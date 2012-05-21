@@ -20,47 +20,58 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
 import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.perspective.workspace.explorer.AdminTree;
 import org.drools.guvnor.client.i18n.Constants;
+import org.drools.guvnor.client.perspective.workspace.explorer.AdminTree;
 import org.drools.guvnor.client.resources.Images;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 /**
  * Navigation panel for the west area.
  */
 @Dependent
-public class NavigationPanel extends Composite {
+public class NavigationPanel extends ResizeComposite {
 
-    private Constants constants = GWT.create(Constants.class);
-    private Images images = GWT.create(Images.class);
+    private Constants        constants = GWT.create( Constants.class );
+    private Images           images    = GWT.create( Images.class );
 
-    @Inject private IOCBeanManager manager;
+    @Inject
+    private IOCBeanManager   manager;
 
-    private StackLayoutPanel layout = new StackLayoutPanel(Unit.EM);
+    private StackLayoutPanel layout    = new StackLayoutPanel( Unit.EM );
 
     @PostConstruct
     public void init() {
-        initWidget(layout);
+        initWidget( layout );
         addAdminPanel();
         addAdminPanel();
     }
 
+    @Override
+    public void onResize() {
+        //TODO {manstis} The first widget! Use to work out resizing....
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        layout.setHeight( "500px" );
+        layout.setWidth( "500px" );
+    }
+
     private void addAdminPanel() {
-        final DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        final DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel( Unit.EM );
 
-        final AdminTree tree = manager.lookupBean(AdminTree.class).getInstance();
-        tree.setStyleName("lhs-Tree");
-        final ScrollPanel treePanel = new ScrollPanel(tree);
-        browseDockLayoutPanel.add(treePanel);
+        final AdminTree tree = manager.lookupBean( AdminTree.class ).getInstance();
+        browseDockLayoutPanel.add( tree );
 
-        layout.add(browseDockLayoutPanel, Util.getHeaderHTML(images.config(), constants.admin()), 2);
+        layout.add( browseDockLayoutPanel,
+                    Util.getHeaderHTML( images.config(),
+                                        constants.admin() ),
+                    2 );
     }
 
 }

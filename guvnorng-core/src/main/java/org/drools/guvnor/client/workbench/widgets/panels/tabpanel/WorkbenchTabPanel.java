@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SourcesTabEvents;
@@ -52,6 +53,7 @@ import com.google.gwt.user.client.ui.TabListener;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.WidgetCollection;
 
 @SuppressWarnings("deprecation")
 public class WorkbenchTabPanel extends Composite
@@ -64,6 +66,7 @@ public class WorkbenchTabPanel extends Composite
     HasBeforeSelectionHandlers<Integer>,
     HasSelectionHandlers<Integer>,
     RequiresResize,
+    ProvidesResize,
     FocusReceivedEventHandler {
     /**
      * This extension of DeckPanel overrides the public mutator methods to
@@ -135,6 +138,11 @@ public class WorkbenchTabPanel extends Composite
                           beforeIndex );
         }
 
+        @Override
+        protected WidgetCollection getChildren() {
+            return super.getChildren();
+        }
+
     }
 
     /**
@@ -181,7 +189,7 @@ public class WorkbenchTabPanel extends Composite
             hp.add( tabLabel );
 
             WorkbenchDragAndDropManager.getInstance().makeDraggable( tabContent,
-                                                                     tabContent );
+                                                                     tabLabel );
 
             final SimplePanel image = new SimplePanel();
             final FocusPanel imageContainer = new FocusPanel();
@@ -500,6 +508,11 @@ public class WorkbenchTabPanel extends Composite
                                                Unit.PX );
         this.getElement().getStyle().setHeight( height,
                                                 Unit.PX );
+        for ( Widget child : this.deck.getChildren() ) {
+            if ( child instanceof RequiresResize ) {
+                ((RequiresResize) child).onResize();
+            }
+        }
     }
 
     @Override

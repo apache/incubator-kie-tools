@@ -581,6 +581,7 @@ a.serviceTab:active {
 }
 
 .dropTarget-highlight {
+	z-index: 100000;
 	background-color: #a0a0e0;
 	opacity: 0.75;
 	filter: alpha(opacity =       75); /* For IE8 and earlier */
