@@ -29,6 +29,18 @@
 
   
   <dependencies>
+  
+    <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
+    <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
+    <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
+    <!--  See https://community.jboss.org/thread/199952?tstart=0 -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>12.0</version>
+      <scope>compile</scope>
+    </dependency>
+  
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
