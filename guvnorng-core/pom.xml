@@ -19,6 +19,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <errai.version>2.0.1-SNAPSHOT</errai.version>
     <gwt.version>2.4.0</gwt.version>
+    <gwt-dnd.version>3.1.2</gwt-dnd.version>
     <weld.version>1.1.6.Final</weld.version>
     <gwt.maven.version>2.4.0</gwt.maven.version>
     <mvel.version>2.1.Beta8</mvel.version>
@@ -236,6 +237,12 @@
       <artifactId>gwt-user</artifactId>
       <version>${gwt.version}</version>
       <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.allen-sauer.gwt.dnd</groupId>
+      <artifactId>gwt-dnd</artifactId>
+      <version>${gwt-dnd.version}</version>
     </dependency>
 
     <!-- Runtime / Container dependencies -->

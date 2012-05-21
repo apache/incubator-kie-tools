@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Panel;
 public class AdminAreaView extends Composite implements AdminAreaPresenter.View {
 
     @Inject UiBinder<Panel, AdminAreaView> uiBinder;
-    @UiField Label nameLabel;
+    @UiField public Label nameLabel;
 
     @PostConstruct
     public void init() {

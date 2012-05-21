@@ -8,7 +8,7 @@
   <inherits name="com.google.gwt.activity.Activity"/>
 
   <!-- inherit css based theme -->
-  <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+  <inherits name='com.google.gwt.user.theme.clean.Clean'/>
 
   <!-- Errai module inherits -->
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
@@ -17,9 +17,12 @@
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
   <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
+  
+  <!-- GWT-DnD module inherits -->
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
   <!-- Specify the application specific style sheet. -->
-  <stylesheet src='css/Guvnor.css'/>
+  <stylesheet src='css/guvnorng-core.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

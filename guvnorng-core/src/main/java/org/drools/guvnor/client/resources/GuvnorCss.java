@@ -31,5 +31,7 @@ public interface GuvnorCss
     String popupListWidgetButtonBar();
 
     String popupListWidgetCaption();
+    
+    String closeTabImage();
 
 }

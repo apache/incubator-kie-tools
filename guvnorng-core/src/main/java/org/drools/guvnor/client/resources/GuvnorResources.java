@@ -25,15 +25,26 @@ public interface GuvnorResources
         extends
         ClientBundle {
 
-    GuvnorResources INSTANCE = GWT.create(GuvnorResources.class);
+    GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
 
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    @Source("images/jbossrulesBlue.gif") ImageResource jbossrulesBlue();
+    @Source("images/jbossrulesBlue.gif")
+    ImageResource jbossrulesBlue();
 
-    @Source("css/Header.css") HeaderCss headerCss();
+    //TODO {manstis} Temporary for Workbench demo
+    @Source("images/gwt-logo.png")
+    ImageResource logo();
 
-    @Source("css/TitledTextCell.css") TitledTextCellCss titledTextCellCss();
+    @Source("images/dragProxy.png")
+    ImageResource workbenchPanelDragProxy();
+    
+    @Source("css/Header.css")
+    HeaderCss headerCss();
 
-    @Source("css/Guvnor.css") GuvnorCss guvnorCss();
+    @Source("css/TitledTextCell.css")
+    TitledTextCellCss titledTextCellCss();
+
+    @Source("css/Guvnor.css")
+    GuvnorCss guvnorCss();
 
 }

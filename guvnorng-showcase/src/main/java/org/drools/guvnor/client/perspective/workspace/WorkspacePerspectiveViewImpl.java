@@ -19,51 +19,73 @@ package org.drools.guvnor.client.perspective.workspace;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.ExplorerViewCenterPanel;
+import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
+import org.drools.guvnor.client.workbench.Workbench;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.content.multi.MultiContentPanel;
-import org.drools.guvnor.client.mvp.ExplorerViewCenterPanel;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
-public class WorkspacePerspectiveViewImpl extends Composite implements WorkspacePerspectivePresenter.MyView {
+public class WorkspacePerspectiveViewImpl extends Composite
+    implements
+    WorkspacePerspectivePresenter.MyView {
 
-    @Inject private UiBinder<Widget, WorkspacePerspectiveViewImpl> uiBinder;
+    @Inject
+    private UiBinder<Widget, WorkspacePerspectiveViewImpl> uiBinder;
 
-    @Inject private IOCBeanManager manager;
+    @Inject
+    private IOCBeanManager                                 manager;
 
-    @UiField SpanElement userName;
+    @UiField
+    public SpanElement                                     userName;
 
-    @UiField HTMLPanel titlePanel;
+    @UiField
+    public HTMLPanel                                       titlePanel;
 
-    @UiField HTMLPanel footerPanel;
-/*
-    @UiField(provided = true) MultiContentPanel contentPanel;*/
-    
-    @UiField(provided = true) ExplorerViewCenterPanel tabbedPanel;
-    
-    @UiField(provided = true) NavigationPanel navPanel;
+    @UiField
+    public HTMLPanel                                       footerPanel;
+
+    //@UiField(provided = true) MultiContentPanel contentPanel;
+
+    @UiField(provided = true)
+    public ExplorerViewCenterPanel                         tabbedPanel;
+
+    @UiField(provided = true)
+    public NavigationPanel                                 navPanel;
+
+    public Workbench                                       workbench;
 
     @PostConstruct
     public void init() {
-        this.navPanel = manager.lookupBean(NavigationPanel.class).getInstance();
+        final Workbench workbench = new Workbench();
+
+        initWidget( workbench );
+
+        //this.navPanel = manager.lookupBean( NavigationPanel.class ).getInstance();
+        this.workbench = manager.lookupBean( Workbench.class ).getInstance();
+        this.workbench.addRootPanel( "Navigation",
+                                     Position.WEST,
+                                     new Label( "Nav panel" ) );
+
         //this.contentPanel = manager.lookupBean(MultiContentPanel.class).getInstance();
-        this.tabbedPanel = manager.lookupBean(ExplorerViewCenterPanel.class).getInstance();
-        initWidget(uiBinder.createAndBindUi(this));
+        //this.tabbedPanel = manager.lookupBean(ExplorerViewCenterPanel.class).getInstance();
+        //initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setUserName(String userName) {
-        this.userName.setInnerText(userName);
+        this.userName.setInnerText( userName );
     }
-/*
-    @Override
-    public MultiContentPanel getContentPanel() {
-        return contentPanel;
-    }
-    */
+
+    /*
+     * @Override public MultiContentPanel getContentPanel() { return
+     * contentPanel; }
+     */
     @Override
     public ExplorerViewCenterPanel getTabbedPanel() {
         return tabbedPanel;

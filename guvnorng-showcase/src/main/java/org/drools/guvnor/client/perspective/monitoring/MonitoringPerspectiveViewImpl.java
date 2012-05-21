@@ -42,15 +42,15 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
 
     @Inject private PlaceController placeController;
 
-    @UiField SpanElement userName;
+    @UiField public SpanElement userName;
 
-    @UiField HTMLPanel titlePanel;
+    @UiField public HTMLPanel titlePanel;
 
-    @UiField HTMLPanel footerPanel;
+    @UiField public HTMLPanel footerPanel;
 
-    @UiField Button backWorkspace;
+    @UiField public Button backWorkspace;
 
-    @UiField Button callService;
+    @UiField public Button callService;
 
     @PostConstruct
     public void init() {

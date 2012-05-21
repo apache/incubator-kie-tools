@@ -30,7 +30,7 @@ import org.drools.guvnor.client.common.ResizableTextArea;
 public class TextEditorView extends Composite implements TextEditorPresenter.View {
 
     @Inject UiBinder<Panel, TextEditorView> uiBinder;
-    @UiField ResizableTextArea fileContent;
+    @UiField public ResizableTextArea fileContent;
     private boolean isDirty = false;
 
     @PostConstruct

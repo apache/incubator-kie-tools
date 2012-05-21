@@ -13,6 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+/* CSS for loading message at application Startup */
+#loading {
+	position: absolute;
+    left: 45%;
+    top: 40%;
+    padding: 2px;
+    z-index: 20001;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+#loading a {
+    color: #225588;
+}
+
+#loading .loading-indicator {
+    background: white;
+    color: #444;
+    font: bold 13px tahoma, arial, helvetica;
+    padding: 10px;
+    margin: 0;
+    height: auto;
+}
+
+#loading-msg {
+    font: normal 10px arial, tahoma, sans-serif;
+}
+
+/* Other styles */
 body {
     font-family: tahoma, arial, helvetica, sans-serif;
     line-height: 1.5em;
@@ -36,50 +66,9 @@ td,th {
     font: normal 12px tahoma, arial, helvetica, sans-serif;
 }
 
-.gwt-Frame {
-    border: 0;
-}
-
-.gwt-DisclosurePanel .content {
-    border-left: 3px solid #e3e3e3;
-    padding: 4px 0px 4px 8px;
-    margin-left: 16px;
-}
-
-.VerticalSplitPanel .vsplitter {
-    background-color: #f3f2e7;
-    border: 1px solid #aa9;
-    /* Pretty much everything */
-    cursor: n-resize;
-    /* IE6, IE7, FF2, Safari Win */
-    cursor: row-resize;
-}
-
 .selectable-label:hover {
     text-decoration: underline;
     cursor: pointer;
-}
-
-.HorizontalSplitPanel .hsplitter {
-    background-color: #f3f2e7;
-    border: 1px solid #aa9;
-    /* Pretty much everything */
-    cursor: n-resize;
-    /* IE6, IE7, FF2, Safari Win */
-    cursor: col-resize;
-}
-
-.gwt-SuggestBoxPopup {
-    background: white;
-    border: 1px solid black;
-}
-
-.gwt-SuggestBoxPopup .item {
-    font-size: 0.7em;
-}
-
-.gwt-SuggestBoxPopup .item-selected {
-    background: yellow;
 }
 
 .testErrorValue {
@@ -101,30 +90,6 @@ td,th {
     border: 1px;
     solid
     #aa9;
-}
-
-.gwt-DialogBox {
-    sborder: 8px solid #aa9;
-    border: 1px solid #aa9;
-    background: #FFF;
-}
-
-.gwt-DialogBox .Caption {
-    font-weight: 700;
-    cursor: default;
-    margin: 2px;
-    padding: 3px;
-    background: #FFFFF0;
-}
-
-.gwt-HorizontalSplitter .Bar {
-    width: 8px;
-    background: #aa9;
-}
-
-.gwt-VerticalSplitter .Bar {
-    height: 8px;
-    background: #aa9;
 }
 
 select {
@@ -181,47 +146,6 @@ select {
 
 .modeller-action-Label {
     font-style: italic;
-}
-
-.gwt-TabBar .gwt-TabBarFirst {
-    width: 0;
-    margin: 0;
-    padding: 0;
-}
-
-.gwt-TabBar .gwt-TabBarRest {
-    border-bottom: 1px solid #aa9;
-    padding-right: 3px;
-}
-
-.gwt-TabBar .gwt-TabBarItem {
-    border: 1px solid #aa9;
-    cursor: pointer;
-    color: #FFF;
-    padding: .5em 1em;
-}
-
-.gwt-TabBar .gwt-TabBarItem-selected {
-    border-bottom: 0 solid #aa9;
-    cursor: url;
-    border: 0 transparent none;
-    margin: 0;
-    padding: .5em 1em;
-    background: #f6f6f6;
-}
-
-.gwt-TabBarItem-selected {
-    color: #000 !important;
-}
-
-.gwt-TextArea {
-    border: 1px solid #aa9;
-    padding: 0;
-}
-
-.gwt-StackPanel .gwt-StackPanelItem {
-    cursor: hand;
-    background: #aa9;
 }
 
 .ks-popups-Popup {
@@ -445,25 +369,8 @@ textarea:focus,textarea:active {
     cursor: pointer !important;
 }
 
-.guvnor-Tree .gwt-TreeItem-selected {
-    background: none !important;
-}
-
-.gwt-TreeItem {
-    width: 100%;
-    cursor: pointer;
-    display: block !important;
-    line-height: em;
-    margin: 0;
-    padding: 0;
-}
-
 a,a:visited {
     color: #00008B;
-}
-
-.gwt-CheckBox,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font { #
-    font-size: smaller;
 }
 
 select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active
@@ -656,3 +563,146 @@ a.serviceTab:active {
     text-decoration: none;
     color: #000000;
 }
+
+/* Workbench styles */
+.workbenchFocusIndicator {
+	background-color: #4090e0;
+	height: 3px;
+	width: 100%;
+}
+
+.workbenchFocusIndicatorHasFocus {
+	background-color: #e0f020;
+}
+
+.workbenchTabPanelBottom {
+	overflow: hidden;
+	padding: 6px;
+}
+
+.dropTarget-highlight {
+	background-color: #a0a0e0;
+	opacity: 0.75;
+	filter: alpha(opacity =       75); /* For IE8 and earlier */
+}
+
+/** Overridden GWT styles 
+.gwt-Frame {
+    border: 0;
+}
+
+.gwt-DisclosurePanel .content {
+    border-left: 3px solid #e3e3e3;
+    padding: 4px 0px 4px 8px;
+    margin-left: 16px;
+}
+
+.VerticalSplitPanel .vsplitter {
+    background-color: #f3f2e7;
+    border: 1px solid #aa9;
+    cursor: n-resize;
+    cursor: row-resize;
+}
+
+.HorizontalSplitPanel .hsplitter {
+    background-color: #f3f2e7;
+    border: 1px solid #aa9;
+    cursor: n-resize;
+    cursor: col-resize;
+}
+
+.gwt-SuggestBoxPopup {
+    background: white;
+    border: 1px solid black;
+}
+
+.gwt-SuggestBoxPopup .item {
+    font-size: 0.7em;
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+    background: yellow;
+}
+
+.gwt-DialogBox {
+    sborder: 8px solid #aa9;
+    border: 1px solid #aa9;
+    background: #FFF;
+}
+
+.gwt-DialogBox .Caption {
+    font-weight: 700;
+    cursor: default;
+    margin: 2px;
+    padding: 3px;
+    background: #FFFFF0;
+}
+
+.gwt-HorizontalSplitter .Bar {
+    width: 8px;
+    background: #aa9;
+}
+
+.gwt-VerticalSplitter .Bar {
+    height: 8px;
+    background: #aa9;
+}
+
+.gwt-TabBar .gwt-TabBarFirst {
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.gwt-TabBar .gwt-TabBarRest {
+    border-bottom: 1px solid #aa9;
+    padding-right: 3px;
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+    border: 1px solid #aa9;
+    cursor: pointer;
+    color: #FFF;
+    padding: .5em 1em;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+    border-bottom: 0 solid #aa9;
+    cursor: url;
+    border: 0 transparent none;
+    margin: 0;
+    padding: .5em 1em;
+    background: #f6f6f6;
+}
+
+.gwt-TabBarItem-selected {
+    color: #000 !important;
+}
+
+.gwt-TextArea {
+    border: 1px solid #aa9;
+    padding: 0;
+}
+
+.gwt-StackPanel .gwt-StackPanelItem {
+    cursor: hand;
+    background: #aa9;
+}
+
+.guvnor-Tree .gwt-TreeItem-selected {
+    background: none !important;
+}
+
+.gwt-TreeItem {
+    width: 100%;
+    cursor: pointer;
+    display: block !important;
+    line-height: em;
+    margin: 0;
+    padding: 0;
+}
+
+.gwt-CheckBox,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
+    font-size: smaller;
+}
+**/
