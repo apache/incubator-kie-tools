@@ -35,6 +35,11 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
+
+import org.drools.guvnor.client.mvp.GuvnorNGPlaceRequestHistoryMapper;
+import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.client.mvp.PlaceRequestHistoryMapper;
 import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
@@ -49,26 +54,32 @@ public class Showcase {
     @Inject private IOCBeanManager manager;
 
     private final PlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
-    //private final EventBus eventBus = new SimpleEventBus();
+    //private final PlaceRequestHistoryMapper historyMapper = GWT.create(GuvnorNGPlaceRequestHistoryMapper.class);
+   //private final EventBus eventBus = new SimpleEventBus();
     //private final PlaceController placeController = new PlaceController(eventBus);
     private final SimplePanel appWidget = new SimplePanel();
     private PlaceHistoryHandler historyHandler;
     @Inject private PlaceController placeController;
+    @Inject private PlaceManager placeManager;
     @Inject private EventBus eventBus;
     @PostConstruct
     public void init() {
         RestClient.setApplicationRoot("/");
-        final Place defaultPlace;
+        final PlaceRequest defaultPlaceRequest;
         final ActivityMapper activityMapper;
 
         activityMapper = manager.lookupBean(PerspectiveActivityMapper.class).getInstance();
-        defaultPlace = new WorkspacePerspectivePlace();
+        defaultPlaceRequest = new PlaceRequest("workspace_perspective");
 
         final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setDisplay(appWidget);
 
         historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(placeController, eventBus, defaultPlace);
+        historyHandler.register(placeController, eventBus, new WorkspacePerspectivePlace());
+/*        
+        PlaceRequestHistoryMapper historyMapper = new GuvnorNGPlaceRequestHistoryMapper();
+        historyHandler = new PlaceHistoryHandler(historyMapper);
+        historyHandler.register(placeManager, eventBus, defaultPlaceRequest);*/
     }
 
     @AfterInitialization
@@ -78,6 +89,7 @@ public class Showcase {
         hideLoadingPopup();
 
         RootLayoutPanel.get().add(appWidget);
+        //placeManager.goTo(new PlaceRequest("workspace_perspective"));
         historyHandler.handleCurrentHistory();
     }
 

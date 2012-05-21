@@ -32,6 +32,8 @@ import org.drools.guvnor.client.content.AdminPlace;
 import org.drools.guvnor.client.content.AdminPlace2;
 import org.drools.guvnor.client.content.editor.TextEditorPlace;
 import org.drools.guvnor.client.i18n.Constants;
+import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace;
 import org.drools.guvnor.client.resources.Images;
 
@@ -39,6 +41,8 @@ import org.drools.guvnor.client.resources.Images;
 public class AdminTree extends AbstractTree {
 
     @Inject private PlaceController placeController;
+
+    @Inject private PlaceManager placeManager;
 
     public static final String ADMIN_ID = "Admin";
     public static final String ADMIN2_ID = "Admin2";
@@ -92,7 +96,7 @@ public class AdminTree extends AbstractTree {
         final TreeItem item = event.getSelectedItem();
         final String widgetID = itemWidgets.get(item);
 
-        if (widgetID != null) {
+/*        if (widgetID != null) {
             final Place place;
             if (widgetID.equals(ADMIN_ID)) {
                 place = new AdminPlace("helloWorld" + "|" + constants.helloWorld());
@@ -108,6 +112,19 @@ public class AdminTree extends AbstractTree {
                 place = null;
             }
             placeController.goTo(place);
+        }*/
+        
+        if (widgetID != null) {
+            final PlaceRequest placeRequest;
+            if (widgetID.equals(ADMIN_ID)) {
+                placeRequest = new PlaceRequest("AdminArea");
+                placeRequest.parameter("uuid", "someuuidvalue");
+            } else if (widgetID.equals(ADMIN2_ID)) {
+                placeRequest = new PlaceRequest("AdminArea2");
+            } else {
+                placeRequest = null;
+            }
+            placeManager.goTo(placeRequest);
         }
     }
 }

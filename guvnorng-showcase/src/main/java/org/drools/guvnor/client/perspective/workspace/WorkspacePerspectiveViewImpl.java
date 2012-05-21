@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.content.multi.MultiContentPanel;
+import org.drools.guvnor.client.mvp.ExplorerViewCenterPanel;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 public class WorkspacePerspectiveViewImpl extends Composite implements WorkspacePerspectivePresenter.MyView {
@@ -39,24 +40,32 @@ public class WorkspacePerspectiveViewImpl extends Composite implements Workspace
     @UiField HTMLPanel titlePanel;
 
     @UiField HTMLPanel footerPanel;
-
-    @UiField(provided = true) MultiContentPanel contentPanel;
-
+/*
+    @UiField(provided = true) MultiContentPanel contentPanel;*/
+    
+    @UiField(provided = true) ExplorerViewCenterPanel tabbedPanel;
+    
     @UiField(provided = true) NavigationPanel navPanel;
 
     @PostConstruct
     public void init() {
         this.navPanel = manager.lookupBean(NavigationPanel.class).getInstance();
-        this.contentPanel = manager.lookupBean(MultiContentPanel.class).getInstance();
+        //this.contentPanel = manager.lookupBean(MultiContentPanel.class).getInstance();
+        this.tabbedPanel = manager.lookupBean(ExplorerViewCenterPanel.class).getInstance();
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setUserName(String userName) {
         this.userName.setInnerText(userName);
     }
-
+/*
     @Override
     public MultiContentPanel getContentPanel() {
         return contentPanel;
+    }
+    */
+    @Override
+    public ExplorerViewCenterPanel getTabbedPanel() {
+        return tabbedPanel;
     }
 }
