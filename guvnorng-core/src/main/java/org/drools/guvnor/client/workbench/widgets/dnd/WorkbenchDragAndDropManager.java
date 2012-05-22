@@ -78,6 +78,15 @@ public class WorkbenchDragAndDropManager {
         dragController.unregisterDropController( dropController );
     }
 
+    public void unregisterDropControllers() {
+        assertDragController();
+        for ( Map.Entry<SimplePanel, DropController> e : this.dropControllerMap.entrySet() ) {
+            final DropController dropController = dropControllerMap.get( e.getKey() );
+            dragController.unregisterDropController( dropController );
+        }
+        this.dropControllerMap.clear();
+    }
+
     public void dragStart(final WorkbenchTabPanel wtp,
                           final Widget w) {
         this.dragWidgetSource = wtp;

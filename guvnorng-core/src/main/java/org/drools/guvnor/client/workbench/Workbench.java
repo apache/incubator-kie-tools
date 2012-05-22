@@ -144,16 +144,18 @@ public class Workbench extends Composite
     }
 
     private void bootstrap() {
-        //TODO {manstis} This needs to add the applicable Widgets for the Perspective
         workbench.clear();
         workbench.setWidget( workbenchRootPanel );
+        WorkbenchDragAndDropManager.getInstance().unregisterDropControllers();
+        
+        //TODO {manstis} This needs to add the applicable Widgets for the Perspective
         addWorkbenchPanel( "p1",
                            workbenchRootPanel,
-                           Position.WEST,
+                           Position.NORTH,
                            new Label( "p1" ) );
         addWorkbenchPanel( "p2",
                            workbenchRootPanel,
-                           Position.EAST,
+                           Position.WEST,
                            new Label( "p2" ) );
 
         //Set focus to root panel
