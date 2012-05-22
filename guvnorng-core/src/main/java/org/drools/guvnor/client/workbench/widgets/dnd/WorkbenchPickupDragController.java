@@ -34,6 +34,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
     public WorkbenchPickupDragController(final AbsolutePanel boundaryPanel) {
         super( boundaryPanel,
                false );
+        setBehaviorDragStartSensitivity( 1 );
     }
 
     @Override
@@ -48,14 +49,14 @@ public class WorkbenchPickupDragController extends PickupDragController {
     @Override
     protected Widget newDragProxy(DragContext context) {
         AbsolutePanel container = new AbsolutePanel();
-        container.getElement().getStyle().setBackgroundColor( "red" );
         container.getElement().getStyle().setProperty( "overflow",
                                                        "visible" );
 
-        int offsetX = context.mouseX - context.draggable.getAbsoluteLeft() - (dragProxy.getWidth() / 2);
-        int offsetY = context.mouseY - context.draggable.getAbsoluteTop() - (dragProxy.getHeight() / 2);
+        //context.draggable is the Widget, not the DragHandle so offset
+        final Widget parent = context.draggable.getParent().getParent();
+        int offsetY = parent.getAbsoluteTop() - context.draggable.getAbsoluteTop();
         container.add( dragProxy,
-                       offsetX,
+                       0,
                        offsetY );
         return container;
     }

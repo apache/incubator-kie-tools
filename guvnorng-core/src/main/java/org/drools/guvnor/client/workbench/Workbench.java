@@ -35,25 +35,23 @@ public class Workbench extends Composite
     implements
     AddWorkbenchPanelEventHandler {
 
-    public static final int      WIDTH              = Window.getClientWidth();
+    public static final int     WIDTH              = Window.getClientWidth();
 
-    public static final int      HEIGHT             = Window.getClientHeight();
+    public static final int     HEIGHT             = Window.getClientHeight();
 
-    private final EventBus       eventBus           = new SimpleEventBus();
+    private final EventBus      eventBus           = new SimpleEventBus();
 
-    private final VerticalPanel  container          = new VerticalPanel();
+    private final VerticalPanel container          = new VerticalPanel();
 
-    private final SimplePanel    workbench          = new SimplePanel();
+    private final SimplePanel   workbench          = new SimplePanel();
 
-    private final AbsolutePanel  workbenchContainer = new AbsolutePanel();
+    private final AbsolutePanel workbenchContainer = new AbsolutePanel();
 
-    private final WorkbenchPanel workbenchRootPanel;
-
-    private final PanelHelper    helperNorth        = new PanelHelperNorth( eventBus );
-    private final PanelHelper    helperSouth        = new PanelHelperSouth( eventBus );
-    private final PanelHelper    helperEast         = new PanelHelperEast( eventBus );
-    private final PanelHelper    helperWest         = new PanelHelperWest( eventBus );
-    private final PanelHelper    helperSelf         = new PanelHelperSelf( eventBus );
+    private final PanelHelper   helperNorth        = new PanelHelperNorth( eventBus );
+    private final PanelHelper   helperSouth        = new PanelHelperSouth( eventBus );
+    private final PanelHelper   helperEast         = new PanelHelperEast( eventBus );
+    private final PanelHelper   helperWest         = new PanelHelperWest( eventBus );
+    private final PanelHelper   helperSelf         = new PanelHelperSelf( eventBus );
 
     public Workbench() {
 
@@ -76,18 +74,6 @@ public class Workbench extends Composite
                                 HEIGHT - 48 );
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
-
-        //Add default workbench widget
-        workbenchRootPanel = new WorkbenchPanel( eventBus,
-                                                 new Label( "root" ),
-                                                 "root" );
-        workbench.setWidget( workbenchRootPanel );
-
-        //Wire-up DnD controller
-        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel,
-                                                                                         eventBus );
-        WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
-                                                                          workbenchDropController );
 
         //Wire-up events
         eventBus.addHandler( AddWorkbenchPanelEvent.TYPE,
@@ -145,9 +131,21 @@ public class Workbench extends Composite
 
     private void bootstrap() {
         workbench.clear();
-        workbench.setWidget( workbenchRootPanel );
         WorkbenchDragAndDropManager.getInstance().unregisterDropControllers();
-        
+
+        //Add default workbench widget
+        //TODO {manstis} You know, I don't really like this, but it works for now.
+        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel( eventBus,
+                                                                      new Label( "root" ),
+                                                                      "root" );
+        workbench.setWidget( workbenchRootPanel );
+
+        //Wire-up DnD controller
+        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel,
+                                                                                         eventBus );
+        WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
+                                                                          workbenchDropController );
+
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
         addWorkbenchPanel( "p1",
                            workbenchRootPanel,
