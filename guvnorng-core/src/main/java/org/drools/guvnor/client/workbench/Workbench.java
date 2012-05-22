@@ -19,12 +19,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,23 +35,25 @@ public class Workbench extends Composite
     implements
     AddWorkbenchPanelEventHandler {
 
-    public static final int     WIDTH              = Window.getClientWidth();
+    public static final int      WIDTH              = Window.getClientWidth();
 
-    public static final int     HEIGHT             = Window.getClientHeight();
+    public static final int      HEIGHT             = Window.getClientHeight();
 
-    private final EventBus      eventBus           = new SimpleEventBus();
+    private final EventBus       eventBus           = new SimpleEventBus();
 
-    private final VerticalPanel container          = new VerticalPanel();
+    private final VerticalPanel  container          = new VerticalPanel();
 
-    private final SimplePanel   workbench          = new SimplePanel();
+    private final SimplePanel    workbench          = new SimplePanel();
 
-    private final AbsolutePanel workbenchContainer = new AbsolutePanel();
+    private final AbsolutePanel  workbenchContainer = new AbsolutePanel();
 
-    private final PanelHelper   helperNorth        = new PanelHelperNorth( eventBus );
-    private final PanelHelper   helperSouth        = new PanelHelperSouth( eventBus );
-    private final PanelHelper   helperEast         = new PanelHelperEast( eventBus );
-    private final PanelHelper   helperWest         = new PanelHelperWest( eventBus );
-    private final PanelHelper   helperSelf         = new PanelHelperSelf( eventBus );
+    private final WorkbenchPanel workbenchRootPanel;
+
+    private final PanelHelper    helperNorth        = new PanelHelperNorth( eventBus );
+    private final PanelHelper    helperSouth        = new PanelHelperSouth( eventBus );
+    private final PanelHelper    helperEast         = new PanelHelperEast( eventBus );
+    private final PanelHelper    helperWest         = new PanelHelperWest( eventBus );
+    private final PanelHelper    helperSelf         = new PanelHelperSelf( eventBus );
 
     public Workbench() {
 
@@ -61,6 +65,7 @@ public class Workbench extends Composite
                                                    Unit.PX );
         menubar.setWidth( WIDTH + "px" );
         menubar.add( makeAddWindowButton() );
+        menubar.add( makeBootstrapButton() );
         container.add( menubar );
 
         //Container panels for workbench
@@ -72,11 +77,39 @@ public class Workbench extends Composite
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
 
+        //Add default workbench widget
+        workbenchRootPanel = new WorkbenchPanel( eventBus,
+                                                 new Label( "root" ),
+                                                 "root" );
+        workbench.setWidget( workbenchRootPanel );
+
+        //Wire-up DnD controller
+        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel,
+                                                                                         eventBus );
+        WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
+                                                                          workbenchDropController );
+
         //Wire-up events
         eventBus.addHandler( AddWorkbenchPanelEvent.TYPE,
                              this );
 
         initWidget( container );
+
+        //Schedule creation of the default perspective
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                //We need to defer execution until the browser has completed initial layout
+                final Timer t = new Timer() {
+                    public void run() {
+                        bootstrap();
+                    }
+                };
+                t.schedule( 250 );
+            }
+
+        } );
     }
 
     private Widget makeAddWindowButton() {
@@ -96,33 +129,35 @@ public class Workbench extends Composite
         return addWidgetButton;
     }
 
-    public void addRootPanel(final String title,
-                             final Widget widget) {
-        //Add default workbench widget
-        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel( eventBus,
-                                                                      widget,
-                                                                      title );
-        workbench.setWidget( workbenchRootPanel );
+    private Widget makeBootstrapButton() {
+        final Button bootstrapButton = new Button( "Bootstrap" );
 
-        //Wire-up DnD controller
-        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel,
-                                                                                         eventBus );
-        WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
-                                                                          workbenchDropController );
-
-        //Set focus to root panel
-        workbenchRootPanel.setFocus( true );
-
-        //Force it to resize
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+        bootstrapButton.addClickHandler( new ClickHandler() {
 
             @Override
-            public void execute() {
-                workbenchRootPanel.onResize();
+            public void onClick(ClickEvent event) {
+                bootstrap();
             }
 
         } );
+        return bootstrapButton;
+    }
 
+    private void bootstrap() {
+        //TODO {manstis} This needs to add the applicable Widgets for the Perspective
+        workbench.clear();
+        workbench.setWidget( workbenchRootPanel );
+        addWorkbenchPanel( "p1",
+                           workbenchRootPanel,
+                           Position.WEST,
+                           new Label( "p1" ) );
+        addWorkbenchPanel( "p2",
+                           workbenchRootPanel,
+                           Position.EAST,
+                           new Label( "p2" ) );
+
+        //Set focus to root panel
+        workbenchRootPanel.setFocus( true );
     }
 
     @Override

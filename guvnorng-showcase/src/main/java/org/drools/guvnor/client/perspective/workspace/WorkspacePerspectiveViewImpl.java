@@ -69,9 +69,9 @@ public class WorkspacePerspectiveViewImpl extends Composite
         //the necessary panels to the Workbench. Switching perspectives clears the
         //existing Workbench and re-creates. The initial populations isn't working
         //yet so I add this for now....
-        this.navPanel = manager.lookupBean( NavigationPanel.class ).getInstance();
-        workbench.addRootPanel( "Navigation",
-                                this.navPanel );
+//        this.navPanel = manager.lookupBean( NavigationPanel.class ).getInstance();
+//        workbench.addRootPanel( "Navigation",
+//                                this.navPanel );
 
         //this.contentPanel = manager.lookupBean(MultiContentPanel.class).getInstance();
         //this.tabbedPanel = manager.lookupBean(ExplorerViewCenterPanel.class).getInstance();
