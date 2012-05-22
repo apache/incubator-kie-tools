@@ -16,13 +16,10 @@
 package org.drools.guvnor.client.workbench;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.workbench.events.AddWorkbenchPanelEvent;
-import org.drools.guvnor.client.workbench.events.FocusReceivedEvent;
-import org.drools.guvnor.client.workbench.events.FocusReceivedEvent.FocusReceivedEventHandler;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -31,17 +28,11 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Popup to select a location to add a new widget
  */
-public class PositionSelectorPopup extends PopupPanel
-    implements
-    FocusReceivedEventHandler {
+public class PositionSelectorPopup extends PopupPanel {
 
-    private ListBox        positionChoices = new ListBox();
+    private ListBox positionChoices = new ListBox();
 
-    private WorkbenchPanel target;
-
-    private final EventBus eventBus;
-
-    private int            widgetCounter   = 1;
+    private int     widgetCounter   = 1;
 
     public enum Position {
         NONE(
@@ -71,13 +62,9 @@ public class PositionSelectorPopup extends PopupPanel
 
     }
 
-    public PositionSelectorPopup(final EventBus eventBus) {
-        this.eventBus = eventBus;
+    public PositionSelectorPopup() {
         initChoices();
         add( positionChoices );
-
-        eventBus.addHandler( FocusReceivedEvent.TYPE,
-                             this );
     }
 
     private void initChoices() {
@@ -100,18 +87,12 @@ public class PositionSelectorPopup extends PopupPanel
                 final String title = position.toString() + " [" + (widgetCounter++) + "]";
                 final Widget widget = new Image( GuvnorResources.INSTANCE.logo() );
 
-                eventBus.fireEvent( new AddWorkbenchPanelEvent( title,
-                                                                target,
-                                                                position,
-                                                                widget ) );
+                PanelManager.getInstance().addWorkbenchPanel( title,
+                                                              position,
+                                                              widget );
             }
 
         } );
-    }
-
-    @Override
-    public void onFocusReceived(FocusReceivedEvent event) {
-        target = event.getWorkbenchPanel();
     }
 
     @Override
@@ -119,7 +100,5 @@ public class PositionSelectorPopup extends PopupPanel
         positionChoices.setSelectedIndex( 0 );
         super.show();
     }
-    
-    
 
 }

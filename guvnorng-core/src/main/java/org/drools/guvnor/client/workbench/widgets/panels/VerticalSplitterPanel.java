@@ -20,14 +20,9 @@ import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -41,16 +36,9 @@ public class VerticalSplitterPanel extends ResizeComposite
     private final ScrollPanel               northWidgetContainer = new ScrollPanel();
     private final ScrollPanel               southWidgetContainer = new ScrollPanel();
 
-    private CompassDropController           northDropController;
-    private CompassDropController           southDropController;
-
-    private final EventBus                  eventBus;
-
-    public VerticalSplitterPanel(final EventBus eventBus,
-                                 final WorkbenchPanel northWidget,
+    public VerticalSplitterPanel(final WorkbenchPanel northWidget,
                                  final WorkbenchPanel southWidget,
                                  final Position position) {
-        this.eventBus = eventBus;
         switch ( position ) {
             case NORTH :
                 slp.addNorth( northWidgetContainer,
@@ -75,87 +63,15 @@ public class VerticalSplitterPanel extends ResizeComposite
         initWidget( slp );
 
         //Wire-up DnD controllers
-        northDropController = new CompassDropController( northWidget,
-                                                         eventBus );
         WorkbenchDragAndDropManager.getInstance().registerDropController( northWidgetContainer,
-                                                                          northDropController );
-        southDropController = new CompassDropController( southWidget,
-                                                         eventBus );
+                                                                          new CompassDropController( northWidget ) );
         WorkbenchDragAndDropManager.getInstance().registerDropController( southWidgetContainer,
-                                                                          southDropController );
+                                                                          new CompassDropController( southWidget ) );
     }
 
     @Override
-    public void remove(WorkbenchPanel panel) {
-        final Widget parent = getParent();
-        final Widget northWidget = getWidget( Position.NORTH );
-        final Widget southWidget = getWidget( Position.SOUTH );
-
-        slp.clear();
-
-        WorkbenchDragAndDropManager.getInstance().unregisterDropController( northWidgetContainer );
-        WorkbenchDragAndDropManager.getInstance().unregisterDropController( southWidgetContainer );
-
-        Position positionToDelete = Position.NONE;
-        if ( panel == northWidget ) {
-            positionToDelete = Position.NORTH;
-        } else if ( panel == southWidget ) {
-            positionToDelete = Position.SOUTH;
-        }
-
-        switch ( positionToDelete ) {
-            case NONE :
-                break;
-            case NORTH :
-                //Set parent's content to the SOUTH widget
-                if ( parent instanceof SimplePanel ) {
-                    ((SimplePanel) parent).setWidget( southWidget );
-                    if ( southWidget instanceof WorkbenchPanel ) {
-                        final WorkbenchPanel wbp = (WorkbenchPanel) southWidget;
-                        southDropController = new CompassDropController( wbp,
-                                                                         eventBus );
-                        WorkbenchDragAndDropManager.getInstance().registerDropController( (SimplePanel) parent,
-                                                                                          southDropController );
-                    }
-                }
-
-                if ( southWidget instanceof RequiresResize ) {
-                    scheduleResize( (RequiresResize) southWidget );
-                }
-
-                break;
-            case SOUTH :
-                //Set parent's content to the NORTH widget
-                if ( parent instanceof SimplePanel ) {
-                    ((SimplePanel) parent).setWidget( northWidget );
-                    if ( northWidget instanceof WorkbenchPanel ) {
-                        final WorkbenchPanel wbp = (WorkbenchPanel) northWidget;
-                        final CompassDropController northDropController = new CompassDropController( wbp,
-                                                                                                     eventBus );
-                        WorkbenchDragAndDropManager.getInstance().registerDropController( (SimplePanel) parent,
-                                                                                          northDropController );
-                    }
-                }
-
-                if ( northWidget instanceof RequiresResize ) {
-                    scheduleResize( (RequiresResize) northWidget );
-                }
-
-                break;
-            default :
-                throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
-        }
-    }
-
-    private void scheduleResize(final RequiresResize widget) {
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                widget.onResize();
-            }
-
-        } );
+    public void clear() {
+        this.slp.clear();
     }
 
     @Override

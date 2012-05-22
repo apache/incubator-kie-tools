@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
-import org.drools.guvnor.client.workbench.WorkbenchPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,7 +30,7 @@ public interface SplitPanel {
     //TODO {manstis} This needs to come from the Editor being added to the panel really
     public static final int INITIAL_SIZE = 64;
 
-    public void remove(WorkbenchPanel panel);
+    public void clear();
 
     public Widget getWidget(Position position);
 

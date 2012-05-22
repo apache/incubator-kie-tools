@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.events.AddWorkbenchPanelEvent;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
@@ -32,7 +32,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -40,18 +39,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CompassDropController extends SimpleDropController {
 
-    private final EventBus   eventBus;
-
     private static Element   dropTargetHighlight;
 
     private static final int DROP_MARGIN                 = 64;
 
     private Position         dropTargetHighlightPosition = Position.NONE;
 
-    public CompassDropController(final WorkbenchPanel wbp,
-                                 final EventBus eventBus) {
+    public CompassDropController(final WorkbenchPanel wbp) {
         super( wbp );
-        this.eventBus = eventBus;
 
         if ( dropTargetHighlight == null ) {
             dropTargetHighlight = Document.get().createDivElement();
@@ -96,11 +91,11 @@ public class CompassDropController extends SimpleDropController {
         //so remember the original sizes before repositioning in the target Panel
         final int oldHeight = w.getOffsetHeight();
         final int oldWidth = w.getOffsetWidth();
-        wtp.remove( w );
-        eventBus.fireEvent( new AddWorkbenchPanelEvent( "TODO",
-                                                        target,
-                                                        dropTargetHighlightPosition,
-                                                        w ) );
+        //wtp.remove( w );
+        PanelManager.getInstance().addWorkbenchPanel( "TODO",
+                                                      target,
+                                                      dropTargetHighlightPosition,
+                                                      w );
 
         //DeckPanel sets the height and width of an inserted Widget to 100% if
         //the Widget does not have a height or width. DeckPanel kindly removed

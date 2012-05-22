@@ -17,15 +17,14 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * 
  */
 public interface PanelHelper {
 
-    public void add(final String title,
-                    final WorkbenchPanel target,
-                    final Widget content);
+    public void add(final WorkbenchPanel child,
+                    final WorkbenchPanel target);
+
+    public void remove(final WorkbenchPanel target);
 
 }

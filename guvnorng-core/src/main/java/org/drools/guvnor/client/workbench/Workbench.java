@@ -1,24 +1,15 @@
 package org.drools.guvnor.client.workbench;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
-import org.drools.guvnor.client.workbench.events.AddWorkbenchPanelEvent;
-import org.drools.guvnor.client.workbench.events.AddWorkbenchPanelEvent.AddWorkbenchPanelEventHandler;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelper;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelperEast;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelperNorth;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelperSelf;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelperSouth;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelHelperWest;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -31,27 +22,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Workbench extends Composite
-    implements
-    AddWorkbenchPanelEventHandler {
+public class Workbench extends Composite {
 
     public static final int     WIDTH              = Window.getClientWidth();
 
     public static final int     HEIGHT             = Window.getClientHeight();
-
-    private final EventBus      eventBus           = new SimpleEventBus();
 
     private final VerticalPanel container          = new VerticalPanel();
 
     private final SimplePanel   workbench          = new SimplePanel();
 
     private final AbsolutePanel workbenchContainer = new AbsolutePanel();
-
-    private final PanelHelper   helperNorth        = new PanelHelperNorth( eventBus );
-    private final PanelHelper   helperSouth        = new PanelHelperSouth( eventBus );
-    private final PanelHelper   helperEast         = new PanelHelperEast( eventBus );
-    private final PanelHelper   helperWest         = new PanelHelperWest( eventBus );
-    private final PanelHelper   helperSelf         = new PanelHelperSelf( eventBus );
 
     public Workbench() {
 
@@ -75,10 +56,6 @@ public class Workbench extends Composite
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
 
-        //Wire-up events
-        eventBus.addHandler( AddWorkbenchPanelEvent.TYPE,
-                             this );
-
         initWidget( container );
 
         //Schedule creation of the default perspective
@@ -100,7 +77,7 @@ public class Workbench extends Composite
 
     private Widget makeAddWindowButton() {
         final Button addWidgetButton = new Button( "Add" );
-        final PositionSelectorPopup popup = new PositionSelectorPopup( eventBus );
+        final PositionSelectorPopup popup = new PositionSelectorPopup();
         popup.addAutoHidePartner( addWidgetButton.getElement() );
         popup.setAutoHideEnabled( true );
 
@@ -135,80 +112,27 @@ public class Workbench extends Composite
 
         //Add default workbench widget
         //TODO {manstis} You know, I don't really like this, but it works for now.
-        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel( eventBus,
-                                                                      new Label( "root" ),
+        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel( new Label( "root" ),
                                                                       "root" );
         workbench.setWidget( workbenchRootPanel );
 
         //Wire-up DnD controller
-        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel,
-                                                                                         eventBus );
+        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel );
         WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
                                                                           workbenchDropController );
 
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
-        addWorkbenchPanel( "p1",
-                           workbenchRootPanel,
-                           Position.NORTH,
-                           new Label( "p1" ) );
-        addWorkbenchPanel( "p2",
-                           workbenchRootPanel,
-                           Position.WEST,
-                           new Label( "p2" ) );
+        PanelManager.getInstance().addWorkbenchPanel( "p1",
+                                                      workbenchRootPanel,
+                                                      Position.NORTH,
+                                                      new Label( "p1" ) );
+        PanelManager.getInstance().addWorkbenchPanel( "p2",
+                                                      workbenchRootPanel,
+                                                      Position.WEST,
+                                                      new Label( "p2" ) );
 
         //Set focus to root panel
-        workbenchRootPanel.setFocus( true );
-    }
-
-    @Override
-    public void onAddWorkbenchPanel(AddWorkbenchPanelEvent event) {
-
-        final String title = event.getTitle();
-        final WorkbenchPanel target = event.getTarget();
-        final Position position = event.getPosition();
-        final Widget widget = event.getWidget();
-
-        addWorkbenchPanel( title,
-                           target,
-                           position,
-                           widget );
-    }
-
-    private void addWorkbenchPanel(final String title,
-                                   final WorkbenchPanel target,
-                                   final Position position,
-                                   final Widget widget) {
-        switch ( position ) {
-            case NORTH :
-                helperNorth.add( title,
-                                 target,
-                                 widget );
-                break;
-
-            case SOUTH :
-                helperSouth.add( title,
-                                 target,
-                                 widget );
-                break;
-
-            case EAST :
-                helperEast.add( title,
-                                target,
-                                widget );
-                break;
-
-            case WEST :
-                helperWest.add( title,
-                                target,
-                                widget );
-                break;
-
-            case SELF :
-                helperSelf.add( title,
-                                target,
-                                widget );
-                break;
-        }
+        PanelManager.getInstance().setFocus( workbenchRootPanel );
     }
 
 }

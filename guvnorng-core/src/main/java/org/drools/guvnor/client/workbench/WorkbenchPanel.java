@@ -15,16 +15,12 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import org.drools.guvnor.client.workbench.events.FocusReceivedEvent;
-import org.drools.guvnor.client.workbench.widgets.panels.ResizableSplitLayoutPanel;
-import org.drools.guvnor.client.workbench.widgets.panels.SplitPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -32,23 +28,37 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WorkbenchPanel extends ResizeComposite {
 
+    //TODO Move the tab panel out of the WorkbenchPanel
     private final WorkbenchTabPanel tabPanel;
 
-    private final EventBus          eventBus;
+    private final String            title;
 
-    public WorkbenchPanel(final EventBus eventBus,
-                          final Widget content,
+    private final Widget            widget;
+
+    public WorkbenchPanel(final Widget widget,
                           final String title) {
-        this.eventBus = eventBus;
-        this.tabPanel = makeTabPanel( content,
+        this.tabPanel = makeTabPanel( widget,
                                       title );
+        this.title = title;
+        this.widget = widget;
         initWidget( tabPanel );
+    }
+
+    public String getWorkbenchTitle() {
+        return this.title;
+    }
+
+    public Widget getWorkbenchWidget() {
+        return this.widget;
+    }
+
+    public void setFocus(boolean hasFocus) {
+        this.tabPanel.setFocus( hasFocus );
     }
 
     private WorkbenchTabPanel makeTabPanel(final Widget content,
                                            final String title) {
-        final WorkbenchTabPanel tabPanel = new WorkbenchTabPanel( eventBus,
-                                                                  this );
+        final WorkbenchTabPanel tabPanel = new WorkbenchTabPanel();
         tabPanel.add( content,
                       title );
 
@@ -57,7 +67,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
                                     @Override
                                     public void onClick(ClickEvent event) {
-                                        setFocus( true );
+                                        PanelManager.getInstance().setFocus( WorkbenchPanel.this );
                                     }
 
                                 },
@@ -66,31 +76,6 @@ public class WorkbenchPanel extends ResizeComposite {
         tabPanel.selectTab( 0 );
 
         return tabPanel;
-    }
-
-    public void remove() {
-        //TODO {manstis} This is a little brittle, should the DOM hierarchy change...
-        //- we just call parent.remove() and that calls up, and calls up.. etc until something handles it?
-        //- we pass references to the actual "containing" class in the constructors?
-        //
-        //Parent should be a SimplePanel (or subclass, e.g. ScrollPanel). This SimplePanel
-        //could be embedded in a SplitPanel. In which case removal is a little more complex.
-        Widget parent0 = getParent();
-        if ( parent0 instanceof SimplePanel ) {
-            Widget parent1 = parent0.getParent();
-            if ( parent1 instanceof ResizableSplitLayoutPanel ) {
-                Widget parent2 = parent1.getParent();
-                if ( parent2 instanceof SplitPanel ) {
-                    ((SplitPanel) parent2).remove( this );
-                }
-            } else {
-                ((SimplePanel) parent0).remove( this );
-            }
-        }
-    }
-
-    public void setFocus(final boolean isFocused) {
-        eventBus.fireEvent( new FocusReceivedEvent( this ) );
     }
 
     public void addTab(final Widget content,

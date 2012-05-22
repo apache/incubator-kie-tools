@@ -17,11 +17,12 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
+import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,50 +33,63 @@ public class PanelHelperEast
     implements
     PanelHelper {
 
-    private final EventBus eventBus;
-
-    public PanelHelperEast(final EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
-
-    public void add(final String title,
-                    final WorkbenchPanel target,
-                    final Widget content) {
+    public void add(final WorkbenchPanel child,
+                    final WorkbenchPanel target) {
 
         final Widget parent = target.getParent();
 
         if ( parent instanceof SimplePanel ) {
-            final WorkbenchPanel wbp = new WorkbenchPanel( eventBus,
-                                                           content,
-                                                           title );
-            add( (SimplePanel) parent,
-                 target,
-                 wbp );
+
+            final SimplePanel sp = (SimplePanel) parent;
+            WorkbenchDragAndDropManager.getInstance().unregisterDropController( sp );
+
+            final HorizontalSplitterPanel hsp = new HorizontalSplitterPanel( target,
+                                                                             child,
+                                                                             Position.EAST );
+            sp.clear();
+            sp.setWidget( hsp );
+
+            //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
+            //so ensure we set the sizes of the new Panel and it's children after the 
+            //browser has added the new DIVs to the HTML tree. This does occasionally
+            //add slight flicker when adding a new Panel.
+            scheduleResize( hsp );
         }
     }
 
-    private void add(final SimplePanel parent,
-                     final WorkbenchPanel target,
-                     final WorkbenchPanel panelToAdd) {
-        WorkbenchDragAndDropManager.getInstance().unregisterDropController( parent );
+    @Override
+    public void remove(WorkbenchPanel panel) {
+        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.getParent().getParent().getParent();
+        final Widget parent = vsp.getParent();
+        final Widget eastWidget = vsp.getWidget( Position.EAST );
+        final Widget westWidget = vsp.getWidget( Position.WEST );
 
-        final HorizontalSplitterPanel hsp = new HorizontalSplitterPanel( eventBus,
-                                                                         target,
-                                                                         panelToAdd,
-                                                                         Position.EAST );
+        vsp.clear();
 
-        parent.clear();
-        parent.setWidget( hsp );
+        WorkbenchDragAndDropManager.getInstance().unregisterDropController( (SimplePanel) eastWidget.getParent() );
+        WorkbenchDragAndDropManager.getInstance().unregisterDropController( (SimplePanel) westWidget.getParent() );
 
-        //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
-        //so ensure we set the sizes of the new Panel and it's children after the 
-        //browser has added the new DIVs to the HTML tree. This does occasionally
-        //add slight flicker when adding a new Panel.
+        //Set parent's content to the WEST widget
+        if ( parent instanceof SimplePanel ) {
+            ((SimplePanel) parent).setWidget( westWidget );
+            if ( westWidget instanceof WorkbenchPanel ) {
+                final WorkbenchPanel wbp = (WorkbenchPanel) westWidget;
+                WorkbenchDragAndDropManager.getInstance().registerDropController( (SimplePanel) parent,
+                                                                                  new CompassDropController( wbp ) );
+            }
+        }
+
+        if ( westWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) westWidget );
+        }
+    }
+
+    private void scheduleResize(final RequiresResize widget) {
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             @Override
             public void execute() {
-                hsp.onResize();
+                widget.onResize();
             }
 
         } );

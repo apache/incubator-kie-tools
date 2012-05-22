@@ -19,9 +19,8 @@ import java.util.Iterator;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.events.FocusReceivedEvent;
-import org.drools.guvnor.client.workbench.events.FocusReceivedEvent.FocusReceivedEventHandler;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,7 +31,6 @@ import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.Composite;
@@ -66,8 +64,7 @@ public class WorkbenchTabPanel extends Composite
     HasBeforeSelectionHandlers<Integer>,
     HasSelectionHandlers<Integer>,
     RequiresResize,
-    ProvidesResize,
-    FocusReceivedEventHandler {
+    ProvidesResize {
     /**
      * This extension of DeckPanel overrides the public mutator methods to
      * prevent external callers from adding to the state of the DeckPanel.
@@ -219,16 +216,13 @@ public class WorkbenchTabPanel extends Composite
             final int indexOfSelectedTab = getSelectedTab();
             super.removeTab( index );
             if ( getTabCount() == 0 ) {
-                //TODO {manstis} This is a little brittle, should the DOM hierarchy change...
-                //- we just call parent.remove() and that calls up, and calls up.. etc until something handles it?
-                //- we pass references to the actual "containing" class in the constructors?
                 Widget parent0 = getParent();
                 if ( parent0 instanceof VerticalPanel ) {
                     Widget parent1 = parent0.getParent();
                     if ( parent1 instanceof WorkbenchTabPanel ) {
                         Widget parent2 = parent1.getParent();
                         if ( parent2 instanceof WorkbenchPanel ) {
-                            ((WorkbenchPanel) parent2).remove();
+                            PanelManager.getInstance().removeWorkbenchPanel( (WorkbenchPanel) parent2 );
                         }
                     }
                 }
@@ -244,19 +238,16 @@ public class WorkbenchTabPanel extends Composite
     private final UnmodifiableTabBar tabBar;
     private final SimplePanel        focusIndicator;
     private final TabbedDeckPanel    deck;
-    private final WorkbenchPanel     owner;
 
     /**
      * Creates an empty tab panel.
      */
-    public WorkbenchTabPanel(final EventBus eventBus,
-                             final WorkbenchPanel owner) {
-        this.owner = owner;
+    public WorkbenchTabPanel() {
         this.tabBar = new UnmodifiableTabBar();
         this.focusIndicator = new SimplePanel();
         this.deck = new TabbedDeckPanel( tabBar );
         this.focusIndicator.getElement().setClassName( "workbenchFocusIndicator" );
-        this.setFocusReceived( false );
+        this.setFocus( false );
 
         VerticalPanel panel = new VerticalPanel();
         panel.add( tabBar );
@@ -278,10 +269,6 @@ public class WorkbenchTabPanel extends Composite
         // Add a11y role "tabpanel"
         Accessibility.setRole( deck.getElement(),
                                Accessibility.ROLE_TABPANEL );
-
-        //Wire-up necessary event handlers
-        eventBus.addHandler( FocusReceivedEvent.TYPE,
-                             this );
     }
 
     public void add(Widget w) {
@@ -515,13 +502,7 @@ public class WorkbenchTabPanel extends Composite
         }
     }
 
-    @Override
-    public void onFocusReceived(FocusReceivedEvent event) {
-        boolean hasFocus = event.getWorkbenchPanel().equals( owner );
-        setFocusReceived( hasFocus );
-    }
-
-    private void setFocusReceived(boolean hasFocus) {
+    public void setFocus(boolean hasFocus) {
         if ( hasFocus ) {
             focusIndicator.getElement().addClassName( "workbenchFocusIndicatorHasFocus" );
         } else {
