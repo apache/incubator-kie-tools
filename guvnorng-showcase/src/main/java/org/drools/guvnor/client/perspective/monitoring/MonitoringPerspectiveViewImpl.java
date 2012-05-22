@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
+import org.drools.guvnor.client.perspective.workspace.DefaultPlace;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
@@ -63,7 +63,7 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
 
     @UiHandler("backWorkspace")
     public void backToWorkspace(ClickEvent e) {
-        placeController.goTo(new WorkspacePerspectivePlace());
+        placeController.goTo(new DefaultPlace());
     }
 
     @UiHandler("callService")

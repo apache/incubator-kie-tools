@@ -16,30 +16,30 @@
 
 package org.drools.guvnor.client;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
-import org.drools.guvnor.client.content.editor.TextEditorPlace;
-import org.drools.guvnor.client.content.editor.TextEditorPresenter;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace;
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePresenter;
-import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePresenter;
-import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
+import org.drools.guvnor.client.perspective.workspace.DefaultActivity;
+import org.drools.guvnor.client.perspective.workspace.DefaultPlace;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 public class PerspectiveActivityMapper implements ActivityMapper {
 
-    @Inject private IOCBeanManager manager;
+    @Inject
+    private IOCBeanManager manager;
 
     private Activity actual = null;
 
     public Activity getActivity(final Place place) {
-        if (place instanceof WorkspacePerspectivePlace) {
-            this.actual = manager.lookupBean(WorkspacePerspectivePresenter.class).getInstance();
+
+        if (place instanceof DefaultPlace) {
+            this.actual = manager.lookupBean(DefaultActivity.class).getInstance();
         }
 
         if (place instanceof MonitoringPerspectivePlace) {

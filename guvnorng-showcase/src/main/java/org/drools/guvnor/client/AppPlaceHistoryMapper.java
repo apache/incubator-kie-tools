@@ -17,12 +17,12 @@
 package org.drools.guvnor.client;
 
 import org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace;
-import org.drools.guvnor.client.perspective.workspace.WorkspacePerspectivePlace;
+import org.drools.guvnor.client.perspective.workspace.DefaultPlace;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 
-@WithTokenizers({WorkspacePerspectivePlace.Tokenizer.class, MonitoringPerspectivePlace.Tokenizer.class})
+@WithTokenizers({DefaultPlace.Tokenizer.class, MonitoringPerspectivePlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 
 }

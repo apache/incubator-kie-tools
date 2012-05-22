@@ -19,20 +19,24 @@ package org.drools.guvnor.client.perspective.workspace;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class WorkspacePerspectivePlace extends Place {
+import javax.enterprise.context.ApplicationScoped;
+
+@TestPlace
+@ApplicationScoped
+public class DefaultPlace extends Place {
 
     public String toString() {
-        return "workspace_perspective";
+        return "default_place";
     }
 
-    public static class Tokenizer implements PlaceTokenizer<WorkspacePerspectivePlace> {
+    public static class Tokenizer implements PlaceTokenizer<DefaultPlace> {
 
-        public String getToken(final WorkspacePerspectivePlace place) {
+        public String getToken(final DefaultPlace place) {
             return place.toString();
         }
 
-        public WorkspacePerspectivePlace getPlace(final String token) {
-            return new WorkspacePerspectivePlace();
+        public DefaultPlace getPlace(final String token) {
+            return new DefaultPlace();
         }
     }
 
