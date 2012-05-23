@@ -9,7 +9,7 @@ import org.drools.guvnor.client.mvp.Closable;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 @Dependent
-public class MyAdminAreaActivity2 extends Activity {
+public class MyAdminAreaActivity2 implements Activity {
 
     @Inject private IOCBeanManager manager;
     private MyAdminAreaPresenter2 presenter;

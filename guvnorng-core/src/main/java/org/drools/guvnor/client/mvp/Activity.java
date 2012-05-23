@@ -16,16 +16,12 @@
 package org.drools.guvnor.client.mvp;
 
 
-public abstract class Activity {
-    public abstract String getNameToken();
-    
-    public abstract void start(AcceptItem tabbedPanel);
+public interface Activity {
+    public String getNameToken();
 
-    public boolean mayStop() {
-        return true;
-    }
+    public void start(AcceptItem tabbedPanel);
 
-    public void onStop() {
+    public boolean mayStop();
 
-    }
+    public void onStop();
 }
