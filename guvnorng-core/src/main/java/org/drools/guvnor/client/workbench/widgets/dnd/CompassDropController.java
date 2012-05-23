@@ -17,7 +17,7 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import java.util.TreeMap;
 
-import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
+import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;

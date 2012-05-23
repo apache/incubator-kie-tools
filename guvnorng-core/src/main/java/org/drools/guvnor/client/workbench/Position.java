@@ -13,25 +13,36 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.widgets.panels;
-
-import org.drools.guvnor.client.workbench.Position;
-
-import com.google.gwt.user.client.ui.Widget;
+package org.drools.guvnor.client.workbench;
 
 /**
  * 
  */
-public interface SplitPanel {
+public enum Position {
 
-    //TODO {manstis} This needs to be TabPanel's height really
-    public static final int MIN_SIZE     = 32;
+    NONE(
+            "---None---"),
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST,
+    SELF;
 
-    //TODO {manstis} This needs to come from the Editor being added to the panel really
-    public static final int INITIAL_SIZE = 64;
+    private String displayName;
 
-    public void clear();
+    Position() {
+        String s = super.toString();
+        this.displayName = s.substring( 0,
+                                        1 ) + s.substring( 1 ).toLowerCase();
+    }
 
-    public Widget getWidget(Position position);
+    Position(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 
 }

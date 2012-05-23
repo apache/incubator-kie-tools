@@ -34,34 +34,6 @@ public class PositionSelectorPopup extends PopupPanel {
 
     private int     widgetCounter   = 1;
 
-    public enum Position {
-        NONE(
-                "---None---"),
-        NORTH,
-        SOUTH,
-        EAST,
-        WEST,
-        SELF;
-
-        private String displayName;
-
-        Position() {
-            String s = super.toString();
-            this.displayName = s.substring( 0,
-                                            1 ) + s.substring( 1 ).toLowerCase();
-        }
-
-        Position(String displayName) {
-            this.displayName = displayName;
-        }
-
-        @Override
-        public String toString() {
-            return displayName;
-        }
-
-    }
-
     public PositionSelectorPopup() {
         initChoices();
         add( positionChoices );

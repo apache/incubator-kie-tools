@@ -18,7 +18,7 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
+import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 
