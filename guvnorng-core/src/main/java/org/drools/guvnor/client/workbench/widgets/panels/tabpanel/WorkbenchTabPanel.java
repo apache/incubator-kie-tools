@@ -367,8 +367,8 @@ public class WorkbenchTabPanel extends Composite
                             part );
 
         // Delegate updates to the TabBar to our DeckPanel implementation
-        deck.insertProtected( part.getWidget(),
-                              part.getTitle(),
+        deck.insertProtected( part.getPartWidget(),
+                              part.getPartTitle(),
                               beforeIndex );
     }
 
@@ -521,8 +521,8 @@ public class WorkbenchTabPanel extends Composite
 
     public String getCorrespondingTabLabel(final Widget w) {
         for ( WorkbenchPart part : this.workbenchParts ) {
-            if ( part.getWidget().equals( w ) ) {
-                return part.getTitle();
+            if ( part.getPartWidget().equals( w ) ) {
+                return part.getPartTitle();
             }
         }
         throw new IllegalArgumentException( "TabbedDeckPanel does not contain widget." );

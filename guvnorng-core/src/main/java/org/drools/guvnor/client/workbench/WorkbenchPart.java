@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -48,11 +47,11 @@ public class WorkbenchPart extends Composite
         container.setWidget( widget );
     }
 
-    public String getTitle() {
+    public String getPartTitle() {
         return title;
     }
 
-    public Widget getWidget() {
+    public Widget getPartWidget() {
         return widget;
     }
 
