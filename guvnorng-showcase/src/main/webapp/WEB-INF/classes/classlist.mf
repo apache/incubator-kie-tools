@@ -1,0 +1,2 @@
+org.drools.guvnor.client.ui.part.Editor
+org.drools.guvnor.client.content.editor.TextEditorPresenter
