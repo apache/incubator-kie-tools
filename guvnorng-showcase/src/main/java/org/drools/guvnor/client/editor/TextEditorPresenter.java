@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.content.editor;
+package org.drools.guvnor.client.editor;
 
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.ui.part.Editor;
 import org.drools.guvnor.shared.ArtifactService;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.enterprise.client.jaxrs.api.ResponseCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
-public class TextEditorPresenter extends Editor implements Activity {
+public class TextEditorPresenter implements Activity {
 
     @Override
     public String getNameToken() {
@@ -46,6 +42,11 @@ public class TextEditorPresenter extends Editor implements Activity {
     @Override
     public boolean mayStop() {
         return true;
+    }
+
+    @Override
+    public void onStop() {
+        //TODO: -Rikkola-
     }
 
     public interface View extends IsWidget {
@@ -66,54 +67,53 @@ public class TextEditorPresenter extends Editor implements Activity {
     @Inject
     Caller<ArtifactService> artifactService;
 
-    @Override
     public void doSave() {
-        artifactService.call(new ResponseCallback() {
-            @Override
-            public void callback(Response response) {
-                if (response.getStatusCode() == Response.SC_NO_CONTENT) {
-                    view.setDirty(false);
-                } else {
-                    //error
-                }
-            }
-        }).save(getInput().getId(), view.getContent());
+//        artifactService.call(new ResponseCallback() {
+//            @Override
+//            public void callback(Response response) {
+//                if (response.getStatusCode() == Response.SC_NO_CONTENT) {
+//                    view.setDirty(false);
+//                } else {
+//                    //error
+//                }
+//            }
+//        }).save(getInput().getId(), view.getContent());
     }
 
-    @Override
+    //    @Override
     public boolean isDirty() {
         return view.isDirty();
     }
 
-    @Override
+    //    @Override
     public void createPartControl(AcceptsOneWidget container) {
         container.setWidget(view);
         loadContent();
     }
 
     public void loadContent() {
-        artifactService.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(String content) {
-                if (content != null) {
-                    view.setContent(content);
-                } else {
-                    view.setContent("-- empty --");
-                }
-            }
-        }).getArtifactContent(getInput().getId());
+//        artifactService.call(new RemoteCallback<String>() {
+//            @Override
+//            public void callback(String content) {
+//                if (content != null) {
+//                    view.setContent(content);
+//                } else {
+//                    view.setContent("-- empty --");
+//                }
+//            }
+//        }).getArtifactContent(getInput().getId());
     }
 
-    @Override
+    //    @Override
     public String getName() {
         return "org.drools.guvnor.client.content.editor.TextEditor";
     }
 
-    @Override
+    //    @Override
     public void dispose() {
     }
 
-    @Override
+    //    @Override
     public void setFocus() {
         view.setFocus();
     }

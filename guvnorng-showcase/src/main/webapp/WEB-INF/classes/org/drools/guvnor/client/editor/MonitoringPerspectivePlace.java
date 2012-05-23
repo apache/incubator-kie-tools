@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.workspace;
+package org.drools.guvnor.client.editor;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class DefaultPlace extends Place {
+public class MonitoringPerspectivePlace extends PlaceRequest  implements IPlaceRequest {
 
-    public String toString() {
-        return "default_place";
+    public MonitoringPerspectivePlace() {
+        super("monitoring_perspective");
     }
 
-    public static class Tokenizer implements PlaceTokenizer<DefaultPlace> {
+    public String toString() {
+        return "monitoring_perspective";
+    }
 
-        public String getToken(final DefaultPlace place) {
+    public static class Tokenizer implements PlaceTokenizer<MonitoringPerspectivePlace> {
+
+        public String getToken(final MonitoringPerspectivePlace place) {
             return place.toString();
         }
 
-        public DefaultPlace getPlace(final String token) {
-            return new DefaultPlace();
+        public MonitoringPerspectivePlace getPlace(final String token) {
+            return new MonitoringPerspectivePlace();
         }
     }
 

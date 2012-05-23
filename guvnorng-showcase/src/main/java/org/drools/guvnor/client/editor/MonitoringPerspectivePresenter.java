@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.monitoring;
+package org.drools.guvnor.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;

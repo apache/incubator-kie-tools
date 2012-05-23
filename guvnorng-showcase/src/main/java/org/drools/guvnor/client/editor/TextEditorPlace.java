@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.content.editor;
+package org.drools.guvnor.client.editor;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 
 @ApplicationScoped
 public class TextEditorPlace extends PlaceRequest implements IPlaceRequest {

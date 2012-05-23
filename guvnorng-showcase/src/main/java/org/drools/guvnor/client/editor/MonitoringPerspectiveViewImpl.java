@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.monitoring;
+package org.drools.guvnor.client.editor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

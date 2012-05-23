@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.perspective.monitoring;
+package org.drools.guvnor.client.editor;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import org.drools.guvnor.client.mvp.IPlaceRequest;

@@ -19,7 +19,7 @@ package org.drools.guvnor.client.place;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
-import org.drools.guvnor.client.content.editor.TextEditorPlace;
+import org.drools.guvnor.client.editor.TextEditorPlace;
 
 public class PlaceBuilderUtil {
 
