@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.client.editor;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

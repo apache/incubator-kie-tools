@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.client.editor;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 
+public class MyAdminAreaView extends Composite implements MyAdminAreaPresenter.View {
 
-@Dependent
-public class MyAdminAreaPresenter2 {
+    @Inject UiBinder<Panel, MyAdminAreaView> uiBinder;
+    @UiField public Label nameLabel;
 
-    public interface View extends IsWidget {
-        void setName(String name);
-    }
-
-    @Inject public View view;
-
-    public MyAdminAreaPresenter2() {
-    }
-    
     @PostConstruct
-    public void bind() {
-        view.setName("AdminArea2");
+    public void init() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public void setName(final String name) {
+        nameLabel.setText(name);
     }
 }

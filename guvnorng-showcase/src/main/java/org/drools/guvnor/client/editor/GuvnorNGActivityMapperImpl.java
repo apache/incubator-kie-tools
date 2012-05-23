@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.client.editor;
 
 
 import java.util.Collection;
@@ -28,6 +28,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.ActivityMapper;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 

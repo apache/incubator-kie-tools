@@ -1,5 +1,8 @@
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.client.editor;
 
+
+import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.client.mvp.PlaceRequestHistoryMapper;
 
 import com.google.gwt.place.shared.WithTokenizers;
 

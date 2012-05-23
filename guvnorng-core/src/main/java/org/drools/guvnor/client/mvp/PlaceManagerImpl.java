@@ -21,7 +21,8 @@ public class PlaceManagerImpl implements PlaceManager {
 
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
-    @Inject private GuvnorNGActivityMapperImpl activityMapper;
+    @Inject private ActivityMapper activityMapper;
+    @Inject private PlaceRequestHistoryMapper historyMapper;
     @Inject private com.google.web.bindery.event.shared.EventBus eventBus;
     private PlaceHistoryHandler placeHistoryHandler;
 
@@ -31,7 +32,7 @@ public class PlaceManagerImpl implements PlaceManager {
     
     @PostConstruct
     public void init() {        
-        PlaceRequestHistoryMapper historyMapper = new GuvnorNGPlaceRequestHistoryMapper();
+        //PlaceRequestHistoryMapper historyMapper = new GuvnorNGPlaceRequestHistoryMapper();
         placeHistoryHandler = new PlaceHistoryHandler(historyMapper);
         placeHistoryHandler.register(this, eventBus, new PlaceRequest("NOWHERE"));
     }

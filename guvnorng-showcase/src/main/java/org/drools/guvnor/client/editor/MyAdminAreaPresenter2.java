@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.client.editor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -24,33 +24,19 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 
 @Dependent
-public class MyAdminAreaPresenter implements Startable, Closable {
-    @Inject private PlaceManager placeManager;
-    
+public class MyAdminAreaPresenter2 {
+
     public interface View extends IsWidget {
         void setName(String name);
     }
 
     @Inject public View view;
 
-    public MyAdminAreaPresenter() {
+    public MyAdminAreaPresenter2() {
     }
-
-    @Override
-    public void onStart() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String uuid =  placeRequest.getParameter("uuid", null);
-        view.setName("AdminArea");
+    
+    @PostConstruct
+    public void bind() {
+        view.setName("AdminArea2");
     }
-
-    @Override
-    public boolean mayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-        view.setName("AdminArea");
-    }
-
 }
