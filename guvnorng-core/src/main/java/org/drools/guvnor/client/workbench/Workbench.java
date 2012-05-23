@@ -111,9 +111,7 @@ public class Workbench extends Composite {
         WorkbenchDragAndDropManager.getInstance().unregisterDropControllers();
 
         //Add default workbench widget
-        //TODO {manstis} You know, I don't really like this, but it works for now.
-        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel( new Label( "root" ),
-                                                                      "root" );
+        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel();
         workbench.setWidget( workbenchRootPanel );
 
         //Wire-up DnD controller
@@ -124,12 +122,16 @@ public class Workbench extends Composite {
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
         PanelManager.getInstance().addWorkbenchPanel( "p1",
                                                       workbenchRootPanel,
-                                                      Position.NORTH,
+                                                      Position.SELF,
                                                       new Label( "p1" ) );
         PanelManager.getInstance().addWorkbenchPanel( "p2",
                                                       workbenchRootPanel,
-                                                      Position.WEST,
+                                                      Position.NORTH,
                                                       new Label( "p2" ) );
+        PanelManager.getInstance().addWorkbenchPanel( "p3",
+                                                      workbenchRootPanel,
+                                                      Position.WEST,
+                                                      new Label( "p3" ) );
 
         //Set focus to root panel
         PanelManager.getInstance().setFocus( workbenchRootPanel );

@@ -31,36 +31,24 @@ public class WorkbenchPanel extends ResizeComposite {
     //TODO Move the tab panel out of the WorkbenchPanel
     private final WorkbenchTabPanel tabPanel;
 
-    private final String            title;
-
-    private final Widget            widget;
-
-    public WorkbenchPanel(final Widget widget,
-                          final String title) {
-        this.tabPanel = makeTabPanel( widget,
-                                      title );
-        this.title = title;
-        this.widget = widget;
+    public WorkbenchPanel() {
+        this.tabPanel = makeTabPanel();
         initWidget( tabPanel );
     }
 
-    public String getWorkbenchTitle() {
-        return this.title;
-    }
-
-    public Widget getWorkbenchWidget() {
-        return this.widget;
+    public WorkbenchPanel(final Widget widget,
+                          final String title) {
+        this();
+        addTab( widget,
+                title );
     }
 
     public void setFocus(boolean hasFocus) {
         this.tabPanel.setFocus( hasFocus );
     }
 
-    private WorkbenchTabPanel makeTabPanel(final Widget content,
-                                           final String title) {
+    private WorkbenchTabPanel makeTabPanel() {
         final WorkbenchTabPanel tabPanel = new WorkbenchTabPanel();
-        tabPanel.add( content,
-                      title );
 
         //Clicking on the TabPanel takes focus
         tabPanel.addDomHandler( new ClickHandler() {
@@ -72,9 +60,6 @@ public class WorkbenchPanel extends ResizeComposite {
 
                                 },
                                  ClickEvent.getType() );
-
-        tabPanel.selectTab( 0 );
-
         return tabPanel;
     }
 

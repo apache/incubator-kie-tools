@@ -91,7 +91,6 @@ public class CompassDropController extends SimpleDropController {
         //so remember the original sizes before repositioning in the target Panel
         final int oldHeight = w.getOffsetHeight();
         final int oldWidth = w.getOffsetWidth();
-        //wtp.remove( w );
         PanelManager.getInstance().addWorkbenchPanel( "TODO",
                                                       target,
                                                       dropTargetHighlightPosition,
