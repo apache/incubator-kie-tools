@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,91 +47,85 @@ public class PanelManager {
         return INSTANCE;
     }
 
-    public void addWorkbenchPanel(final String title,
-                                  final Position position,
-                                  final Widget widget) {
-        addWorkbenchPanel( title,
+    public void addWorkbenchPanel(final WorkbenchPart part,
+                                  final Position position) {
+        addWorkbenchPanel( part,
                            this.focusPanel,
-                           position,
-                           widget );
+                           position );
     }
 
-    public void addWorkbenchPanel(final String title,
-                                  final WorkbenchPanel target,
-                                  final Position position,
-                                  final Widget widget) {
+    public void addWorkbenchPanel(final WorkbenchPart part,
+                                  final WorkbenchPanel panel,
+                                  final Position position) {
 
         if ( position == Position.SELF ) {
-            target.addTab( widget,
-                           title );
+            panel.addTab( part );
             return;
         }
 
-        final WorkbenchPanel wbp = new WorkbenchPanel( widget,
-                                                       title );
-        workbenchPanels.add( wbp );
+        workbenchPanels.add( panel );
 
         switch ( position ) {
             case NORTH :
-                helperNorth.add( wbp,
-                                 target );
+                helperNorth.add( part,
+                                 panel );
                 break;
 
             case SOUTH :
-                helperSouth.add( wbp,
-                                 target );
+                helperSouth.add( part,
+                                 panel );
                 break;
 
             case EAST :
-                helperEast.add( wbp,
-                                target );
+                helperEast.add( part,
+                                panel );
                 break;
 
             case WEST :
-                helperWest.add( wbp,
-                                target );
+                helperWest.add( part,
+                                panel );
                 break;
         }
     }
 
-    public void removeWorkbenchPanel(final WorkbenchPanel target) {
+    public void removeWorkbenchPanel(final WorkbenchPanel panel) {
 
-        workbenchPanels.remove( target );
+        workbenchPanels.remove( panel );
 
         //Find the position that needs to be deleted
         Position position = Position.NONE;
-        final Widget parent = target.getParent().getParent().getParent();
+        final Widget parent = panel.getParent().getParent().getParent();
         if ( parent instanceof HorizontalSplitterPanel ) {
             final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-            if ( target.equals( hsp.getWidget( Position.EAST ) ) ) {
+            if ( panel.equals( hsp.getWidget( Position.EAST ) ) ) {
                 position = Position.EAST;
-            } else if ( target.equals( hsp.getWidget( Position.WEST ) ) ) {
+            } else if ( panel.equals( hsp.getWidget( Position.WEST ) ) ) {
                 position = Position.WEST;
             }
         } else if ( parent instanceof VerticalSplitterPanel ) {
             final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-            if ( target.equals( vsp.getWidget( Position.NORTH ) ) ) {
+            if ( panel.equals( vsp.getWidget( Position.NORTH ) ) ) {
                 position = Position.NORTH;
-            } else if ( target.equals( vsp.getWidget( Position.SOUTH ) ) ) {
+            } else if ( panel.equals( vsp.getWidget( Position.SOUTH ) ) ) {
                 position = Position.SOUTH;
             }
         }
 
         switch ( position ) {
             case NORTH :
-                helperNorth.remove( target );
+                helperNorth.remove( panel );
                 break;
 
             case SOUTH :
-                helperSouth.remove( target );
+                helperSouth.remove( panel );
                 break;
 
             case EAST :
-                helperEast.remove( target );
+                helperEast.remove( panel );
                 break;
 
             case WEST :
-                helperWest.remove( target );
+                helperWest.remove( panel );
                 break;
         }
     }

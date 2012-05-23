@@ -17,6 +17,7 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
@@ -36,7 +37,7 @@ public class VerticalSplitterPanel extends ResizeComposite
     private final ScrollPanel               northWidgetContainer = new ScrollPanel();
     private final ScrollPanel               southWidgetContainer = new ScrollPanel();
 
-    public VerticalSplitterPanel(final WorkbenchPanel northWidget,
+    public VerticalSplitterPanel(final WorkbenchPart northWidget,
                                  final WorkbenchPanel southWidget,
                                  final Position position) {
         switch ( position ) {
@@ -57,8 +58,43 @@ public class VerticalSplitterPanel extends ResizeComposite
             default :
                 throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
         }
-        northWidgetContainer.setWidget( northWidget );
+        final WorkbenchPanel northPanel = new WorkbenchPanel( northWidget );
+        northWidgetContainer.setWidget( northPanel );
         southWidgetContainer.setWidget( southWidget );
+
+        initWidget( slp );
+
+        //Wire-up DnD controllers
+        WorkbenchDragAndDropManager.getInstance().registerDropController( northWidgetContainer,
+                                                                          new CompassDropController( northPanel ) );
+        WorkbenchDragAndDropManager.getInstance().registerDropController( southWidgetContainer,
+                                                                          new CompassDropController( southWidget ) );
+    }
+
+    public VerticalSplitterPanel(final WorkbenchPanel northWidget,
+                                 final WorkbenchPart southWidget,
+                                 final Position position) {
+        switch ( position ) {
+            case NORTH :
+                slp.addNorth( northWidgetContainer,
+                              INITIAL_SIZE );
+                slp.add( southWidgetContainer );
+                slp.setWidgetMinSize( northWidgetContainer,
+                                      MIN_SIZE );
+                break;
+            case SOUTH :
+                slp.addSouth( southWidgetContainer,
+                              INITIAL_SIZE );
+                slp.add( northWidgetContainer );
+                slp.setWidgetMinSize( southWidgetContainer,
+                                      MIN_SIZE );
+                break;
+            default :
+                throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
+        }
+        final WorkbenchPanel southPanel = new WorkbenchPanel( southWidget );
+        northWidgetContainer.setWidget( northWidget );
+        southWidgetContainer.setWidget( southPanel );
 
         initWidget( slp );
 
@@ -66,7 +102,7 @@ public class VerticalSplitterPanel extends ResizeComposite
         WorkbenchDragAndDropManager.getInstance().registerDropController( northWidgetContainer,
                                                                           new CompassDropController( northWidget ) );
         WorkbenchDragAndDropManager.getInstance().registerDropController( southWidgetContainer,
-                                                                          new CompassDropController( southWidget ) );
+                                                                          new CompassDropController( southPanel ) );
     }
 
     @Override

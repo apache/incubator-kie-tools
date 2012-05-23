@@ -21,30 +21,22 @@ import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPa
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  */
 public class WorkbenchPanel extends ResizeComposite {
 
-    //TODO Move the tab panel out of the WorkbenchPanel
     private final WorkbenchTabPanel tabPanel;
 
     public WorkbenchPanel() {
         this.tabPanel = makeTabPanel();
-        initWidget( tabPanel );
+        initWidget( this.tabPanel );
     }
 
-    public WorkbenchPanel(final Widget widget,
-                          final String title) {
+    public WorkbenchPanel(final WorkbenchPart part) {
         this();
-        addTab( widget,
-                title );
-    }
-
-    public void setFocus(boolean hasFocus) {
-        this.tabPanel.setFocus( hasFocus );
+        addTab( part );
     }
 
     private WorkbenchTabPanel makeTabPanel() {
@@ -63,11 +55,14 @@ public class WorkbenchPanel extends ResizeComposite {
         return tabPanel;
     }
 
-    public void addTab(final Widget content,
-                       final String title) {
-        tabPanel.add( content,
-                        title );
+    public void addTab(final WorkbenchPart part) {
+        tabPanel.add( part.getWidget(),
+                      part.getTitle() );
         tabPanel.selectTab( tabPanel.getTabBar().getTabCount() - 1 );
+    }
+
+    public void setFocus(boolean hasFocus) {
+        this.tabPanel.setFocus( hasFocus );
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.TreeMap;
 
 import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
 
@@ -71,14 +72,16 @@ public class CompassDropController extends SimpleDropController {
             return;
         }
 
-        final WorkbenchPanel target = (WorkbenchPanel) getDropTarget();
-        final WorkbenchTabPanel wtp = WorkbenchDragAndDropManager.getInstance().getDragWidgetSource();
-        final Widget w = WorkbenchDragAndDropManager.getInstance().getDragWidget();
+        final WorkbenchPanel panel = (WorkbenchPanel) getDropTarget();
+        final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
+        final WorkbenchTabPanel wtp = workbenchContext.getOrigin();
+        final Widget dragWidget = workbenchContext.getWidget();
+        final String dragTitle = workbenchContext.getTitle();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
         //net effect. If we're trying to drop as a new tab there is no net effect.
-        if ( wtp.getParent() == target ) {
+        if ( wtp.getParent() == panel ) {
             if ( wtp.getTabBar().getTabCount() == 1 ) {
                 return;
             }
@@ -87,20 +90,21 @@ public class CompassDropController extends SimpleDropController {
             }
         }
 
+        //TODO {manstis} Do we need to recreate the Part and do the size stuff, if we can reuse the existing?
         //DeckPanel clears the height and width of a Widget when it is removed
         //so remember the original sizes before repositioning in the target Panel
-        final int oldHeight = w.getOffsetHeight();
-        final int oldWidth = w.getOffsetWidth();
-        PanelManager.getInstance().addWorkbenchPanel( "TODO",
-                                                      target,
-                                                      dropTargetHighlightPosition,
-                                                      w );
+        //final int oldHeight = dragWidget.getOffsetHeight();
+        //final int oldWidth = dragWidget.getOffsetWidth();
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( dragWidget,
+                                                                         dragTitle ),
+                                                                         panel,
+                                                      dropTargetHighlightPosition );
 
         //DeckPanel sets the height and width of an inserted Widget to 100% if
         //the Widget does not have a height or width. DeckPanel kindly removed
         //the Widget's height and width when removed above so we need to reset.
-        w.setPixelSize( oldWidth,
-                        oldHeight );
+        //part.setPixelSize( oldWidth,
+        //                   oldHeight );
     }
 
     @Override

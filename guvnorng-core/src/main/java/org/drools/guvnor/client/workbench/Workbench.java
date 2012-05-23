@@ -120,18 +120,18 @@ public class Workbench extends Composite {
                                                                           workbenchDropController );
 
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
-        PanelManager.getInstance().addWorkbenchPanel( "p1",
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p1" ),
+                                                                         "p1" ),
                                                       workbenchRootPanel,
-                                                      Position.SELF,
-                                                      new Label( "p1" ) );
-        PanelManager.getInstance().addWorkbenchPanel( "p2",
+                                                      Position.SELF );
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p2" ),
+                                                                         "p2" ),
                                                       workbenchRootPanel,
-                                                      Position.NORTH,
-                                                      new Label( "p2" ) );
-        PanelManager.getInstance().addWorkbenchPanel( "p3",
+                                                      Position.NORTH );
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p3" ),
+                                                                         "p3" ),
                                                       workbenchRootPanel,
-                                                      Position.WEST,
-                                                      new Label( "p3" ) );
+                                                      Position.WEST );
 
         //Set focus to root panel
         PanelManager.getInstance().setFocus( workbenchRootPanel );

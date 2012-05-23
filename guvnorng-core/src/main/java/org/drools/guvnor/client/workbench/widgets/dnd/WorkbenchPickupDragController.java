@@ -41,8 +41,10 @@ public class WorkbenchPickupDragController extends PickupDragController {
     public void dragStart() {
         final Widget w = super.context.selectedWidgets.get( 0 );
         final WorkbenchTabPanel wtp = (WorkbenchTabPanel) w.getParent().getParent().getParent();
-        WorkbenchDragAndDropManager.getInstance().dragStart( wtp,
-                                                             w );
+        final WorkbenchDragContext context = new WorkbenchDragContext( "TODO",
+                                                                       w,
+                                                                       wtp );
+        WorkbenchDragAndDropManager.getInstance().setWorkbenchContext( context );
         super.dragStart();
     }
 

@@ -18,8 +18,6 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
-
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -39,11 +37,8 @@ public class WorkbenchDragAndDropManager {
     //A registry of SimplePanels and their respective DropController
     private Map<SimplePanel, DropController>   dropControllerMap = new HashMap<SimplePanel, DropController>();
 
-    //The WorkbenchTabPanel a drag operation started on
-    private WorkbenchTabPanel                  dragWidgetSource  = null;
-
-    //The Widget being dragged
-    private Widget                             dragWidget        = null;
+    //The context of the drag operation
+    private WorkbenchDragContext               workbenchContext  = null;
 
     private WorkbenchDragAndDropManager() {
     }
@@ -87,18 +82,12 @@ public class WorkbenchDragAndDropManager {
         this.dropControllerMap.clear();
     }
 
-    public void dragStart(final WorkbenchTabPanel wtp,
-                          final Widget w) {
-        this.dragWidgetSource = wtp;
-        this.dragWidget = w;
+    public void setWorkbenchContext(final WorkbenchDragContext workbenchContext) {
+        this.workbenchContext = workbenchContext;
     }
 
-    public WorkbenchTabPanel getDragWidgetSource() {
-        return this.dragWidgetSource;
-    }
-
-    public Widget getDragWidget() {
-        return this.dragWidget;
+    public WorkbenchDragContext getWorkbenchContext() {
+        return this.workbenchContext;
     }
 
     private void assertDragController() {
