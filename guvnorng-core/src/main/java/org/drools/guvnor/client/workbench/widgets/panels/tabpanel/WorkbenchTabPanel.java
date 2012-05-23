@@ -367,7 +367,7 @@ public class WorkbenchTabPanel extends Composite
                             part );
 
         // Delegate updates to the TabBar to our DeckPanel implementation
-        deck.insertProtected( part.getPartWidget(),
+        deck.insertProtected( part,
                               part.getPartTitle(),
                               beforeIndex );
     }

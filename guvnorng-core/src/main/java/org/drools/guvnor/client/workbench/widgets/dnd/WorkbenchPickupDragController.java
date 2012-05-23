@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
@@ -39,11 +40,9 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
     @Override
     public void dragStart() {
-        final Widget w = super.context.selectedWidgets.get( 0 );
-        final WorkbenchTabPanel wtp = (WorkbenchTabPanel) w.getParent().getParent().getParent();
-        final String title = wtp.getCorrespondingTabLabel( w );
-        final WorkbenchDragContext context = new WorkbenchDragContext( title,
-                                                                       w,
+        final WorkbenchPart part = (WorkbenchPart) super.context.selectedWidgets.get( 0 );
+        final WorkbenchTabPanel wtp = (WorkbenchTabPanel) part.getParent().getParent().getParent();
+        final WorkbenchDragContext context = new WorkbenchDragContext( part,
                                                                        wtp );
         WorkbenchDragAndDropManager.getInstance().setWorkbenchContext( context );
         super.dragStart();

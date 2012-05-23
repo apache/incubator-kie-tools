@@ -74,11 +74,11 @@ public class CompassDropController extends SimpleDropController {
             return;
         }
 
+        final WorkbenchPart part = (WorkbenchPart) context.draggable;
         final WorkbenchPanel panel = (WorkbenchPanel) getDropTarget();
         final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
         final WorkbenchTabPanel wtp = workbenchContext.getOrigin();
-        final Widget dragWidget = workbenchContext.getWidget();
-        final String dragTitle = workbenchContext.getTitle();
+        final Widget dragWidget = part.getPartWidget();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
@@ -96,9 +96,10 @@ public class CompassDropController extends SimpleDropController {
         //so remember the original sizes before repositioning in the target Panel
         final int oldHeight = dragWidget.getOffsetHeight();
         final int oldWidth = dragWidget.getOffsetWidth();
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( dragWidget,
-                                                                         dragTitle ),
-                                                                         panel,
+
+        wtp.remove( part );
+        PanelManager.getInstance().addWorkbenchPanel( part,
+                                                      panel,
                                                       dropTargetHighlightPosition );
 
         //DeckPanel sets the height and width of an inserted Widget to 100% if

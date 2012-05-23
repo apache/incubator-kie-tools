@@ -1,5 +1,14 @@
 package org.drools.guvnor.client.workbench;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
+import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
+import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
+import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
@@ -7,15 +16,15 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.workbench.PositionSelectorPopup.Position;
-import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
-import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
-import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class Workbench extends Composite {
@@ -41,6 +50,7 @@ public class Workbench extends Composite {
                                                    Unit.PX );
         menubar.setWidth( WIDTH + "px" );
         menubar.add( menu );
+        menubar.add( makeAddWindowButton() );
         menubar.add( makeBootstrapButton() );
         container.add( menubar );
 
@@ -70,6 +80,23 @@ public class Workbench extends Composite {
             }
 
         } );
+    }
+
+    private Widget makeAddWindowButton() {
+        final Button addWidgetButton = new Button( "Add (manstis)" );
+        final PositionSelectorPopup popup = new PositionSelectorPopup();
+        popup.addAutoHidePartner( addWidgetButton.getElement() );
+        popup.setAutoHideEnabled( true );
+
+        addWidgetButton.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                popup.showRelativeTo( addWidgetButton );
+            }
+
+        } );
+        return addWidgetButton;
     }
 
     private Widget makeBootstrapButton() {

@@ -15,39 +15,30 @@
  */
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
-
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  */
 public class WorkbenchDragContext {
 
-    private final String            title;
-
-    private final Widget            widget;
+    private final WorkbenchPart     part;
 
     private final WorkbenchTabPanel origin;
 
-    public WorkbenchDragContext(final String title,
-                                final Widget widget,
+    public WorkbenchDragContext(final WorkbenchPart part,
                                 final WorkbenchTabPanel origin) {
-        this.title = title;
-        this.widget = widget;
+        this.part = part;
         this.origin = origin;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public Widget getWidget() {
-        return widget;
+    public WorkbenchPart getWorkbenchPart() {
+        return this.part;
     }
 
     public WorkbenchTabPanel getOrigin() {
-        return origin;
+        return this.origin;
     }
 
 }
