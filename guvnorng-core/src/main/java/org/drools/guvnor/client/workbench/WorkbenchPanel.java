@@ -56,8 +56,7 @@ public class WorkbenchPanel extends ResizeComposite {
     }
 
     public void addTab(final WorkbenchPart part) {
-        tabPanel.add( part.getWidget(),
-                      part.getTitle() );
+        tabPanel.add( part );
         tabPanel.selectTab( tabPanel.getTabBar().getTabCount() - 1 );
     }
 

@@ -27,6 +27,8 @@ import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 import com.allen_sauer.gwt.dnd.client.util.CoordinateArea;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -90,11 +92,10 @@ public class CompassDropController extends SimpleDropController {
             }
         }
 
-        //TODO {manstis} Do we need to recreate the Part and do the size stuff, if we can reuse the existing?
         //DeckPanel clears the height and width of a Widget when it is removed
         //so remember the original sizes before repositioning in the target Panel
-        //final int oldHeight = dragWidget.getOffsetHeight();
-        //final int oldWidth = dragWidget.getOffsetWidth();
+        final int oldHeight = dragWidget.getOffsetHeight();
+        final int oldWidth = dragWidget.getOffsetWidth();
         PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( dragWidget,
                                                                          dragTitle ),
                                                                          panel,
@@ -103,8 +104,15 @@ public class CompassDropController extends SimpleDropController {
         //DeckPanel sets the height and width of an inserted Widget to 100% if
         //the Widget does not have a height or width. DeckPanel kindly removed
         //the Widget's height and width when removed above so we need to reset.
-        //part.setPixelSize( oldWidth,
-        //                   oldHeight );
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                dragWidget.setPixelSize( oldWidth,
+                                         oldHeight );
+            }
+
+        } );
     }
 
     @Override
