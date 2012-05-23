@@ -16,7 +16,10 @@
 package org.drools.guvnor.client.mvp;
 
 
+import org.drools.guvnor.client.workbench.PositionSelectorPopup;
+
 public interface Activity {
+
     public String getNameToken();
 
     public void start(AcceptItem tabbedPanel);
@@ -24,4 +27,6 @@ public interface Activity {
     public boolean mayStop();
 
     public void onStop();
+
+    public PositionSelectorPopup.Position getPreferredPosition();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client;
+package org.drools.guvnor.client.mvp;
 
 
 import org.drools.guvnor.client.mvp.Activity;

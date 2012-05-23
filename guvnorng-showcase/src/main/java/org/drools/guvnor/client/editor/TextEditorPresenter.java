@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.workbench.PositionSelectorPopup;
 import org.drools.guvnor.shared.ArtifactService;
 import org.jboss.errai.ioc.client.api.Caller;
 
@@ -47,6 +48,11 @@ public class TextEditorPresenter implements Activity {
     @Override
     public void onStop() {
         //TODO: -Rikkola-
+    }
+
+    @Override
+    public PositionSelectorPopup.Position getPreferredPosition() {
+        return PositionSelectorPopup.Position.SELF;
     }
 
     public interface View extends IsWidget {

@@ -7,6 +7,7 @@ import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.Closable;
 import org.drools.guvnor.client.mvp.ScreenService;
+import org.drools.guvnor.client.workbench.PositionSelectorPopup;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 @Dependent
@@ -27,7 +28,12 @@ public class MyAdminAreaActivity2 implements Activity {
             ((ScreenService) presenter).onClose();
         }       
     }
-    
+
+    @Override
+    public PositionSelectorPopup.Position getPreferredPosition() {
+        return PositionSelectorPopup.Position.SELF;
+    }
+
     public boolean mayStop() {
         if(presenter instanceof ScreenService) {
             return ((ScreenService) presenter).mayClose();

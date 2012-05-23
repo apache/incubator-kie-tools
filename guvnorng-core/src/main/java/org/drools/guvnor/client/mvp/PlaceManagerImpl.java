@@ -3,6 +3,11 @@ package org.drools.guvnor.client.mvp;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.workbench.Workbench;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -75,21 +80,19 @@ public class PlaceManagerImpl
     private void startNewActivity(final PlaceRequest newPlace) {
         final Activity activity = activityMapper.getActivity( newPlace );
 
-        //TODO: find the appropriate container to display this view based on current layout and PlaceRequest's preferred location (E/S/W/N/C)
-        //Panel preferredContainer = LayoutManager.getPreferredContainer(newPlace);
-        //final ExplorerViewCenterPanel preferredContainer = new ExplorerViewCenterPanel();
-
-        activeActivities.put( newPlace,
-                              activity );
+        activeActivities.put(newPlace, activity);
 
         activity.start(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
 
-                        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( widget.asWidget(),
-                                                                                         tabTitle ),
-                                                                      Position.SOUTH );
+
+                        PanelManager.getInstance().addWorkbenchPanel(
+                                new WorkbenchPart(
+                                        widget.asWidget(),
+                                        tabTitle),
+                                activity.getPreferredPosition());
                     }
                 } );
         updateHistory( newPlace );
