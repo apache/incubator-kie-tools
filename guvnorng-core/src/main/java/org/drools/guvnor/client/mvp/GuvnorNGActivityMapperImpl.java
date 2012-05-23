@@ -17,18 +17,23 @@
 package org.drools.guvnor.client.mvp;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 
 @Dependent
+//@ApplicationScoped
 public class GuvnorNGActivityMapperImpl implements ActivityMapper {
 /*
     Map<String, Activity> activites = new HashMap<String, Activity>();
@@ -45,6 +50,17 @@ public class GuvnorNGActivityMapperImpl implements ActivityMapper {
     }
     
 */
+    @PostConstruct
+    public void lookupBean() {
+        Collection<IOCBeanDef> beans = manager.lookupBeans(Activity.class);     
+
+        // check to see if the bean exists
+        for (IOCBeanDef activityBean : beans) {
+            // get the instance of the bean
+          Activity bean = (Activity) activityBean.getInstance();
+        }
+      }
+    
     @Inject private IOCBeanManager manager;
 
     private Activity actual = null;

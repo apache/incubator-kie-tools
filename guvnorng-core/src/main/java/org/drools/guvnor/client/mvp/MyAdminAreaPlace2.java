@@ -41,14 +41,14 @@ public class MyAdminAreaPlace2 extends Place {
         return MY_ADMIN_AREA2 != null ? MY_ADMIN_AREA2.hashCode() : 0;
     }
 
-    public static class Tokenizer implements PlaceTokenizer<MyAdminAreaPlace> {
+    public static class Tokenizer implements PlaceTokenizer<MyAdminAreaPlace2> {
 
-        public String getToken(MyAdminAreaPlace place) {
-            return "MY_ADMIN_AREA";
+        public String getToken(MyAdminAreaPlace2 place) {
+            return "MY_ADMIN_AREA2";
         }
 
-        public MyAdminAreaPlace getPlace(String token) {
-            return new MyAdminAreaPlace();
+        public MyAdminAreaPlace2 getPlace(String token) {
+            return new MyAdminAreaPlace2();
         }
     }
 }
