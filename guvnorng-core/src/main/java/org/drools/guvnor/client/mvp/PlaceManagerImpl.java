@@ -2,9 +2,9 @@ package org.drools.guvnor.client.mvp;
 
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.drools.guvnor.client.workbench.PositionSelectorPopup;
 import org.drools.guvnor.client.workbench.Workbench;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import javax.annotation.PostConstruct;
@@ -82,14 +82,12 @@ public class PlaceManagerImpl implements PlaceManager {
                 new AcceptItem() {
                     public void add(String tabTitle, IsWidget widget) {
 
-                        PanelManager.getInstance().addWorkbenchPanel(tabTitle,
-                                PositionSelectorPopup.Position.SOUTH,
-                                widget.asWidget());
-//                        workbench.
-//                        preferredContainer.addTab(
-//                                tabTitle,
-//                                widget,
-//                                newPlace);
+
+                        PanelManager.getInstance().addWorkbenchPanel(
+                                new WorkbenchPart(
+                                        widget.asWidget(),
+                                        tabTitle),
+                                PositionSelectorPopup.Position.SOUTH);
                     }
                 });
         updateHistory(newPlace);

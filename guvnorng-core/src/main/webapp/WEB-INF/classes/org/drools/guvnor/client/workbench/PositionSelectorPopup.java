@@ -84,12 +84,13 @@ public class PositionSelectorPopup extends PopupPanel {
                 Position position = Position.valueOf( selection );
                 hide();
 
+                //TODO {manstis} This can be any editor...
                 final String title = position.toString() + " [" + (widgetCounter++) + "]";
                 final Widget widget = new Image( GuvnorResources.INSTANCE.logo() );
 
-                PanelManager.getInstance().addWorkbenchPanel( title,
-                                                              position,
-                                                              widget );
+                PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( widget,
+                                                                                 title ),
+                                                              position );
             }
 
         } );

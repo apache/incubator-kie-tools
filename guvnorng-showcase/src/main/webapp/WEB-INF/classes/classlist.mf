@@ -1,2 +1,7 @@
-org.drools.guvnor.client.ui.part.Editor
+org.drools.guvnor.client.editor.GuvnorNGActivityMapperImpl
+org.drools.guvnor.client.content.editor.TextEditorPlace
 org.drools.guvnor.client.content.editor.TextEditorPresenter
+org.drools.guvnor.client.perspective.workspace.explorer.AdminTree
+org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePlace
+org.drools.guvnor.client.ui.part.WorkbenchPart
+org.drools.guvnor.client.perspective.monitoring.MonitoringPerspectivePresenter

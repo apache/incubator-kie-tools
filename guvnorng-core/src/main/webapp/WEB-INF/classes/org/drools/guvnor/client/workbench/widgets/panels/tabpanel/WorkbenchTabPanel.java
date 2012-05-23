@@ -15,10 +15,13 @@
  */
 package org.drools.guvnor.client.workbench.widgets.panels.tabpanel;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
@@ -235,17 +238,21 @@ public class WorkbenchTabPanel extends Composite
 
     }
 
-    private final UnmodifiableTabBar tabBar;
-    private final SimplePanel        focusIndicator;
-    private final TabbedDeckPanel    deck;
+    private final UnmodifiableTabBar  tabBar;
+    private final SimplePanel         focusIndicator;
+    private final TabbedDeckPanel     deck;
+    private final List<WorkbenchPart> workbenchParts;
 
     /**
      * Creates an empty tab panel.
      */
     public WorkbenchTabPanel() {
         this.tabBar = new UnmodifiableTabBar();
-        this.focusIndicator = new SimplePanel();
         this.deck = new TabbedDeckPanel( tabBar );
+
+        this.workbenchParts = new ArrayList<WorkbenchPart>();
+
+        this.focusIndicator = new SimplePanel();
         this.focusIndicator.getElement().setClassName( "workbenchFocusIndicator" );
         this.setFocus( false );
 
@@ -279,15 +286,11 @@ public class WorkbenchTabPanel extends Composite
      * Adds a widget to the tab panel. If the Widget is already attached to the
      * TabPanel, it will be moved to the right-most index.
      * 
-     * @param w
-     *            the widget to be added
-     * @param tabText
-     *            the text to be shown on its tab
+     * @param part
+     *            the WorkbenchPart to add
      */
-    public void add(Widget w,
-                    String tabText) {
-        insert( w,
-                tabText,
+    public void add(WorkbenchPart part) {
+        insert( part,
                 getWidgetCount() );
     }
 
@@ -352,21 +355,20 @@ public class WorkbenchTabPanel extends Composite
      * Inserts a widget into the tab panel. If the Widget is already attached to
      * the TabPanel, it will be moved to the requested index.
      * 
-     * @param widget
-     *            the widget to be inserted
-     * @param tabText
-     *            the text to be shown on its tab
-     * @param asHTML
-     *            <code>true</code> to treat the specified text as HTML
+     * @param part
+     *            the WorkbenchPart to add
      * @param beforeIndex
      *            the index before which it will be inserted
      */
-    public void insert(Widget widget,
-                       String tabText,
+    public void insert(WorkbenchPart part,
                        int beforeIndex) {
+        //Store WorkbenchPart being inserted
+        workbenchParts.add( beforeIndex,
+                            part );
+
         // Delegate updates to the TabBar to our DeckPanel implementation
-        deck.insertProtected( widget,
-                              tabText,
+        deck.insertProtected( part.getWidget(),
+                              part.getTitle(),
                               beforeIndex );
     }
 
@@ -403,6 +405,9 @@ public class WorkbenchTabPanel extends Composite
     }
 
     public boolean remove(int index) {
+        //Remove associated WorkbenchPart
+        workbenchParts.remove( index );
+
         // Delegate updates to the TabBar to our DeckPanel implementation
         return deck.remove( index );
     }
@@ -414,6 +419,10 @@ public class WorkbenchTabPanel extends Composite
      *            the widget to be removed
      */
     public boolean remove(Widget widget) {
+        //Remove associated WorkbenchPart
+        int index = getWidgetIndex( widget );
+        workbenchParts.remove( index );
+
         // Delegate updates to the TabBar to our DeckPanel implementation
         return deck.remove( widget );
     }
@@ -508,6 +517,15 @@ public class WorkbenchTabPanel extends Composite
         } else {
             focusIndicator.getElement().removeClassName( "workbenchFocusIndicatorHasFocus" );
         }
+    }
+
+    public String getCorrespondingTabLabel(final Widget w) {
+        for ( WorkbenchPart part : this.workbenchParts ) {
+            if ( part.getWidget().equals( w ) ) {
+                return part.getTitle();
+            }
+        }
+        throw new IllegalArgumentException( "TabbedDeckPanel does not contain widget." );
     }
 
 }
