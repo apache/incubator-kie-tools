@@ -20,16 +20,18 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Closable;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.mvp.Startable;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 
 @Dependent
-public class MyAdminAreaPresenter implements Startable, Closable {
+public class MyAdminAreaPresenter implements ScreenService {
     @Inject private PlaceManager placeManager;
     
     public interface View extends IsWidget {
@@ -49,13 +51,30 @@ public class MyAdminAreaPresenter implements Startable, Closable {
     }
 
     @Override
-    public boolean mayClose() {
-        return true;
+    public void onClose() {
     }
 
     @Override
-    public void onClose() {
-        view.setName("AdminArea");
+    public boolean mayClose() {
+        return true;
+    }
+    
+    @Override
+    public void onReveal() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onHide() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mayOnHide() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

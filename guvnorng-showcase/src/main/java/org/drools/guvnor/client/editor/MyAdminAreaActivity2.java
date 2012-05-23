@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.Closable;
+import org.drools.guvnor.client.mvp.ScreenService;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 @Dependent
@@ -19,24 +20,45 @@ public class MyAdminAreaActivity2 implements Activity {
 
     @Override
     public void start(AcceptItem tabbedPanel) {
-        //TODO: Get tab title (or an closable title bar widget). 
-        //MyAdminAreaPresenter presenter = new MyAdminAreaPresenter();
-        presenter = manager.lookupBean(MyAdminAreaPresenter2.class).getInstance();
-        //TODO: Provide a base class for Presenter. Implement a getView() method in the base class
-        tabbedPanel.add("MyAdminArea2", presenter.view);
     }
     
     public void onStop() {
-        if(presenter instanceof Closable) {
-            ((Closable) presenter).onClose();
+        if(presenter instanceof ScreenService) {
+            ((ScreenService) presenter).onClose();
         }       
     }
     
     public boolean mayStop() {
-        if(presenter instanceof Closable) {
-            return ((Closable) presenter).mayClose();
+        if(presenter instanceof ScreenService) {
+            return ((ScreenService) presenter).mayClose();
         }  
         return true;
+    }
+    
+    public void onRevealPresenter(AcceptItem acceptPanel) {
+        if(presenter == null) {
+            presenter = manager.lookupBean(MyAdminAreaPresenter2.class).getInstance();        
+            if(presenter instanceof ScreenService) {
+                ((ScreenService) presenter).onStart();
+            }
+            //TODO: Get tab title (or an closable title bar widget).        
+            acceptPanel.add("MyAdminArea2", presenter.view);   
+        }
+        
+        if(presenter instanceof ScreenService) {
+            ((ScreenService) presenter).onReveal();
+        }  
+    }
+    
+    public void onClosePresenter() {
+        if(presenter == null) {
+            return; 
+        }
+        
+        if(presenter instanceof ScreenService) {
+            ((ScreenService) presenter).onClose();
+        }  
+        presenter = null;
     }
     
     public String getNameToken() {

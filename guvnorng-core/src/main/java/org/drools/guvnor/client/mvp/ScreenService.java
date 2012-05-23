@@ -1,8 +1,8 @@
 package org.drools.guvnor.client.mvp;
 
 public interface ScreenService {
-    /* onBind() is called right after the Presenter is constructed. */
-    public void onBind(AcceptItem acceptPanel);
+    /* onStart() is called right after the Presenter is constructed. */
+    public void onStart();
 
     /* onClose() is called after the Presenter is destroyed. */
     public void onClose();
