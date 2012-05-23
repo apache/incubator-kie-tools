@@ -31,41 +31,31 @@
     }
   </ui:style>
 
-  <gwt:SimplePanel styleName="{style.resetDockPanel}">
-    <gwt:DockLayoutPanel unit='PX'>
-      <gwt:north size='70'>
-        <gwt:VerticalPanel width="100%">
-          <gwt:HTMLPanel ui:field="titlePanel" styleName='{guvnorResources.headerCss.mainClass}'>
-            <div class='{guvnorResources.headerCss.logoClass}'>
-              <gwt:Image resource='{images.hdrlogoDrools}'/>
-            </div>
-            <div class='{guvnorResources.headerCss.controlsClass}'>
-              <div class='{guvnorResources.headerCss.userInfoClass}'>
-                <small>
-                  <ui:text from='{i18n.WelcomeUser}'/>
-                  <span ui:field="userName"/>
-                  <a href='logout.jsp'>[<ui:text from='{i18n.SignOut}'/>]
-                  </a>
-                </small>
-              </div>
-            </div>
-            <div style="clear:both;"></div>
-          </gwt:HTMLPanel>
-        </gwt:VerticalPanel>
-      </gwt:north>
-      <gwt:center>
-        <gwt:HTMLPanel>
-          <gwt:Image resource='{images.monitoringScreenshot}'/>
-          <gwt:Button ui:field="backWorkspace">Back to Workspace</gwt:Button>
-          <gwt:Button ui:field="callService">CallService</gwt:Button>
-        </gwt:HTMLPanel>
-      </gwt:center>
-      <gwt:south size="20">
-        <gwt:HorizontalPanel width="100%">
-          <gwt:HTMLPanel ui:field="footerPanel"/>
-        </gwt:HorizontalPanel>
-      </gwt:south>
-    </gwt:DockLayoutPanel>
-  </gwt:SimplePanel>
+  <gwt:VerticalPanel width="100%">
+    <gwt:HTMLPanel ui:field="titlePanel" styleName='{guvnorResources.headerCss.mainClass}'>
+      <div class='{guvnorResources.headerCss.logoClass}'>
+        <gwt:Image resource='{images.hdrlogoDrools}'/>
+      </div>
+      <div class='{guvnorResources.headerCss.controlsClass}'>
+        <div class='{guvnorResources.headerCss.userInfoClass}'>
+          <small>
+            <ui:text from='{i18n.WelcomeUser}'/>
+            <span ui:field="userName"/>
+            <a href='logout.jsp'>[<ui:text from='{i18n.SignOut}'/>]
+            </a>
+          </small>
+        </div>
+      </div>
+      <div style="clear:both;"></div>
+    </gwt:HTMLPanel>
+    <gwt:HTMLPanel>
+      <gwt:Image resource='{images.monitoringScreenshot}'/>
+      <gwt:Button ui:field="backWorkspace">Back to Workspace</gwt:Button>
+      <gwt:Button ui:field="callService">CallService</gwt:Button>
+    </gwt:HTMLPanel>
+    <gwt:HorizontalPanel width="100%">
+      <gwt:HTMLPanel ui:field="footerPanel"/>
+    </gwt:HorizontalPanel>
+  </gwt:VerticalPanel>
 
 </ui:UiBinder>
