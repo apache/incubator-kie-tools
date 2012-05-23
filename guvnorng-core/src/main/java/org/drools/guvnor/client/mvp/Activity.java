@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.mvp;
 
 
-import org.drools.guvnor.client.workbench.PositionSelectorPopup;
+import org.drools.guvnor.client.workbench.Position;
 
 public interface Activity {
 
@@ -28,5 +28,5 @@ public interface Activity {
 
     public void onStop();
 
-    public PositionSelectorPopup.Position getPreferredPosition();
+    public Position getPreferredPosition();
 }

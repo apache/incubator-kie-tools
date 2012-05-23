@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.workbench.PositionSelectorPopup;
+import org.drools.guvnor.client.workbench.Position;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -50,8 +50,8 @@ public class MonitoringPerspectivePresenter implements Activity {
     }
 
     @Override
-    public PositionSelectorPopup.Position getPreferredPosition() {
-        return PositionSelectorPopup.Position.SELF;
+    public Position getPreferredPosition() {
+        return Position.SELF;
     }
 
     public interface MyView extends IsWidget {
