@@ -16,27 +16,19 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.web.bindery.event.shared.EventBus;
-import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.common.content.multi.MultiActivityManager;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.workbench.Workbench;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -45,31 +37,18 @@ import javax.inject.Inject;
 public class DefaultEntryPoint {
 
     @Inject
-    PerspectiveActivityMapper activityMapper;
+    MultiActivityManager multiActivityManager;
 
-    private final PlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
     private final SimplePanel appWidget = new SimplePanel();
-    private PlaceHistoryHandler historyHandler;
-    @Inject
-    private PlaceController placeController;
-    @Inject
-    private EventBus eventBus;
 
     @PostConstruct
     public void init() {
         RestClient.setApplicationRoot("/");
 
-        final ActivityManager activityManager = new ActivityManager(activityMapper,
-                eventBus);
         final Workbench workbench = new Workbench();
+        multiActivityManager.setWorkBench(workbench);
         appWidget.add(workbench);
 
-        activityManager.setDisplay(appWidget);
-
-        historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(placeController,
-                eventBus,
-                null);
     }
 
     @AfterInitialization
@@ -79,7 +58,6 @@ public class DefaultEntryPoint {
         hideLoadingPopup();
 
         RootLayoutPanel.get().add(appWidget);
-        historyHandler.handleCurrentHistory();
     }
 
     private void loadStyles() {
