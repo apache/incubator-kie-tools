@@ -20,6 +20,7 @@ import com.google.gwt.place.shared.Place;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class PlaceRequest extends Place {
@@ -50,7 +51,11 @@ public class PlaceRequest extends Place {
         }
         return value;
     }
-
+    
+    public Set<String> getParameterNames() {
+        return parameters.keySet();
+    }
+    
     public PlaceRequest parameter(String name, String value) {
         this.parameters.put(name, value);
         return this;

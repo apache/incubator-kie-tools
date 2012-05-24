@@ -1,31 +1,85 @@
 package org.drools.guvnor.client.editor;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequestHistoryMapper;
 
-import com.google.gwt.place.shared.WithTokenizers;
 
-@WithTokenizers(
-        {
-            MyAdminAreaPlace.Tokenizer.class,
-            MyAdminAreaPlace2.Tokenizer.class
-        }
-)
 public class GuvnorNGPlaceRequestHistoryMapper implements PlaceRequestHistoryMapper {
 
     @Override
     public PlaceRequest getPlaceRequest(String token) {
-        if("AdminArea".equals(token)) {
-            return new PlaceRequest("AdminArea");
-        } else if("AdminArea2".equals(token)) {
-            return new PlaceRequest("AdminArea2");
+        String nameToken = token.indexOf("?") != -1 ? token.substring(0,  token.indexOf("?")-1) : token;
+        String query = token.indexOf("?") != -1 ? token.substring(token.indexOf("?")) : "";
+        Map<String, String> parameters = getParameters(token);
+       
+        PlaceRequest placeRequest = new PlaceRequest(nameToken);
+        for(String parameterName : parameters.keySet()) {
+            placeRequest.parameter(parameterName, parameters.get(parameterName));
         }
-        return null;
+
+        return placeRequest;
     }
 
     @Override
     public String getToken(PlaceRequest placeRequest) {
-        return placeRequest.getNameToken();
+        StringBuilder token = new StringBuilder();
+        token.append(placeRequest.getNameToken());
+
+        if (placeRequest.getParameterNames().size() > 0) {
+            token.append("?");
+        }
+        for (String name : placeRequest.getParameterNames()) {
+            token.append(name).append("=")
+                    .append(placeRequest.getParameter(name, null));
+            token.append("&");
+        }
+        
+        if(token.length() != 0 && token.lastIndexOf("&")+1 == token.length()) {
+            token.deleteCharAt(token.length());           
+        }
+
+        return token.toString();
+    }
+
+    private static Map<String, String> getParameters(String query) {
+       Map<String, String> parameters = new HashMap<String, String>();
+
+        if (query !=null && !"".equalsIgnoreCase(query)) {
+            List<String> parts = Arrays.asList(query.split("&"));
+            for (String part : parts) {
+                int index = part.indexOf('=');
+                String name = null;
+                String value = null;
+                if (index == -1) {
+                    name = part;
+                    value = "";
+                } else {
+                    name = part.substring(0, index);
+                    value = index < part.length() ? part.substring(index + 1) : "";
+                    value = urlDecode(value);
+                }
+                parameters.put(urlDecode(name), value);
+            }
+        }
+        
+        return parameters;
+    }
+    
+    private static String urlDecode(String value) {
+        try {
+            value = URLDecoder.decode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            //LOG.warning("UTF-8 encoding can not be used to decode " + value);          
+        }
+        return value;
     }
 }

@@ -23,50 +23,62 @@ public class MyAdminAreaActivity implements Activity {
     public void start(AcceptItem tabbedPanel) {
     }
 
-    public void onStop() {
-        if (presenter instanceof ScreenService) {
-            ((ScreenService) presenter).onClose();
-        }
-    }
-
     @Override
     public Position getPreferredPosition() {
         return Position.SELF;
     }
-
+    
+    public void onStop() {
+        if(presenter !=null && presenter instanceof ScreenService) {
+            ((ScreenService) presenter).onClose();
+        }       
+    }
+    
     public boolean mayStop() {
-        if (presenter instanceof ScreenService) {
+        if(presenter !=null && presenter instanceof ScreenService) {
             return ((ScreenService) presenter).mayClose();
-        }
+        }  
         return true;
     }
-
-    public void onRevealPresenter(AcceptItem acceptPanel) {
-        if (presenter == null) {
-            presenter = manager.lookupBean(MyAdminAreaPresenter.class).getInstance();
-            if (presenter instanceof ScreenService) {
+    
+    public void revealPlace(AcceptItem acceptPanel) {
+        if(presenter == null) {
+            presenter = manager.lookupBean(MyAdminAreaPresenter.class).getInstance();        
+            if(presenter instanceof ScreenService) {
                 ((ScreenService) presenter).onStart();
             }
             //TODO: Get tab title (or an closable title bar widget).        
-            acceptPanel.add("MyAdminArea", presenter.view);
+            acceptPanel.add("MyAdminArea", presenter.view);   
         }
-
-        if (presenter instanceof ScreenService) {
+        
+        if(presenter instanceof ScreenService) {
             ((ScreenService) presenter).onReveal();
-        }
+        }  
     }
 
-    public void onClosePresenter() {
-        if (presenter == null) {
-            return;
+    /**
+    * True - Close the place
+    * False - Do not close the place
+    */
+    public boolean mayClosePlace() {
+        if(presenter instanceof ScreenService) {
+            return ((ScreenService) presenter).mayClose();
+        } 
+        
+        return true;
+    }
+    
+    public void closePlace() {
+        if(presenter == null) {
+            return; 
         }
-
-        if (presenter instanceof ScreenService) {
+        
+        if(presenter instanceof ScreenService) {
             ((ScreenService) presenter).onClose();
-        }
+        }  
         presenter = null;
     }
-
+    
     public String getNameToken() {
         return "MyAdminArea";
     }
