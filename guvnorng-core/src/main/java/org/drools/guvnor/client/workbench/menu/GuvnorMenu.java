@@ -25,7 +25,7 @@ public class GuvnorMenu extends Composite {
     @Inject
     public GuvnorMenu(final IOCBeanManager manager) {
 
-        Button add = new Button( "Add" );
+        Button add = new Button( "Add (mr. Rikkola)" );
 
         add.addClickHandler( new ClickHandler() {
             @Override
