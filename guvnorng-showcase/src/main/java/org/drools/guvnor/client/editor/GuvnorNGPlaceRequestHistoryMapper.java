@@ -12,6 +12,8 @@ import java.util.Map;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequestHistoryMapper;
 
+import com.google.gwt.http.client.URL;
+
 
 public class GuvnorNGPlaceRequestHistoryMapper implements PlaceRequestHistoryMapper {
 
@@ -75,11 +77,6 @@ public class GuvnorNGPlaceRequestHistoryMapper implements PlaceRequestHistoryMap
     }
     
     private static String urlDecode(String value) {
-        try {
-            value = URLDecoder.decode(value, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            //LOG.warning("UTF-8 encoding can not be used to decode " + value);          
-        }
-        return value;
+      return URL.decode(value);
     }
 }
