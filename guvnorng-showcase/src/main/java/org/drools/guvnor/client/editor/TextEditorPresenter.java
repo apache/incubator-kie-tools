@@ -123,4 +123,10 @@ public class TextEditorPresenter implements Activity {
     public void setFocus() {
         view.setFocus();
     }
+
+    @Override
+    public void revealPlace(AcceptItem acceptPanel) {
+        acceptPanel.add("Text editor", view);        
+    }
+    
 }

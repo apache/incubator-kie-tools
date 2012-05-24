@@ -51,12 +51,7 @@ public class PlaceManagerImpl
     @Override
     public void goTo(PlaceRequest placeRequest) {
         currentPlaceRequest = placeRequest;
-
-        if ( isActivityAlreadyActive( placeRequest ) ) {
-            showExistingActivity( placeRequest );
-        } else {
-            startNewActivity( placeRequest );
-        }
+        revealPlace(placeRequest);
     }
 
     @Override
@@ -67,7 +62,7 @@ public class PlaceManagerImpl
             return new PlaceRequest( "NOWHERE" );
         }
     }
-
+/*
     private void showExistingActivity(final PlaceRequest token) {
         //TODO: the requested view might have be dragged to other containers. How do we know where it is now?
         //        preferredContainer.show(token);
@@ -96,8 +91,27 @@ public class PlaceManagerImpl
                     }
                 } );
         updateHistory( newPlace );
-    }
+    }*/
+    
+    private void revealPlace(final PlaceRequest newPlace) {
+        final Activity activity = activityMapper.getActivity( newPlace );
 
+        activity.revealPlace(
+                new AcceptItem() {
+                    public void add(String tabTitle,
+                                    IsWidget widget) {
+
+
+                        PanelManager.getInstance().addWorkbenchPanel(
+                                new WorkbenchPart(
+                                        widget.asWidget(),
+                                        tabTitle),
+                                activity.getPreferredPosition());
+                    }
+                } );
+        updateHistory( newPlace );
+    }
+    
     public void updateHistory(PlaceRequest request) {
         placeHistoryHandler.onPlaceChange( request );
     }

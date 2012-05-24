@@ -65,4 +65,9 @@ public class MonitoringPerspectivePresenter implements Activity {
     public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
         acceptsOneWidget.setWidget(view);
     }
+
+    @Override
+    public void revealPlace(AcceptItem acceptPanel) {
+        acceptPanel.add("monitoring_perspective", view);        
+    }
 }

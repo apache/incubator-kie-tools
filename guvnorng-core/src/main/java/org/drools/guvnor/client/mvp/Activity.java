@@ -29,4 +29,6 @@ public interface Activity {
     public void onStop();
 
     public Position getPreferredPosition();
+    
+    public void revealPlace(AcceptItem acceptPanel);
 }

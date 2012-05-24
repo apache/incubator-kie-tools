@@ -60,4 +60,23 @@ public class PackageExplorerActivity implements Activity {
     public Position getPreferredPosition() {
         return Position.WEST;
     }
+
+    @Override
+    public void revealPlace(AcceptItem acceptPanel) {
+        Tree tree = new Tree();
+
+        final TreeItem treeItem = tree.addItem("Editors");
+        final TreeItem textEditorTreeItem = treeItem.addItem("Text Editor");
+
+        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+            @Override
+            public void onSelection(SelectionEvent<TreeItem> event) {
+                if (textEditorTreeItem.equals(event.getSelectedItem())) {
+                    placeManager.goTo(new TextEditorPlace());
+                }
+            }
+        });
+
+        acceptPanel.add("Package Explorer", tree);
+    }
 }
