@@ -28,22 +28,7 @@ public class PackageExplorerActivity implements Activity {
     }
 
     @Override
-    public void start(AcceptItem acceptItem) {
-        Tree tree = new Tree();
-
-        final TreeItem treeItem = tree.addItem("Editors");
-        final TreeItem textEditorTreeItem = treeItem.addItem("Text Editor");
-
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-            @Override
-            public void onSelection(SelectionEvent<TreeItem> event) {
-                if (textEditorTreeItem.equals(event.getSelectedItem())) {
-                    placeManager.goTo(new TextEditorPlace());
-                }
-            }
-        });
-
-        acceptItem.add("Package Explorer", tree);
+    public void start() {
     }
 
     @Override

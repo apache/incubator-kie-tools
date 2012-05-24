@@ -19,40 +19,12 @@ package org.drools.guvnor.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.mvp.AcceptItem;
-import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.workbench.Position;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class MonitoringPerspectivePresenter implements Activity {
-
-    @Override
-    public String getNameToken() {
-        return "monitoring_perspective";
-    }
-
-    @Override
-    public void start(AcceptItem tabbedPanel) {
-        tabbedPanel.add("monitoring_perspective", view);
-    }
-
-    @Override
-    public boolean mayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //TODO: -Rikkola-
-    }
-
-    @Override
-    public Position getPreferredPosition() {
-        return Position.SELF;
-    }
+public class MonitoringPerspectivePresenter {
 
     public interface MyView extends IsWidget {
 
@@ -64,10 +36,5 @@ public class MonitoringPerspectivePresenter implements Activity {
 
     public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
         acceptsOneWidget.setWidget(view);
-    }
-
-    @Override
-    public void revealPlace(AcceptItem acceptPanel) {
-        acceptPanel.add("monitoring_perspective", view);        
     }
 }

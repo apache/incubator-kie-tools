@@ -18,9 +18,6 @@ package org.drools.guvnor.client.editor;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.mvp.AcceptItem;
-import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.shared.ArtifactService;
 import org.jboss.errai.ioc.client.api.Caller;
 
@@ -28,33 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
-public class TextEditorPresenter implements Activity {
-
-    @Override
-    public String getNameToken() {
-        return "TextEditor";
-    }
-
-    @Override
-    public void start(AcceptItem tabbedPanel) {
-        tabbedPanel.add("Text editor", view);
-    }
-
-    @Override
-    public boolean mayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //TODO: -Rikkola-
-    }
-
-    @Override
-    public Position getPreferredPosition() {
-        return Position.SELF;
-    }
-
+public class TextEditorPresenter {
     public interface View extends IsWidget {
 
         void setContent(String content);
@@ -122,11 +93,6 @@ public class TextEditorPresenter implements Activity {
     //    @Override
     public void setFocus() {
         view.setFocus();
-    }
-
-    @Override
-    public void revealPlace(AcceptItem acceptPanel) {
-        acceptPanel.add("Text editor", view);        
     }
     
 }

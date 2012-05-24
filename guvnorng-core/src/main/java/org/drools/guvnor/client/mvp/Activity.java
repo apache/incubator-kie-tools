@@ -22,7 +22,7 @@ public interface Activity {
 
     public String getNameToken();
 
-    public void start(AcceptItem acceptItem);
+    public void start();
 
     public boolean mayStop();
 

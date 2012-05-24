@@ -20,7 +20,7 @@ public class MyAdminAreaActivity implements Activity {
     }
 
     @Override
-    public void start(AcceptItem tabbedPanel) {
+    public void start() {
     }
 
     @Override
