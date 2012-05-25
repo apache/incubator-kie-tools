@@ -175,17 +175,17 @@ public class VFSServicesServerImpl implements VFSService {
         return Files.probeContentType(path);
     }
 
-    @Override
-    public <V extends FileAttributeView> V getFileAttributeView(final Path path, final Class<V> type, final LinkOption... options)
-            throws IllegalArgumentException {
-        return Files.getFileAttributeView(path, type, options);
-    }
-
-    @Override
-    public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return Files.readAttributes(path, type, options);
-    }
+//    @Override
+//    public <V extends FileAttributeView> V getFileAttributeView(final Path path, final Class<V> type, final LinkOption... options)
+//            throws IllegalArgumentException {
+//        return Files.getFileAttributeView(path, type, options);
+//    }
+//
+//    @Override
+//    public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
+//            throws IllegalArgumentException, UnsupportedOperationException, IOException {
+//        return Files.readAttributes(path, type, options);
+//    }
 
     @Override
     public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)

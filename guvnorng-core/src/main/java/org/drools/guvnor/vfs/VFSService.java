@@ -117,13 +117,14 @@ public interface VFSService {
     String probeContentType(Path path)
             throws UnsupportedOperationException, IOException;
 
-    <V extends FileAttributeView> V getFileAttributeView(Path path,
-            Class<V> type, LinkOption... options)
-            throws IllegalArgumentException;
-
-    <A extends BasicFileAttributes> A readAttributes(Path path,
-            Class<A> type, LinkOption... options)
-            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException;
+//TODO commented for now - seems that it's an errai (codegen on generified return type)
+//    <V extends FileAttributeView> V getFileAttributeView(Path path,
+//            Class<V> type, LinkOption... options)
+//            throws IllegalArgumentException;
+//
+//    <A extends BasicFileAttributes> A readAttributes(Path path,
+//            Class<A> type, LinkOption... options)
+//            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException;
 
     Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException;
