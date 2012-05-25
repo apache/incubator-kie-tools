@@ -15,6 +15,10 @@
  */
 package org.drools.guvnor.client.workbench;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -27,7 +31,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class WorkbenchPart extends Composite
     implements
     RequiresResize,
-    ProvidesResize {
+    ProvidesResize,
+    HasCloseHandlers<WorkbenchPart> {
 
     private String      title;
 
@@ -63,4 +68,8 @@ public class WorkbenchPart extends Composite
         }
     }
 
+    @Override
+    public HandlerRegistration addCloseHandler(CloseHandler<WorkbenchPart> handler) {
+        return addHandler(handler, CloseEvent.getType());
+    }
 }

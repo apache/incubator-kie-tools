@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.*;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -28,12 +29,6 @@ import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.Composite;
@@ -117,7 +112,7 @@ public class WorkbenchTabPanel extends Composite
             return false;
         }
 
-        protected void insertProtected(Widget w,
+        protected void insertProtected(WorkbenchPart w,
                                        String tabText,
                                        int beforeIndex) {
 
@@ -164,7 +159,7 @@ public class WorkbenchTabPanel extends Composite
             throw new UnsupportedOperationException( "Use WorkbenchTabPanel.insert() to alter the TabBar" );
         }
 
-        public void insertTabProtected(Widget w,
+        public void insertTabProtected(WorkbenchPart w,
                                        String text,
                                        int beforeIndex) {
             checkInsertBeforeTabIndex( beforeIndex );
@@ -183,7 +178,7 @@ public class WorkbenchTabPanel extends Composite
             }
         }
 
-        private Widget makeClosableItem(final Widget tabContent,
+        private Widget makeClosableItem(final WorkbenchPart tabContent,
                                         final Label tabLabel) {
             final HorizontalPanel hp = new HorizontalPanel();
             hp.add( tabLabel );
@@ -198,7 +193,7 @@ public class WorkbenchTabPanel extends Composite
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    remove( tabContent );
+                    CloseEvent.fire(tabContent, tabContent);
                 }
 
             } );
@@ -412,6 +407,15 @@ public class WorkbenchTabPanel extends Composite
         return deck.remove( index );
     }
 
+    /**
+     * Checks if the workspace panel is in this container.
+     * @param workbenchPart
+     * @return True, it is. False, it is not.
+     */
+    public boolean contains(WorkbenchPart workbenchPart) {
+        return getWidgetIndex(workbenchPart) >= 0;
+    }
+    
     /**
      * Removes the given widget, and its associated tab.
      * 

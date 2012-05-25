@@ -25,7 +25,7 @@ import org.drools.guvnor.client.workbench.WorkbenchPart;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ *
  */
 public class PanelManager {
 
@@ -140,4 +140,12 @@ public class PanelManager {
         this.focusPanel = panel;
     }
 
+    public void removeWorkbenchPart(WorkbenchPart workbenchPart) {
+        for (WorkbenchPanel workbenchPanel : workbenchPanels) {
+            if(workbenchPanel.contains(workbenchPart)){
+                workbenchPanel.remove(workbenchPart);
+                return;
+            }
+        }
+    }
 }

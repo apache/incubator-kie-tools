@@ -36,7 +36,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
     public WorkbenchPanel(final WorkbenchPart part) {
         this();
-        addTab( part );
+        addTab(part);
     }
 
     private WorkbenchTabPanel makeTabPanel() {
@@ -61,7 +61,14 @@ public class WorkbenchPanel extends ResizeComposite {
     }
 
     public void setFocus(boolean hasFocus) {
-        this.tabPanel.setFocus( hasFocus );
+        this.tabPanel.setFocus(hasFocus);
     }
 
+    public boolean contains(WorkbenchPart workbenchPart) {
+        return tabPanel.contains(workbenchPart);
+    }
+
+    public boolean remove(WorkbenchPart workbenchPart) {
+        return tabPanel.remove(workbenchPart);
+    }
 }
