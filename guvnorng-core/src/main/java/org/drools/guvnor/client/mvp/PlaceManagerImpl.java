@@ -3,17 +3,11 @@ package org.drools.guvnor.client.mvp;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.workbench.Workbench;
-import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.Workbench;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -86,8 +80,10 @@ public class PlaceManagerImpl
                     public void add(String tabTitle,
                                     IsWidget widget) {
 
-                        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( widget.asWidget(),
-                                                                                         tabTitle ),
+                        WorkbenchPart workbenchPart = new WorkbenchPart( widget.asWidget(),
+                                                                         tabTitle );
+
+                        PanelManager.getInstance().addWorkbenchPanel( workbenchPart,
                                                                       activity.getPreferredPosition() );
                     }
                 } );
