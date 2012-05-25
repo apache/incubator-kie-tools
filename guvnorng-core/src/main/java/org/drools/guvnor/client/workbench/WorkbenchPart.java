@@ -15,6 +15,12 @@
  */
 package org.drools.guvnor.client.workbench;
 
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -27,7 +33,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class WorkbenchPart extends Composite
     implements
     RequiresResize,
-    ProvidesResize {
+    ProvidesResize,
+    HasCloseHandlers<WorkbenchPart> {
 
     private String      title;
 
@@ -45,6 +52,15 @@ public class WorkbenchPart extends Composite
         this.title = title;
         this.widget = widget;
         container.setWidget( widget );
+
+        addCloseHandler( new CloseHandler<WorkbenchPart>() {
+
+            @Override
+            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
+                PanelManager.getInstance().removeWorkbenchPart( workbenchPartCloseEvent.getTarget() );
+            }
+
+        } );
     }
 
     public String getPartTitle() {
@@ -61,6 +77,12 @@ public class WorkbenchPart extends Composite
         if ( w instanceof RequiresResize ) {
             ((RequiresResize) w).onResize();
         }
+    }
+
+    @Override
+    public HandlerRegistration addCloseHandler(CloseHandler<WorkbenchPart> handler) {
+        return addHandler( handler,
+                           CloseEvent.getType() );
     }
 
 }

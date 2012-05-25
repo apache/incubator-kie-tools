@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.client.workbench.widgets.panels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
@@ -29,16 +29,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PanelManager {
 
-    private static PanelManager  INSTANCE        = new PanelManager();
+    private static PanelManager INSTANCE        = new PanelManager();
 
-    private final PanelHelper    helperNorth     = new PanelHelperNorth();
-    private final PanelHelper    helperSouth     = new PanelHelperSouth();
-    private final PanelHelper    helperEast      = new PanelHelperEast();
-    private final PanelHelper    helperWest      = new PanelHelperWest();
+    private final PanelHelper   helperNorth     = new PanelHelperNorth();
+    private final PanelHelper   helperSouth     = new PanelHelperSouth();
+    private final PanelHelper   helperEast      = new PanelHelperEast();
+    private final PanelHelper   helperWest      = new PanelHelperWest();
 
-    private WorkbenchPanel       focusPanel      = null;
+    private WorkbenchPanel      focusPanel      = null;
 
-    private List<WorkbenchPanel> workbenchPanels = new ArrayList<WorkbenchPanel>();
+    private Set<WorkbenchPanel> workbenchPanels = new HashSet<WorkbenchPanel>();
 
     private PanelManager() {
     }
@@ -55,35 +55,37 @@ public class PanelManager {
     }
 
     public void addWorkbenchPanel(final WorkbenchPart part,
-                                  final WorkbenchPanel panel,
+                                  final WorkbenchPanel targetPanel,
                                   final Position position) {
 
         if ( position == Position.SELF ) {
-            panel.addTab( part );
+            targetPanel.addTab( part );
             return;
         }
 
-        workbenchPanels.add( panel );
+        final WorkbenchPanel newPanel = new WorkbenchPanel( part );
+        workbenchPanels.add( newPanel );
+        workbenchPanels.add( targetPanel );
 
         switch ( position ) {
             case NORTH :
-                helperNorth.add( part,
-                                 panel );
+                helperNorth.add( newPanel,
+                                 targetPanel );
                 break;
 
             case SOUTH :
-                helperSouth.add( part,
-                                 panel );
+                helperSouth.add( newPanel,
+                                 targetPanel );
                 break;
 
             case EAST :
-                helperEast.add( part,
-                                panel );
+                helperEast.add( newPanel,
+                                targetPanel );
                 break;
 
             case WEST :
-                helperWest.add( part,
-                                panel );
+                helperWest.add( newPanel,
+                                targetPanel );
                 break;
         }
     }
@@ -138,6 +140,15 @@ public class PanelManager {
             wbp.setFocus( wbp == panel );
         }
         this.focusPanel = panel;
+    }
+
+    public void removeWorkbenchPart(WorkbenchPart workbenchPart) {
+        for ( WorkbenchPanel workbenchPanel : workbenchPanels ) {
+            if ( workbenchPanel.contains( workbenchPart ) ) {
+                workbenchPanel.remove( workbenchPart );
+                return;
+            }
+        }
     }
 
 }

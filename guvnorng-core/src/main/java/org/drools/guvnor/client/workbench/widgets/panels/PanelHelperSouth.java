@@ -17,7 +17,6 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
@@ -34,18 +33,18 @@ public class PanelHelperSouth
     implements
     PanelHelper {
 
-    public void add(final WorkbenchPart part,
-                    final WorkbenchPanel panel) {
+    public void add(final WorkbenchPanel newPanel,
+                    final WorkbenchPanel targetPanel) {
 
-        final Widget parent = panel.getParent();
+        final Widget parent = targetPanel.getParent();
 
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
             WorkbenchDragAndDropManager.getInstance().unregisterDropController( sp );
 
-            final VerticalSplitterPanel vsp = new VerticalSplitterPanel( panel,
-                                                                         part,
+            final VerticalSplitterPanel vsp = new VerticalSplitterPanel( targetPanel,
+                                                                         newPanel,
                                                                          Position.SOUTH );
 
             sp.clear();

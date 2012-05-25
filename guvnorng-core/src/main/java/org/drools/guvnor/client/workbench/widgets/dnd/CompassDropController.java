@@ -27,14 +27,13 @@ import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 import com.allen_sauer.gwt.dnd.client.util.CoordinateArea;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,7 +48,7 @@ public class CompassDropController extends SimpleDropController {
     private Position         dropTargetHighlightPosition = Position.NONE;
 
     public CompassDropController(final WorkbenchPanel wbp) {
-        super( wbp );
+        super( wbp.getParent() );
 
         if ( dropTargetHighlight == null ) {
             dropTargetHighlight = Document.get().createDivElement();
@@ -75,10 +74,9 @@ public class CompassDropController extends SimpleDropController {
         }
 
         final WorkbenchPart part = (WorkbenchPart) context.draggable;
-        final WorkbenchPanel panel = (WorkbenchPanel) getDropTarget();
+        final WorkbenchPanel panel = (WorkbenchPanel) (((ScrollPanel) getDropTarget()).getWidget());
         final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
         final WorkbenchTabPanel wtp = workbenchContext.getOrigin();
-        final Widget dragWidget = part.getPartWidget();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
@@ -92,28 +90,10 @@ public class CompassDropController extends SimpleDropController {
             }
         }
 
-        //DeckPanel clears the height and width of a Widget when it is removed
-        //so remember the original sizes before repositioning in the target Panel
-        final int oldHeight = dragWidget.getOffsetHeight();
-        final int oldWidth = dragWidget.getOffsetWidth();
-
         wtp.remove( part );
         PanelManager.getInstance().addWorkbenchPanel( part,
                                                       panel,
                                                       dropTargetHighlightPosition );
-
-        //DeckPanel sets the height and width of an inserted Widget to 100% if
-        //the Widget does not have a height or width. DeckPanel kindly removed
-        //the Widget's height and width when removed above so we need to reset.
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                dragWidget.setPixelSize( oldWidth,
-                                         oldHeight );
-            }
-
-        } );
     }
 
     @Override
@@ -148,7 +128,7 @@ public class CompassDropController extends SimpleDropController {
         int y = 0;
         int width = 0;
         int height = 0;
-        final Widget dropTargetParent = getDropTarget().getParent();
+        final Widget dropTargetParent = getDropTarget();
         dropTargetHighlightPosition = p;
         switch ( p ) {
             case SELF :
@@ -231,7 +211,7 @@ public class CompassDropController extends SimpleDropController {
     private Position getPosition(final DragContext context) {
         int mx = context.mouseX;
         int my = context.mouseY;
-        final Widget dropTargetParent = getDropTarget().getParent();
+        final Widget dropTargetParent = getDropTarget();
         int cxmin = dropTargetParent.getElement().getAbsoluteLeft();
         int cymin = dropTargetParent.getElement().getAbsoluteTop();
         int cxmax = dropTargetParent.getElement().getAbsoluteRight();

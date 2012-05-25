@@ -64,4 +64,12 @@ public class WorkbenchPanel extends ResizeComposite {
         this.tabPanel.setFocus( hasFocus );
     }
 
+    public boolean contains(WorkbenchPart workbenchPart) {
+        return tabPanel.contains( workbenchPart );
+    }
+
+    public boolean remove(WorkbenchPart workbenchPart) {
+        return tabPanel.remove( workbenchPart );
+    }
+
 }

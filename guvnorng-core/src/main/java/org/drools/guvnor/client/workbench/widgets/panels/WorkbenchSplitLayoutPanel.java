@@ -25,21 +25,40 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * A panel that adds user-positioned splitters between each of its child
+ * widgets. This is a fork of the standard SplitLayoutPanel with the following
+ * changes:-
+ * 1) http://code.google.com/p/google-web-toolkit/issues/detail?id=7135
  * 
+ * <p>
+ * This panel is used in the same way as {@link DockLayoutPanel}, except that
+ * its children's sizes are always specified in {@link Unit#PX} units, and each
+ * pair of child widgets has a splitter between them that the user can drag.
+ * </p>
+ * <p>
+ * This widget will <em>only</em> work in standards mode, which requires that
+ * the HTML page in which it is run have an explicit &lt;!DOCTYPE&gt;
+ * declaration.
+ * </p>
+ * <h3>CSS Style Rules</h3>
+ * <ul class='css'>
+ * <li>.gwt-SplitLayoutPanel { the panel itself }</li>
+ * <li>.gwt-SplitLayoutPanel .gwt-SplitLayoutPanel-HDragger { horizontal dragger
+ * }</li>
+ * <li>.gwt-SplitLayoutPanel .gwt-SplitLayoutPanel-VDragger { vertical dragger }
+ * </li>
+ * </ul>
+ * <p>
+ * <h3>Example</h3> {@example com.google.gwt.examples.SplitLayoutPanelExample}
+ * </p>
  */
-public class ResizableSplitLayoutPanel extends DockLayoutPanel
-    implements
-    RequiresResize,
-    ProvidesResize {
+public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
     class HSplitter extends Splitter {
-
         public HSplitter(Widget target,
                          boolean reverse) {
             super( target,
@@ -73,21 +92,9 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
         protected int getTargetSize() {
             return target.getOffsetWidth();
         }
-
-        @Override
-        public void onResize() {
-            Widget parent = getParent().getParent();
-            int height = parent.getElement().getClientHeight();
-            this.getElement().getStyle().setHeight( height,
-                                                    Unit.PX );
-        }
-
     }
 
-    abstract class Splitter extends Widget
-        implements
-        RequiresResize {
-
+    abstract class Splitter extends Widget {
         protected final Widget   target;
 
         private int              offset;
@@ -208,8 +215,14 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
                 return;
             }
 
+            double newCenterSize = centerSize + (layout.size - size);
+            if ( newCenterSize < minCenterSize ) {
+                return;
+            }
+
             // Adjust our view until the deferred layout gets scheduled.
             centerSize += layout.size - size;
+            centerSize = newCenterSize;
             layout.size = size;
 
             // Defer actually updating the layout, so that if we receive many
@@ -227,7 +240,6 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
     }
 
     class VSplitter extends Splitter {
-
         public VSplitter(Widget target,
                          boolean reverse) {
             super( target,
@@ -261,15 +273,6 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
         protected int getTargetSize() {
             return target.getOffsetHeight();
         }
-
-        @Override
-        public void onResize() {
-            Widget parent = getParent().getParent();
-            int width = parent.getElement().getClientWidth();
-            this.getElement().getStyle().setWidth( width,
-                                                   Unit.PX );
-        }
-
     }
 
     private static final int DEFAULT_SPLITTER_SIZE = 8;
@@ -282,11 +285,13 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
 
     private final int        splitterSize;
 
+    private int              minCenterSize         = 0;
+
     /**
      * Construct a new {@link SplitLayoutPanel} with the default splitter size
      * of 8px.
      */
-    public ResizableSplitLayoutPanel() {
+    public WorkbenchSplitLayoutPanel() {
         this( DEFAULT_SPLITTER_SIZE );
     }
 
@@ -297,7 +302,7 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
      * @param splitterSize
      *            the size of the splitter in pixels
      */
-    public ResizableSplitLayoutPanel(int splitterSize) {
+    public WorkbenchSplitLayoutPanel(int splitterSize) {
         super( Unit.PX );
         this.splitterSize = splitterSize;
         setStyleName( "gwt-SplitLayoutPanel" );
@@ -381,12 +386,18 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
      */
     public void setWidgetMinSize(Widget child,
                                  int minSize) {
-        assert (child == null) || (child.getParent() == this) : "The specified widget is not a child of this panel";
+        assertIsAChild( child );
         Splitter splitter = getAssociatedSplitter( child );
         // The splitter is null for the center element.
         if ( splitter != null ) {
             splitter.setMinSize( minSize );
+        } else {
+            minCenterSize = minSize;
         }
+    }
+
+    private void assertIsAChild(Widget widget) {
+        assert (widget == null) || (widget.getParent() == this) : "The specified widget is not a child of this panel";
     }
 
     private Splitter getAssociatedSplitter(Widget child) {
@@ -434,5 +445,4 @@ public class ResizableSplitLayoutPanel extends DockLayoutPanel
                       splitterSize,
                       before );
     }
-
 }

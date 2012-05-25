@@ -16,15 +16,14 @@
 package org.drools.guvnor.client.workbench.widgets.panels;
 
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.WorkbenchPart;
 
 /**
  * 
  */
 public interface PanelHelper {
 
-    public void add(final WorkbenchPart part,
-                    final WorkbenchPanel panel);
+    public void add(final WorkbenchPanel newPanel,
+                    final WorkbenchPanel targetPanel);
 
     public void remove(final WorkbenchPanel panel);
 
