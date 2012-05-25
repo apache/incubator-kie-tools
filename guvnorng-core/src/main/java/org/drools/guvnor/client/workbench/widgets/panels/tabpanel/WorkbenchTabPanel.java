@@ -25,11 +25,11 @@ import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -117,8 +117,7 @@ public class WorkbenchTabPanel extends Composite
             return false;
         }
 
-        protected void insertProtected(Widget w,
-                                       String tabText,
+        protected void insertProtected(WorkbenchPart w,
                                        int beforeIndex) {
 
             // Check to see if the TabPanel already contains the Widget. If so,
@@ -132,7 +131,6 @@ public class WorkbenchTabPanel extends Composite
             }
 
             tabBar.insertTabProtected( w,
-                                       tabText,
                                        beforeIndex );
             super.insert( w,
                           beforeIndex );
@@ -164,12 +162,11 @@ public class WorkbenchTabPanel extends Composite
             throw new UnsupportedOperationException( "Use WorkbenchTabPanel.insert() to alter the TabBar" );
         }
 
-        public void insertTabProtected(Widget w,
-                                       String text,
+        public void insertTabProtected(WorkbenchPart w,
                                        int beforeIndex) {
             checkInsertBeforeTabIndex( beforeIndex );
 
-            Label item = new Label( text );
+            Label item = new Label( w.getPartTitle() );
             item.setWordWrap( false );
             Widget closableItem = makeClosableItem( w,
                                                     item );
@@ -183,7 +180,7 @@ public class WorkbenchTabPanel extends Composite
             }
         }
 
-        private Widget makeClosableItem(final Widget tabContent,
+        private Widget makeClosableItem(final WorkbenchPart tabContent,
                                         final Label tabLabel) {
             final HorizontalPanel hp = new HorizontalPanel();
             hp.add( tabLabel );
@@ -198,7 +195,8 @@ public class WorkbenchTabPanel extends Composite
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    remove( tabContent );
+                    CloseEvent.fire( tabContent,
+                                     tabContent );
                 }
 
             } );
@@ -368,7 +366,6 @@ public class WorkbenchTabPanel extends Composite
 
         // Delegate updates to the TabBar to our DeckPanel implementation
         deck.insertProtected( part,
-                              part.getPartTitle(),
                               beforeIndex );
     }
 
@@ -410,6 +407,16 @@ public class WorkbenchTabPanel extends Composite
 
         // Delegate updates to the TabBar to our DeckPanel implementation
         return deck.remove( index );
+    }
+
+    /**
+     * Checks if the workspace panel is in this container.
+     * 
+     * @param workbenchPart
+     * @return True, it is. False, it is not.
+     */
+    public boolean contains(WorkbenchPart workbenchPart) {
+        return getWidgetIndex( workbenchPart ) >= 0;
     }
 
     /**
@@ -497,13 +504,6 @@ public class WorkbenchTabPanel extends Composite
 
     @Override
     public void onResize() {
-        final Widget parent = getParent().getParent();
-        int width = parent.getElement().getOffsetWidth();
-        int height = parent.getElement().getOffsetHeight();
-        this.getElement().getStyle().setWidth( width,
-                                               Unit.PX );
-        this.getElement().getStyle().setHeight( height,
-                                                Unit.PX );
         for ( Widget child : this.deck.getChildren() ) {
             if ( child instanceof RequiresResize ) {
                 ((RequiresResize) child).onResize();
@@ -517,15 +517,6 @@ public class WorkbenchTabPanel extends Composite
         } else {
             focusIndicator.getElement().removeClassName( "workbenchFocusIndicatorHasFocus" );
         }
-    }
-
-    public String getCorrespondingTabLabel(final Widget w) {
-        for ( WorkbenchPart part : this.workbenchParts ) {
-            if ( part.getPartWidget().equals( w ) ) {
-                return part.getPartTitle();
-            }
-        }
-        throw new IllegalArgumentException( "TabbedDeckPanel does not contain widget." );
     }
 
 }
