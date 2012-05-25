@@ -514,22 +514,13 @@ public class WorkbenchTabPanel extends Composite
             }
         }
     }
-
+        
     public void setFocus(boolean hasFocus) {
         if ( hasFocus ) {
             focusIndicator.getElement().addClassName( "workbenchFocusIndicatorHasFocus" );
         } else {
             focusIndicator.getElement().removeClassName( "workbenchFocusIndicatorHasFocus" );
         }
-    }
-
-    public String getCorrespondingTabLabel(final Widget w) {
-        for ( WorkbenchPart part : this.workbenchParts ) {
-            if ( part.getPartWidget().equals( w ) ) {
-                return part.getPartTitle();
-            }
-        }
-        throw new IllegalArgumentException( "TabbedDeckPanel does not contain widget." );
     }
 
 }
