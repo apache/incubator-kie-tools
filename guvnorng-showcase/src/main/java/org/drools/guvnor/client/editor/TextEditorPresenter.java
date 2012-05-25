@@ -16,16 +16,22 @@
 
 package org.drools.guvnor.client.editor;
 
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.shared.ArtifactService;
-import org.jboss.errai.ioc.client.api.Caller;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.mvp.ScreenService;
+import org.drools.guvnor.vfs.VFSService;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+
 @Dependent
-public class TextEditorPresenter {
+public class TextEditorPresenter implements ScreenService {
+
+    @Inject View view;
+    @Inject Caller<VFSService> vfsServices;
+
     public interface View extends IsWidget {
 
         void setContent(String content);
@@ -38,11 +44,6 @@ public class TextEditorPresenter {
 
         boolean isDirty();
     }
-
-    @Inject
-    View view;
-    @Inject
-    Caller<ArtifactService> artifactService;
 
     public void doSave() {
 //        artifactService.call(new ResponseCallback() {
@@ -79,6 +80,15 @@ public class TextEditorPresenter {
 //                }
 //            }
 //        }).getArtifactContent(getInput().getId());
+        vfsServices.call(new RemoteCallback<String>() {
+            @Override public void callback(String response) {
+                if (response == null) {
+                    view.setContent("-- empty --");
+                } else {
+                    view.setContent(response);
+                }
+            }
+        }).readAllString(null);
     }
 
     //    @Override
@@ -94,5 +104,28 @@ public class TextEditorPresenter {
     public void setFocus() {
         view.setFocus();
     }
-    
+
+    @Override public void onStart() {
+        loadContent();
+    }
+
+    @Override public void onClose() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public boolean mayClose() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public void onReveal() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public void onHide() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public void mayOnHide() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

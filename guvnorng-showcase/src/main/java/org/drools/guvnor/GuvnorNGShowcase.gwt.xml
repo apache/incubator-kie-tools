@@ -21,8 +21,8 @@
    
 <!--      <inherits name="org.drools.guvnor.GuvnorCore"/>
  -->
-   <inherits name="org.drools.guvnor.GuvnorNGCore"/>
- 
+  <inherits name="org.drools.guvnor.GuvnorNGCore"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/Guvnor.css'/>
 

@@ -17,15 +17,18 @@
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
   <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
-  
+
   <!-- GWT-DnD module inherits -->
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+
+  <!-- VFS common interfaces -->
+  <inherits name="org.drools.java.nio.VFSCommon"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnorng-core.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
-  <source path='shared'/>
+  <source path='vfs'/>
 
 </module>

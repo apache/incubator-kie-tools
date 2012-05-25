@@ -28,9 +28,15 @@
     <uel.impl.version>2.1.2-b04</uel.impl.version>
   </properties>
 
-  
+
   <dependencies>
-  
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
     <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
     <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
@@ -40,20 +46,6 @@
       <artifactId>guava</artifactId>
       <version>12.0</version>
       <scope>compile</scope>
-    </dependency>
-  
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>3.6.0.v20100505</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.resources</artifactId>
-      <version>3.6.0.v20100526-0737</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -238,7 +230,7 @@
       <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>com.allen-sauer.gwt.dnd</groupId>
       <artifactId>gwt-dnd</artifactId>
@@ -1306,8 +1298,8 @@
       </dependencies>
     </profile>
   </profiles>
-  
-  
+
+
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
@@ -1318,7 +1310,7 @@
       </resource>
       <resource>
         <directory>src/main/resources</directory>
-      </resource>      
+      </resource>
     </resources>
 
     <plugins>

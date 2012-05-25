@@ -26,16 +26,25 @@
     <slf4j.version>1.6.1</slf4j.version>
     <uel.impl.version>2.1.2-b04</uel.impl.version>
   </properties>
-  
+
   <dependencies>
-  
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-impl</artifactId>
+    </dependency>
+
     <!-- Internal dependencies -->
     <!-- <dependency>
        <groupId>org.drools</groupId>
        <artifactId>guvnor-webapp-core</artifactId>
        <version>5.5.0-SNAPSHOT</version>
     </dependency> -->
-    
+
     <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
     <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
     <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
@@ -46,13 +55,12 @@
       <version>12.0</version>
       <scope>compile</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-core</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
@@ -1311,8 +1319,8 @@
       </dependencies>
     </profile>
   </profiles>
-  
-  
+
+
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
@@ -1323,7 +1331,7 @@
       </resource>
       <resource>
         <directory>src/main/resources</directory>
-      </resource>      
+      </resource>
     </resources>
 
     <plugins>
@@ -1333,7 +1341,7 @@
         <version>${gwt.maven.version}</version>
         <configuration>
           <module>org.drools.guvnor.FastCompiledGuvnorNGShowcase</module>
-        
+
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>

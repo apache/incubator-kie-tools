@@ -1,7 +1,8 @@
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.workbench.Workbench;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -11,35 +12,40 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.drools.guvnor.client.workbench.Position;
+import org.drools.guvnor.client.workbench.Workbench;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 public class PlaceManagerImpl
-        implements
-        PlaceManager {
+    implements
+    PlaceManager {
 
-    private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
+    private final Map<PlaceRequest, Activity>            activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
-    private ActivityMapper activityMapper;
+    private ActivityMapper                               activityMapper;
     @Inject
-    private PlaceRequestHistoryMapper historyMapper;
+    private PlaceRequestHistoryMapper                    historyMapper;
     @Inject
     private com.google.web.bindery.event.shared.EventBus eventBus;
-    private PlaceHistoryHandler placeHistoryHandler;
+    private PlaceHistoryHandler                          placeHistoryHandler;
 
     @Inject
-    private Workbench workbench;
-    PlaceRequest currentPlaceRequest;
+    private Workbench                                    workbench;
+    PlaceRequest                                         currentPlaceRequest;
 
     @PostConstruct
     public void init() {
         //PlaceRequestHistoryMapper historyMapper = new GuvnorNGPlaceRequestHistoryMapper();
-        placeHistoryHandler = new PlaceHistoryHandler(historyMapper);
-        placeHistoryHandler.register(this,
-                eventBus,
-                new PlaceRequest("NOWHERE"));
+        placeHistoryHandler = new PlaceHistoryHandler( historyMapper );
+        placeHistoryHandler.register( this,
+                                      eventBus,
+                                      new PlaceRequest( "NOWHERE" ) );
     }
 
     @Override
@@ -50,10 +56,10 @@ public class PlaceManagerImpl
 
     @Override
     public PlaceRequest getCurrentPlaceRequest() {
-        if (currentPlaceRequest != null) {
+        if ( currentPlaceRequest != null ) {
             return currentPlaceRequest;
         } else {
-            return new PlaceRequest("NOWHERE");
+            return new PlaceRequest( "NOWHERE" );
         }
     }
 /*
@@ -86,9 +92,9 @@ public class PlaceManagerImpl
                 } );
         updateHistory( newPlace );
     }*/
-
+    
     private void revealPlace(final PlaceRequest newPlace) {
-        final Activity activity = activityMapper.getActivity(newPlace);
+        final Activity activity = activityMapper.getActivity( newPlace );
 
         activity.revealPlace(
                 new AcceptItem() {
@@ -96,34 +102,25 @@ public class PlaceManagerImpl
                                     IsWidget widget) {
 
 
-                        WorkbenchPart workbenchPart = new WorkbenchPart(
-                                widget.asWidget(),
-                                tabTitle);
-
-                        workbenchPart.addCloseHandler(new CloseHandler<WorkbenchPart>() {
-                            @Override
-                            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
-                                PanelManager.getInstance().removeWorkbenchPart(workbenchPartCloseEvent.getTarget());
-                            }
-                        });
-
                         PanelManager.getInstance().addWorkbenchPanel(
-                                workbenchPart,
+                                new WorkbenchPart(
+                                        widget.asWidget(),
+                                        tabTitle),
                                 activity.getPreferredPosition());
                     }
-                });
-        updateHistory(newPlace);
+                } );
+        updateHistory( newPlace );
     }
-
+    
     public void updateHistory(PlaceRequest request) {
-        placeHistoryHandler.onPlaceChange(request);
+        placeHistoryHandler.onPlaceChange( request );
     }
 
     public void onClosePlace(@Observes ClosePlaceEvent closePlaceEvent) {
-        final Activity activity = activeActivities.get(closePlaceEvent.getPlaceRequest());
-        if (activity.mayStop()) {
+        final Activity activity = activeActivities.get( closePlaceEvent.getPlaceRequest() );
+        if ( activity.mayStop() ) {
             activity.onStop();
-            activeActivities.remove(closePlaceEvent.getPlaceRequest());
+            activeActivities.remove( closePlaceEvent.getPlaceRequest() );
             // TODO: How to do close?
             //            preferredContainer.close(closePlaceEvent.getPlaceRequest());
         }

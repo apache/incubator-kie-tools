@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* CSS for loading message at application Startup */
 #loading {
-	position: absolute;
+    position: absolute;
     left: 45%;
     top: 40%;
     padding: 2px;
@@ -56,7 +56,7 @@ code {
     font-size: small;
 }
 
-td,th {
+td, th {
     margin: 0;
     padding: 0;
 }
@@ -88,8 +88,7 @@ td,th {
 
 .successBar {
     border: 1px;
-    solid
-    #aa9;
+    solid #aa9;
 }
 
 select {
@@ -99,13 +98,13 @@ select {
     padding: 0 !important;
 }
 
-.model-builder-Background { #
-    -moz-border-radius: .7em; #
-    -webkit-border-radius: .7em; #
-    -khtml-border-radius: .7em; #
-    border-radius: .7em;
-    padding-left: .5em; #
-    border: 1px solid #ddd;
+.model-builder-Background {
+    # -moz-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # border-radius: .7em;
+    padding-left: .5em;
+    # border: 1px solid #ddd;
     background: #FFF;
 }
 
@@ -117,21 +116,21 @@ select {
 
 .model-builderInner-Background {
     border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc; #
-    -moz-border-radius: .7em; #
-    -khtml-border-radius: .7em; #
-    -webkit-border-radius: .7em; #
-    border-radius: .7em;
+    border-bottom: 1px solid #ccc;
+    # -moz-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # border-radius: .7em;
     background: #FFF;
 }
 
 .model-builderInnerInner-Background {
     border-top: 0 solid #ccc;
-    border-bottom: 0 solid #ccc; #
-    -moz-border-radius: .7em; #
-    -webkit-border-radius: .7em; #
-    -khtml-border-radius: .7em; #
-    border-radius: .7em;
+    border-bottom: 0 solid #ccc;
+    # -moz-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # border-radius: .7em;
     background: #FFF;
 }
 
@@ -149,7 +148,8 @@ select {
 }
 
 .ks-popups-Popup {
-    border: 6px solid #black; //# aa9;
+    border: 6px solid #black;
+/ / # aa9;
     -moz-border-radius: .7em;
     -webkit-border-radius: .7em;
     -khtml-border-radius: .7em;
@@ -158,8 +158,8 @@ select {
     background: #FFF;
 }
 
-.decision-Table-upload { #
-    border: 1px solid #aa9;
+.decision-Table-upload {
+    # border: 1px solid #aa9;
     background: #FFF;
 }
 
@@ -296,8 +296,8 @@ select {
     background: #f6f6f6;
 }
 
-.resource-name-Label { #
-    font-weight: 700;
+.resource-name-Label {
+    # font-weight: 700;
 }
 
 .infoProse {
@@ -336,7 +336,7 @@ button {
     background: #fff;
 }
 
-button:active,button:focus {
+button:active, button:focus {
     color: #FFF;
     border: 1px solid #444;
     background: #999;
@@ -355,7 +355,7 @@ textarea {
     background: #fefefe !important;
 }
 
-textarea:focus,textarea:active {
+textarea:focus, textarea:active {
     color: #000;
     border-color: #000 !important;
     background: #fff !important;
@@ -369,49 +369,48 @@ textarea:focus,textarea:active {
     cursor: pointer !important;
 }
 
-a,a:visited {
+a, a:visited {
     color: #00008B;
 }
 
-select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active
-    {
+select:focus, input:focus, input:active, .constraint-value-Editor:focus, .constraint-value-Editor:active {
     color: #000;
     border-color: #000 !important;
 }
 
-input,.constraint-value-Editor {
+input, .constraint-value-Editor {
     border: 1px solid #aa9;
     color: #666;
     border-color: #ccc !important;
     padding: 2px !important;
 }
 
-.ks-info,.ks-List .ks-SinkItem-selected a,.sinkitem {
+.ks-info, .ks-List .ks-SinkItem-selected a, .sinkitem {
     color: #FFF;
 }
 
-.editable-Surface,.package-Editor { #
-    border: 1px solid #aa9;
+.editable-Surface, .package-Editor {
+    # border: 1px solid #aa9;
     background: #white;
 }
 
-.dt-editor-DescriptionCell,.dt-editor-CountColumn {
+.dt-editor-DescriptionCell, .dt-editor-CountColumn {
     padding: 3px;
     background: #FFFFF0;
 }
 
-.dt-editor-DescriptionCell-selected,.dt-editor-CountColumn-selected {
+.dt-editor-DescriptionCell-selected, .dt-editor-CountColumn-selected {
     color: #FFF;
     padding: 3px;
     background: #aa9;
 }
 
-.rule-viewer-Documentation,.dsl-text-Editor,.default-text-Area {
+.rule-viewer-Documentation, .dsl-text-Editor, .default-text-Area {
     border: 1px solid #aa9;
     background: #FFFFF0;
 }
 
-.rule-ListEvenRow,.DatePicker .weekheader {
+.rule-ListEvenRow, .DatePicker .weekheader {
     background: #FFFFF0;
 }
 
@@ -423,7 +422,7 @@ input,.constraint-value-Editor {
     border-bottom: 1px solid #aa9;
 }
 
-.DatePicker,.DatePicker .cell .gwt-HTML,.DatePicker .day .gwt-HTML {
+.DatePicker, .DatePicker .cell .gwt-HTML, .DatePicker .day .gwt-HTML {
     border: 1px solid #aa9;
 }
 
@@ -530,8 +529,8 @@ input,.constraint-value-Editor {
 
 .icon-bar {
     width: 100%;
-    background-color: rgb(220,220,220);
-    border-top: 1px solid rgb(200,200,200);
+    background-color: rgb(220, 220, 220);
+    border-top: 1px solid rgb(200, 200, 200);
 }
 
 .icon-bar-item {
@@ -543,7 +542,7 @@ input,.constraint-value-Editor {
 }
 
 .icon-bar-item:hover {
-    background-color: rgb(180,180,180);
+    background-color: rgb(180, 180, 180);
 }
 
 a.serviceTab, a.serviceTab:link, a.serviceTab:visited {
@@ -566,25 +565,27 @@ a.serviceTab:active {
 
 /* Workbench styles */
 .workbenchFocusIndicator {
-	background-color: #4090e0;
-	height: 3px;
-	width: 100%;
+    background-color: #4090e0;
+    height: 3px;
+    width: 100%;
 }
 
 .workbenchFocusIndicatorHasFocus {
-	background-color: #e0f020;
+    background-color: #e0f020;
 }
 
 .workbenchTabPanelBottom {
-	overflow: hidden;
-	padding: 6px;
+    overflow: hidden;
+    padding: 6px;
+    width: 100%;
+    height: 100%;
 }
 
 .dropTarget-highlight {
-	z-index: 100000;
-	background-color: #a0a0e0;
-	opacity: 0.75;
-	filter: alpha(opacity =       75); /* For IE8 and earlier */
+    z-index: 100000;
+    background-color: #a0a0e0;
+    opacity: 0.75;
+    filter: alpha(opacity = 75); /* For IE8 and earlier */
 }
 
 /** Overridden GWT styles 

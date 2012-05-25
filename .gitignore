@@ -6,9 +6,9 @@
 /.*
 !.gitignore
 /nbproject
-/*.ipr
-/*.iws
-/*.iml
+*.ipr
+*.iws
+*.iml
 /guvnorng-core/src/main/webapp/WEB-INF/classes
 /guvnorng-showcase/src/main/webapp/WEB-INF/classes
 /guvnorng-core/target
