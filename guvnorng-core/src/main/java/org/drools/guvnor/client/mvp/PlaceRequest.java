@@ -39,6 +39,26 @@ public class PlaceRequest extends Place {
         return nameToken;
     }
 
+    public String getFullToken() {
+        StringBuilder token = new StringBuilder();
+        token.append(this.getNameToken());
+
+        if (this.getParameterNames().size() > 0) {
+            token.append("?");
+        }
+        for (String name : this.getParameterNames()) {
+            token.append(name).append("=")
+                    .append(this.getParameter(name, null));
+            token.append("&");
+        }
+        
+        if(token.length() != 0 && token.lastIndexOf("&")+1 == token.length()) {
+            token.deleteCharAt(token.length());           
+        }
+
+        return token.toString();
+    }
+    
     public String getParameter(String key, String defaultValue) {
         String value = null;
 
@@ -56,6 +76,10 @@ public class PlaceRequest extends Place {
         return parameters.keySet();
     }
     
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+    
     public PlaceRequest parameter(String name, String value) {
         this.parameters.put(name, value);
         return this;
@@ -71,16 +95,12 @@ public class PlaceRequest extends Place {
         if (o == null || getClass() != o.getClass()) return false;
 
         PlaceRequest placeRequest = (PlaceRequest) o;
-
-        if (nameToken != null ? !nameToken.equals(placeRequest.getNameToken()) : placeRequest.getNameToken() != null)
-            return false;
-
-        return true;
+        return getFullToken().equals(placeRequest.getFullToken());
     }
 
     @Override
     public int hashCode() {
-        return nameToken != null ? nameToken.hashCode() : 0;
+        return getFullToken() != null ? getFullToken().hashCode() : 0;
     }
 
 }

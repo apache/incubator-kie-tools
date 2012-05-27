@@ -2,6 +2,7 @@ package org.drools.guvnor.client.editor;
 
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.workbench.Position;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -10,6 +11,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
+@NameToken("MyAdminArea2")
 public class MyAdminAreaActivity2 implements Activity {
 
     @Inject

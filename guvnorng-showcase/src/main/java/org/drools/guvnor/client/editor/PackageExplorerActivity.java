@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.workbench.Position;
 
@@ -13,6 +14,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
+@NameToken("Package Explorer")
 public class PackageExplorerActivity implements Activity {
 
     private final PlaceManager placeManager;

@@ -26,10 +26,13 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Dependent
 public class GuvnorNGActivityMapperImpl implements ActivityMapper {
+    private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
     private IOCBeanManager manager;
@@ -49,4 +52,34 @@ public class GuvnorNGActivityMapperImpl implements ActivityMapper {
 
         return null;
     }
+    
+    //Not working yet with Errai
+    public Activity getActivity1(final PlaceRequest placeRequest) {
+        if (activeActivities.containsKey(placeRequest)) {
+            return activeActivities.get(placeRequest);
+        }
+
+        NameToken qual = new NameToken() {
+            public Class annotationType() {
+                return NameToken.class;
+            }
+
+            @Override
+            public String value() {
+                return placeRequest.getNameToken();
+            }
+        };
+
+        IOCBeanDef<Activity> bean = manager.lookupBean(Activity.class, qual);
+        Activity activity = (Activity) bean.getInstance();
+        activeActivities.put(placeRequest, activity);
+        return activity;
+    }
+    
+    public void removeActivity(final PlaceRequest placeRequest) {
+        Activity activity = activeActivities.remove(placeRequest);
+        activity.onStop();
+    }
+        
+    
 }
