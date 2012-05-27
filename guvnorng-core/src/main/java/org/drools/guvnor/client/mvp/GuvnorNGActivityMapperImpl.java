@@ -53,7 +53,7 @@ public class GuvnorNGActivityMapperImpl implements ActivityMapper {
         return null;
     }
     
-    //Not working yet with Errai
+    //Not working yet with Errai:https://community.jboss.org/thread/200255
     public Activity getActivity1(final PlaceRequest placeRequest) {
         if (activeActivities.containsKey(placeRequest)) {
             return activeActivities.get(placeRequest);
