@@ -20,14 +20,19 @@ import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManage
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -70,6 +75,20 @@ public class WorkbenchPanel extends ResizeComposite {
 
                                 },
                                 ClickEvent.getType() );
+
+        //When tab is selected ensure content is resized
+        tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
+
+            @Override
+            public void onSelection(SelectionEvent<Integer> event) {
+                final Widget w = tabPanel.getWidget( event.getSelectedItem() );
+                if ( w instanceof RequiresResize ) {
+                    scheduleResize( (RequiresResize) w );
+                }
+
+            }
+
+        } );
         return tabPanel;
     }
 
@@ -96,6 +115,17 @@ public class WorkbenchPanel extends ResizeComposite {
         } );
         fp.add( image );
         return fp;
+    }
+
+    private void scheduleResize(final RequiresResize widget) {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                widget.onResize();
+            }
+
+        } );
     }
 
     public void setFocus(boolean hasFocus) {

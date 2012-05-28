@@ -16,6 +16,10 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
-    <g:TextArea ui:field="fileContent"/>
+             xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+             xmlns:common="urn:import:org.drools.guvnor.client.editor">
+
+  <g:ResizeLayoutPanel>
+    <common:ResizableTextArea ui:field="fileContent"/>
+  </g:ResizeLayoutPanel>
 </ui:UiBinder>

@@ -26,3 +26,9 @@
 .guvnor-PopupTitleBar-close-button {
     padding: 2px 4px 0px 0px;
 }
+
+.gwt-TextArea {
+	border: 0px !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}

@@ -24,19 +24,24 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 
+/**
+ * A Text editor
+ */
 public class TextEditorView extends Composite
     implements
+    RequiresResize,
     TextEditorPresenter.View {
 
     @Inject
-    UiBinder<TextArea, TextEditorView> uiBinder;
+    UiBinder<ResizeLayoutPanel, TextEditorView> uiBinder;
 
     @UiField
-    public TextArea                    fileContent;
+    public ResizableTextArea                    fileContent;
 
-    private boolean                    isDirty = false;
+    private boolean                             isDirty = false;
 
     @PostConstruct
     public void init() {
@@ -71,6 +76,15 @@ public class TextEditorView extends Composite
     @Override
     public void setDirty(boolean dirty) {
         isDirty = dirty;
+    }
+
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize( width,
+                      height );
+        fileContent.onResize();
     }
 
 }
