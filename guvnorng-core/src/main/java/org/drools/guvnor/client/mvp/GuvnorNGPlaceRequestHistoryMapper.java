@@ -44,7 +44,7 @@ public class GuvnorNGPlaceRequestHistoryMapper implements PlaceRequestHistoryMap
         }
         
         if(token.length() != 0 && token.lastIndexOf("&")+1 == token.length()) {
-            token.deleteCharAt(token.length());           
+            token.deleteCharAt(token.length()-1);           
         }
 
         return token.toString();

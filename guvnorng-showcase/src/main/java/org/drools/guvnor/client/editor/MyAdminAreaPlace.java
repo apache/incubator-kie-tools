@@ -16,14 +16,21 @@
 
 package org.drools.guvnor.client.editor;
 
+import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.client.mvp.PlaceRequest;
+
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 
-public class MyAdminAreaPlace extends Place {
+public class MyAdminAreaPlace extends PlaceRequest implements IPlaceRequest {
 
     private String MY_ADMIN_AREA = "MyAdminArea";
-
+    
+    public MyAdminAreaPlace() {
+        super("MyAdminArea");
+    }
+    
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;

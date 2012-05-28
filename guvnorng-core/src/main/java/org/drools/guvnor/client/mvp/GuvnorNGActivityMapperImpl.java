@@ -25,9 +25,13 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Qualifier;
+
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 @Dependent
@@ -38,16 +42,29 @@ public class GuvnorNGActivityMapperImpl implements ActivityMapper {
     private IOCBeanManager manager;
 
     public Activity getActivity(final PlaceRequest placeRequest) {
-
+        if (activeActivities.containsKey(placeRequest)) {
+            return activeActivities.get(placeRequest);
+        }
+        
         Collection<IOCBeanDef> beans = manager.lookupBeans(Activity.class);
 
         // check to see if the bean exists
         for (IOCBeanDef activityBean : beans) {
             // get the instance of the activity
+            Set<Annotation> qualifiers = activityBean.getQualifiers();
+            for(Annotation q : qualifiers) {
+                if(q instanceof NameToken && ((NameToken)q).value().equalsIgnoreCase(placeRequest.getNameToken())) {
+                    Activity activity = (Activity) activityBean.getInstance();                    
+                    activeActivities.put(placeRequest, activity);
+                    return activity;
+                }
+            }
+/*            
             Activity activity = (Activity) activityBean.getInstance();
             if (activity.getNameToken().equals(placeRequest.getNameToken())) {
                 return activity;
-            }
+                
+            }*/
         }
 
         return null;
