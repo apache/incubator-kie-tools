@@ -21,37 +21,25 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  */
-public class WorkbenchPart extends Composite
+public class WorkbenchPart extends SimpleLayoutPanel
     implements
-    RequiresResize,
-    ProvidesResize,
     HasCloseHandlers<WorkbenchPart> {
 
     private String      title;
-
-    private Widget      widget;
-
-    private SimplePanel container = new SimplePanel();
-
-    public WorkbenchPart() {
-        initWidget( container );
-    }
+    private ScrollPanel sp = new ScrollPanel();
 
     public WorkbenchPart(final Widget widget,
                          final String title) {
-        this();
         this.title = title;
-        this.widget = widget;
-        container.setWidget( widget );
+        sp.setWidget( widget );
+        setWidget( sp );
 
         addCloseHandler( new CloseHandler<WorkbenchPart>() {
 
@@ -67,22 +55,20 @@ public class WorkbenchPart extends Composite
         return title;
     }
 
-    public Widget getPartWidget() {
-        return widget;
-    }
-
-    @Override
-    public void onResize() {
-        final Widget w = container.getWidget();
-        if ( w instanceof RequiresResize ) {
-            ((RequiresResize) w).onResize();
-        }
-    }
-
     @Override
     public HandlerRegistration addCloseHandler(CloseHandler<WorkbenchPart> handler) {
         return addHandler( handler,
                            CloseEvent.getType() );
+    }
+
+    @Override
+    public void onResize() {
+        final Widget parent = getParent();
+        if ( parent != null ) {
+            sp.setPixelSize( parent.getOffsetWidth(),
+                             parent.getOffsetHeight() );
+        }
+        super.onResize();
     }
 
 }

@@ -21,7 +21,7 @@ import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
@@ -33,7 +33,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -74,15 +75,15 @@ public class CompassDropController extends SimpleDropController {
         }
 
         final WorkbenchPart part = (WorkbenchPart) context.draggable;
-        final WorkbenchPanel panel = (WorkbenchPanel) (((ScrollPanel) getDropTarget()).getWidget());
+        final WorkbenchPanel panel = (WorkbenchPanel) (((SimpleLayoutPanel) getDropTarget()).getWidget());
         final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
-        final WorkbenchTabPanel wtp = workbenchContext.getOrigin();
+        final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
         //net effect. If we're trying to drop as a new tab there is no net effect.
         if ( wtp.getParent() == panel ) {
-            if ( wtp.getTabBar().getTabCount() == 1 ) {
+            if ( wtp.getWidgetCount() == 1 ) {
                 return;
             }
             if ( dropTargetHighlightPosition == Position.SELF ) {
@@ -90,7 +91,8 @@ public class CompassDropController extends SimpleDropController {
             }
         }
 
-        wtp.remove( part );
+        CloseEvent.fire( part,
+                         part );
         PanelManager.getInstance().addWorkbenchPanel( part,
                                                       panel,
                                                       dropTargetHighlightPosition );

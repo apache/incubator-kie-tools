@@ -15,19 +15,30 @@
  */
 package org.drools.guvnor.client.workbench;
 
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  */
 public class WorkbenchPanel extends ResizeComposite {
 
-    private final WorkbenchTabPanel tabPanel;
+    private static final int              TAB_BAR_HEIGHT = 32;
+
+    private final WorkbenchTabLayoutPanel tabPanel;
 
     public WorkbenchPanel() {
         this.tabPanel = makeTabPanel();
@@ -39,8 +50,15 @@ public class WorkbenchPanel extends ResizeComposite {
         addTab( part );
     }
 
-    private WorkbenchTabPanel makeTabPanel() {
-        final WorkbenchTabPanel tabPanel = new WorkbenchTabPanel();
+    public void addTab(final WorkbenchPart part) {
+        tabPanel.add( part,
+                      makeTabWidget( part ) );
+        tabPanel.selectTab( part );
+    }
+
+    private WorkbenchTabLayoutPanel makeTabPanel() {
+        final WorkbenchTabLayoutPanel tabPanel = new WorkbenchTabLayoutPanel( TAB_BAR_HEIGHT,
+                                                                              Unit.PX );
 
         //Clicking on the TabPanel takes focus
         tabPanel.addDomHandler( new ClickHandler() {
@@ -51,13 +69,33 @@ public class WorkbenchPanel extends ResizeComposite {
                                     }
 
                                 },
-                                 ClickEvent.getType() );
+                                ClickEvent.getType() );
         return tabPanel;
     }
 
-    public void addTab(final WorkbenchPart part) {
-        tabPanel.add( part );
-        tabPanel.selectTab( tabPanel.getTabBar().getTabCount() - 1 );
+    private Widget makeTabWidget(final WorkbenchPart part) {
+        final FlowPanel fp = new FlowPanel();
+        final InlineLabel tabLabel = new InlineLabel( part.getPartTitle() );
+        fp.add( tabLabel );
+
+        WorkbenchDragAndDropManager.getInstance().makeDraggable( part,
+                                                                 tabLabel );
+
+        final FocusPanel image = new FocusPanel();
+        image.getElement().getStyle().setFloat( Style.Float.RIGHT );
+
+        image.setStyleName( GuvnorResources.INSTANCE.guvnorCss().closeTabImage() );
+        image.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                CloseEvent.fire( part,
+                                 part );
+            }
+
+        } );
+        fp.add( image );
+        return fp;
     }
 
     public void setFocus(boolean hasFocus) {
@@ -65,11 +103,33 @@ public class WorkbenchPanel extends ResizeComposite {
     }
 
     public boolean contains(WorkbenchPart workbenchPart) {
-        return tabPanel.contains( workbenchPart );
+        return tabPanel.getWidgetIndex( workbenchPart ) >= 0;
     }
 
-    public boolean remove(WorkbenchPart workbenchPart) {
-        return tabPanel.remove( workbenchPart );
+    public boolean remove(WorkbenchPart part) {
+        final int indexOfTabToRemove = tabPanel.getWidgetIndex( part );
+        final int indexOfSelectedTab = tabPanel.getSelectedIndex();
+        final boolean removed = tabPanel.remove( part );
+
+        if ( removed ) {
+
+            if ( tabPanel.getWidgetCount() == 0 ) {
+                PanelManager.getInstance().removeWorkbenchPanel( this );
+            } else {
+                if ( indexOfSelectedTab == indexOfTabToRemove ) {
+                    tabPanel.selectTab( indexOfTabToRemove > 0 ? indexOfTabToRemove - 1 : 0 );
+                }
+            }
+        }
+        return removed;
+    }
+
+    @Override
+    public void onResize() {
+        final Widget parent = getParent();
+        setPixelSize( parent.getOffsetWidth(),
+                      parent.getOffsetHeight() );
+        super.onResize();
     }
 
 }

@@ -21,7 +21,7 @@ import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -32,8 +32,8 @@ public class HorizontalSplitterPanel extends ResizeComposite
     SplitPanel {
 
     private final WorkbenchSplitLayoutPanel slp                 = new WorkbenchSplitLayoutPanel();
-    private final ScrollPanel               eastWidgetContainer = new ScrollPanel();
-    private final ScrollPanel               westWidgetContainer = new ScrollPanel();
+    private final SimpleLayoutPanel         eastWidgetContainer = new SimpleLayoutPanel();
+    private final SimpleLayoutPanel         westWidgetContainer = new SimpleLayoutPanel();
 
     public HorizontalSplitterPanel(final WorkbenchPanel eastWidget,
                                    final WorkbenchPanel westWidget,
@@ -88,11 +88,9 @@ public class HorizontalSplitterPanel extends ResizeComposite
 
     @Override
     public void onResize() {
-        Widget parent = getParent();
-        int width = parent.getOffsetWidth();
-        int height = parent.getOffsetHeight();
-        this.setPixelSize( width,
-                           height );
+        final Widget parent = getParent();
+        setPixelSize( parent.getOffsetWidth(),
+                      parent.getOffsetHeight() );
         super.onResize();
     }
 

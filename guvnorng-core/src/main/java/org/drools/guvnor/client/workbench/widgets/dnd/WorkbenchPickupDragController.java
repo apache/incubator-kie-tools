@@ -17,10 +17,12 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
+import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,11 +43,29 @@ public class WorkbenchPickupDragController extends PickupDragController {
     @Override
     public void dragStart() {
         final WorkbenchPart part = (WorkbenchPart) super.context.selectedWidgets.get( 0 );
-        final WorkbenchTabPanel wtp = (WorkbenchTabPanel) part.getParent().getParent().getParent();
+        final WorkbenchTabLayoutPanel wtp = (WorkbenchTabLayoutPanel) part.getParent().getParent().getParent();
         final WorkbenchDragContext context = new WorkbenchDragContext( part,
                                                                        wtp );
         WorkbenchDragAndDropManager.getInstance().setWorkbenchContext( context );
         super.dragStart();
+        final Widget movablePanel = getMoveablePanel();
+        if ( movablePanel != null ) {
+            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
+                                            super.context.mouseX,
+                                            super.context.mouseY );
+        }
+
+    }
+
+    @Override
+    public void dragMove() {
+        super.dragMove();
+        final Widget movablePanel = getMoveablePanel();
+        if ( movablePanel != null ) {
+            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
+                                            super.context.mouseX,
+                                            super.context.mouseY );
+        }
     }
 
     @Override
@@ -54,13 +74,23 @@ public class WorkbenchPickupDragController extends PickupDragController {
         container.getElement().getStyle().setProperty( "overflow",
                                                        "visible" );
 
-        //context.draggable is the Widget, not the DragHandle so offset
-        final Widget parent = context.draggable.getParent().getParent();
-        int offsetY = parent.getAbsoluteTop() - context.draggable.getAbsoluteTop();
+        //Offset to centre of dragProxy
+        int offsetX = 0 - ((int) (dragProxy.getWidth() * 0.5));
+        int offsetY = 0 - ((int) (dragProxy.getWidth() * 1.5));
         container.add( dragProxy,
-                       0,
+                       offsetX,
                        offsetY );
         return container;
+    }
+
+    private Widget getMoveablePanel() {
+        for ( int index = 0; index < context.boundaryPanel.getWidgetCount(); index++ ) {
+            final Widget w = context.boundaryPanel.getWidget( index );
+            if ( w.getStyleName().equals( DragClientBundle.INSTANCE.css().movablePanel() ) ) {
+                return w;
+            }
+        }
+        return null;
     }
 
 }

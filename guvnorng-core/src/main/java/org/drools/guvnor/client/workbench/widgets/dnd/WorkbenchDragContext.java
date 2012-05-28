@@ -16,19 +16,19 @@
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
 
 /**
  * 
  */
 public class WorkbenchDragContext {
 
-    private final WorkbenchPart     part;
+    private final WorkbenchPart           part;
 
-    private final WorkbenchTabPanel origin;
+    private final WorkbenchTabLayoutPanel origin;
 
     public WorkbenchDragContext(final WorkbenchPart part,
-                                final WorkbenchTabPanel origin) {
+                                final WorkbenchTabLayoutPanel origin) {
         this.part = part;
         this.origin = origin;
     }
@@ -37,7 +37,7 @@ public class WorkbenchDragContext {
         return this.part;
     }
 
-    public WorkbenchTabPanel getOrigin() {
+    public WorkbenchTabLayoutPanel getOrigin() {
         return this.origin;
     }
 

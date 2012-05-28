@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -126,21 +127,41 @@ public class Workbench extends Composite {
                                                                           workbenchDropController );
 
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p1" ),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
                                                                          "p1" ),
                                                       workbenchRootPanel,
                                                       Position.SELF );
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p2" ),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
                                                                          "p2" ),
                                                       workbenchRootPanel,
                                                       Position.NORTH );
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new Label( "p3" ),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
                                                                          "p3" ),
                                                       workbenchRootPanel,
                                                       Position.WEST );
 
         //Set focus to root panel
         PanelManager.getInstance().setFocus( workbenchRootPanel );
+    }
+
+    private static class LabelWithSize extends VerticalPanel
+        implements
+        RequiresResize {
+
+        private Label label = new Label();
+
+        public LabelWithSize() {
+            setPixelSize( 200,
+                          200 );
+            getElement().getStyle().setBackgroundColor( "#90f0e0" );
+            add( label );
+        }
+
+        @Override
+        public void onResize() {
+            label.setText( "(w:" + getParent().getOffsetWidth() + ", h:" + getParent().getOffsetHeight() + ")" );
+        }
+
     }
 
 }
