@@ -46,7 +46,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 @EntryPoint
 public class HelloWorld {
     private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController(eventBus);
+/*    private final PlaceController placeController = new PlaceController(eventBus);*/
     
     @PostConstruct
     public void init() {
@@ -69,10 +69,10 @@ public class HelloWorld {
         historyHandler.register(placeController, eventBus, defaultPlace);
 */    }
 
-    @Produces
+/*    @Produces
     public PlaceController placeController() {
         return placeController;
-    }
+    }*/
 
     @Produces
     public EventBus eventBus() {

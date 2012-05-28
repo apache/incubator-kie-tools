@@ -30,6 +30,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.perspective.workspace.DefaultPlace;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
@@ -39,8 +42,9 @@ import org.jboss.errai.bus.client.framework.RequestDispatcher;
 public class MonitoringPerspectiveViewImpl extends Composite implements MonitoringPerspectivePresenter.MyView {
 
     @Inject private UiBinder<Widget, MonitoringPerspectiveViewImpl> uiBinder;
-
-    @Inject private PlaceController placeController;
+    
+    @Inject
+    private PlaceManager placeManager;
 
     @UiField public SpanElement userName;
 
@@ -63,7 +67,8 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
 
     @UiHandler("backWorkspace")
     public void backToWorkspace(ClickEvent e) {
-        placeController.goTo(new DefaultPlace());
+        PlaceRequest placeRequest = new PlaceRequest("AdminArea");
+        placeManager.goTo(placeRequest);
     }
 
     @UiHandler("callService")

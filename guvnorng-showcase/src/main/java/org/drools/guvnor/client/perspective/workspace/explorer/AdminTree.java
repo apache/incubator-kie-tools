@@ -18,7 +18,6 @@ package org.drools.guvnor.client.perspective.workspace.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.common.Util;
@@ -35,8 +34,6 @@ import java.util.Map;
 @Dependent
 public class AdminTree extends AbstractTree {
 
-    @Inject
-    private PlaceController placeController;
 
     @Inject
     private PlaceManager placeManager;
