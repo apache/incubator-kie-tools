@@ -24,44 +24,52 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
-import org.drools.guvnor.client.common.ResizableTextArea;
+import com.google.gwt.user.client.ui.TextArea;
 
-public class TextEditorView extends Composite implements TextEditorPresenter.View {
+public class TextEditorView extends Composite
+    implements
+    TextEditorPresenter.View {
 
-    @Inject UiBinder<Panel, TextEditorView> uiBinder;
-    @UiField public ResizableTextArea fileContent;
-    private boolean isDirty = false;
+    @Inject
+    UiBinder<TextArea, TextEditorView> uiBinder;
+
+    @UiField
+    public TextArea                    fileContent;
+
+    private boolean                    isDirty = false;
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        fileContent.addChangeHandler(new ChangeHandler() {
+        fileContent.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 isDirty = true;
             }
-        });
+        } );
 
     }
 
     public void setContent(final String content) {
-        fileContent.setText(content);
+        fileContent.setText( content );
     }
 
     public String getContent() {
         return fileContent.getText();
     }
 
-    @Override public void setFocus() {
-        fileContent.setFocus(true);
+    @Override
+    public void setFocus() {
+        fileContent.setFocus( true );
     }
 
-    @Override public boolean isDirty() {
+    @Override
+    public boolean isDirty() {
         return isDirty;
     }
 
-    @Override public void setDirty(boolean dirty) {
+    @Override
+    public void setDirty(boolean dirty) {
         isDirty = dirty;
     }
 
