@@ -16,16 +16,12 @@
 
 package org.drools.guvnor.client.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.AcceptItem;
-import org.drools.guvnor.client.mvp.Closable;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
-import org.drools.guvnor.client.mvp.Startable;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

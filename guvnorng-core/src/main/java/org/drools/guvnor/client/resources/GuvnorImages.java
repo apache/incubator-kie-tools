@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-/**
- * General CSS for Guvnor. Use of standalone CSS files should be migrated to
- * here
- */
-public interface GuvnorCss
+public interface GuvnorImages
         extends
-        CssResource {
+        ClientBundle {
 
-    String closeTabImage();
+    //TODO {manstis} Temporary for Workbench demo
+    @Source("images/gwt-logo.png")
+    ImageResource logo();
+
+    //DnD drag proxy
+    @Source("images/dragProxy.png")
+    ImageResource workbenchPanelDragProxy();
 
 }

@@ -22,8 +22,7 @@
     >
 
   <ui:with field="i18n" type="org.drools.guvnor.client.i18n.Constants"/>
-  <ui:with field='guvnorResources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
-  <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
+  <ui:with field='resources' type='org.drools.guvnor.client.resources.ShowcaseResources'/>
 
   <ui:style>
     .resetDockPanel > div {
@@ -32,12 +31,12 @@
   </ui:style>
 
   <gwt:VerticalPanel width="100%">
-    <gwt:HTMLPanel ui:field="titlePanel" styleName='{guvnorResources.headerCss.mainClass}'>
-      <div class='{guvnorResources.headerCss.logoClass}'>
-        <gwt:Image resource='{images.hdrlogoDrools}'/>
+    <gwt:HTMLPanel ui:field="titlePanel" styleName='{resources.showcaseCss.mainClass}'>
+      <div class='{resources.showcaseCss.logoClass}'>
+        <gwt:Image resource='{resources.showcaseImages.hdrlogoDrools}'/>
       </div>
-      <div class='{guvnorResources.headerCss.controlsClass}'>
-        <div class='{guvnorResources.headerCss.userInfoClass}'>
+      <div class='{resources.showcaseCss.controlsClass}'>
+        <div class='{resources.showcaseCss.userInfoClass}'>
           <small>
             <ui:text from='{i18n.WelcomeUser}'/>
             <span ui:field="userName"/>
@@ -49,7 +48,7 @@
       <div style="clear:both;"></div>
     </gwt:HTMLPanel>
     <gwt:HTMLPanel>
-      <gwt:Image resource='{images.monitoringScreenshot}'/>
+      <gwt:Image resource='{resources.showcaseImages.monitoringScreenshot}'/>
       <gwt:Button ui:field="backWorkspace">Back to Workspace</gwt:Button>
       <gwt:Button ui:field="callService">CallService</gwt:Button>
     </gwt:HTMLPanel>

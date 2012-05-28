@@ -17,16 +17,23 @@ package org.drools.guvnor.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-public interface GuvnorResources
+public interface ShowcaseResources
         extends
         ClientBundle {
 
-    GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
+    ShowcaseResources INSTANCE = GWT.create( ShowcaseResources.class );
 
-    @Source("css/Guvnor.css")
-    GuvnorCss guvnorCss();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Source("images/jbossrulesBlue.gif")
+    ImageResource jbossrulesBlue();
 
-    GuvnorImages guvnorImages();
+    @Source("css/Showcase.css")
+    ShowcaseCss showcaseCss();
+
+    ShowcaseImages showcaseImages();
 
 }

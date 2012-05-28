@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.client.perspective.workspace.explorer.AdminTree;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.core.client.GWT;
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
 public class NavigationPanel extends ResizeComposite {
 
     private Constants        constants = GWT.create( Constants.class );
-    private Images           images    = GWT.create( Images.class );
+    private ShowcaseImages   images    = GWT.create( ShowcaseImages.class );
 
     @Inject
     private IOCBeanManager   manager;

@@ -21,10 +21,23 @@ import com.google.gwt.resources.client.CssResource;
  * General CSS for Guvnor. Use of standalone CSS files should be migrated to
  * here
  */
-public interface GuvnorCss
+public interface ShowcaseCss
         extends
         CssResource {
+    
+    @ClassName("header")
+    String mainClass();
 
-    String closeTabImage();
+    @ClassName("userInfo")
+    String userInfoClass();
+
+    @ClassName("perspectives")
+    String perspectivesClass();
+
+    @ClassName("controls")
+    String controlsClass();
+
+    @ClassName("logo")
+    String logoClass();
 
 }

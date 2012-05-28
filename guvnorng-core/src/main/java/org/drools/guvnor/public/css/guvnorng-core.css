@@ -588,6 +588,15 @@ a.serviceTab:active {
     filter: alpha(opacity = 75); /* For IE8 and earlier */
 }
 
+.gwt-TabLayoutPanelContentContainer {
+	border: 0px !important;
+	padding: 2px !important;
+}
+	
+.gwt-TabLayoutPanelContent {
+	border: 0px !important;
+}
+
 /** Overridden GWT styles 
 .gwt-Frame {
     border: 0;

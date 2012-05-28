@@ -13,20 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-public interface GuvnorResources
+public interface ShowcaseImages
         extends
         ClientBundle {
 
-    GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
+    @Source("images/monitoring.png")
+    ImageResource monitoringScreenshot();
 
-    @Source("css/Guvnor.css")
-    GuvnorCss guvnorCss();
-
-    GuvnorImages guvnorImages();
+    @Source("images/hdrlogo_drools.gif")
+    ImageResource hdrlogoDrools();
+    
+    @Source("images/edit.gif")
+    ImageResource edit();
+    
+    @Source("images/new_item.gif")
+    ImageResource newItem();
+    
+    @Source("images/analyze.gif")
+    ImageResource analyze();
+    
+    @Source("images/information.gif")
+    ImageResource information();
+    
+    @Source("images/config.png")
+    ImageResource config();
 
 }

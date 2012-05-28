@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.ShowcaseImages;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -45,7 +45,7 @@ public class AdminTree extends AbstractTree {
     public static final String FILE2_ID = "MyHack2.hack";
 
     private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static ShowcaseImages images = GWT.create(ShowcaseImages.class);
 
     @PostConstruct
     public void init() {

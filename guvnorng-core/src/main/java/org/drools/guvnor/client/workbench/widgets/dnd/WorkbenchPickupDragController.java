@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WorkbenchPickupDragController extends PickupDragController {
 
-    private final Image dragProxy = new Image( GuvnorResources.INSTANCE.workbenchPanelDragProxy() );
+    private final Image dragProxy = new Image( GuvnorResources.INSTANCE.guvnorImages().workbenchPanelDragProxy() );
 
     public WorkbenchPickupDragController(final AbsolutePanel boundaryPanel) {
         super( boundaryPanel,

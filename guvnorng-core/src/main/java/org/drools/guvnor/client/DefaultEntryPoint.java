@@ -16,35 +16,35 @@
 
 package org.drools.guvnor.client;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.workbench.Workbench;
+import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.RoundedCornersResource;
-import org.drools.guvnor.client.workbench.Workbench;
-import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 @EntryPoint
 public class DefaultEntryPoint {
 
     @Inject
-    Workbench workbench;
+    Workbench                 workbench;
 
     private final SimplePanel appWidget = new SimplePanel();
 
     @PostConstruct
     public void init() {
-        RestClient.setApplicationRoot("/");
+        RestClient.setApplicationRoot( "/" );
 
-        appWidget.add(workbench);
+        appWidget.add( workbench );
 
     }
 
@@ -54,32 +54,30 @@ public class DefaultEntryPoint {
 
         hideLoadingPopup();
 
-        RootLayoutPanel.get().add(appWidget);
+        RootLayoutPanel.get().add( appWidget );
     }
 
     private void loadStyles() {
         //Ensure CSS has been loaded
         GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
-        GuvnorResources.INSTANCE.headerCss().ensureInjected();
-        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
     }
 
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get("loading").getElement();
+        final Element e = RootPanel.get( "loading" ).getElement();
 
         new Animation() {
 
             @Override
             protected void onUpdate(double progress) {
-                e.getStyle().setOpacity(1.0 - progress);
+                e.getStyle().setOpacity( 1.0 - progress );
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
+                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
             }
-        }.run(500);
+        }.run( 500 );
     }
 
 }
