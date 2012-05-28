@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.editor;
+package org.drools.guvnor.client.mvp;
 
 
 import java.io.UnsupportedEncodingException;
@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 
-import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceRequestHistoryMapper;
 
 import com.google.gwt.http.client.URL;
 
