@@ -16,9 +16,9 @@
 
 package org.drools.java.nio.file;
 
-import java.io.Closeable;
 import java.util.Set;
 
+import org.drools.java.nio.Closeable;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.attribute.UserPrincipalLookupService;
 import org.drools.java.nio.file.spi.FileSystemProvider;

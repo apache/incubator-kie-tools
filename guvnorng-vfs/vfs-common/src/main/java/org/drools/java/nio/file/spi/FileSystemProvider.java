@@ -54,6 +54,10 @@ import org.drools.java.nio.file.attribute.FileAttributeView;
  */
 public interface FileSystemProvider {
 
+    void forceAsDefault();
+
+    boolean isDefault();
+
     String getScheme();
 
     FileSystem newFileSystem(URI uri, Map<String, ?> env)

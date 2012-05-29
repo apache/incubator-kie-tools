@@ -23,8 +23,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -48,9 +51,11 @@ import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Path;
+import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
+import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.spi.FileSystemProvider;
 import org.drools.java.nio.fs.BasePath;
 
@@ -59,9 +64,20 @@ import static org.drools.java.nio.util.Preconditions.*;
 public class SimpleFileSystemProvider implements FileSystemProvider {
 
     private final SimpleFileSystem fileSystem;
+    private boolean isDefault;
 
     public SimpleFileSystemProvider() {
         this.fileSystem = new SimpleFileSystem(this);
+    }
+
+    @Override
+    public synchronized void forceAsDefault() {
+        this.isDefault = true;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return isDefault;
     }
 
     @Override public String getScheme() {
@@ -78,8 +94,9 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return fileSystem;
     }
 
-    @Override public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return new BasePath(getDefaultFileSystem(), uri.getPath(), true);
+    @Override
+    public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        return new BasePath(getDefaultFileSystem(), uri.getPath(), false);
     }
 
     @Override public FileSystem newFileSystem(final Path path, final Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
@@ -118,16 +135,95 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        final File file = checkNotNull("path", path).toFile();
+        if (file.exists()) {
+            throw new FileAlreadyExistsException("");
+        }
+        try {
+            file.createNewFile();
+            return new SeekableByteChannel() {
+                @Override public long position() throws IOException {
+                    return 0;
+                }
+
+                @Override public SeekableByteChannel position(long newPosition) throws IOException {
+                    return null;
+                }
+
+                @Override public long size() throws IOException {
+                    return 0;
+                }
+
+                @Override public SeekableByteChannel truncate(long size) throws IOException {
+                    return null;
+                }
+
+                @Override public int read(ByteBuffer dst) throws java.io.IOException {
+                    return 0;
+                }
+
+                @Override public int write(ByteBuffer src) throws java.io.IOException {
+                    return 0;
+                }
+
+                @Override public boolean isOpen() {
+                    return false;
+                }
+
+                @Override public void close() throws java.io.IOException {
+                }
+            };
+        } catch (java.io.IOException e) {
+            throw new IOException();
+        }
     }
 
-    @Override public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws NotDirectoryException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws NotDirectoryException, IOException, SecurityException {
+        final File file = checkNotNull("dir", dir).toFile();
+        if (!file.isDirectory()) {
+            throw new NotDirectoryException(dir.toString());
+        }
+        final File[] content = file.listFiles();
+        return new DirectoryStream<Path>() {
+
+            @Override
+            public void close() throws IOException {
+            }
+
+            @Override
+            public Iterator<Path> iterator() {
+                return new Iterator<Path>() {
+                    private int i = 0;
+
+                    @Override public boolean hasNext() {
+                        return i < content.length;
+                    }
+
+                    @Override public Path next() {
+                        if (i < content.length) {
+                            final File result = content[i];
+                            i++;
+                            return Paths.get(result.toURI());
+                        } else {
+                            throw new NoSuchElementException();
+                        }
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 
-    @Override public void createDirectory(final Path dir, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void createDirectory(final Path dir, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        checkNotNull("dir", dir).toFile().mkdirs();
     }
 
     @Override public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
@@ -138,12 +234,13 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
+        checkNotNull("path", path).toFile().delete();
     }
 
     @Override public boolean deleteIfExists(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return checkNotNull("path", path).toFile().delete();
     }
 
     @Override public Path readSymbolicLink(final Path link) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
@@ -183,14 +280,57 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     @Override public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
             throws UnsupportedOperationException, IOException, SecurityException {
         checkNotNull("path", path);
-        if (!path.toFile().exists()) {
+        final File file = path.toFile();
+        if (!file.exists()) {
             throw new NoSuchFileException(path.toString());
         }
+
+        if (type.equals(BasicFileAttributes.class)) {
+            return (A) new BasicFileAttributes() {
+
+                @Override public FileTime lastModifiedTime() {
+                    return null;
+                }
+
+                @Override public FileTime lastAccessTime() {
+                    return null;
+                }
+
+                @Override public FileTime creationTime() {
+                    return null;
+                }
+
+                @Override public boolean isRegularFile() {
+                    return file.isFile();
+                }
+
+                @Override public boolean isDirectory() {
+                    return file.isDirectory();
+                }
+
+                @Override public boolean isSymbolicLink() {
+                    return false;
+                }
+
+                @Override public boolean isOther() {
+                    return false;
+                }
+
+                @Override public long size() {
+                    return file.length();
+                }
+
+                @Override public Object fileKey() {
+                    return null;
+                }
+            };
+        }
+
         return null;
     }
 
     @Override public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new IOException();
     }
 
     @Override public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {

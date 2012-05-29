@@ -14,25 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.java.nio.file;
+package org.drools.java.nio;
 
-import org.drools.java.nio.IOException;
-import org.junit.Test;
+public interface Closeable extends java.io.Closeable {
 
-import static org.junit.Assert.*;
-
-public class TempFileTest {
-
-    @Test
-    public void createTempFile() {
-        try {
-            final Path file = Files.createTempFile("foo", null);
-            assertNotNull(file);
-            assertTrue(file.isAbsolute());
-            assertNotNull(file.toUri());
-        } catch (IOException e) {
-            fail("unexpected exception");
-        }
-    }
+    public void close() throws IOException;
 
 }

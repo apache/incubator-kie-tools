@@ -16,8 +16,9 @@
 
 package org.drools.java.nio.file;
 
-import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
+
+import org.drools.java.nio.Closeable;
 
 public interface WatchService extends Closeable {
 

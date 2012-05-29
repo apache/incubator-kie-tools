@@ -55,7 +55,7 @@ public final class SimpleFileSystem implements FileSystem {
 
     @Override
     public String getSeparator() {
-        return System.getProperty("path.separator", "/");
+        return System.getProperty("file.separator", "/");
     }
 
     @Override

@@ -16,8 +16,7 @@
 
 package org.drools.java.nio.file;
 
-import java.io.Closeable;
-
+import org.drools.java.nio.Closeable;
 import org.drools.java.nio.IOException;
 
 public interface DirectoryStream<T> extends Closeable, Iterable<T> {

@@ -58,6 +58,11 @@ public final class Files {
 
     private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
 
+    /**
+     * Maximum loop count when creating temp directories.
+     */
+    private static final int TEMP_DIR_ATTEMPTS = 10000;
+
     private Files() {
     }
 
@@ -318,10 +323,22 @@ public final class Files {
         throw new UnsupportedOperationException("feature not available");
     }
 
-    //TODO impl
+    //implemantation based on google's guava lib
     public static Path createTempDirectory(final String prefix, final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        throw new UnsupportedOperationException("feature not available");
+
+        final File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        final String baseName = prefix + "-" + System.currentTimeMillis() + "-";
+
+        for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
+            final File tempDir = new File(baseDir, baseName + counter);
+            if (tempDir.mkdir()) {
+                return Paths.get(tempDir.toURI());
+            }
+        }
+        throw new IllegalStateException("Failed to create directory within "
+                + TEMP_DIR_ATTEMPTS + " attempts (tried "
+                + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
     }
 
     //copying and moving
@@ -675,7 +692,9 @@ public final class Files {
     public static Path walkFileTree(final Path start, final Set<FileVisitOption> options,
             final int maxDepth, final FileVisitor<? super Path> visitor)
             throws IllegalArgumentException, SecurityException, IOException {
-        return null;
+        new FileTreeWalker(visitor, maxDepth).walk(start);
+
+        return start;
     }
 
     /**

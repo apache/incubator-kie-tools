@@ -60,6 +60,7 @@ public final class FileSystemProviders {
             for (int i = 0; i < installedProviders.size(); i++) {
                 final FileSystemProvider provider = installedProviders.get(i);
                 if (i == 0) {
+                    provider.forceAsDefault();
                     result.put("default", provider);
                 }
                 result.put(provider.getScheme(), provider);
