@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.shared.DirectoryStreamVO;
-import org.drools.guvnor.shared.ExtendedPathVO;
+import org.drools.guvnor.vfs.DirectoryStreamVO;
+import org.drools.guvnor.vfs.ExtendedPathVO;
 import org.drools.guvnor.vfs.VFSService;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.AtomicMoveNotSupportedException;

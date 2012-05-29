@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared;
+package org.drools.guvnor.vfs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
