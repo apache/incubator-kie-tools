@@ -16,6 +16,7 @@
 
 package org.drools.java.nio.file.spi;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -33,6 +34,7 @@ import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.ExtendedPath;
 import org.drools.java.nio.file.FileAlreadyExistsException;
 import org.drools.java.nio.file.FileStore;
 import org.drools.java.nio.file.FileSystem;
@@ -69,6 +71,9 @@ public interface FileSystemProvider {
     Path getPath(URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
 
+    ExtendedPath getExtendedPath(File result)
+            throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
+
     FileSystem newFileSystem(Path path, Map<String, ?> env)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException;
 
@@ -89,7 +94,7 @@ public interface FileSystemProvider {
             Set<? extends OpenOption> options, FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
-    DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter)
+    DirectoryStream<? extends Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter)
             throws NotDirectoryException, IOException, SecurityException;
 
     void createDirectory(Path dir, FileAttribute<?>... attrs)
@@ -139,4 +144,5 @@ public interface FileSystemProvider {
 
     void setAttribute(Path path, String attribute, Object value, LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException;
+
 }

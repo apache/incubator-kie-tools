@@ -40,6 +40,7 @@ import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.ExtendedPath;
 import org.drools.java.nio.file.FileAlreadyExistsException;
 import org.drools.java.nio.file.FileStore;
 import org.drools.java.nio.file.FileSystem;
@@ -99,8 +100,14 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return new BasePath(getDefaultFileSystem(), uri.getPath(), false);
     }
 
-    @Override public FileSystem newFileSystem(final Path path, final Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public ExtendedPath getExtendedPath(File result) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        return new BasePath(getDefaultFileSystem(), result);
+    }
+
+    @Override
+    public FileSystem newFileSystem(final Path path, final Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        return null;
     }
 
     @Override
@@ -181,32 +188,32 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws NotDirectoryException, IOException, SecurityException {
+    public DirectoryStream<? extends Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws NotDirectoryException, IOException, SecurityException {
         final File file = checkNotNull("dir", dir).toFile();
         if (!file.isDirectory()) {
             throw new NotDirectoryException(dir.toString());
         }
         final File[] content = file.listFiles();
-        return new DirectoryStream<Path>() {
+        return new DirectoryStream<ExtendedPath>() {
 
             @Override
             public void close() throws IOException {
             }
 
             @Override
-            public Iterator<Path> iterator() {
-                return new Iterator<Path>() {
+            public Iterator<ExtendedPath> iterator() {
+                return new Iterator<ExtendedPath>() {
                     private int i = 0;
 
                     @Override public boolean hasNext() {
                         return i < content.length;
                     }
 
-                    @Override public Path next() {
+                    @Override public ExtendedPath next() {
                         if (i < content.length) {
                             final File result = content[i];
                             i++;
-                            return Paths.get(result.toURI());
+                            return Paths.extend(result);
                         } else {
                             throw new NoSuchElementException();
                         }

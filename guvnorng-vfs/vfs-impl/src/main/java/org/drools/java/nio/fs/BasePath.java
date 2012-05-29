@@ -24,17 +24,19 @@ import java.util.regex.Pattern;
 
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.ClosedWatchServiceException;
+import org.drools.java.nio.file.ExtendedPath;
 import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.InvalidPathException;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.Path;
 import org.drools.java.nio.file.WatchKey;
 import org.drools.java.nio.file.WatchService;
+import org.drools.java.nio.file.attribute.FileTime;
 
 import static org.drools.java.nio.file.WatchEvent.*;
 import static org.drools.java.nio.util.Preconditions.*;
 
-public class BasePath implements Path {
+public class BasePath implements ExtendedPath {
 
     private static final Pattern PATH_PATTERN = Pattern.compile("\\\\|/");
 
@@ -46,6 +48,10 @@ public class BasePath implements Path {
     private final String root;
     private String toStringFormat;
 
+    private final boolean isFile;
+    private final boolean isDirectory;
+    private final boolean exists;
+
     public BasePath(final FileSystem fs, final String root) {
         checkNotNull("path", root);
         this.fs = checkNotNull("fs", fs);
@@ -55,6 +61,13 @@ public class BasePath implements Path {
         this.names = null;
         this.root = null;
         this.toStringFormat = root;
+        this.isFile = false;
+        this.isDirectory = true;
+        this.exists = true;
+    }
+
+    public BasePath(final FileSystem fs, final File file) {
+        this(fs, file.getAbsolutePath(), false);
     }
 
     public BasePath(final FileSystem fs, final String path, final boolean isRealPath) {
@@ -88,6 +101,26 @@ public class BasePath implements Path {
             this.root = null;
             this.names = PATH_PATTERN.split(workPath);
         }
+        boolean tempExists = false;
+        boolean tempIsDirectory = false;
+        boolean tempIsFile = false;
+
+        try {
+            final File temp = toFile();
+            tempExists = temp.exists();
+            if (tempExists) {
+                tempIsDirectory = temp.isDirectory();
+                tempIsFile = temp.isFile();
+            } else {
+                tempIsDirectory = false;
+                tempIsFile = false;
+            }
+        } catch (Exception ex) {
+        }
+
+        this.exists = tempExists;
+        this.isDirectory = tempIsDirectory;
+        this.isFile = tempIsFile;
     }
 
     public BasePath(final FileSystem fs, final String[] names, final String root, final boolean isAbsolute, final boolean isRealPath, final boolean usesWindowsFormat) {
@@ -97,6 +130,27 @@ public class BasePath implements Path {
         this.isRealPath = isRealPath;
         this.usesWindowsFormat = usesWindowsFormat;
         this.root = root;
+
+        boolean tempExists = false;
+        boolean tempIsDirectory = false;
+        boolean tempIsFile = false;
+
+        try {
+            final File temp = toFile();
+            tempExists = temp.exists();
+            if (tempExists) {
+                tempIsDirectory = temp.isDirectory();
+                tempIsFile = temp.isFile();
+            } else {
+                tempIsDirectory = false;
+                tempIsFile = false;
+            }
+        } catch (Exception ex) {
+        }
+
+        this.exists = tempExists;
+        this.isDirectory = tempIsDirectory;
+        this.isFile = tempIsFile;
     }
 
     @Override
@@ -136,7 +190,7 @@ public class BasePath implements Path {
 
     @Override
     public Path getName(int index) throws IllegalArgumentException {
-        return newPath();
+        return new BasePath(fs, names[index], false);
     }
 
     @Override
@@ -298,6 +352,56 @@ public class BasePath implements Path {
             }
         }
         return toStringFormat;
+    }
+
+    @Override
+    public boolean exists() {
+        return exists;
+    }
+
+    @Override
+    public FileTime lastModifiedTime() {
+        return null;
+    }
+
+    @Override
+    public FileTime lastAccessTime() {
+        return null;
+    }
+
+    @Override
+    public FileTime creationTime() {
+        return null;
+    }
+
+    @Override
+    public boolean isRegularFile() {
+        return isFile;
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return isDirectory;
+    }
+
+    @Override
+    public boolean isSymbolicLink() {
+        return false;
+    }
+
+    @Override
+    public boolean isOther() {
+        return false;
+    }
+
+    @Override
+    public long size() {
+        return -1;
+    }
+
+    @Override
+    public Object fileKey() {
+        return null;
     }
 
     private String getSeparator() {

@@ -147,7 +147,7 @@ public final class Files {
      * @throws SecurityException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#newDirectoryStream(java.nio.file.Path)">Original JavaDoc</a>
      */
-    public static DirectoryStream<Path> newDirectoryStream(final Path dir)
+    public static DirectoryStream<? extends Path> newDirectoryStream(final Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
         checkNotNull("dir", dir);
 
@@ -159,7 +159,7 @@ public final class Files {
     }
 
     //TODO impl
-    public static DirectoryStream<Path> newDirectoryStream(final Path dir, final String glob)
+    public static DirectoryStream<? extends Path> newDirectoryStream(final Path dir, final String glob)
             throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException, SecurityException {
         throw new UnsupportedOperationException("feature not available");
     }
@@ -171,7 +171,7 @@ public final class Files {
      * @throws SecurityException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#newDirectoryStream(java.nio.file.Path, java.nio.file.DirectoryStream.Filter)">Original JavaDoc</a>
      */
-    public static DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter)
+    public static DirectoryStream<? extends Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
         checkNotNull("dir", dir);
         checkNotNull("filter", filter);

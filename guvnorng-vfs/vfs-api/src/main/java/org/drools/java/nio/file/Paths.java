@@ -16,6 +16,7 @@
 
 package org.drools.java.nio.file;
 
+import java.io.File;
 import java.net.URI;
 
 import org.drools.java.nio.file.api.FileSystemProviders;
@@ -37,7 +38,11 @@ public final class Paths {
      */
     public static Path get(final String first, final String... more)
             throws IllegalArgumentException {
-        checkNotEmpty("first", first);
+        checkNotNull("first", first);
+
+        if (first.trim().length() == 0) {
+            return FileSystems.getDefault().getPath(first);
+        }
 
         URI uri = null;
         if (more == null) {
@@ -64,5 +69,14 @@ public final class Paths {
         checkNotNull("uri", uri);
 
         return FileSystemProviders.resolveProvider(uri).getPath(uri);
+    }
+
+    public static ExtendedPath extend(final Path path) {
+        checkNotNull("path", path);
+        return extend(path.toFile());
+    }
+
+    public static ExtendedPath extend(final File result) {
+        return FileSystemProviders.resolveProvider(result.toURI()).getExtendedPath(result);
     }
 }

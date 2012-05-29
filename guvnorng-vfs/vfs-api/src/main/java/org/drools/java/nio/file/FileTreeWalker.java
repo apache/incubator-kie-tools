@@ -63,7 +63,7 @@ class FileTreeWalker {
             return visitor.visitFile(file, attrs);
         }
 
-        DirectoryStream<Path> stream = null;
+        DirectoryStream<? extends Path> stream = null;
         FileVisitResult result;
 
         try {

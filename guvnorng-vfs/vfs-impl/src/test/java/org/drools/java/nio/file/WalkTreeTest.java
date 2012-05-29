@@ -163,6 +163,12 @@ public class WalkTreeTest {
 
         Files.walkFileTree(top, new SimpleFileVisitor<Path>() {
             @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                System.out.println("preVisitDirectory:" + dir.toString());
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 System.out.println("visitFile:" + file.toString());
                 Files.delete(file);
@@ -189,6 +195,43 @@ public class WalkTreeTest {
         });
 
         assertFalse(Files.exists(top));
+    }
+
+    @Test
+    public void simpleWalkerOverUserDir() {
+
+        final Path top = Paths.get(System.getProperty("user.home"));
+
+        for (Path paths : top) {
+            System.out.println("out:" + paths.toString());
+        }
+
+        Files.walkFileTree(top, null, 2, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                System.out.println("preVisitDirectory:" + dir.toString());
+                System.out.println("preVisitDirectory:getFileName:" + dir.getFileName().toString());
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                System.out.println("visitFile:" + file.toString());
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                System.out.println("visitFileFailed:" + file.toString());
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                System.out.println("postVisitDirectory:" + dir.toString());
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
 }
