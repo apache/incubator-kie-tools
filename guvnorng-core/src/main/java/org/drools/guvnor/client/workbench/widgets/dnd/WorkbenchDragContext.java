@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 /**
  * 

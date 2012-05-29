@@ -21,7 +21,7 @@ import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;

@@ -18,7 +18,7 @@ package org.drools.guvnor.client.workbench;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.widgets.panels.tabpanel;
+package org.drools.guvnor.client.workbench.widgets.panels;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.TabLayoutPanel;

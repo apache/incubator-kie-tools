@@ -17,7 +17,7 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.panels.tabpanel.WorkbenchTabLayoutPanel;
+import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;

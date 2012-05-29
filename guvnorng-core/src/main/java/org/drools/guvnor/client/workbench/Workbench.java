@@ -1,8 +1,11 @@
 package org.drools.guvnor.client.workbench;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import org.drools.guvnor.client.moshpit.DebugLabel;
+import org.drools.guvnor.client.moshpit.PositionSelectorPopup;
 import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
@@ -20,13 +23,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-@Dependent
+@Singleton
+@ApplicationScoped
 public class Workbench extends Composite {
 
     public static final int     WIDTH              = Window.getClientWidth();
@@ -127,41 +129,21 @@ public class Workbench extends Composite {
                                                                           workbenchDropController );
 
         //TODO {manstis} This needs to add the applicable Widgets for the Perspective
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
                                                                          "p1" ),
                                                       workbenchRootPanel,
                                                       Position.SELF );
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
                                                                          "p2" ),
                                                       workbenchRootPanel,
                                                       Position.NORTH );
-        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new LabelWithSize(),
+        PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
                                                                          "p3" ),
                                                       workbenchRootPanel,
                                                       Position.WEST );
 
         //Set focus to root panel
         PanelManager.getInstance().setFocus( workbenchRootPanel );
-    }
-
-    private static class LabelWithSize extends VerticalPanel
-        implements
-        RequiresResize {
-
-        private Label label = new Label();
-
-        public LabelWithSize() {
-            setPixelSize( 200,
-                          200 );
-            getElement().getStyle().setBackgroundColor( "#90f0e0" );
-            add( label );
-        }
-
-        @Override
-        public void onResize() {
-            label.setText( "(w:" + getParent().getOffsetWidth() + ", h:" + getParent().getOffsetHeight() + ")" );
-        }
-
     }
 
 }

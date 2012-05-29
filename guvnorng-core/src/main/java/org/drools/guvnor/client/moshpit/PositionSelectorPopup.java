@@ -13,9 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench;
+package org.drools.guvnor.client.moshpit;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.workbench.Position;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;

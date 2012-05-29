@@ -17,21 +17,17 @@
 package org.drools.guvnor.client.mvp;
 
 
-import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.mvp.ActivityMapper;
-import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Qualifier;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 
 @Dependent

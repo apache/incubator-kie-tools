@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.Workbench;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
@@ -23,14 +22,15 @@ public class PlaceManagerImpl
 
     @Inject
     private ActivityMapper                               activityMapper;
+    
     @Inject
     private PlaceRequestHistoryMapper                    historyMapper;
+    
     @Inject
     private com.google.web.bindery.event.shared.EventBus eventBus;
+    
     private PlaceHistoryHandler                          placeHistoryHandler;
 
-    @Inject
-    private Workbench                                    workbench;
     PlaceRequest                                         currentPlaceRequest;
 
     @PostConstruct

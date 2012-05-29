@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
@@ -19,11 +20,13 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 
-@Dependent
+@Singleton
+@ApplicationScoped
 public class GuvnorMenu extends Composite {
 
     @Inject
-    public GuvnorMenu(final IOCBeanManager manager) {
+    public GuvnorMenu(final IOCBeanManager manager,
+                      final PlaceManager placeManager) {
 
         Button add = new Button( "Add (mr. Rikkola)" );
 
@@ -44,7 +47,6 @@ public class GuvnorMenu extends Composite {
                 popup.addSelectionHandler( new SelectionHandler<IPlaceRequest>() {
                     @Override
                     public void onSelection(SelectionEvent<IPlaceRequest> event) {
-                        PlaceManager placeManager = manager.lookupBean( PlaceManager.class ).getInstance();
                         placeManager.goTo( event.getSelectedItem().getPlace() );
                     }
                 } );
