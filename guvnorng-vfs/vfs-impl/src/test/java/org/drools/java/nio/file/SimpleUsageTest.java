@@ -17,6 +17,8 @@
 package org.drools.java.nio.file;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -82,5 +84,16 @@ public class SimpleUsageTest {
             fail("shouldn't raise exception.");
         }
     }
+
+    @Test
+    public void whitespaceOnPath() throws IOException, URISyntaxException {
+        final Path file = Paths.get("/path", "to some folder", "file.txt");
+        assertEquals("default:///path/to%20some%20folder/file.txt", file.toUri().toString());
+
+        final Path file2 = Paths.get("default:///path/to%20some%20folder/file.txt");
+        assertEquals("default:///path/to%20some%20folder/file.txt", file2.toUri().toString());
+
+    }
+
 
 }

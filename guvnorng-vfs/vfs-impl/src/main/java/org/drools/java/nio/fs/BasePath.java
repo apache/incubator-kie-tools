@@ -18,6 +18,8 @@ package org.drools.java.nio.fs;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
@@ -47,6 +49,7 @@ public class BasePath implements ExtendedPath {
     private final String[] names;
     private final String root;
     private String toStringFormat;
+    private String toEncodedStringFormat;
 
     private final boolean isFile;
     private final boolean isDirectory;
@@ -61,6 +64,7 @@ public class BasePath implements ExtendedPath {
         this.names = null;
         this.root = null;
         this.toStringFormat = root;
+        this.toEncodedStringFormat = root;
         this.isFile = false;
         this.isDirectory = true;
         this.exists = true;
@@ -258,9 +262,17 @@ public class BasePath implements ExtendedPath {
     @Override
     public URI toUri() throws IOException, SecurityException {
         if (!isRealPath && fs.provider().isDefault()) {
-            return URI.create("default://" + toString());
+            try {
+                return new URI("default", "", toString(), null);
+            } catch (URISyntaxException e) {
+                return URI.create("default://" + toEncodedString());
+            }
         }
-        return URI.create(fs.provider().getScheme() + "://" + toString());
+        try {
+            return new URI(fs.provider().getScheme(), "", toString(), null);
+        } catch (URISyntaxException e) {
+            return URI.create(fs.provider().getScheme() + "://" + toEncodedString());
+        }
     }
 
     @Override
@@ -352,6 +364,28 @@ public class BasePath implements ExtendedPath {
             }
         }
         return toStringFormat;
+    }
+
+    public String toEncodedString() {
+        if (toEncodedStringFormat == null) {
+            synchronized (this) {
+                final StringBuilder sb = new StringBuilder();
+                if (getRoot() != null) {
+                    sb.append(((BasePath) getRoot()).toString());
+                }
+                if (names != null) {
+                    for (int i = 0; i < names.length; i++) {
+                        final String name = names[i];
+                        sb.append(URLEncoder.encode(name));
+                        if (i != (names.length - 1)) {
+                            sb.append(getSeparator());
+                        }
+                    }
+                }
+                toEncodedStringFormat = sb.toString();
+            }
+        }
+        return toEncodedStringFormat;
     }
 
     @Override

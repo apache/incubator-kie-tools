@@ -18,6 +18,7 @@ package org.drools.java.nio.file;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.drools.java.nio.file.api.FileSystemProviders;
 
@@ -45,15 +46,22 @@ public final class Paths {
         }
 
         URI uri = null;
-        if (more == null) {
+        if (more == null || more.length == 0) {
             try {
-                uri = URI.create(first);
-            } catch (IllegalArgumentException ex) {
-                uri = null;
+                uri = new URI(first);
+            } catch (URISyntaxException ex) {
+                try {
+                    uri = URI.create(first);
+                } catch (IllegalArgumentException e) {
+                    uri = null;
+                }
             }
         }
         if (uri != null) {
-            return get(uri);
+            try {
+                return get(uri);
+            } catch (Exception ex) {
+            }
         }
         return FileSystems.getDefault().getPath(first, more);
     }
