@@ -58,7 +58,7 @@ public class FileExplorerActivity implements Activity {
 
     @Override
     public String getNameToken() {
-        return "Package Explorer";
+        return "File Explorer";
     }
 
     @Override
@@ -131,7 +131,7 @@ public class FileExplorerActivity implements Activity {
                 final ExtendedPath path = (ExtendedPath) event.getSelectedItem().getUserObject();
                 if (path.isRegularFile()) {
                     PlaceRequest placeRequest = new PlaceRequest("TextEditor");
-                    placeRequest.parameter("path", path.toString());
+                    placeRequest.parameter("path", path.toUriAsString());
                     placeManager.goTo(placeRequest);
                 }
             }

@@ -20,6 +20,8 @@ import org.drools.java.nio.file.attribute.BasicFileAttributes;
 
 public interface ExtendedPath extends Path, BasicFileAttributes {
 
+    String toUriAsString();
+
     boolean exists();
 
 }

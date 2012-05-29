@@ -46,9 +46,12 @@ public class ExtendedPathVO implements ExtendedPath {
     private boolean isDirectory;
     private boolean isRegularFile;
     private List<ExtendedPathVO> names = new ArrayList<ExtendedPathVO>();
+    private String toUriStringFormat;
 
     public ExtendedPathVO(final ExtendedPath extendedPath) {
         this.toStringFormat = extendedPath.toString();
+        this.toUriStringFormat = extendedPath.toUriAsString();
+
         this.isAbsolute = extendedPath.isAbsolute();
         if (extendedPath.getRoot() != null) {
             if (extendedPath.getRoot() instanceof ExtendedPathVO) {
@@ -69,6 +72,12 @@ public class ExtendedPathVO implements ExtendedPath {
 
     public ExtendedPathVO(final Path path) {
         this.toStringFormat = path.toString();
+        if (path instanceof ExtendedPath) {
+            this.toUriStringFormat = ((ExtendedPath) path).toUriAsString();
+        } else {
+            this.toUriStringFormat = "";
+        }
+
         this.isAbsolute = path.isAbsolute();
         if (path.getRoot() != null) {
             if (path.getRoot() instanceof ExtendedPathVO) {
@@ -285,6 +294,11 @@ public class ExtendedPathVO implements ExtendedPath {
     @Override
     public String toString() {
         return toStringFormat;
+    }
+
+    @Override
+    public String toUriAsString() {
+        return toUriStringFormat;
     }
 
 }

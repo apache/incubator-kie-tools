@@ -355,6 +355,11 @@ public class BasePath implements ExtendedPath {
     }
 
     @Override
+    public String toUriAsString() {
+        return toUri().toString();
+    }
+
+    @Override
     public boolean exists() {
         return exists;
     }
