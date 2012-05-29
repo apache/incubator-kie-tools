@@ -317,7 +317,18 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public String readAllString(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException {
-        return "Hello\nWorld!";  //To change body of implemented methods use File | Settings | File Templates.
+
+        final Path realPath = Paths.get(((ExtendedPath) path).toUriAsString());
+
+        final List<String> result = Files.readAllLines(realPath, UTF_8);
+        if (result == null) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (final String s : result) {
+            sb.append(s).append('\n');
+        }
+        return sb.toString();
     }
 
     @Override

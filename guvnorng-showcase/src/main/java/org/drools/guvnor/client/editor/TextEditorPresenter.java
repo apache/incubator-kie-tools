@@ -19,18 +19,35 @@ package org.drools.guvnor.client.editor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.mvp.ScreenService;
+import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.java.nio.file.ExtendedPath;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 @Dependent
-public class TextEditorPresenter implements ScreenService {
+public class TextEditorPresenter implements EditorService {
 
     @Inject View view;
     @Inject Caller<VFSService> vfsServices;
+
+    ExtendedPath path = null;
+
+    @Override
+    public void onStart(final ExtendedPath path) {
+        this.path = path;
+        vfsServices.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(String response) {
+                if (response == null) {
+                    view.setContent("-- empty --");
+                } else {
+                    view.setContent(response);
+                }
+            }
+        }).readAllString(path);
+    }
 
     public interface View extends IsWidget {
 
@@ -46,79 +63,34 @@ public class TextEditorPresenter implements ScreenService {
     }
 
     public void doSave() {
-//        artifactService.call(new ResponseCallback() {
-//            @Override
-//            public void callback(Response response) {
-//                if (response.getStatusCode() == Response.SC_NO_CONTENT) {
-//                    view.setDirty(false);
-//                } else {
-//                    //error
-//                }
-//            }
-//        }).save(getInput().getId(), view.getContent());
+        vfsServices.call(new RemoteCallback<ExtendedPath>() {
+            @Override
+            public void callback(ExtendedPath response) {
+                view.setDirty(false);
+            }
+        }).write(path, view.getContent());
     }
 
-    //    @Override
+    @Override
     public boolean isDirty() {
         return view.isDirty();
     }
 
-    //    @Override
-    public void createPartControl(AcceptsOneWidget container) {
-        container.setWidget(view);
-        loadContent();
-    }
-
-    public void loadContent() {
-//        artifactService.call(new RemoteCallback<String>() {
-//            @Override
-//            public void callback(String content) {
-//                if (content != null) {
-//                    view.setContent(content);
-//                } else {
-//                    view.setContent("-- empty --");
-//                }
-//            }
-//        }).getArtifactContent(getInput().getId());
-        vfsServices.call(new RemoteCallback<String>() {
-            @Override public void callback(String response) {
-                if (response == null) {
-                    view.setContent("-- empty --");
-                } else {
-                    view.setContent(response);
-                }
-            }
-        }).readAllString(null);
-    }
-
-    //    @Override
-    public String getName() {
-        return "org.drools.guvnor.client.content.editor.TextEditor";
-    }
-
-    //    @Override
-    public void dispose() {
-    }
-
-    //    @Override
-    public void setFocus() {
-        view.setFocus();
-    }
-
-    @Override public void onStart() {
-        loadContent();
+    @Override
+    public void onStart() {
     }
 
     @Override public void onClose() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.path = null;
     }
 
     @Override public boolean mayClose() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public void onReveal() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void onReveal() {
+        view.setFocus();
     }
 
     @Override public void onHide() {
