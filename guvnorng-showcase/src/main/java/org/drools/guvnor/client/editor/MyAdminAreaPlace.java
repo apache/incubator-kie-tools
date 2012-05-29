@@ -16,13 +16,15 @@
 
 package org.drools.guvnor.client.editor;
 
+import javax.enterprise.context.Dependent;
+
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-
+@Dependent
 public class MyAdminAreaPlace extends PlaceRequest implements IPlaceRequest {
 
     private String MY_ADMIN_AREA = "MyAdminArea";
