@@ -64,7 +64,7 @@ public class BasePath implements ExtendedPath {
         this.names = null;
         this.root = null;
         this.toStringFormat = root;
-        this.toEncodedStringFormat = root;
+        this.toEncodedStringFormat = root.replace("\\", "/");
         this.isFile = false;
         this.isDirectory = true;
         this.exists = true;
@@ -371,14 +371,14 @@ public class BasePath implements ExtendedPath {
             synchronized (this) {
                 final StringBuilder sb = new StringBuilder();
                 if (getRoot() != null) {
-                    sb.append(((BasePath) getRoot()).toString());
+                    sb.append(((BasePath) getRoot()).toEncodedString());
                 }
                 if (names != null) {
                     for (int i = 0; i < names.length; i++) {
                         final String name = names[i];
                         sb.append(URLEncoder.encode(name));
                         if (i != (names.length - 1)) {
-                            sb.append(getSeparator());
+                            sb.append("/");
                         }
                     }
                 }

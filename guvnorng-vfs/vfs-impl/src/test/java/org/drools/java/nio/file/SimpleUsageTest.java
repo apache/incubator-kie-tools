@@ -93,6 +93,9 @@ public class SimpleUsageTest {
         final Path file2 = Paths.get("default:///path/to%20some%20folder/file.txt");
         assertEquals("default:///path/to%20some%20folder/file.txt", file2.toUri().toString());
 
+        final Path file3 = Paths.get("C:\\Users\\JLIU\\.android");
+        System.out.println(file3.toUri().toString());
+
     }
 
 
