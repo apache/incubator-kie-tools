@@ -16,11 +16,8 @@
 
 package org.drools.guvnor.client.mvp;
 
-import org.drools.java.nio.file.ExtendedPath;
 
 public interface EditorService extends ScreenService {
-
-    public void onStart(ExtendedPath path);
 
     public void doSave();
 

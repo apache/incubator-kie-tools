@@ -21,6 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.EditorService;
+import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.vfs.VFSService;
 import org.drools.java.nio.file.ExtendedPath;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -31,22 +33,29 @@ public class TextEditorPresenter implements EditorService {
 
     @Inject View view;
     @Inject Caller<VFSService> vfsServices;
-
+    @Inject private PlaceManager placeManager;
+    
     ExtendedPath path = null;
-
+    
     @Override
-    public void onStart(final ExtendedPath path) {
-        this.path = path;
-        vfsServices.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(String response) {
-                if (response == null) {
-                    view.setContent("-- empty --");
-                } else {
-                    view.setContent(response);
-                }
+    public void onStart() {
+        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        final String uriPath = placeRequest.getParameter("path", null);
+
+        vfsServices.call(new RemoteCallback<ExtendedPath>() {
+            @Override public void callback(ExtendedPath extendedPath) {
+                vfsServices.call(new RemoteCallback<String>() {
+                    @Override
+                    public void callback(String response) {
+                        if (response == null) {
+                            view.setContent("-- empty --");
+                        } else {
+                            view.setContent(response);
+                        }
+                    }
+                }).readAllString(path);
             }
-        }).readAllString(path);
+        }).get(uriPath);
     }
 
     public interface View extends IsWidget {
@@ -74,10 +83,6 @@ public class TextEditorPresenter implements EditorService {
     @Override
     public boolean isDirty() {
         return view.isDirty();
-    }
-
-    @Override
-    public void onStart() {
     }
 
     @Override public void onClose() {

@@ -5,16 +5,9 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.NameToken;
-import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.workbench.Position;
-import org.drools.guvnor.vfs.VFSService;
-import org.drools.java.nio.file.ExtendedPath;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 @Dependent
@@ -22,8 +15,6 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 public class TextEditorActivity implements Activity {
 
     @Inject private IOCBeanManager manager;
-    @Inject private PlaceManager placeManager;
-    @Inject private Caller<VFSService> vfsServices;
 
     private TextEditorPresenter presenter;
 
@@ -51,31 +42,20 @@ public class TextEditorActivity implements Activity {
         }
         return true;
     }
-
-    public void revealPlace(final AcceptItem acceptPanel) {
-        if (presenter == null) {
-            presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();
-            PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-            final String uriPath = placeRequest.getParameter("path", null);
-
-            vfsServices.call(new RemoteCallback<ExtendedPath>() {
-                @Override public void callback(ExtendedPath extendedPath) {
-                    if (presenter instanceof ScreenService) {
-                        ((ScreenService) presenter).onStart();
-                    }
-                    if (presenter instanceof EditorService) {
-                        ((EditorService) presenter).onStart(extendedPath);
-                    }
-
-                    //TODO: Get tab title (or an closable title bar widget).
-                    acceptPanel.add("TextEditor", presenter.view);
-                }
-            }).get(uriPath);
+    
+    public void revealPlace(AcceptItem acceptPanel) {
+        if(presenter == null) {
+            presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();        
+            if(presenter instanceof ScreenService) {
+                ((ScreenService) presenter).onStart();
+            }
+            //TODO: Get tab title (or an closable title bar widget).        
+            acceptPanel.add("MyAdminArea", presenter.view);   
         }
-
-//        if (presenter instanceof ScreenService) {
-//            ((ScreenService) presenter).onReveal();
-//        }
+        
+        if(presenter instanceof ScreenService) {
+            ((ScreenService) presenter).onReveal();
+        }  
     }
 
     /**
