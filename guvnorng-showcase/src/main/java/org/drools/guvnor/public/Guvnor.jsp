@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <!--
@@ -7,8 +7,8 @@
        Also, if you append #asset=UUID&nochrome it will only show the asset without all the GUI "chrome"
   -->
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
   <meta name="gwt:property" content="locale=<%=request.getLocale().toString()%>">
+  
   <title>JBoss Guvnor</title>
   <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
   <link rel="icon" href="images/drools.gif" type="image/gif"/>
