@@ -53,7 +53,7 @@ public class TextEditorPresenter implements EditorService {
                             view.setContent(response);
                         }
                     }
-                }).readAllString(path);
+                }).readAllString(extendedPath);
             }
         }).get(uriPath);
     }
