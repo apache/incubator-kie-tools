@@ -31,4 +31,24 @@ public interface GuvnorImages
     @Source("images/dragProxy.png")
     ImageResource workbenchPanelDragProxy();
 
+    //CompassDropController North arrow
+    @Source("images/compass-north.png")
+    ImageResource compassNorth();
+
+    //CompassDropController South arrow
+    @Source("images/compass-south.png")
+    ImageResource compassSouth();
+
+    //CompassDropController East arrow
+    @Source("images/compass-east.png")
+    ImageResource compassEast();
+
+    //CompassDropController West arrow
+    @Source("images/compass-west.png")
+    ImageResource compassWest();
+
+    //CompassDropController Centre
+    @Source("images/compass-centre.png")
+    ImageResource compassCentre();
+
 }

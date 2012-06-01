@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
-import java.util.TreeMap;
-
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -24,55 +22,52 @@ import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
-import com.allen_sauer.gwt.dnd.client.util.CoordinateArea;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A DragController covering the entire WorkbenchPanel that renders a Compass
+ * with which to select the target position of the drag operation.
  */
 public class CompassDropController extends SimpleDropController {
 
-    private static Element   dropTargetHighlight;
-
-    private static final int DROP_MARGIN                 = 64;
-
-    private Position         dropTargetHighlightPosition = Position.NONE;
+    private final CompassWidget compass = CompassWidget.getInstance();
 
     public CompassDropController(final WorkbenchPanel wbp) {
         super( wbp.getParent() );
+    }
 
-        if ( dropTargetHighlight == null ) {
-            dropTargetHighlight = Document.get().createDivElement();
-            dropTargetHighlight.getStyle().setPosition( Style.Position.ABSOLUTE );
-            dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
-            dropTargetHighlight.setClassName( "dropTarget-highlight" );
-            dropTargetHighlight.getStyle().setMargin( 0,
-                                                      Unit.PX );
-            dropTargetHighlight.getStyle().setPadding( 0,
-                                                       Unit.PX );
-            dropTargetHighlight.getStyle().setBorderWidth( 0,
-                                                           Unit.PX );
-            Document.get().getBody().appendChild( dropTargetHighlight );
-        }
+    @Override
+    //When entering a WorkbenchPanel show the Compass
+    public void onEnter(DragContext context) {
+        compass.onEnter( context );
+        super.onEnter( context );
+    }
+
+    @Override
+    //Hide the WorkbenchPanel's Compass
+    public void onLeave(DragContext context) {
+        compass.onLeave( context );
+        super.onLeave( context );
+    }
+
+    @Override
+    public void onMove(DragContext context) {
+        compass.onMove( context );
+        super.onMove( context );
     }
 
     @Override
     public void onDrop(DragContext context) {
 
         //If not dropTarget has been identified do nothing
-        if ( dropTargetHighlightPosition == Position.NONE ) {
+        Position p = compass.getDropPosition();
+        if ( p == Position.NONE ) {
             return;
         }
+
+        compass.onDrop( context );
 
         final WorkbenchPart part = (WorkbenchPart) context.draggable;
         final WorkbenchPanel panel = (WorkbenchPanel) (((SimpleLayoutPanel) getDropTarget()).getWidget());
@@ -86,7 +81,7 @@ public class CompassDropController extends SimpleDropController {
             if ( wtp.getWidgetCount() == 1 ) {
                 return;
             }
-            if ( dropTargetHighlightPosition == Position.SELF ) {
+            if ( p == Position.SELF ) {
                 return;
             }
         }
@@ -95,176 +90,7 @@ public class CompassDropController extends SimpleDropController {
                          part );
         PanelManager.getInstance().addWorkbenchPanel( part,
                                                       panel,
-                                                      dropTargetHighlightPosition );
-    }
-
-    @Override
-    public void onEnter(DragContext context) {
-        showDropTarget( context );
-        super.onEnter( context );
-    }
-
-    @Override
-    public void onLeave(DragContext context) {
-        hideDropTarget();
-        super.onLeave( context );
-    }
-
-    @Override
-    public void onMove(DragContext context) {
-        showDropTarget( context );
-        super.onMove( context );
-    }
-
-    @Override
-    public void onPreviewDrop(DragContext context) throws VetoDragException {
-        super.onPreviewDrop( context );
-    }
-
-    private void showDropTarget(final DragContext context) {
-        Position p = getPosition( context );
-        if ( dropTargetHighlightPosition == p ) {
-            return;
-        }
-        int x = 0;
-        int y = 0;
-        int width = 0;
-        int height = 0;
-        final Widget dropTargetParent = getDropTarget();
-        dropTargetHighlightPosition = p;
-        switch ( p ) {
-            case SELF :
-                x = dropTargetParent.getAbsoluteLeft();
-                y = dropTargetParent.getAbsoluteTop();
-                width = dropTargetParent.getOffsetWidth();
-                height = dropTargetParent.getOffsetHeight();
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
-                break;
-            case NORTH :
-                x = dropTargetParent.getAbsoluteLeft();
-                y = dropTargetParent.getAbsoluteTop();
-                width = dropTargetParent.getOffsetWidth();
-                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
-                break;
-            case SOUTH :
-                x = dropTargetParent.getAbsoluteLeft();
-                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
-                y = dropTargetParent.getOffsetHeight() + dropTargetParent.getAbsoluteTop() - height;
-                width = dropTargetParent.getOffsetWidth();
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
-                break;
-            case EAST :
-                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
-                x = dropTargetParent.getOffsetWidth() + dropTargetParent.getAbsoluteLeft() - width;
-                y = dropTargetParent.getAbsoluteTop();
-                height = dropTargetParent.getOffsetHeight();
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
-                break;
-            case WEST :
-                x = dropTargetParent.getAbsoluteLeft();
-                y = dropTargetParent.getAbsoluteTop();
-                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
-                height = dropTargetParent.getOffsetHeight();
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
-                break;
-            default :
-                hideDropTarget();
-        }
-    }
-
-    private void showDropTarget(int x,
-                                int y,
-                                int width,
-                                int height) {
-        dropTargetHighlight.getStyle().setLeft( x,
-                                                Unit.PX );
-        dropTargetHighlight.getStyle().setWidth( width,
-                                                 Unit.PX );
-        dropTargetHighlight.getStyle().setTop( y,
-                                               Unit.PX );
-        dropTargetHighlight.getStyle().setHeight( height,
-                                                  Unit.PX );
-        dropTargetHighlight.getStyle().setVisibility( Visibility.VISIBLE );
-        dropTargetHighlight.getStyle().setDisplay( Display.BLOCK );
-    }
-
-    private void hideDropTarget() {
-        dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
-        dropTargetHighlight.getStyle().setDisplay( Display.NONE );
-        dropTargetHighlightPosition = Position.NONE;
-    }
-
-    private Position getPosition(final DragContext context) {
-        int mx = context.mouseX;
-        int my = context.mouseY;
-        final Widget dropTargetParent = getDropTarget();
-        int cxmin = dropTargetParent.getElement().getAbsoluteLeft();
-        int cymin = dropTargetParent.getElement().getAbsoluteTop();
-        int cxmax = dropTargetParent.getElement().getAbsoluteRight();
-        int cymax = dropTargetParent.getElement().getAbsoluteBottom();
-
-        //Possible drop positions. TreeMap is sorted by it's Key hence the first
-        //entry will be the position to which the mouse pointer is closest
-        TreeMap<Integer, Position> possiblePositions = new TreeMap<Integer, Position>();
-
-        //Default is NONE. Since it has the maximum Integer value 
-        //it will always be last in the list of possibilities
-        possiblePositions.put( Integer.MAX_VALUE,
-                               Position.NONE );
-
-        //Centre position (self)
-        CoordinateArea ca = new CoordinateArea( cxmin,
-                                                cymin,
-                                                cxmax,
-                                                cymax );
-        if ( mx > ca.getCenter().getLeft() - DROP_MARGIN && mx < ca.getCenter().getLeft() + DROP_MARGIN ) {
-            if ( my > ca.getCenter().getTop() - DROP_MARGIN && my < ca.getCenter().getTop() + DROP_MARGIN ) {
-                return Position.SELF;
-            }
-        }
-
-        //Determine which other positions are candidates
-        int northDelta = my - cymin;
-        int southDelta = cymax - my;
-        int eastDelta = cxmax - mx;
-        int westDelta = mx - cxmin;
-
-        if ( northDelta <= DROP_MARGIN ) {
-            possiblePositions.put( northDelta,
-                                   Position.NORTH );
-        }
-        if ( southDelta <= DROP_MARGIN ) {
-            possiblePositions.put( southDelta,
-                                   Position.SOUTH );
-        }
-        if ( eastDelta <= DROP_MARGIN ) {
-            possiblePositions.put( eastDelta,
-                                   Position.EAST );
-        }
-        if ( westDelta <= DROP_MARGIN ) {
-            possiblePositions.put( westDelta,
-                                   Position.WEST );
-        }
-
-        //Return the first Value, i.e. lowest value. GWT doesn't support TreeMap.getFirstEntry()
-        Integer lowestKey = possiblePositions.firstKey();
-        return possiblePositions.get( lowestKey );
+                                                      p );
     }
 
 }

@@ -73,6 +73,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         AbsolutePanel container = new AbsolutePanel();
         container.getElement().getStyle().setProperty( "overflow",
                                                        "visible" );
+        container.getElement().getStyle().setOpacity( 0.75 );
+        container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         //Offset to centre of dragProxy
         int offsetX = 0 - ((int) (dragProxy.getWidth() * 0.5));
