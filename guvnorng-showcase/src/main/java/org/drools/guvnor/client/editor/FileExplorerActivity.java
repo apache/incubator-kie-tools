@@ -39,22 +39,22 @@ public class FileExplorerActivity implements Activity {
     }
 
     @Override
-    public String getNameToken() {
-        return "File Explorer";
-    }
-
-    @Override
     public void start() {
     }
-
-    @Override
-    public boolean mayStop() {
-        return true;
-    }
-
+    
     @Override
     public void onStop() {
-        //TODO: -Rikkola-
+        if ( presenter != null && presenter instanceof ScreenService ) {
+            ((ScreenService) presenter).onClose();
+        }
+    }
+    
+    @Override
+    public boolean mayStop() {
+        if ( presenter != null && presenter instanceof ScreenService ) {
+            return ((ScreenService) presenter).mayClose();
+        }
+        return true;
     }
 
     @Override
@@ -62,6 +62,7 @@ public class FileExplorerActivity implements Activity {
         return Position.WEST;
     }
     
+    @Override
     public void revealPlace(AcceptItem acceptPanel) {
         if(presenter == null) {
             presenter = manager.lookupBean(FileExplorerPresenter.class).getInstance();        
@@ -76,69 +77,28 @@ public class FileExplorerActivity implements Activity {
             ((ScreenService) presenter).onReveal();
         }  
     }
-/*    
-    public void revealPlace1(AcceptItem acceptPanel) {
-        final Tree tree = new Tree();
-        final TreeItem root = tree.addItem(Util.getHeader(images.openedFolder(), "Home"));
+    
+    /**
+     * True - Close the place False - Do not close the place
+     */
+    @Override
+    public boolean mayClosePlace() {
+        if ( presenter instanceof ScreenService ) {
+            return ((ScreenService) presenter).mayClose();
+        }
 
-        vfsService.call(new RemoteCallback<DirectoryStream<ExtendedPath>>() {
-            @Override
-            public void callback(DirectoryStream<ExtendedPath> response) {
-                for (final ExtendedPath path : response) {
-                    final TreeItem item;
-                    if (path.isDirectory()) {
-                        item = root.addItem(Util.getHeader(images.openedFolder(), path.getFileName().toString()));
-                        item.addItem(LAZY_LOAD);
-                    } else {
-                        item = root.addItem(Util.getHeader(images.file(), path.getFileName().toString()));
-                    }
-                    item.setUserObject(path);
-                }
-            }
-        }).newDirectoryStream();
-
-        tree.addOpenHandler(new OpenHandler<TreeItem>() {
-            @Override public void onOpen(final OpenEvent<TreeItem> event) {
-                if (needsLoading(event.getTarget())) {
-                    vfsService.call(new RemoteCallback<DirectoryStream<ExtendedPath>>() {
-                        @Override
-                        public void callback(DirectoryStream<ExtendedPath> response) {
-                            event.getTarget().getChild(0).remove();
-                            for (final ExtendedPath path : response) {
-                                final TreeItem item;
-                                if (path.isDirectory()) {
-                                    item = event.getTarget().addItem(Util.getHeader(images.openedFolder(), path.getFileName().toString()));
-                                    item.addItem(LAZY_LOAD);
-                                } else {
-                                    item = event.getTarget().addItem(Util.getHeader(images.file(), path.getFileName().toString()));
-                                }
-                                item.setUserObject(path);
-                            }
-                        }
-                    }).newDirectoryStream(event.getTarget().getUserObject().toString());
-                }
-
-            }
-        });
-
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-            @Override
-            public void onSelection(SelectionEvent<TreeItem> event) {
-                final ExtendedPath path = (ExtendedPath) event.getSelectedItem().getUserObject();
-                if (path.isRegularFile()) {
-                    PlaceRequest placeRequest = new PlaceRequest("TextEditor");
-                    placeRequest.parameter("path", path.toUriAsString());
-                    placeManager.goTo(placeRequest);
-                }
-            }
-        });
-
-        acceptPanel.add("File Explorer", tree);
+        return true;
     }
+    
+    @Override
+    public void closePlace() {
+        if ( presenter == null ) {
+            return;
+        }
 
-    private boolean needsLoading(TreeItem item) {
-        return item.getChildCount() == 1
-                && LAZY_LOAD.equals(item.getChild(0).getText());
-    }*/
-
+        if ( presenter instanceof ScreenService ) {
+            ((ScreenService) presenter).onClose();
+        }
+        presenter = null;
+    }
 }

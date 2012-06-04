@@ -96,11 +96,8 @@ public class PlaceManagerImpl
 
     public void onClosePlace(@Observes ClosePlaceEvent closePlaceEvent) {
         final Activity activity = activeActivities.get( closePlaceEvent.getPlaceRequest() );
-        if ( activity.mayStop() ) {
-            activity.onStop();
-            activeActivities.remove( closePlaceEvent.getPlaceRequest() );
-            // TODO: How to do close?
-            //            preferredContainer.close(closePlaceEvent.getPlaceRequest());
+        if ( activity.mayClosePlace() ) {
+            activity.closePlace();
         }
     }
 

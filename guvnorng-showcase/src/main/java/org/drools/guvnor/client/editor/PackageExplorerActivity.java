@@ -26,11 +26,6 @@ public class PackageExplorerActivity implements Activity {
     }
 
     @Override
-    public String getNameToken() {
-        return "Package Explorer";
-    }
-
-    @Override
     public void start() {
     }
 
@@ -78,5 +73,16 @@ public class PackageExplorerActivity implements Activity {
         });
 
         acceptPanel.add("Package Explorer", tree);
+    }
+
+    @Override
+    public boolean mayClosePlace() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public void closePlace() {
+        // TODO Auto-generated method stub        
     }
 }

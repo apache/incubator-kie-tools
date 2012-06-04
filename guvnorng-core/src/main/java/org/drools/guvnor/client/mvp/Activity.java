@@ -20,8 +20,6 @@ import org.drools.guvnor.client.workbench.Position;
 
 public interface Activity {
 
-    public String getNameToken();
-
     public void start();
 
     public boolean mayStop();
@@ -31,4 +29,8 @@ public interface Activity {
     public Position getPreferredPosition();
     
     public void revealPlace(AcceptItem acceptPanel);
+    
+    public boolean mayClosePlace();
+
+    public void closePlace();
 }

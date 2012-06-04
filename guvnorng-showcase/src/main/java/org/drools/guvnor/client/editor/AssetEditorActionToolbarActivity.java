@@ -62,6 +62,7 @@ public class AssetEditorActionToolbarActivity implements Activity {
     * True - Close the place
     * False - Do not close the place
     */
+    @Override
     public boolean mayClosePlace() {
         if(presenter instanceof ScreenService) {
             return ((ScreenService) presenter).mayClose();
@@ -70,6 +71,7 @@ public class AssetEditorActionToolbarActivity implements Activity {
         return true;
     }
     
+    @Override
     public void closePlace() {
         if(presenter == null) {
             return; 
@@ -79,9 +81,5 @@ public class AssetEditorActionToolbarActivity implements Activity {
             ((ScreenService) presenter).onClose();
         }  
         presenter = null;
-    }
-    
-    public String getNameToken() {
-        return "Toolbar";
     }
 }

@@ -32,18 +32,15 @@ public class TextEditorActivity
     @Override
     public void start() {
     }
-
+    
     @Override
-    public Position getPreferredPosition() {
-        return Position.SELF;
-    }
-
     public void onStop() {
         if ( presenter != null && presenter instanceof ScreenService ) {
             ((ScreenService) presenter).onClose();
         }
     }
-
+    
+    @Override
     public boolean mayStop() {
         if ( presenter != null && presenter instanceof ScreenService ) {
             return ((ScreenService) presenter).mayClose();
@@ -51,6 +48,12 @@ public class TextEditorActivity
         return true;
     }
 
+    @Override
+    public Position getPreferredPosition() {
+        return Position.SELF;
+    }
+    
+    @Override
     public void revealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = manager.lookupBean( TextEditorPresenter.class ).getInstance();
@@ -76,6 +79,7 @@ public class TextEditorActivity
     /**
      * True - Close the place False - Do not close the place
      */
+    @Override
     public boolean mayClosePlace() {
         if ( presenter instanceof ScreenService ) {
             return ((ScreenService) presenter).mayClose();
@@ -83,7 +87,8 @@ public class TextEditorActivity
 
         return true;
     }
-
+    
+    @Override
     public void closePlace() {
         if ( presenter == null ) {
             return;
@@ -93,9 +98,5 @@ public class TextEditorActivity
             ((ScreenService) presenter).onClose();
         }
         presenter = null;
-    }
-
-    public String getNameToken() {
-        return "TextEditor";
     }
 }
