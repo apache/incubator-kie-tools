@@ -19,85 +19,54 @@ package org.drools.guvnor.client.editor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
-import org.drools.guvnor.client.mvp.AcceptItem;
-import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.common.Util;
+import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
-import org.drools.guvnor.client.workbench.Position;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.drools.guvnor.client.resources.ShowcaseImages;
+import org.drools.guvnor.vfs.VFSService;
+import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.ExtendedPath;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 
 @Dependent
-@NameToken("File Explorer")
-public class FileExplorerActivity implements Activity {
+public class FileExplorerPresenter implements ScreenService {
 
-    private FileExplorerPresenter presenter;
-    @Inject
-    private IOCBeanManager manager;
+    @Inject View view;
+    @Inject Caller<VFSService> vfsService;
+    @Inject private PlaceManager placeManager;
+    private static ShowcaseImages images = GWT.create(ShowcaseImages.class);
+    private static final String LAZY_LOAD = "Loading...";
     
-    public FileExplorerActivity() {
-    }
-
     @Override
-    public String getNameToken() {
-        return "File Explorer";
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public boolean mayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //TODO: -Rikkola-
-    }
-
-    @Override
-    public Position getPreferredPosition() {
-        return Position.WEST;
-    }
-    
-    public void revealPlace(AcceptItem acceptPanel) {
-        if(presenter == null) {
-            presenter = manager.lookupBean(FileExplorerPresenter.class).getInstance();        
-            if(presenter instanceof ScreenService) {
-                ((ScreenService) presenter).onStart();
-            }
-            //TODO: Get tab title (or an closable title bar widget).        
-            acceptPanel.add("File Explorer", presenter.view);   
-        }
-        
-        if(presenter instanceof ScreenService) {
-            ((ScreenService) presenter).onReveal();
-        }  
-    }
-/*    
-    public void revealPlace1(AcceptItem acceptPanel) {
-        final Tree tree = new Tree();
-        final TreeItem root = tree.addItem(Util.getHeader(images.openedFolder(), "Home"));
-
+    public void onStart() {
         vfsService.call(new RemoteCallback<DirectoryStream<ExtendedPath>>() {
             @Override
             public void callback(DirectoryStream<ExtendedPath> response) {
                 for (final ExtendedPath path : response) {
                     final TreeItem item;
                     if (path.isDirectory()) {
-                        item = root.addItem(Util.getHeader(images.openedFolder(), path.getFileName().toString()));
+                        item = view.getRootItem().addItem(Util.getHeader(images.openedFolder(), path.getFileName().toString()));
                         item.addItem(LAZY_LOAD);
                     } else {
-                        item = root.addItem(Util.getHeader(images.file(), path.getFileName().toString()));
+                        item = view.getRootItem().addItem(Util.getHeader(images.file(), path.getFileName().toString()));
                     }
                     item.setUserObject(path);
                 }
             }
         }).newDirectoryStream();
 
-        tree.addOpenHandler(new OpenHandler<TreeItem>() {
+        view.getTree().addOpenHandler(new OpenHandler<TreeItem>() {
             @Override public void onOpen(final OpenEvent<TreeItem> event) {
                 if (needsLoading(event.getTarget())) {
                     vfsService.call(new RemoteCallback<DirectoryStream<ExtendedPath>>() {
@@ -121,7 +90,7 @@ public class FileExplorerActivity implements Activity {
             }
         });
 
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+        view.getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
                 final ExtendedPath path = (ExtendedPath) event.getSelectedItem().getUserObject();
@@ -132,13 +101,35 @@ public class FileExplorerActivity implements Activity {
                 }
             }
         });
-
-        acceptPanel.add("File Explorer", tree);
     }
 
+    public interface View extends IsWidget {
+        TreeItem getRootItem();
+        Tree getTree();
+    }
+
+    @Override public void onClose() {
+    }
+
+    @Override public boolean mayClose() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onReveal() {
+        //view.setFocus();
+    }
+
+    @Override public void onHide() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public void mayOnHide() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+    
     private boolean needsLoading(TreeItem item) {
         return item.getChildCount() == 1
                 && LAZY_LOAD.equals(item.getChild(0).getText());
-    }*/
-
+    }
 }
