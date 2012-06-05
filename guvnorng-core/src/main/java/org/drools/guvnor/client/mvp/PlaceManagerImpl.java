@@ -19,6 +19,7 @@ public class PlaceManagerImpl
         PlaceManager {
 
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
+    private final Map<PlaceRequest, WorkbenchPart> existingWorkbenchParts = new HashMap<PlaceRequest, WorkbenchPart>();
 
     @Inject
     private ActivityMapper activityMapper;
@@ -35,7 +36,6 @@ public class PlaceManagerImpl
 
     @PostConstruct
     public void init() {
-        //PlaceRequestHistoryMapper historyMapper = new GuvnorNGPlaceRequestHistoryMapper();
         placeHistoryHandler = new PlaceHistoryHandler(historyMapper);
         placeHistoryHandler.register(this,
                 eventBus,
@@ -57,44 +57,33 @@ public class PlaceManagerImpl
         }
     }
 
-    /*
-     * private void showExistingActivity(final PlaceRequest token) { //TODO: the
-     * requested view might have be dragged to other containers. How do we know
-     * where it is now? // preferredContainer.show(token); } private boolean
-     * isActivityAlreadyActive(final PlaceRequest token) { return
-     * activeActivities.keySet().contains( token ); } private void
-     * startNewActivity(final PlaceRequest newPlace) { final Activity activity =
-     * activityMapper.getActivity( newPlace ); activeActivities.put(newPlace,
-     * activity); activity.start( new AcceptItem() { public void add(String
-     * tabTitle, IsWidget widget) {
-     * PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart(
-     * widget.asWidget(), tabTitle), activity.getPreferredPosition()); } } );
-     * updateHistory( newPlace ); }
-     */
-
     private void revealPlace(final PlaceRequest newPlace) {
         final Activity activity = activityMapper.getActivity(newPlace);
+
+        activeActivities.put(newPlace, activity);
 
         activity.revealPlace(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
 
-                        WorkbenchPart workbenchPart = new WorkbenchPart(widget.asWidget(),
+                        WorkbenchPart workbenchPart = new WorkbenchPart(
+                                widget.asWidget(),
                                 tabTitle);
 
-                        workbenchPart.addCloseHandler(new CloseHandler<WorkbenchPart>() {
-                            @Override
-                            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
-                                if (activity.mayClosePlace()) {
-                                    activity.closePlace();
-                                    PanelManager.getInstance().removeWorkbenchPart(workbenchPartCloseEvent.getTarget());
-                                }
-                            }
+                        existingWorkbenchParts.put(newPlace, workbenchPart);
 
-                        });
+                        workbenchPart.addCloseHandler(
+                                new CloseHandler<WorkbenchPart>() {
+                                    @Override
+                                    public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
+                                        onClosePlace(new ClosePlaceEvent(newPlace));
+                                    }
 
-                        PanelManager.getInstance().addWorkbenchPanel(workbenchPart,
+                                });
+
+                        PanelManager.getInstance().addWorkbenchPanel(
+                                workbenchPart,
                                 activity.getPreferredPosition());
                     }
                 });
@@ -109,6 +98,7 @@ public class PlaceManagerImpl
         final Activity activity = activeActivities.get(closePlaceEvent.getPlaceRequest());
         if (activity.mayClosePlace()) {
             activity.closePlace();
+            PanelManager.getInstance().removeWorkbenchPart(existingWorkbenchParts.get(closePlaceEvent.getPlaceRequest()));
         }
     }
 
