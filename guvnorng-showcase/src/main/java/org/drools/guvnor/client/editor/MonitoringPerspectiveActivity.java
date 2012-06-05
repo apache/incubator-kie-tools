@@ -82,4 +82,14 @@ public class MonitoringPerspectiveActivity implements Activity {
         }  
         presenter = null;
     }
+
+    @Override
+    public void hide() {
+        //TODO: -Rikkola-
+    }
+
+    @Override
+    public void show() {
+        //TODO: -Rikkola-
+    }
 }

@@ -33,4 +33,8 @@ public interface Activity {
     public boolean mayClosePlace();
 
     public void closePlace();
+
+    public void hide();
+
+    public void show();
 }

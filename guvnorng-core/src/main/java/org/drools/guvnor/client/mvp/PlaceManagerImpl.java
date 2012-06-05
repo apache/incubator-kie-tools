@@ -2,8 +2,12 @@ package org.drools.guvnor.client.mvp;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import javax.annotation.PostConstruct;
@@ -81,6 +85,18 @@ public class PlaceManagerImpl
                                     }
 
                                 });
+                        workbenchPart.addWorkbenchPartHideHandler(new WorkbenchPartHideHandler() {
+                            @Override
+                            public void onHide(WorkbenchPartHideEvent event) {
+                                activity.hide();
+                            }
+                        });
+                        workbenchPart.addSelectionHandler(new SelectionHandler<WorkbenchPart>() {
+                            @Override
+                            public void onSelection(SelectionEvent<WorkbenchPart> workbenchPartSelectionEvent) {
+                                activity.show();
+                            }
+                        });
 
                         PanelManager.getInstance().addWorkbenchPanel(
                                 workbenchPart,

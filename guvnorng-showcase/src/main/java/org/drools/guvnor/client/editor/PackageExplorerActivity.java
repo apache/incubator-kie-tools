@@ -85,4 +85,14 @@ public class PackageExplorerActivity implements Activity {
     public void closePlace() {
         // TODO Auto-generated method stub        
     }
+
+    @Override
+    public void hide() {
+        //TODO: -Rikkola-
+    }
+
+    @Override
+    public void show() {
+        //TODO: -Rikkola-
+    }
 }

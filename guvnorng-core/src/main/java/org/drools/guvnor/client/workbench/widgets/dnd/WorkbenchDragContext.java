@@ -23,7 +23,7 @@ import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel
  */
 public class WorkbenchDragContext {
 
-    private final WorkbenchPart           part;
+    private final WorkbenchPart part;
 
     private final WorkbenchTabLayoutPanel origin;
 

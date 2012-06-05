@@ -15,31 +15,32 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.workbench.widgets.events.HasWorkbenchPartHideHandlers;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
 
 /**
- * 
+ *
  */
 public class WorkbenchPart extends SimpleLayoutPanel
-    implements
-    HasCloseHandlers<WorkbenchPart> {
+        implements
+        HasCloseHandlers<WorkbenchPart>,
+        HasSelectionHandlers<WorkbenchPart>,
+        HasWorkbenchPartHideHandlers {
 
-    private String      title;
+    private String title;
     private ScrollPanel sp = new ScrollPanel();
 
     public WorkbenchPart(final Widget widget,
                          final String title) {
         this.title = title;
-        sp.setWidget( widget );
-        setWidget( sp );
+        sp.setWidget(widget);
+        setWidget(sp);
 
 
     }
@@ -50,18 +51,34 @@ public class WorkbenchPart extends SimpleLayoutPanel
 
     @Override
     public HandlerRegistration addCloseHandler(CloseHandler<WorkbenchPart> handler) {
-        return addHandler( handler,
-                           CloseEvent.getType() );
+        return addHandler(
+                handler,
+                CloseEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addSelectionHandler(SelectionHandler<WorkbenchPart> handler) {
+        return addHandler(
+                handler,
+                SelectionEvent.getType()
+        );
+    }
+
+    @Override
+    public HandlerRegistration addWorkbenchPartHideHandler(WorkbenchPartHideHandler handler) {
+        return addHandler(
+                handler,
+                WorkbenchPartHideEvent.getType()
+        );
     }
 
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        if ( parent != null ) {
-            sp.setPixelSize( parent.getOffsetWidth(),
-                             parent.getOffsetHeight() );
+        if (parent != null) {
+            sp.setPixelSize(parent.getOffsetWidth(),
+                    parent.getOffsetHeight());
         }
         super.onResize();
     }
-
 }

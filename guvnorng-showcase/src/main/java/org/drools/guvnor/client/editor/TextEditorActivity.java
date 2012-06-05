@@ -99,4 +99,14 @@ public class TextEditorActivity
         }
         presenter = null;
     }
+
+    @Override
+    public void hide() {
+        //TODO: -Rikkola-
+    }
+
+    @Override
+    public void show() {
+        //TODO: -Rikkola-
+    }
 }

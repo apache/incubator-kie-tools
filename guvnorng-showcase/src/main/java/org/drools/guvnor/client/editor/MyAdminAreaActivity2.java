@@ -82,4 +82,14 @@ public class MyAdminAreaActivity2 implements Activity {
         }  
         presenter = null;
     }
+
+    @Override
+    public void hide() {
+        //TODO: -Rikkola-
+    }
+
+    @Override
+    public void show() {
+        //TODO: -Rikkola-
+    }
 }
