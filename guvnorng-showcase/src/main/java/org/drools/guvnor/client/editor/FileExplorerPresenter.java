@@ -112,7 +112,7 @@ public class FileExplorerPresenter implements ScreenService {
     }
 
     @Override public boolean mayClose() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
     @Override

@@ -41,14 +41,7 @@ public class WorkbenchPart extends SimpleLayoutPanel
         sp.setWidget( widget );
         setWidget( sp );
 
-        addCloseHandler( new CloseHandler<WorkbenchPart>() {
 
-            @Override
-            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
-                PanelManager.getInstance().removeWorkbenchPart( workbenchPartCloseEvent.getTarget() );
-            }
-
-        } );
     }
 
     public String getPartTitle() {
