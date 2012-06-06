@@ -24,7 +24,7 @@
   <inherits name="org.drools.guvnor.GuvnorNGCore"/>
 
   <!-- Specify the application specific style sheet. -->
-  <stylesheet src='css/Guvnor.css'/>
+  <stylesheet src='css/guvnorng-showcase.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

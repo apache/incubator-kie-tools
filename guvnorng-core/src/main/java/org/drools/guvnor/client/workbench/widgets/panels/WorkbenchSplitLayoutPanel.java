@@ -30,10 +30,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel that adds user-positioned splitters between each of its child
- * widgets. This is a fork of the standard SplitLayoutPanel with the following
- * changes:-
+ * widgets.
+ * <p>
+ * This is a fork of the standard SplitLayoutPanel with the following changes:-
  * 1) http://code.google.com/p/google-web-toolkit/issues/detail?id=7135
- * 
+ * </p>
  * <p>
  * This panel is used in the same way as {@link DockLayoutPanel}, except that
  * its children's sizes are always specified in {@link Unit#PX} units, and each

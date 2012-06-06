@@ -141,9 +141,6 @@ public class Workbench extends Composite {
                                                                          "p3" ),
                                                       workbenchRootPanel,
                                                       Position.WEST );
-
-        //Set focus to root panel
-        PanelManager.getInstance().setFocus( workbenchRootPanel );
     }
 
 }
