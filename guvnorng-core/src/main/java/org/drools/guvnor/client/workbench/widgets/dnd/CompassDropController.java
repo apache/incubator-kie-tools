@@ -24,7 +24,7 @@ import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * A DragController covering the entire WorkbenchPanel that renders a Compass
@@ -70,7 +70,7 @@ public class CompassDropController extends SimpleDropController {
         compass.onDrop( context );
 
         final WorkbenchPart part = (WorkbenchPart) context.draggable;
-        final WorkbenchPanel panel = (WorkbenchPanel) (((SimpleLayoutPanel) getDropTarget()).getWidget());
+        final WorkbenchPanel panel = (WorkbenchPanel) (((SimplePanel) getDropTarget()).getWidget());
         final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
         final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
 

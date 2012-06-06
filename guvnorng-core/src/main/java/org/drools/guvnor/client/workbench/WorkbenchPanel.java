@@ -42,7 +42,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WorkbenchPanel extends ResizeComposite {
 
-    private static final int              TAB_BAR_HEIGHT = 32;
+    private static final int              TAB_BAR_HEIGHT   = 32;
+
+    private static final int              FOCUS_BAR_HEIGHT = 3;
 
     private final WorkbenchTabLayoutPanel tabPanel;
 
@@ -64,6 +66,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
     private WorkbenchTabLayoutPanel makeTabPanel() {
         final WorkbenchTabLayoutPanel tabPanel = new WorkbenchTabLayoutPanel( TAB_BAR_HEIGHT,
+                                                                              FOCUS_BAR_HEIGHT,
                                                                               Unit.PX );
 
         //Clicking on the TabPanel takes focus

@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.workbench.widgets.panels;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.guvnor.client.workbench.Position;
@@ -49,6 +50,7 @@ public class PanelManager {
 
     public void addWorkbenchPanel(final WorkbenchPart part,
                                   final Position position) {
+        assertFocusPanel();
         addWorkbenchPanel( part,
                            this.focusPanel,
                            position );
@@ -58,6 +60,8 @@ public class PanelManager {
                                   final WorkbenchPanel targetPanel,
                                   final Position position) {
 
+        workbenchPanels.add( targetPanel );
+
         if ( position == Position.SELF ) {
             targetPanel.addTab( part );
             return;
@@ -65,7 +69,6 @@ public class PanelManager {
 
         final WorkbenchPanel newPanel = new WorkbenchPanel( part );
         workbenchPanels.add( newPanel );
-        workbenchPanels.add( targetPanel );
 
         switch ( position ) {
             case NORTH :
@@ -88,11 +91,10 @@ public class PanelManager {
                                 targetPanel );
                 break;
         }
+        setFocus( newPanel );
     }
 
     public void removeWorkbenchPanel(final WorkbenchPanel panel) {
-
-        workbenchPanels.remove( panel );
 
         //Find the position that needs to be deleted
         Position position = Position.NONE;
@@ -116,30 +118,49 @@ public class PanelManager {
         switch ( position ) {
             case NORTH :
                 helperNorth.remove( panel );
+                workbenchPanels.remove( panel );
                 break;
 
             case SOUTH :
                 helperSouth.remove( panel );
+                workbenchPanels.remove( panel );
                 break;
 
             case EAST :
                 helperEast.remove( panel );
+                workbenchPanels.remove( panel );
                 break;
 
             case WEST :
                 helperWest.remove( panel );
+                workbenchPanels.remove( panel );
                 break;
+        }
+
+        if ( this.focusPanel == panel ) {
+            this.focusPanel = null;
+            assertFocusPanel();
+            setFocus( this.focusPanel );
         }
     }
 
     public void setFocus(final WorkbenchPanel panel) {
-        if ( !this.workbenchPanels.contains( panel ) ) {
-            this.workbenchPanels.add( panel );
-        }
         for ( WorkbenchPanel wbp : this.workbenchPanels ) {
             wbp.setFocus( wbp == panel );
         }
         this.focusPanel = panel;
+    }
+
+    private void assertFocusPanel() {
+        if ( this.focusPanel == null ) {
+            final Iterator<WorkbenchPanel> iterator = this.workbenchPanels.iterator();
+            if ( iterator.hasNext() ) {
+                this.focusPanel = iterator.next();
+            }
+        }
+        if ( this.focusPanel == null ) {
+            throw new UnsupportedOperationException( "Unable to find a root WorkbenchPanel." );
+        }
     }
 
     public void removeWorkbenchPart(WorkbenchPart workbenchPart) {
