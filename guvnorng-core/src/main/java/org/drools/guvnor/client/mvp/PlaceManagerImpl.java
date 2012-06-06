@@ -1,11 +1,11 @@
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
+import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -77,13 +77,13 @@ public class PlaceManagerImpl
 
                         existingWorkbenchParts.put(newPlace, workbenchPart);
 
-                        workbenchPart.addCloseHandler(
-                                new CloseHandler<WorkbenchPart>() {
+
+                        workbenchPart.addActivityCloseHandler(
+                                new ActivityCloseHandler() {
                                     @Override
-                                    public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
+                                    public void onCloseActivity(ActivityCloseEvent event) {
                                         onClosePlace(new ClosePlaceEvent(newPlace));
                                     }
-
                                 });
                         workbenchPart.addWorkbenchPartHideHandler(new WorkbenchPartHideHandler() {
                             @Override
@@ -114,7 +114,8 @@ public class PlaceManagerImpl
         final Activity activity = activeActivities.get(closePlaceEvent.getPlaceRequest());
         if (activity.mayClosePlace()) {
             activity.closePlace();
-            PanelManager.getInstance().removeWorkbenchPart(existingWorkbenchParts.get(closePlaceEvent.getPlaceRequest()));
+            activeActivities.remove(activity);
+            existingWorkbenchParts.remove(closePlaceEvent.getPlaceRequest()).close();
         }
     }
 

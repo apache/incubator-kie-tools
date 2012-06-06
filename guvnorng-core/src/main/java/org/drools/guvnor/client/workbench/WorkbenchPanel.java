@@ -18,6 +18,7 @@ package org.drools.guvnor.client.workbench;
 import com.google.gwt.event.logical.shared.*;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
@@ -128,8 +129,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
             @Override
             public void onClick(ClickEvent event) {
-                CloseEvent.fire( part,
-                                 part );
+                ActivityCloseEvent.fire(part);
             }
 
         } );

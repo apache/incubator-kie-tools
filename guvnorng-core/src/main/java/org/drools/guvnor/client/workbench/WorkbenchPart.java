@@ -20,9 +20,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.workbench.widgets.events.HasWorkbenchPartHideHandlers;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
+import org.drools.guvnor.client.workbench.widgets.events.*;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 /**
  *
@@ -30,6 +29,7 @@ import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandle
 public class WorkbenchPart extends SimpleLayoutPanel
         implements
         HasCloseHandlers<WorkbenchPart>,
+        HasCloseActivityHandlers,
         HasSelectionHandlers<WorkbenchPart>,
         HasWorkbenchPartHideHandlers {
 
@@ -43,6 +43,18 @@ public class WorkbenchPart extends SimpleLayoutPanel
         setWidget(sp);
 
 
+        addCloseHandler( new CloseHandler<WorkbenchPart>() {
+
+            @Override
+            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
+                close();
+            }
+
+        } );
+    }
+
+    public void close() {
+        PanelManager.getInstance().removeWorkbenchPart( this );
     }
 
     public String getPartTitle() {
@@ -54,6 +66,13 @@ public class WorkbenchPart extends SimpleLayoutPanel
         return addHandler(
                 handler,
                 CloseEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addActivityCloseHandler(ActivityCloseHandler handler) {
+        return addHandler(
+                handler,
+                ActivityCloseEvent.getType());
     }
 
     @Override
