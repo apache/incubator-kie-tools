@@ -208,7 +208,6 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
                             final File result = content[i];
                             i++;
                             return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
-                            //return Paths.extend(result);
                         } else {
                             throw new NoSuchElementException();
                         }

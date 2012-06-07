@@ -28,7 +28,7 @@ import org.drools.java.nio.file.PathMatcher;
 import org.drools.java.nio.file.WatchService;
 import org.drools.java.nio.file.attribute.UserPrincipalLookupService;
 import org.drools.java.nio.file.spi.FileSystemProvider;
-import org.drools.java.nio.fs.BasePath;
+import org.drools.java.nio.fs.base.GeneralPathImpl;
 
 public final class JGitFileSystem implements FileSystem {
 
@@ -77,7 +77,7 @@ public final class JGitFileSystem implements FileSystem {
     @Override
     public Path getPath(String first, String... more) throws InvalidPathException {
         if (more == null) {
-            return new BasePath(this, first, false);
+            return GeneralPathImpl.create(this, first, false);
         }
         final StringBuilder sb = new StringBuilder();
         sb.append(first);
@@ -89,7 +89,7 @@ public final class JGitFileSystem implements FileSystem {
                 sb.append(segment);
             }
         }
-        return new BasePath(this, sb.toString(), false);
+        return GeneralPathImpl.create(this, sb.toString(), false);
     }
 
     @Override

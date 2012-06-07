@@ -40,7 +40,6 @@ import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.ExtendedPath;
 import org.drools.java.nio.file.FileAlreadyExistsException;
 import org.drools.java.nio.file.FileStore;
 import org.drools.java.nio.file.FileSystem;
@@ -52,13 +51,12 @@ import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Path;
-import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.spi.FileSystemProvider;
-import org.drools.java.nio.fs.BasePath;
+import org.drools.java.nio.fs.base.GeneralPathImpl;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevTree;
@@ -102,12 +100,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return new BasePath(getDefaultFileSystem(), uri.getPath(), false);
-    }
-
-    @Override
-    public ExtendedPath getExtendedPath(File result) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return new BasePath(getDefaultFileSystem(), result);
+        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
     }
 
     @Override
@@ -193,7 +186,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public DirectoryStream<? extends Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws NotDirectoryException, IOException, SecurityException {
+    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
         try {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repository = builder.setGitDir(new File("D:\\svn\\drools\\guvnorngnew"))
@@ -216,26 +209,26 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             throw new NotDirectoryException(dir.toString());
         }
         final File[] content = file.listFiles();
-        return new DirectoryStream<ExtendedPath>() {
+        return new DirectoryStream<Path>() {
 
             @Override
             public void close() throws IOException {
             }
 
             @Override
-            public Iterator<ExtendedPath> iterator() {
-                return new Iterator<ExtendedPath>() {
+            public Iterator<Path> iterator() {
+                return new Iterator<Path>() {
                     private int i = 0;
 
                     @Override public boolean hasNext() {
                         return i < content.length;
                     }
 
-                    @Override public ExtendedPath next() {
+                    @Override public Path next() {
                         if (i < content.length) {
                             final File result = content[i];
                             i++;
-                            return Paths.extend(result);
+                            return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
                         } else {
                             throw new NoSuchElementException();
                         }
