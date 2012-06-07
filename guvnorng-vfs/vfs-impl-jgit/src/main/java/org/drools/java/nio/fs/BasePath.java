@@ -398,6 +398,18 @@ public class BasePath implements ExtendedPath {
         return exists;
     }
 
+    @Override public boolean isReadable() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public boolean isWritable() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override public boolean isHidden() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     @Override
     public FileTime lastModifiedTime() {
         return null;

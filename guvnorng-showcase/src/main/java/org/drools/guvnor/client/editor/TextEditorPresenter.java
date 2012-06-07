@@ -23,40 +23,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.vfs.Paths;
+import org.drools.guvnor.vfs.SimplePath;
 import org.drools.guvnor.vfs.VFSService;
-import org.drools.java.nio.file.ExtendedPath;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 @Dependent
 public class TextEditorPresenter implements EditorService {
-
-    @Inject View view;
-    @Inject Caller<VFSService> vfsServices;
-    @Inject private PlaceManager placeManager;
-    
-    ExtendedPath path = null;
-    
-    @Override
-    public void onStart() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String uriPath = placeRequest.getParameter("path", null);
-
-        vfsServices.call(new RemoteCallback<ExtendedPath>() {
-            @Override public void callback(ExtendedPath extendedPath) {
-                vfsServices.call(new RemoteCallback<String>() {
-                    @Override
-                    public void callback(String response) {
-                        if (response == null) {
-                            view.setContent("-- empty --");
-                        } else {
-                            view.setContent(response);
-                        }
-                    }
-                }).readAllString(extendedPath);
-            }
-        }).get(uriPath);
-    }
 
     public interface View extends IsWidget {
 
@@ -71,10 +46,35 @@ public class TextEditorPresenter implements EditorService {
         boolean isDirty();
     }
 
-    public void doSave() {
-        vfsServices.call(new RemoteCallback<ExtendedPath>() {
+    @Inject View view;
+    @Inject Caller<VFSService> vfsServices;
+    @Inject private PlaceManager placeManager;
+
+    SimplePath path = null;
+
+    @Override
+    public void onStart() {
+        //i believe that editor should receive the path as parameter of start! - porcelli
+        final PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        final String uri = placeRequest.getParameter("path", null);
+        path = Paths.fromURI(uri);
+
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback(ExtendedPath response) {
+            public void callback(String response) {
+                if (response == null) {
+                    view.setContent("-- empty --");
+                } else {
+                    view.setContent(response);
+                }
+            }
+        }).readAllString(path);
+    }
+
+    public void doSave() {
+        vfsServices.call(new RemoteCallback<Path>() {
+            @Override
+            public void callback(Path response) {
                 view.setDirty(false);
             }
         }).write(path, view.getContent());
@@ -85,12 +85,13 @@ public class TextEditorPresenter implements EditorService {
         return view.isDirty();
     }
 
-    @Override public void onClose() {
+    @Override
+    public void onClose() {
         this.path = null;
     }
 
     @Override public boolean mayClose() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
     @Override
@@ -99,10 +100,9 @@ public class TextEditorPresenter implements EditorService {
     }
 
     @Override public void onHide() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public void mayOnHide() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void mayOnHide() {
     }
 }

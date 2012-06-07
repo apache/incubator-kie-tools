@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
+import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
-import org.drools.java.nio.file.ExtendedPath;
 import org.jboss.errai.ioc.client.api.Caller;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -44,7 +44,7 @@ public class FactModelEditorPresenter
     @Inject
     private PlaceManager placeManager;
 
-    private ExtendedPath path = null;
+    private Path path = null;
 
     public interface View
         extends

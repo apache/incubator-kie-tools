@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.java.nio.file;
+package org.drools.guvnor.vfs;
 
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
+public interface SimplePath {
 
-public interface ExtendedPath extends Path, BasicFileAttributes {
+    String getFileName();
 
-    String toUriAsString();
-
-    boolean exists();
-
+    String toURI();
 }

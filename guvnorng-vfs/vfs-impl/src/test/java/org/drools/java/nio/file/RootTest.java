@@ -30,7 +30,7 @@ public class RootTest {
         System.out.println("testWindowsRootPath:path: " + path.toString());
         assertNotNull(path);
         assertNotNull(path.getRoot());
-        assertEquals("c:/", path.getRoot().toString());
+        assertEquals("c:", path.getRoot().toString());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class RootTest {
         System.out.println("testDefaultWindowsRootPath:path: " + path.toString());
         assertNotNull(path);
         assertNotNull(path.getRoot());
-        assertEquals("c:/", path.getRoot().toString());
+        assertEquals("c:", path.getRoot().toString());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class RootTest {
         System.out.println("testWindowsDirectRootedPath:path: " + path.toString());
         assertNotNull(path);
         assertNotNull(path.getRoot());
-        assertEquals("c:\\", path.getRoot().toString());
+        assertEquals("c:", path.getRoot().toString());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class RootTest {
         System.out.println("testWindows2DirectRootedPath:path: " + path.toString());
         assertNotNull(path);
         assertNotNull(path.getRoot());
-        assertEquals("c:/", path.getRoot().toString());
+        assertEquals("c:", path.getRoot().toString());
     }
 
     @Test

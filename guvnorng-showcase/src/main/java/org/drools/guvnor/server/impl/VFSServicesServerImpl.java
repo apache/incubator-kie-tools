@@ -18,30 +18,32 @@ package org.drools.guvnor.server.impl;
 
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.vfs.DirectoryStreamVO;
-import org.drools.guvnor.vfs.ExtendedPathVO;
+import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.vfs.SimplePath;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
+import org.drools.guvnor.vfs.impl.PathImpl;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.ExtendedPath;
 import org.drools.java.nio.file.FileAlreadyExistsException;
-import org.drools.java.nio.file.FileSystemNotFoundException;
 import org.drools.java.nio.file.Files;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.NoSuchFileException;
 import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
-import org.drools.java.nio.file.Path;
 import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.PatternSyntaxException;
+import org.drools.java.nio.file.attribute.BasicFileAttributeView;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
@@ -54,273 +56,180 @@ public class VFSServicesServerImpl implements VFSService {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     @Override
-    public ExtendedPath get(final String first, final String... more)
-            throws IllegalArgumentException {
-        return new ExtendedPathVO(Paths.extend(Paths.get(first, more)));
+    public Path get(final String first, final String... more) throws IllegalArgumentException {
+        return convert(Paths.get(first, more));
     }
 
     @Override
-    public ExtendedPath get(final URI uri)
-            throws IllegalArgumentException, FileSystemNotFoundException {
-        return new ExtendedPathVO(Paths.extend(Paths.get(uri)));
-    }
-
-    @Override public DirectoryStream<ExtendedPath> newDirectoryStream() throws IllegalArgumentException, NotDirectoryException, IOException {
-        return new DirectoryStreamVO((DirectoryStream<ExtendedPath>) Files.newDirectoryStream(Paths.get(System.getProperty("user.home"))));
+    public Path get(final SimplePath path) throws IllegalArgumentException {
+        return convert(Paths.get(URI.create(path.toURI())));
     }
 
     @Override
-    public DirectoryStream<ExtendedPath> newDirectoryStream(String dir) throws IllegalArgumentException, NotDirectoryException, IOException {
-        return new DirectoryStreamVO((DirectoryStream<ExtendedPath>) Files.newDirectoryStream(Paths.get(dir)));
-    }
-
-    @Override
-    public DirectoryStream<ExtendedPath> newDirectoryStream(final Path dir)
+    public DirectoryStream<Path> newDirectoryStream()
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        return new DirectoryStreamVO((DirectoryStream<ExtendedPath>) Files.newDirectoryStream(dir));
+        return newDirectoryStream(Files.newDirectoryStream(Paths.get(System.getProperty("user.home"))).iterator());
     }
 
     @Override
-    public DirectoryStream<ExtendedPath> newDirectoryStream(final Path dir, final String glob)
-            throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException {
-        return new DirectoryStreamVO((DirectoryStream<ExtendedPath>) Files.newDirectoryStream(dir, glob));
+    public DirectoryStream<Path> newDirectoryStream(final SimplePath dir) throws IllegalArgumentException, NotDirectoryException, IOException {
+        return newDirectoryStream(Files.newDirectoryStream(fromSimplePath(dir)).iterator());
     }
 
     @Override
-    public DirectoryStream<ExtendedPath> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter)
-            throws IllegalArgumentException, NotDirectoryException, IOException {
-        return new DirectoryStreamVO((DirectoryStream<ExtendedPath>) Files.newDirectoryStream(dir, filter));
+    public DirectoryStream<Path> newDirectoryStream(SimplePath dir, String glob) throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException {
+        return null;
     }
 
     @Override
-    public ExtendedPath createFile(final Path path, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createFile(path, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createDirectory(final Path dir, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createDirectory(dir, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createDirectories(final Path dir, final FileAttribute<?>... attrs)
-            throws UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createDirectories(dir, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createSymbolicLink(link, target, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createLink(final Path link, final Path existing)
-            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createLink(link, existing)));
-    }
-
-    @Override
-    public void delete(final Path path)
-            throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
-        Files.delete(path);
-    }
-
-    @Override
-    public boolean deleteIfExists(final Path path)
-            throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
-        return Files.deleteIfExists(path);
-    }
-
-    @Override
-    public ExtendedPath createTempFile(final Path dir, final String prefix, final String suffix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createTempFile(dir, prefix, suffix, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createTempFile(final String prefix, final String suffix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createTempFile(prefix, suffix, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createTempDirectory(final Path dir, final String prefix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createTempDirectory(dir, prefix, attrs)));
-    }
-
-    @Override
-    public ExtendedPath createTempDirectory(final String prefix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.createTempDirectory(prefix, attrs)));
-    }
-
-    @Override
-    public ExtendedPath copy(final Path source, final Path target, final CopyOption... options)
-            throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.copy(source, target, options)));
-    }
-
-    @Override
-    public ExtendedPath move(final Path source, final Path target, final CopyOption... options)
-            throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.move(source, target, options)));
-    }
-
-    @Override
-    public ExtendedPath readSymbolicLink(final Path link)
-            throws IllegalArgumentException, UnsupportedOperationException, NotLinkException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.readSymbolicLink(link)));
-    }
-
-    @Override
-    public String probeContentType(final Path path)
-            throws UnsupportedOperationException, IOException {
-        return Files.probeContentType(path);
-    }
-
-//    @Override
-//    public <V extends FileAttributeView> V getFileAttributeView(final Path path, final Class<V> type, final LinkOption... options)
-//            throws IllegalArgumentException {
-//        return Files.getFileAttributeView(path, type, options);
-//    }
-//
-//    @Override
-//    public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
-//            throws IllegalArgumentException, UnsupportedOperationException, IOException {
-//        return Files.readAttributes(path, type, options);
-//    }
-
-    @Override
-    public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
-            throws UnsupportedOperationException, IllegalArgumentException, IOException {
-        return Files.readAttributes(path, attributes, options);
-    }
-
-    @Override
-    public ExtendedPath setAttribute(final Path path, final String attribute, final Object value, final LinkOption... options)
-            throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.setAttribute(path, attribute, value, options)));
-    }
-
-    @Override
-    public Object getAttribute(final Path path, final String attribute, final LinkOption... options)
-            throws UnsupportedOperationException, IllegalArgumentException, IOException {
-        return Files.getAttribute(path, attribute, options);
-    }
-
-    @Override
-    public UserPrincipal getOwner(final Path path, final LinkOption... options)
-            throws UnsupportedOperationException, IOException {
-        return Files.getOwner(path, options);
-    }
-
-    @Override
-    public ExtendedPath setOwner(final Path path, final UserPrincipal owner)
-            throws UnsupportedOperationException, IOException {
-        return new ExtendedPathVO(Paths.extend(Files.setOwner(path, owner)));
-    }
-
-    @Override
-    public FileTime getLastModifiedTime(final Path path, final LinkOption... options)
-            throws IllegalArgumentException, IOException {
-        return Files.getLastModifiedTime(path, options);
-    }
-
-    @Override
-    public ExtendedPath setLastModifiedTime(final Path path, final FileTime time)
-            throws IOException {
-        return new ExtendedPathVO(Paths.extend(Files.setLastModifiedTime(path, time)));
-    }
-
-    @Override
-    public long size(final Path path)
-            throws IllegalArgumentException, IOException {
-        return Files.size(path);
-    }
-
-    @Override
-    public boolean exists(final Path path, final LinkOption... options)
-            throws IllegalArgumentException {
-        return Files.exists(path, options);
-    }
-
-    @Override
-    public boolean notExists(final Path path, final LinkOption... options)
-            throws IllegalArgumentException {
-        return Files.notExists(path, options);
-    }
-
-    @Override
-    public boolean isSameFile(final Path path, final Path path2)
-            throws IllegalArgumentException, IOException {
-        return Files.isSameFile(path, path2);
-    }
-
-    @Override
-    public boolean isHidden(final Path path)
-            throws IllegalArgumentException, IOException {
-        return Files.isHidden(path);
-    }
-
-    @Override
-    public boolean isReadable(final Path path)
-            throws IllegalArgumentException {
-        return Files.isReadable(path);
-    }
-
-    @Override
-    public boolean isWritable(final Path path)
-            throws IllegalArgumentException {
-        return Files.isWritable(path);
-    }
-
-    @Override
-    public boolean isExecutable(final Path path)
-            throws IllegalArgumentException {
-        return Files.isExecutable(path);
-    }
-
-    @Override
-    public boolean isSymbolicLink(final Path path)
-            throws IllegalArgumentException {
-        return Files.isSymbolicLink(path);
-    }
-
-    @Override
-    public boolean isDirectory(final Path path, final LinkOption... options)
-            throws IllegalArgumentException {
-        return Files.isDirectory(path, options);
-    }
-
-    @Override
-    public boolean isRegularFile(final Path path, final LinkOption... options)
-            throws IllegalAccessError {
-        return Files.isRegularFile(path, options);
-    }
-
-    @Override
-    public byte[] readAllBytes(final Path path)
-            throws IOException, OutOfMemoryError {
-        return Files.readAllBytes(path);
-    }
-
-    @Override
-    public String readAllString(final Path path, final Charset cs)
-            throws IllegalArgumentException, NoSuchFileException, IOException {
+    public DirectoryStream<Path> newDirectoryStream(SimplePath dir, DirectoryStream.Filter<? super SimplePath> filter) throws IllegalArgumentException, NotDirectoryException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String readAllString(final Path path)
+    public Path createFile(SimplePath path, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createDirectory(SimplePath dir, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createDirectories(SimplePath dir, FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createSymbolicLink(SimplePath link, SimplePath target, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createLink(SimplePath link, SimplePath existing) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void delete(SimplePath path) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean deleteIfExists(SimplePath path) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createTempFile(SimplePath dir, String prefix, String suffix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createTempFile(String prefix, String suffix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createTempDirectory(SimplePath dir, String prefix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path createTempDirectory(String prefix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path copy(SimplePath source, SimplePath target, CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path move(SimplePath source, SimplePath target, CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path readSymbolicLink(SimplePath link) throws IllegalArgumentException, UnsupportedOperationException, NotLinkException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String probeContentType(SimplePath path) throws UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, Object> readAttributes(SimplePath path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path setAttribute(SimplePath path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Object getAttribute(SimplePath path, String attribute, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public UserPrincipal getOwner(SimplePath path, LinkOption... options) throws UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path setOwner(SimplePath path, UserPrincipal owner) throws UnsupportedOperationException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Path setLastModifiedTime(SimplePath path, FileTime time) throws IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public long size(SimplePath path) throws IllegalArgumentException, IOException {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean notExists(SimplePath path, LinkOption... options) throws IllegalArgumentException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isSameFile(SimplePath path, SimplePath path2) throws IllegalArgumentException, IOException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isExecutable(SimplePath path) throws IllegalArgumentException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public byte[] readAllBytes(SimplePath path) throws IOException {
+        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String readAllString(SimplePath path, String charset) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return readAllString(path, Charset.forName(charset));
+    }
+
+    @Override
+    public String readAllString(final SimplePath path) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return readAllString(path, UTF_8);
+    }
+
+    private String readAllString(final SimplePath path, final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException {
 
-        final Path realPath = Paths.get(((ExtendedPath) path).toUriAsString());
-
-        final List<String> result = Files.readAllLines(realPath, UTF_8);
+        final List<String> result = Files.readAllLines(fromSimplePath(path), cs);
         if (result == null) {
             return "";
         }
@@ -329,47 +238,69 @@ public class VFSServicesServerImpl implements VFSService {
             sb.append(s).append('\n');
         }
         return sb.toString();
+
     }
 
     @Override
-    public List<String> readAllLines(final Path path, final Charset cs)
-            throws IllegalArgumentException, NoSuchFileException, IOException {
-        return Files.readAllLines(path, cs);
+    public List<String> readAllLines(SimplePath path, String charset) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public List<String> readAllLines(final Path path)
-            throws IllegalArgumentException, NoSuchFileException, IOException {
-        return Files.readAllLines(path, UTF_8);
+    public List<String> readAllLines(SimplePath path) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public ExtendedPath write(final Path path, final byte[] bytes, final OpenOption... options)
-            throws IOException, UnsupportedOperationException {
-        return new ExtendedPathVO(Paths.extend(Files.write(path, bytes, options)));
+    public Path write(SimplePath path, byte[] bytes, OpenOption... options) throws IOException, UnsupportedOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public ExtendedPath write(final Path path, final Iterable<? extends CharSequence> lines, final Charset cs, final OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new ExtendedPathVO(Paths.extend(Files.write(path, lines, cs, options)));
+    public Path write(SimplePath path, Iterable<? extends CharSequence> lines, String charset, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public ExtendedPath write(final Path path, final Iterable<? extends CharSequence> lines, final OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new ExtendedPathVO(Paths.extend(Files.write(path, lines, UTF_8, options)));
+    public Path write(SimplePath path, Iterable<? extends CharSequence> lines, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public ExtendedPath write(final Path path, final String content, final Charset cs, final OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new ExtendedPathVO(Paths.extend(Files.write(path, content.getBytes(cs), options)));
+    public Path write(SimplePath path, String content, String charset, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return convert(Files.write(fromSimplePath(path), content, Charset.forName(charset), options));
     }
 
     @Override
-    public ExtendedPath write(final Path path, final String content, final OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new ExtendedPathVO(Paths.extend(Files.write(path, content.getBytes(), options)));
+    public Path write(SimplePath path, String content, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return convert(Files.write(fromSimplePath(path), content, UTF_8, options));
+    }
+
+    private Path convert(final org.drools.java.nio.file.Path path) {
+        final BasicFileAttributeView attributes = Files.getFileAttributeView(path, BasicFileAttributeView.class);
+
+        return new PathImpl(path.getFileName().toString(),
+                path.toUri().toString(),
+                Files.exists(path),
+                attributes.readAttributes().isRegularFile(),
+                attributes.readAttributes().isDirectory(),
+                path.isAbsolute(),
+                attributes.readAttributes().isSymbolicLink(),
+                Files.isReadable(path),
+                Files.isWritable(path),
+                Files.isHidden(path),
+                attributes.readAttributes().lastModifiedTime());
+    }
+
+    private DirectoryStream<Path> newDirectoryStream(final Iterator<org.drools.java.nio.file.Path> iterator) {
+        final List<Path> content = new LinkedList<Path>();
+        while (iterator.hasNext()) {
+            content.add(convert(iterator.next()));
+        }
+        return new DirectoryStreamImpl(content);
+    }
+
+    private org.drools.java.nio.file.Path fromSimplePath(final SimplePath path) {
+        return Paths.get(URI.create(path.toURI()));
     }
 }

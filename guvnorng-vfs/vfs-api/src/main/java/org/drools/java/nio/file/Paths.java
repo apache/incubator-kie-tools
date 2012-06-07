@@ -78,13 +78,4 @@ public final class Paths {
 
         return FileSystemProviders.resolveProvider(uri).getPath(uri);
     }
-
-    public static ExtendedPath extend(final Path path) {
-        checkNotNull("path", path);
-        return extend(path.toFile());
-    }
-
-    public static ExtendedPath extend(final File result) {
-        return FileSystemProviders.resolveProvider(result.toURI()).getExtendedPath(result);
-    }
 }

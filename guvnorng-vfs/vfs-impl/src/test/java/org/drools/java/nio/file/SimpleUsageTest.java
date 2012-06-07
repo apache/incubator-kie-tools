@@ -17,9 +17,9 @@
 package org.drools.java.nio.file;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -94,9 +94,17 @@ public class SimpleUsageTest {
         assertEquals("default:///path/to%20some%20folder/file.txt", file2.toUri().toString());
 
         final Path file3 = Paths.get("C:\\Users\\JLIU\\.android");
-        System.out.println(file3.toUri().toString());
-
+        assertEquals("C:\\Users\\JLIU\\.android", file3.toString());
+        assertEquals("default:///C:/Users/JLIU/.android", file3.toUri().toString());
     }
 
+    @Test
+    public void testSomething() {
+        Iterator<Path> stream = Files.newDirectoryStream(Paths.get(System.getProperty("user.home"))).iterator();
+        while (stream.hasNext()) {
+            final Path next = stream.next();
+            System.out.println(next.getFileName().toString());
+        }
+    }
 
 }

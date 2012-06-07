@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs;
+package org.drools.guvnor.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.drools.guvnor.vfs.Path;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.ExtendedPath;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DirectoryStreamVO implements DirectoryStream<ExtendedPath> {
+public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
-    private final List<ExtendedPathVO> content = new ArrayList<ExtendedPathVO>();
+    private List<Path> content;
 
-    public DirectoryStreamVO(final DirectoryStream<ExtendedPath> stream) {
-        for (final ExtendedPath path : stream) {
-            content.add(new ExtendedPathVO(path));
-        }
+    public DirectoryStreamImpl() {
+
     }
 
-    public DirectoryStreamVO() {
+    public DirectoryStreamImpl(final List<Path> content) {
+        this.content = new ArrayList<Path>(content);
     }
 
     @Override
@@ -45,9 +44,8 @@ public class DirectoryStreamVO implements DirectoryStream<ExtendedPath> {
     }
 
     @Override
-    public Iterator<ExtendedPath> iterator() {
-
-        return new Iterator<ExtendedPath>() {
+    public Iterator<Path> iterator() {
+        return new Iterator<Path>() {
             private int i = 0;
 
             @Override
@@ -56,9 +54,9 @@ public class DirectoryStreamVO implements DirectoryStream<ExtendedPath> {
             }
 
             @Override
-            public ExtendedPath next() {
+            public Path next() {
                 if (i < content.size()) {
-                    ExtendedPath result = content.get(i);
+                    final Path result = content.get(i);
                     i++;
                     return result;
                 } else {
