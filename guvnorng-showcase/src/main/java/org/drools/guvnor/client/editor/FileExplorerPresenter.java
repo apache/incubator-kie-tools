@@ -94,6 +94,13 @@ public class FileExplorerPresenter implements ScreenService {
             public void onSelection(SelectionEvent<TreeItem> event) {
                 final Path path = (Path) event.getSelectedItem().getUserObject();
                 if (path.isFile()) {
+                    //TODO {manstis} This needs to be made more generic. When a regularFile is selected we don't know
+                    //what editor is needed. This should delegate to a mechanism to load an Asset from the backend. This
+                    //service fronts the VFS and will create an AbstractAsset based upon the file extension (possibly populate
+                    //AssetData and AssetMetaData) and return that. If we annotate Places with the file extension they support
+                    //we can then identify and instantiate the correct Place for the AbstractAsset. The Place can also take a
+                    //parameter that is the concrete AbstractAsset (e.g. FactModels or RuleContentText). Any unrecognised
+                    //file extension can be wrapped into a plain-text asset and TextEditor used.
                     PlaceRequest placeRequest = new PlaceRequest("TextEditor");
                     placeRequest.parameter("path", path.toURI());
                     placeManager.goTo(placeRequest);
