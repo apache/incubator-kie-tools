@@ -1352,7 +1352,7 @@
             <compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.GuvnorNGShowcase/Guvnor.html</runTarget>
-          <extraJvmArgs>-Xmx512m</extraJvmArgs>
+          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
           <hostedWebapp>src/main/webapp/</hostedWebapp>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
