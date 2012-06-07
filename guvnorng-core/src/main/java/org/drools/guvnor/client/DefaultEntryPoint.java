@@ -43,17 +43,13 @@ public class DefaultEntryPoint {
     @PostConstruct
     public void init() {
         RestClient.setApplicationRoot( "/" );
-
         appWidget.add( workbench );
-
     }
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
-
         hideLoadingPopup();
-
         RootLayoutPanel.get().add( appWidget );
     }
 

@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.i18n;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 /**
@@ -31,6 +32,8 @@ public interface Constants
         extends
         Messages {
 
+    Constants INSTANCE = GWT.create( Constants.class );
+
     String helloWorld();
 
     String admin();
@@ -44,4 +47,63 @@ public interface Constants
     String SignOut();
 
     String WelcomeUser();
+
+    String Rename();
+
+    String Delete();
+
+    String OK();
+
+    String InvalidModelName(String name);
+
+    String NameTakenForModel(String name);
+
+    String ModelNameChangeWarning();
+
+    String Name();
+
+    String DoesNotExtend();
+
+    String CreatesCircularDependency(String name);
+
+    String TypeExtends();
+
+    String AddField();
+
+    String AddAnnotation();
+
+    String AreYouSureYouWantToRemoveTheField0(String fieldName);
+
+    String AreYouSureYouWantToRemoveTheAnnotation0(String annotationName);
+
+    String MoveUp();
+
+    String MoveDown();
+
+    String RemoveThisFactType();
+
+    String CannotDeleteADeclarationThatIsASuperType();
+
+    String AreYouSureYouWantToRemoveThisFact();
+
+    String chooseType();
+
+    String FieldNameAttribute();
+
+    String Type();
+
+    String InvalidDataTypeName(String dataType);
+
+    String WholeNumberInteger();
+
+    String TrueOrFalse();
+
+    String Text();
+
+    String Date();
+
+    String DecimalNumber();
+
+    String AddNewFactType();
+    
 }

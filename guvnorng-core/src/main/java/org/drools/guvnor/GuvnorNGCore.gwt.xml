@@ -18,6 +18,9 @@
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
   <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
 
+  <!-- Prevent compilation warning -->
+  <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
+
   <!-- GWT-DnD module inherits -->
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
