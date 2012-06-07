@@ -16,46 +16,44 @@
 
 package org.drools.guvnor.client.perspective.workspace.explorer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Map;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
 public class AdminTree extends AbstractTree {
 
-
     @Inject
-    private PlaceManager placeManager;
+    private PlaceManager       placeManager;
 
-    public static final String ADMIN_ID = "Admin";
-    public static final String ADMIN2_ID = "Admin2";
+    public static final String ADMIN_ID              = "Admin";
+    public static final String ADMIN2_ID             = "Admin2";
     public static final String CHANGE_PERSPECTIVE_ID = "OtherPerspective";
-    public static final String FILE1_ID = "MyHack1.hack";
-    public static final String FILE2_ID = "MyHack2.hack";
-
-    private static Constants constants = GWT.create(Constants.class);
-    private static ShowcaseImages images = GWT.create(ShowcaseImages.class);
+    public static final String FILE1_ID              = "MyHack1.hack";
+    public static final String FILE2_ID              = "MyHack2.hack";
 
     @PostConstruct
     public void init() {
         super.init();
-        this.name = constants.admin();
-        this.image = images.config();
+        this.name = Constants.INSTANCE.admin();
+        this.image = ShowcaseImages.INSTANCE.config();
 
-        mainTree.setAnimationEnabled(true);
-        setupTree(mainTree, itemWidgets);
-        mainTree.addSelectionHandler(this);
+        mainTree.setAnimationEnabled( true );
+        setupTree( mainTree,
+                   itemWidgets );
+        mainTree.addSelectionHandler( this );
     }
 
     @Override
@@ -66,59 +64,67 @@ public class AdminTree extends AbstractTree {
     public void refreshTree() {
         mainTree.clear();
         itemWidgets.clear();
-        setupTree(mainTree, itemWidgets);
+        setupTree( mainTree,
+                   itemWidgets );
     }
 
-    public void setupTree(final Tree tree, final Map<TreeItem, String> itemWidgets) {
-        final TreeItem admin = tree.addItem(Util.getHeader(images.analyze(), constants.admin()));
-        itemWidgets.put(admin, ADMIN_ID);
+    public void setupTree(final Tree tree,
+                          final Map<TreeItem, String> itemWidgets) {
+        final TreeItem admin = tree.addItem( Util.getHeader( ShowcaseImages.INSTANCE.analyze(),
+                                                             Constants.INSTANCE.admin() ) );
+        itemWidgets.put( admin,
+                         ADMIN_ID );
 
-        final TreeItem admin2 = tree.addItem(Util.getHeader(images.information(), "admin2"));
-        itemWidgets.put(admin2, ADMIN2_ID);
+        final TreeItem admin2 = tree.addItem( Util.getHeader( ShowcaseImages.INSTANCE.information(),
+                                                              "admin2" ) );
+        itemWidgets.put( admin2,
+                         ADMIN2_ID );
 
-        final TreeItem file1 = tree.addItem(Util.getHeader(images.edit(), FILE1_ID));
-        itemWidgets.put(file1, FILE1_ID);
+        final TreeItem file1 = tree.addItem( Util.getHeader( ShowcaseImages.INSTANCE.edit(),
+                                                             FILE1_ID ) );
+        itemWidgets.put( file1,
+                         FILE1_ID );
 
-        final TreeItem file2 = tree.addItem(Util.getHeader(images.edit(), FILE2_ID));
-        itemWidgets.put(file2, FILE2_ID);
+        final TreeItem file2 = tree.addItem( Util.getHeader( ShowcaseImages.INSTANCE.edit(),
+                                                             FILE2_ID ) );
+        itemWidgets.put( file2,
+                         FILE2_ID );
 
-        final TreeItem changePerspective = tree.addItem(Util.getHeader(images.newItem(), "monitoring"));
-        itemWidgets.put(changePerspective, CHANGE_PERSPECTIVE_ID);
+        final TreeItem changePerspective = tree.addItem( Util.getHeader( ShowcaseImages.INSTANCE.newItem(),
+                                                                         "monitoring" ) );
+        itemWidgets.put( changePerspective,
+                         CHANGE_PERSPECTIVE_ID );
     }
 
     public void onSelection(SelectionEvent<TreeItem> event) {
         final TreeItem item = event.getSelectedItem();
-        final String widgetID = itemWidgets.get(item);
+        final String widgetID = itemWidgets.get( item );
 
-/*        if (widgetID != null) {
-            final Place place;
-            if (widgetID.equals(ADMIN_ID)) {
-                place = new AdminPlace("helloWorld" + "|" + constants.helloWorld());
-            } else if (widgetID.equals(ADMIN2_ID)) {
-                place = new AdminPlace2("helloWorld" + "|" + constants.helloWorld() + " 2");
-            } else if (widgetID.equals(FILE1_ID)) {
-                place = new TextEditorPlace("hackFile" + "|" + FILE1_ID);
-            } else if (widgetID.equals(FILE2_ID)) {
-                place = new TextEditorPlace("hackFile" + "|" + FILE2_ID);
-            } else if (widgetID.equals(CHANGE_PERSPECTIVE_ID)) {
-                place = new MonitoringPerspectivePlace();
-            } else {
-                place = null;
-            }
-            placeController.goTo(place);
-        }*/
+        /*
+         * if (widgetID != null) { final Place place; if
+         * (widgetID.equals(ADMIN_ID)) { place = new AdminPlace("helloWorld" +
+         * "|" + constants.helloWorld()); } else if (widgetID.equals(ADMIN2_ID))
+         * { place = new AdminPlace2("helloWorld" + "|" + constants.helloWorld()
+         * + " 2"); } else if (widgetID.equals(FILE1_ID)) { place = new
+         * TextEditorPlace("hackFile" + "|" + FILE1_ID); } else if
+         * (widgetID.equals(FILE2_ID)) { place = new TextEditorPlace("hackFile"
+         * + "|" + FILE2_ID); } else if (widgetID.equals(CHANGE_PERSPECTIVE_ID))
+         * { place = new MonitoringPerspectivePlace(); } else { place = null; }
+         * placeController.goTo(place); }
+         */
 
-        if (widgetID != null) {
+        if ( widgetID != null ) {
             final PlaceRequest placeRequest;
-            if (widgetID.equals(ADMIN_ID)) {
-                placeRequest = new PlaceRequest("AdminArea");
-                placeRequest.parameter("uuid", "someuuidvalue");
-            } else if (widgetID.equals(ADMIN2_ID)) {
-                placeRequest = new PlaceRequest("AdminArea2");
+            if ( widgetID.equals( ADMIN_ID ) ) {
+                placeRequest = new PlaceRequest( "AdminArea" );
+                placeRequest.parameter( "uuid",
+                                        "someuuidvalue" );
+            } else if ( widgetID.equals( ADMIN2_ID ) ) {
+                placeRequest = new PlaceRequest( "AdminArea2" );
             } else {
                 placeRequest = null;
             }
-            placeManager.goTo(placeRequest);
+            placeManager.goTo( placeRequest );
         }
     }
 }

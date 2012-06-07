@@ -26,40 +26,27 @@ import org.drools.guvnor.client.perspective.workspace.explorer.AdminTree;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 /**
  * Navigation panel for the west area.
  */
 @Dependent
-public class NavigationPanel extends ResizeComposite {
-
-    private Constants        constants = GWT.create( Constants.class );
-    private ShowcaseImages   images    = GWT.create( ShowcaseImages.class );
+public class NavigationPanel extends Composite {
 
     @Inject
     private IOCBeanManager   manager;
 
-    private StackLayoutPanel layout    = new StackLayoutPanel( Unit.EM );
+    private StackLayoutPanel layout = new StackLayoutPanel( Unit.EM );
 
     @PostConstruct
     public void init() {
         initWidget( layout );
         addAdminPanel();
         addAdminPanel();
-    }
-
-    @Override
-    public void onResize() {
-        //TODO {manstis} The first widget! Use to work out resizing....
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        layout.setHeight( "500px" );
-        layout.setWidth( "500px" );
     }
 
     private void addAdminPanel() {
@@ -69,8 +56,8 @@ public class NavigationPanel extends ResizeComposite {
         browseDockLayoutPanel.add( tree );
 
         layout.add( browseDockLayoutPanel,
-                    Util.getHeaderHTML( images.config(),
-                                        constants.admin() ),
+                    Util.getHeaderHTML( ShowcaseImages.INSTANCE.config(),
+                                        Constants.INSTANCE.admin() ),
                     2 );
     }
 

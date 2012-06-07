@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2010 JBoss Inc Licensed under the Apache License, Version 
+  2.0 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+  Unless required by applicable law or agreed to in writing, software distributed 
+  under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+  OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+  the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
+
+  <ui:with field='images' type='org.drools.guvnor.client.resources.ShowcaseImages' />
+  <ui:with field='roundCornersResource' type='org.drools.guvnor.client.resources.RoundedCornersResource' />
+
+  <gwt:HTMLPanel>
+    <table style='width:100%; border-collapse:collapse;'>
+      <tr>
+        <td style='width:4px;'>
+          <div class='{roundCornersResource.roundCornersCss.greyTopLeftCornerClass}' />
+        </td>
+        <td>
+          <div class='{roundCornersResource.roundCornersCss.greyTopClass}' />
+        </td>
+        <td style='width:4px;'>
+          <div
+            class='{roundCornersResource.roundCornersCss.greyTopRightCornerClass}' />
+        </td>
+      </tr>
+
+      <tr>
+        <td class='{roundCornersResource.roundCornersCss.greySideLeftClass}' />
+        <td class='{roundCornersResource.roundCornersCss.greyCenterClass}'>
+          <gwt:HTMLPanel>
+            <div style="float:left;">
+              <gwt:HorizontalPanel>
+                <gwt:Image ui:field="icon" styleName="guvnor-LazyStackPanel-row-header-icon" />
+                <gwt:Label ui:field="titleLabel" styleName="guvnor-cursor" />
+              </gwt:HorizontalPanel>
+            </div>
+            <div style="float:right;">
+              <table>
+                <tr>
+                  <td width="17px">
+                    <gwt:Image ui:field="editIcon" resource='{images.edit}' styleName="guvnor-cursor" />
+                  </td>
+                  <td width="17px">
+                    <gwt:Image ui:field="moveUpIcon" resource='{images.shuffleUp}' styleName="guvnor-cursor" />
+                  </td>
+                  <td width="17px">
+                    <gwt:Image ui:field="moveDownIcon" resource='{images.shuffleDown}' styleName="guvnor-cursor" />
+                  </td>
+                  <td width="17px">
+                    <gwt:Image ui:field="deleteIcon" resource='{images.deleteItemSmall}' styleName="guvnor-cursor" />
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div style="clear:both;" />
+          </gwt:HTMLPanel>
+        </td>
+        <td class='{roundCornersResource.roundCornersCss.greySideRightClass}' />
+      </tr>
+
+      <tr>
+        <td style='width:4px;'>
+          <div class='{roundCornersResource.roundCornersCss.greyBottomLeftCornerClass}' />
+        </td>
+        <td>
+          <div class='{roundCornersResource.roundCornersCss.greyBottomClass}' />
+        </td>
+        <td style='width:4px;'>
+          <div class='{roundCornersResource.roundCornersCss.greyBottomRightCornerClass}' />
+        </td>
+      </tr>
+    </table>
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

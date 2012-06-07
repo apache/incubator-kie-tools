@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -23,24 +24,23 @@ public interface ShowcaseImages
         extends
         ClientBundle {
 
+    ShowcaseImages INSTANCE = GWT.create( ShowcaseImages.class );
+
     @Source("images/monitoring.png")
     ImageResource monitoringScreenshot();
 
     @Source("images/hdrlogo_drools.gif")
     ImageResource hdrlogoDrools();
-    
+
     @Source("images/edit.gif")
     ImageResource edit();
-    
-    @Source("images/new_item.gif")
-    ImageResource newItem();
-    
+
     @Source("images/analyze.gif")
     ImageResource analyze();
-    
+
     @Source("images/information.gif")
     ImageResource information();
-    
+
     @Source("images/config.png")
     ImageResource config();
 
@@ -49,5 +49,35 @@ public interface ShowcaseImages
 
     @Source("images/file.gif")
     ImageResource file();
+
+    @Source("images/collapse.gif")
+    ImageResource collapse();
+
+    @Source("images/collapseall.gif")
+    ImageResource collapseAll();
+
+    @Source("images/expand.gif")
+    ImageResource expand();
+
+    @Source("images/expandall.gif")
+    ImageResource expandAll();
+
+    @Source("images/close.gif")
+    ImageResource close();
+
+    @Source("images/new_item.gif")
+    ImageResource newItem();
+
+    @Source("images/new_item_disabled.gif")
+    ImageResource newItemDisabled();
+
+    @Source("images/delete_item_small.gif")
+    ImageResource deleteItemSmall();
+
+    @Source("images/shuffle_down.gif")
+    ImageResource shuffleDown();
+
+    @Source("images/shuffle_up.gif")
+    ImageResource shuffleUp();
 
 }
