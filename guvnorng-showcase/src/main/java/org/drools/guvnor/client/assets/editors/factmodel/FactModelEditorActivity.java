@@ -117,4 +117,14 @@ public class FactModelEditorActivity
         return "FactModelEditor";
     }
 
+    @Override
+    public void hide() {
+        presenter.onHide();
+    }
+
+    @Override
+    public void show() {
+        presenter.onReveal();
+    }
+
 }

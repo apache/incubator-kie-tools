@@ -23,10 +23,6 @@ public interface GuvnorImages
         extends
         ClientBundle {
 
-    //TODO {manstis} Temporary for Workbench demo
-    @Source("images/gwt-logo.png")
-    ImageResource logo();
-
     //DnD drag proxy
     @Source("images/dragProxy.png")
     ImageResource workbenchPanelDragProxy();

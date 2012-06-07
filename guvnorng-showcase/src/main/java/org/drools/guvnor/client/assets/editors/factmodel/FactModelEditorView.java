@@ -83,7 +83,13 @@ public class FactModelEditorView extends Composite
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        editorContainer.setPixelSize( width,
+        if ( height < 200 ) {
+            height = 200;
+        }
+        if ( width < 500 ) {
+            width = 500;
+        }
+        editorContainer.setPixelSize( width - 24,
                                       height );
     }
 

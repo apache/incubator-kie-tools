@@ -15,17 +15,14 @@
  */
 package org.drools.guvnor.client.moshpit;
 
-import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Popup to select a location to add a new widget
@@ -60,9 +57,7 @@ public class PositionSelectorPopup extends PopupPanel {
 
                 //TODO {manstis} This can be any editor...
                 final String title = position.toString() + " [" + (widgetCounter++) + "]";
-                final Widget widget = new Image( GuvnorResources.INSTANCE.guvnorImages().logo() );
-
-                PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( widget,
+                PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
                                                                                  title ),
                                                               position );
             }

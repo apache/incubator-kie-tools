@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface SplitPanel {
 
-    //TODO {manstis} This needs to be TabPanel's height really
+    //TODO {manstis} This needs to come from the Editor being added to the panel really
     public static final int MIN_SIZE     = 32;
 
     //TODO {manstis} This needs to come from the Editor being added to the panel really

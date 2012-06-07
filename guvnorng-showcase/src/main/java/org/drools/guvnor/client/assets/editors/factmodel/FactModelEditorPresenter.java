@@ -64,7 +64,11 @@ public class FactModelEditorPresenter
     @Override
     public void onStart() {
 
-        //TODO {manstis} Need to load the FactModels object from the backend
+        //TODO {manstis} Need to load the FactModels object from the backend. See FileExplorerActivity
+        //for more detail as to how this might work. If the AbstractAsset is passed as a parameter in
+        //the Place then the following can be used to extract the asset to be edited.
+        //- PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        //- final FactModels asset = placeRequest.getParameter( "asset", null );
         FactModels asset = new FactModels();
         view.setContent( asset );
 
@@ -89,7 +93,7 @@ public class FactModelEditorPresenter
     }
 
     public void doSave() {
-        //TODO {manstis} Need to load the FactModels object from the backend
+        //TODO {manstis} Need to save the FactModels object to the backend
         //        vfsServices.call( new RemoteCallback<ExtendedPath>() {
         //            @Override
         //            public void callback(ExtendedPath response) {
