@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -57,6 +58,7 @@ import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.spi.FileSystemProvider;
 import org.drools.java.nio.fs.base.GeneralFileAttributeView;
+import org.drools.java.nio.fs.base.GeneralFileAttributes;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
 
 import static org.drools.java.nio.util.Preconditions.*;
@@ -309,7 +311,27 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+    public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
+            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+        if (attributes.equals("*")) {
+            final GeneralFileAttributes attrs = toGeneralPathImpl(path).getAttrs();
+            final Map<String, Object> result = new HashMap<String, Object>();
+            result.put("isRegularFile", attrs.isRegularFile());
+            result.put("isDirectory", attrs.isDirectory());
+            result.put("isSymbolicLink", attrs.isSymbolicLink());
+            result.put("isOther", attrs.isOther());
+            result.put("size", new Long(attrs.size()));
+            result.put("fileKey", attrs.fileKey());
+            result.put("exists", attrs.exists());
+            result.put("isReadable", attrs.isReadable());
+            result.put("isExecutable", attrs.isExecutable());
+            result.put("isHidden", attrs.isHidden());
+            //todo check why errai can't serialize it
+            result.put("lastModifiedTime", null);
+            result.put("lastAccessTime", null);
+            result.put("creationTime", null);
+            return result;
+        }
         throw new IOException();
     }
 
@@ -326,7 +348,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         if (path instanceof GeneralPathImpl) {
             return (GeneralPathImpl) path;
         }
-        return null;
+        return GeneralPathImpl.create(fileSystem, path.toString(), false);
     }
 
 }

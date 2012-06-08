@@ -16,6 +16,8 @@
 
 package org.drools.java.nio.file;
 
+import java.util.Map;
+
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.attribute.BasicFileAttributeView;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
@@ -40,6 +42,21 @@ public class BasicFileAttributesTest {
             assertNotNull(attributesView.readAttributes());
             assertFalse(attributesView.readAttributes().isDirectory());
             assertTrue(attributesView.readAttributes().isRegularFile());
+        } catch (IOException e) {
+            fail("unexpected exception");
+        }
+    }
+
+    @Test
+    public void checkStarAttributes() {
+        try {
+            final Path file = Files.createTempFile("foo", null);
+
+            final Map<String, Object> attributes = Files.readAttributes(file, "*");
+
+            assertNotNull(attributes);
+            assertFalse((Boolean) attributes.get("isDirectory"));
+            assertTrue((Boolean) attributes.get("isRegularFile"));
         } catch (IOException e) {
             fail("unexpected exception");
         }

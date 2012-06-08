@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.editor;
 
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -33,8 +34,8 @@ import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.SimplePath;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.vfs.VFSTempUtil;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -55,11 +56,12 @@ public class FileExplorerPresenter implements ScreenService {
             @Override
             public void callback(DirectoryStream<Path> response) {
                 for (final Path path : response) {
-                    vfsService.call(new RemoteCallback<BasicFileAttributes>() {
+                    vfsService.call(new RemoteCallback<Map>() {
                         @Override
-                        public void callback(final BasicFileAttributes response) {
+                        public void callback(final Map response) {
+                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
                             final TreeItem item;
-                            if (response.isDirectory()) {
+                            if (attrs.isDirectory()) {
                                 item = view.getRootItem().addItem(Util.getHeader(images.openedFolder(), path.getFileName()));
                                 item.addItem(LAZY_LOAD);
                             } else {
@@ -67,7 +69,7 @@ public class FileExplorerPresenter implements ScreenService {
                             }
                             item.setUserObject(path);
                         }
-                    }).readAttributes(path, BasicFileAttributes.class);
+                    }).readAttributes(path);
                 }
             }
         }).newDirectoryStream();
@@ -80,11 +82,12 @@ public class FileExplorerPresenter implements ScreenService {
                         public void callback(DirectoryStream<Path> response) {
                             event.getTarget().getChild(0).remove();
                             for (final Path path : response) {
-                                vfsService.call(new RemoteCallback<BasicFileAttributes>() {
+                                vfsService.call(new RemoteCallback<Map>() {
                                     @Override
-                                    public void callback(final BasicFileAttributes response) {
+                                    public void callback(final Map response) {
+                                        final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
                                         final TreeItem item;
-                                        if (response.isDirectory()) {
+                                        if (attrs.isDirectory()) {
                                             item = event.getTarget().addItem(Util.getHeader(images.openedFolder(), path.getFileName()));
                                             item.addItem(LAZY_LOAD);
                                         } else {
@@ -92,10 +95,10 @@ public class FileExplorerPresenter implements ScreenService {
                                         }
                                         item.setUserObject(path);
                                     }
-                                }).readAttributes(path, BasicFileAttributes.class);
+                                }).readAttributes(path);
                             }
                         }
-                    }).newDirectoryStream((SimplePath) event.getTarget().getUserObject());
+                    }).newDirectoryStream((Path) event.getTarget().getUserObject());
                 }
             }
         });
@@ -104,10 +107,11 @@ public class FileExplorerPresenter implements ScreenService {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
                 final Path path = (Path) event.getSelectedItem().getUserObject();
-                vfsService.call(new RemoteCallback<BasicFileAttributes>() {
+                vfsService.call(new RemoteCallback<Map>() {
                     @Override
-                    public void callback(final BasicFileAttributes response) {
-                        if (response.isRegularFile()) {
+                    public void callback(final Map response) {
+                        final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
+                        if (attrs.isRegularFile()) {
                             //TODO {manstis} This needs to be made more generic. When a regularFile is selected we don't know
                             //what editor is needed. This should delegate to a mechanism to load an Asset from the backend. This
                             //service fronts the VFS and will create an AbstractAsset based upon the file extension (possibly populate
@@ -120,7 +124,7 @@ public class FileExplorerPresenter implements ScreenService {
                             placeManager.goTo(placeRequest);
                         }
                     }
-                }).readAttributes(path, BasicFileAttributes.class);
+                }).readAttributes(path);
             }
         });
     }

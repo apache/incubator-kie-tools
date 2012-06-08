@@ -16,99 +16,52 @@
 
 package org.drools.guvnor.vfs.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.guvnor.vfs.Path;
-import org.drools.java.nio.file.attribute.FileTime;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class PathImpl extends SimplePathImpl implements Path {
+public class PathImpl implements Path {
 
-    private boolean exists;
-    private boolean isFile;
-    private boolean isDirectory;
-    private boolean isAbsolute;
-    private boolean isSymbolicLink;
-    private boolean isReadable;
-    private boolean isWritable;
-    private boolean isHidden;
-    //private FileTime lastModifiedTime;
+    private String uri = null;
+    private String fileName = null;
+    private HashMap<String, Object> attributes = null;
 
     public PathImpl() {
     }
 
-    public PathImpl(final String fileName, final String uri,
-            final boolean exists, final boolean isFile, final boolean isDirectory,
-            final boolean isAbsolute, final boolean isSymbolicLink, final boolean isReadable,
-            final boolean isWritable, final boolean isHidden, final FileTime lastModifiedTime) {
-        super(fileName, uri);
-        this.exists = exists;
-        this.isFile = isFile;
-        this.isDirectory = isDirectory;
-        this.isAbsolute = isAbsolute;
-        this.isSymbolicLink = isSymbolicLink;
-        this.isReadable = isReadable;
-        this.isWritable = isWritable;
-        this.isHidden = isHidden;
-        //this.lastModifiedTime = lastModifiedTime;
+    public PathImpl(final String uri) {
+        this.uri = uri;
     }
 
-//    @Override
-//    public boolean exists() {
-//        return exists;
-//    }
-//
-//    @Override
-//    public boolean isFile() {
-//        return isFile;
-//    }
-//
-//    @Override
-//    public boolean isDirectory() {
-//        return isDirectory;
-//    }
-//
-//    @Override
-//    public boolean isAbsolute() {
-//        return isAbsolute;
-//    }
-//
-//    @Override
-//    public boolean isSymbolicLink() {
-//        return isSymbolicLink;
-//    }
-//
-//    @Override
-//    public boolean isReadable() {
-//        return isReadable;
-//    }
-//
-//    @Override
-//    public boolean isWritable() {
-//        return isWritable;
-//    }
-//
-//    @Override
-//    public boolean isHidden() {
-//        return isHidden;
-//    }
-//
-//    @Override
-//    public FileTime getLastModifiedTime() {
-////        return lastModifiedTime;
-//        return null;
-//    }
+    public PathImpl(final String fileName, final String uri, final Map<String, Object> attrs) {
+        this.fileName = fileName;
+        this.uri = uri;
+        this.attributes = new HashMap<String, Object>(attrs);
+    }
 
-    @Override public String toString() {
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public String toURI() {
+        return uri;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String toString() {
         return "PathImpl{" +
                 "uri='" + uri + '\'' +
-                ", exists=" + exists +
-                ", isFile=" + isFile +
-                ", isDirectory=" + isDirectory +
-                ", isAbsolute=" + isAbsolute +
-                ", isSymbolicLink=" + isSymbolicLink +
-                ", isReadable=" + isReadable +
-                ", isWritable=" + isWritable +
-                ", isHidden=" + isHidden +
+                ", fileName='" + fileName + '\'' +
+                ", attrs=" + attributes +
                 '}';
     }
 }

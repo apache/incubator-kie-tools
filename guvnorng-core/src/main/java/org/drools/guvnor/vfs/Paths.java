@@ -16,15 +16,15 @@
 
 package org.drools.guvnor.vfs;
 
-import org.drools.guvnor.vfs.impl.SimplePathImpl;
+import org.drools.guvnor.vfs.impl.PathImpl;
 
 public final class Paths {
 
     private Paths() {
     }
 
-    public static SimplePath fromURI(final String uri) {
-        return new SimplePathImpl(uri);
+    public static Path fromURI(final String uri) {
+        return new PathImpl(uri);
     }
 
 }

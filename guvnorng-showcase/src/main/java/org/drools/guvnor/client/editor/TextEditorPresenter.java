@@ -25,7 +25,6 @@ import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.Paths;
-import org.drools.guvnor.vfs.SimplePath;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -50,7 +49,7 @@ public class TextEditorPresenter implements EditorService {
     @Inject Caller<VFSService> vfsServices;
     @Inject private PlaceManager placeManager;
 
-    SimplePath path = null;
+    Path path = null;
 
     @Override
     public void onStart() {

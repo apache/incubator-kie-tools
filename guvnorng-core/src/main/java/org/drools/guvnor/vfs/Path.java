@@ -16,23 +16,9 @@
 
 package org.drools.guvnor.vfs;
 
-public interface Path extends SimplePath {
+public interface Path {
 
-//    boolean exists();
-//
-//    boolean isFile();
-//
-//    boolean isDirectory();
-//
-//    boolean isAbsolute();
-//
-//    boolean isSymbolicLink();
-//
-//    boolean isReadable();
-//
-//    boolean isWritable();
-//
-//    boolean isHidden();
-//
-//    FileTime getLastModifiedTime();
+    String getFileName();
+
+    String toURI();
 }

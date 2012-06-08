@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.vfs.impl;
 
+import java.util.Map;
+
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,7 +30,7 @@ public class BasicAttributesVO implements BasicFileAttributes {
     private boolean isSymbolicLink;
     private boolean isOther;
     private Long fileLenght;
-//    private FileTime lastModifiedTime;
+    //    private FileTime lastModifiedTime;
 //    private FileTime lastAccessTime;
 //    private FileTime creationTime;
     private Object fileKey;
@@ -37,7 +39,23 @@ public class BasicAttributesVO implements BasicFileAttributes {
     private Boolean isReadable = null;
     private Boolean isHidden = null;
 
-    public BasicAttributesVO(){
+    public BasicAttributesVO() {
+    }
+
+    public BasicAttributesVO(Map attrs) {
+        this.isRegularFile = (Boolean) attrs.get("isRegularFile");
+        this.isDirectory = (Boolean) attrs.get("isDirectory");
+        this.isOther = (Boolean) attrs.get("isOther");
+        this.isSymbolicLink = (Boolean) attrs.get("isSymbolicLink");
+        this.fileKey = attrs.get("fileKey");
+//        this.creationTime = creationTime;
+//        this.lastAccessTime = lastAccessTime;
+//        this.lastModifiedTime = lastModifiedTime;
+        this.fileLenght = (Long) attrs.get("fileLenght");
+        this.exists = (Boolean) attrs.get("exists");
+        this.isReadable = (Boolean) attrs.get("isReadable");
+        this.isExecutable = (Boolean) attrs.get("isExecutable");
+        this.isHidden = (Boolean) attrs.get("isHidden");
     }
 
     public BasicAttributesVO(final boolean isRegularFile, final boolean isDirectory, final boolean isOther, final boolean isSymbolicLink,
