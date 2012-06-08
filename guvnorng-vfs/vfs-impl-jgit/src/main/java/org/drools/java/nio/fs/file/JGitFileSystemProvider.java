@@ -51,17 +51,13 @@ import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Path;
+import org.drools.java.nio.file.attribute.BasicFileAttributeView;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
-import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.spi.FileSystemProvider;
+import org.drools.java.nio.fs.base.GeneralFileAttributeView;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevTree;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import static org.drools.java.nio.util.Preconditions.*;
 
@@ -187,23 +183,6 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
-        try {
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        Repository repository = builder.setGitDir(new File("D:\\svn\\drools\\guvnorngnew"))
-          .readEnvironment() // scan environment GIT_* variables
-          .findGitDir() // scan up the file system tree
-          .build();
-        
-        
-        ObjectId head = repository.resolve("HEAD");
-        RevWalk walk = new RevWalk(repository);
-        RevTree tree = walk.parseTree(head);
-        
-        } catch (Exception e) {
-        
-        }
-        
-        
         final File file = checkNotNull("dir", dir).toFile();
         if (!file.isDirectory()) {
             throw new NotDirectoryException(dir.toString());
@@ -248,17 +227,20 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         checkNotNull("dir", dir).toFile().mkdirs();
     }
 
-    @Override public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    @Override
+    public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public void createLink(final Path link, final Path existing) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    @Override
+    public void createLink(final Path link, final Path existing) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
         checkNotNull("path", path).toFile().delete();
+        toGeneralPathImpl(path).clearCache();
     }
 
     @Override public boolean deleteIfExists(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
@@ -284,101 +266,67 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
         checkNotNull("path", path);
-        return path.toFile().isHidden();
+        return toGeneralPathImpl(path).getAttrs().isHidden();
     }
 
-    @Override public FileStore getFileStore(Path path) throws IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public FileStore getFileStore(final Path path) throws IOException, SecurityException {
+        return null;
     }
 
-    @Override public void checkAccess(Path path, AccessMode... modes) throws UnsupportedOperationException, AccessDeniedException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void checkAccess(Path path, AccessMode... modes)
+            throws UnsupportedOperationException, AccessDeniedException, IOException, SecurityException {
     }
 
-    @Override public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    @Override
+    public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
 
-    @Override public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
-            throws UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull("path", path);
-        final File file = path.toFile();
-        if (!file.exists()) {
-            throw new NoSuchFileException(path.toString());
-        }
-
-        if (type.equals(BasicFileAttributes.class)) {
-            return (A) new BasicFileAttributes() {
-
-                @Override public FileTime lastModifiedTime() {
-                    return null;
-                }
-
-                @Override public FileTime lastAccessTime() {
-                    return null;
-                }
-
-                @Override public FileTime creationTime() {
-                    return null;
-                }
-
-                @Override public boolean isRegularFile() {
-                    return file.isFile();
-                }
-
-                @Override public boolean isDirectory() {
-                    return file.isDirectory();
-                }
-
-                @Override public boolean isSymbolicLink() {
-                    return false;
-                }
-
-                @Override public boolean isOther() {
-                    return false;
-                }
-
-                @Override public long size() {
-                    return file.length();
-                }
-
-                @Override public Object fileKey() {
-                    return null;
-                }
-            };
+        if (type == BasicFileAttributeView.class) {
+            return (V) new GeneralFileAttributeView(toGeneralPathImpl(path));
         }
 
         return null;
     }
 
-    @Override public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+    @Override
+    public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
+            throws UnsupportedOperationException, IOException, SecurityException {
+        checkNotNull("path", path);
+        checkNotNull("type", type);
+
+        final GeneralPathImpl pathImpl = toGeneralPathImpl(path);
+        if (!pathImpl.getAttrs().exists()) {
+            throw new NoSuchFileException("");
+        }
+
+        if (type == BasicFileAttributes.class) {
+            BasicFileAttributeView view = getFileAttributeView(path, BasicFileAttributeView.class, options);
+            return (A) view.readAttributes();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         throw new IOException();
     }
 
-    @Override public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+    @Override
+    public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private FileSystem getDefaultFileSystem() {
         return fileSystem;
     }
-    
-    public static void main(String[] args) throws Exception {
-        try {
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        Repository repository = builder.setGitDir(new File("D:\\svn\\drools\\guvnorngnew"))
-          .readEnvironment() // scan environment GIT_* variables
-          .findGitDir() // scan up the file system tree
-          .build();
-        
-        
-        ObjectId head = repository.resolve("HEAD");
-        RevWalk walk = new RevWalk(repository);
-        RevTree tree = walk.parseTree(head);
-        
-        } catch (Exception e) {
-        
+
+    private GeneralPathImpl toGeneralPathImpl(final Path path) {
+        if (path instanceof GeneralPathImpl) {
+            return (GeneralPathImpl) path;
         }
+        return null;
     }
 
 }

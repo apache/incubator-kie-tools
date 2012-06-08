@@ -52,6 +52,12 @@
       <artifactId>org.eclipse.jgit.ui</artifactId>
       <version>1.3.0.201202151440-r</version>
     </dependency>
-    
+
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.6.1</version>
+  </dependency>
+
   </dependencies>
 </project>

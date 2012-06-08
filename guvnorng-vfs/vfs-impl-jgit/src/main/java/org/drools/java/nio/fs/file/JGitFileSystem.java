@@ -66,12 +66,12 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public Iterable<FileStore> getFileStores() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public Set<String> supportedFileAttributeViews() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -94,17 +94,17 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public PathMatcher getPathMatcher(String syntaxAndPattern) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public WatchService newWatchService() throws UnsupportedOperationException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
