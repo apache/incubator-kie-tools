@@ -52,51 +52,51 @@ public class PathImpl extends SimplePathImpl implements Path {
         //this.lastModifiedTime = lastModifiedTime;
     }
 
-    @Override
-    public boolean exists() {
-        return exists;
-    }
-
-    @Override
-    public boolean isFile() {
-        return isFile;
-    }
-
-    @Override
-    public boolean isDirectory() {
-        return isDirectory;
-    }
-
-    @Override
-    public boolean isAbsolute() {
-        return isAbsolute;
-    }
-
-    @Override
-    public boolean isSymbolicLink() {
-        return isSymbolicLink;
-    }
-
-    @Override
-    public boolean isReadable() {
-        return isReadable;
-    }
-
-    @Override
-    public boolean isWritable() {
-        return isWritable;
-    }
-
-    @Override
-    public boolean isHidden() {
-        return isHidden;
-    }
-
-    @Override
-    public FileTime getLastModifiedTime() {
-//        return lastModifiedTime;
-        return null;
-    }
+//    @Override
+//    public boolean exists() {
+//        return exists;
+//    }
+//
+//    @Override
+//    public boolean isFile() {
+//        return isFile;
+//    }
+//
+//    @Override
+//    public boolean isDirectory() {
+//        return isDirectory;
+//    }
+//
+//    @Override
+//    public boolean isAbsolute() {
+//        return isAbsolute;
+//    }
+//
+//    @Override
+//    public boolean isSymbolicLink() {
+//        return isSymbolicLink;
+//    }
+//
+//    @Override
+//    public boolean isReadable() {
+//        return isReadable;
+//    }
+//
+//    @Override
+//    public boolean isWritable() {
+//        return isWritable;
+//    }
+//
+//    @Override
+//    public boolean isHidden() {
+//        return isHidden;
+//    }
+//
+//    @Override
+//    public FileTime getLastModifiedTime() {
+////        return lastModifiedTime;
+//        return null;
+//    }
 
     @Override public String toString() {
         return "PathImpl{" +

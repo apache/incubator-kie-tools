@@ -31,6 +31,7 @@ import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.PatternSyntaxException;
+import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
@@ -112,14 +113,14 @@ public interface VFSService {
     String probeContentType(SimplePath path)
             throws UnsupportedOperationException, IOException;
 
-//TODO commented for now - seems that it's an errai (codegen on generified return type)
+    //TODO commented for now - seems that it's an errai (codegen on generified return type)
 //    <V extends FileAttributeView> V getFileAttributeView(SimplePath path,
 //            Class<V> type, LinkOption... options)
 //            throws IllegalArgumentException;
-//
-//    <A extends BasicFileAttributes> A readAttributes(SimplePath path,
-//            Class<A> type, LinkOption... options)
-//            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException;
+
+    <A extends BasicFileAttributes> A readAttributes(SimplePath path,
+            Class<A> type)
+            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException;
 
     Map<String, Object> readAttributes(SimplePath path, String attributes, LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException;

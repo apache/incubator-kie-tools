@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.SimplePath;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.vfs.impl.BasicAttributesVO;
 import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
 import org.drools.guvnor.vfs.impl.PathImpl;
 import org.drools.java.nio.IOException;
@@ -44,9 +45,11 @@ import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.PatternSyntaxException;
 import org.drools.java.nio.file.attribute.BasicFileAttributeView;
+import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
+import org.drools.java.nio.fs.base.GeneralFileAttributes;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
@@ -162,6 +165,11 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
+    public <A extends BasicFileAttributes> A readAttributes(SimplePath path, Class<A> type) throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException {
+        return convert(Files.readAttributes(fromSimplePath(path), type), type);
+    }
+
+    @Override
     public Map<String, Object> readAttributes(SimplePath path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -274,6 +282,34 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public Path write(SimplePath path, String content, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return convert(Files.write(fromSimplePath(path), content, UTF_8, options));
+    }
+
+    private <A extends BasicFileAttributes> A convert(final A value, final Class<A> destType) {
+        if (destType.equals(BasicFileAttributes.class)) {
+            final boolean isRegularFile = value.isRegularFile();
+            final boolean isDirectory = value.isDirectory();
+            final boolean isOther = value.isOther();
+            final boolean isSymbolicLink = value.isSymbolicLink();
+            final Object fileKey = value.fileKey();
+            final FileTime creationTime = value.creationTime();
+            final FileTime lastAccessTime = value.lastAccessTime();
+            final FileTime lastModifiedTime = value.lastModifiedTime();
+            final long fileLenght = value.size();
+
+            if (value instanceof GeneralFileAttributes) {
+                final GeneralFileAttributes generalValue = (GeneralFileAttributes) value;
+                final boolean exists = generalValue.exists();
+                final boolean isReadable = generalValue.isReadable();
+                final boolean isExecutable = generalValue.isExecutable();
+                final boolean isHidden = generalValue.isHidden();
+                return (A) new BasicAttributesVO(isRegularFile, isDirectory, isOther, isSymbolicLink,
+                        fileKey, creationTime, lastAccessTime, lastModifiedTime, fileLenght,
+                        exists, isReadable, isExecutable, isHidden);
+            }
+            return (A) new BasicAttributesVO(isRegularFile, isDirectory, isOther, isSymbolicLink,
+                    fileKey, creationTime, lastAccessTime, lastModifiedTime, fileLenght);
+        }
+        return value;
     }
 
     private Path convert(final org.drools.java.nio.file.Path path) {

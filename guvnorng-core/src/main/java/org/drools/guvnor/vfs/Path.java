@@ -16,25 +16,23 @@
 
 package org.drools.guvnor.vfs;
 
-import org.drools.java.nio.file.attribute.FileTime;
-
 public interface Path extends SimplePath {
 
-    boolean exists();
-
-    boolean isFile();
-
-    boolean isDirectory();
-
-    boolean isAbsolute();
-
-    boolean isSymbolicLink();
-
-    boolean isReadable();
-
-    boolean isWritable();
-
-    boolean isHidden();
-
-    FileTime getLastModifiedTime();
+//    boolean exists();
+//
+//    boolean isFile();
+//
+//    boolean isDirectory();
+//
+//    boolean isAbsolute();
+//
+//    boolean isSymbolicLink();
+//
+//    boolean isReadable();
+//
+//    boolean isWritable();
+//
+//    boolean isHidden();
+//
+//    FileTime getLastModifiedTime();
 }
