@@ -16,6 +16,7 @@
 
 package org.drools.java.nio.fs.file;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +27,7 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -58,6 +60,15 @@ import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.spi.FileSystemProvider;
 import org.drools.java.nio.fs.base.GeneralFileAttributeView;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepository;
+
+import com.gitblit.FileSettings;
+import com.gitblit.GitBlit;
+import com.gitblit.GitBlitException;
+import com.gitblit.models.PathModel;
+import com.gitblit.models.RepositoryModel;
+import com.gitblit.utils.JGitUtils;
 
 import static org.drools.java.nio.util.Preconditions.*;
 
@@ -65,10 +76,19 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     private final JGitFileSystem fileSystem;
     private boolean isDefault;
+    
+    public static final File REPOSITORIES = new File("git");
+    private Repository repository;
 
     public JGitFileSystemProvider() {
+        setUpGitRepository();
         this.fileSystem = new JGitFileSystem(this);
     }
+    
+    public Repository getRepository() {
+        return repository;
+    }
+    
 
     @Override
     public synchronized void forceAsDefault() {
@@ -96,7 +116,10 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
+        PathModel pathModel = JGitUtils.getPathModel(repository, uri.getPath(), null);
+        return new JGitPathImpl(fileSystem, pathModel);       
+/*        
+        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);*/
     }
 
     @Override
@@ -106,7 +129,12 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public InputStream newInputStream(final Path path, final OpenOption... options)
-            throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+            throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {        
+        //TODO: check if the path specified exists in git repo
+        
+        byte[] byteContent = JGitUtils.getByteContent(repository, null, path.toString());
+        return new ByteArrayInputStream(byteContent);
+/*        
         final File file = path.toFile();
         if (!file.exists()) {
             throw new NoSuchFileException(file.toString());
@@ -115,7 +143,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             return new FileInputStream(path.toFile());
         } catch (FileNotFoundException e) {
             throw new NoSuchFileException(e.getMessage());
-        }
+        }*/
     }
 
     @Override
@@ -183,43 +211,53 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
-        final File file = checkNotNull("dir", dir).toFile();
-        if (!file.isDirectory()) {
-            throw new NotDirectoryException(dir.toString());
-        }
-        final File[] content = file.listFiles();
-        return new DirectoryStream<Path>() {
-
-            @Override
-            public void close() throws IOException {
+        try {
+            repository = getGuvnorNGRepository();
+            final List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
+            
+            for(PathModel p : files) {
+                System.out.println(p.name);
             }
+            
+            return new DirectoryStream<Path>() {
 
-            @Override
-            public Iterator<Path> iterator() {
-                return new Iterator<Path>() {
-                    private int i = 0;
+                @Override
+                public void close() throws IOException {
+                }
 
-                    @Override public boolean hasNext() {
-                        return i < content.length;
-                    }
+                @Override
+                public Iterator<Path> iterator() {
+                    return new Iterator<Path>() {
+                        private int i = 0;
 
-                    @Override public Path next() {
-                        if (i < content.length) {
-                            final File result = content[i];
-                            i++;
-                            return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
-                        } else {
-                            throw new NoSuchElementException();
+                        @Override public boolean hasNext() {
+                            return i < files.size();
                         }
-                    }
 
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-            }
-        };
+                        @Override public Path next() {
+                            if (i < files.size()) {
+                                PathModel pathModel = files.get(i);
+                                
+                                final File result = new File(pathModel.path);
+                                i++;
+                                return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
+                            } else {
+                                throw new NoSuchElementException();
+                            }
+                        }
+
+                        @Override
+                        public void remove() {
+                            throw new UnsupportedOperationException();
+                        }
+                    };
+                }
+            };
+        } catch (java.io.IOException e) {            
+            IOException i = new IOException();
+            i.initCause(e);
+            throw i;
+        }
     }
 
     @Override
@@ -240,7 +278,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
         checkNotNull("path", path).toFile().delete();
-        toGeneralPathImpl(path).clearCache();
+        //toGeneralPathImpl(path).clearCache();
     }
 
     @Override public boolean deleteIfExists(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
@@ -266,7 +304,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
         checkNotNull("path", path);
-        return toGeneralPathImpl(path).getAttrs().isHidden();
+        return ((JGitlFileAttributes)getFileAttributeView(path, BasicFileAttributeView.class, null).readAttributes()).isHidden();
     }
 
     @Override
@@ -281,9 +319,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
-
         if (type == BasicFileAttributeView.class) {
-            return (V) new GeneralFileAttributeView(toGeneralPathImpl(path));
+            //TODO: path contains absolute path. how to convert it to a path relative to repository root?
+            //PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
+            PathModel pathModel = JGitUtils.getPathModel(repository, null, null);
+            return (V) new JGitFileAttributeView(pathModel);
         }
 
         return null;
@@ -295,10 +335,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         checkNotNull("path", path);
         checkNotNull("type", type);
 
-        final GeneralPathImpl pathImpl = toGeneralPathImpl(path);
+        //TODO: Check if the path exists in git repo
+/*        final GeneralPathImpl pathImpl = toGeneralPathImpl(path);
         if (!pathImpl.getAttrs().exists()) {
             throw new NoSuchFileException("");
-        }
+        }*/
 
         if (type == BasicFileAttributes.class) {
             BasicFileAttributeView view = getFileAttributeView(path, BasicFileAttributeView.class, options);
@@ -322,11 +363,57 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return fileSystem;
     }
 
-    private GeneralPathImpl toGeneralPathImpl(final Path path) {
-        if (path instanceof GeneralPathImpl) {
-            return (GeneralPathImpl) path;
-        }
-        return null;
+    public static void main(String[] args) throws Exception {
+        JGitFileSystemProvider j = new JGitFileSystemProvider();
+        j.setUpGitRepository();
     }
+    
+    public void setUpGitRepository() {
+        try {
+            // startGitblit();
 
+            if (REPOSITORIES.exists() || REPOSITORIES.mkdirs()) {
+                cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
+
+                showRemoteBranches("guvnorng.git");
+
+                repository = getGuvnorNGRepository();
+                List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
+                for (PathModel p : files) {
+                    System.out.println(p.name);
+                    System.out.println("isTree: " + p.isTree());
+                }
+
+                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-core", null);
+
+                String contentA = JGitUtils.getStringContent(repository, null, "README.md");
+                System.out.println(contentA);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static Repository getGuvnorNGRepository() throws java.io.IOException {
+        return new FileRepository(new File(new File("git"), "guvnorng.git"));
+    }
+    
+    private static void cloneOrFetch(String name, String fromUrl) throws Exception {
+        System.out.print("Fetching " + name + "... ");
+        JGitUtils.cloneRepository(REPOSITORIES, name, fromUrl);
+        System.out.println("done.");
+    }
+    
+    private static void showRemoteBranches(String repositoryName) {
+        try {
+            FileSettings settings = new FileSettings("my.properties");
+            GitBlit.self().configureContext(settings, true);
+            RepositoryModel model = GitBlit.self().getRepositoryModel(repositoryName);
+            model.showRemoteBranches = true;
+            GitBlit.self().updateRepositoryModel(model.name, model, false);
+        } catch (GitBlitException g) {
+            g.printStackTrace();
+        }
+    }
+    
 }

@@ -16,6 +16,7 @@
 
 package org.drools.java.nio.fs.file;
 
+import java.net.URI;
 import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
@@ -29,6 +30,9 @@ import org.drools.java.nio.file.WatchService;
 import org.drools.java.nio.file.attribute.UserPrincipalLookupService;
 import org.drools.java.nio.file.spi.FileSystemProvider;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
+
+import com.gitblit.models.PathModel;
+import com.gitblit.utils.JGitUtils;
 
 public final class JGitFileSystem implements FileSystem {
 
@@ -76,6 +80,15 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public Path getPath(String first, String... more) throws InvalidPathException {
+        PathModel pathModel = JGitUtils.getPathModel(((JGitFileSystemProvider)provider).getRepository(), first, null);
+        //PathModel pathModel = JGitUtils.getPathModel(repository, first, null);
+        if(pathModel == null) {
+            pathModel = JGitUtils.getPathModel(((JGitFileSystemProvider)provider).getRepository(), null, null);
+        } 
+        
+        return new JGitPathImpl(this, pathModel);   
+
+/*        
         if (more == null) {
             return GeneralPathImpl.create(this, first, false);
         }
@@ -89,7 +102,7 @@ public final class JGitFileSystem implements FileSystem {
                 sb.append(segment);
             }
         }
-        return GeneralPathImpl.create(this, sb.toString(), false);
+        return GeneralPathImpl.create(this, sb.toString(), false);*/
     }
 
     @Override
