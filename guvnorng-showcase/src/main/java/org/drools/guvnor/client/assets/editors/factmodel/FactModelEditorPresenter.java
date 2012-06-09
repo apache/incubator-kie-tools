@@ -20,9 +20,13 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.vfs.impl.PathImpl;
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -39,7 +43,7 @@ public class FactModelEditorPresenter
     View                 view;
 
     @Inject
-    Caller<VFSService>   vfsServices;
+    Caller<AssetService>   assetService;
 
     @Inject
     private PlaceManager placeManager;
@@ -63,33 +67,18 @@ public class FactModelEditorPresenter
 
     @Override
     public void onStart() {
-
-        //TODO {manstis} Need to load the FactModels object from the backend. See FileExplorerActivity
-        //for more detail as to how this might work. If the AbstractAsset is passed as a parameter in
-        //the Place then the following can be used to extract the asset to be edited.
-        //- PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        //- final FactModels asset = placeRequest.getParameter( "asset", null );
-        FactModels asset = new FactModels();
-        view.setContent( asset );
-
-        //        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        //        final String uriPath = placeRequest.getParameter( "path",
-        //                                                          null );
-        //        vfsServices.call( new RemoteCallback<ExtendedPath>() {
-        //            @Override
-        //            public void callback(ExtendedPath extendedPath) {
-        //                vfsServices.call( new RemoteCallback<String>() {
-        //                    @Override
-        //                    public void callback(String response) {
-        //                        if ( response == null ) {
-        //                            view.setContent( "-- empty --" );
-        //                        } else {
-        //                            view.setContent( response );
-        //                        }
-        //                    }
-        //                } ).readAllString( extendedPath );
-        //            }
-        //        } ).get( uriPath );
+        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        String uri = placeRequest.getParameter( "path", null );
+        Path path = new PathImpl(uri);
+        
+/*        FactModels asset = new FactModels();
+        view.setContent( asset );*/
+        assetService.call(new RemoteCallback<FactModels>() {
+            @Override
+            public void callback(FactModels response) {
+                view.setContent(response);
+            }
+        }).loadAsset(path/*, FactModels.class*/);
     }
 
     public void doSave() {
