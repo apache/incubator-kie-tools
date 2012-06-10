@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,6 @@ import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.spi.FileSystemProvider;
-import org.drools.java.nio.fs.base.GeneralFileAttributeView;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepository;
@@ -77,7 +77,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final JGitFileSystem fileSystem;
     private boolean isDefault;
     
-    public static final File REPOSITORIES = new File("git");
+    public static final File REPOSITORIES_ROOT_DIR = new File("git");
     private Repository repository;
 
     public JGitFileSystemProvider() {
@@ -116,10 +116,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        PathModel pathModel = JGitUtils.getPathModel(repository, uri.getPath(), null);
-        return new JGitPathImpl(fileSystem, pathModel);       
-/*        
-        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);*/
+        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
     }
 
     @Override
@@ -213,8 +210,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
         try {
             repository = getGuvnorNGRepository();
-            final List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
+            final List<PathModel> files = JGitUtils.getFilesInPath(repository, dir.toString(), null);
             
+            System.out.println("newDirectoryStream is invoked, Path is: " + dir.toString());
             for(PathModel p : files) {
                 System.out.println(p.name);
             }
@@ -237,10 +235,10 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                         @Override public Path next() {
                             if (i < files.size()) {
                                 PathModel pathModel = files.get(i);
-                                
-                                final File result = new File(pathModel.path);
+                                System.out.println(pathModel.path + "  isTree: " + pathModel.isTree());
                                 i++;
-                                return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
+                                return GeneralPathImpl.create(getDefaultFileSystem(), pathModel.path, false);
+                                //return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
                             } else {
                                 throw new NoSuchElementException();
                             }
@@ -320,9 +318,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
         if (type == BasicFileAttributeView.class) {
-            //TODO: path contains absolute path. how to convert it to a path relative to repository root?
-            //PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
-            PathModel pathModel = JGitUtils.getPathModel(repository, null, null);
+            PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
             return (V) new JGitFileAttributeView(pathModel);
         }
 
@@ -350,7 +346,28 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+    public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
+            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+        if (attributes.equals("*")) {
+            PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
+            JGitlFileAttributes attrs = new JGitlFileAttributes(pathModel);
+            final Map<String, Object> result = new HashMap<String, Object>();
+            result.put("isRegularFile", attrs.isRegularFile());
+            result.put("isDirectory", attrs.isDirectory());
+            result.put("isSymbolicLink", attrs.isSymbolicLink());
+            result.put("isOther", attrs.isOther());
+            result.put("size", new Long(attrs.size()));
+            result.put("fileKey", attrs.fileKey());
+            result.put("exists", attrs.exists());
+            result.put("isReadable", attrs.isReadable());
+            result.put("isExecutable", attrs.isExecutable());
+            result.put("isHidden", attrs.isHidden());
+            //todo check why errai can't serialize it
+            result.put("lastModifiedTime", null);
+            result.put("lastAccessTime", null);
+            result.put("creationTime", null);
+            return result;
+        }
         throw new IOException();
     }
 
@@ -365,28 +382,31 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     public static void main(String[] args) throws Exception {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
-        j.setUpGitRepository();
     }
     
     public void setUpGitRepository() {
         try {
             // startGitblit();
 
-            if (REPOSITORIES.exists() || REPOSITORIES.mkdirs()) {
+            if (REPOSITORIES_ROOT_DIR.exists() || REPOSITORIES_ROOT_DIR.mkdirs()) {
                 cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
-
                 showRemoteBranches("guvnorng.git");
 
                 repository = getGuvnorNGRepository();
+                
                 List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
                 for (PathModel p : files) {
                     System.out.println(p.name);
+                    System.out.println(p.path);
                     System.out.println("isTree: " + p.isTree());
                 }
 
-                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-core", null);
+                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-api", null);
+                
+                //GeneralPathImpl p = GeneralPathImpl.create(this.fileSystem, "guvnorng-vfs/vfs-api", false);                
+                //Map<String, Object> attrs = readAttributes(p, "*", null);
 
-                String contentA = JGitUtils.getStringContent(repository, null, "README.md");
+                String contentA = JGitUtils.getStringContent(repository, null, "guvnorng-vfs/vfs-api/pom.xml");
                 System.out.println(contentA);
             }
         } catch (Exception e) {
@@ -400,7 +420,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     
     private static void cloneOrFetch(String name, String fromUrl) throws Exception {
         System.out.print("Fetching " + name + "... ");
-        JGitUtils.cloneRepository(REPOSITORIES, name, fromUrl);
+        JGitUtils.cloneRepository(REPOSITORIES_ROOT_DIR, name, fromUrl);
         System.out.println("done.");
     }
     

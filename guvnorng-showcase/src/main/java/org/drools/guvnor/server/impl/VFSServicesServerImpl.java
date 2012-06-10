@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.vfs.VFSTempUtil;
 import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
 import org.drools.guvnor.vfs.impl.PathImpl;
 import org.drools.java.nio.IOException;
@@ -43,10 +45,15 @@ import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.PatternSyntaxException;
+import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
+import org.drools.java.nio.fs.base.GeneralPathImpl;
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.server.annotations.Service;
+
+import com.google.gwt.user.client.ui.TreeItem;
 
 @Service
 @ApplicationScoped
@@ -67,7 +74,9 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public DirectoryStream<Path> newDirectoryStream()
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        return newDirectoryStream(Files.newDirectoryStream(Paths.get(System.getProperty("user.home"))).iterator());
+        Path p = new PathImpl("");        
+
+        return newDirectoryStream(Files.newDirectoryStream(fromPath(p)).iterator());
     }
 
     @Override
@@ -278,7 +287,10 @@ public class VFSServicesServerImpl implements VFSService {
     private Path convert(final org.drools.java.nio.file.Path path) {
         final Map<String, Object> attributes = Files.readAttributes(path, "*");
 
-        return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
+        //REVISIT - JLIU: Path.toUri constructs an absolute URI with a scheme equal to the URI scheme that identifies the provider. In order to support
+        //relative path, shall we avoid using Path.toUri? or shall we always use absolute path?
+        return new PathImpl(path.getFileName().toString(), path.toString(), attributes);
+        //return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
     }
 
     private DirectoryStream<Path> newDirectoryStream(final Iterator<org.drools.java.nio.file.Path> iterator) {
@@ -291,5 +303,28 @@ public class VFSServicesServerImpl implements VFSService {
 
     private org.drools.java.nio.file.Path fromPath(final Path path) {
         return Paths.get(URI.create(path.toURI()));
+    }
+    
+    public static void main(String[] args) throws Exception {
+        VFSServicesServerImpl vfs = new VFSServicesServerImpl();
+        //root - to JGIT, this means the root directory of the selected git repository. 
+        URI u = new URI("");
+        URI u2 = new URI("default:///.");
+        URI u3 = URI.create("default:///.");
+        
+        URI u4 = new URI(null, null, ".", null, null);
+        
+        Path p = new PathImpl("");        
+        DirectoryStream<Path> response = vfs.newDirectoryStream(p);
+        
+        for (final Path path : response) {
+            Map<String, Object> attributes = vfs.readAttributes(path);
+
+            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(attributes);
+            System.out.println("path.getFileName() " + path.getFileName());
+            System.out.println("attrs.isDirectory() " + attrs.isDirectory());
+            System.out.println("attrs.isRegularFile() " + attrs.isRegularFile());
+            System.out.println("path.toURI() " + path.toURI());
+        }
     }
 }

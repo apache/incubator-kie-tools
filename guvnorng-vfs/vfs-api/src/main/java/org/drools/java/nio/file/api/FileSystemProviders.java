@@ -89,9 +89,12 @@ public final class FileSystemProviders {
     public static FileSystemProvider resolveProvider(final URI uri) {
         checkNotNull("uri", uri);
         final String scheme = uri.getScheme();
-        if (scheme == null) {
-            throw new IllegalArgumentException("Scheme not found");
+        
+        //REVISIT - JLIU: In order to allow URI that has no scheme specified, we return the default provider if the scheme is not specified.
+        if(scheme == null || "".equals(scheme)) {
+            return getDefaultProvider();
         }
+
         return getProvider(scheme);
     }
 
