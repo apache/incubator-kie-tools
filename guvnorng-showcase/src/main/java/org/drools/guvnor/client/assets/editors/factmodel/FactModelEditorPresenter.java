@@ -69,7 +69,7 @@ public class FactModelEditorPresenter
     public void onStart() {
         PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         String uri = placeRequest.getParameter( "path", null );
-        Path path = new PathImpl(uri);
+        Path path = new PathImpl("mortgagesSample/MortgageModel.model.drl");
         
 /*        FactModels asset = new FactModels();
         view.setContent( asset );*/

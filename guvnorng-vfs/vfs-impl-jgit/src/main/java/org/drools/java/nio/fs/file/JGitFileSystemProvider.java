@@ -77,7 +77,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final JGitFileSystem fileSystem;
     private boolean isDefault;
     
-    public static final File REPOSITORIES_ROOT_DIR = new File("git");
+    public static final String REPOSITORIES_ROOT_DIR = "git_repo";
     private Repository repository;
 
     public JGitFileSystemProvider() {
@@ -387,8 +387,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     public void setUpGitRepository() {
         try {
             // startGitblit();
+            File gitRepoRoot = new File(REPOSITORIES_ROOT_DIR);
 
-            if (REPOSITORIES_ROOT_DIR.exists() || REPOSITORIES_ROOT_DIR.mkdirs()) {
+            if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
                 cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
                 showRemoteBranches("guvnorng.git");
 
@@ -415,12 +416,12 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
     
     public static Repository getGuvnorNGRepository() throws java.io.IOException {
-        return new FileRepository(new File(new File("git"), "guvnorng.git"));
+        return new FileRepository(new File(REPOSITORIES_ROOT_DIR, "guvnorng.git"));
     }
     
     private static void cloneOrFetch(String name, String fromUrl) throws Exception {
         System.out.print("Fetching " + name + "... ");
-        JGitUtils.cloneRepository(REPOSITORIES_ROOT_DIR, name, fromUrl);
+        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl);
         System.out.println("done.");
     }
     

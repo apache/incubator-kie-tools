@@ -17,16 +17,19 @@
 package org.drools.guvnor.server.impl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
 public class AssetServiceImpl implements AssetService {
-
+    @Inject VFSService vfsService;
 /*    @Override
     public <V> V loadAsset(Path path, Class<V> type) {
         if (type == FactModels.class) {
@@ -38,10 +41,15 @@ public class AssetServiceImpl implements AssetService {
     
     @Override
     public FactModels loadAsset(Path path) {
-        //if (type == FactModels.class) {
+        try {
             FactModels asset = new FactModels();
+            String content = vfsService.readAllString(path);
+            FactModelContentHandler handler = new FactModelContentHandler();
+            handler.retrieveAssetContent(asset, content);
             return asset;
-        //}
-        //return null;
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 }

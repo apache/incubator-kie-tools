@@ -274,7 +274,15 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.0.0.Beta4</version>
-    </dependency>
+    </dependency>   
+<!--            
+            
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency> -->
+    
   </dependencies>
 
   <profiles>
@@ -796,6 +804,7 @@
           <scope>provided</scope>
           <version>${jetty.version}</version>
         </dependency>
+    
       </dependencies>
 
       <build>
@@ -1012,6 +1021,14 @@
           <scope>provided</scope>
           <version>${jetty.version}</version>
         </dependency>
+        
+            
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency>
+    
       </dependencies>
 
       <build>
