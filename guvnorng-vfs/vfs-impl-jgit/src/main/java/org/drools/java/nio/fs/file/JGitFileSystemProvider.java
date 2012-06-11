@@ -77,7 +77,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final JGitFileSystem fileSystem;
     private boolean isDefault;
     
-    public static final String REPOSITORIES_ROOT_DIR = "git_repo";
+    public static final String REPOSITORIES_ROOT_DIR = "./git";
     private Repository repository;
 
     public JGitFileSystemProvider() {
