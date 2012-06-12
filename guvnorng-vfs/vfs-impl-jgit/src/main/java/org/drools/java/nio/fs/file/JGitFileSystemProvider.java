@@ -433,8 +433,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             File gitRepoRoot = new File(REPOSITORIES_ROOT_DIR);
 
             if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
-                cloneOrFetch("guvnorng.git", "git@github.com:droolsjbpm/guvnorng.git");
-                //showRemoteBranches("guvnorng.git");
+                cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
+                //cloneOrFetch("guvnorng.git", "git@github.com:droolsjbpm/guvnorng.git");
+               //showRemoteBranches("guvnorng.git");
 
                 repository = getGuvnorNGRepository();
                 
