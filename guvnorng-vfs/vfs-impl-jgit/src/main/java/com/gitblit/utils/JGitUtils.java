@@ -17,6 +17,7 @@ package com.gitblit.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,17 +30,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.jgit.JGitText;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheBuilder;
+import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.errors.ConfigInvalidException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -70,6 +80,7 @@ import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.OrTreeFilter;
@@ -1661,4 +1672,183 @@ public class JGitUtils {
 		}
 		return success;
 	}
+    
+    public static void commitAndPush(Repository repository, PathModel pathModel, InputStream inputStream, String commitMessage) {        
+        try {           
+/*            
+            RefModel issuesBranch = JGitUtils.getPagesBranch(repository);
+            if (issuesBranch == null) {
+                JGitUtils.createOrphanBranch(repository, "gh-pages", null);
+            }
+
+            System.out.println("Updating gh-pages branch...");
+            ObjectId headId = repository.resolve(ghpages + "^{commit}");*/
+            
+            ObjectInserter odi = repository.newObjectInserter();
+            try {
+                // Create the in-memory index of the new/updated issue.
+                ObjectId headId = repository.resolve(Constants.HEAD);
+                DirCache index = createIndex(repository, headId, pathModel, inputStream, true);
+                ObjectId indexTreeId = index.writeTree(odi);
+
+                // Create a commit object
+                PersonIdent author = new PersonIdent("jliu", "jervisliu@gmail.com");
+                CommitBuilder commit = new CommitBuilder();
+                commit.setAuthor(author);
+                commit.setCommitter(author);
+                commit.setEncoding(Constants.CHARACTER_ENCODING);
+                commit.setMessage(commitMessage);
+                commit.setParentId(headId);
+                commit.setTreeId(indexTreeId);
+
+                // Insert the commit into the repository
+                ObjectId commitId = odi.insert(commit);
+                odi.flush();
+
+                RevWalk revWalk = new RevWalk(repository);
+                try {
+                    RevCommit revCommit = revWalk.parseCommit(commitId);
+                    RefUpdate ru = repository.updateRef(Constants.HEAD);
+                    ru.setNewObjectId(commitId);
+                    ru.setExpectedOldObjectId(headId);
+                    ru.setRefLogMessage("commit: " + revCommit.getShortMessage(), false);
+                    Result rc = ru.forceUpdate();
+                    switch (rc) {
+                    case NEW:
+                    case FORCED:
+                    case FAST_FORWARD:
+                        break;
+                    case REJECTED:
+                    case LOCK_FAILURE:
+                        throw new ConcurrentRefUpdateException(JGitText.get().couldNotLockHEAD,
+                                ru.getRef(), rc);
+                    default:
+                        throw new JGitInternalException(MessageFormat.format(
+                                JGitText.get().updatingRefFailed, Constants.HEAD, commitId.toString(), rc));
+                    }
+                } finally {
+                    revWalk.release();
+                }
+                
+                Git git = Git.wrap(repository);
+                List<RefSpec> specs = new ArrayList<RefSpec>();
+                specs.add(new RefSpec("refs/heads/master"));
+
+                PushCommand pushCommand = git.push();
+                pushCommand.call();
+                System.out.println("git pushed.");
+            } finally {
+                odi.release();
+            }           
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }       
+    }    	   
+
+    /**
+     * Creates an in-memory index of the issue change.
+     * 
+     * @param repo
+     * @param headId
+     * @param sourceFolder
+     * @param obliterate
+     *            if true the source folder tree is used as the new tree for
+     *            gh-pages and non-existent files are considered deleted
+     * @return an in-memory index
+     * @throws IOException
+     */
+    private static DirCache createIndex(Repository repo, ObjectId headId, /*File sourceFolder,*/ PathModel pathModel, InputStream fis,
+            boolean obliterate) throws IOException {
+
+        DirCache inCoreIndex = DirCache.newInCore();
+        DirCacheBuilder dcBuilder = inCoreIndex.builder();
+        ObjectInserter inserter = repo.newObjectInserter();
+
+        try {
+            // Add all files to the temporary index
+            Set<String> ignorePaths = new TreeSet<String>();
+            //List<File> files = listFiles(sourceFolder);
+            //for (File file : files) {
+                // create an index entry for the file
+/*                final DirCacheEntry dcEntry = new DirCacheEntry(StringUtils.getRelativePath(
+                        sourceFolder.getPath(), file.getPath()));
+                dcEntry.setLength(file.length());
+                dcEntry.setLastModified(file.lastModified());
+                dcEntry.setFileMode(FileMode.REGULAR_FILE);*/
+            final DirCacheEntry dcEntry = new DirCacheEntry(pathModel.path);
+            dcEntry.setLength(pathModel.size);
+            //dcEntry.setLastModified(file.lastModified());
+            dcEntry.setFileMode(FileMode.REGULAR_FILE);
+            
+                // add this entry to the ignore paths set
+                ignorePaths.add(dcEntry.getPathString());
+
+                // insert object
+                //InputStream inputStream = new FileInputStream(file);
+                try {
+/*                    dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB, file.length(),
+                            inputStream));*/
+                    dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB, pathModel.size,
+                            fis));
+                } finally {
+                    //inputStream.close();
+                    fis.close();
+                }
+
+                // add to temporary in-core index
+                dcBuilder.add(dcEntry);
+           //}
+
+            if (!obliterate) {
+                // Traverse HEAD to add all other paths
+                TreeWalk treeWalk = new TreeWalk(repo);
+                int hIdx = -1;
+                if (headId != null)
+                    hIdx = treeWalk.addTree(new RevWalk(repo).parseTree(headId));
+                treeWalk.setRecursive(true);
+
+                while (treeWalk.next()) {
+                    String path = treeWalk.getPathString();
+                    CanonicalTreeParser hTree = null;
+                    if (hIdx != -1)
+                        hTree = treeWalk.getTree(hIdx, CanonicalTreeParser.class);
+                    if (!ignorePaths.contains(path)) {
+                        // add entries from HEAD for all other paths
+                        if (hTree != null) {
+                            // create a new DirCacheEntry with data retrieved from HEAD
+                            final DirCacheEntry dcEntry1 = new DirCacheEntry(path);
+                            dcEntry.setObjectId(hTree.getEntryObjectId());
+                            dcEntry.setFileMode(hTree.getEntryFileMode());
+
+                            // add to temporary in-core index
+                            dcBuilder.add(dcEntry1);
+                        }
+                    }
+                }
+
+                // release the treewalk
+                treeWalk.release();
+            }
+            
+            // finish temporary in-core index used for this commit
+            dcBuilder.finish();
+        } catch (Exception e) {
+        } finally {        
+            inserter.release();
+        }
+        return inCoreIndex;
+    }
+
+    private static List<File> listFiles(File folder) {
+        List<File> files = new ArrayList<File>();
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                files.addAll(listFiles(file));
+            } else {
+                files.add(file);
+            }
+        }
+        return files;
+    }
 }

@@ -26,12 +26,15 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 
 import org.drools.java.nio.IOException;
@@ -60,15 +63,45 @@ import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.spi.FileSystemProvider;
 import org.drools.java.nio.fs.base.GeneralPathImpl;
+import org.eclipse.jgit.JGitText;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.awtui.AwtCredentialsProvider;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheBuilder;
+import org.eclipse.jgit.dircache.DirCacheEntry;
+import org.eclipse.jgit.lib.CommitBuilder;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.FileMode;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RefUpdate.Result;
+import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.DepthWalk.Commit;
 import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.util.FS;
 
 import com.gitblit.FileSettings;
 import com.gitblit.GitBlit;
 import com.gitblit.GitBlitException;
 import com.gitblit.models.PathModel;
+import com.gitblit.models.RefModel;
 import com.gitblit.models.RepositoryModel;
 import com.gitblit.utils.JGitUtils;
+import com.gitblit.utils.StringUtils;
 
 import static org.drools.java.nio.util.Preconditions.*;
 
@@ -77,7 +110,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final JGitFileSystem fileSystem;
     private boolean isDefault;
     
-    public static final String REPOSITORIES_ROOT_DIR = "./git";
+    public static final String REPOSITORIES_ROOT_DIR = ".git";
     private Repository repository;
 
     public JGitFileSystemProvider() {
@@ -382,6 +415,16 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     public static void main(String[] args) throws Exception {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
+        
+        Repository repository = j.getGuvnorNGRepository();     
+        
+        File source = new File("sometestfile/testfile.txt");
+        System.out.println(source.getAbsolutePath());
+        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile", source.length(), 0, "");
+        String commitMessage = "test. pushed from jgit.";
+        InputStream inputStream = new FileInputStream(source);
+        
+        JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage);
     }
     
     public void setUpGitRepository() {
@@ -390,19 +433,26 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             File gitRepoRoot = new File(REPOSITORIES_ROOT_DIR);
 
             if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
-                cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
-                showRemoteBranches("guvnorng.git");
+                cloneOrFetch("guvnorng.git", "git@github.com:droolsjbpm/guvnorng.git");
+                //showRemoteBranches("guvnorng.git");
 
                 repository = getGuvnorNGRepository();
                 
                 List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
                 for (PathModel p : files) {
+                    System.out.println("name " + p.name);
+                    System.out.println("path " + p.path);
+                    System.out.println("isTree: " + p.isTree());
+                }
+                
+                List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "guvnorng-vfs", null);
+                for (PathModel p : files1) {
                     System.out.println(p.name);
                     System.out.println(p.path);
                     System.out.println("isTree: " + p.isTree());
                 }
-
-                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-api", null);
+                
+                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-impl-jgit", null);
                 
                 //GeneralPathImpl p = GeneralPathImpl.create(this.fileSystem, "guvnorng-vfs/vfs-api", false);                
                 //Map<String, Object> attrs = readAttributes(p, "*", null);
@@ -414,15 +464,17 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             e.printStackTrace();
         }
     }
-    
+  
     public static Repository getGuvnorNGRepository() throws java.io.IOException {
         return new FileRepository(new File(REPOSITORIES_ROOT_DIR, "guvnorng.git"));
     }
     
     private static void cloneOrFetch(String name, String fromUrl) throws Exception {
         System.out.print("Fetching " + name + "... ");
-        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl);
-        System.out.println("done.");
+        AwtCredentialsProvider credential = new AwtCredentialsProvider();
+        
+        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl, true, credential);
+        System.out.println("Fetching done.");
     }
     
     private static void showRemoteBranches(String repositoryName) {
@@ -435,6 +487,5 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         } catch (GitBlitException g) {
             g.printStackTrace();
         }
-    }
-    
+    }    
 }
