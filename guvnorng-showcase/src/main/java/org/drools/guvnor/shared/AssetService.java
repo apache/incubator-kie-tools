@@ -17,12 +17,32 @@
 package org.drools.guvnor.shared;
 
 
-import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
+import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface AssetService {
     //<V> V loadAsset(Path path, Class<V> type);
-    FactModels loadAsset(Path path);
+    
+    /**
+     * Returns the Asset 
+     * 
+     * @param path: the path to identify the Asset  
+     * @param type: The asset type, each asset type has an associated content hander. For example 
+     * <code>
+     * brl=org.drools.guvnor.server.contenthandler.drools.BRLContentHandler
+     * dslr=org.drools.guvnor.server.contenthandler.drools.DSLRuleContentHandler
+     * drl=org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandle
+     * </code>
+     * In Drools Guvnor, this information is configured in contenthandler.properties file. In GuvnorNG,
+     * this will be defined in annotation, for exmaple: 
+     * <code>
+     * @Handles( "brl" )
+     * public class BRLContentHandler {
+     * }
+     * </code>
+     * @return AbstractAsset
+     */
+    AbstractAsset loadAsset(Path path, String type);
 }

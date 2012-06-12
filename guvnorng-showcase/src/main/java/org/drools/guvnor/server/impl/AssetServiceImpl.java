@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
+import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
@@ -40,7 +41,7 @@ public class AssetServiceImpl implements AssetService {
     }*/
     
     @Override
-    public FactModels loadAsset(Path path) {
+    public AbstractAsset loadAsset(Path path, String type) {
         try {
             FactModels asset = new FactModels();
             String content = vfsService.readAllString(path);

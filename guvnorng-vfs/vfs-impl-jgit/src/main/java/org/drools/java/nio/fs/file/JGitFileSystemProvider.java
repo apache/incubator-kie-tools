@@ -425,6 +425,22 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         InputStream inputStream = new FileInputStream(source);
         
         JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage);
+        
+        repository = getGuvnorNGRepository();
+        
+        List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
+        for (PathModel p : files) {
+            System.out.println("name: " + p.name);
+            System.out.println("path: " + p.path);
+            System.out.println("isTree: " + p.isTree());
+        }
+        
+        List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "mortgagesSample", null);
+        for (PathModel p : files1) {
+            System.out.println(p.name);
+            System.out.println(p.path);
+            System.out.println("isTree: " + p.isTree());
+        }        
     }
     
     public void setUpGitRepository() {
@@ -441,15 +457,15 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 
                 List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
                 for (PathModel p : files) {
-                    System.out.println("name " + p.name);
-                    System.out.println("path " + p.path);
+                    System.out.println("name: " + p.name);
+                    System.out.println("path: " + p.path);
                     System.out.println("isTree: " + p.isTree());
                 }
                 
-                List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "guvnorng-vfs", null);
+                List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "mortgagesSample", null);
                 for (PathModel p : files1) {
-                    System.out.println(p.name);
-                    System.out.println(p.path);
+                    System.out.println("name: " + p.name);
+                    System.out.println("name: " + p.path);
                     System.out.println("isTree: " + p.isTree());
                 }
                 

@@ -22,6 +22,7 @@ import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.shared.AssetService;
+import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
@@ -73,12 +74,12 @@ public class FactModelEditorPresenter
         
 /*        FactModels asset = new FactModels();
         view.setContent( asset );*/
-        assetService.call(new RemoteCallback<FactModels>() {
+        assetService.call(new RemoteCallback<AbstractAsset>() {
             @Override
-            public void callback(FactModels response) {
-                view.setContent(response);
+            public void callback(AbstractAsset response) {
+                view.setContent((FactModels)response);
             }
-        }).loadAsset(path/*, FactModels.class*/);
+        }).loadAsset(path, "model.drl");
     }
 
     public void doSave() {

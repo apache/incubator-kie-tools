@@ -1688,7 +1688,7 @@ public class JGitUtils {
             try {
                 // Create the in-memory index of the new/updated issue.
                 ObjectId headId = repository.resolve(Constants.HEAD);
-                DirCache index = createIndex(repository, headId, pathModel, inputStream, true);
+                DirCache index = createIndex(repository, headId, pathModel, inputStream, false);
                 ObjectId indexTreeId = index.writeTree(odi);
 
                 // Create a commit object
@@ -1730,13 +1730,13 @@ public class JGitUtils {
                     revWalk.release();
                 }
                 
-                Git git = Git.wrap(repository);
+/*                Git git = Git.wrap(repository);
                 List<RefSpec> specs = new ArrayList<RefSpec>();
                 specs.add(new RefSpec("refs/heads/master"));
 
                 PushCommand pushCommand = git.push();
                 pushCommand.call();
-                System.out.println("git pushed.");
+                System.out.println("git pushed.");*/
             } finally {
                 odi.release();
             }           
