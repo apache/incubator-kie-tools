@@ -17,19 +17,19 @@
 package org.drools.guvnor.server.contenthandler.drools;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-/*import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;*/
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FieldMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.plaintext.RuleContentText;
-/*import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-*/
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,18 +40,18 @@ public class FactModelContentHandler {
     private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
 
     public void retrieveAssetContent(FactModels asset,
-                                     String item) throws SerializationException {
-/*        try {
-            List<FactMetaModel> models = toModel( item );
+                                     String content) throws SerializationException {
+        try {
+            List<FactMetaModel> models = toModel( content );
             //FactModels ms = new FactModels();
             asset.setContent(models);
             //asset.setContent( ms );
         } catch ( DroolsParserException e ) {
             log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")" );
             RuleContentText text = new RuleContentText();
-            text.setContent(item);
+            text.setContent(content);
             //asset.setContent( text );
-        }*/
+        }
 
     }
 
@@ -59,11 +59,11 @@ public class FactModelContentHandler {
     public void storeAssetContent(FactModels asset,
                                   String repoAsset)
                                                       throws SerializationException {
-        //repoAsset = toDRL( asset.getContent() );
+        repoAsset = toDRL( asset.getContent() );
 
     }
 
-/*    String toDRL(FactMetaModel mm) {
+    String toDRL(FactMetaModel mm) {
         StringBuilder sb = new StringBuilder();
         sb.append( "declare " ).append( mm.getName() );
         if ( mm.hasSuperType() ) {
@@ -157,5 +157,5 @@ public class FactModelContentHandler {
         sb.append( ")" );
         return sb;
     }
-*/
+
 }
