@@ -8,11 +8,11 @@
     <version>5.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>vfs-impl</artifactId>
+  <artifactId>vfs-fs</artifactId>
   <packaging>jar</packaging>
 
-  <name>VFS Impl</name>
-  <description>VFS Impl</description>
+  <name>VFS File System Impl</name>
+  <description>VFS File System Impl</description>
 
   <dependencies>
     <dependency>

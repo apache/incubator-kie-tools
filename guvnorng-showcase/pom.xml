@@ -40,7 +40,7 @@
     
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>vfs-impl-jgit</artifactId>
+      <artifactId>vfs-jgit</artifactId>
     </dependency>
 
     <!-- Internal dependencies -->

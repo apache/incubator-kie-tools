@@ -469,7 +469,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                     System.out.println("isTree: " + p.isTree());
                 }
                 
-                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-impl-jgit", null);
+                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-impls/vfs-jgit", null);
                 
                 //GeneralPathImpl p = GeneralPathImpl.create(this.fileSystem, "guvnorng-vfs/vfs-api", false);                
                 //Map<String, Object> attrs = readAttributes(p, "*", null);

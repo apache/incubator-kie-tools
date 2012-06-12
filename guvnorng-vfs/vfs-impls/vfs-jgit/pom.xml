@@ -8,11 +8,11 @@
     <version>5.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>vfs-impl-jgit</artifactId>
+  <artifactId>vfs-jgit</artifactId>
   <packaging>jar</packaging>
 
-  <name>VFS Impl JGIT</name>
-  <description>VFS Impl JGIT</description>
+  <name>VFS JGIT Impl</name>
+  <description>VFS JGIT Impl</description>
 
   <repositories>
     <repository>

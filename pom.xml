@@ -84,12 +84,12 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>vfs-impl</artifactId>
+        <artifactId>vfs-fs</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>vfs-impl-jgit</artifactId>
+        <artifactId>vfs-jgit</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

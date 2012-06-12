@@ -15,7 +15,7 @@
   <modules>
     <module>vfs-common</module>
     <module>vfs-api</module>
-    <module>vfs-impl</module>
-    <module>vfs-impl-jgit</module>
+    <module>vfs-impls/vfs-fs</module>
+    <module>vfs-impls/vfs-jgit</module>
   </modules>
 </project>
