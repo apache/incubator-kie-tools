@@ -15,13 +15,24 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import com.google.gwt.event.logical.shared.*;
+import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
+import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
+import org.drools.guvnor.client.workbench.widgets.events.HasCloseActivityHandlers;
+import org.drools.guvnor.client.workbench.widgets.events.HasWorkbenchPartHideHandlers;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.workbench.widgets.events.*;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 /**
  *
@@ -33,24 +44,14 @@ public class WorkbenchPart extends SimpleLayoutPanel
         HasSelectionHandlers<WorkbenchPart>,
         HasWorkbenchPartHideHandlers {
 
-    private String title;
+    private String      title;
     private ScrollPanel sp = new ScrollPanel();
 
     public WorkbenchPart(final Widget widget,
                          final String title) {
         this.title = title;
-        sp.setWidget(widget);
-        setWidget(sp);
-
-
-        addCloseHandler( new CloseHandler<WorkbenchPart>() {
-
-            @Override
-            public void onClose(CloseEvent<WorkbenchPart> workbenchPartCloseEvent) {
-                close();
-            }
-
-        } );
+        sp.setWidget( widget );
+        setWidget( sp );
     }
 
     public void close() {
@@ -63,40 +64,34 @@ public class WorkbenchPart extends SimpleLayoutPanel
 
     @Override
     public HandlerRegistration addCloseHandler(CloseHandler<WorkbenchPart> handler) {
-        return addHandler(
-                handler,
-                CloseEvent.getType());
+        return addHandler( handler,
+                           CloseEvent.getType() );
     }
 
     @Override
     public HandlerRegistration addActivityCloseHandler(ActivityCloseHandler handler) {
-        return addHandler(
-                handler,
-                ActivityCloseEvent.getType());
+        return addHandler( handler,
+                           ActivityCloseEvent.getType() );
     }
 
     @Override
     public HandlerRegistration addSelectionHandler(SelectionHandler<WorkbenchPart> handler) {
-        return addHandler(
-                handler,
-                SelectionEvent.getType()
-        );
+        return addHandler( handler,
+                           SelectionEvent.getType() );
     }
 
     @Override
     public HandlerRegistration addWorkbenchPartHideHandler(WorkbenchPartHideHandler handler) {
-        return addHandler(
-                handler,
-                WorkbenchPartHideEvent.getType()
-        );
+        return addHandler( handler,
+                           WorkbenchPartHideEvent.getType() );
     }
 
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        if (parent != null) {
-            sp.setPixelSize(parent.getOffsetWidth(),
-                    parent.getOffsetHeight());
+        if ( parent != null ) {
+            sp.setPixelSize( parent.getOffsetWidth(),
+                             parent.getOffsetHeight() );
         }
         super.onResize();
     }

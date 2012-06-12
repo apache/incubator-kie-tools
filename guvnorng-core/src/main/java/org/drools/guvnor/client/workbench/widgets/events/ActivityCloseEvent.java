@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class ActivityCloseEvent extends GwtEvent<ActivityCloseHandler> {
 
-    private static Type<ActivityCloseHandler> TYPE;
+    private static final Type<ActivityCloseHandler> TYPE = new Type<ActivityCloseHandler>();
 
     @Override
     public Type<ActivityCloseHandler> getAssociatedType() {
@@ -12,21 +12,16 @@ public class ActivityCloseEvent extends GwtEvent<ActivityCloseHandler> {
     }
 
     public static Type<ActivityCloseHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<ActivityCloseHandler>();
-        }
-        return (Type) TYPE;
+        return TYPE;
     }
 
     public static void fire(HasCloseActivityHandlers source) {
-        if (TYPE != null) {
-            ActivityCloseEvent event = new ActivityCloseEvent();
-            source.fireEvent(event);
-        }
+        ActivityCloseEvent event = new ActivityCloseEvent();
+        source.fireEvent( event );
     }
 
     @Override
     protected void dispatch(ActivityCloseHandler handler) {
-        handler.onCloseActivity(this);
+        handler.onCloseActivity( this );
     }
 }

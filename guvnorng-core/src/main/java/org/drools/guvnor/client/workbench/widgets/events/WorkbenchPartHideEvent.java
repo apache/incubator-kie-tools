@@ -6,25 +6,22 @@ import org.drools.guvnor.client.workbench.WorkbenchPart;
 
 public class WorkbenchPartHideEvent extends GwtEvent<WorkbenchPartHideHandler> {
 
-    private final WorkbenchPart deselectedWorkbenchPart;
+    private final WorkbenchPart                         deselectedWorkbenchPart;
 
-    private static Type<WorkbenchPartHideHandler> TYPE;
+    private static final Type<WorkbenchPartHideHandler> TYPE = new Type<WorkbenchPartHideHandler>();
 
     @Override
     public Type<WorkbenchPartHideHandler> getAssociatedType() {
-        return (Type) TYPE;
+        return TYPE;
     }
 
     public static Type<WorkbenchPartHideHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<WorkbenchPartHideHandler>();
-        }
-        return (Type) TYPE;
+        return TYPE;
     }
 
     @Override
     protected void dispatch(WorkbenchPartHideHandler handler) {
-        handler.onHide(this);
+        handler.onHide( this );
     }
 
     public WorkbenchPartHideEvent(WorkbenchPart deselectedWorkbenchPart) {
@@ -35,10 +32,11 @@ public class WorkbenchPartHideEvent extends GwtEvent<WorkbenchPartHideHandler> {
         return deselectedWorkbenchPart;
     }
 
-    public static <T> void fire(HasSelectionHandlers<T> source, WorkbenchPart deselectedItem) {
-        if (TYPE != null) {
-            WorkbenchPartHideEvent event = new WorkbenchPartHideEvent(deselectedItem);
-            source.fireEvent(event);
+    public static <T> void fire(HasSelectionHandlers<T> source,
+                                WorkbenchPart deselectedItem) {
+        if ( TYPE != null ) {
+            WorkbenchPartHideEvent event = new WorkbenchPartHideEvent( deselectedItem );
+            source.fireEvent( event );
         }
     }
 }
