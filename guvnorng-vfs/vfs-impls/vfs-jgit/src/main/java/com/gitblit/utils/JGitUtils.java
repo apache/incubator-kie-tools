@@ -21,10 +21,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
@@ -53,7 +56,9 @@ import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.errors.ConfigInvalidException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.errors.NotSupportedException;
 import org.eclipse.jgit.errors.StopWalkException;
+import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
@@ -79,7 +84,12 @@ import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
+import org.eclipse.jgit.transport.Transport;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
@@ -1673,7 +1683,7 @@ public class JGitUtils {
 		return success;
 	}
     
-    public static void commitAndPush(Repository repository, PathModel pathModel, InputStream inputStream, String commitMessage) {        
+    public static void commitAndPush(Repository repository, PathModel pathModel, InputStream inputStream, String commitMessage, CredentialsProvider credentialsProvider) {        
         try {           
 /*            
             RefModel issuesBranch = JGitUtils.getPagesBranch(repository);
@@ -1692,7 +1702,7 @@ public class JGitUtils {
                 ObjectId indexTreeId = index.writeTree(odi);
 
                 // Create a commit object
-                PersonIdent author = new PersonIdent("jliu", "jervisliu@gmail.com");
+                PersonIdent author = new PersonIdent("jervisliu", "jervisliu@gmail.com");
                 CommitBuilder commit = new CommitBuilder();
                 commit.setAuthor(author);
                 commit.setCommitter(author);
@@ -1735,6 +1745,7 @@ public class JGitUtils {
                 specs.add(new RefSpec("refs/heads/master"));
 
                 PushCommand pushCommand = git.push();
+                pushCommand.setCredentialsProvider(credentialsProvider);
                 pushCommand.call();
                 System.out.println("git pushed.");
             } finally {

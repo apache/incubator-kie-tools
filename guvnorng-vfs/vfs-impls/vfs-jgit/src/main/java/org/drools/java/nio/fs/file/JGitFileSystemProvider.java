@@ -112,6 +112,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     
     public static final String REPOSITORIES_ROOT_DIR = ".git";
     private Repository repository;
+    private static UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("jervisliu", "uguess");
 
     public JGitFileSystemProvider() {
         setUpGitRepository();
@@ -420,11 +421,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         File source = new File("sometestfiles/testfile.txt");
         System.out.println(source.getAbsolutePath());
-        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile7", source.length(), 0, "");
+        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile9", source.length(), 0, "");
         String commitMessage = "test. pushed from jgit.";
         InputStream inputStream = new FileInputStream(source);
         
-        JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage);
+        JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage, credential);
         
         repository = getGuvnorNGRepository();
         
@@ -450,8 +451,8 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
             if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
                 //cloneOrFetch("guvnorng.git", "git@github.com:jervisliu/guvnorng-playground.git");
-                cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
-                //cloneOrFetch("guvnorng.git", "git@github.com:droolsjbpm/guvnorng.git");
+                //cloneOrFetch("guvnorng.git", "https://github.com/jervisliu/guvnorng-playground.git");
+                cloneOrFetch("guvnorng.git", "https://github.com/droolsjbpm/guvnorng.git");
                //showRemoteBranches("guvnorng.git");
 
                 repository = getGuvnorNGRepository();
@@ -484,8 +485,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     
     private static void cloneOrFetch(String name, String fromUrl) throws Exception {
         System.out.print("Fetching " + name + "... ");
-        AwtCredentialsProvider credential = new AwtCredentialsProvider();
-        
+        //AwtCredentialsProvider credential = new AwtCredentialsProvider();
         JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl, true, credential);
         System.out.println("Fetching done.");
     }
