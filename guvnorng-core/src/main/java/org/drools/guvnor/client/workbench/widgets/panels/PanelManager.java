@@ -145,6 +145,9 @@ public class PanelManager {
     }
 
     public void setFocus(final WorkbenchPanel panel) {
+        if ( !this.workbenchPanels.contains( panel ) ) {
+            this.workbenchPanels.add( panel );
+        }
         for ( WorkbenchPanel wbp : this.workbenchPanels ) {
             wbp.setFocus( wbp == panel );
         }
