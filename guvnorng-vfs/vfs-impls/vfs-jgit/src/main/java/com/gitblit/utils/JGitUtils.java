@@ -1730,13 +1730,13 @@ public class JGitUtils {
                     revWalk.release();
                 }
                 
-/*                Git git = Git.wrap(repository);
+                Git git = Git.wrap(repository);
                 List<RefSpec> specs = new ArrayList<RefSpec>();
                 specs.add(new RefSpec("refs/heads/master"));
 
                 PushCommand pushCommand = git.push();
                 pushCommand.call();
-                System.out.println("git pushed.");*/
+                System.out.println("git pushed.");
             } finally {
                 odi.release();
             }           
@@ -1818,8 +1818,8 @@ public class JGitUtils {
                         if (hTree != null) {
                             // create a new DirCacheEntry with data retrieved from HEAD
                             final DirCacheEntry dcEntry1 = new DirCacheEntry(path);
-                            dcEntry.setObjectId(hTree.getEntryObjectId());
-                            dcEntry.setFileMode(hTree.getEntryFileMode());
+                            dcEntry1.setObjectId(hTree.getEntryObjectId());
+                            dcEntry1.setFileMode(hTree.getEntryFileMode());
 
                             // add to temporary in-core index
                             dcBuilder.add(dcEntry1);

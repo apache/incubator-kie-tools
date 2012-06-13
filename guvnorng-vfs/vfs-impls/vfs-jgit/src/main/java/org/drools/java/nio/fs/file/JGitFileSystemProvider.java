@@ -418,9 +418,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         Repository repository = j.getGuvnorNGRepository();     
         
-        File source = new File("sometestfile/testfile.txt");
+        File source = new File("sometestfiles/testfile.txt");
         System.out.println(source.getAbsolutePath());
-        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile", source.length(), 0, "");
+        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile7", source.length(), 0, "");
         String commitMessage = "test. pushed from jgit.";
         InputStream inputStream = new FileInputStream(source);
         
@@ -449,6 +449,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             File gitRepoRoot = new File(REPOSITORIES_ROOT_DIR);
 
             if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
+                //cloneOrFetch("guvnorng.git", "git@github.com:jervisliu/guvnorng-playground.git");
                 cloneOrFetch("guvnorng.git", "git://github.com/droolsjbpm/guvnorng.git");
                 //cloneOrFetch("guvnorng.git", "git@github.com:droolsjbpm/guvnorng.git");
                //showRemoteBranches("guvnorng.git");
@@ -465,16 +466,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "mortgagesSample", null);
                 for (PathModel p : files1) {
                     System.out.println("name: " + p.name);
-                    System.out.println("name: " + p.path);
+                    System.out.println("path: " + p.path);
                     System.out.println("isTree: " + p.isTree());
                 }
-                
-                PathModel pathModel = JGitUtils.getPathModel(repository, "guvnorng-vfs/vfs-impls/vfs-jgit", null);
-                
-                //GeneralPathImpl p = GeneralPathImpl.create(this.fileSystem, "guvnorng-vfs/vfs-api", false);                
-                //Map<String, Object> attrs = readAttributes(p, "*", null);
 
-                String contentA = JGitUtils.getStringContent(repository, null, "guvnorng-vfs/vfs-api/pom.xml");
+                String contentA = JGitUtils.getStringContent(repository, null, "mortgagesSample/MortgageModel.model.drl");
                 System.out.println(contentA);
             }
         } catch (Exception e) {
