@@ -19,8 +19,8 @@ package org.drools.guvnor.client.editors.admin1;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -46,7 +46,7 @@ public class MyAdminAreaPresenter
 
     @Override
     public void onStart() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         String uuid = placeRequest.getParameter( "uuid",
                                                  null );
         view.setName( "AdminArea" );

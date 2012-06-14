@@ -117,8 +117,8 @@ public class AdminTree extends AbstractTree {
             final PlaceRequest placeRequest;
             if ( widgetID.equals( ADMIN_ID ) ) {
                 placeRequest = new PlaceRequest( "AdminArea" );
-                placeRequest.parameter( "uuid",
-                                        "someuuidvalue" );
+                placeRequest.addParameter( "uuid",
+                                           "someuuidvalue" );
             } else if ( widgetID.equals( ADMIN2_ID ) ) {
                 placeRequest = new PlaceRequest( "AdminArea2" );
             } else {

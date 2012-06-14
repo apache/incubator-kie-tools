@@ -5,9 +5,9 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.workbench.Position;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -32,14 +32,14 @@ public class TextEditorActivity
     @Override
     public void start() {
     }
-    
+
     @Override
     public void onStop() {
         if ( presenter != null && presenter instanceof ScreenService ) {
             ((ScreenService) presenter).onClose();
         }
     }
-    
+
     @Override
     public boolean mayStop() {
         if ( presenter != null && presenter instanceof ScreenService ) {
@@ -52,7 +52,7 @@ public class TextEditorActivity
     public Position getPreferredPosition() {
         return Position.SELF;
     }
-    
+
     @Override
     public void revealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
@@ -70,7 +70,7 @@ public class TextEditorActivity
     }
 
     private String getTabTitle() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         final String uriPath = placeRequest.getParameter( "path",
                                                           null );
         return "Text Editor [" + uriPath + "]";
@@ -87,7 +87,7 @@ public class TextEditorActivity
 
         return true;
     }
-    
+
     @Override
     public void closePlace() {
         if ( presenter == null ) {

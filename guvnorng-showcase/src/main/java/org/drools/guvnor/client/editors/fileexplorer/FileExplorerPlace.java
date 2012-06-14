@@ -22,9 +22,11 @@ import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 @Dependent
-public class FileExplorerPlace extends PlaceRequest implements IPlaceRequest {
+public class FileExplorerPlace extends PlaceRequest
+    implements
+    IPlaceRequest {
 
     public FileExplorerPlace() {
-        super("File Explorer");
+        super( "File Explorer" );
     }
 }

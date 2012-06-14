@@ -19,20 +19,25 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.mvp.EditorService;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.Paths;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
-@Dependent
-public class TextEditorPresenter implements EditorService {
+import com.google.gwt.user.client.ui.IsWidget;
 
-    public interface View extends IsWidget {
+@Dependent
+public class TextEditorPresenter
+    implements
+    EditorService {
+
+    public interface View
+        extends
+        IsWidget {
 
         void setContent(String content);
 
@@ -45,38 +50,43 @@ public class TextEditorPresenter implements EditorService {
         boolean isDirty();
     }
 
-    @Inject View view;
-    @Inject Caller<VFSService> vfsServices;
-    @Inject private PlaceManager placeManager;
+    @Inject
+    View                 view;
+    @Inject
+    Caller<VFSService>   vfsServices;
+    @Inject
+    private PlaceManager placeManager;
 
-    Path path = null;
+    Path                 path = null;
 
     @Override
     public void onStart() {
         //i believe that editor should receive the path as parameter of start! - porcelli
-        final PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String uri = placeRequest.getParameter("path", null);
-        path = Paths.fromURI(uri);
+        final IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        final String uri = placeRequest.getParameter( "path",
+                                                      null );
+        path = Paths.fromURI( uri );
 
-        vfsServices.call(new RemoteCallback<String>() {
+        vfsServices.call( new RemoteCallback<String>() {
             @Override
             public void callback(String response) {
-                if (response == null) {
-                    view.setContent("-- empty --");
+                if ( response == null ) {
+                    view.setContent( "-- empty --" );
                 } else {
-                    view.setContent(response);
+                    view.setContent( response );
                 }
             }
-        }).readAllString(path);
+        } ).readAllString( path );
     }
 
     public void doSave() {
-        vfsServices.call(new RemoteCallback<Path>() {
+        vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback(Path response) {
-                view.setDirty(false);
+                view.setDirty( false );
             }
-        }).write(path, view.getContent());
+        } ).write( path,
+                   view.getContent() );
     }
 
     @Override
@@ -89,7 +99,8 @@ public class TextEditorPresenter implements EditorService {
         this.path = null;
     }
 
-    @Override public boolean mayClose() {
+    @Override
+    public boolean mayClose() {
         return true;
     }
 
@@ -98,7 +109,8 @@ public class TextEditorPresenter implements EditorService {
         view.setFocus();
     }
 
-    @Override public void onHide() {
+    @Override
+    public void onHide() {
     }
 
     @Override

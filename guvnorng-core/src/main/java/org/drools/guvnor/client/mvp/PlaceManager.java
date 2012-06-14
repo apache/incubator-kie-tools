@@ -16,11 +16,10 @@
 
 package org.drools.guvnor.client.mvp;
 
-
 public interface PlaceManager {
 
-    void goTo(PlaceRequest request);
+    void goTo(IPlaceRequest request);
 
-    public PlaceRequest getCurrentPlaceRequest();
+    public IPlaceRequest getCurrentPlaceRequest();
 
 }

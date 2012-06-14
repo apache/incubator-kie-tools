@@ -22,8 +22,8 @@ public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<PlaceRequest, Activity>            activeActivities       = new HashMap<PlaceRequest, Activity>();
-    private final Map<PlaceRequest, WorkbenchPart>       existingWorkbenchParts = new HashMap<PlaceRequest, WorkbenchPart>();
+    private final Map<IPlaceRequest, Activity>           activeActivities       = new HashMap<IPlaceRequest, Activity>();
+    private final Map<IPlaceRequest, WorkbenchPart>      existingWorkbenchParts = new HashMap<IPlaceRequest, WorkbenchPart>();
 
     @Inject
     private ActivityMapper                               activityMapper;
@@ -36,7 +36,7 @@ public class PlaceManagerImpl
 
     private PlaceHistoryHandler                          placeHistoryHandler;
 
-    PlaceRequest                                         currentPlaceRequest;
+    IPlaceRequest                                        currentPlaceRequest;
 
     @PostConstruct
     public void init() {
@@ -47,13 +47,13 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo(PlaceRequest placeRequest) {
+    public void goTo(IPlaceRequest placeRequest) {
         currentPlaceRequest = placeRequest;
         revealPlace( placeRequest );
     }
 
     @Override
-    public PlaceRequest getCurrentPlaceRequest() {
+    public IPlaceRequest getCurrentPlaceRequest() {
         if ( currentPlaceRequest != null ) {
             return currentPlaceRequest;
         } else {
@@ -61,7 +61,7 @@ public class PlaceManagerImpl
         }
     }
 
-    private void revealPlace(final PlaceRequest newPlace) {
+    private void revealPlace(final IPlaceRequest newPlace) {
         final Activity activity = activityMapper.getActivity( newPlace );
 
         activeActivities.put( newPlace,
@@ -107,7 +107,7 @@ public class PlaceManagerImpl
         updateHistory( newPlace );
     }
 
-    public void updateHistory(PlaceRequest request) {
+    public void updateHistory(IPlaceRequest request) {
         placeHistoryHandler.onPlaceChange( request );
     }
 

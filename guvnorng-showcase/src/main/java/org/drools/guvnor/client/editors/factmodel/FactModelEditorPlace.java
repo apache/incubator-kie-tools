@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.client.mvp.SupportedFormat;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
@@ -26,6 +27,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  */
 @ApplicationScoped
+@SupportedFormat("model.drl")
 public class FactModelEditorPlace extends PlaceRequest
     implements
     IPlaceRequest {

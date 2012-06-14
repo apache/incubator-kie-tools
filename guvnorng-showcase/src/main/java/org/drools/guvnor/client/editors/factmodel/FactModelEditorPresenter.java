@@ -19,8 +19,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.EditorService;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
@@ -43,12 +43,12 @@ public class FactModelEditorPresenter
     View                 view;
 
     @Inject
-    Caller<AssetService>   assetService;
+    Caller<AssetService> assetService;
 
     @Inject
     private PlaceManager placeManager;
 
-    private Path path = null;
+    private Path         path = null;
 
     public interface View
         extends
@@ -67,18 +67,18 @@ public class FactModelEditorPresenter
 
     @Override
     public void onStart() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String uri = placeRequest.getParameter( "path", null );
-        Path path = new PathImpl("mortgagesSample/MortgageModel.model.drl");
-        
-/*        FactModels asset = new FactModels();
-        view.setContent( asset );*/
-        assetService.call(new RemoteCallback<AbstractAsset>() {
+        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        String uri = placeRequest.getParameter( "path",
+                                                null );
+        Path path = new PathImpl( uri );
+
+        assetService.call( new RemoteCallback<AbstractAsset>() {
             @Override
             public void callback(AbstractAsset response) {
-                view.setContent((FactModels)response);
+                view.setContent( (FactModels) response );
             }
-        }).loadAsset(path, "model.drl");
+        } ).loadAsset( path,
+                       "model.drl" );
     }
 
     public void doSave() {

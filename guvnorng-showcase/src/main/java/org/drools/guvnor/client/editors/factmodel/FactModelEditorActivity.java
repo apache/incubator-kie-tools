@@ -20,9 +20,9 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.AcceptItem;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.workbench.Position;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -85,7 +85,7 @@ public class FactModelEditorActivity
     }
 
     private String getTabTitle() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         final String uriPath = placeRequest.getParameter( "path",
                                                           null );
         return "FactModel Editor [" + uriPath + "]";

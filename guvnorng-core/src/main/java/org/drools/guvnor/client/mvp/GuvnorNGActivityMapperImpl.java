@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.mvp;
 
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,47 +28,48 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
-
 @Dependent
-public class GuvnorNGActivityMapperImpl implements ActivityMapper {
-    private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
+public class GuvnorNGActivityMapperImpl
+    implements
+    ActivityMapper {
+    private final Map<IPlaceRequest, Activity> activeActivities = new HashMap<IPlaceRequest, Activity>();
 
     @Inject
-    private IOCBeanManager manager;
+    private IOCBeanManager                     manager;
 
-    public Activity getActivity(final PlaceRequest placeRequest) {
-        if (activeActivities.containsKey(placeRequest)) {
-            return activeActivities.get(placeRequest);
+    public Activity getActivity(final IPlaceRequest placeRequest) {
+        if ( activeActivities.containsKey( placeRequest ) ) {
+            return activeActivities.get( placeRequest );
         }
-        
-        Collection<IOCBeanDef> beans = manager.lookupBeans(Activity.class);
+
+        Collection<IOCBeanDef> beans = manager.lookupBeans( Activity.class );
 
         // check to see if the bean exists
-        for (IOCBeanDef activityBean : beans) {
+        for ( IOCBeanDef activityBean : beans ) {
             // get the instance of the activity
             Set<Annotation> qualifiers = activityBean.getQualifiers();
-            for(Annotation q : qualifiers) {
-                if(q instanceof NameToken && ((NameToken)q).value().equalsIgnoreCase(placeRequest.getNameToken())) {
-                    Activity activity = (Activity) activityBean.getInstance();                    
-                    activeActivities.put(placeRequest, activity);
+            for ( Annotation q : qualifiers ) {
+                if ( q instanceof NameToken && ((NameToken) q).value().equalsIgnoreCase( placeRequest.getNameToken() ) ) {
+                    Activity activity = (Activity) activityBean.getInstance();
+                    activeActivities.put( placeRequest,
+                                          activity );
                     return activity;
                 }
             }
-/*            
-            Activity activity = (Activity) activityBean.getInstance();
-            if (activity.getNameToken().equals(placeRequest.getNameToken())) {
-                return activity;
-                
-            }*/
+            /*
+             * Activity activity = (Activity) activityBean.getInstance(); if
+             * (activity.getNameToken().equals(placeRequest.getNameToken())) {
+             * return activity; }
+             */
         }
 
         return null;
     }
-    
+
     //Not working yet with Errai:https://community.jboss.org/thread/200255
     public Activity getActivity1(final PlaceRequest placeRequest) {
-        if (activeActivities.containsKey(placeRequest)) {
-            return activeActivities.get(placeRequest);
+        if ( activeActivities.containsKey( placeRequest ) ) {
+            return activeActivities.get( placeRequest );
         }
 
         NameToken qual = new NameToken() {
@@ -83,16 +83,17 @@ public class GuvnorNGActivityMapperImpl implements ActivityMapper {
             }
         };
 
-        IOCBeanDef<Activity> bean = manager.lookupBean(Activity.class, qual);
+        IOCBeanDef<Activity> bean = manager.lookupBean( Activity.class,
+                                                        qual );
         Activity activity = (Activity) bean.getInstance();
-        activeActivities.put(placeRequest, activity);
+        activeActivities.put( placeRequest,
+                              activity );
         return activity;
     }
-    
+
     public void removeActivity(final PlaceRequest placeRequest) {
-        Activity activity = activeActivities.remove(placeRequest);
+        Activity activity = activeActivities.remove( placeRequest );
         activity.onStop();
     }
-        
-    
+
 }

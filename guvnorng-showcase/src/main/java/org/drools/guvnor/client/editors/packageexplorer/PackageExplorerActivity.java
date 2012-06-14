@@ -16,7 +16,9 @@ import javax.inject.Inject;
 
 @Dependent
 @NameToken("Package Explorer")
-public class PackageExplorerActivity implements Activity {
+public class PackageExplorerActivity
+    implements
+    Activity {
 
     private final PlaceManager placeManager;
 
@@ -48,31 +50,34 @@ public class PackageExplorerActivity implements Activity {
     public void revealPlace(AcceptItem acceptPanel) {
         Tree tree = new Tree();
 
-        final TreeItem treeItem = tree.addItem("Editors");
-        final TreeItem textEditorTreeItem = treeItem.addItem("Text Editor");
-        final TreeItem textEditor2TreeItem = treeItem.addItem("Text Editor2");
-        final TreeItem myAdminAreaTreeItem = treeItem.addItem("MyAdminArea");
+        final TreeItem treeItem = tree.addItem( "Editors" );
+        final TreeItem textEditorTreeItem = treeItem.addItem( "Text Editor" );
+        final TreeItem textEditor2TreeItem = treeItem.addItem( "Text Editor2" );
+        final TreeItem myAdminAreaTreeItem = treeItem.addItem( "MyAdminArea" );
 
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
-                if (textEditorTreeItem.equals(event.getSelectedItem())) {
+                if ( textEditorTreeItem.equals( event.getSelectedItem() ) ) {
                     //placeManager.goTo(new TextEditorPlace());
-                    PlaceRequest placeRequest = new PlaceRequest("TextEditor");
-                    placeRequest.parameter("uuid", "uuid");
-                    placeManager.goTo(placeRequest);
-                } else if (textEditor2TreeItem.equals(event.getSelectedItem())) {
-                    PlaceRequest placeRequest = new PlaceRequest("TextEditor");
-                    placeRequest.parameter("uuid", "uuid2");
-                    placeManager.goTo(placeRequest);
-                } else if (myAdminAreaTreeItem.equals(event.getSelectedItem())) {
-                    PlaceRequest placeRequest = new PlaceRequest("MyAdminArea");
-                    placeManager.goTo(placeRequest);
+                    PlaceRequest placeRequest = new PlaceRequest( "TextEditor" );
+                    placeRequest.addParameter( "uuid",
+                                               "uuid" );
+                    placeManager.goTo( placeRequest );
+                } else if ( textEditor2TreeItem.equals( event.getSelectedItem() ) ) {
+                    PlaceRequest placeRequest = new PlaceRequest( "TextEditor" );
+                    placeRequest.addParameter( "uuid",
+                                               "uuid2" );
+                    placeManager.goTo( placeRequest );
+                } else if ( myAdminAreaTreeItem.equals( event.getSelectedItem() ) ) {
+                    PlaceRequest placeRequest = new PlaceRequest( "MyAdminArea" );
+                    placeManager.goTo( placeRequest );
                 }
             }
-        });
+        } );
 
-        acceptPanel.add("Package Explorer", tree);
+        acceptPanel.add( "Package Explorer",
+                         tree );
     }
 
     @Override
