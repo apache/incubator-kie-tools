@@ -23,9 +23,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
 import org.drools.guvnor.vfs.VFSTempUtil;
@@ -37,6 +38,8 @@ import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.FileAlreadyExistsException;
+import org.drools.java.nio.file.FileSystemAlreadyExistsException;
+import org.drools.java.nio.file.FileSystems;
 import org.drools.java.nio.file.Files;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.NoSuchFileException;
@@ -45,21 +48,36 @@ import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.PatternSyntaxException;
+import org.drools.java.nio.file.ProviderNotFoundException;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
-import org.drools.java.nio.fs.base.GeneralPathImpl;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.server.annotations.Service;
 
-import com.google.gwt.user.client.ui.TreeItem;
 
 @Service
 @ApplicationScoped
 public class VFSServicesServerImpl implements VFSService {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
+    
+    @PostConstruct
+    public void init() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+        //creatre file system based on information stored in configuration file or information persisted in a git repo.
+        Map<String, String> env = new HashMap<String, String>();
+        //String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
+        String fromGitURL = "git://github.com/droolsjbpm/guvnorng.git";
+        String userName = "jervisliu";
+        String password = "yan7312";
+        
+        env.put("fromGitURL", fromGitURL);
+        env.put("userName", userName);
+        env.put("password", password);
+        URI uri = URI.create("jgit:///guvnorng");
+       
+        FileSystems.newFileSystem(uri, env);
+    }
 
     @Override
     public Path get(final String first, final String... more) throws IllegalArgumentException {
@@ -74,7 +92,7 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public DirectoryStream<Path> newDirectoryStream()
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        Path p = new PathImpl("");        
+        Path p = new PathImpl("jgit:///guvnorng");    
 
         return newDirectoryStream(Files.newDirectoryStream(fromPath(p)).iterator());
     }
@@ -307,14 +325,25 @@ public class VFSServicesServerImpl implements VFSService {
     
     public static void main(String[] args) throws Exception {
         VFSServicesServerImpl vfs = new VFSServicesServerImpl();
-        //root - to JGIT, this means the root directory of the selected git repository. 
+/*
         URI u = new URI("");
         URI u2 = new URI("default:///.");
-        URI u3 = URI.create("default:///.");
+        URI u3 = URI.create("default:///.");        
+        URI u4 = new URI(null, null, ".", null, null);*/
+       
+        Map<String, String> env = new HashMap<String, String>();
+        String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
+        String userName = "jervisliu";
+        String password = "**";
         
-        URI u4 = new URI(null, null, ".", null, null);
-        
-        Path p = new PathImpl("");        
+        env.put("fromGitURL", fromGitURL);
+        env.put("userName", userName);
+        env.put("password", password);
+        URI uri = URI.create("jgit:///guvnorng");
+       
+        FileSystems.newFileSystem(uri, env);
+                
+        Path p = new PathImpl("jgit:///guvnorng");       
         DirectoryStream<Path> response = vfs.newDirectoryStream(p);
         
         for (final Path path : response) {

@@ -88,6 +88,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.DepthWalk.Commit;
 import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -111,18 +112,15 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private boolean isDefault;
     
     public static final String REPOSITORIES_ROOT_DIR = ".git";
-    private Repository repository;
-    private static UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("jervisliu", "uguess");
+
+    //TODO: persistent repository list to a guvnorng info git repository or to some configuration files?
+    private static Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
 
     public JGitFileSystemProvider() {
-        setUpGitRepository();
+        //TODO: initialize repositories from a configuration file or from a git repository
+        
         this.fileSystem = new JGitFileSystem(this);
-    }
-    
-    public Repository getRepository() {
-        return repository;
-    }
-    
+    }    
 
     @Override
     public synchronized void forceAsDefault() {
@@ -135,22 +133,110 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
 
     @Override public String getScheme() {
-        return "file";
+        return "jgit";
     }
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
-        return null;
+        validateURI(uri);
+        
+        String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
+        
+        String fromGitURL = (String)env.get("fromGitURL");
+        if (fromGitURL == null || "".equals(fromGitURL)) {
+            throw new IllegalArgumentException("fromGitURL is undefined");
+        } 
+        String userName = (String)env.get("username");
+        String password = (String)env.get("password");
+        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
+        
+        if(repositories.containsKey(rootJGitRepositoryName)) {
+            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " already exists");
+        }
+        
+        try {
+            cloneOrFetch(rootJGitRepositoryName, fromGitURL, credential);
+        } catch (Exception e) {
+            throw new IOException();
+        }
+        
+        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
+        jGitRepositoryConfiguration.setRepositoryName(rootJGitRepositoryName);
+        jGitRepositoryConfiguration.setFromGitURL(fromGitURL);
+        jGitRepositoryConfiguration.setUserName(userName);
+        jGitRepositoryConfiguration.setPassword(password);
+        repositories.put(rootJGitRepositoryName, jGitRepositoryConfiguration);
+        
+        //TODO: Set up FileSystem more properly to represent the status of git repository
+        FileSystem jGitFileSystem = new JGitFileSystem(this);
+        return jGitFileSystem;
     }
-
+    
+    private void validateURI(URI uri) {
+        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {
+            throw new IllegalArgumentException(
+                    "URI does not match this provider");
+        } else if (uri.getAuthority() != null) {
+            throw new IllegalArgumentException("Authority component should not present");
+        } else if (uri.getPath() == null) {
+            throw new IllegalArgumentException("Path component is undefined");
+        } else if (uri.getQuery() != null) {
+            throw new IllegalArgumentException("Query component should not present");
+        } else if (uri.getFragment() != null) {
+            throw new IllegalArgumentException("Fragment component shoud not present");
+        }        
+    }
+        
     @Override
     public FileSystem getFileSystem(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return fileSystem;
-    }
+        //validateURI(uri);
+        
+        String path = getRootJGitRepositoryName(uri.getPath());
 
+        if(!repositories.containsKey(path)) {
+            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " does not exist");
+        }
+        JGitRepositoryConfiguration jGitRepositoryConfiguration = repositories.get(path);
+        String userName = (String)jGitRepositoryConfiguration.getUserName();
+        String password = (String)jGitRepositoryConfiguration.getPassword();
+        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);     
+        try {
+            cloneOrFetch(path, jGitRepositoryConfiguration.getFromGitURL(), credential);
+        } catch (Exception e) {
+            throw new IOException();
+        }       
+        
+        //TODO: Set up FileSystem more properly to represent the status of git repository
+        FileSystem jGitFileSystem = new JGitFileSystem(this);
+        return jGitFileSystem;
+    }
+    
+    private static String getRootJGitRepositoryName(final String path) {
+        String rootJGitRepositoryName = path;
+        if(rootJGitRepositoryName.startsWith("/")) {
+            rootJGitRepositoryName = rootJGitRepositoryName.substring(1);
+        }    
+        if(rootJGitRepositoryName.indexOf("/") > 0) {
+            rootJGitRepositoryName = rootJGitRepositoryName.substring(0, rootJGitRepositoryName.indexOf("/"));
+        }
+        return rootJGitRepositoryName;
+    }
+    
+    private static String getPathRelativeToRootJGitRepository(final String path) {
+        String rootJGitRepositoryName = getRootJGitRepositoryName(path);
+        int indexOfEndOfRootJGitRepositoryName = path.indexOf(rootJGitRepositoryName) + rootJGitRepositoryName.length() + 1;
+        String relativePath = indexOfEndOfRootJGitRepositoryName > path.length() ? "" : path.substring(indexOfEndOfRootJGitRepositoryName);
+        if(relativePath.startsWith("/")) {
+            relativePath = relativePath.substring(1);
+        }    
+        return relativePath;
+    }
+    
     @Override
     public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
+        FileSystem fileSystem = getFileSystem(uri);
+        
+        return GeneralPathImpl.create(fileSystem, uri.getPath(), false);
     }
 
     @Override
@@ -161,9 +247,16 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public InputStream newInputStream(final Path path, final OpenOption... options)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {        
-        //TODO: check if the path specified exists in git repo
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+        String relativePath = getPathRelativeToRootJGitRepository(path.toString());   
+        Repository repo;
+        try {
+            repo = getRepository(rootJGitRepositoryName);
+        } catch (java.io.IOException e) {
+            throw new IOException();
+        }
         
-        byte[] byteContent = JGitUtils.getByteContent(repository, null, path.toString());
+        byte[] byteContent = JGitUtils.getByteContent(repo, null, relativePath);
         return new ByteArrayInputStream(byteContent);
 /*        
         final File file = path.toFile();
@@ -243,16 +336,13 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
         try {
-            repository = getGuvnorNGRepository();
-            final List<PathModel> files = JGitUtils.getFilesInPath(repository, dir.toString(), null);
+            final String rootJGitRepositoryName = getRootJGitRepositoryName(dir.toString());
+            String relativePath = getPathRelativeToRootJGitRepository(dir.toString());            
+            Repository repo = getRepository(rootJGitRepositoryName);
             
-            System.out.println("newDirectoryStream is invoked, Path is: " + dir.toString());
-            for(PathModel p : files) {
-                System.out.println(p.name);
-            }
+            final List<PathModel> files = JGitUtils.getFilesInPath(repo, relativePath, null);
             
             return new DirectoryStream<Path>() {
-
                 @Override
                 public void close() throws IOException {
                 }
@@ -271,7 +361,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                                 PathModel pathModel = files.get(i);
                                 System.out.println(pathModel.path + "  isTree: " + pathModel.isTree());
                                 i++;
-                                return GeneralPathImpl.create(getDefaultFileSystem(), pathModel.path, false);
+                                //String uri = "jgit:///" + rootJGitRepositoryName + "/" + pathModel.path;
+                                String uri = "/" + rootJGitRepositoryName + "/" + pathModel.path;
+                                return GeneralPathImpl.create(getDefaultFileSystem(), uri, false);
                                 //return GeneralPathImpl.createFromFile(getDefaultFileSystem(), result);
                             } else {
                                 throw new NoSuchElementException();
@@ -351,8 +443,17 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
+        Repository repo;
+        try {
+            repo = getRepository(rootJGitRepositoryName);
+        } catch (java.io.IOException e) {
+            throw new IOException();
+        }
+        
         if (type == BasicFileAttributeView.class) {
-            PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
+            PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
             return (V) new JGitFileAttributeView(pathModel);
         }
 
@@ -381,9 +482,18 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
-            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {       
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
+        Repository repo;
+        try {
+            repo = getRepository(rootJGitRepositoryName);
+        } catch (java.io.IOException e) {
+            throw new IOException();
+        }
+        
         if (attributes.equals("*")) {
-            PathModel pathModel = JGitUtils.getPathModel(repository, path.toString(), null);
+            PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
             JGitlFileAttributes attrs = new JGitlFileAttributes(pathModel);
             final Map<String, Object> result = new HashMap<String, Object>();
             result.put("isRegularFile", attrs.isRegularFile());
@@ -417,17 +527,33 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     public static void main(String[] args) throws Exception {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
         
-        Repository repository = j.getGuvnorNGRepository();     
+        Map<String, String> env = new HashMap<String, String>();
+        String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
+        String userName = "jervisliu";
+        String password = "**";
         
+        env.put("fromGitURL", fromGitURL);
+        env.put("userName", userName);
+        env.put("password", password);
+        URI uri = URI.create("jgit:///guvnorng");
+        j.newFileSystem(uri, env);
+        
+        //j.newFileSystem(uri, env);
+       
+        FileSystem fileSystem = j.getFileSystem(uri);
+        
+        Repository repository = getRepository("guvnorng");     
+/*        
         File source = new File("sometestfiles/testfile.txt");
         System.out.println(source.getAbsolutePath());
         PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile9", source.length(), 0, "");
         String commitMessage = "test. pushed from jgit.";
         InputStream inputStream = new FileInputStream(source);
         
+        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("jervisliu", "uguess");
         JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage, credential);
         
-        repository = getGuvnorNGRepository();
+        repository = getGuvnorNGRepository();*/
         
         List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
         for (PathModel p : files) {
@@ -441,52 +567,24 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             System.out.println(p.name);
             System.out.println(p.path);
             System.out.println("isTree: " + p.isTree());
-        }        
+        }     
+        
+        String contentA = JGitUtils.getStringContent(repository, null, "mortgagesSample/MortgageModel.model.drl");
+        System.out.println(contentA);
     }
-    
-    public void setUpGitRepository() {
-        try {
-            // startGitblit();
-            File gitRepoRoot = new File(REPOSITORIES_ROOT_DIR);
 
-            if (gitRepoRoot.exists() || gitRepoRoot.mkdirs()) {
-                //cloneOrFetch("guvnorng.git", "git@github.com:jervisliu/guvnorng-playground.git");
-                //cloneOrFetch("guvnorng.git", "https://github.com/jervisliu/guvnorng-playground.git");
-                cloneOrFetch("guvnorng.git", "https://github.com/droolsjbpm/guvnorng.git");
-               //showRemoteBranches("guvnorng.git");
-
-                repository = getGuvnorNGRepository();
-                
-                List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
-                for (PathModel p : files) {
-                    System.out.println("name: " + p.name);
-                    System.out.println("path: " + p.path);
-                    System.out.println("isTree: " + p.isTree());
-                }
-                
-                List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "mortgagesSample", null);
-                for (PathModel p : files1) {
-                    System.out.println("name: " + p.name);
-                    System.out.println("path: " + p.path);
-                    System.out.println("isTree: " + p.isTree());
-                }
-
-                String contentA = JGitUtils.getStringContent(repository, null, "mortgagesSample/MortgageModel.model.drl");
-                System.out.println(contentA);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static Repository getRepository(String repositoryName) throws java.io.IOException {
+        // bare repository, ensure .git suffix
+        if (!repositoryName.toLowerCase().endsWith(Constants.DOT_GIT_EXT)) {
+            repositoryName += Constants.DOT_GIT_EXT;
         }
-    }
-  
-    public static Repository getGuvnorNGRepository() throws java.io.IOException {
-        return new FileRepository(new File(REPOSITORIES_ROOT_DIR, "guvnorng.git"));
-    }
+        return new FileRepository(new File(REPOSITORIES_ROOT_DIR, repositoryName));
+    } 
     
-    private static void cloneOrFetch(String name, String fromUrl) throws Exception {
+    private static void cloneOrFetch(String name, String fromUrl, CredentialsProvider credentialsProvider) throws Exception {
         System.out.print("Fetching " + name + "... ");
         //AwtCredentialsProvider credential = new AwtCredentialsProvider();
-        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl, true, credential);
+        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl, true, credentialsProvider);
         System.out.println("Fetching done.");
     }
     
