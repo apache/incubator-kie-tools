@@ -16,13 +16,14 @@
 
 package org.drools.guvnor.client.editors.monitoring;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
+import javax.enterprise.context.Dependent;
+
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import javax.enterprise.context.ApplicationScoped;
+import com.google.gwt.place.shared.PlaceTokenizer;
 
-@ApplicationScoped
+@Dependent
 public class MonitoringPerspectivePlace extends PlaceRequest  implements IPlaceRequest {
 
     public MonitoringPerspectivePlace() {

@@ -15,28 +15,23 @@
  */
 package org.drools.guvnor.client.editors.factmodel;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.client.mvp.SupportedFormat;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
  * 
  */
-@ApplicationScoped
-@SupportedFormat("model.drl")
+@Dependent
 public class FactModelEditorPlace extends PlaceRequest
     implements
     IPlaceRequest {
 
-    private final String fileName;
-
     public FactModelEditorPlace() {
         super( "FactModelEditor" );
-        fileName = "";
     }
 
     public FactModelEditorPlace(final String token) {
@@ -45,12 +40,14 @@ public class FactModelEditorPlace extends PlaceRequest
         if ( parts.length != 1 ) {
             throw new RuntimeException( "Invalid token" );
         }
-        this.fileName = parts[0];
+        addParameter( "path",
+                      parts[0] );
     }
 
     @Override
     public String toString() {
-        return this.fileName;
+        return getParameter( "path",
+                             "" );
     }
 
     @Override
@@ -63,15 +60,17 @@ public class FactModelEditorPlace extends PlaceRequest
         }
 
         FactModelEditorPlace that = (FactModelEditorPlace) o;
-        if ( this.fileName == null && that.fileName != null ) {
-            return false;
-        }
-        return this.fileName.equals( that.fileName );
+        final String thisPath = this.getParameter( "path",
+                                                   "" );
+        final String thatPath = that.getParameter( "path",
+                                                   "" );
+        return thisPath.equals( thatPath );
     }
 
     @Override
     public int hashCode() {
-        int result = this.fileName.hashCode();
+        int result = this.getParameter( "path",
+                                        "" ).hashCode();
         return result;
     }
 

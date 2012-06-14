@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -34,16 +35,16 @@ public class GuvnorMenu extends Composite {
             @Override
             public void onClick(ClickEvent clickEvent) {
 
-                final Set<IPlaceRequest> places = new HashSet<IPlaceRequest>();
+                final Set<IPlaceRequestFactory> factories = new HashSet<IPlaceRequestFactory>();
 
-                Collection<IOCBeanDef> beans = manager.lookupBeans( IPlaceRequest.class );
+                Collection<IOCBeanDef> beans = manager.lookupBeans( IPlaceRequestFactory.class );
 
-                for ( IOCBeanDef placeBean : beans ) {
-                    final IPlaceRequest instance = (IPlaceRequest) placeBean.getInstance();
-                    places.add( instance );
+                for ( IOCBeanDef bean : beans ) {
+                    final IPlaceRequestFactory instance = (IPlaceRequestFactory) bean.getInstance();
+                    factories.add( instance );
                 }
 
-                SelectPlacePopup popup = new SelectPlacePopup( places );
+                SelectPlacePopup popup = new SelectPlacePopup( factories );
                 popup.addSelectionHandler( new SelectionHandler<IPlaceRequest>() {
                     @Override
                     public void onSelection(SelectionEvent<IPlaceRequest> event) {

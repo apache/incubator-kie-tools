@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
@@ -146,28 +147,20 @@ public class FileExplorerPresenter
         } );
     }
 
-    //TODO {manstis} This needs to be made more generic. When a regularFile is selected we don't know
-    //what editor is needed. This should delegate to a mechanism to load an Asset from the backend. This
-    //service fronts the VFS and will create an AbstractAsset based upon the file extension (possibly populate
-    //AssetData and AssetMetaData) and return that. If we annotate Places with the file extension they support
-    //we can then identify and instantiate the correct Place for the AbstractAsset. The Place can also take a
-    //parameter that is the concrete AbstractAsset (e.g. FactModels or RuleContentText). Any unrecognised
-    //file extension can be wrapped into a plain-text asset and TextEditor used.
     private IPlaceRequest getPlace(final Path path) {
         final String fileType = getFileType( path.getFileName() );
 
         //Lookup all Places and check if one handles the file extension
-        Collection<IOCBeanDef> places = iocManager.lookupBeans( IPlaceRequest.class );
-        for ( IOCBeanDef place : places ) {
-            Set<Annotation> annotations = place.getQualifiers();
+        Collection<IOCBeanDef> factories = iocManager.lookupBeans( IPlaceRequestFactory.class );
+        for ( IOCBeanDef factory : factories ) {
+            Set<Annotation> annotations = factory.getQualifiers();
             for ( Annotation a : annotations ) {
                 if ( a instanceof SupportedFormat ) {
                     SupportedFormat format = (SupportedFormat) a;
                     if ( format.value().equalsIgnoreCase( fileType ) ) {
-                        final IPlaceRequest instance = (IPlaceRequest) place.getInstance();
-                        instance.addParameter( "path",
-                                               path.toURI() );
-                        return instance;
+                        final IPlaceRequestFactory instance = (IPlaceRequestFactory) factory.getInstance();
+                        final IPlaceRequest place = instance.makePlace( path );
+                        return place;
                     }
                 }
             }
