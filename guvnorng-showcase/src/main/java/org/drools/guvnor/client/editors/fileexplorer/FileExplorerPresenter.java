@@ -25,10 +25,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.Util;
+import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.mvp.SupportedFormat;
 import org.drools.guvnor.client.resources.ShowcaseImages;
@@ -57,16 +57,25 @@ public class FileExplorerPresenter
     ScreenService {
 
     @Inject
-    View                          view;
+    View                 view;
 
     @Inject
-    Caller<VFSService>            vfsService;
+    Caller<VFSService>   vfsService;
 
     @Inject
-    private PlaceManager          placeManager;
+    private PlaceManager placeManager;
 
     @Inject
-    IOCBeanManager                iocManager;
+    IOCBeanManager       iocManager;
+
+    public interface View
+        extends
+        IsWidget {
+
+        TreeItem getRootItem();
+
+        Tree getTree();
+    }
 
     private static ShowcaseImages images    = GWT.create( ShowcaseImages.class );
     private static final String   LAZY_LOAD = "Loading...";
@@ -147,10 +156,11 @@ public class FileExplorerPresenter
         } );
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private IPlaceRequest getPlace(final Path path) {
         final String fileType = getFileType( path.getFileName() );
 
-        //Lookup all Places and check if one handles the file extension
+        //Lookup a IPlaceRequestFactory that can handle the file extension
         Collection<IOCBeanDef> factories = iocManager.lookupBeans( IPlaceRequestFactory.class );
         for ( IOCBeanDef factory : factories ) {
             Set<Annotation> annotations = factory.getQualifiers();
@@ -166,10 +176,11 @@ public class FileExplorerPresenter
             }
         }
 
-        PlaceRequest placeRequest = new PlaceRequest( "TextEditor" );
-        placeRequest.addParameter( "path",
+        //If a specific handler was not found use a TextEditor
+        TextEditorPlace defaultPlace = new TextEditorPlace( "TextEditor" );
+        defaultPlace.addParameter( "path",
                                    path.toURI() );
-        return placeRequest;
+        return defaultPlace;
     }
 
     private String getFileType(final String fileName) {
@@ -178,15 +189,6 @@ public class FileExplorerPresenter
             return fileName.substring( dotIndex + 1 );
         }
         return fileName;
-    }
-
-    public interface View
-        extends
-        IsWidget {
-
-        TreeItem getRootItem();
-
-        Tree getTree();
     }
 
     @Override

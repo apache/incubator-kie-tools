@@ -1,15 +1,22 @@
 package org.drools.guvnor.client.workbench;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -39,6 +46,9 @@ public class Workbench extends Composite {
 
     @Inject
     PlaceManager                placeManager;
+
+    @Inject
+    IOCBeanManager              iocManager;
 
     @Inject
     GuvnorMenu                  menu;
@@ -100,8 +110,8 @@ public class Workbench extends Composite {
         final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel );
         WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
                                                                           workbenchDropController );
-        
-        //TODO {manstis} placeManager.goto(XYZ);
+
+        //TODO {manstis} Lookup PerspectiveProviders and if present launch it to set-up the Workbench
     }
 
 }
