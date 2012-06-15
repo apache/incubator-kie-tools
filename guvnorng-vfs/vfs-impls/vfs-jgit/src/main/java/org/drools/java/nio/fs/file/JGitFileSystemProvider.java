@@ -528,21 +528,21 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
         
         Map<String, String> env = new HashMap<String, String>();
-        String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
-        String userName = "jervisliu";
-        String password = "**";
+        String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        String userName = "guvnorngtestuser1";
+        String password = "test1234";
         
         env.put("fromGitURL", fromGitURL);
         env.put("userName", userName);
         env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng");
+        URI uri = URI.create("jgit:///guvnorng-playground");
         j.newFileSystem(uri, env);
         
         //j.newFileSystem(uri, env);
        
         FileSystem fileSystem = j.getFileSystem(uri);
         
-        Repository repository = getRepository("guvnorng");     
+        Repository repository = getRepository("guvnorng-playground");     
 /*        
         File source = new File("sometestfiles/testfile.txt");
         System.out.println(source.getAbsolutePath());

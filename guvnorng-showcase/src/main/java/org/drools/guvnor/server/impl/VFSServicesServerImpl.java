@@ -67,14 +67,14 @@ public class VFSServicesServerImpl implements VFSService {
         //creatre file system based on information stored in configuration file or information persisted in a git repo.
         Map<String, String> env = new HashMap<String, String>();
         //String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
-        String fromGitURL = "git://github.com/droolsjbpm/guvnorng.git";
-        String userName = "jervisliu";
-        String password = "yan7312";
+        String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        String userName = "guvnorngtestuser1";
+        String password = "test1234";
         
         env.put("fromGitURL", fromGitURL);
         env.put("userName", userName);
         env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng");
+        URI uri = URI.create("jgit:///guvnorng-playground");
        
         FileSystems.newFileSystem(uri, env);
     }
@@ -88,7 +88,26 @@ public class VFSServicesServerImpl implements VFSService {
     public Path get(final Path path) throws IllegalArgumentException {
         return convert(Paths.get(URI.create(path.toURI())));
     }
-
+    
+    //@Override
+    public void newFileSystem(String repositoryName, String fromGitURL, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+        Map<String, String> env = new HashMap<String, String>();
+        env.put("fromGitURL", fromGitURL);
+        env.put("userName", userName);
+        env.put("password", password);
+        URI uri = URI.create("jgit:///" + repositoryName);
+        FileSystems.newFileSystem(uri, env);
+    }
+    
+    public void listFileSystems(String repositoryName, String fromGitURL, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+        Map<String, String> env = new HashMap<String, String>();
+        env.put("fromGitURL", fromGitURL);
+        env.put("userName", userName);
+        env.put("password", password);
+        URI uri = URI.create("jgit:///" + repositoryName);
+        FileSystems.newFileSystem(uri, env);
+    }
+    
     @Override
     public DirectoryStream<Path> newDirectoryStream()
             throws IllegalArgumentException, NotDirectoryException, IOException {
@@ -332,18 +351,18 @@ public class VFSServicesServerImpl implements VFSService {
         URI u4 = new URI(null, null, ".", null, null);*/
        
         Map<String, String> env = new HashMap<String, String>();
-        String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
-        String userName = "jervisliu";
-        String password = "**";
+        String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        String userName = "guvnorngtestuser1";
+        String password = "test1234";
         
         env.put("fromGitURL", fromGitURL);
         env.put("userName", userName);
         env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng");
+        URI uri = URI.create("jgit:///guvnorng-playground");
        
         FileSystems.newFileSystem(uri, env);
                 
-        Path p = new PathImpl("jgit:///guvnorng");       
+        Path p = new PathImpl("jgit:///guvnorng-playground");       
         DirectoryStream<Path> response = vfs.newDirectoryStream(p);
         
         for (final Path path : response) {
