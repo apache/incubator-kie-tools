@@ -96,6 +96,11 @@ public class FileExplorerPresenter
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
+                    final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(), r.getRepositoryName() ) );
+                    repositoryRootItem.setState(true);
+                    //repositoryRootItem.addItem( LAZY_LOAD );
+                    repositoryRootItem.setUserObject( r );  
+                    
                     PathImpl p = new PathImpl( r.getRootURI().toString() );
                     vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
                         @Override
@@ -107,11 +112,11 @@ public class FileExplorerPresenter
                                         final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
                                         final TreeItem item;
                                         if ( attrs.isDirectory() ) {
-                                            item = view.getRootItem().addItem( Util.getHeader( images.openedFolder(),
+                                            item = repositoryRootItem.addItem( Util.getHeader( images.openedFolder(),
                                                                                                path.getFileName() ) );
                                             item.addItem( LAZY_LOAD );
                                         } else {
-                                            item = view.getRootItem().addItem( Util.getHeader( images.file(),
+                                            item = repositoryRootItem.addItem( Util.getHeader( images.file(),
                                                                                                path.getFileName() ) );
                                         }
                                         item.setUserObject( path );
@@ -127,7 +132,7 @@ public class FileExplorerPresenter
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
             public void onOpen(final OpenEvent<TreeItem> event) {
-                if ( needsLoading( event.getTarget() ) ) {
+                if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path) {
                     vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
                         @Override
                         public void callback(DirectoryStream<Path> response) {

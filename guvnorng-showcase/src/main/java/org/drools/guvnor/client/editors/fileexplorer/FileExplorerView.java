@@ -36,8 +36,9 @@ public class FileExplorerView extends Composite
 
     @PostConstruct
     public void init() {
-        rootTreeItem = tree.addItem( Util.getHeader( images.openedFolder(),
+        rootTreeItem = tree.addItem( Util.getHeader( images.packageIcon(),
                                                      "Repositories" ) );
+        rootTreeItem.setState(true);
         initWidget( tree );
     }
 
