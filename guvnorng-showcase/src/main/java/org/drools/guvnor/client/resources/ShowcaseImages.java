@@ -46,7 +46,10 @@ public interface ShowcaseImages
 
     @Source("images/open_folder.gif")
     ImageResource openedFolder();
-
+    
+    @Source("images/package.gif")
+    ImageResource packageIcon();
+    
     @Source("images/file.gif")
     ImageResource file();
 
