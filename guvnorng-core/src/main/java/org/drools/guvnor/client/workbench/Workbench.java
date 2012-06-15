@@ -1,5 +1,10 @@
 package org.drools.guvnor.client.workbench;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -7,9 +12,12 @@ import javax.inject.Singleton;
 
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
+import org.drools.guvnor.client.workbench.perspectives.DefaultPerspective;
+import org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.core.client.Scheduler;
@@ -91,6 +99,7 @@ public class Workbench extends Composite {
         } );
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void bootstrap() {
         workbench.clear();
         WorkbenchDragAndDropManager.getInstance().unregisterDropControllers();
@@ -106,7 +115,31 @@ public class Workbench extends Composite {
         WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
                                                                           workbenchDropController );
 
-        //TODO {manstis} Lookup PerspectiveProviders and if present launch it to set-up the Workbench
+        //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
+        boolean foundDefaultPerspective = false;
+        IPerspectiveProvider defaultPerspective = null;
+
+        Collection<IOCBeanDef> perspectives = iocManager.lookupBeans( IPerspectiveProvider.class );
+        Iterator<IOCBeanDef> perspectivesIterator = perspectives.iterator();
+        while ( !foundDefaultPerspective && perspectivesIterator.hasNext() ) {
+            IOCBeanDef perspective = perspectivesIterator.next();
+            Set<Annotation> annotations = perspective.getQualifiers();
+            for ( Annotation a : annotations ) {
+                if ( a instanceof DefaultPerspective ) {
+                    if ( defaultPerspective == null ) {
+                        defaultPerspective = (IPerspectiveProvider) perspective.getInstance();
+                        foundDefaultPerspective = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //If a default perspective was found load it up!
+        if ( foundDefaultPerspective ) {
+            defaultPerspective.buildWorkbench( PanelManager.getInstance(),
+                                               workbenchRootPanel );
+        }
     }
 
 }
