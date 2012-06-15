@@ -18,6 +18,7 @@ package org.drools.guvnor.client.editors.fileexplorer;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,9 +33,12 @@ import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.client.mvp.SupportedFormat;
 import org.drools.guvnor.client.resources.ShowcaseImages;
+import org.drools.guvnor.shared.AssetService;
+import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
 import org.drools.guvnor.vfs.VFSTempUtil;
+import org.drools.guvnor.vfs.impl.PathImpl;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -61,6 +65,9 @@ public class FileExplorerPresenter
 
     @Inject
     Caller<VFSService>   vfsService;
+    
+    @Inject
+    Caller<AssetService>   assetService;
 
     @Inject
     private PlaceManager placeManager;
@@ -82,7 +89,14 @@ public class FileExplorerPresenter
 
     @Override
     public void onStart() {
-        vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
+
+        
+     vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
+      @Override
+      public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+       for ( final JGitRepositoryConfigurationVO r : repositories ) {      
+          PathImpl p = new PathImpl(r.getRootURI().toString());
+          vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
             @Override
             public void callback(DirectoryStream<Path> response) {
                 for ( final Path path : response ) {
@@ -104,7 +118,9 @@ public class FileExplorerPresenter
                     } ).readAttributes( path );
                 }
             }
-        } ).newDirectoryStream();
+        } ).newDirectoryStream(p);
+      }}
+      } ).listJGitRepositories();
 
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.java.nio.fs.file;
+package org.drools.guvnor.vfs;
 
 import java.net.URI;
 
-public class JGitRepositoryConfiguration {
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
+public class JGitRepositoryConfigurationVO {
     private String repositoryName;
     private String fromGitURL;
     private String userName;
     private String password;
     private String description;
-    private URI rootURI;
+    private String rootURI;
     public String getRepositoryName() {
         return repositoryName;
     }
@@ -55,12 +58,11 @@ public class JGitRepositoryConfiguration {
     public void setDescription(String description) {
         this.description = description;
     }
-    public URI getRootURI() {
+    public String getRootURI() {
         return rootURI;
     }
-    public void setRootURI(URI rootURI) {
+    public void setRootURI(String rootURI) {
         this.rootURI = rootURI;
-    }
-    
+    }   
     
 }

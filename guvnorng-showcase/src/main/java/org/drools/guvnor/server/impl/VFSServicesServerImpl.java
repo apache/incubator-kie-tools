@@ -17,7 +17,10 @@
 package org.drools.guvnor.server.impl;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +30,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
 import org.drools.guvnor.vfs.VFSTempUtil;
@@ -38,6 +42,7 @@ import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.FileAlreadyExistsException;
+import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.FileSystemAlreadyExistsException;
 import org.drools.java.nio.file.FileSystems;
 import org.drools.java.nio.file.Files;
@@ -53,7 +58,10 @@ import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
+import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.jboss.errai.bus.server.annotations.Service;
+
+import com.google.gwt.http.client.URL;
 
 
 @Service
@@ -62,21 +70,29 @@ public class VFSServicesServerImpl implements VFSService {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     
+    //TODO: Get from guvnorng-config git repository
+    Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
+
     @PostConstruct
     public void init() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
-        //creatre file system based on information stored in configuration file or information persisted in a git repo.
-        Map<String, String> env = new HashMap<String, String>();
-        //String fromGitURL = "https://github.com/droolsjbpm/guvnorng.git";
+        //Mock data until we can get real data from guvnorng-config git repository
+        String repositoryName = "guvnorng-playground";
         String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         String userName = "guvnorngtestuser1";
-        String password = "test1234";
+        String password = "test1234";        
+        Map<String, String> env = new HashMap<String, String>();
+        newJGitFileSystem(repositoryName, fromGitURL, userName, password);
+/*                
         
-        env.put("fromGitURL", fromGitURL);
-        env.put("userName", userName);
-        env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng-playground");
-       
-        FileSystems.newFileSystem(uri, env);
+        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
+        jGitRepositoryConfiguration.setFromGitURL("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
+        jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground");
+        jGitRepositoryConfiguration.setUserName("guvnorngtestuser1");
+        jGitRepositoryConfiguration.setPassword("test1234");
+        URI uri = URI.create("jgit:///" + "guvnorng-playground");
+        jGitRepositoryConfiguration.setRootURI(uri);
+
+        repositories.put("guvnorng-playground", jGitRepositoryConfiguration);*/
     }
 
     @Override
@@ -90,22 +106,69 @@ public class VFSServicesServerImpl implements VFSService {
     }
     
     //@Override
-    public void newFileSystem(String repositoryName, String fromGitURL, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+    //This method is JGit specific
+    public FileSystem newJGitFileSystem(String repositoryName, String fromGitURL, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
         Map<String, String> env = new HashMap<String, String>();
         env.put("fromGitURL", fromGitURL);
         env.put("userName", userName);
         env.put("password", password);
         URI uri = URI.create("jgit:///" + repositoryName);
-        FileSystems.newFileSystem(uri, env);
+        FileSystem fileSystem = FileSystems.newFileSystem(uri, env);
+        
+        //Save this newly created git repository's metadata info into guvnorng-config git repository
+        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
+        jGitRepositoryConfiguration.setFromGitURL(fromGitURL);
+        jGitRepositoryConfiguration.setRepositoryName(repositoryName);
+        jGitRepositoryConfiguration.setUserName(userName);
+        jGitRepositoryConfiguration.setPassword(password);
+        jGitRepositoryConfiguration.setRootURI(uri);
+        
+        addRepositoryConfiguration(repositoryName, jGitRepositoryConfiguration);
+        
+        return fileSystem;
     }
     
-    public void listFileSystems(String repositoryName, String fromGitURL, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
-        Map<String, String> env = new HashMap<String, String>();
-        env.put("fromGitURL", fromGitURL);
-        env.put("userName", userName);
-        env.put("password", password);
-        URI uri = URI.create("jgit:///" + repositoryName);
-        FileSystems.newFileSystem(uri, env);
+    //This method is JGit specific
+    @Override
+    public List<JGitRepositoryConfigurationVO> listJGitRepositories() {
+        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
+        List<JGitRepositoryConfigurationVO> result = new ArrayList<JGitRepositoryConfigurationVO>();
+
+        for (JGitRepositoryConfiguration j : repo.values()) {
+            JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
+            jGitRepositoryConfigurationVO.setFromGitURL(j.getFromGitURL());
+            jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
+            jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
+
+            result.add(jGitRepositoryConfigurationVO);
+        }
+
+        return result;
+    }
+    
+    //This method is JGit specific
+    @Override
+    public List<FileSystem> listJGitFileSystems() {
+        List<FileSystem> fileSystems = new ArrayList<FileSystem>();
+
+        Map<String, JGitRepositoryConfiguration> repositories = getRepositoryConfiguration();
+        for (String repositoryName : repositories.keySet()) {
+            URI uri = URI.create("jgit:///" + repositoryName);
+            FileSystem f = FileSystems.getFileSystem(uri);
+            fileSystems.add(f);
+        }
+        
+        return fileSystems;
+    }
+    
+    //TODO: Get from guvnorng-config git repository
+    private Map<String, JGitRepositoryConfiguration> getRepositoryConfiguration() {   
+        return repositories;       
+    }
+    
+    //TODO: Save to guvnorng-config git repository   
+    private void addRepositoryConfiguration(String repositoryName, JGitRepositoryConfiguration j) {       
+        repositories.put(repositoryName, j);       
     }
     
     @Override
@@ -339,17 +402,36 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     private org.drools.java.nio.file.Path fromPath(final Path path) {
-        return Paths.get(URI.create(path.toURI()));
+        //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
+        String pathString = path.toURI();
+        pathString = pathString.replaceAll(" ", "%20");
+        return Paths.get(URI.create(pathString));
     }
     
     public static void main(String[] args) throws Exception {
         VFSServicesServerImpl vfs = new VFSServicesServerImpl();
+        vfs.init();
 /*
         URI u = new URI("");
         URI u2 = new URI("default:///.");
         URI u3 = URI.create("default:///.");        
         URI u4 = new URI(null, null, ".", null, null);*/
-       
+        
+        List<JGitRepositoryConfigurationVO> repositories = vfs.listJGitRepositories();
+        for ( final JGitRepositoryConfigurationVO r : repositories ) {    
+            PathImpl p = new PathImpl(r.getRootURI().toString());
+            DirectoryStream<Path> response = vfs.newDirectoryStream(p);
+            for ( final Path path : response ) {
+                Map<String, Object> attributes = vfs.readAttributes(path);
+
+                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(attributes);
+                System.out.println("path.getFileName() " + path.getFileName());
+                System.out.println("attrs.isDirectory() " + attrs.isDirectory());
+                System.out.println("attrs.isRegularFile() " + attrs.isRegularFile());
+                System.out.println("path.toURI() " + path.toURI());                
+            }
+        }
+/*       
         Map<String, String> env = new HashMap<String, String>();
         String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         String userName = "guvnorngtestuser1";
@@ -373,6 +455,6 @@ public class VFSServicesServerImpl implements VFSService {
             System.out.println("attrs.isDirectory() " + attrs.isDirectory());
             System.out.println("attrs.isRegularFile() " + attrs.isRegularFile());
             System.out.println("path.toURI() " + path.toURI());
-        }
+        }*/
     }
 }

@@ -16,6 +16,12 @@
 
 package org.drools.guvnor.server.impl;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -25,6 +31,7 @@ import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
+import org.drools.java.nio.file.FileSystem;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
@@ -53,4 +60,28 @@ public class AssetServiceImpl implements AssetService {
         }
         return null;
     }
+    
+/*    //@Override
+    public List<JGitRepositoryConfigurationVO> listRepositories() {
+        try {
+            List<FileSystem> fileSystems = vfsService.listJGitFileSystems();
+            List<JGitRepositoryConfigurationVO> repositories = new ArrayList<JGitRepositoryConfigurationVO>();
+            
+            for (FileSystem f : fileSystems) {
+                //TODO: how to get info following info
+                JGitRepositoryConfigurationVO jGitRepositoryConfiguration = new JGitRepositoryConfigurationVO();
+                jGitRepositoryConfiguration.setFromGitURL("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
+                jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground");
+                URI uri = URI.create("jgit:///" + "guvnorng-playground");
+                jGitRepositoryConfiguration.setRootURI(uri);
+                
+                repositories.add(jGitRepositoryConfiguration);
+            }
+
+            return repositories;
+        } catch (Exception e) {
+
+        }
+        return null;
+    }*/
 }

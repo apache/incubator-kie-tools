@@ -25,6 +25,7 @@ import org.drools.java.nio.file.CopyOption;
 import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.FileAlreadyExistsException;
+import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.NoSuchFileException;
 import org.drools.java.nio.file.NotDirectoryException;
@@ -186,5 +187,9 @@ public interface VFSService {
     Path write(Path path,
             String content, OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
+
+    List<FileSystem> listJGitFileSystems();
+
+    List<JGitRepositoryConfigurationVO> listJGitRepositories();
 
 }
