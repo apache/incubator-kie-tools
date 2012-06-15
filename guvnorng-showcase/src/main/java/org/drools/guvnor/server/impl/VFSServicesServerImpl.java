@@ -70,11 +70,11 @@ public class VFSServicesServerImpl implements VFSService {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     
-    //TODO: Get from guvnorng-config git repository
     Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
 
     @PostConstruct
     public void init() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+        //TODO: Get from guvnorng-config git repository
         //Mock data until we can get real data from guvnorng-config git repository
         String repositoryName = "guvnorng-playground";
         String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
@@ -82,17 +82,6 @@ public class VFSServicesServerImpl implements VFSService {
         String password = "test1234";        
         Map<String, String> env = new HashMap<String, String>();
         newJGitFileSystem(repositoryName, fromGitURL, userName, password);
-/*                
-        
-        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
-        jGitRepositoryConfiguration.setFromGitURL("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
-        jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground");
-        jGitRepositoryConfiguration.setUserName("guvnorngtestuser1");
-        jGitRepositoryConfiguration.setPassword("test1234");
-        URI uri = URI.create("jgit:///" + "guvnorng-playground");
-        jGitRepositoryConfiguration.setRootURI(uri);
-
-        repositories.put("guvnorng-playground", jGitRepositoryConfiguration);*/
     }
 
     @Override
