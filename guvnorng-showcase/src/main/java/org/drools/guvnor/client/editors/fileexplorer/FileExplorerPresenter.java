@@ -30,7 +30,7 @@ import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.ScreenService;
+import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.client.mvp.SupportedFormat;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.drools.guvnor.shared.AssetService;
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 @Dependent
 public class FileExplorerPresenter
     implements
-    ScreenService {
+    StaticScreenService {
 
     @Inject
     View                 view;
@@ -82,6 +82,8 @@ public class FileExplorerPresenter
         TreeItem getRootItem();
 
         Tree getTree();
+
+        void setFocus();
     }
 
     private static ShowcaseImages images    = GWT.create( ShowcaseImages.class );
@@ -218,17 +220,16 @@ public class FileExplorerPresenter
 
     @Override
     public void onReveal() {
-        //view.setFocus();
+        view.setFocus();
     }
 
     @Override
     public void onHide() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void mayOnHide() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public boolean mayHide() {
+        return true;
     }
 
     private boolean needsLoading(TreeItem item) {

@@ -3,18 +3,20 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.AcceptItem;
+import org.drools.guvnor.client.mvp.AbstractEditorScreenActivity;
 import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.ScreenService;
-import org.drools.guvnor.client.workbench.Position;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @NameToken("TextEditor")
-public class TextEditorActivity
+//TODO {manstis} This should not need to re-implement Activity but Errai doesn't detect it if it doesn't
+public class TextEditorActivity extends AbstractEditorScreenActivity
     implements
     Activity {
 
@@ -30,83 +32,22 @@ public class TextEditorActivity
     }
 
     @Override
-    public void start() {
+    public EditorScreenService getPresenter() {
+        this.presenter = manager.lookupBean( TextEditorPresenter.class ).getInstance();
+        return this.presenter;
     }
 
     @Override
-    public void onStop() {
-        if ( presenter != null && presenter instanceof ScreenService ) {
-            ((ScreenService) presenter).onClose();
-        }
-    }
-
-    @Override
-    public boolean mayStop() {
-        if ( presenter != null && presenter instanceof ScreenService ) {
-            return ((ScreenService) presenter).mayClose();
-        }
-        return true;
-    }
-
-    @Override
-    public Position getPreferredPosition() {
-        return Position.SELF;
-    }
-
-    @Override
-    public void revealPlace(AcceptItem acceptPanel) {
-        if ( presenter == null ) {
-            presenter = manager.lookupBean( TextEditorPresenter.class ).getInstance();
-            if ( presenter instanceof ScreenService ) {
-                ((ScreenService) presenter).onStart();
-            }
-        }
-
-        if ( presenter instanceof ScreenService ) {
-            acceptPanel.add( getTabTitle(),
-                             presenter.view );
-            ((ScreenService) presenter).onReveal();
-        }
-    }
-
-    private String getTabTitle() {
+    public String getTitle() {
         IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         final String uriPath = placeRequest.getParameter( "path",
                                                           null );
         return "Text Editor [" + uriPath + "]";
     }
 
-    /**
-     * True - Close the place False - Do not close the place
-     */
     @Override
-    public boolean mayClosePlace() {
-        if ( presenter instanceof ScreenService ) {
-            return ((ScreenService) presenter).mayClose();
-        }
-
-        return true;
+    public IsWidget getWidget() {
+        return presenter.view;
     }
 
-    @Override
-    public void closePlace() {
-        if ( presenter == null ) {
-            return;
-        }
-
-        if ( presenter instanceof ScreenService ) {
-            ((ScreenService) presenter).onClose();
-        }
-        presenter = null;
-    }
-
-    @Override
-    public void hide() {
-        //TODO: -Rikkola-
-    }
-
-    @Override
-    public void show() {
-        //TODO: -Rikkola-
-    }
 }

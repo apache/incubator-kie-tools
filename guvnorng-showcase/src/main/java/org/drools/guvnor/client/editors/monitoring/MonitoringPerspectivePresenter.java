@@ -16,25 +16,53 @@
 
 package org.drools.guvnor.client.editors.monitoring;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.IsWidget;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.StaticScreenService;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
 @ApplicationScoped
-public class MonitoringPerspectivePresenter {
+public class MonitoringPerspectivePresenter
+    implements
+    StaticScreenService {
 
-    public interface MyView extends IsWidget {
-
-        void setUserName(String userName);
+    public interface MyView
+        extends
+        IsWidget {
     }
 
     @Inject
     MyView view;
 
-    public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
-        acceptsOneWidget.setWidget(view);
+    public MonitoringPerspectivePresenter() {
     }
+
+    @Override
+    public void onStart() {
+    }
+
+    @Override
+    public void onClose() {
+    }
+
+    @Override
+    public boolean mayClose() {
+        return true;
+    }
+
+    @Override
+    public boolean mayHide() {
+        return true;
+    }
+
+    @Override
+    public void onReveal() {
+    }
+
+    @Override
+    public void onHide() {
+    }
+
 }

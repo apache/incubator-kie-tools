@@ -16,44 +16,45 @@
 
 package org.drools.guvnor.client.editors.fileexplorer;
 
-import org.drools.guvnor.client.mvp.AcceptItem;
-import org.drools.guvnor.client.mvp.Activity;
-import org.drools.guvnor.client.mvp.NameToken;
-import org.drools.guvnor.client.mvp.ScreenService;
-import org.drools.guvnor.client.workbench.Position;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.workbench.Position;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
 @Dependent
 @NameToken("File Explorer")
-public class FileExplorerActivity implements Activity {
+//TODO {manstis} This should not need to re-implement Activity but Errai doesn't detect it if it doesn't
+public class FileExplorerActivity extends AbstractStaticScreenActivity implements Activity {
+
+    @Inject
+    private IOCBeanManager        manager;
 
     private FileExplorerPresenter presenter;
-    @Inject
-    private IOCBeanManager manager;
 
     public FileExplorerActivity() {
     }
 
     @Override
-    public void start() {
+    public StaticScreenService getPresenter() {
+        this.presenter = manager.lookupBean( FileExplorerPresenter.class ).getInstance();
+        return this.presenter;
     }
 
     @Override
-    public void onStop() {
-        if (presenter != null && presenter instanceof ScreenService) {
-            ((ScreenService) presenter).onClose();
-        }
+    public String getTitle() {
+        return "File Explorer";
     }
 
     @Override
-    public boolean mayStop() {
-        if (presenter != null && presenter instanceof ScreenService) {
-            return ((ScreenService) presenter).mayClose();
-        }
-        return true;
+    public IsWidget getWidget() {
+        return presenter.view;
     }
 
     @Override
@@ -61,53 +62,4 @@ public class FileExplorerActivity implements Activity {
         return Position.WEST;
     }
 
-    @Override
-    public void revealPlace(AcceptItem acceptPanel) {
-        if (presenter == null) {
-            presenter = manager.lookupBean(FileExplorerPresenter.class).getInstance();
-            if (presenter instanceof ScreenService) {
-                ((ScreenService) presenter).onStart();
-            }
-            //TODO: Get tab title (or an closable title bar widget).        
-            acceptPanel.add("File Explorer", presenter.view);
-        }
-
-        if (presenter instanceof ScreenService) {
-            ((ScreenService) presenter).onReveal();
-        }
-    }
-
-    /**
-     * True - Close the place False - Do not close the place
-     */
-    @Override
-    public boolean mayClosePlace() {
-        if (presenter instanceof ScreenService) {
-            return ((ScreenService) presenter).mayClose();
-        }
-
-        return true;
-    }
-
-    @Override
-    public void closePlace() {
-        if (presenter == null) {
-            return;
-        }
-
-        if (presenter instanceof ScreenService) {
-            ((ScreenService) presenter).onClose();
-        }
-        presenter = null;
-    }
-
-    @Override
-    public void hide() {
-        presenter.onHide();
-    }
-
-    @Override
-    public void show() {
-        presenter.onReveal();
-    }
 }

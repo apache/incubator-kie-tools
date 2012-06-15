@@ -16,27 +16,56 @@
 
 package org.drools.guvnor.client.editors.admin2;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.StaticScreenService;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
-
 @Dependent
-public class MyAdminAreaPresenter2 {
+public class MyAdminAreaPresenter2
+    implements
+    StaticScreenService {
 
-    public interface View extends IsWidget {
+    public interface View
+        extends
+        IsWidget {
+
         void setName(String name);
     }
 
-    @Inject public View view;
+    @Inject
+    public View view;
 
     public MyAdminAreaPresenter2() {
     }
-    
-    @PostConstruct
-    public void bind() {
-        view.setName("AdminArea2");
+
+    @Override
+    public void onStart() {
+        view.setName( "AdminArea2" );
     }
+
+    @Override
+    public void onClose() {
+    }
+
+    @Override
+    public boolean mayClose() {
+        return true;
+    }
+
+    @Override
+    public boolean mayHide() {
+        return true;
+    }
+
+    @Override
+    public void onReveal() {
+    }
+
+    @Override
+    public void onHide() {
+    }
+
 }

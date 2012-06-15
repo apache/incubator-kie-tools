@@ -21,24 +21,24 @@ import javax.annotation.PostConstruct;
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-
 public class FileExplorerView extends Composite
-    implements FileExplorerPresenter.View {
+    implements
+    FileExplorerPresenter.View {
 
-    final Tree tree = new Tree();
-    TreeItem rootTreeItem;
-    private static ShowcaseImages images = GWT.create(ShowcaseImages.class);
-    
+    final Tree                    tree   = new Tree();
+    TreeItem                      rootTreeItem;
+    private static ShowcaseImages images = GWT.create( ShowcaseImages.class );
+
     @PostConstruct
     public void init() {
-        rootTreeItem = tree.addItem(Util.getHeader(images.openedFolder(), "Home"));
-        initWidget(tree);
+        rootTreeItem = tree.addItem( Util.getHeader( images.openedFolder(),
+                                                     "Home" ) );
+        initWidget( tree );
     }
 
     @Override
@@ -49,6 +49,11 @@ public class FileExplorerView extends Composite
     @Override
     public Tree getTree() {
         return tree;
+    }
+
+    @Override
+    public void setFocus() {
+        tree.setFocus( true );
     }
 
 }

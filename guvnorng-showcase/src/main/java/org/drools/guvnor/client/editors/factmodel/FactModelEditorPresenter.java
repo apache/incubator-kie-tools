@@ -18,14 +18,11 @@ package org.drools.guvnor.client.editors.factmodel;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.EditorService;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.impl.PathImpl;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
@@ -37,18 +34,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Dependent
 public class FactModelEditorPresenter
     implements
-    EditorService {
+    EditorScreenService {
 
     @Inject
     View                 view;
 
     @Inject
     Caller<AssetService> assetService;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    private Path         path = null;
 
     public interface View
         extends
@@ -66,12 +58,7 @@ public class FactModelEditorPresenter
     }
 
     @Override
-    public void onStart() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String uri = placeRequest.getParameter( "path",
-                                                null );
-        Path path = new PathImpl( uri );
-
+    public void onStart(Path path) {
         assetService.call( new RemoteCallback<AbstractAsset>() {
             @Override
             public void callback(AbstractAsset response) {
@@ -99,7 +86,6 @@ public class FactModelEditorPresenter
 
     @Override
     public void onClose() {
-        this.path = null;
     }
 
     @Override
@@ -117,7 +103,8 @@ public class FactModelEditorPresenter
     }
 
     @Override
-    public void mayOnHide() {
+    public boolean mayHide() {
+        return true;
     }
 
 }

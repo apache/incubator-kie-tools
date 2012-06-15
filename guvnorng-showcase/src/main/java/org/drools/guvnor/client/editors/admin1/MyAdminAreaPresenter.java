@@ -19,22 +19,19 @@ package org.drools.guvnor.client.editors.admin1;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.ScreenService;
+import org.drools.guvnor.client.mvp.StaticScreenService;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class MyAdminAreaPresenter
     implements
-    ScreenService {
-    @Inject
-    private PlaceManager placeManager;
+    StaticScreenService {
 
     public interface View
         extends
         IsWidget {
+
         void setName(String name);
     }
 
@@ -46,9 +43,6 @@ public class MyAdminAreaPresenter
 
     @Override
     public void onStart() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String uuid = placeRequest.getParameter( "uuid",
-                                                 null );
         view.setName( "AdminArea" );
     }
 
@@ -62,21 +56,16 @@ public class MyAdminAreaPresenter
     }
 
     @Override
-    public void onReveal() {
-        // TODO Auto-generated method stub
+    public boolean mayHide() {
+        return true;
+    }
 
+    @Override
+    public void onReveal() {
     }
 
     @Override
     public void onHide() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mayOnHide() {
-        // TODO Auto-generated method stub
-
     }
 
 }

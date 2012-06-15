@@ -55,7 +55,6 @@ public class PositionSelectorPopup extends PopupPanel {
                 Position position = Position.valueOf( selection );
                 hide();
 
-                //TODO {manstis} This can be any editor...
                 final String title = position.toString() + " [" + (widgetCounter++) + "]";
                 PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
                                                                                  title ),

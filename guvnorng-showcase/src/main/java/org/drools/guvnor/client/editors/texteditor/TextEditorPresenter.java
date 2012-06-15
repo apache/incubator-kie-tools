@@ -19,11 +19,8 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.EditorService;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.Paths;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -33,7 +30,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Dependent
 public class TextEditorPresenter
     implements
-    EditorService {
+    EditorScreenService {
 
     public interface View
         extends
@@ -51,22 +48,16 @@ public class TextEditorPresenter
     }
 
     @Inject
-    View                 view;
-    @Inject
-    Caller<VFSService>   vfsServices;
-    @Inject
-    private PlaceManager placeManager;
+    View               view;
 
-    Path                 path = null;
+    @Inject
+    Caller<VFSService> vfsServices;
+
+    private Path       path;
 
     @Override
-    public void onStart() {
-        //i believe that editor should receive the path as parameter of start! - porcelli
-        final IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String uri = placeRequest.getParameter( "path",
-                                                      null );
-        path = Paths.fromURI( uri );
-
+    public void onStart(final Path path) {
+        this.path = path;
         vfsServices.call( new RemoteCallback<String>() {
             @Override
             public void callback(String response) {
@@ -114,6 +105,7 @@ public class TextEditorPresenter
     }
 
     @Override
-    public void mayOnHide() {
+    public boolean mayHide() {
+        return true;
     }
 }

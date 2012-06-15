@@ -16,11 +16,19 @@
 
 package org.drools.guvnor.client.mvp;
 
+import org.drools.guvnor.vfs.Path;
 
-public interface EditorService extends ScreenService {
+public interface EditorScreenService
+    extends
+    BaseScreenService {
 
+    // onStart() is called right after the Presenter is constructed.
+    public void onStart(Path path);
+
+    // Perform a save.
     public void doSave();
 
+    //Is the editor dirty, i.e. contains unsaved state
     public boolean isDirty();
 
 }
