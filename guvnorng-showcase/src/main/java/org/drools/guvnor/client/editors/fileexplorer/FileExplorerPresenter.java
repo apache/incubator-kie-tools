@@ -65,9 +65,9 @@ public class FileExplorerPresenter
 
     @Inject
     Caller<VFSService>   vfsService;
-    
+
     @Inject
-    Caller<AssetService>   assetService;
+    Caller<AssetService> assetService;
 
     @Inject
     private PlaceManager placeManager;
@@ -92,37 +92,37 @@ public class FileExplorerPresenter
     @Override
     public void onStart() {
 
-        
-     vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
-      @Override
-      public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-       for ( final JGitRepositoryConfigurationVO r : repositories ) {      
-          PathImpl p = new PathImpl(r.getRootURI().toString());
-          vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
+        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
-            public void callback(DirectoryStream<Path> response) {
-                for ( final Path path : response ) {
-                    vfsService.call( new RemoteCallback<Map>() {
+            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+                for ( final JGitRepositoryConfigurationVO r : repositories ) {
+                    PathImpl p = new PathImpl( r.getRootURI().toString() );
+                    vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
                         @Override
-                        public void callback(final Map response) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
-                            final TreeItem item;
-                            if ( attrs.isDirectory() ) {
-                                item = view.getRootItem().addItem( Util.getHeader( images.openedFolder(),
-                                                                                   path.getFileName() ) );
-                                item.addItem( LAZY_LOAD );
-                            } else {
-                                item = view.getRootItem().addItem( Util.getHeader( images.file(),
-                                                                                   path.getFileName() ) );
+                        public void callback(DirectoryStream<Path> response) {
+                            for ( final Path path : response ) {
+                                vfsService.call( new RemoteCallback<Map>() {
+                                    @Override
+                                    public void callback(final Map response) {
+                                        final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                                        final TreeItem item;
+                                        if ( attrs.isDirectory() ) {
+                                            item = view.getRootItem().addItem( Util.getHeader( images.openedFolder(),
+                                                                                               path.getFileName() ) );
+                                            item.addItem( LAZY_LOAD );
+                                        } else {
+                                            item = view.getRootItem().addItem( Util.getHeader( images.file(),
+                                                                                               path.getFileName() ) );
+                                        }
+                                        item.setUserObject( path );
+                                    }
+                                } ).readAttributes( path );
                             }
-                            item.setUserObject( path );
                         }
-                    } ).readAttributes( path );
+                    } ).newDirectoryStream( p );
                 }
             }
-        } ).newDirectoryStream(p);
-      }}
-      } ).listJGitRepositories();
+        } ).listJGitRepositories();
 
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
