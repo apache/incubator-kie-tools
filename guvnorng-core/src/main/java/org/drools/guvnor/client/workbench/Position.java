@@ -26,7 +26,8 @@ public enum Position {
     SOUTH,
     EAST,
     WEST,
-    SELF;
+    SELF,
+    ROOT;
 
     private String displayName;
 

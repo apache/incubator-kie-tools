@@ -34,7 +34,7 @@ public abstract class AbstractStaticScreenActivity
 
     @Override
     public Position getPreferredPosition() {
-        return Position.SELF;
+        return Position.ROOT;
     }
 
     public void onStop() {
@@ -52,6 +52,9 @@ public abstract class AbstractStaticScreenActivity
         if ( presenter == null ) {
             presenter = getPresenter();
         }
+        if ( presenter == null ) {
+            return;
+        }
 
         presenter.onStart();
         acceptPanel.add( getTitle(),
@@ -67,7 +70,10 @@ public abstract class AbstractStaticScreenActivity
 
     @Override
     public boolean mayClosePlace() {
-        return presenter.mayClose();
+        if ( presenter != null ) {
+            return presenter.mayClose();
+        }
+        return true;
     }
 
     @Override

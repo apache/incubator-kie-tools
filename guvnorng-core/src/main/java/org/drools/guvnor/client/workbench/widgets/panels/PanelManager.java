@@ -39,6 +39,8 @@ public class PanelManager {
 
     private WorkbenchPanel      focusPanel      = null;
 
+    private WorkbenchPanel      rootPanel       = null;
+
     private Set<WorkbenchPanel> workbenchPanels = new HashSet<WorkbenchPanel>();
 
     private PanelManager() {
@@ -46,6 +48,10 @@ public class PanelManager {
 
     public static PanelManager getInstance() {
         return INSTANCE;
+    }
+
+    public void setRoot(final WorkbenchPanel panel) {
+        this.rootPanel = panel;
     }
 
     public void addWorkbenchPanel(final WorkbenchPart part,
@@ -90,11 +96,20 @@ public class PanelManager {
                 helperWest.add( newPanel,
                                 targetPanel );
                 break;
+
+            case ROOT :
+                rootPanel.addTab( part );
+                break;
         }
         setFocus( newPanel );
     }
 
     public void removeWorkbenchPanel(final WorkbenchPanel panel) {
+
+        //The root WorkbenchPanel cannot be removed
+        if ( panel == rootPanel ) {
+            return;
+        }
 
         //Find the position that needs to be deleted
         Position position = Position.NONE;

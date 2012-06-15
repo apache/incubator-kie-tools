@@ -41,7 +41,7 @@ public abstract class AbstractEditorScreenActivity
 
     @Override
     public Position getPreferredPosition() {
-        return Position.SELF;
+        return Position.ROOT;
     }
 
     public void onStop() {
@@ -58,6 +58,9 @@ public abstract class AbstractEditorScreenActivity
     public void revealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = getPresenter();
+        }
+        if ( presenter == null ) {
+            return;
         }
 
         IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
@@ -79,7 +82,10 @@ public abstract class AbstractEditorScreenActivity
 
     @Override
     public boolean mayClosePlace() {
-        return presenter.mayClose();
+        if ( presenter != null ) {
+            return presenter.mayClose();
+        }
+        return true;
     }
 
     @Override
