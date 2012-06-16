@@ -94,12 +94,12 @@ public class FileExplorerPresenter
 
     @Override
     public void onStart() {
-
+        view.getRootItem().setUserObject(REPOSITORY_ID);
+        view.getRootItem().addItem( LAZY_LOAD );
         vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-                view.getRootItem().setUserObject(REPOSITORY_ID);
-
+                view.getRootItem().removeItems();
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
                     final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(), r.getRepositoryName() ) );
                     repositoryRootItem.setState(true);
