@@ -51,12 +51,12 @@ public abstract class AbstractStaticScreenActivity
     public void revealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = getPresenter();
+            presenter.onStart();        
         }
         if ( presenter == null ) {
             return;
         }
 
-        presenter.onStart();
         acceptPanel.add( getTitle(),
                          getWidget() );
         presenter.onReveal();

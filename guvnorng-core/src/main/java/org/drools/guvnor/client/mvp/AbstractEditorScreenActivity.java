@@ -58,16 +58,16 @@ public abstract class AbstractEditorScreenActivity
     public void revealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = getPresenter();
+
+            IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+            String uri = placeRequest.getParameter( "path",
+                                                    null );
+            Path path = new PathImpl( uri );
+            ((EditorScreenService) presenter).onStart( path );
         }
         if ( presenter == null ) {
             return;
         }
-
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String uri = placeRequest.getParameter( "path",
-                                                null );
-        Path path = new PathImpl( uri );
-        ((EditorScreenService) presenter).onStart( path );
 
         acceptPanel.add( getTitle(),
                          getWidget() );
