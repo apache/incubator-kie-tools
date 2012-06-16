@@ -30,6 +30,7 @@ import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.client.mvp.SupportedFormat;
 import org.drools.guvnor.client.resources.ShowcaseImages;
@@ -75,6 +76,8 @@ public class FileExplorerPresenter
     @Inject
     IOCBeanManager       iocManager;
 
+    private static String REPOSITORY_ID = "repositories";
+    
     public interface View
         extends
         IsWidget {
@@ -95,6 +98,8 @@ public class FileExplorerPresenter
         vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+                view.getRootItem().setUserObject(REPOSITORY_ID);
+
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
                     final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(), r.getRepositoryName() ) );
                     repositoryRootItem.setState(true);
@@ -164,17 +169,29 @@ public class FileExplorerPresenter
         view.getTree().addSelectionHandler( new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
-                final Path path = (Path) event.getSelectedItem().getUserObject();
-                vfsService.call( new RemoteCallback<Map>() {
-                    @Override
-                    public void callback(final Map response) {
-                        final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
-                        if ( attrs.isRegularFile() ) {
-                            IPlaceRequest placeRequest = getPlace( path );
-                            placeManager.goTo( placeRequest );
+                if (event.getSelectedItem().getUserObject() instanceof Path) {
+                    final Path path = (Path) event.getSelectedItem().getUserObject();
+                    vfsService.call(new RemoteCallback<Map>() {
+                        @Override
+                        public void callback(final Map response) {
+                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
+                            if (attrs.isRegularFile()) {
+                                IPlaceRequest placeRequest = getPlace(path);
+                                placeManager.goTo(placeRequest);
+                            }
                         }
-                    }
-                } ).readAttributes( path );
+                    }).readAttributes(path);
+                } else if(event.getSelectedItem().getUserObject() instanceof String && ((String)event.getSelectedItem().getUserObject()).equals(REPOSITORY_ID) ) {
+                    PlaceRequest placeRequest = new PlaceRequest( "RepositoriesEditor" );
+                    placeManager.goTo( placeRequest );                
+                } else if(event.getSelectedItem().getUserObject() instanceof JGitRepositoryConfigurationVO) {
+                    final JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = (JGitRepositoryConfigurationVO) event.getSelectedItem().getUserObject();
+                    PlaceRequest placeRequest = new PlaceRequest( "RepositoryEditor" );
+                    placeRequest.addParameter( "description", jGitRepositoryConfigurationVO.getDescription());
+                    placeRequest.addParameter( "fromGitURL", jGitRepositoryConfigurationVO.getFromGitURL());
+                    placeRequest.addParameter( "repositoryName", jGitRepositoryConfigurationVO.getRepositoryName());                    
+                    placeManager.goTo( placeRequest );                                 
+                }
             }
         } );
     }

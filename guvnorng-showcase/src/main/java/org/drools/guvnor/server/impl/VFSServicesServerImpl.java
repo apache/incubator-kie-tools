@@ -17,10 +17,8 @@
 package org.drools.guvnor.server.impl;
 
 import java.net.URI;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -60,8 +58,6 @@ import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
 import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.jboss.errai.bus.server.annotations.Service;
-
-import com.google.gwt.http.client.URL;
 
 
 @Service
@@ -117,7 +113,6 @@ public class VFSServicesServerImpl implements VFSService {
         return fileSystem;
     }
     
-    //This method is JGit specific
     @Override
     public List<JGitRepositoryConfigurationVO> listJGitRepositories() {
         Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
@@ -135,7 +130,19 @@ public class VFSServicesServerImpl implements VFSService {
         return result;
     }
     
-    //This method is JGit specific
+    @Override
+    public JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName) {
+        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
+        JGitRepositoryConfiguration j = repo.get(repositoryName);
+
+        JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
+        jGitRepositoryConfigurationVO.setFromGitURL(j.getFromGitURL());
+        jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
+        jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
+
+        return jGitRepositoryConfigurationVO;
+    }
+    
     @Override
     public List<FileSystem> listJGitFileSystems() {
         List<FileSystem> fileSystems = new ArrayList<FileSystem>();

@@ -192,4 +192,6 @@ public interface VFSService {
 
     List<JGitRepositoryConfigurationVO> listJGitRepositories();
 
+    JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName);
+
 }

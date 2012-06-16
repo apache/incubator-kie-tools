@@ -194,7 +194,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         String path = getRootJGitRepositoryName(uri.getPath());
 
         if(!repositories.containsKey(path)) {
-            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " does not exist");
+            throw new FileSystemNotFoundException("FileSystem identifed by URI: " + uri + " does not exist");
         }
         JGitRepositoryConfiguration jGitRepositoryConfiguration = repositories.get(path);
         String userName = (String)jGitRepositoryConfiguration.getUserName();
