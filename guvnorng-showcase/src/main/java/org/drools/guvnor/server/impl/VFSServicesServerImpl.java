@@ -104,16 +104,17 @@ public class VFSServicesServerImpl implements VFSService {
                 InputStream is = Files.newInputStream(fromPath(path), null);
                 Properties properties = new Properties();
                 properties.load(is);
+                
+                //Clone or fetch the repo
+                newJGitFileSystem(properties.getProperty("repositoryname"), properties.getProperty("giturl"), properties.getProperty("username"), properties.getProperty("password"));                
 
+                //Add this newly created repository configuration info to the in-memory cache of repository configuration list
                 jGitRepositoryConfiguration.setRepositoryName(properties.getProperty("repositoryname"));
                 jGitRepositoryConfiguration.setGitURL(properties.getProperty("giturl"));
                 jGitRepositoryConfiguration.setUserName(properties.getProperty("username"));
                 jGitRepositoryConfiguration.setPassword(properties.getProperty("password"));
                 jGitRepositoryConfiguration.setRootURI(URI.create(properties.getProperty("rooturi")));
-                addRepositoryConfiguration(jGitRepositoryConfiguration.getRepositoryName(), jGitRepositoryConfiguration);
-                
-                //Clone or fetch the repo
-                newJGitFileSystem(properties.getProperty("repositoryname"), properties.getProperty("giturl"), properties.getProperty("username"), properties.getProperty("password"));                
+                addRepositoryConfiguration(jGitRepositoryConfiguration.getRepositoryName(), jGitRepositoryConfiguration);                
             }             
         }
     }

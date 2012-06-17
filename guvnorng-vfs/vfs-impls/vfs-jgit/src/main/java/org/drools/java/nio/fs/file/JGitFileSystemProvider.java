@@ -142,7 +142,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
         
-        String gitURL = (String)env.get("gitURL");
+        String gitURL = (String)env.get("giturl");
         if (gitURL == null || "".equals(gitURL)) {
             throw new IllegalArgumentException("gitURL is undefined");
         } 
