@@ -188,7 +188,7 @@ public class FileExplorerPresenter
                     final JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = (JGitRepositoryConfigurationVO) event.getSelectedItem().getUserObject();
                     PlaceRequest placeRequest = new PlaceRequest( "RepositoryEditor" );
                     placeRequest.addParameter( "description", jGitRepositoryConfigurationVO.getDescription());
-                    placeRequest.addParameter( "fromGitURL", jGitRepositoryConfigurationVO.getFromGitURL());
+                    placeRequest.addParameter( "gitURL", jGitRepositoryConfigurationVO.getGitURL());
                     placeRequest.addParameter( "repositoryName", jGitRepositoryConfigurationVO.getRepositoryName());                    
                     placeManager.goTo( placeRequest );                                 
                 }

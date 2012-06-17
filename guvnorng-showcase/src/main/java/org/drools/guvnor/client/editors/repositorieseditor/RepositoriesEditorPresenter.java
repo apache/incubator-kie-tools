@@ -62,7 +62,7 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    view.addRepository(r.getRepositoryName(), r.getFromGitURL(), r.getDescription(), r.getRootURI());
+                    view.addRepository(r.getRepositoryName(), r.getGitURL(), r.getDescription(), r.getRootURI());
                 }
             }
         } ).listJGitRepositories();

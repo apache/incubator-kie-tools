@@ -20,7 +20,7 @@ import java.net.URI;
 
 public class JGitRepositoryConfiguration {
     private String repositoryName;
-    private String fromGitURL;
+    private String gitURL;
     private String userName;
     private String password;
     private String description;
@@ -31,11 +31,11 @@ public class JGitRepositoryConfiguration {
     public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
     }
-    public String getFromGitURL() {
-        return fromGitURL;
+    public String getGitURL() {
+        return gitURL;
     }
-    public void setFromGitURL(String fromGitURL) {
-        this.fromGitURL = fromGitURL;
+    public void setGitURL(String gitURL) {
+        this.gitURL = gitURL;
     }
     public String getUserName() {
         return userName;

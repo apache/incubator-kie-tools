@@ -70,7 +70,7 @@ public class RepositoryEditorPresenter implements StaticScreenService {
         vfsService.call( new RemoteCallback<JGitRepositoryConfigurationVO>() {
             @Override
             public void callback(JGitRepositoryConfigurationVO repository) {
-                    view.addRepository(repository.getRepositoryName(), repository.getFromGitURL(), repository.getDescription(), repository.getRootURI());
+                    view.addRepository(repository.getRepositoryName(), repository.getGitURL(), repository.getDescription(), repository.getRootURI());
             }
         } ).loadJGitRepository(repositoryName);
     }

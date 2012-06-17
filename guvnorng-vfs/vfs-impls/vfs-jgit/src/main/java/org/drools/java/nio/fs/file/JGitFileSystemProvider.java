@@ -142,9 +142,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
         
-        String fromGitURL = (String)env.get("fromGitURL");
-        if (fromGitURL == null || "".equals(fromGitURL)) {
-            throw new IllegalArgumentException("fromGitURL is undefined");
+        String gitURL = (String)env.get("gitURL");
+        if (gitURL == null || "".equals(gitURL)) {
+            throw new IllegalArgumentException("gitURL is undefined");
         } 
         String userName = (String)env.get("username");
         String password = (String)env.get("password");
@@ -155,14 +155,14 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         }
         
         try {
-            cloneOrFetch(rootJGitRepositoryName, fromGitURL, credential);
+            cloneOrFetch(rootJGitRepositoryName, gitURL, credential);
         } catch (Exception e) {
             throw new IOException();
         }
         
         JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
         jGitRepositoryConfiguration.setRepositoryName(rootJGitRepositoryName);
-        jGitRepositoryConfiguration.setFromGitURL(fromGitURL);
+        jGitRepositoryConfiguration.setGitURL(gitURL);
         jGitRepositoryConfiguration.setUserName(userName);
         jGitRepositoryConfiguration.setPassword(password);
         repositories.put(rootJGitRepositoryName, jGitRepositoryConfiguration);
@@ -201,7 +201,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         String password = (String)jGitRepositoryConfiguration.getPassword();
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);     
         try {
-            cloneOrFetch(path, jGitRepositoryConfiguration.getFromGitURL(), credential);
+            cloneOrFetch(path, jGitRepositoryConfiguration.getGitURL(), credential);
         } catch (Exception e) {
             throw new IOException();
         }       
@@ -528,12 +528,12 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
         
         Map<String, String> env = new HashMap<String, String>();
-        String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         String userName = "guvnorngtestuser1";
         String password = "test1234";
         
-        env.put("fromGitURL", fromGitURL);
-        env.put("userName", userName);
+        env.put("giturl", gitURL);
+        env.put("username", userName);
         env.put("password", password);
         URI uri = URI.create("jgit:///guvnorng-playground");
         j.newFileSystem(uri, env);

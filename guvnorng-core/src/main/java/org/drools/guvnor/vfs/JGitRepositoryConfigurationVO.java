@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class JGitRepositoryConfigurationVO {
     private String repositoryName;
-    private String fromGitURL;
+    private String gitURL;
     private String userName;
     private String password;
     private String description;
@@ -34,11 +34,11 @@ public class JGitRepositoryConfigurationVO {
     public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
     }
-    public String getFromGitURL() {
-        return fromGitURL;
+    public String getGitURL() {
+        return gitURL;
     }
-    public void setFromGitURL(String fromGitURL) {
-        this.fromGitURL = fromGitURL;
+    public void setGitURL(String gitURL) {
+        this.gitURL = gitURL;
     }
     public String getUserName() {
         return userName;
