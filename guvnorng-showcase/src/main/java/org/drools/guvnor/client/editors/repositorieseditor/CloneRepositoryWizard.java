@@ -19,6 +19,7 @@ package org.drools.guvnor.client.editors.repositorieseditor;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -43,7 +44,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
-
+@Dependent
 public class CloneRepositoryWizard extends FormStylePopup {
 
     @Inject
@@ -85,6 +86,7 @@ public class CloneRepositoryWizard extends FormStylePopup {
                         @Override
                         public void callback(final Void v) {
                             Window.alert("The repository is cloned successfully");
+                            hide();
 
                         }
                     }).cloneJGitFileSystem(nameTextBox.getText(), gitURLTextBox.getText(),

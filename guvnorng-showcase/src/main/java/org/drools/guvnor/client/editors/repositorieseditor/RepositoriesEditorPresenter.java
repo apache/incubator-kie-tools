@@ -21,11 +21,14 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.editors.admin1.MyAdminAreaPresenter;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -36,6 +39,8 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
     
     @Inject
     Caller<VFSService>   vfsService;
+    @Inject
+    private IOCBeanManager       iocManager;
     
     public interface View extends IsWidget {
         void addRepository(String repositoryName, String gitURL, String description, String link);
@@ -64,7 +69,7 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
                 new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        NewRepositoryWizard newRepositoryWizard = new NewRepositoryWizard();
+                        NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
                         newRepositoryWizard.show();
                     }
                 });
@@ -73,7 +78,7 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
                 new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        CloneRepositoryWizard cloneRepositoryWizard = new CloneRepositoryWizard();
+                        CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
                         cloneRepositoryWizard.show();
                     }
                 });
