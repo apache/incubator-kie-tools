@@ -17,25 +17,19 @@
 package org.drools.guvnor.client.editors.repositorieseditor;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
-import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
-import org.drools.guvnor.vfs.VFSTempUtil;
-import org.drools.guvnor.vfs.impl.PathImpl;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
 public class RepositoriesEditorPresenter implements StaticScreenService {
@@ -43,11 +37,10 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
     @Inject
     Caller<VFSService>   vfsService;
     
-    public interface View
-        extends
-        IsWidget {
-
+    public interface View extends IsWidget {
         void addRepository(String repositoryName, String gitURL, String description, String link);
+        Button getCreateRepoButton();
+        Button getCloneRepoButton();
     }
 
     @Inject
@@ -66,6 +59,24 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
                 }
             }
         } ).listJGitRepositories();
+        
+        view.getCreateRepoButton().addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        NewRepositoryWizard newRepositoryWizard = new NewRepositoryWizard();
+                        newRepositoryWizard.show();
+                    }
+                });
+        
+        view.getCloneRepoButton().addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        CloneRepositoryWizard cloneRepositoryWizard = new CloneRepositoryWizard();
+                        cloneRepositoryWizard.show();
+                    }
+                });
     }
 
     @Override

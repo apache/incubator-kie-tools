@@ -82,5 +82,7 @@ public interface ShowcaseImages
 
     @Source("images/shuffle_up.gif")
     ImageResource shuffleUp();
-
+    
+    @Source("images/backup_large.png")
+    ImageResource backupLarge();
 }

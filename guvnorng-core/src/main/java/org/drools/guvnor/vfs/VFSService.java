@@ -26,12 +26,14 @@ import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.FileAlreadyExistsException;
 import org.drools.java.nio.file.FileSystem;
+import org.drools.java.nio.file.FileSystemAlreadyExistsException;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.NoSuchFileException;
 import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.PatternSyntaxException;
+import org.drools.java.nio.file.ProviderNotFoundException;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
@@ -193,5 +195,15 @@ public interface VFSService {
     List<JGitRepositoryConfigurationVO> listJGitRepositories();
 
     JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName);
+
+    FileSystem createJGitFileSystem(String repositoryName, String userName,
+            String password) throws IllegalArgumentException,
+            FileSystemAlreadyExistsException, ProviderNotFoundException,
+            SecurityException, java.io.IOException;
+
+    void cloneJGitFileSystem(String repositoryName, String gitURL,
+            String userName, String password) throws IllegalArgumentException,
+            FileSystemAlreadyExistsException, ProviderNotFoundException,
+            SecurityException, java.io.IOException;
 
 }

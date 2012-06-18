@@ -16,25 +16,16 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
-  <g:HTMLPanel ui:field="panel">
-<!--     <h1>Admin Area</h1>
-    <g:Label ui:field="nameLabel"></g:Label> -->
-    
-<!-- <li>
-  <h3>
-    <a href="/droolsjbpm/droolsjbpm-contributed-experiments">droolsjbpm-contributed-experiments</a>
-  </h3>
 
-  <div class="body">
-        <p>
-          Contributed experiments. Much of this code is stale and unmaintained, but we don't want to lose it.
-        </p>
+  <gwt:VerticalPanel>
+    <gwt:HorizontalPanel>
+      <gwt:Button ui:field="createRepoButton" text='Create New Repository'/>
+      <gwt:Button ui:field="cloneRepoButton" text='Clone Repository'/>
+    </gwt:HorizontalPanel>
+    <gwt:HTMLPanel ui:field="panel">
+    </gwt:HTMLPanel>
+  </gwt:VerticalPanel>
 
-        <p >Last updated <time title="2011-07-20 12:08:57" datetime="2011-07-20T12:08:57-07:00" class="js-relative-date">11 months ago</time></p>
-  </div>
-</li> -->
-
-  </g:HTMLPanel>
 </ui:UiBinder> 

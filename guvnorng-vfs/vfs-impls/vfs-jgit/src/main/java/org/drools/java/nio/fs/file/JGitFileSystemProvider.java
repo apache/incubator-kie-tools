@@ -144,7 +144,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         String gitURL = (String)env.get("giturl");
         if (gitURL == null || "".equals(gitURL)) {
-            throw new IllegalArgumentException("gitURL is undefined");
+            throw new IllegalArgumentException("giturl is undefined");
         } 
         String userName = (String)env.get("username");
         String password = (String)env.get("password");

@@ -19,8 +19,11 @@ package org.drools.guvnor.client.editors.repositorieseditor;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -38,7 +41,13 @@ public class RepositoriesEditorView extends Composite
 
     @UiField
     public HTMLPanel                 panel;
-
+    
+    @UiField
+    public Button                 createRepoButton;
+    
+    @UiField
+    public Button                 cloneRepoButton;
+    
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -64,6 +73,14 @@ public class RepositoriesEditorView extends Composite
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width,
                             height );
+    }
+
+    public Button getCreateRepoButton() {
+        return createRepoButton;
+    }
+
+    public Button  getCloneRepoButton() {
+        return cloneRepoButton;
     }
 
 }
