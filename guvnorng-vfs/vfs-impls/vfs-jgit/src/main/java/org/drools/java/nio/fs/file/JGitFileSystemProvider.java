@@ -26,15 +26,12 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 
 import org.drools.java.nio.IOException;
@@ -137,28 +134,38 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
+    //Clone a git repositoyr or create a new git repositoy if giturl parameter is not present. 
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
         validateURI(uri);
         
         String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
-        
+         
+        if(repositories.containsKey(rootJGitRepositoryName)) {
+            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " already exists");
+        }       
         String gitURL = (String)env.get("giturl");
-        if (gitURL == null || "".equals(gitURL)) {
+/*        if (gitURL == null || "".equals(gitURL)) {
             throw new IllegalArgumentException("giturl is undefined");
-        } 
+        } */
         String userName = (String)env.get("username");
         String password = (String)env.get("password");
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
-        
-        if(repositories.containsKey(rootJGitRepositoryName)) {
-            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " already exists");
+
+        if(gitURL == null || "".equals(gitURL)) {
+            //Create new repository
+            JGitUtils.createAndConfigRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName);
+        } else {
+            // Clone
+            try {
+                System.out.print("Fetching " + rootJGitRepositoryName + "... ");
+                //AwtCredentialsProvider credential = new AwtCredentialsProvider();
+                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, gitURL, true, credential);
+                System.out.println("Fetching done.");
+            } catch (Exception e) {
+                throw new IOException();
+            }
         }
-        
-        try {
-            cloneOrFetch(rootJGitRepositoryName, gitURL, credential);
-        } catch (Exception e) {
-            throw new IOException();
-        }
+
         
         JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
         jGitRepositoryConfiguration.setRepositoryName(rootJGitRepositoryName);
@@ -201,7 +208,10 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         String password = (String)jGitRepositoryConfiguration.getPassword();
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);     
         try {
-            cloneOrFetch(path, jGitRepositoryConfiguration.getGitURL(), credential);
+                System.out.print("Fetching " + path + "... ");
+                //AwtCredentialsProvider credential = new AwtCredentialsProvider();
+                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), path, jGitRepositoryConfiguration.getGitURL(), true, credential);
+                System.out.println("Fetching done.");
         } catch (Exception e) {
             throw new IOException();
         }       
@@ -526,50 +536,59 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     public static void main(String[] args) throws Exception {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
+
+        String repositoryName = "mytestrepo";
+        JGitUtils.createAndConfigRepository(new File(REPOSITORIES_ROOT_DIR), repositoryName);
+        Repository r = getRepository(repositoryName); 
+        ObjectId headId = r.resolve(Constants.HEAD);
         
+        List<PathModel> files2 = JGitUtils.getFilesInPath(r, null, null);
+        for (PathModel p : files2) {
+            System.out.println("name: " + p.name);
+            System.out.println("path: " + p.path);
+            System.out.println("isTree: " + p.isTree());
+        }
+
         Map<String, String> env = new HashMap<String, String>();
-        String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        String gitURL = "https://github.com/guvnorngtestuser1/mytestrepo.git";
         String userName = "guvnorngtestuser1";
         String password = "test1234";
         
         env.put("giturl", gitURL);
         env.put("username", userName);
         env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng-playground");
-        j.newFileSystem(uri, env);
-        
+        URI uri = URI.create("jgit:///mytestrepo");
         //j.newFileSystem(uri, env);
-       
-        FileSystem fileSystem = j.getFileSystem(uri);
         
-        Repository repository = getRepository("guvnorng-playground");     
-/*        
-        File source = new File("sometestfiles/testfile.txt");
+        //FileSystem fileSystem = j.getFileSystem(uri);
+        
+        Repository repository = getRepository(repositoryName); 
+        
+        File source = new File("pom.xml");
         System.out.println(source.getAbsolutePath());
-        PathModel pathModel = new PathModel("sometestfile", "mortgagesSample/sometestfile9", source.length(), 0, "");
+        PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");
         String commitMessage = "test. pushed from jgit.";
         InputStream inputStream = new FileInputStream(source);
         
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("jervisliu", "uguess");
         JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage, credential);
         
-        repository = getGuvnorNGRepository();*/
-        
-        List<PathModel> files = JGitUtils.getFilesInPath(repository, null, null);
+        Repository repository2 = getRepository(repositoryName); 
+        List<PathModel> files = JGitUtils.getFilesInPath(repository2, null, null);
         for (PathModel p : files) {
             System.out.println("name: " + p.name);
             System.out.println("path: " + p.path);
             System.out.println("isTree: " + p.isTree());
         }
         
-        List<PathModel> files1 = JGitUtils.getFilesInPath(repository, "mortgagesSample", null);
+        List<PathModel> files1 = JGitUtils.getFilesInPath(repository2, "mortgagesSample", null);
         for (PathModel p : files1) {
             System.out.println(p.name);
             System.out.println(p.path);
             System.out.println("isTree: " + p.isTree());
         }     
         
-        String contentA = JGitUtils.getStringContent(repository, null, "mortgagesSample/MortgageModel.model.drl");
+        String contentA = JGitUtils.getStringContent(repository2, null, "mortgagesSample/sometestfile9");
         System.out.println(contentA);
     }
 
@@ -580,14 +599,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         }
         return new FileRepository(new File(REPOSITORIES_ROOT_DIR, repositoryName));
     } 
-    
-    private static void cloneOrFetch(String name, String fromUrl, CredentialsProvider credentialsProvider) throws Exception {
-        System.out.print("Fetching " + name + "... ");
-        //AwtCredentialsProvider credential = new AwtCredentialsProvider();
-        JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), name, fromUrl, true, credentialsProvider);
-        System.out.println("Fetching done.");
-    }
-    
+
     private static void showRemoteBranches(String repositoryName) {
         try {
             FileSettings settings = new FileSettings("my.properties");

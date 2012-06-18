@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,8 +104,12 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitblit.GitBlitException;
+import com.gitblit.Constants.AccessRestrictionType;
+import com.gitblit.Constants.FederationStrategy;
 import com.gitblit.models.GitNote;
 import com.gitblit.models.PathModel;
+import com.gitblit.models.RepositoryModel;
 import com.gitblit.models.PathModel.PathChangeModel;
 import com.gitblit.models.RefModel;
 
@@ -1708,7 +1713,10 @@ public class JGitUtils {
                 commit.setCommitter(author);
                 commit.setEncoding(Constants.CHARACTER_ENCODING);
                 commit.setMessage(commitMessage);
-                commit.setParentId(headId);
+                //headId can be null if the repository has no commit yet
+                if(headId != null) {
+                    commit.setParentId(headId);
+                }
                 commit.setTreeId(indexTreeId);
 
                 // Insert the commit into the repository
@@ -1861,5 +1869,190 @@ public class JGitUtils {
             }
         }
         return files;
+    }
+    
+    /**
+     * Updates the Gitblit configuration for the specified repository.
+     * 
+     * @param r
+     *            the Git repository
+     * @param repository
+     *            the Gitblit repository model
+     */
+    public static void updateConfiguration(Repository r, RepositoryModel repository) {
+        StoredConfig config = JGitUtils.readConfig(r);
+        config.setString(CONFIG_GITBLIT, null, "description", repository.description);
+        config.setString(CONFIG_GITBLIT, null, "owner", repository.owner);
+        config.setBoolean(CONFIG_GITBLIT, null, "useTickets", repository.useTickets);
+        config.setBoolean(CONFIG_GITBLIT, null, "useDocs", repository.useDocs);
+        config.setString(CONFIG_GITBLIT, null, "accessRestriction", repository.accessRestriction.name());
+        config.setBoolean(CONFIG_GITBLIT, null, "showRemoteBranches", repository.showRemoteBranches);
+        config.setBoolean(CONFIG_GITBLIT, null, "isFrozen", repository.isFrozen);
+        config.setBoolean(CONFIG_GITBLIT, null, "showReadme", repository.showReadme);
+        config.setBoolean(CONFIG_GITBLIT, null, "skipSizeCalculation", repository.skipSizeCalculation);
+        config.setBoolean(CONFIG_GITBLIT, null, "skipSummaryMetrics", repository.skipSummaryMetrics);
+        config.setString(CONFIG_GITBLIT, null, "federationStrategy",
+                repository.federationStrategy.name());
+        config.setBoolean(CONFIG_GITBLIT, null, "isFederated", repository.isFederated);
+
+        updateList(config, "federationSets", repository.federationSets);
+        updateList(config, "preReceiveScript", repository.preReceiveScripts);
+        updateList(config, "postReceiveScript", repository.postReceiveScripts);
+        updateList(config, "mailingList", repository.mailingLists);
+        updateList(config, "indexBranch", repository.indexedBranches);
+        
+        // User Defined Properties
+/*        if (repository.customFields != null) {
+            if (repository.customFields.size() == 0) {
+                // clear section
+                config.unsetSection(CONFIG_GITBLIT, Constants.CONFIG_CUSTOM_FIELDS);
+            } else {
+                for (Entry<String, String> property : repository.customFields.entrySet()) {
+                    // set field
+                    String key = property.getKey();
+                    String value = property.getValue();
+                    config.setString(CONFIG_GITBLIT, Constants.CONFIG_CUSTOM_FIELDS, key, value);
+                }
+            }
+        }*/
+
+        try {
+            config.save();
+        } catch (IOException e) {
+            //logger.error("Failed to save repository config!", e);
+        }
+    }
+    
+    private static void updateList(StoredConfig config, String field, List<String> list) {
+        // a null list is skipped, not cleared
+        // this is for RPC administration where an older manager might be used
+        if (list == null) {
+            return;
+        }
+        if (ArrayUtils.isEmpty(list)) {
+            config.unset(CONFIG_GITBLIT, null, field);
+        } else {
+            config.setStringList(CONFIG_GITBLIT, null, field, list);
+        }
+    }
+    
+    /**
+     * Returns the repository model for the specified repository. This method
+     * does not consider user access permissions.
+     * 
+     * @param repositoryName
+     * @return repository model or null
+     */
+    public static RepositoryModel getRepositoryModel(Repository r, String repositoryName) {
+/*        Repository r = getRepository(repositoryName);
+        if (r == null) {
+            return null;
+        }*/
+        RepositoryModel model = new RepositoryModel();
+        model.name = repositoryName;
+        model.hasCommits = JGitUtils.hasCommits(r);
+        model.lastChange = JGitUtils.getLastChange(r);
+        model.isBare = r.isBare();
+        StoredConfig config = JGitUtils.readConfig(r);
+        if (config != null) {
+            model.description = getConfig(config, "description", "");
+            model.owner = getConfig(config, "owner", "");
+            model.useTickets = getConfig(config, "useTickets", false);
+            model.useDocs = getConfig(config, "useDocs", false);
+            model.accessRestriction = AccessRestrictionType.fromName(getConfig(config,
+                    "accessRestriction", null));
+            model.showRemoteBranches = getConfig(config, "showRemoteBranches", false);
+            model.isFrozen = getConfig(config, "isFrozen", false);
+            model.showReadme = getConfig(config, "showReadme", false);
+            model.skipSizeCalculation = getConfig(config, "skipSizeCalculation", false);
+            model.skipSummaryMetrics = getConfig(config, "skipSummaryMetrics", false);
+            model.federationStrategy = FederationStrategy.fromName(getConfig(config,
+                    "federationStrategy", null));
+            model.federationSets = new ArrayList<String>(Arrays.asList(config.getStringList(
+                    CONFIG_GITBLIT, null, "federationSets")));
+            model.isFederated = getConfig(config, "isFederated", false);
+            model.origin = config.getString("remote", "origin", "url");
+            model.preReceiveScripts = new ArrayList<String>(Arrays.asList(config.getStringList(
+                    CONFIG_GITBLIT, null, "preReceiveScript")));
+            model.postReceiveScripts = new ArrayList<String>(Arrays.asList(config.getStringList(
+                    CONFIG_GITBLIT, null, "postReceiveScript")));
+            model.mailingLists = new ArrayList<String>(Arrays.asList(config.getStringList(
+                    CONFIG_GITBLIT, null, "mailingList")));
+            model.indexedBranches = new ArrayList<String>(Arrays.asList(config.getStringList(
+                    CONFIG_GITBLIT, null, "indexBranch")));
+            
+            // Custom defined properties
+/*            model.customFields = new LinkedHashMap<String, String>();
+            for (String aProperty : config.getNames(CONFIG_GITBLIT, Constants.CONFIG_CUSTOM_FIELDS)) {
+                model.customFields.put(aProperty, config.getString(CONFIG_GITBLIT, Constants.CONFIG_CUSTOM_FIELDS, aProperty));
+            }*/
+        }
+        model.HEAD = JGitUtils.getHEADRef(r);
+        model.availableRefs = JGitUtils.getAvailableHeadTargets(r);
+        //r.close();
+        return model;
+    }
+    public static final String CONFIG_GITBLIT = "gitblit";
+    
+    /**
+     * Returns the gitblit string value for the specified key. If key is not
+     * set, returns defaultValue.
+     * 
+     * @param config
+     * @param field
+     * @param defaultValue
+     * @return field value or defaultValue
+     */
+    private static String getConfig(StoredConfig config, String field, String defaultValue) {
+        String value = config.getString(CONFIG_GITBLIT, null, field);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return value;
+    }
+    
+
+    /**
+     * Returns the gitblit boolean value for the specified key. If key is not
+     * set, returns defaultValue.
+     * 
+     * @param config
+     * @param field
+     * @param defaultValue
+     * @return field value or defaultValue
+     */
+    private static boolean getConfig(StoredConfig config, String field, boolean defaultValue) {
+        return config.getBoolean(CONFIG_GITBLIT, field, defaultValue);
+    }
+    
+    public static void createAndConfigRepository(File repositoriesFolder, String repositoryName) {
+        if (!repositoryName.toLowerCase().endsWith(org.eclipse.jgit.lib.Constants.DOT_GIT_EXT)) {
+            repositoryName += org.eclipse.jgit.lib.Constants.DOT_GIT_EXT;
+        }
+        if (new File(repositoriesFolder, repositoryName).exists()) {
+/*            throw new GitBlitException(MessageFormat.format(
+                    "Can not create repository ''{0}'' because it already exists.",
+                    repositoryName));*/
+        }
+        
+        // create repository
+        Repository repository = JGitUtils.createRepository(repositoriesFolder, repositoryName);
+        
+        RepositoryModel model = JGitUtils.getRepositoryModel(repository, repositoryName);
+        
+        JGitUtils.updateConfiguration(repository, model);
+            // only update symbolic head if it changes
+            String currentRef = JGitUtils.getHEADRef(repository);
+            if (!StringUtils.isEmpty(model.HEAD) && !model.HEAD.equals(currentRef)) {
+/*                logger.info(MessageFormat.format("Relinking {0} HEAD from {1} to {2}", 
+                        repository.name, currentRef, repository.HEAD));*/
+                if (JGitUtils.setHEADtoRef(repository, model.HEAD)) {
+                    // clear the cache
+                    //clearRepositoryCache(repositoryName);
+                }
+            }
+
+        // close the repository object
+        repository.close();
     }
 }
