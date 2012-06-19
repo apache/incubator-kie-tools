@@ -51,6 +51,7 @@ public class EnumEditor
 
     public void init() {
 
+
         if (content == null) {
             content = "";
         }
@@ -66,6 +67,7 @@ public class EnumEditor
 
         for (String line : array) {
             EnumRow enumRow = new EnumRow(line);
+
             dataProvider.getList().add(enumRow);
         }
 
@@ -81,9 +83,8 @@ public class EnumEditor
 
 
             @Override
-
             public String getValue(EnumRow enumRow) {
-                return enumRow.getText();
+                return enumRow.getFactName();
             }
         };
         Column<EnumRow, String> columnSecond = new Column<EnumRow, String>(new EditTextCell()) {
@@ -91,34 +92,50 @@ public class EnumEditor
 
             @Override
             public String getValue(EnumRow enumRow) {
-                return enumRow.getText();
+                return enumRow.getFieldName();
             }
         };
         Column<EnumRow, String> columnThird = new Column<EnumRow, String>(new EditTextCell()) {
 
+
             @Override
             public String getValue(EnumRow enumRow) {
-                return enumRow.getText();
+                return enumRow.getContext();
             }
         };
         columnFirst.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
 
             public void update(int index, EnumRow object, String value) {
-                // object.setText(value);
+                object.setFactName(value);
+
+            }
+        });
+        columnSecond.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
+
+            public void update(int index, EnumRow object, String value) {
+
+                object.setFieldName(value);
+
+            }
+        });
+        columnThird.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
+
+            public void update(int index, EnumRow object, String value) {
+
+                object.setContext(value);
             }
         });
 
         cellTable.addColumn(delete);
-        cellTable.addColumn(columnFirst, "TEXT1");
-        cellTable.addColumn(columnSecond, "TEXT2");
-        cellTable.addColumn(columnThird, "TEXT3");
+        cellTable.addColumn(columnFirst, "Fact");
+        cellTable.addColumn(columnSecond, "Field");
+        cellTable.addColumn(columnThird, "Context");
 
         // Connect the table to the data provider.
         dataProvider.addDataDisplay(cellTable);
 
 
         delete.setFieldUpdater(new FieldUpdater<EnumRow, String>() {
-
 
             public void update(int index, EnumRow object, String value) {
                 dataProvider.getList().remove(object);
@@ -127,7 +144,7 @@ public class EnumEditor
 
         Button addButton = new Button("+", new ClickHandler() {
             public void onClick(ClickEvent clickEvent) {
-                EnumRow enumRow = new EnumRow("'Applicant.creditRating': ['AA', 'OK', 'Sub prime']\n");
+                EnumRow enumRow = new EnumRow("");
                 dataProvider.getList().add(enumRow);
             }
         });
