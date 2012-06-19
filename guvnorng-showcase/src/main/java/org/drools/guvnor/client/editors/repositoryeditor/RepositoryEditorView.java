@@ -50,8 +50,8 @@ public class RepositoryEditorView extends Composite
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
                                "</h3>" +
                                "<div>" +
-                                   "<p>" + description + "</p>" +
-                                   "<p >Last updated</p>" +
+                                   "<p> Description: " + description + "</p>" +
+                                   "<p >Last updated: </p>" +
                                "</div>" +    
                            "</li>"
                 
