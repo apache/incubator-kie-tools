@@ -62,8 +62,16 @@ public class PlaceManagerImpl
     }
 
     private void revealPlace(final IPlaceRequest newPlace) {
-        final Activity activity = activityMapper.getActivity( newPlace );
 
+        //If we're already showing this place exit.
+        //TODO What should we do if the Activity is hidden? Hidden Activities do not appear to
+        //be handled in PlaceManagerImpl. Are hidden Activities still stored here, or do we need
+        //some other mechanism?!?!
+        if ( activeActivities.containsKey( newPlace ) ) {
+            return;
+        }
+
+        final Activity activity = activityMapper.getActivity( newPlace );
         activeActivities.put( newPlace,
                               activity );
 
@@ -112,11 +120,12 @@ public class PlaceManagerImpl
     }
 
     public void onClosePlace(@Observes ClosePlaceEvent closePlaceEvent) {
-        final Activity activity = activeActivities.get( closePlaceEvent.getPlaceRequest() );
+        final IPlaceRequest place = closePlaceEvent.getPlaceRequest();
+        final Activity activity = activeActivities.get( place );
         if ( activity.mayClosePlace() ) {
             activity.closePlace();
-            activeActivities.remove( activity );
-            existingWorkbenchParts.remove( closePlaceEvent.getPlaceRequest() ).close();
+            activeActivities.remove( place );
+            existingWorkbenchParts.remove( place ).close();
         }
     }
 
