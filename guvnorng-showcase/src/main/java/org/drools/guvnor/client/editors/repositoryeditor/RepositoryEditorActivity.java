@@ -4,7 +4,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
@@ -16,7 +18,10 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
 
     @Inject
     private IOCBeanManager            iocManager;
-
+    
+    @Inject
+    private PlaceManager        placeManager;
+    
     private RepositoryEditorPresenter presenter;
 
     public RepositoryEditorActivity() {
@@ -30,8 +35,10 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
 
     @Override
     public String getTitle() {
-        //TODO: probably this is not the best place to return title, if the title is retrieved from the back end.
-        return "Repository";
+        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        final String repositoryName = placeRequest.getParameter( "repositoryName",
+                                                          "RepositoryEditor" );
+        return repositoryName;
     }
 
     @Override
