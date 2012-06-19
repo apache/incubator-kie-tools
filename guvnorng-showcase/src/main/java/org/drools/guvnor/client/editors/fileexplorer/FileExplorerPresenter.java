@@ -99,6 +99,10 @@ public class FileExplorerPresenter
         vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+                
+                PlaceRequest placeRequest = new PlaceRequest( "RepositoriesEditor" );
+                placeManager.goTo( placeRequest );   
+                
                 view.getRootItem().removeItems();
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
                     final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(), r.getRepositoryName() ) );

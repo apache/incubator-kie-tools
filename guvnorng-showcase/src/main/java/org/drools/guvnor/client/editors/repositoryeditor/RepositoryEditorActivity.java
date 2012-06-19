@@ -34,7 +34,8 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity
 
     @Override
     public String getTitle() {
-        return "RepositoryEditor";
+        //TODO: probably this is not the best place to return title, if the title is retrieved from the back end.
+        return "Repository";
     }
 
     @Override
