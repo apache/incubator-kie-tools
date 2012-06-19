@@ -4,7 +4,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.AbstractEditorScreenActivity;
-import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
@@ -15,10 +14,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @NameToken("TextEditor")
-//TODO {manstis} This should not need to re-implement Activity but Errai doesn't detect it if it doesn't
-public class TextEditorActivity extends AbstractEditorScreenActivity
-    implements
-    Activity {
+public class TextEditorActivity extends AbstractEditorScreenActivity {
 
     @Inject
     private IOCBeanManager      manager;
