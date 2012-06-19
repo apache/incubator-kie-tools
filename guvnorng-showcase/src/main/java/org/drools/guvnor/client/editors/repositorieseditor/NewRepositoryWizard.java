@@ -16,24 +16,25 @@
 
 package org.drools.guvnor.client.editors.repositorieseditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.drools.guvnor.vfs.VFSService;
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
-
+@Dependent
 public class NewRepositoryWizard extends FormStylePopup {
 
     @Inject
@@ -44,6 +45,8 @@ public class NewRepositoryWizard extends FormStylePopup {
     private TextBox nameTextBox = new TextBox();
     //private TextArea descriptionTextArea = new TextArea();
     private TextBox descriptionTextArea = new TextBox();
+    private TextBox usernameTextBox = new TextBox();
+    private TextBox passwordTextBox = new TextBox();
     
     public NewRepositoryWizard() {
         super(images.backupLarge(), "New Repository");
@@ -57,16 +60,29 @@ public class NewRepositoryWizard extends FormStylePopup {
         descriptionTextArea.setTitle("Description");
         addAttribute("Description:", descriptionTextArea);
         
+
+        usernameTextBox.setWidth("200px");
+        usernameTextBox.setTitle("User Name");
+        addAttribute("User Name:", usernameTextBox);
+        
+        passwordTextBox.setWidth("200px");
+        passwordTextBox.setTitle("Password");
+        addAttribute("Password:", passwordTextBox);
+        
         HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button("Create");
         create.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-/*                if(nameTextBox.getText() == null || "".equals(nameTextBox.getText())) {
-                    Window.alert(constants.FeedbackTemplateCanNotBeNull());
-                    return;
-                }
-                createFeedbackTemplate(nameTextBox.getText(), descriptionTextArea.getText(), refreshCommand);
-                hide();*/
+                
+                    vfsService.call(new RemoteCallback<Void>() {
+                        @Override
+                        public void callback(final Void v) {
+                            Window.alert("The repository is created successfully");
+                            hide();
+                        }
+                    }).createJGitFileSystem(nameTextBox.getText(), descriptionTextArea.getText(),
+                            usernameTextBox.getText(), passwordTextBox.getText());
+               
             }
         });
         hp.add(create);
@@ -81,10 +97,5 @@ public class NewRepositoryWizard extends FormStylePopup {
         hp.add(cancel);
         addAttribute("", hp);
     }
-
-    private void createFeedbackTemplate(final String name, String desc, final Command refreshCommand) {
-
-    }
-
 
 }

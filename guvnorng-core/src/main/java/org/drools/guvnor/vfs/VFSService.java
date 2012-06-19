@@ -196,14 +196,10 @@ public interface VFSService {
 
     JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName);
 
-    FileSystem createJGitFileSystem(String repositoryName, String userName,
-            String password) throws IllegalArgumentException,
-            FileSystemAlreadyExistsException, ProviderNotFoundException,
-            SecurityException, java.io.IOException;
+    void createJGitFileSystem(String repositoryName, String description, String userName,
+            String password) ;
 
     void cloneJGitFileSystem(String repositoryName, String gitURL,
-            String userName, String password) throws IllegalArgumentException,
-            FileSystemAlreadyExistsException, ProviderNotFoundException,
-            SecurityException, java.io.IOException;
+            String userName, String password);
 
 }

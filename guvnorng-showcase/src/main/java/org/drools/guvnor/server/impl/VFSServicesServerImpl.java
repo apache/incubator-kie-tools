@@ -130,10 +130,10 @@ public class VFSServicesServerImpl implements VFSService {
         env.put("username", userName);
         env.put("password", password);
         env.put("giturl", gitURL);
-       URI rootURI = URI.create("jgit:///" + repositoryName);
-        
+        URI rootURI = URI.create("jgit:///" + repositoryName);        
         
         try {
+            //This either clones the repository or creates a new git repository (locally). 
             FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,7 +158,7 @@ public class VFSServicesServerImpl implements VFSService {
     }
     
     @Override
-    public FileSystem createJGitFileSystem(String repositoryName, String userName, String password) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+    public void createJGitFileSystem(String repositoryName, String description, String userName, String password) {
         if(getRepositoryConfiguration().get(repositoryName) != null) {
             throw new FileSystemAlreadyExistsException("JGitFileSystem identifed by repositoryName: " + repositoryName + " already exists");
         }
@@ -168,7 +168,13 @@ public class VFSServicesServerImpl implements VFSService {
         env.put("userName", userName);
         env.put("password", password);
         URI rootURI = URI.create("jgit:///" + repositoryName);
-        FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
+        
+        try {
+            //This either clones the repository or creates a new git repository (locally). 
+            FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }         
         
         //Add this newly created repository configuration info to the in-memory cache of repository configuration list
         JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
@@ -186,8 +192,6 @@ public class VFSServicesServerImpl implements VFSService {
         properties.setProperty("username", userName);
         properties.setProperty("password", password);
         properties.setProperty("rooturi", rootURI.toString());
-        
-        return fileSystem;
     }
     
     @Override

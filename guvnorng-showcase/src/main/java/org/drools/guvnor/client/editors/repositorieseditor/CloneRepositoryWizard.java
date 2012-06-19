@@ -16,32 +16,22 @@
 
 package org.drools.guvnor.client.editors.repositorieseditor;
 
-import java.io.IOException;
-import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.drools.guvnor.vfs.VFSService;
-import org.drools.guvnor.vfs.VFSTempUtil;
-import org.drools.java.nio.file.FileSystemAlreadyExistsException;
-import org.drools.java.nio.file.ProviderNotFoundException;
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 @Dependent
@@ -81,7 +71,6 @@ public class CloneRepositoryWizard extends FormStylePopup {
         create.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 
-                try {
                     vfsService.call(new RemoteCallback<Void>() {
                         @Override
                         public void callback(final Void v) {
@@ -91,22 +80,7 @@ public class CloneRepositoryWizard extends FormStylePopup {
                         }
                     }).cloneJGitFileSystem(nameTextBox.getText(), gitURLTextBox.getText(),
                             usernameTextBox.getText(), passwordTextBox.getText());
-                } catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (FileSystemAlreadyExistsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (ProviderNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (SecurityException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+               
             }
         });
         hp.add(create);
