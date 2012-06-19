@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.workbench.widgets.panels;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.guvnor.client.workbench.Position;
@@ -52,6 +51,7 @@ public class PanelManager {
 
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
+        workbenchPanels.add( panel );
     }
 
     public void addWorkbenchPanel(final WorkbenchPart part,
@@ -66,41 +66,44 @@ public class PanelManager {
                                   final WorkbenchPanel targetPanel,
                                   final Position position) {
 
-        workbenchPanels.add( targetPanel );
-
-        if ( position == Position.SELF ) {
-            targetPanel.addTab( part );
-            return;
-        }
-
-        final WorkbenchPanel newPanel = new WorkbenchPanel( part );
-        workbenchPanels.add( newPanel );
+        WorkbenchPanel newPanel = new WorkbenchPanel( part );
 
         switch ( position ) {
+            case SELF :
+                newPanel = targetPanel;
+                newPanel.addTab( part );
+                break;
+
+            case ROOT :
+                newPanel = rootPanel;
+                newPanel.addTab( part );
+                break;
+
             case NORTH :
+                workbenchPanels.add( newPanel );
                 helperNorth.add( newPanel,
                                  targetPanel );
                 break;
 
             case SOUTH :
+                workbenchPanels.add( newPanel );
                 helperSouth.add( newPanel,
                                  targetPanel );
                 break;
 
             case EAST :
+                workbenchPanels.add( newPanel );
                 helperEast.add( newPanel,
                                 targetPanel );
                 break;
 
             case WEST :
+                workbenchPanels.add( newPanel );
                 helperWest.add( newPanel,
                                 targetPanel );
                 break;
-
-            case ROOT :
-                rootPanel.addTab( part );
-                break;
         }
+
         setFocus( newPanel );
     }
 
@@ -160,9 +163,6 @@ public class PanelManager {
     }
 
     public void setFocus(final WorkbenchPanel panel) {
-        if ( !this.workbenchPanels.contains( panel ) ) {
-            this.workbenchPanels.add( panel );
-        }
         for ( WorkbenchPanel wbp : this.workbenchPanels ) {
             wbp.setFocus( wbp == panel );
         }
@@ -171,13 +171,7 @@ public class PanelManager {
 
     private void assertFocusPanel() {
         if ( this.focusPanel == null ) {
-            final Iterator<WorkbenchPanel> iterator = this.workbenchPanels.iterator();
-            if ( iterator.hasNext() ) {
-                this.focusPanel = iterator.next();
-            }
-        }
-        if ( this.focusPanel == null ) {
-            throw new UnsupportedOperationException( "Unable to find a root WorkbenchPanel." );
+            this.focusPanel = rootPanel;
         }
     }
 
