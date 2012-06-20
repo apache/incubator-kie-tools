@@ -18,23 +18,26 @@ package org.drools.guvnor.client.editors.monitoring;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 @Dependent
-public class MonitoringPerspectivePlace extends PlaceRequest  implements IPlaceRequest {
+public class MonitoringPerspectivePlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "Monitoring";
 
     public MonitoringPerspectivePlace() {
-        super("monitoring_perspective");
+        super( PLACE_NAME );
     }
 
     public String toString() {
-        return "monitoring_perspective";
+        return PLACE_NAME;
     }
 
-    public static class Tokenizer implements PlaceTokenizer<MonitoringPerspectivePlace> {
+    public static class Tokenizer
+        implements
+        PlaceTokenizer<MonitoringPerspectivePlace> {
 
         public String getToken(final MonitoringPerspectivePlace place) {
             return place.toString();

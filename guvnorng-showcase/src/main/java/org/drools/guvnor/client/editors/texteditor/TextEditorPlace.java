@@ -18,22 +18,21 @@ package org.drools.guvnor.client.editors.texteditor;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 @Dependent
-public class TextEditorPlace extends PlaceRequest
-    implements
-    IPlaceRequest {
+public class TextEditorPlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "TextEditor";
 
     public TextEditorPlace() {
-        super( "TextEditor" );
+        super( PLACE_NAME );
     }
 
     public TextEditorPlace(final String token) {
-        super( "TextEditor" );
+        super( PLACE_NAME );
         String[] parts = token.split( "\\|" );
         if ( parts.length != 1 ) {
             throw new RuntimeException( "Invalid token" );

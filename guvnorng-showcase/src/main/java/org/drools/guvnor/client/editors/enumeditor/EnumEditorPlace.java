@@ -17,7 +17,6 @@ package org.drools.guvnor.client.editors.enumeditor;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -26,16 +25,16 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  */
 @Dependent
-public class EnumEditorPlace extends PlaceRequest
-    implements
-    IPlaceRequest {
+public class EnumEditorPlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "EnumEditor";
 
     public EnumEditorPlace() {
-        super( "EnumEditor" );
+        super( PLACE_NAME );
     }
 
     public EnumEditorPlace(final String token) {
-        super( "EnumEditor" );
+        super( PLACE_NAME );
         String[] parts = token.split( "\\|" );
         if ( parts.length != 1 ) {
             throw new RuntimeException( "Invalid token" );

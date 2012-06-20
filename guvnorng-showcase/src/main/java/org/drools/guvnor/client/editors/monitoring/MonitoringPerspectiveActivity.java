@@ -11,7 +11,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("monitoring_perspective")
+@NameToken("Monitoring")
 public class MonitoringPerspectiveActivity extends AbstractStaticScreenActivity {
 
     @Inject

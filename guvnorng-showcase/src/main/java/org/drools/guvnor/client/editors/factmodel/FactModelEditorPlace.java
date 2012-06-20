@@ -17,7 +17,6 @@ package org.drools.guvnor.client.editors.factmodel;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -26,16 +25,16 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  */
 @Dependent
-public class FactModelEditorPlace extends PlaceRequest
-    implements
-    IPlaceRequest {
+public class FactModelEditorPlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "FactModelEditor";
 
     public FactModelEditorPlace() {
-        super( "FactModelEditor" );
+        super( PLACE_NAME );
     }
 
     public FactModelEditorPlace(final String token) {
-        super( "FactModelEditor" );
+        super( PLACE_NAME );
         String[] parts = token.split( "\\|" );
         if ( parts.length != 1 ) {
             throw new RuntimeException( "Invalid token" );

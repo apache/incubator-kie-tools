@@ -18,41 +18,37 @@ package org.drools.guvnor.client.editors.repositoryeditor;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 @Dependent
-public class RepositoryEditorPlace extends PlaceRequest implements IPlaceRequest {
+public class RepositoryEditorPlace extends PlaceRequest {
 
-    private String MY_ADMIN_AREA = "RepositoryEditor";
-    
+    private static final String PLACE_NAME = "RepositoryEditor";
+
     public RepositoryEditorPlace() {
-        super("RepositoryEditor");
+        super( PLACE_NAME );
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;
         if ( o == null || getClass() != o.getClass() ) return false;
-
-        RepositoryEditorPlace place = (RepositoryEditorPlace) o;
-
-        if ( MY_ADMIN_AREA != null ? !MY_ADMIN_AREA.equals( place.MY_ADMIN_AREA ) : place.MY_ADMIN_AREA != null ) return false;
-
         return true;
     }
 
     @Override
     public int hashCode() {
-        return MY_ADMIN_AREA != null ? MY_ADMIN_AREA.hashCode() : 0;
+        return PLACE_NAME.hashCode();
     }
 
-    public static class Tokenizer implements PlaceTokenizer<RepositoryEditorPlace> {
+    public static class Tokenizer
+        implements
+        PlaceTokenizer<RepositoryEditorPlace> {
 
         public String getToken(RepositoryEditorPlace place) {
-            return "RepositoryEditor";
+            return PLACE_NAME;
         }
 
         public RepositoryEditorPlace getPlace(String token) {

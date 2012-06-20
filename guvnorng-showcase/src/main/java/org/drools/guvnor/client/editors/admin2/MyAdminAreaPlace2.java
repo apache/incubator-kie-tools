@@ -18,42 +18,37 @@ package org.drools.guvnor.client.editors.admin2;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 @Dependent
-public class MyAdminAreaPlace2 extends PlaceRequest implements IPlaceRequest {
+public class MyAdminAreaPlace2 extends PlaceRequest {
 
-    private String MY_ADMIN_AREA2 = "MyAdminArea2";
-    
+    private static final String PLACE_NAME = "MyAdminArea2";
+
     public MyAdminAreaPlace2() {
-        super("MyAdminArea2");
+        super( PLACE_NAME );
     }
-    
-    
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;
         if ( o == null || getClass() != o.getClass() ) return false;
-
-        MyAdminAreaPlace2 place = (MyAdminAreaPlace2) o;
-
-        if ( MY_ADMIN_AREA2 != null ? !MY_ADMIN_AREA2.equals( place.MY_ADMIN_AREA2 ) : place.MY_ADMIN_AREA2 != null ) return false;
-
         return true;
     }
 
     @Override
     public int hashCode() {
-        return MY_ADMIN_AREA2 != null ? MY_ADMIN_AREA2.hashCode() : 0;
+        return PLACE_NAME.hashCode();
     }
 
-    public static class Tokenizer implements PlaceTokenizer<MyAdminAreaPlace2> {
+    public static class Tokenizer
+        implements
+        PlaceTokenizer<MyAdminAreaPlace2> {
 
         public String getToken(MyAdminAreaPlace2 place) {
-            return "MY_ADMIN_AREA2";
+            return PLACE_NAME;
         }
 
         public MyAdminAreaPlace2 getPlace(String token) {

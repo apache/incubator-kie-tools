@@ -18,15 +18,14 @@ package org.drools.guvnor.client.editors.fileexplorer;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
 @Dependent
-public class FileExplorerPlace extends PlaceRequest
-    implements
-    IPlaceRequest {
+public class FileExplorerPlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "File Explorer";
 
     public FileExplorerPlace() {
-        super( "File Explorer" );
+        super( PLACE_NAME );
     }
 }

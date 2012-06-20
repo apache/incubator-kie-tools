@@ -21,7 +21,6 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.editors.admin1.MyAdminAreaPresenter;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.VFSService;
@@ -35,16 +34,26 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-public class RepositoriesEditorPresenter implements StaticScreenService {
+public class RepositoriesEditorPresenter
+    implements
+    StaticScreenService {
+
+    @Inject
+    Caller<VFSService>     vfsService;
     
     @Inject
-    Caller<VFSService>   vfsService;
-    @Inject
-    private IOCBeanManager       iocManager;
-    
-    public interface View extends IsWidget {
-        void addRepository(String repositoryName, String gitURL, String description, String link);
+    private IOCBeanManager iocManager;
+
+    public interface View
+        extends
+        IsWidget {
+        void addRepository(String repositoryName,
+                           String gitURL,
+                           String description,
+                           String link);
+
         Button getCreateRepoButton();
+
         Button getCloneRepoButton();
     }
 
@@ -60,28 +69,31 @@ public class RepositoriesEditorPresenter implements StaticScreenService {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    view.addRepository(r.getRepositoryName(), r.getGitURL(), r.getDescription(), r.getRootURI());
+                    view.addRepository( r.getRepositoryName(),
+                                        r.getGitURL(),
+                                        r.getDescription(),
+                                        r.getRootURI() );
                 }
             }
         } ).listJGitRepositories();
-        
+
         view.getCreateRepoButton().addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
-                        newRepositoryWizard.show();
-                    }
-                });
-        
+                                                    new ClickHandler() {
+                                                        @Override
+                                                        public void onClick(ClickEvent event) {
+                                                            NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                                                            newRepositoryWizard.show();
+                                                        }
+                                                    } );
+
         view.getCloneRepoButton().addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
-                        cloneRepositoryWizard.show();
-                    }
-                });
+                                                   new ClickHandler() {
+                                                       @Override
+                                                       public void onClick(ClickEvent event) {
+                                                           CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                                                           cloneRepositoryWizard.show();
+                                                       }
+                                                   } );
     }
 
     @Override

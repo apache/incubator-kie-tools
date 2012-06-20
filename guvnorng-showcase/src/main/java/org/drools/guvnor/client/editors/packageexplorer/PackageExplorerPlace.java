@@ -1,14 +1,15 @@
 package org.drools.guvnor.client.editors.packageexplorer;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceRequest;
-
 import javax.enterprise.context.Dependent;
 
+import org.drools.guvnor.client.mvp.PlaceRequest;
+
 @Dependent
-public class PackageExplorerPlace extends PlaceRequest implements IPlaceRequest {
+public class PackageExplorerPlace extends PlaceRequest {
+
+    private static final String PLACE_NAME = "Package Explorer";
 
     public PackageExplorerPlace() {
-        super("Package Explorer");
+        super( PLACE_NAME );
     }
 }

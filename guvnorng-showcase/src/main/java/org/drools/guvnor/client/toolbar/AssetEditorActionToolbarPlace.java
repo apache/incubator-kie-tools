@@ -18,42 +18,37 @@ package org.drools.guvnor.client.toolbar;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 @Dependent
-public class AssetEditorActionToolbarPlace extends PlaceRequest implements IPlaceRequest {
+public class AssetEditorActionToolbarPlace extends PlaceRequest {
 
-    private String MY_ADMIN_AREA = "Toolbar";
-    
+    private static final String PLACE_NAME = "Toolbar";
+
     public AssetEditorActionToolbarPlace() {
-        super("Toolbar");
+        super( PLACE_NAME );
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;
         if ( o == null || getClass() != o.getClass() ) return false;
-
-        AssetEditorActionToolbarPlace place = (AssetEditorActionToolbarPlace) o;
-
-        if ( MY_ADMIN_AREA != null ? !MY_ADMIN_AREA.equals( place.MY_ADMIN_AREA ) : place.MY_ADMIN_AREA != null ) return false;
-
         return true;
     }
 
     @Override
     public int hashCode() {
-        return MY_ADMIN_AREA != null ? MY_ADMIN_AREA.hashCode() : 0;
+        return PLACE_NAME.hashCode();
     }
 
-    public static class Tokenizer implements PlaceTokenizer<AssetEditorActionToolbarPlace> {
+    public static class Tokenizer
+        implements
+        PlaceTokenizer<AssetEditorActionToolbarPlace> {
 
         public String getToken(AssetEditorActionToolbarPlace place) {
-            return "Toolbar";
+            return PLACE_NAME;
         }
 
         public AssetEditorActionToolbarPlace getPlace(String token) {

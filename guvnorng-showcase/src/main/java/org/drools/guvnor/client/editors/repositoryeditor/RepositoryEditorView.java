@@ -24,7 +24,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
 
@@ -37,25 +36,28 @@ public class RepositoryEditorView extends Composite
     UiBinder<Panel, RepositoryEditorView> uiBinder;
 
     @UiField
-    public HTMLPanel                 panel;
+    public HTMLPanel                      panel;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void addRepository(String repositoryName, String gitURL, String description, String link) {
-        panel.add(new HTML("<li>" +
+    public void addRepository(String repositoryName,
+                              String gitURL,
+                              String description,
+                              String link) {
+        panel.add( new HTML( "<li>" +
                                "<h3>" +
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
                                "</h3>" +
                                "<div>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
-                               "</div>" +    
-                           "</li>"
-                
-                ));
+                               "</div>" +
+                             "</li>"
+
+        ) );
     }
 
     @Override
