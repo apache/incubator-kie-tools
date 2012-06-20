@@ -58,7 +58,7 @@ public class RepositoriesEditorView extends Composite
                                "<h3>" +
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
                                "</h3>" +
-                               "<div>" +
+                               "<div class=.guvnor-repository-body>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
                                "</div>" +    
