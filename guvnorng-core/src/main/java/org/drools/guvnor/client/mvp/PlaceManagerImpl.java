@@ -1,8 +1,14 @@
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
@@ -10,33 +16,33 @@ import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.ResettableEventBus;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 @ApplicationScoped
 public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<IPlaceRequest, Activity>           activeActivities       = new HashMap<IPlaceRequest, Activity>();
-    private final Map<IPlaceRequest, WorkbenchPart>      existingWorkbenchParts = new HashMap<IPlaceRequest, WorkbenchPart>();
+    private final Map<IPlaceRequest, Activity>      activeActivities       = new HashMap<IPlaceRequest, Activity>();
+    private final Map<IPlaceRequest, WorkbenchPart> existingWorkbenchParts = new HashMap<IPlaceRequest, WorkbenchPart>();
 
     @Inject
-    private ActivityMapper                               activityMapper;
+    private ActivityMapper                          activityMapper;
 
     @Inject
-    private PlaceRequestHistoryMapper                    historyMapper;
+    private PlaceRequestHistoryMapper               historyMapper;
 
     @Inject
-    private com.google.web.bindery.event.shared.EventBus eventBus;
+    private EventBus                                eventBus;
 
-    private PlaceHistoryHandler                          placeHistoryHandler;
+    private PlaceHistoryHandler                     placeHistoryHandler;
 
-    IPlaceRequest                                        currentPlaceRequest;
+    IPlaceRequest                                   currentPlaceRequest;
 
     @PostConstruct
     public void init() {
@@ -127,6 +133,12 @@ public class PlaceManagerImpl
             activeActivities.remove( place );
             existingWorkbenchParts.remove( place ).close();
         }
+    }
+
+    @Produces
+    @ApplicationScoped
+    EventBus makeEventBus() {
+        return new ResettableEventBus( new SimpleEventBus() );
     }
 
 }

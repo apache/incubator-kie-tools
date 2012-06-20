@@ -16,72 +16,70 @@
 
 package org.drools.guvnor.server.impl;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
+import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
-import org.drools.java.nio.file.FileSystem;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
-public class AssetServiceImpl implements AssetService {
-    @Inject VFSService vfsService;
-/*    @Override
-    public <V> V loadAsset(Path path, Class<V> type) {
-        if (type == FactModels.class) {
-            FactModels asset = new FactModels();
-            return (V)asset;
-        }
-        return null;
-    }*/
-    
+public class AssetServiceImpl
+    implements
+    AssetService {
+    @Inject
+    VFSService vfsService;
+
+    /*
+     * @Override public <V> V loadAsset(Path path, Class<V> type) { if (type ==
+     * FactModels.class) { FactModels asset = new FactModels(); return (V)asset;
+     * } return null; }
+     */
+
     @Override
-    public AbstractAsset loadAsset(Path path, String type) {
+    public AbstractAsset loadAsset(Path path,
+                                   String type) {
         try {
-            FactModels asset = new FactModels();
-            String content = vfsService.readAllString(path);
-            FactModelContentHandler handler = new FactModelContentHandler();
-            handler.retrieveAssetContent(asset, content);
-            return asset;
-        } catch (Exception e) {
+            String content = vfsService.readAllString( path );
+
+            if ( type.equals( "model.drl" ) ) {
+                FactModels asset = new FactModels();
+                FactModelContentHandler handler = new FactModelContentHandler();
+                handler.retrieveAssetContent( asset,
+                                              content );
+                return asset;
+            }
+            if ( type.equals( "enumeration" ) ) {
+                EnumModel asset = new EnumModel();
+                asset.setDefinitions( content );
+                return asset;
+            }
+        } catch ( Exception e ) {
 
         }
         return null;
     }
-    
-/*    //@Override
-    public List<JGitRepositoryConfigurationVO> listRepositories() {
-        try {
-            List<FileSystem> fileSystems = vfsService.listJGitFileSystems();
-            List<JGitRepositoryConfigurationVO> repositories = new ArrayList<JGitRepositoryConfigurationVO>();
-            
-            for (FileSystem f : fileSystems) {
-                //TODO: how to get info following info
-                JGitRepositoryConfigurationVO jGitRepositoryConfiguration = new JGitRepositoryConfigurationVO();
-                jGitRepositoryConfiguration.setFromGitURL("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
-                jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground");
-                URI uri = URI.create("jgit:///" + "guvnorng-playground");
-                jGitRepositoryConfiguration.setRootURI(uri);
-                
-                repositories.add(jGitRepositoryConfiguration);
-            }
 
-            return repositories;
-        } catch (Exception e) {
-
-        }
-        return null;
-    }*/
+    /*
+     * //@Override public List<JGitRepositoryConfigurationVO> listRepositories()
+     * { try { List<FileSystem> fileSystems = vfsService.listJGitFileSystems();
+     * List<JGitRepositoryConfigurationVO> repositories = new
+     * ArrayList<JGitRepositoryConfigurationVO>(); for (FileSystem f :
+     * fileSystems) { //TODO: how to get info following info
+     * JGitRepositoryConfigurationVO jGitRepositoryConfiguration = new
+     * JGitRepositoryConfigurationVO();
+     * jGitRepositoryConfiguration.setFromGitURL
+     * ("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
+     * jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground"); URI
+     * uri = URI.create("jgit:///" + "guvnorng-playground");
+     * jGitRepositoryConfiguration.setRootURI(uri);
+     * repositories.add(jGitRepositoryConfiguration); } return repositories; }
+     * catch (Exception e) { } return null; }
+     */
 }
