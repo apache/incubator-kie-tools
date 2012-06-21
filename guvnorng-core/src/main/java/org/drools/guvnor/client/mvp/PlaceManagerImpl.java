@@ -138,7 +138,7 @@ public class PlaceManagerImpl
     @Produces
     @ApplicationScoped
     EventBus makeEventBus() {
-        return new ResettableEventBus( new SimpleEventBus() );
+        return new SimpleEventBus();
     }
 
 }
