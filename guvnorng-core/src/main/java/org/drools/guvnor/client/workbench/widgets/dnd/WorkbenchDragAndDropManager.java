@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.workbench.BeanFactory;
+
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,32 +42,33 @@ public class WorkbenchDragAndDropManager {
     @Inject
     private WorkbenchPickupDragController    dragController;
 
+    @Inject
+    private BeanFactory                      factory;
+
     public void makeDraggable(Widget draggable,
                               Widget dragHandle) {
-        assertDragController();
         this.dragController.makeDraggable( draggable,
                                            dragHandle );
     }
 
     public void registerDropController(final SimplePanel owner,
                                        final DropController dropController) {
-        assertDragController();
         dropControllerMap.put( owner,
                                dropController );
         dragController.registerDropController( dropController );
     }
 
     public void unregisterDropController(final SimplePanel owner) {
-        assertDragController();
         final DropController dropController = dropControllerMap.remove( owner );
         dragController.unregisterDropController( dropController );
+        factory.release( dropController );
     }
 
     public void unregisterDropControllers() {
-        assertDragController();
         for ( Map.Entry<SimplePanel, DropController> e : this.dropControllerMap.entrySet() ) {
             final DropController dropController = dropControllerMap.get( e.getKey() );
             dragController.unregisterDropController( dropController );
+            factory.release( dropController );
         }
         this.dropControllerMap.clear();
     }
@@ -76,12 +79,6 @@ public class WorkbenchDragAndDropManager {
 
     public WorkbenchDragContext getWorkbenchContext() {
         return this.workbenchContext;
-    }
-
-    private void assertDragController() {
-        if ( this.dragController == null ) {
-            throw new IllegalStateException( "DragAndDropManager has not been initialised. Call init() first." );
-        }
     }
 
 }

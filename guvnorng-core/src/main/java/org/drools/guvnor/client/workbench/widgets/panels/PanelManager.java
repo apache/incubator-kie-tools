@@ -148,21 +148,25 @@ public class PanelManager {
             case NORTH :
                 helperNorth.remove( panel );
                 workbenchPanels.remove( panel );
+                factory.release( panel );
                 break;
 
             case SOUTH :
                 helperSouth.remove( panel );
                 workbenchPanels.remove( panel );
+                factory.release( panel );
                 break;
 
             case EAST :
                 helperEast.remove( panel );
                 workbenchPanels.remove( panel );
+                factory.release( panel );
                 break;
 
             case WEST :
                 helperWest.remove( panel );
                 workbenchPanels.remove( panel );
+                factory.release( panel );
                 break;
         }
 
@@ -190,6 +194,7 @@ public class PanelManager {
         for ( WorkbenchPanel workbenchPanel : workbenchPanels ) {
             if ( workbenchPanel.contains( workbenchPart ) ) {
                 workbenchPanel.remove( workbenchPart );
+                factory.release( workbenchPart );
                 return;
             }
         }
