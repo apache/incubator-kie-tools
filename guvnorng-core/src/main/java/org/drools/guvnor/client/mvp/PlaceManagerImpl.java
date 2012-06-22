@@ -9,6 +9,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
@@ -18,7 +19,6 @@ import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -39,6 +39,12 @@ public class PlaceManagerImpl
 
     @Inject
     private EventBus                                eventBus;
+
+    @Inject
+    private PanelManager                            panelManager;
+
+    @Inject
+    private BeanFactory                             factory;
 
     private PlaceHistoryHandler                     placeHistoryHandler;
 
@@ -86,13 +92,12 @@ public class PlaceManagerImpl
                     public void add(String tabTitle,
                                     IsWidget widget) {
 
-                        WorkbenchPart workbenchPart = new WorkbenchPart( widget.asWidget(),
-                                                                         tabTitle );
-
+                        WorkbenchPart part = factory.newWorkbenchPart( widget.asWidget(),
+                                                                       tabTitle );
                         existingWorkbenchParts.put( newPlace,
-                                                    workbenchPart );
+                                                    part );
 
-                        workbenchPart.addActivityCloseHandler(
+                        part.addActivityCloseHandler(
                                 new ActivityCloseHandler() {
                                     @Override
                                     public void onCloseActivity(ActivityCloseEvent event) {
@@ -100,22 +105,22 @@ public class PlaceManagerImpl
                                     }
                                 } );
 
-                        workbenchPart.addWorkbenchPartHideHandler( new WorkbenchPartHideHandler() {
+                        part.addWorkbenchPartHideHandler( new WorkbenchPartHideHandler() {
                             @Override
                             public void onHide(WorkbenchPartHideEvent event) {
                                 activity.hide();
                             }
                         } );
 
-                        workbenchPart.addSelectionHandler( new SelectionHandler<WorkbenchPart>() {
+                        part.addSelectionHandler( new SelectionHandler<WorkbenchPart>() {
                             @Override
                             public void onSelection(SelectionEvent<WorkbenchPart> workbenchPartSelectionEvent) {
                                 activity.show();
                             }
                         } );
 
-                        PanelManager.getInstance().addWorkbenchPanel( workbenchPart,
-                                                                      activity.getPreferredPosition() );
+                        panelManager.addWorkbenchPanel( part,
+                                                        activity.getPreferredPosition() );
                     }
                 } );
         updateHistory( newPlace );

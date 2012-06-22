@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -33,6 +35,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class CompassDropController extends SimpleDropController {
 
     private final CompassWidget compass = CompassWidget.getInstance();
+
+    @Inject
+    private PanelManager                panelManager;
 
     public CompassDropController(final WorkbenchPanel wbp) {
         super( wbp.getParent() );
@@ -88,9 +93,9 @@ public class CompassDropController extends SimpleDropController {
 
         CloseEvent.fire( part,
                          part );
-        PanelManager.getInstance().addWorkbenchPanel( part,
-                                                      panel,
-                                                      p );
+        panelManager.addWorkbenchPanel( part,
+                                        panel,
+                                        p );
     }
 
 }

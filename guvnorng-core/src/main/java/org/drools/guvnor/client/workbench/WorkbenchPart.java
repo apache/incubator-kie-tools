@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.workbench;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
 import org.drools.guvnor.client.workbench.widgets.events.HasCloseActivityHandlers;
@@ -30,6 +33,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,6 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  *
  */
+@Dependent
 public class WorkbenchPart extends SimpleLayoutPanel
         implements
         HasCloseHandlers<WorkbenchPart>,
@@ -44,13 +49,13 @@ public class WorkbenchPart extends SimpleLayoutPanel
         HasSelectionHandlers<WorkbenchPart>,
         HasWorkbenchPartHideHandlers {
 
-    private String      title;
-    private ScrollPanel sp = new ScrollPanel();
+    @Inject
+    private PanelManager panelManager;
 
-    public WorkbenchPart(final Widget widget,
-                         final String title) {
-        this.title = title;
-        sp.setWidget( widget );
+    private String       title;
+    private ScrollPanel  sp = new ScrollPanel();
+
+    public WorkbenchPart() {
         setWidget( sp );
 
         addCloseHandler( new CloseHandler<WorkbenchPart>() {
@@ -63,8 +68,16 @@ public class WorkbenchPart extends SimpleLayoutPanel
         } );
     }
 
+    public void setPartWidget(IsWidget w) {
+        sp.setWidget( w );
+    }
+
+    public void setPartTitle(final String title) {
+        this.title = title;
+    }
+
     public void close() {
-        PanelManager.getInstance().removeWorkbenchPart( this );
+        panelManager.removeWorkbenchPart( this );
     }
 
     public String getPartTitle() {

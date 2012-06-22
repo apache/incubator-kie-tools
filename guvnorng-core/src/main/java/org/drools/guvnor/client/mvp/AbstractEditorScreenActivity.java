@@ -31,7 +31,7 @@ public abstract class AbstractEditorScreenActivity
     Activity {
 
     @Inject
-    PlaceManager                placeManager;
+    private PlaceManager        placeManager;
 
     private EditorScreenService presenter;
 

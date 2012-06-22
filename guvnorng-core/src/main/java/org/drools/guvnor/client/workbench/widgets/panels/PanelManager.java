@@ -18,6 +18,8 @@ package org.drools.guvnor.client.workbench.widgets.panels;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -27,9 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
+@ApplicationScoped
 public class PanelManager {
-
-    private static PanelManager INSTANCE        = new PanelManager();
 
     private final PanelHelper   helperNorth     = new PanelHelperNorth();
     private final PanelHelper   helperSouth     = new PanelHelperSouth();
@@ -41,13 +42,6 @@ public class PanelManager {
     private WorkbenchPanel      rootPanel       = null;
 
     private Set<WorkbenchPanel> workbenchPanels = new HashSet<WorkbenchPanel>();
-
-    private PanelManager() {
-    }
-
-    public static PanelManager getInstance() {
-        return INSTANCE;
-    }
 
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;

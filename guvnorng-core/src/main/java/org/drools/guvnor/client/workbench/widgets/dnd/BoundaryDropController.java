@@ -17,6 +17,8 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
@@ -47,6 +49,9 @@ public class BoundaryDropController extends SimpleDropController {
     private static final int DROP_MARGIN                 = 64;
 
     private Position         dropTargetHighlightPosition = Position.NONE;
+
+    @Inject
+    private PanelManager             panelManager;
 
     public BoundaryDropController(final WorkbenchPanel wbp) {
         super( wbp.getParent() );
@@ -93,9 +98,9 @@ public class BoundaryDropController extends SimpleDropController {
 
         CloseEvent.fire( part,
                          part );
-        PanelManager.getInstance().addWorkbenchPanel( part,
-                                                      panel,
-                                                      dropTargetHighlightPosition );
+        panelManager.addWorkbenchPanel( part,
+                                        panel,
+                                        dropTargetHighlightPosition );
     }
 
     @Override

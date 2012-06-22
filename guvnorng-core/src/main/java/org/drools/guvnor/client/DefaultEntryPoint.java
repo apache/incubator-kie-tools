@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class DefaultEntryPoint {
 
     @Inject
-    Workbench                 workbench;
+    private Workbench         workbench;
 
     private final SimplePanel appWidget = new SimplePanel();
 

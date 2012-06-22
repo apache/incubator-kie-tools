@@ -47,13 +47,16 @@ public class Workbench extends Composite {
     private final AbsolutePanel workbenchContainer = new AbsolutePanel();
 
     @Inject
-    PlaceManager                placeManager;
+    private PanelManager        panelManager;
 
     @Inject
-    IOCBeanManager              iocManager;
+    private PlaceManager        placeManager;
 
     @Inject
-    GuvnorMenu                  menu;
+    private IOCBeanManager      iocManager;
+
+    @Inject
+    private GuvnorMenu          menu;
 
     public Workbench() {
     }
@@ -107,8 +110,8 @@ public class Workbench extends Composite {
         //Add default workbench widget
         final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel();
         workbench.setWidget( workbenchRootPanel );
-        PanelManager.getInstance().setRoot( workbenchRootPanel );
-        PanelManager.getInstance().setFocus( workbenchRootPanel );
+        panelManager.setRoot( workbenchRootPanel );
+        panelManager.setFocus( workbenchRootPanel );
 
         //Wire-up DnD controller
         final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel );
@@ -137,7 +140,7 @@ public class Workbench extends Composite {
 
         //If a default perspective was found load it up!
         if ( foundDefaultPerspective ) {
-            defaultPerspective.buildWorkbench( PanelManager.getInstance(),
+            defaultPerspective.buildWorkbench( panelManager,
                                                workbenchRootPanel );
         }
     }

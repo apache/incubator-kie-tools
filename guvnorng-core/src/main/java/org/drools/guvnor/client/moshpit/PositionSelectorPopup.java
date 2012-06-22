@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.moshpit;
 
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -29,9 +32,15 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class PositionSelectorPopup extends PopupPanel {
 
-    private ListBox positionChoices = new ListBox();
+    private ListBox      positionChoices = new ListBox();
 
-    private int     widgetCounter   = 1;
+    private int          widgetCounter   = 1;
+
+    @Inject
+    private PanelManager panelManager;
+
+    @Inject
+    private BeanFactory  factory;
 
     public PositionSelectorPopup() {
         initChoices();
@@ -56,9 +65,10 @@ public class PositionSelectorPopup extends PopupPanel {
                 hide();
 
                 final String title = position.toString() + " [" + (widgetCounter++) + "]";
-                PanelManager.getInstance().addWorkbenchPanel( new WorkbenchPart( new DebugLabel(),
-                                                                                 title ),
-                                                              position );
+                WorkbenchPart part = factory.newWorkbenchPart( new DebugLabel(),
+                                                               title );
+                panelManager.addWorkbenchPanel( part,
+                                                position );
             }
 
         } );

@@ -15,7 +15,8 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import com.google.gwt.event.logical.shared.*;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
@@ -29,13 +30,16 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-
 
 /**
  *
@@ -45,6 +49,9 @@ public class WorkbenchPanel extends ResizeComposite {
     public static final int               TAB_BAR_HEIGHT   = 32;
 
     private static final int              FOCUS_BAR_HEIGHT = 3;
+
+    @Inject
+    private PanelManager                  panelManager;
 
     private final WorkbenchTabLayoutPanel tabPanel;
 
@@ -74,27 +81,27 @@ public class WorkbenchPanel extends ResizeComposite {
 
                                     @Override
                                     public void onClick(ClickEvent event) {
-                                        PanelManager.getInstance().setFocus( WorkbenchPanel.this );
+                                        panelManager.setFocus( WorkbenchPanel.this );
                                     }
 
                                 },
                                 ClickEvent.getType() );
 
-        tabPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
+        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
             @Override
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 
                 int previousTabIndex = tabPanel.getSelectedIndex();
-                if (previousTabIndex >= 0) {
-                    final Widget widget = tabPanel.getWidget(previousTabIndex);
-                    if (widget instanceof WorkbenchPart) {
+                if ( previousTabIndex >= 0 ) {
+                    final Widget widget = tabPanel.getWidget( previousTabIndex );
+                    if ( widget instanceof WorkbenchPart ) {
                         WorkbenchPartHideEvent.fire(
-                                (WorkbenchPart) widget,
-                                (WorkbenchPart) widget);
+                                                     (WorkbenchPart) widget,
+                                                     (WorkbenchPart) widget );
                     }
                 }
             }
-        });
+        } );
         //When tab is selected ensure content is resized
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
 
@@ -104,10 +111,10 @@ public class WorkbenchPanel extends ResizeComposite {
                 if ( w instanceof RequiresResize ) {
                     scheduleResize( (RequiresResize) w );
                 }
-                if( w instanceof WorkbenchPart){
+                if ( w instanceof WorkbenchPart ) {
                     SelectionEvent.fire(
-                            (WorkbenchPart) w,
-                            (WorkbenchPart) w);
+                                         (WorkbenchPart) w,
+                                         (WorkbenchPart) w );
                 }
 
             }
@@ -132,7 +139,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
             @Override
             public void onClick(ClickEvent event) {
-                ActivityCloseEvent.fire(part);
+                ActivityCloseEvent.fire( part );
             }
 
         } );
@@ -167,7 +174,7 @@ public class WorkbenchPanel extends ResizeComposite {
         if ( removed ) {
 
             if ( tabPanel.getWidgetCount() == 0 ) {
-                PanelManager.getInstance().removeWorkbenchPanel( this );
+                panelManager.removeWorkbenchPanel( this );
             } else {
                 if ( indexOfSelectedTab == indexOfTabToRemove ) {
                     tabPanel.selectTab( indexOfTabToRemove > 0 ? indexOfTabToRemove - 1 : 0 );
