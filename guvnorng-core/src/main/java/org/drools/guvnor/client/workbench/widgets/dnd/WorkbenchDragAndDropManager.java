@@ -18,39 +18,27 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  */
+@ApplicationScoped
 public class WorkbenchDragAndDropManager {
 
-    private static WorkbenchDragAndDropManager INSTANCE          = new WorkbenchDragAndDropManager();
-
-    //Wrapped DragController
-    private PickupDragController               dragController;
-
     //A registry of SimplePanels and their respective DropController
-    private Map<SimplePanel, DropController>   dropControllerMap = new HashMap<SimplePanel, DropController>();
+    private Map<SimplePanel, DropController> dropControllerMap = new HashMap<SimplePanel, DropController>();
 
     //The context of the drag operation
-    private WorkbenchDragContext               workbenchContext  = null;
+    private WorkbenchDragContext             workbenchContext  = null;
 
-    private WorkbenchDragAndDropManager() {
-    }
-
-    public static WorkbenchDragAndDropManager getInstance() {
-        return INSTANCE;
-    }
-
-    public void init(final AbsolutePanel boundaryPanel) {
-        this.dragController = new WorkbenchPickupDragController( boundaryPanel );
-        this.dragController.setBehaviorDragProxy( true );
-    }
+    @Inject
+    private WorkbenchPickupDragController    dragController;
 
     public void makeDraggable(Widget draggable,
                               Widget dragHandle) {

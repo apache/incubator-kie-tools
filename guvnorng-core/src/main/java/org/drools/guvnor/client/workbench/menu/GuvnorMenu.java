@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
@@ -21,13 +20,16 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 
-@Singleton
 @ApplicationScoped
 public class GuvnorMenu extends Composite {
 
     @Inject
-    public GuvnorMenu(final IOCBeanManager manager,
-                      final PlaceManager placeManager) {
+    private IOCBeanManager iocManager;
+
+    @Inject
+    private PlaceManager   placeManager;
+
+    public GuvnorMenu() {
 
         Button add = new Button( "Add (mr. Rikkola)" );
 
@@ -37,7 +39,7 @@ public class GuvnorMenu extends Composite {
 
                 final Set<IPlaceRequestFactory> factories = new HashSet<IPlaceRequestFactory>();
 
-                Collection<IOCBeanDef> beans = manager.lookupBeans( IPlaceRequestFactory.class );
+                Collection<IOCBeanDef> beans = iocManager.lookupBeans( IPlaceRequestFactory.class );
 
                 for ( IOCBeanDef bean : beans ) {
                     final IPlaceRequestFactory instance = (IPlaceRequestFactory) bean.getInstance();

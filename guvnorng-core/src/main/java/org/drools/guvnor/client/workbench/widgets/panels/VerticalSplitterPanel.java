@@ -15,9 +15,12 @@
  */
 package org.drools.guvnor.client.workbench.widgets.panels;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -27,17 +30,28 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
+@Dependent
 public class VerticalSplitterPanel extends ResizeComposite
     implements
     SplitPanel {
+
+    @Inject
+    private WorkbenchDragAndDropManager     dndManager;
+
+    @Inject
+    private BeanFactory                     factory;
 
     private final WorkbenchSplitLayoutPanel slp                  = new WorkbenchSplitLayoutPanel();
     private final SimpleLayoutPanel         northWidgetContainer = new SimpleLayoutPanel();
     private final SimpleLayoutPanel         southWidgetContainer = new SimpleLayoutPanel();
 
-    public VerticalSplitterPanel(final WorkbenchPanel northWidget,
-                                 final WorkbenchPanel southWidget,
-                                 final Position position) {
+    public VerticalSplitterPanel() {
+        initWidget( slp );
+    }
+
+    public void setup(final WorkbenchPanel northWidget,
+                      final WorkbenchPanel southWidget,
+                      final Position position) {
         switch ( position ) {
             case NORTH :
                 slp.addNorth( northWidgetContainer,
@@ -60,13 +74,11 @@ public class VerticalSplitterPanel extends ResizeComposite
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );
 
-        initWidget( slp );
-
         //Wire-up DnD controllers
-        WorkbenchDragAndDropManager.getInstance().registerDropController( northWidgetContainer,
-                                                                          new CompassDropController( northWidget ) );
-        WorkbenchDragAndDropManager.getInstance().registerDropController( southWidgetContainer,
-                                                                          new CompassDropController( southWidget ) );
+        dndManager.registerDropController( northWidgetContainer,
+                                           factory.newDropController( northWidget ) );
+        dndManager.registerDropController( southWidgetContainer,
+                                           factory.newDropController( southWidget ) );
     }
 
     @Override

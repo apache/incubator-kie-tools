@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.workbench;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  *
  */
+@Dependent
 public class WorkbenchPanel extends ResizeComposite {
 
     public static final int               TAB_BAR_HEIGHT   = 32;
@@ -53,16 +55,14 @@ public class WorkbenchPanel extends ResizeComposite {
     @Inject
     private PanelManager                  panelManager;
 
+    @Inject
+    private WorkbenchDragAndDropManager   dndManager;
+
     private final WorkbenchTabLayoutPanel tabPanel;
 
     public WorkbenchPanel() {
         this.tabPanel = makeTabPanel();
         initWidget( this.tabPanel );
-    }
-
-    public WorkbenchPanel(final WorkbenchPart part) {
-        this();
-        addTab( part );
     }
 
     public void addTab(final WorkbenchPart part) {
@@ -128,8 +128,8 @@ public class WorkbenchPanel extends ResizeComposite {
         final InlineLabel tabLabel = new InlineLabel( part.getPartTitle() );
         fp.add( tabLabel );
 
-        WorkbenchDragAndDropManager.getInstance().makeDraggable( part,
-                                                                 tabLabel );
+        dndManager.makeDraggable( part,
+                                  tabLabel );
 
         final FocusPanel image = new FocusPanel();
         image.getElement().getStyle().setFloat( Style.Float.RIGHT );

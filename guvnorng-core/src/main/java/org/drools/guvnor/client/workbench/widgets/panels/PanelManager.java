@@ -19,10 +19,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.annotations.WorkbenchPosition;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,10 +35,24 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class PanelManager {
 
-    private final PanelHelper   helperNorth     = new PanelHelperNorth();
-    private final PanelHelper   helperSouth     = new PanelHelperSouth();
-    private final PanelHelper   helperEast      = new PanelHelperEast();
-    private final PanelHelper   helperWest      = new PanelHelperWest();
+    @Inject
+    @WorkbenchPosition(position = Position.NORTH)
+    private PanelHelper         helperNorth;
+
+    @Inject
+    @WorkbenchPosition(position = Position.SOUTH)
+    private PanelHelper         helperSouth;
+
+    @Inject
+    @WorkbenchPosition(position = Position.EAST)
+    private PanelHelper         helperEast;
+
+    @Inject
+    @WorkbenchPosition(position = Position.WEST)
+    private PanelHelper         helperWest;
+
+    @Inject
+    private BeanFactory         factory;
 
     private WorkbenchPanel      focusPanel      = null;
 
@@ -60,7 +77,7 @@ public class PanelManager {
                                   final WorkbenchPanel targetPanel,
                                   final Position position) {
 
-        WorkbenchPanel newPanel = new WorkbenchPanel( part );
+        WorkbenchPanel newPanel = factory.newWorkbenchPanel( part );
 
         switch ( position ) {
             case SELF :

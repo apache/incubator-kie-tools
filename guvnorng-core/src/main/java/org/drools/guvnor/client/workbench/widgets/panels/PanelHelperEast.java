@@ -15,9 +15,13 @@
  */
 package org.drools.guvnor.client.workbench.widgets.panels;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
-import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
+import org.drools.guvnor.client.workbench.annotations.WorkbenchPosition;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.core.client.Scheduler;
@@ -29,9 +33,17 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
+@ApplicationScoped
+@WorkbenchPosition(position = Position.EAST)
 public class PanelHelperEast
     implements
     PanelHelper {
+
+    @Inject
+    private WorkbenchDragAndDropManager dndManager;
+
+    @Inject
+    private BeanFactory                 factory;
 
     public void add(final WorkbenchPanel newPanel,
                     final WorkbenchPanel targetPanel) {
@@ -41,11 +53,12 @@ public class PanelHelperEast
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            WorkbenchDragAndDropManager.getInstance().unregisterDropController( sp );
+            dndManager.unregisterDropController( sp );
 
-            final HorizontalSplitterPanel hsp = new HorizontalSplitterPanel( targetPanel,
-                                                                             newPanel,
-                                                                             Position.EAST );
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
+                                                                                    newPanel,
+                                                                                    Position.EAST );
+
             sp.clear();
             sp.setWidget( hsp );
 
@@ -66,16 +79,16 @@ public class PanelHelperEast
 
         vsp.clear();
 
-        WorkbenchDragAndDropManager.getInstance().unregisterDropController( (SimplePanel) eastWidget.getParent() );
-        WorkbenchDragAndDropManager.getInstance().unregisterDropController( (SimplePanel) westWidget.getParent() );
+        dndManager.unregisterDropController( (SimplePanel) eastWidget.getParent() );
+        dndManager.unregisterDropController( (SimplePanel) westWidget.getParent() );
 
         //Set parent's content to the WEST widget
         if ( parent instanceof SimplePanel ) {
             ((SimplePanel) parent).setWidget( westWidget );
             if ( westWidget instanceof WorkbenchPanel ) {
                 final WorkbenchPanel wbp = (WorkbenchPanel) westWidget;
-                WorkbenchDragAndDropManager.getInstance().registerDropController( (SimplePanel) parent,
-                                                                                  new CompassDropController( wbp ) );
+                dndManager.registerDropController( (SimplePanel) parent,
+                                                   factory.newDropController( wbp ) );
             }
         }
 

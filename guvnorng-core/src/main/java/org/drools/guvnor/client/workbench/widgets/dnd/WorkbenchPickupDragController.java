@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
@@ -30,13 +33,18 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
+@ApplicationScoped
 public class WorkbenchPickupDragController extends PickupDragController {
 
-    private final Image dragProxy = new Image( GuvnorResources.INSTANCE.guvnorImages().workbenchPanelDragProxy() );
+    private final Image                 dragProxy = new Image( GuvnorResources.INSTANCE.guvnorImages().workbenchPanelDragProxy() );
 
-    public WorkbenchPickupDragController(final AbsolutePanel boundaryPanel) {
-        super( boundaryPanel,
+    @Inject
+    private WorkbenchDragAndDropManager dndManager;
+
+    public WorkbenchPickupDragController() {
+        super( new AbsolutePanel(),
                false );
+        setBehaviorDragProxy( true );
         setBehaviorDragStartSensitivity( 1 );
     }
 
@@ -46,7 +54,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchTabLayoutPanel wtp = (WorkbenchTabLayoutPanel) part.getParent().getParent().getParent();
         final WorkbenchDragContext context = new WorkbenchDragContext( part,
                                                                        wtp );
-        WorkbenchDragAndDropManager.getInstance().setWorkbenchContext( context );
+        dndManager.setWorkbenchContext( context );
         super.dragStart();
         final Widget movablePanel = getMoveablePanel();
         if ( movablePanel != null ) {

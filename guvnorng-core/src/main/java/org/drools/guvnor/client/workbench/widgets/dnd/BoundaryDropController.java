@@ -17,6 +17,7 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import java.util.TreeMap;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.Position;
@@ -27,7 +28,7 @@ import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.allen_sauer.gwt.dnd.client.util.CoordinateArea;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -42,20 +43,27 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
-public class BoundaryDropController extends SimpleDropController {
+@Dependent
+public class BoundaryDropController
+    implements
+    DropController {
 
-    private static Element   dropTargetHighlight;
+    private static Element              dropTargetHighlight;
 
-    private static final int DROP_MARGIN                 = 64;
+    private static final int            DROP_MARGIN                 = 64;
 
-    private Position         dropTargetHighlightPosition = Position.NONE;
+    private Position                    dropTargetHighlightPosition = Position.NONE;
+
+    private WorkbenchPanel              dropTarget;
 
     @Inject
-    private PanelManager             panelManager;
+    private PanelManager                panelManager;
 
-    public BoundaryDropController(final WorkbenchPanel wbp) {
-        super( wbp.getParent() );
+    @Inject
+    private WorkbenchDragAndDropManager dndManager;
 
+    public void setup(final WorkbenchPanel wbp) {
+        this.dropTarget = wbp;
         if ( dropTargetHighlight == null ) {
             dropTargetHighlight = Document.get().createDivElement();
             dropTargetHighlight.getStyle().setPosition( Style.Position.ABSOLUTE );
@@ -81,7 +89,7 @@ public class BoundaryDropController extends SimpleDropController {
 
         final WorkbenchPart part = (WorkbenchPart) context.draggable;
         final WorkbenchPanel panel = (WorkbenchPanel) (((SimpleLayoutPanel) getDropTarget()).getWidget());
-        final WorkbenchDragContext workbenchContext = WorkbenchDragAndDropManager.getInstance().getWorkbenchContext();
+        final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
@@ -106,24 +114,25 @@ public class BoundaryDropController extends SimpleDropController {
     @Override
     public void onEnter(DragContext context) {
         showDropTarget( context );
-        super.onEnter( context );
     }
 
     @Override
     public void onLeave(DragContext context) {
         hideDropTarget();
-        super.onLeave( context );
     }
 
     @Override
     public void onMove(DragContext context) {
         showDropTarget( context );
-        super.onMove( context );
     }
 
     @Override
     public void onPreviewDrop(DragContext context) throws VetoDragException {
-        super.onPreviewDrop( context );
+    }
+
+    @Override
+    public Widget getDropTarget() {
+        return this.dropTarget;
     }
 
     private void showDropTarget(final DragContext context) {

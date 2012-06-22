@@ -8,14 +8,13 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.workbench.annotations.DefaultPerspective;
 import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
-import org.drools.guvnor.client.workbench.perspectives.DefaultPerspective;
 import org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -32,34 +31,31 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-@Singleton
 @ApplicationScoped
 public class Workbench extends Composite {
 
-    public static final int     WIDTH              = Window.getClientWidth();
+    public static final int               WIDTH     = Window.getClientWidth();
 
-    public static final int     HEIGHT             = Window.getClientHeight();
+    public static final int               HEIGHT    = Window.getClientHeight();
 
-    private final VerticalPanel container          = new VerticalPanel();
+    private final VerticalPanel           container = new VerticalPanel();
 
-    private final SimplePanel   workbench          = new SimplePanel();
-
-    private final AbsolutePanel workbenchContainer = new AbsolutePanel();
+    private final SimplePanel             workbench = new SimplePanel();
 
     @Inject
-    private PanelManager        panelManager;
+    private PanelManager                  panelManager;
 
     @Inject
-    private PlaceManager        placeManager;
+    private IOCBeanManager                iocManager;
 
     @Inject
-    private IOCBeanManager      iocManager;
+    private WorkbenchDragAndDropManager   dndManager;
 
     @Inject
-    private GuvnorMenu          menu;
+    private WorkbenchPickupDragController dragController;
 
-    public Workbench() {
-    }
+    @Inject
+    private BeanFactory                   factory;
 
     @PostConstruct
     public void setup() {
@@ -71,13 +67,15 @@ public class Workbench extends Composite {
         menubar.getElement().getStyle().setHeight( 48.0,
                                                    Unit.PX );
         menubar.setWidth( WIDTH + "px" );
+
+        final GuvnorMenu menu = iocManager.lookupBean( GuvnorMenu.class ).getInstance();
         menubar.add( menu );
         container.add( menubar );
 
         //Container panels for workbench
+        final AbsolutePanel workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.setPixelSize( WIDTH,
                                          HEIGHT - 48 );
-        WorkbenchDragAndDropManager.getInstance().init( workbenchContainer );
         workbench.setPixelSize( WIDTH,
                                 HEIGHT - 48 );
         workbenchContainer.add( workbench );
@@ -105,18 +103,18 @@ public class Workbench extends Composite {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void bootstrap() {
         workbench.clear();
-        WorkbenchDragAndDropManager.getInstance().unregisterDropControllers();
+        dndManager.unregisterDropControllers();
 
         //Add default workbench widget
-        final WorkbenchPanel workbenchRootPanel = new WorkbenchPanel();
+        final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel();
         workbench.setWidget( workbenchRootPanel );
         panelManager.setRoot( workbenchRootPanel );
         panelManager.setFocus( workbenchRootPanel );
 
         //Wire-up DnD controller
-        final CompassDropController workbenchDropController = new CompassDropController( workbenchRootPanel );
-        WorkbenchDragAndDropManager.getInstance().registerDropController( workbench,
-                                                                          workbenchDropController );
+        final CompassDropController workbenchDropController = factory.newDropController( workbenchRootPanel );
+        dndManager.registerDropController( workbench,
+                                           workbenchDropController );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         boolean foundDefaultPerspective = false;
