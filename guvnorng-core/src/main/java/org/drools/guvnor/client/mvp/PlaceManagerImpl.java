@@ -9,7 +9,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
@@ -39,9 +38,6 @@ public class PlaceManagerImpl
 
     @Inject
     private PanelManager                            panelManager;
-
-    @Inject
-    private BeanFactory                             factory;
 
     private PlaceHistoryHandler                     placeHistoryHandler;
 
@@ -89,8 +85,8 @@ public class PlaceManagerImpl
                     public void add(String tabTitle,
                                     IsWidget widget) {
 
-                        WorkbenchPart part = factory.newWorkbenchPart( widget.asWidget(),
-                                                                       tabTitle );
+                        WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
+                                                                tabTitle );
                         existingWorkbenchParts.put( newPlace,
                                                     part );
 

@@ -23,8 +23,6 @@ import org.drools.guvnor.client.workbench.widgets.panels.HorizontalSplitterPanel
 import org.drools.guvnor.client.workbench.widgets.panels.VerticalSplitterPanel;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * A convenience class to create new instances of managed beans.
  */
@@ -43,14 +41,6 @@ public class BeanFactory {
         final WorkbenchPanel panel = (WorkbenchPanel) iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
         panel.addTab( part );
         return panel;
-    }
-
-    public WorkbenchPart newWorkbenchPart(final Widget w,
-                                          final String title) {
-        final WorkbenchPart part = (WorkbenchPart) iocManager.lookupBean( WorkbenchPart.class ).getInstance();
-        part.setPartWidget( w );
-        part.setPartTitle( title );
-        return part;
     }
 
     public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanel eastPanel,

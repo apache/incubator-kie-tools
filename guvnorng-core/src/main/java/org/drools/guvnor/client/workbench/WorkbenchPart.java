@@ -15,9 +15,6 @@
  */
 package org.drools.guvnor.client.workbench;
 
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,22 +22,16 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  *
  */
-@Dependent
 public class WorkbenchPart extends SimpleLayoutPanel {
 
     private String      title;
     private ScrollPanel sp = new ScrollPanel();
 
-    public WorkbenchPart() {
-        setWidget( sp );
-    }
-
-    public void setPartWidget(IsWidget w) {
-        sp.setWidget( w );
-    }
-
-    public void setPartTitle(final String title) {
+    public WorkbenchPart(final Widget w,
+                         final String title) {
         this.title = title;
+        setWidget( sp );
+        sp.setWidget( w );
     }
 
     public String getPartTitle() {
