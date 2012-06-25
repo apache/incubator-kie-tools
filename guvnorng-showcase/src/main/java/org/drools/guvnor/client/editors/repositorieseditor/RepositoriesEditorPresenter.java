@@ -69,10 +69,11 @@ public class RepositoriesEditorPresenter
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
+                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName="+r.getRepositoryName();
                     view.addRepository( r.getRepositoryName(),
                                         r.getGitURL(),
                                         r.getDescription(),
-                                        r.getRootURI() );
+                                        link );
                 }
             }
         } ).listJGitRepositories();

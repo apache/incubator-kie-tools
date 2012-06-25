@@ -54,11 +54,12 @@ public class RepositoriesEditorView extends Composite
                               String gitURL,
                               String description,
                               String link) {
-        panel.add( new HTML( "<li>" +
+        panel.setWidth("800px");
+        panel.add( new HTML( "<li  class=guvnor-repository-li>" +
                                "<h3>" +
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
                                "</h3>" +
-                               "<div class=.guvnor-repository-body>" +
+                               "<div class=guvnor-repository-body>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
                                "</div>" +
