@@ -109,7 +109,6 @@ public class Workbench extends Composite {
         final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel();
         workbench.setWidget( workbenchRootPanel );
         panelManager.setRoot( workbenchRootPanel );
-        panelManager.setFocus( workbenchRootPanel );
 
         //Wire-up DnD controller
         final CompassDropController workbenchDropController = factory.newDropController( workbenchRootPanel );

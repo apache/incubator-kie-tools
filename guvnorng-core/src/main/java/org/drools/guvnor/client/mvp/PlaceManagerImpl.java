@@ -11,14 +11,11 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.BeanFactory;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
-import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseHandler;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideHandler;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -97,28 +94,6 @@ public class PlaceManagerImpl
                         existingWorkbenchParts.put( newPlace,
                                                     part );
 
-                        part.addActivityCloseHandler(
-                                new ActivityCloseHandler() {
-                                    @Override
-                                    public void onCloseActivity(ActivityCloseEvent event) {
-                                        onClosePlace( new ClosePlaceEvent( newPlace ) );
-                                    }
-                                } );
-
-                        part.addWorkbenchPartHideHandler( new WorkbenchPartHideHandler() {
-                            @Override
-                            public void onHide(WorkbenchPartHideEvent event) {
-                                activity.hide();
-                            }
-                        } );
-
-                        part.addSelectionHandler( new SelectionHandler<WorkbenchPart>() {
-                            @Override
-                            public void onSelection(SelectionEvent<WorkbenchPart> workbenchPartSelectionEvent) {
-                                activity.show();
-                            }
-                        } );
-
                         panelManager.addWorkbenchPanel( part,
                                                         activity.getPreferredPosition() );
                     }
@@ -130,14 +105,47 @@ public class PlaceManagerImpl
         placeHistoryHandler.onPlaceChange( request );
     }
 
-    public void onClosePlace(@Observes ClosePlaceEvent closePlaceEvent) {
-        final IPlaceRequest place = closePlaceEvent.getPlaceRequest();
+    public void onWorkbenchPartClosed(@Observes WorkbenchPartClosedEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        final IPlaceRequest place = getPlaceForWorkbenchPart( part );
+        if ( place == null ) {
+            return;
+        }
         final Activity activity = activeActivities.get( place );
         if ( activity.mayClosePlace() ) {
             activity.closePlace();
             activeActivities.remove( place );
-            existingWorkbenchParts.remove( place ).close();
+            existingWorkbenchParts.remove( place );
         }
+    }
+
+    private IPlaceRequest getPlaceForWorkbenchPart(final WorkbenchPart part) {
+        for ( Map.Entry<IPlaceRequest, WorkbenchPart> e : existingWorkbenchParts.entrySet() ) {
+            if ( e.getValue().equals( part ) ) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
+
+    public void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        final IPlaceRequest place = getPlaceForWorkbenchPart( part );
+        if ( place == null ) {
+            return;
+        }
+        final Activity activity = activeActivities.get( place );
+        activity.show();
+    }
+
+    public void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
+        final WorkbenchPart part = event.getDeselectedWorkbenchPart();
+        final IPlaceRequest place = getPlaceForWorkbenchPart( part );
+        if ( place == null ) {
+            return;
+        }
+        final Activity activity = activeActivities.get( place );
+        activity.hide();
     }
 
     @Produces

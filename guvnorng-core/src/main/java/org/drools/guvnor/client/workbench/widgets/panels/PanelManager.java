@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.BeanFactory;
@@ -26,6 +27,9 @@ import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.annotations.WorkbenchPosition;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -63,6 +67,7 @@ public class PanelManager {
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
         workbenchPanels.add( panel );
+        setFocus( panel );
     }
 
     public void addWorkbenchPanel(final WorkbenchPart part,
@@ -177,7 +182,12 @@ public class PanelManager {
         }
     }
 
-    public void setFocus(final WorkbenchPanel panel) {
+    public void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
+        final WorkbenchPanel panel = event.getWorkbenchPanel();
+        setFocus( panel );
+    }
+
+    private void setFocus(final WorkbenchPanel panel) {
         for ( WorkbenchPanel wbp : this.workbenchPanels ) {
             wbp.setFocus( wbp == panel );
         }
@@ -190,7 +200,17 @@ public class PanelManager {
         }
     }
 
-    public void removeWorkbenchPart(WorkbenchPart workbenchPart) {
+    public void onWorkbenchPartClosedEvent(@Observes WorkbenchPartClosedEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        removeWorkbenchPart( part );
+    }
+
+    public void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        removeWorkbenchPart( part );
+    }
+
+    private void removeWorkbenchPart(WorkbenchPart workbenchPart) {
         for ( WorkbenchPanel workbenchPanel : workbenchPanels ) {
             if ( workbenchPanel.contains( workbenchPart ) ) {
                 workbenchPanel.remove( workbenchPart );

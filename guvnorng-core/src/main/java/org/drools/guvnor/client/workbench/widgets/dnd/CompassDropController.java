@@ -16,18 +16,19 @@
 package org.drools.guvnor.client.workbench.widgets.dnd;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -39,15 +40,18 @@ public class CompassDropController
     implements
     DropController {
 
-    private final CompassWidget         compass = CompassWidget.getInstance();
+    private final CompassWidget              compass = CompassWidget.getInstance();
 
-    private WorkbenchPanel              dropTarget;
-
-    @Inject
-    private PanelManager                panelManager;
+    private WorkbenchPanel                   dropTarget;
 
     @Inject
-    private WorkbenchDragAndDropManager dndManager;
+    private PanelManager                     panelManager;
+
+    @Inject
+    private WorkbenchDragAndDropManager      dndManager;
+
+    @Inject
+    private Event<WorkbenchPartDroppedEvent> workbenchPartDroppedEvent;
 
     public void setup(final WorkbenchPanel wbp) {
         dropTarget = wbp;;
@@ -97,8 +101,7 @@ public class CompassDropController
             }
         }
 
-        CloseEvent.fire( part,
-                         part );
+        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
         panelManager.addWorkbenchPanel( part,
                                         dropTarget,
                                         p );

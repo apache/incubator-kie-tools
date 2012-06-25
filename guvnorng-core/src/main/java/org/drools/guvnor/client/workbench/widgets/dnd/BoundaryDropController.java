@@ -18,11 +18,13 @@ package org.drools.guvnor.client.workbench.widgets.dnd;
 import java.util.TreeMap;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
@@ -36,7 +38,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,19 +49,22 @@ public class BoundaryDropController
     implements
     DropController {
 
-    private static Element              dropTargetHighlight;
+    private static Element                   dropTargetHighlight;
 
-    private static final int            DROP_MARGIN                 = 64;
+    private static final int                 DROP_MARGIN                 = 64;
 
-    private Position                    dropTargetHighlightPosition = Position.NONE;
+    private Position                         dropTargetHighlightPosition = Position.NONE;
 
-    private WorkbenchPanel              dropTarget;
-
-    @Inject
-    private PanelManager                panelManager;
+    private WorkbenchPanel                   dropTarget;
 
     @Inject
-    private WorkbenchDragAndDropManager dndManager;
+    private PanelManager                     panelManager;
+
+    @Inject
+    private WorkbenchDragAndDropManager      dndManager;
+
+    @Inject
+    private Event<WorkbenchPartDroppedEvent> workbenchPartDroppedEvent;
 
     public void setup(final WorkbenchPanel wbp) {
         this.dropTarget = wbp;
@@ -104,8 +108,7 @@ public class BoundaryDropController
             }
         }
 
-        CloseEvent.fire( part,
-                         part );
+        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
         panelManager.addWorkbenchPanel( part,
                                         panel,
                                         dropTargetHighlightPosition );

@@ -16,12 +16,15 @@
 package org.drools.guvnor.client.workbench;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.drools.guvnor.client.workbench.widgets.events.ActivityCloseEvent;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartHideEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 import org.drools.guvnor.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
@@ -48,17 +51,29 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 public class WorkbenchPanel extends ResizeComposite {
 
-    public static final int               TAB_BAR_HEIGHT   = 32;
+    public static final int                    TAB_BAR_HEIGHT   = 32;
 
-    private static final int              FOCUS_BAR_HEIGHT = 3;
-
-    @Inject
-    private PanelManager                  panelManager;
+    private static final int                   FOCUS_BAR_HEIGHT = 3;
 
     @Inject
-    private WorkbenchDragAndDropManager   dndManager;
+    private PanelManager                       panelManager;
 
-    private final WorkbenchTabLayoutPanel tabPanel;
+    @Inject
+    private WorkbenchDragAndDropManager        dndManager;
+
+    @Inject
+    private Event<WorkbenchPartClosedEvent>    workbenchPartClosedEvent;
+
+    @Inject
+    private Event<WorkbenchPartOnFocusEvent>   workbenchPartOnFocusEvent;
+
+    @Inject
+    private Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
+
+    @Inject
+    private Event<WorkbenchPanelOnFocusEvent>  workbenchPanelOnFocusEvent;
+
+    private final WorkbenchTabLayoutPanel      tabPanel;
 
     public WorkbenchPanel() {
         this.tabPanel = makeTabPanel();
@@ -81,28 +96,29 @@ public class WorkbenchPanel extends ResizeComposite {
 
                                     @Override
                                     public void onClick(ClickEvent event) {
-                                        panelManager.setFocus( WorkbenchPanel.this );
+                                        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
                                     }
 
                                 },
                                 ClickEvent.getType() );
 
+        //Selecting a tab causes the previously selected to receive a hide event
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
+
             @Override
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 
                 int previousTabIndex = tabPanel.getSelectedIndex();
                 if ( previousTabIndex >= 0 ) {
-                    final Widget widget = tabPanel.getWidget( previousTabIndex );
-                    if ( widget instanceof WorkbenchPart ) {
-                        WorkbenchPartHideEvent.fire(
-                                                     (WorkbenchPart) widget,
-                                                     (WorkbenchPart) widget );
+                    final Widget w = tabPanel.getWidget( previousTabIndex );
+                    if ( w instanceof WorkbenchPart ) {
+                        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( (WorkbenchPart) w ) );
                     }
                 }
             }
         } );
-        //When tab is selected ensure content is resized
+
+        //When tab is selected ensure content is resized and set focus
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
 
             @Override
@@ -112,9 +128,7 @@ public class WorkbenchPanel extends ResizeComposite {
                     scheduleResize( (RequiresResize) w );
                 }
                 if ( w instanceof WorkbenchPart ) {
-                    SelectionEvent.fire(
-                                         (WorkbenchPart) w,
-                                         (WorkbenchPart) w );
+                    workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( (WorkbenchPart) w ) );
                 }
 
             }
@@ -139,7 +153,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
             @Override
             public void onClick(ClickEvent event) {
-                ActivityCloseEvent.fire( part );
+                workbenchPartClosedEvent.fire( new WorkbenchPartClosedEvent( part ) );
             }
 
         } );
