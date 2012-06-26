@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.editors.fileexplorer;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +46,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -63,21 +63,23 @@ public class FileExplorerPresenter
     StaticScreenService {
 
     @Inject
-    View                  view;
+    View                        view;
 
     @Inject
-    Caller<VFSService>    vfsService;
+    Caller<VFSService>          vfsService;
 
     @Inject
-    Caller<AssetService>  assetService;
+    Caller<AssetService>        assetService;
 
     @Inject
-    private PlaceManager  placeManager;
+    private PlaceManager        placeManager;
 
     @Inject
-    IOCBeanManager        iocManager;
+    IOCBeanManager              iocManager;
 
-    private static String REPOSITORY_ID = "repositories";
+    private static final String REPOSITORY_ID      = "repositories";
+
+    private static final String DEFAULT_NAME_TOKEN = "TextEditor";
 
     public interface View
         extends
@@ -205,31 +207,38 @@ public class FileExplorerPresenter
         } );
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private IPlaceRequest getPlace(final Path path) {
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
-        //See https://community.jboss.org/thread/200255 as to why we can't use look lookupBean(Class, Qualifiers)
         final String fileType = getFileType( path.getFileName() );
-        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( Activity.class );
-        for ( IOCBeanDef activity : activities ) {
-            Set<Annotation> annotations = activity.getQualifiers();
-            for ( Annotation a : annotations ) {
-                if ( a instanceof SupportedFormat ) {
-                    SupportedFormat format = (SupportedFormat) a;
-                    final String formatValue = format.value();
-                    if ( formatValue.equalsIgnoreCase( fileType ) ) {
-                        final IPlaceRequest place = new PlaceRequest( getNameToken( annotations ) );
-                        place.addParameter( "path",
-                                            path.toURI() );
-                        return place;
-                    }
-                }
+        final Annotation qualifier = new SupportedFormat() {
+
+            @Override
+            public Class< ? extends Annotation> annotationType() {
+                return SupportedFormat.class;
             }
+
+            @Override
+            public String value() {
+                return fileType;
+            }
+
+        };
+        try {
+            final IOCBeanDef<Activity> activity = iocManager.lookupBean( Activity.class,
+                                                                         qualifier );
+            final String nameToken = getNameToken( activity.getQualifiers() );
+            final IPlaceRequest place = new PlaceRequest( nameToken );
+            place.addParameter( "path",
+                                path.toURI() );
+            return place;
+        } catch ( IOCResolutionException ioce ) {
+            //Could not find a bean to handle the required format (or we found multiple!)
+            //TODO {manstis} We could present the user with a list of choices
         }
 
         //If a specific handler was not found use a TextEditor
-        TextEditorPlace defaultPlace = new TextEditorPlace( "TextEditor" );
+        TextEditorPlace defaultPlace = new TextEditorPlace( DEFAULT_NAME_TOKEN );
         defaultPlace.addParameter( "path",
                                    path.toURI() );
         return defaultPlace;
@@ -250,7 +259,7 @@ public class FileExplorerPresenter
                 return token.value();
             }
         }
-        return "TextEditor";
+        return DEFAULT_NAME_TOKEN;
     }
 
     @Override

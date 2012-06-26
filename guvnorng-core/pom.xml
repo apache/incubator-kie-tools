@@ -17,7 +17,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <errai.version>2.0.1-SNAPSHOT</errai.version>
+    <errai.version>2.1-SNAPSHOT</errai.version>
     <gwt.version>2.4.0</gwt.version>
     <gwt-dnd.version>3.1.2</gwt-dnd.version>
     <weld.version>1.1.6.Final</weld.version>
@@ -28,14 +28,7 @@
     <uel.impl.version>2.1.2-b04</uel.impl.version>
   </properties>
 
-
   <dependencies>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
     <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
     <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
@@ -46,6 +39,12 @@
       <artifactId>guava</artifactId>
       <version>12.0</version>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-common</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>

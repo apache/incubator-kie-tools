@@ -17,7 +17,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <errai.version>2.0.1-SNAPSHOT</errai.version>
+    <errai.version>2.1-SNAPSHOT</errai.version>
     <gwt.version>2.4.0</gwt.version>
     <weld.version>1.1.6.Final</weld.version>
     <gwt.maven.version>2.4.0</gwt.maven.version>
@@ -28,6 +28,18 @@
   </properties>
 
   <dependencies>
+  
+    <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
+    <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
+    <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
+    <!--  See https://community.jboss.org/thread/199952?tstart=0 -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>12.0</version>
+      <scope>compile</scope>
+    </dependency>
+  
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-api</artifactId>
@@ -44,23 +56,6 @@
     </dependency>
 
     <!-- Internal dependencies -->
-    <!-- <dependency>
-       <groupId>org.drools</groupId>
-       <artifactId>guvnor-webapp-core</artifactId>
-       <version>5.5.0-SNAPSHOT</version>
-    </dependency> -->
-
-    <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
-    <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
-    <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
-    <!--  See https://community.jboss.org/thread/199952?tstart=0 -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>12.0</version>
-      <scope>compile</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-core</artifactId>

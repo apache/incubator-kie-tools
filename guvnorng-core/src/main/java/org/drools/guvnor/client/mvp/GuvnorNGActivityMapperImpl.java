@@ -17,16 +17,15 @@
 package org.drools.guvnor.client.mvp;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
 
 @Dependent
 public class GuvnorNGActivityMapperImpl
@@ -35,9 +34,8 @@ public class GuvnorNGActivityMapperImpl
     private final Map<IPlaceRequest, Activity> activeActivities = new HashMap<IPlaceRequest, Activity>();
 
     @Inject
-    private IOCBeanManager                     manager;
+    private IOCBeanManager                     iocManager;
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public Activity getActivity(final IPlaceRequest placeRequest) {
         if ( activeActivities.containsKey( placeRequest ) ) {
             return activeActivities.get( placeRequest );
@@ -45,23 +43,31 @@ public class GuvnorNGActivityMapperImpl
 
         final String nameToken = placeRequest.getNameToken();
 
-        Collection<IOCBeanDef> beans = manager.lookupBeans( Activity.class );
-
         //Lookup Activity by NameToken
-        //See https://community.jboss.org/thread/200255 as to why we can't use look lookupBean(Class, Qualifiers)
-        for ( IOCBeanDef activityBean : beans ) {
-            Set<Annotation> qualifiers = activityBean.getQualifiers();
-            for ( Annotation q : qualifiers ) {
-                if ( q instanceof NameToken ) {
-                    final NameToken token = (NameToken) q;
-                    if ( token.value().equalsIgnoreCase( nameToken ) ) {
-                        Activity activity = (Activity) activityBean.getInstance();
-                        activeActivities.put( placeRequest,
-                                              activity );
-                        return activity;
-                    }
-                }
+        final Annotation qualifier = new NameToken() {
+
+            @Override
+            public Class< ? extends Annotation> annotationType() {
+                return NameToken.class;
             }
+
+            @Override
+            public String value() {
+                return nameToken;
+            }
+
+        };
+        try {
+            final IOCBeanDef<Activity> activity = iocManager.lookupBean( Activity.class,
+                                                                         qualifier );
+            final Activity instance = (Activity) activity.getInstance();
+            activeActivities.put( placeRequest,
+                                  instance );
+            return instance;
+
+        } catch ( IOCResolutionException ioce ) {
+            //Could not find a bean to handle the NameToken (or we found multiple!)
+            //TODO {manstis} We could present the user with a list of choices
         }
 
         return null;
