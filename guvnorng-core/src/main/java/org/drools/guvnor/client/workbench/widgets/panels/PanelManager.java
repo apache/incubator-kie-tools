@@ -28,7 +28,7 @@ import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.WorkbenchPart;
 import org.drools.guvnor.client.workbench.annotations.WorkbenchPosition;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -200,7 +200,7 @@ public class PanelManager {
         }
     }
 
-    public void onWorkbenchPartClosedEvent(@Observes WorkbenchPartClosedEvent event) {
+    public void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         removeWorkbenchPart( part );
     }

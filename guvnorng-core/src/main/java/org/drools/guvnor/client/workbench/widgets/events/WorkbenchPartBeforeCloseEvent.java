@@ -20,11 +20,11 @@ import org.drools.guvnor.client.workbench.WorkbenchPart;
 /**
  * An event when a WorkbenchPart is closed
  */
-public class WorkbenchPartClosedEvent {
+public class WorkbenchPartBeforeCloseEvent {
 
     private final WorkbenchPart part;
 
-    public WorkbenchPartClosedEvent(final WorkbenchPart part) {
+    public WorkbenchPartBeforeCloseEvent(final WorkbenchPart part) {
         this.part = part;
     }
 

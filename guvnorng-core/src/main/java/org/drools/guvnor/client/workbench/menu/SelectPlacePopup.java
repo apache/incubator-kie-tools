@@ -2,8 +2,9 @@ package org.drools.guvnor.client.workbench.menu;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,16 +22,16 @@ public class SelectPlacePopup extends PopupPanel
 
     private final VerticalPanel layout = new VerticalPanel();
 
-    public SelectPlacePopup(Set<IPlaceRequestFactory> factories) {
+    public SelectPlacePopup(Set<AbstractStaticScreenActivity> activities) {
         add( layout );
 
-        for ( final IPlaceRequestFactory factory : factories ) {
-            Button button = new Button( factory.getFactoryName() );
+        for ( final AbstractStaticScreenActivity activity : activities ) {
+            Button button = new Button( activity.getTitle() );
             button.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SelectionEvent.fire( SelectPlacePopup.this,
-                                         factory.makePlace() );
+                                         new PlaceRequest( activity.getTitle() ) );
 
                     SelectPlacePopup.this.hide();
 

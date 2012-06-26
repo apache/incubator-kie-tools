@@ -37,58 +37,34 @@ public class GuvnorNGActivityMapperImpl
     @Inject
     private IOCBeanManager                     manager;
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Activity getActivity(final IPlaceRequest placeRequest) {
         if ( activeActivities.containsKey( placeRequest ) ) {
             return activeActivities.get( placeRequest );
         }
 
+        final String nameToken = placeRequest.getNameToken();
+
         Collection<IOCBeanDef> beans = manager.lookupBeans( Activity.class );
 
-        // check to see if the bean exists
+        //Lookup Activity by NameToken
+        //See https://community.jboss.org/thread/200255 as to why we can't use look lookupBean(Class, Qualifiers)
         for ( IOCBeanDef activityBean : beans ) {
-            // get the instance of the activity
             Set<Annotation> qualifiers = activityBean.getQualifiers();
             for ( Annotation q : qualifiers ) {
-                if ( q instanceof NameToken && ((NameToken) q).value().equalsIgnoreCase( placeRequest.getNameToken() ) ) {
-                    Activity activity = (Activity) activityBean.getInstance();
-                    activeActivities.put( placeRequest,
-                                          activity );
-                    return activity;
+                if ( q instanceof NameToken ) {
+                    final NameToken token = (NameToken) q;
+                    if ( token.value().equalsIgnoreCase( nameToken ) ) {
+                        Activity activity = (Activity) activityBean.getInstance();
+                        activeActivities.put( placeRequest,
+                                              activity );
+                        return activity;
+                    }
                 }
             }
-            /*
-             * Activity activity = (Activity) activityBean.getInstance(); if
-             * (activity.getNameToken().equals(placeRequest.getNameToken())) {
-             * return activity; }
-             */
         }
 
         return null;
-    }
-
-    //Not working yet with Errai:https://community.jboss.org/thread/200255
-    public Activity getActivity1(final PlaceRequest placeRequest) {
-        if ( activeActivities.containsKey( placeRequest ) ) {
-            return activeActivities.get( placeRequest );
-        }
-
-        NameToken qual = new NameToken() {
-            public Class annotationType() {
-                return NameToken.class;
-            }
-
-            @Override
-            public String value() {
-                return placeRequest.getNameToken();
-            }
-        };
-
-        IOCBeanDef<Activity> bean = manager.lookupBean( Activity.class,
-                                                        qual );
-        Activity activity = (Activity) bean.getInstance();
-        activeActivities.put( placeRequest,
-                              activity );
-        return activity;
     }
 
     public void removeActivity(final PlaceRequest placeRequest) {

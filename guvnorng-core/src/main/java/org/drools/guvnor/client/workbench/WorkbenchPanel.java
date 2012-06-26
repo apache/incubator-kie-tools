@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -51,29 +51,29 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 public class WorkbenchPanel extends ResizeComposite {
 
-    public static final int                    TAB_BAR_HEIGHT   = 32;
+    public static final int                      TAB_BAR_HEIGHT   = 32;
 
-    private static final int                   FOCUS_BAR_HEIGHT = 3;
-
-    @Inject
-    private PanelManager                       panelManager;
+    private static final int                     FOCUS_BAR_HEIGHT = 3;
 
     @Inject
-    private WorkbenchDragAndDropManager        dndManager;
+    private PanelManager                         panelManager;
 
     @Inject
-    private Event<WorkbenchPartClosedEvent>    workbenchPartClosedEvent;
+    private WorkbenchDragAndDropManager          dndManager;
 
     @Inject
-    private Event<WorkbenchPartOnFocusEvent>   workbenchPartOnFocusEvent;
+    private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
 
     @Inject
-    private Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
+    private Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
 
     @Inject
-    private Event<WorkbenchPanelOnFocusEvent>  workbenchPanelOnFocusEvent;
+    private Event<WorkbenchPartLostFocusEvent>   workbenchPartLostFocusEvent;
 
-    private final WorkbenchTabLayoutPanel      tabPanel;
+    @Inject
+    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
+
+    private final WorkbenchTabLayoutPanel        tabPanel;
 
     public WorkbenchPanel() {
         this.tabPanel = makeTabPanel();
@@ -153,7 +153,7 @@ public class WorkbenchPanel extends ResizeComposite {
 
             @Override
             public void onClick(ClickEvent event) {
-                workbenchPartClosedEvent.fire( new WorkbenchPartClosedEvent( part ) );
+                workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
             }
 
         } );

@@ -69,7 +69,6 @@ public class BeanFactory {
         return dropController;
     }
 
-    //TODO {manstis} We don't release any objects we create
     public void release(final Object o) {
         iocManager.destroyBean( o );
     }

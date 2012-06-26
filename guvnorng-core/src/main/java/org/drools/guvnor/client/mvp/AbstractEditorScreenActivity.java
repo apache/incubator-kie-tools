@@ -21,6 +21,7 @@ import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.impl.PathImpl;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -82,10 +83,12 @@ public abstract class AbstractEditorScreenActivity
 
     @Override
     public boolean mayClosePlace() {
-        if ( presenter != null ) {
-            return presenter.mayClose();
-        }
-        return true;
+        //TODO {manstis} Hack just to show the ability to veto closures
+        return Window.confirm( "Are you sure you want to close?" );
+        //if ( presenter != null ) {
+        //return presenter.mayClose();
+        //}
+        //return true;
     }
 
     @Override

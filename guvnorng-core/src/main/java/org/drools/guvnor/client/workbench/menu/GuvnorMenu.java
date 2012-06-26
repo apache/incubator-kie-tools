@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -29,24 +29,25 @@ public class GuvnorMenu extends Composite {
     @Inject
     private PlaceManager   placeManager;
 
+    @SuppressWarnings("rawtypes")
     public GuvnorMenu() {
 
-        Button add = new Button( "Add (mr. Rikkola)" );
+        Button add = new Button( "Static places" );
 
         add.addClickHandler( new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
 
-                final Set<IPlaceRequestFactory> factories = new HashSet<IPlaceRequestFactory>();
+                final Set<AbstractStaticScreenActivity> activities = new HashSet<AbstractStaticScreenActivity>();
 
-                Collection<IOCBeanDef> beans = iocManager.lookupBeans( IPlaceRequestFactory.class );
+                Collection<IOCBeanDef> activityBeans = iocManager.lookupBeans( AbstractStaticScreenActivity.class );
 
-                for ( IOCBeanDef bean : beans ) {
-                    final IPlaceRequestFactory instance = (IPlaceRequestFactory) bean.getInstance();
-                    factories.add( instance );
+                for ( IOCBeanDef activityBean : activityBeans ) {
+                    final AbstractStaticScreenActivity instance = (AbstractStaticScreenActivity) activityBean.getInstance();
+                    activities.add( instance );
                 }
 
-                SelectPlacePopup popup = new SelectPlacePopup( factories );
+                SelectPlacePopup popup = new SelectPlacePopup( activities );
                 popup.addSelectionHandler( new SelectionHandler<IPlaceRequest>() {
                     @Override
                     public void onSelection(SelectionEvent<IPlaceRequest> event) {

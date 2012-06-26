@@ -27,8 +27,9 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
+import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
+import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.StaticScreenService;
@@ -62,22 +63,22 @@ public class FileExplorerPresenter
     StaticScreenService {
 
     @Inject
-    View                 view;
+    View                  view;
 
     @Inject
-    Caller<VFSService>   vfsService;
+    Caller<VFSService>    vfsService;
 
     @Inject
-    Caller<AssetService> assetService;
+    Caller<AssetService>  assetService;
 
     @Inject
-    private PlaceManager placeManager;
+    private PlaceManager  placeManager;
 
     @Inject
-    IOCBeanManager       iocManager;
+    IOCBeanManager        iocManager;
 
     private static String REPOSITORY_ID = "repositories";
-    
+
     public interface View
         extends
         IsWidget {
@@ -94,22 +95,23 @@ public class FileExplorerPresenter
 
     @Override
     public void onStart() {
-        view.getRootItem().setUserObject(REPOSITORY_ID);
+        view.getRootItem().setUserObject( REPOSITORY_ID );
         view.getRootItem().addItem( LAZY_LOAD );
         vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-                
+
                 PlaceRequest placeRequest = new PlaceRequest( "RepositoriesEditor" );
-                placeManager.goTo( placeRequest );   
-                
+                placeManager.goTo( placeRequest );
+
                 view.getRootItem().removeItems();
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(), r.getRepositoryName() ) );
-                    repositoryRootItem.setState(true);
+                    final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(),
+                                                                                                    r.getRepositoryName() ) );
+                    repositoryRootItem.setState( true );
                     //repositoryRootItem.addItem( LAZY_LOAD );
-                    repositoryRootItem.setUserObject( r );  
-                    
+                    repositoryRootItem.setUserObject( r );
+
                     PathImpl p = new PathImpl( r.getRootURI().toString() );
                     vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
                         @Override
@@ -141,7 +143,7 @@ public class FileExplorerPresenter
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
             public void onOpen(final OpenEvent<TreeItem> event) {
-                if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path) {
+                if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path ) {
                     vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
                         @Override
                         public void callback(DirectoryStream<Path> response) {
@@ -173,28 +175,31 @@ public class FileExplorerPresenter
         view.getTree().addSelectionHandler( new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
-                if (event.getSelectedItem().getUserObject() instanceof Path) {
+                if ( event.getSelectedItem().getUserObject() instanceof Path ) {
                     final Path path = (Path) event.getSelectedItem().getUserObject();
-                    vfsService.call(new RemoteCallback<Map>() {
+                    vfsService.call( new RemoteCallback<Map>() {
                         @Override
                         public void callback(final Map response) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
-                            if (attrs.isRegularFile()) {
-                                IPlaceRequest placeRequest = getPlace(path);
-                                placeManager.goTo(placeRequest);
+                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                            if ( attrs.isRegularFile() ) {
+                                IPlaceRequest placeRequest = getPlace( path );
+                                placeManager.goTo( placeRequest );
                             }
                         }
-                    }).readAttributes(path);
-                } else if(event.getSelectedItem().getUserObject() instanceof String && ((String)event.getSelectedItem().getUserObject()).equals(REPOSITORY_ID) ) {
+                    } ).readAttributes( path );
+                } else if ( event.getSelectedItem().getUserObject() instanceof String && ((String) event.getSelectedItem().getUserObject()).equals( REPOSITORY_ID ) ) {
                     PlaceRequest placeRequest = new PlaceRequest( "RepositoriesEditor" );
-                    placeManager.goTo( placeRequest );                
-                } else if(event.getSelectedItem().getUserObject() instanceof JGitRepositoryConfigurationVO) {
+                    placeManager.goTo( placeRequest );
+                } else if ( event.getSelectedItem().getUserObject() instanceof JGitRepositoryConfigurationVO ) {
                     final JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = (JGitRepositoryConfigurationVO) event.getSelectedItem().getUserObject();
                     PlaceRequest placeRequest = new PlaceRequest( "RepositoryEditor" );
-                    placeRequest.addParameter( "description", jGitRepositoryConfigurationVO.getDescription());
-                    placeRequest.addParameter( "gitURL", jGitRepositoryConfigurationVO.getGitURL());
-                    placeRequest.addParameter( "repositoryName", jGitRepositoryConfigurationVO.getRepositoryName());                    
-                    placeManager.goTo( placeRequest );                                 
+                    placeRequest.addParameter( "description",
+                                               jGitRepositoryConfigurationVO.getDescription() );
+                    placeRequest.addParameter( "gitURL",
+                                               jGitRepositoryConfigurationVO.getGitURL() );
+                    placeRequest.addParameter( "repositoryName",
+                                               jGitRepositoryConfigurationVO.getRepositoryName() );
+                    placeManager.goTo( placeRequest );
                 }
             }
         } );
@@ -202,18 +207,20 @@ public class FileExplorerPresenter
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private IPlaceRequest getPlace(final Path path) {
-        final String fileType = getFileType( path.getFileName() );
 
-        //Lookup a IPlaceRequestFactory that can handle the file extension
-        Collection<IOCBeanDef> factories = iocManager.lookupBeans( IPlaceRequestFactory.class );
-        for ( IOCBeanDef factory : factories ) {
-            Set<Annotation> annotations = factory.getQualifiers();
+        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
+        //See https://community.jboss.org/thread/200255 as to why we can't use look lookupBean(Class, Qualifiers)
+        final String fileType = getFileType( path.getFileName() );
+        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( Activity.class );
+        for ( IOCBeanDef activity : activities ) {
+            Set<Annotation> annotations = activity.getQualifiers();
             for ( Annotation a : annotations ) {
                 if ( a instanceof SupportedFormat ) {
                     SupportedFormat format = (SupportedFormat) a;
                     if ( format.value().equalsIgnoreCase( fileType ) ) {
-                        final IPlaceRequestFactory instance = (IPlaceRequestFactory) factory.getInstance();
-                        final IPlaceRequest place = instance.makePlace( path );
+                        final IPlaceRequest place = new PlaceRequest( getNameToken( annotations ) );
+                        place.addParameter( "path",
+                                            path.toURI() );
                         return place;
                     }
                 }
@@ -233,6 +240,16 @@ public class FileExplorerPresenter
             return fileName.substring( dotIndex + 1 );
         }
         return fileName;
+    }
+
+    private String getNameToken(final Set<Annotation> annotations) {
+        for ( Annotation a : annotations ) {
+            if ( a instanceof NameToken ) {
+                NameToken token = (NameToken) a;
+                return token.value();
+            }
+        }
+        return "TextEditor";
     }
 
     @Override

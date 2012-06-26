@@ -23,6 +23,7 @@ import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.workbench.annotations.SupportedFormat;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 @Dependent
 @NameToken("FactModelEditor")
+@SupportedFormat(".model.drl")
 public class FactModelEditorActivity extends AbstractEditorScreenActivity {
 
     @Inject

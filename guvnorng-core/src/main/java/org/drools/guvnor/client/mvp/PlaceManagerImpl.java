@@ -5,12 +5,14 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartClosedEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -38,6 +40,9 @@ public class PlaceManagerImpl
 
     @Inject
     private PanelManager                            panelManager;
+
+    @Inject
+    private Event<WorkbenchPartCloseEvent>          workbenchPartCloseEvent;
 
     private PlaceHistoryHandler                     placeHistoryHandler;
 
@@ -101,7 +106,7 @@ public class PlaceManagerImpl
         placeHistoryHandler.onPlaceChange( request );
     }
 
-    public void onWorkbenchPartClosed(@Observes WorkbenchPartClosedEvent event) {
+    public void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         final IPlaceRequest place = getPlaceForWorkbenchPart( part );
         if ( place == null ) {
@@ -112,6 +117,7 @@ public class PlaceManagerImpl
             activity.closePlace();
             activeActivities.remove( place );
             existingWorkbenchParts.remove( place );
+            workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
         }
     }
 
