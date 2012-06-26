@@ -14,9 +14,9 @@ public class GuvnorNGPlaceRequestHistoryMapper
     @Override
     public PlaceRequest getPlaceRequest(String token) {
         String nameToken = token.indexOf( "?" ) != -1 ? token.substring( 0,
-                                                                         token.indexOf( "?" ) - 1 ) : token;
-        String query = token.indexOf( "?" ) != -1 ? token.substring( token.indexOf( "?" ) ) : "";
-        Map<String, String> parameters = getParameters( token );
+                                                                         token.indexOf( "?" ) ) : token;
+        String query = token.indexOf( "?" ) != -1 ? token.substring( token.indexOf( "?" ) + 1 ) : "";
+        Map<String, String> parameters = getParameters( query );
 
         PlaceRequest placeRequest = new PlaceRequest( nameToken );
         for ( String parameterName : parameters.keySet() ) {
