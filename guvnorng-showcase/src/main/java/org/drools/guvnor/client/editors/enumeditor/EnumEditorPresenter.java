@@ -26,6 +26,7 @@ import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -83,7 +84,7 @@ public class EnumEditorPresenter
 
     @Override
     public boolean mayClose() {
-        return true;
+        return Window.confirm( "Are you sure you want to close?" );
     }
 
     @Override

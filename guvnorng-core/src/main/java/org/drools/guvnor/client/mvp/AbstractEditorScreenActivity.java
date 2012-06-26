@@ -83,12 +83,10 @@ public abstract class AbstractEditorScreenActivity
 
     @Override
     public boolean mayClosePlace() {
-        //TODO {manstis} Hack just to show the ability to veto closures
-        return Window.confirm( "Are you sure you want to close?" );
-        //if ( presenter != null ) {
-        //return presenter.mayClose();
-        //}
-        //return true;
+        if ( presenter != null ) {
+            return presenter.mayClose();
+        }
+        return true;
     }
 
     @Override

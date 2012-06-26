@@ -217,7 +217,8 @@ public class FileExplorerPresenter
             for ( Annotation a : annotations ) {
                 if ( a instanceof SupportedFormat ) {
                     SupportedFormat format = (SupportedFormat) a;
-                    if ( format.value().equalsIgnoreCase( fileType ) ) {
+                    final String formatValue = format.value();
+                    if ( formatValue.equalsIgnoreCase( fileType ) ) {
                         final IPlaceRequest place = new PlaceRequest( getNameToken( annotations ) );
                         place.addParameter( "path",
                                             path.toURI() );

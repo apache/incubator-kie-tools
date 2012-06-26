@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @NameToken("EnumEditor")
-@SupportedFormat(".enumeration")
+@SupportedFormat("enumeration")
 public class EnumEditorActivity extends AbstractEditorScreenActivity {
 
     @Inject

@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 @Dependent
 @NameToken("FactModelEditor")
-@SupportedFormat(".model.drl")
+@SupportedFormat("model.drl")
 public class FactModelEditorActivity extends AbstractEditorScreenActivity {
 
     @Inject
