@@ -18,7 +18,7 @@ package org.drools.guvnor.client.editors.factmodel;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.client.mvp.IPlaceRequestFactory;
-import org.drools.guvnor.client.mvp.SupportedFormat;
+import org.drools.guvnor.client.workbench.annotations.SupportedFormat;
 import org.drools.guvnor.vfs.Path;
 
 /**
