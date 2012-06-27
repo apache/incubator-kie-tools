@@ -26,14 +26,12 @@ import org.drools.java.nio.file.DirectoryNotEmptyException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.FileAlreadyExistsException;
 import org.drools.java.nio.file.FileSystem;
-import org.drools.java.nio.file.FileSystemAlreadyExistsException;
 import org.drools.java.nio.file.LinkOption;
 import org.drools.java.nio.file.NoSuchFileException;
 import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.PatternSyntaxException;
-import org.drools.java.nio.file.ProviderNotFoundException;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
@@ -171,23 +169,23 @@ public interface VFSService {
     List<String> readAllLines(Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException;
 
-    Path write(Path path, byte[] bytes, OpenOption... options)
-            throws IOException, UnsupportedOperationException;
+//    Path write(Path path, byte[] bytes)
+//            throws IOException, UnsupportedOperationException;
+//
+//    Path write(Path path,
+//            Iterable<? extends CharSequence> lines, String charset)
+//            throws IllegalArgumentException, IOException, UnsupportedOperationException;
+//
+//    Path write(Path path,
+//            Iterable<? extends CharSequence> lines)
+//            throws IllegalArgumentException, IOException, UnsupportedOperationException;
+//
+//    Path write(Path path,
+//            String content, String charset)
+//            throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
     Path write(Path path,
-            Iterable<? extends CharSequence> lines, String charset, OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException;
-
-    Path write(Path path,
-            Iterable<? extends CharSequence> lines, OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException;
-
-    Path write(Path path,
-            String content, String charset, OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException;
-
-    Path write(Path path,
-            String content, OpenOption... options)
+            String content)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
     List<FileSystem> listJGitFileSystems();

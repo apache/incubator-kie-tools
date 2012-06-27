@@ -25,6 +25,9 @@
   <!-- GWT-DnD module inherits -->
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
+  <!-- GuvnorNG API common interfaces -->
+  <inherits name="org.drools.guvnor.APIGuvnorNG"/>
+
   <!-- VFS common interfaces -->
   <inherits name="org.drools.java.nio.VFSCommon"/>
 
@@ -33,6 +36,5 @@
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
-  <source path='vfs'/>
 
 </module>

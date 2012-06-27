@@ -434,29 +434,29 @@ public class VFSServicesServerImpl implements VFSService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
-    public Path write(Path path, byte[] bytes, OpenOption... options) throws IOException, UnsupportedOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+//    @Override
+//    public Path write(Path path, byte[] bytes) throws IOException, UnsupportedOperationException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
+//
+//    @Override
+//    public Path write(Path path, Iterable<? extends CharSequence> lines, String charset) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
+//
+//    @Override
+//    public Path write(Path path, Iterable<? extends CharSequence> lines) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
+//
+//    @Override
+//    public Path write(Path path, String content, String charset) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+//        return convert(Files.write(fromPath(path), content, Charset.forName(charset), null));
+//    }
 
     @Override
-    public Path write(Path path, Iterable<? extends CharSequence> lines, String charset, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Path write(Path path, String content, String charset, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert(Files.write(fromPath(path), content, Charset.forName(charset), options));
-    }
-
-    @Override
-    public Path write(Path path, String content, OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert(Files.write(fromPath(path), content, UTF_8, options));
+    public Path write(Path path, String content) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return convert(Files.write(fromPath(path), content, UTF_8, null));
     }
 
     private Path convert(final org.drools.java.nio.file.Path path) {

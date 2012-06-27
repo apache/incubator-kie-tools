@@ -66,6 +66,7 @@
 
   <modules>
     <module>guvnorng-vfs</module>
+    <module>guvnorng-api</module>
     <module>guvnorng-core</module>
     <module>guvnorng-showcase</module>
   </modules>
@@ -90,6 +91,11 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>vfs-jgit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnorng-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
