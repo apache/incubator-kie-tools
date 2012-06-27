@@ -15,7 +15,7 @@
   <artifactId>guvnorng</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor multiproject</name>
+  <name>GuvnorNG Multiproject</name>
   <description>
     Guvnor Next Generation.
   </description>
