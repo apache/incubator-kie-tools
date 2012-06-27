@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test;
+package org.drools.guvnor.client.editors.test.generated;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-/**
- * A place for the Test widget
- */
+//TODO {manstis} This class should be generated. See TestPlace.
 public class TestPlace extends PlaceRequest {
 
     private static final String PLACE_NAME = "Test";
