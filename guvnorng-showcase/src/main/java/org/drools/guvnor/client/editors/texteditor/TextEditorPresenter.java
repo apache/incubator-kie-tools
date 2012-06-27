@@ -86,13 +86,13 @@ public class TextEditorPresenter
     }
 
     @Override
-    public void onClose() {
-        this.path = null;
+    public boolean mayClose() {
+        return true;
     }
 
     @Override
-    public boolean mayClose() {
-        return true;
+    public void onClose() {
+        this.path = null;
     }
 
     @Override
@@ -101,11 +101,11 @@ public class TextEditorPresenter
     }
 
     @Override
-    public void onHide() {
+    public void onLostFocus() {
     }
 
     @Override
-    public boolean mayHide() {
-        return true;
+    public void onFocus() {
     }
+
 }

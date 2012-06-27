@@ -85,7 +85,7 @@ public class PlaceManagerImpl
         activeActivities.put( newPlace,
                               activity );
 
-        activity.revealPlace(
+        activity.onRevealPlace(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
@@ -114,7 +114,7 @@ public class PlaceManagerImpl
         }
         final Activity activity = activeActivities.get( place );
         if ( activity.mayClosePlace() ) {
-            activity.closePlace();
+            activity.onClosePlace();
             activeActivities.remove( place );
             existingWorkbenchParts.remove( place );
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
@@ -137,7 +137,7 @@ public class PlaceManagerImpl
             return;
         }
         final Activity activity = activeActivities.get( place );
-        activity.show();
+        activity.onFocus();
     }
 
     public void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
@@ -147,7 +147,7 @@ public class PlaceManagerImpl
             return;
         }
         final Activity activity = activeActivities.get( place );
-        activity.hide();
+        activity.onLostFocus();
     }
 
     @Produces

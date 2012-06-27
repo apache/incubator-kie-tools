@@ -40,7 +40,7 @@ public class RepositoriesEditorPresenter
 
     @Inject
     Caller<VFSService>     vfsService;
-    
+
     @Inject
     private IOCBeanManager iocManager;
 
@@ -69,7 +69,7 @@ public class RepositoriesEditorPresenter
             @Override
             public void callback(List<JGitRepositoryConfigurationVO> repositories) {
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName="+r.getRepositoryName();
+                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
                     view.addRepository( r.getRepositoryName(),
                                         r.getGitURL(),
                                         r.getDescription(),
@@ -98,17 +98,12 @@ public class RepositoriesEditorPresenter
     }
 
     @Override
-    public void onClose() {
-    }
-
-    @Override
     public boolean mayClose() {
         return true;
     }
 
     @Override
-    public boolean mayHide() {
-        return true;
+    public void onClose() {
     }
 
     @Override
@@ -116,7 +111,11 @@ public class RepositoriesEditorPresenter
     }
 
     @Override
-    public void onHide() {
+    public void onLostFocus() {
+    }
+
+    @Override
+    public void onFocus() {
     }
 
 }

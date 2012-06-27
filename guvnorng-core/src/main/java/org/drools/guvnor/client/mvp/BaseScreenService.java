@@ -2,23 +2,19 @@ package org.drools.guvnor.client.mvp;
 
 public interface BaseScreenService {
 
-    // onClose() is called after the Presenter is destroyed.
-    public void onClose();
-
-    // onReveal() is called whenever the Presenter was not visible on screen and becomes visible.
-    public void onReveal();
-
-    // onHide() is called when the Presenter was visible on screen and is being hidden.
-    public void onHide();
-
-    /**
-     * True - Close the screen False - Do not close the screen
-     */
+    //Called before a screen is closed. This gives the screen an opportunity to object to closure
     public boolean mayClose();
 
-    /**
-     * True - Hide the screen False - Do not hide the screen. For example, need
-     * to save data.
-     */
-    public boolean mayHide();
+    //Called when the screen is closed.
+    public void onClose();
+
+    //Called when the screen is displayed.
+    public void onReveal();
+
+    //Called when the screen looses the focus
+    public void onLostFocus();
+
+    //Called when the screen gains the focus
+    public void onFocus();
+
 }

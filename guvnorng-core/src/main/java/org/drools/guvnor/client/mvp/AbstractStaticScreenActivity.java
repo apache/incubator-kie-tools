@@ -29,16 +29,8 @@ public abstract class AbstractStaticScreenActivity
     private StaticScreenService presenter;
 
     @Override
-    public void start() {
-    }
-
-    @Override
     public Position getPreferredPosition() {
         return Position.ROOT;
-    }
-
-    public void onStop() {
-        presenter.onClose();
     }
 
     public boolean mayStop() {
@@ -48,13 +40,34 @@ public abstract class AbstractStaticScreenActivity
         return true;
     }
 
-    public void revealPlace(AcceptItem acceptPanel) {
-        if ( presenter == null ) {
-            presenter = getPresenter();
-            presenter.onStart();        
+    public void onStop() {
+        presenter.onClose();
+    }
+
+    @Override
+    public boolean mayClosePlace() {
+        if ( presenter != null ) {
+            return presenter.mayClose();
         }
+        return true;
+    }
+
+    @Override
+    public void onClosePlace() {
         if ( presenter == null ) {
             return;
+        }
+        presenter.onClose();
+        presenter = null;
+    }
+
+    public void onRevealPlace(AcceptItem acceptPanel) {
+        if ( presenter == null ) {
+            presenter = getPresenter();
+            if ( presenter == null ) {
+                return;
+            }
+            presenter.onStart();
         }
 
         acceptPanel.add( getTitle(),
@@ -69,28 +82,13 @@ public abstract class AbstractStaticScreenActivity
     public abstract IsWidget getWidget();
 
     @Override
-    public boolean mayClosePlace() {
-        if ( presenter != null ) {
-            return presenter.mayClose();
-        }
-        return true;
+    public void onLostFocus() {
+        presenter.onLostFocus();
     }
 
     @Override
-    public void closePlace() {
-        if ( presenter == null ) {
-            return;
-        }
-        presenter.onClose();
-        presenter = null;
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void show() {
+    public void onFocus() {
+        presenter.onFocus();
     }
 
 }

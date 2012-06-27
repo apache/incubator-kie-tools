@@ -44,17 +44,12 @@ public class MonitoringPerspectivePresenter
     }
 
     @Override
-    public void onClose() {
-    }
-
-    @Override
     public boolean mayClose() {
         return true;
     }
 
     @Override
-    public boolean mayHide() {
-        return true;
+    public void onClose() {
     }
 
     @Override
@@ -62,7 +57,11 @@ public class MonitoringPerspectivePresenter
     }
 
     @Override
-    public void onHide() {
+    public void onLostFocus() {
+    }
+
+    @Override
+    public void onFocus() {
     }
 
 }

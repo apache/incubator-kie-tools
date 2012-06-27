@@ -21,7 +21,6 @@ import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.impl.PathImpl;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -37,16 +36,8 @@ public abstract class AbstractEditorScreenActivity
     private EditorScreenService presenter;
 
     @Override
-    public void start() {
-    }
-
-    @Override
     public Position getPreferredPosition() {
         return Position.ROOT;
-    }
-
-    public void onStop() {
-        presenter.onClose();
     }
 
     public boolean mayStop() {
@@ -56,18 +47,39 @@ public abstract class AbstractEditorScreenActivity
         return true;
     }
 
-    public void revealPlace(AcceptItem acceptPanel) {
+    public void onStop() {
+        presenter.onClose();
+    }
+
+    @Override
+    public boolean mayClosePlace() {
+        if ( presenter != null ) {
+            return presenter.mayClose();
+        }
+        return true;
+    }
+
+    @Override
+    public void onClosePlace() {
+        if ( presenter == null ) {
+            return;
+        }
+        presenter.onClose();
+        presenter = null;
+    }
+
+    public void onRevealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = getPresenter();
+            if ( presenter == null ) {
+                return;
+            }
 
             IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
             String uri = placeRequest.getParameter( "path",
                                                     null );
             Path path = new PathImpl( uri );
             ((EditorScreenService) presenter).onStart( path );
-        }
-        if ( presenter == null ) {
-            return;
         }
 
         acceptPanel.add( getTitle(),
@@ -82,28 +94,13 @@ public abstract class AbstractEditorScreenActivity
     public abstract IsWidget getWidget();
 
     @Override
-    public boolean mayClosePlace() {
-        if ( presenter != null ) {
-            return presenter.mayClose();
-        }
-        return true;
+    public void onLostFocus() {
+        presenter.onLostFocus();
     }
 
     @Override
-    public void closePlace() {
-        if ( presenter == null ) {
-            return;
-        }
-        presenter.onClose();
-        presenter = null;
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void show() {
+    public void onFocus() {
+        presenter.onFocus();
     }
 
 }

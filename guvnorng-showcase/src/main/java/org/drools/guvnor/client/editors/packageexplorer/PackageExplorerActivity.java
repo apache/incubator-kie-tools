@@ -28,7 +28,8 @@ public class PackageExplorerActivity
     }
 
     @Override
-    public void start() {
+    public Position getPreferredPosition() {
+        return Position.WEST;
     }
 
     @Override
@@ -38,16 +39,19 @@ public class PackageExplorerActivity
 
     @Override
     public void onStop() {
-        //TODO: -Rikkola-
     }
 
     @Override
-    public Position getPreferredPosition() {
-        return Position.WEST;
+    public boolean mayClosePlace() {
+        return true;
     }
 
     @Override
-    public void revealPlace(AcceptItem acceptPanel) {
+    public void onClosePlace() {
+    }
+
+    @Override
+    public void onRevealPlace(AcceptItem acceptPanel) {
         Tree tree = new Tree();
 
         final TreeItem treeItem = tree.addItem( "Editors" );
@@ -81,23 +85,10 @@ public class PackageExplorerActivity
     }
 
     @Override
-    public boolean mayClosePlace() {
-        // TODO Auto-generated method stub
-        return true;
+    public void onLostFocus() {
     }
 
     @Override
-    public void closePlace() {
-        // TODO Auto-generated method stub        
-    }
-
-    @Override
-    public void hide() {
-        //TODO: -Rikkola-
-    }
-
-    @Override
-    public void show() {
-        //TODO: -Rikkola-
+    public void onFocus() {
     }
 }

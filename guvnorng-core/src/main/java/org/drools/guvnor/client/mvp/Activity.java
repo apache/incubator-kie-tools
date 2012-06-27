@@ -20,21 +20,20 @@ import org.drools.guvnor.client.workbench.Position;
 
 public interface Activity {
 
-    public void start();
-
     public boolean mayStop();
 
     public void onStop();
 
-    public Position getPreferredPosition();
-    
-    public void revealPlace(AcceptItem acceptPanel);
-    
     public boolean mayClosePlace();
 
-    public void closePlace();
+    public void onClosePlace();
 
-    public void hide();
+    public Position getPreferredPosition();
+    
+    public void onRevealPlace(AcceptItem acceptPanel);
 
-    public void show();
+    public void onFocus();
+
+    public void onLostFocus();
+    
 }

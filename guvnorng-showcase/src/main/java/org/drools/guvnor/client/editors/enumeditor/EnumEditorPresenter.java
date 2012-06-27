@@ -79,12 +79,12 @@ public class EnumEditorPresenter
     }
 
     @Override
-    public void onClose() {
+    public boolean mayClose() {
+        return Window.confirm( "Are you sure you want to close?" );
     }
 
     @Override
-    public boolean mayClose() {
-        return Window.confirm( "Are you sure you want to close?" );
+    public void onClose() {
     }
 
     @Override
@@ -93,12 +93,12 @@ public class EnumEditorPresenter
     }
 
     @Override
-    public void onHide() {
+    public void onLostFocus() {
     }
 
     @Override
-    public boolean mayHide() {
-        return true;
+    public void onFocus() {
+        view.setFocus();
     }
 
 }

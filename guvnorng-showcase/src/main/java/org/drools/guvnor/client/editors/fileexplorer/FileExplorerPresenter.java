@@ -263,12 +263,12 @@ public class FileExplorerPresenter
     }
 
     @Override
-    public void onClose() {
+    public boolean mayClose() {
+        return true;
     }
 
     @Override
-    public boolean mayClose() {
-        return true;
+    public void onClose() {
     }
 
     @Override
@@ -277,12 +277,12 @@ public class FileExplorerPresenter
     }
 
     @Override
-    public void onHide() {
+    public void onLostFocus() {
     }
 
     @Override
-    public boolean mayHide() {
-        return true;
+    public void onFocus() {
+        view.setFocus();
     }
 
     private boolean needsLoading(TreeItem item) {
