@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
-
 @Dependent
 public class RepositoriesEditorPlace extends PlaceRequest {
 
@@ -31,28 +29,4 @@ public class RepositoriesEditorPlace extends PlaceRequest {
         super( PLACE_NAME );
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return PLACE_NAME.hashCode();
-    }
-
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<RepositoriesEditorPlace> {
-
-        public String getToken(RepositoriesEditorPlace place) {
-            return PLACE_NAME;
-        }
-
-        public RepositoriesEditorPlace getPlace(String token) {
-            return new RepositoriesEditorPlace();
-        }
-    }
 }

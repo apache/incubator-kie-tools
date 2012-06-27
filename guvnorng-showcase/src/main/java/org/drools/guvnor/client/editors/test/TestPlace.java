@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.repositoryeditor;
-
-import javax.enterprise.context.Dependent;
+package org.drools.guvnor.client.editors.test;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-@Dependent
-public class RepositoryEditorPlace extends PlaceRequest {
+/**
+ * A place for the Test widget
+ */
+public class TestPlace extends PlaceRequest {
 
-    private static final String PLACE_NAME = "RepositoryEditor";
+    private static final String PLACE_NAME = "Test";
 
-    public RepositoryEditorPlace() {
+    public TestPlace() {
         super( PLACE_NAME );
     }
 

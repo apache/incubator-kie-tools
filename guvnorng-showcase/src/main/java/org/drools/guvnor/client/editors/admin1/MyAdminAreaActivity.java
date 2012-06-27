@@ -34,6 +34,11 @@ public class MyAdminAreaActivity extends AbstractStaticScreenActivity {
     }
 
     @Override
+    public String getNameToken() {
+        return "MyAdminArea";
+    }
+
+    @Override
     public IsWidget getWidget() {
         return presenter.view;
     }

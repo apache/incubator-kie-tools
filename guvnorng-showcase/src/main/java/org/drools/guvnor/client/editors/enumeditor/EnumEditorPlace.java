@@ -19,8 +19,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
-
 /**
  * 
  */
@@ -31,59 +29,6 @@ public class EnumEditorPlace extends PlaceRequest {
 
     public EnumEditorPlace() {
         super( PLACE_NAME );
-    }
-
-    public EnumEditorPlace(final String token) {
-        super( PLACE_NAME );
-        String[] parts = token.split( "\\|" );
-        if ( parts.length != 1 ) {
-            throw new RuntimeException( "Invalid token" );
-        }
-        addParameter( "path",
-                      parts[0] );
-    }
-
-    @Override
-    public String toString() {
-        return getParameter( "path",
-                             "" );
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        EnumEditorPlace that = (EnumEditorPlace) o;
-        final String thisPath = this.getParameter( "path",
-                                                   "" );
-        final String thatPath = that.getParameter( "path",
-                                                   "" );
-        return thisPath.equals( thatPath );
-    }
-
-    @Override
-    public int hashCode() {
-        int result = this.getParameter( "path",
-                                        "" ).hashCode();
-        return result;
-    }
-
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<EnumEditorPlace> {
-
-        public String getToken(final EnumEditorPlace place) {
-            return place.toString();
-        }
-
-        public EnumEditorPlace getPlace(final String token) {
-            return new EnumEditorPlace( token );
-        }
     }
 
 }

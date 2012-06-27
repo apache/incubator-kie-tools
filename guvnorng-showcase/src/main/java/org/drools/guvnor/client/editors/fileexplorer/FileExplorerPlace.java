@@ -23,7 +23,7 @@ import org.drools.guvnor.client.mvp.PlaceRequest;
 @Dependent
 public class FileExplorerPlace extends PlaceRequest {
 
-    private static final String PLACE_NAME = "File Explorer";
+    private static final String PLACE_NAME = "FileExplorer";
 
     public FileExplorerPlace() {
         super( PLACE_NAME );

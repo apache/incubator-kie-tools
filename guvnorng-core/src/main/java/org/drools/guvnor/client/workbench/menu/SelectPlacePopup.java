@@ -1,5 +1,9 @@
 package org.drools.guvnor.client.workbench.menu;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
@@ -25,13 +29,26 @@ public class SelectPlacePopup extends PopupPanel
     public SelectPlacePopup(Set<AbstractStaticScreenActivity> activities) {
         add( layout );
 
-        for ( final AbstractStaticScreenActivity activity : activities ) {
+        //Sort Activities so they're always in the same sequence!
+        List<AbstractStaticScreenActivity> sortedActivities = new ArrayList<AbstractStaticScreenActivity>( activities );
+        Collections.sort( sortedActivities,
+                          new Comparator<AbstractStaticScreenActivity>() {
+
+                              @Override
+                              public int compare(AbstractStaticScreenActivity o1,
+                                                 AbstractStaticScreenActivity o2) {
+                                  return o1.getTitle().compareTo( o2.getTitle() );
+                              }
+
+                          } );
+
+        for ( final AbstractStaticScreenActivity activity : sortedActivities ) {
             Button button = new Button( activity.getTitle() );
             button.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SelectionEvent.fire( SelectPlacePopup.this,
-                                         new PlaceRequest( activity.getTitle() ) );
+                                         new PlaceRequest( activity.getNameToken() ) );
 
                     SelectPlacePopup.this.hide();
 

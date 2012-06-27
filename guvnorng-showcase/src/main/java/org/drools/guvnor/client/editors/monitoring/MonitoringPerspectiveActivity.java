@@ -30,6 +30,11 @@ public class MonitoringPerspectiveActivity extends AbstractStaticScreenActivity 
 
     @Override
     public String getTitle() {
+        return "Monitoring perspective";
+    }
+
+    @Override
+    public String getNameToken() {
         return "Monitoring";
     }
 

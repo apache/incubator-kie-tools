@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
-
 @Dependent
 public class TextEditorPlace extends PlaceRequest {
 
@@ -29,64 +27,6 @@ public class TextEditorPlace extends PlaceRequest {
 
     public TextEditorPlace() {
         super( PLACE_NAME );
-    }
-
-    public TextEditorPlace(final String token) {
-        super( PLACE_NAME );
-        String[] parts = token.split( "\\|" );
-        if ( parts.length != 1 ) {
-            throw new RuntimeException( "Invalid token" );
-        }
-        addParameter( "path",
-                      parts[0] );
-    }
-
-    public String getFileName() {
-        return getParameter( "path",
-                             "" );
-    }
-
-    @Override
-    public String toString() {
-        return getParameter( "path",
-                             "" );
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        TextEditorPlace that = (TextEditorPlace) o;
-        final String thisPath = this.getParameter( "path",
-                                                   "" );
-        final String thatPath = that.getParameter( "path",
-                                                   "" );
-        return thisPath.equals( thatPath );
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getParameter( "path",
-                                   "" ).hashCode();
-        return result;
-    }
-
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<TextEditorPlace> {
-
-        public String getToken(final TextEditorPlace place) {
-            return place.toString();
-        }
-
-        public TextEditorPlace getPlace(final String token) {
-            return new TextEditorPlace( token );
-        }
     }
 
 }

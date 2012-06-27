@@ -46,9 +46,8 @@ public class PlaceRequest extends Place
             token.append( "?" );
         }
         for ( String name : this.getParameterNames() ) {
-            token.append( name ).append( "=" )
-                    .append( this.getParameter( name,
-                                                null ) );
+            token.append( name ).append( "=" ).append( this.getParameter( name,
+                                                                          null ) );
             token.append( "&" );
         }
 

@@ -18,10 +18,10 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
 
     @Inject
     private IOCBeanManager            iocManager;
-    
+
     @Inject
-    private PlaceManager        placeManager;
-    
+    private PlaceManager              placeManager;
+
     private RepositoryEditorPresenter presenter;
 
     public RepositoryEditorActivity() {
@@ -37,8 +37,13 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
     public String getTitle() {
         IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         final String repositoryName = placeRequest.getParameter( "repositoryName",
-                                                          "RepositoryEditor" );
+                                                                 "RepositoryEditor" );
         return repositoryName;
+    }
+
+    @Override
+    public String getNameToken() {
+        return "RepositoryEditor";
     }
 
     @Override

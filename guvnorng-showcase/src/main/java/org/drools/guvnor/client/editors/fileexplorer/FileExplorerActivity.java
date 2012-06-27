@@ -28,7 +28,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("File Explorer")
+@NameToken("FileExplorer")
 public class FileExplorerActivity extends AbstractStaticScreenActivity {
 
     @Inject
@@ -48,6 +48,11 @@ public class FileExplorerActivity extends AbstractStaticScreenActivity {
     @Override
     public String getTitle() {
         return "File Explorer";
+    }
+
+    @Override
+    public String getNameToken() {
+        return "FileExplorer";
     }
 
     @Override

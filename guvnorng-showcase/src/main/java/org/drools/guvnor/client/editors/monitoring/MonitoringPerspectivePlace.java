@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
-
 @Dependent
 public class MonitoringPerspectivePlace extends PlaceRequest {
 
@@ -29,23 +27,6 @@ public class MonitoringPerspectivePlace extends PlaceRequest {
 
     public MonitoringPerspectivePlace() {
         super( PLACE_NAME );
-    }
-
-    public String toString() {
-        return PLACE_NAME;
-    }
-
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<MonitoringPerspectivePlace> {
-
-        public String getToken(final MonitoringPerspectivePlace place) {
-            return place.toString();
-        }
-
-        public MonitoringPerspectivePlace getPlace(final String token) {
-            return new MonitoringPerspectivePlace();
-        }
     }
 
 }

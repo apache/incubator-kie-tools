@@ -238,7 +238,7 @@ public class FileExplorerPresenter
         }
 
         //If a specific handler was not found use a TextEditor
-        TextEditorPlace defaultPlace = new TextEditorPlace( DEFAULT_NAME_TOKEN );
+        TextEditorPlace defaultPlace = new TextEditorPlace();
         defaultPlace.addParameter( "path",
                                    path.toURI() );
         return defaultPlace;

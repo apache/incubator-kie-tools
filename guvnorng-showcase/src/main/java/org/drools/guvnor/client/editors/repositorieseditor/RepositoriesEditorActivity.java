@@ -30,7 +30,12 @@ public class RepositoriesEditorActivity extends AbstractStaticScreenActivity {
 
     @Override
     public String getTitle() {
-        return "Repositories";
+        return "RepositoriesEditor";
+    }
+
+    @Override
+    public String getNameToken() {
+        return "RepositoriesEditor";
     }
 
     @Override

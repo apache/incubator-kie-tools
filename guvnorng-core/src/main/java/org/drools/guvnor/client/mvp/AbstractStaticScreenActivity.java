@@ -79,6 +79,8 @@ public abstract class AbstractStaticScreenActivity
 
     public abstract String getTitle();
 
+    public abstract String getNameToken();
+
     public abstract IsWidget getWidget();
 
     @Override

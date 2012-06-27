@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-import com.google.gwt.place.shared.PlaceTokenizer;
-
 @Dependent
 public class AssetEditorActionToolbarPlace extends PlaceRequest {
 
@@ -31,28 +29,4 @@ public class AssetEditorActionToolbarPlace extends PlaceRequest {
         super( PLACE_NAME );
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return PLACE_NAME.hashCode();
-    }
-
-    public static class Tokenizer
-        implements
-        PlaceTokenizer<AssetEditorActionToolbarPlace> {
-
-        public String getToken(AssetEditorActionToolbarPlace place) {
-            return PLACE_NAME;
-        }
-
-        public AssetEditorActionToolbarPlace getPlace(String token) {
-            return new AssetEditorActionToolbarPlace();
-        }
-    }
 }
