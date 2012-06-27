@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.shared.common.LogEntry;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;

@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
 @Path("/broadcast")
 public interface BroadcastService {
@@ -31,10 +30,5 @@ public interface BroadcastService {
     @GET
     @Path("/set_focus/{id}")
     public void setFocus(@PathParam("id") final String id);
-
-    @GET
-    @Path("/is_dirty/{id}")
-    @Produces("text/plain")
-    public void checkDirty(@PathParam("id") final String id);
 
 }

@@ -48,12 +48,12 @@ public class TextEditorPresenter
     }
 
     @Inject
-    View               view;
+    public  View               view;
 
     @Inject
-    Caller<VFSService> vfsServices;
+    private Caller<VFSService> vfsServices;
 
-    private Path       path;
+    private Path               path;
 
     @Override
     public void onStart(final Path path) {

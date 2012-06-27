@@ -15,20 +15,44 @@
  */
 package org.drools.guvnor.client;
 
+import javax.inject.Inject;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import org.drools.guvnor.client.editors.texteditor.TextEditorPresenter;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.resources.ShowcaseResources;
+import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.vfs.Paths;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 /**
- * 
+ *
  */
 @EntryPoint
 public class ShowcaseEntryPoint {
 
+    @Inject private IOCBeanManager manager;
+
     @AfterInitialization
     public void startApp() {
         loadStyles();
+        if (Window.Location.getPath().contains("Standalone.html")) {
+            //TODO THIS SHOULD BE MOVED TO CORE SOON - LOOKUP SHOULD BE BASED ON CODE GEN!
+            final TextEditorPresenter presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();
+            RootLayoutPanel.get().add(presenter.view);
+
+            Path path = null;
+            final String pathURI = Window.Location.getParameter("path");
+            if (pathURI != null) {
+                path = Paths.fromURI(pathURI);
+            }
+
+            presenter.onStart(path);
+            presenter.onReveal();
+        }
     }
 
     private void loadStyles() {

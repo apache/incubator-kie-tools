@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.contenthandler.drools;
 
-import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -40,7 +39,7 @@ public class FactModelContentHandler {
     private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
 
     public void retrieveAssetContent(FactModels asset,
-                                     String content) throws SerializationException {
+                                     String content) {
         try {
             List<FactMetaModel> models = toModel( content );
             //FactModels ms = new FactModels();
@@ -57,10 +56,8 @@ public class FactModelContentHandler {
 
 
     public void storeAssetContent(FactModels asset,
-                                  String repoAsset)
-                                                      throws SerializationException {
+                                  String repoAsset) {
         repoAsset = toDRL( asset.getContent() );
-
     }
 
     String toDRL(FactMetaModel mm) {

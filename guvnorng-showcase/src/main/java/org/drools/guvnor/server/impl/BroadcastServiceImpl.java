@@ -50,16 +50,6 @@ public class BroadcastServiceImpl implements BroadcastService {
                 .sendNowWith(dispatcher);
     }
 
-    @Override
-    public void checkDirty(final String id) {
-        final String decodedId = decode(id);
-        MessageBuilder.createMessage()
-                .toSubject("IsDirty_" + decodedId)
-                .signalling()
-                .noErrorHandling()
-                .sendNowWith(dispatcher);
-    }
-
     private String decode(String content) {
         try {
             return URLDecoder.decode(content, "utf-8");

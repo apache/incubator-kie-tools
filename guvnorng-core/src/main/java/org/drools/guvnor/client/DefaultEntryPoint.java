@@ -19,6 +19,7 @@ package org.drools.guvnor.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.Workbench;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -43,14 +44,18 @@ public class DefaultEntryPoint {
     @PostConstruct
     public void init() {
         RestClient.setApplicationRoot( "/" );
-        appWidget.add( workbench );
+        if (!Window.Location.getPath().contains("Standalone.html")) {
+            appWidget.add(workbench);
+        }
     }
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
         hideLoadingPopup();
-        RootLayoutPanel.get().add( appWidget );
+        if (!Window.Location.getPath().contains("Standalone.html")) {
+            RootLayoutPanel.get().add(appWidget);
+        }
     }
 
     private void loadStyles() {

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.shared.common;
+package org.drools.guvnor.server.util;
 
 import java.util.Date;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * For showing a log in the GUI (last X messages).
  */
-public class LogEntry implements IsSerializable {
+public class LogEntry {
 
     public int severity;
     public String message;
