@@ -23,15 +23,15 @@ import org.drools.java.nio.file.attribute.FileTime;
 
 public class GeneralFileAttributeView implements BasicFileAttributeView {
 
-    private final GeneralPathImpl path;
+    private final AttrHolder<? extends BasicFileAttributes> holder;
 
-    public GeneralFileAttributeView(final GeneralPathImpl path) {
-        this.path = path;
+    public GeneralFileAttributeView(final AttrHolder<? extends BasicFileAttributes> holder) {
+        this.holder = holder;
     }
 
     @Override
     public BasicFileAttributes readAttributes() throws IOException {
-        return path.getAttrs();
+        return holder.getAttrs();
     }
 
     @Override

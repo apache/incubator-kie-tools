@@ -38,22 +38,5 @@
         </includes>
       </resource>
     </resources>
-
-    <!--<plugins>-->
-    <!--&lt;!&ndash;-->
-    <!--... or ask the plugin to detect them based on gwt modules files and copy the required java sources-->
-    <!--&ndash;&gt;-->
-    <!--<plugin>-->
-    <!--<groupId>org.codehaus.mojo</groupId>-->
-    <!--<artifactId>gwt-maven-plugin</artifactId>-->
-    <!--<executions>-->
-    <!--<execution>-->
-    <!--<goals>-->
-    <!--<goal>resources</goal>-->
-    <!--</goals>-->
-    <!--</execution>-->
-    <!--</executions>-->
-    <!--</plugin>-->
-    <!--</plugins>-->
   </build>
 </project>

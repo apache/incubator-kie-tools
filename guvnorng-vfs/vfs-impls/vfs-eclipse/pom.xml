@@ -6,18 +6,29 @@
     <groupId>org.drools</groupId>
     <artifactId>guvnorng</artifactId>
     <version>5.5.0-SNAPSHOT</version>
+    <relativePath>../../../pom.xml</relativePath>
   </parent>
 
-  <artifactId>vfs-fs</artifactId>
+  <artifactId>vfs-eclipse</artifactId>
   <packaging>jar</packaging>
 
-  <name>VFS File System Impl</name>
-  <description>VFS File System Impl</description>
+  <name>VFS Eclipse Impl</name>
+  <description>VFS Eclipse Impl</description>
 
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

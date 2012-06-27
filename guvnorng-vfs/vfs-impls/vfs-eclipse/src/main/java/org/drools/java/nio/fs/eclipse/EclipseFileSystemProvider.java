@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.java.nio.fs.file;
+package org.drools.java.nio.fs.eclipse;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -52,24 +48,24 @@ import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.OpenOption;
 import org.drools.java.nio.file.Path;
-import org.drools.java.nio.file.attribute.BasicFileAttributeView;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileAttributeView;
 import org.drools.java.nio.file.spi.FileSystemProvider;
-import org.drools.java.nio.fs.base.GeneralFileAttributeView;
 import org.drools.java.nio.fs.base.GeneralFileAttributes;
-import org.drools.java.nio.fs.base.GeneralPathImpl;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 
-import static org.drools.java.nio.util.Preconditions.*;
+public class EclipseFileSystemProvider implements FileSystemProvider {
 
-public class SimpleFileSystemProvider implements FileSystemProvider {
-
-    private final SimpleFileSystem fileSystem;
+    private final EclipseFileSystem fileSystem;
     private boolean isDefault;
 
-    public SimpleFileSystemProvider() {
-        this.fileSystem = new SimpleFileSystem(this);
+    public EclipseFileSystemProvider() {
+        this.fileSystem = new EclipseFileSystem(this);
     }
 
     @Override
@@ -83,12 +79,12 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override public String getScheme() {
-        return "file";
+        return "eclipse";
     }
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -98,54 +94,90 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return GeneralPathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
+        return EclipsePathImpl.create(getDefaultFileSystem(), uri.getPath(), false);
     }
 
     @Override
     public FileSystem newFileSystem(final Path path, final Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public InputStream newInputStream(final Path path, final OpenOption... options)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        final File file = path.toFile();
+        final org.eclipse.core.runtime.Path epath = new org.eclipse.core.runtime.Path(path.toString());
+        final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(epath);
         if (!file.exists()) {
             throw new NoSuchFileException(file.toString());
         }
-        try {
-            return new FileInputStream(path.toFile());
-        } catch (FileNotFoundException e) {
-            throw new NoSuchFileException(e.getMessage());
-        }
-    }
 
-    @Override
-    public OutputStream newOutputStream(final Path path, final OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         try {
-            return new FileOutputStream(path.toFile());
-        } catch (FileNotFoundException e) {
+            return file.getContents();
+        } catch (final CoreException e) {
             throw new IOException();
         }
     }
 
     @Override
-    public FileChannel newFileChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public OutputStream newOutputStream(final Path path, final OpenOption... options)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        final org.eclipse.core.runtime.Path epath = new org.eclipse.core.runtime.Path(path.toString());
+        final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(epath);
 
-    @Override public AsynchronousFileChannel newAsynchronousFileChannel(final Path path, final Set<? extends OpenOption> options, final ExecutorService executor, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (!file.exists()) {
+            throw new IOException();
+        }
+
+        return new OutputStream() {
+
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            boolean isClosed = false;
+
+            @Override
+            public void write(int b) throws java.io.IOException {
+                if (isClosed) {
+                    throw new IOException();
+                }
+                stream.write(b);
+            }
+
+            @Override
+            public void close() {
+                if (isClosed) {
+                    return;
+                }
+                try {
+                    file.setContents(new ByteArrayInputStream(stream.toByteArray()), true, true, null);
+                    stream.close();
+                    isClosed = true;
+                } catch (Exception e) {
+                    throw new IOException();
+                }
+            }
+        };
     }
 
     @Override
-    public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        final File file = checkNotNull("path", path).toFile();
+    public FileChannel newFileChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public AsynchronousFileChannel newAsynchronousFileChannel(final Path path, final Set<? extends OpenOption> options, final ExecutorService executor, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        final org.eclipse.core.runtime.Path epath = new org.eclipse.core.runtime.Path(path.getParent().toString());
+        final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(epath);
+
         if (file.exists()) {
             throw new FileAlreadyExistsException("");
         }
+
         try {
-            file.createNewFile();
+            file.create(new ByteArrayInputStream("".getBytes()), IResource.FORCE, null);
             return new SeekableByteChannel() {
                 @Override public long position() throws IOException {
                     return 0;
@@ -178,143 +210,141 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
                 @Override public void close() throws java.io.IOException {
                 }
             };
-        } catch (java.io.IOException e) {
+        } catch (Exception e) {
             throw new IOException();
         }
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
-        final File file = checkNotNull("dir", dir).toFile();
-        if (!file.isDirectory()) {
-            throw new NotDirectoryException(dir.toString());
-        }
-        final File[] content = file.listFiles();
-        return new DirectoryStream<Path>() {
-
-            @Override
-            public void close() throws IOException {
-            }
-
-            @Override
-            public Iterator<Path> iterator() {
-                return new Iterator<Path>() {
-                    private int i = 0;
-
-                    @Override public boolean hasNext() {
-                        return i < content.length;
-                    }
-
-                    @Override public Path next() {
-                        if (i < content.length) {
-                            final File result = content[i];
-                            i++;
-                            return GeneralPathImpl.newFromFile(getDefaultFileSystem(), result);
-                        } else {
-                            throw new NoSuchElementException();
-                        }
-                    }
-
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-            }
-        };
+    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter)
+            throws NotDirectoryException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+//        final File file = checkNotNull("dir", dir).toFile();
+//        if (!file.isDirectory()) {
+//            throw new NotDirectoryException(dir.toString());
+//        }
+//        final File[] content = file.listFiles();
+//        return new DirectoryStream<Path>() {
+//
+//            @Override
+//            public void close() throws IOException {
+//            }
+//
+//            @Override
+//            public Iterator<Path> iterator() {
+//                return new Iterator<Path>() {
+//                    private int i = 0;
+//
+//                    @Override public boolean hasNext() {
+//                        return i < content.length;
+//                    }
+//
+//                    @Override public Path next() {
+//                        if (i < content.length) {
+//                            final File result = content[i];
+//                            i++;
+//                            return EclipsePathImpl.createFromFile(getDefaultFileSystem(), result);
+//                        } else {
+//                            throw new NoSuchElementException();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void remove() {
+//                        throw new UnsupportedOperationException();
+//                    }
+//                };
+//            }
+//        };
     }
 
     @Override
-    public void createDirectory(final Path dir, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        checkNotNull("dir", dir).toFile().mkdirs();
+    public void createDirectory(final Path dir, final FileAttribute<?>... attrs)
+            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        final org.eclipse.core.runtime.Path epath = new org.eclipse.core.runtime.Path(dir.toString());
+        final IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(epath);
+        if (folder.exists()) {
+            throw new FileAlreadyExistsException(dir.toString());
+        }
+        try {
+            folder.create(true, false, null);
+        } catch (CoreException e) {
+            throw new IOException();
+        }
     }
 
     @Override
     public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLink(final Path link, final Path existing) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        checkNotNull("path", path).toFile().delete();
-        toGeneralPathImpl(path).clearCache();
+        throw new UnsupportedOperationException();
     }
 
     @Override public boolean deleteIfExists(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        return checkNotNull("path", path).toFile().delete();
+        throw new UnsupportedOperationException();
     }
 
-    @Override public Path readSymbolicLink(final Path link) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public Path readSymbolicLink(final Path link) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
-    @Override public void copy(final Path source, final Path target, final CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void copy(final Path source, final Path target, final CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
-    @Override public void move(Path source, Path target, CopyOption... options) throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public void move(Path source, Path target, CopyOption... options) throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
-    @Override public boolean isSameFile(Path path, Path path2) throws IOException, SecurityException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    public boolean isSameFile(Path path, Path path2) throws IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
-        checkNotNull("path", path);
-        return toGeneralPathImpl(path).getAttrs().isHidden();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public FileStore getFileStore(final Path path) throws IOException, SecurityException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void checkAccess(Path path, AccessMode... modes)
             throws UnsupportedOperationException, AccessDeniedException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
-
-        if (type == BasicFileAttributeView.class) {
-            return (V) new GeneralFileAttributeView(toGeneralPathImpl(path));
-        }
-
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
             throws UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull("path", path);
-        checkNotNull("type", type);
+        throw new UnsupportedOperationException();
 
-        final GeneralPathImpl pathImpl = toGeneralPathImpl(path);
-        if (!pathImpl.getAttrs().exists()) {
-            throw new NoSuchFileException("");
-        }
-
-        if (type == BasicFileAttributes.class) {
-            BasicFileAttributeView view = getFileAttributeView(path, BasicFileAttributeView.class, options);
-            return (A) view.readAttributes();
-        }
-
-        return null;
     }
 
     @Override
     public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         if (attributes.equals("*")) {
-            final GeneralFileAttributes attrs = toGeneralPathImpl(path).getAttrs();
+            final GeneralFileAttributes attrs = toEclipsePathImpl(path).getAttrs();
             final Map<String, Object> result = new HashMap<String, Object>();
             result.put("isRegularFile", attrs.isRegularFile());
             result.put("isDirectory", attrs.isDirectory());
@@ -337,18 +367,18 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
 
     @Override
     public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException();
     }
 
     private FileSystem getDefaultFileSystem() {
         return fileSystem;
     }
 
-    private GeneralPathImpl toGeneralPathImpl(final Path path) {
-        if (path instanceof GeneralPathImpl) {
-            return (GeneralPathImpl) path;
+    private EclipsePathImpl toEclipsePathImpl(final Path path) {
+        if (path instanceof EclipsePathImpl) {
+            return (EclipsePathImpl) path;
         }
-        return GeneralPathImpl.create(fileSystem, path.toString(), false);
+        return EclipsePathImpl.create(fileSystem, path.toString(), false);
     }
 
 }

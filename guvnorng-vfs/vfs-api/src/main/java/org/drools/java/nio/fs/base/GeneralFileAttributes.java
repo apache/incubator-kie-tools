@@ -18,6 +18,7 @@ package org.drools.java.nio.fs.base;
 
 import java.util.concurrent.TimeUnit;
 
+import org.drools.java.nio.file.Path;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileTime;
 
@@ -25,7 +26,7 @@ import static org.drools.java.nio.util.Preconditions.*;
 
 public class GeneralFileAttributes implements BasicFileAttributes {
 
-    private final GeneralPathImpl generalPath;
+    private final Path generalPath;
     private final FileTime lastModifiedTime;
     private final boolean exists;
     private final boolean isRegularFile;
@@ -35,7 +36,7 @@ public class GeneralFileAttributes implements BasicFileAttributes {
     private final boolean isReadable;
     private long fileLenght = -1;
 
-    GeneralFileAttributes(final GeneralPathImpl generalPath) {
+    GeneralFileAttributes(final Path generalPath) {
         this.generalPath = checkNotNull("generalPath", generalPath);
         final long lastModified = generalPath.toFile().lastModified();
         this.lastModifiedTime = new FileTime() {
