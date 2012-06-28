@@ -21,7 +21,7 @@ import org.drools.guvnor.client.mvp.PlaceRequest;
 //TODO {manstis} This class should be generated. See TestPlace.
 public class TestPlace2 extends PlaceRequest {
 
-    private static final String PLACE_NAME = "Test";
+    private static final String PLACE_NAME = "Test2";
 
     public TestPlace2() {
         super( PLACE_NAME );
