@@ -54,7 +54,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
 
@@ -66,15 +65,8 @@
     </dependency>
 
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
       <scope>test</scope>
     </dependency>
 
@@ -213,18 +205,18 @@
       <version>${jetty.version}</version>
     </dependency>
 
-    <!-- Weld Modules -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <version>${weld.version}</version>
-    </dependency>
+    <!--&lt;!&ndash; Weld Modules &ndash;&gt;-->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.weld.se</groupId>-->
+      <!--<artifactId>weld-se-core</artifactId>-->
+      <!--<version>${weld.version}</version>-->
+    <!--</dependency>-->
 
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet</artifactId>
-      <version>${weld.version}</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.weld.servlet</groupId>-->
+      <!--<artifactId>weld-servlet</artifactId>-->
+      <!--<version>${weld.version}</version>-->
+    <!--</dependency>-->
 
     <!-- GWT and GWT Extensions -->
     <dependency>
@@ -244,7 +236,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
@@ -255,37 +246,51 @@
   </dependencies>
 
   <build>
-    <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwt.maven.version}</version>
-        <configuration>
-          <logLevel>INFO</logLevel>
-          <runTarget>org.drools.guvnor.GuvnorNGCore/Guvnor.html</runTarget>
-          <extraJvmArgs>-Xmx512m</extraJvmArgs>
-          <soyc>false</soyc>
-          <hostedWebapp>src/main/webapp/</hostedWebapp>
-          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
-        </configuration>
-        <executions>
-          <execution>
-            <id>gwt-clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>gwt-compile</id>
-            <goals>
-              <goal>resources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.codehaus.mojo</groupId>-->
+        <!--<artifactId>gwt-maven-plugin</artifactId>-->
+        <!--<version>${gwt.maven.version}</version>-->
+        <!--<configuration>-->
+          <!--<logLevel>INFO</logLevel>-->
+          <!--<runTarget>org.drools.guvnor.GuvnorNGCore/Guvnor.html</runTarget>-->
+          <!--<extraJvmArgs>-Xmx512m</extraJvmArgs>-->
+          <!--<soyc>false</soyc>-->
+          <!--<hostedWebapp>src/main/webapp/</hostedWebapp>-->
+          <!--<server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>-->
+        <!--</configuration>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>gwt-clean</id>-->
+            <!--<phase>clean</phase>-->
+            <!--<goals>-->
+              <!--<goal>clean</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+          <!--<execution>-->
+            <!--<id>gwt-compile</id>-->
+            <!--<goals>-->
+              <!--<goal>resources</goal>-->
+              <!--<goal>compile</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
 
       <!-- Tests are skipped by default because they require additional GWT dependencies. Run mvn with
         -Pintegration-test to enable testing. -->
@@ -306,28 +311,28 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>jacoco-gwt-maven-plugin</artifactId>
-        <version>0.5.4.201202141554</version>
+      <!--<plugin>-->
+        <!--<groupId>org.jboss.errai</groupId>-->
+        <!--<artifactId>jacoco-gwt-maven-plugin</artifactId>-->
+        <!--<version>0.5.4.201202141554</version>-->
 
-        <executions>
-          <execution>
-            <id>jacoco-gwt-prepare-agent</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-gwt-report</id>
-            <phase>site</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>jacoco-gwt-prepare-agent</id>-->
+            <!--<phase>initialize</phase>-->
+            <!--<goals>-->
+              <!--<goal>prepare-agent</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+          <!--<execution>-->
+            <!--<id>jacoco-gwt-report</id>-->
+            <!--<phase>site</phase>-->
+            <!--<goals>-->
+              <!--<goal>report</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
 
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
@@ -350,47 +355,47 @@
       </plugin>
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <versionRange>[2.3.0,)</versionRange>
-                    <goals>
-                      <goal>resources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jboss.errai</groupId>
-                    <artifactId>jacoco-gwt-maven-plugin</artifactId>
-                    <versionRange>[0.0,)</versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <!--<pluginManagement>-->
+      <!--<plugins>-->
+        <!--<plugin>-->
+          <!--<groupId>org.eclipse.m2e</groupId>-->
+          <!--<artifactId>lifecycle-mapping</artifactId>-->
+          <!--<version>1.0.0</version>-->
+          <!--<configuration>-->
+            <!--<lifecycleMappingMetadata>-->
+              <!--<pluginExecutions>-->
+                <!--<pluginExecution>-->
+                  <!--<pluginExecutionFilter>-->
+                    <!--<groupId>org.codehaus.mojo</groupId>-->
+                    <!--<artifactId>gwt-maven-plugin</artifactId>-->
+                    <!--<versionRange>[2.3.0,)</versionRange>-->
+                    <!--<goals>-->
+                      <!--<goal>resources</goal>-->
+                    <!--</goals>-->
+                  <!--</pluginExecutionFilter>-->
+                  <!--<action>-->
+                    <!--<execute/>-->
+                  <!--</action>-->
+                <!--</pluginExecution>-->
+                <!--<pluginExecution>-->
+                  <!--<pluginExecutionFilter>-->
+                    <!--<groupId>org.jboss.errai</groupId>-->
+                    <!--<artifactId>jacoco-gwt-maven-plugin</artifactId>-->
+                    <!--<versionRange>[0.0,)</versionRange>-->
+                    <!--<goals>-->
+                      <!--<goal>prepare-agent</goal>-->
+                    <!--</goals>-->
+                  <!--</pluginExecutionFilter>-->
+                  <!--<action>-->
+                    <!--<ignore/>-->
+                  <!--</action>-->
+                <!--</pluginExecution>-->
+              <!--</pluginExecutions>-->
+            <!--</lifecycleMappingMetadata>-->
+          <!--</configuration>-->
+        <!--</plugin>-->
+      <!--</plugins>-->
+    <!--</pluginManagement>-->
   </build>
 
   <!-- Repositories -->

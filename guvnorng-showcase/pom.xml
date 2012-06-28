@@ -39,40 +39,32 @@
       <version>12.0</version>
       <scope>compile</scope>
     </dependency>
-  
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-api</artifactId>
     </dependency>
 
-    <!--dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-impl</artifactId>
-    </dependency-->
-    
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-jgit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-eclipse</artifactId>
     </dependency>
 
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>3.6.0.v20100505</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.resources</artifactId>
-      <version>3.6.0.v20100526-0737</version>
-      <scope>provided</scope>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnorng-api</artifactId>
     </dependency>
 
     <dependency>
