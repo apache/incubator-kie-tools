@@ -21,18 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-
 /**
- * Defines the file type a Place handles
+ * 
  */
-
-@Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface SupportedFormat {
+@Target({ElementType.TYPE})
+public @interface WorkbenchWidget {
 
-    String value();
+    String nameToken();
+
+    String format() default "";
 
 }

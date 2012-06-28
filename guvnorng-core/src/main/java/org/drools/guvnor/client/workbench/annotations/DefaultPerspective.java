@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.workbench.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
@@ -27,6 +28,7 @@ import javax.inject.Qualifier;
  * Marker annotation to set a Perspective as the default
  */
 @Qualifier
+@Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DefaultPerspective {

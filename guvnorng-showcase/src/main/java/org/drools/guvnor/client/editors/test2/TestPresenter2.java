@@ -18,6 +18,14 @@ package org.drools.guvnor.client.editors.test2;
 
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.workbench.annotations.OnClose;
+import org.drools.guvnor.client.workbench.annotations.OnFocus;
+import org.drools.guvnor.client.workbench.annotations.OnLostFocus;
+import org.drools.guvnor.client.workbench.annotations.OnMayClose;
+import org.drools.guvnor.client.workbench.annotations.OnReveal;
+import org.drools.guvnor.client.workbench.annotations.OnStart;
+import org.drools.guvnor.client.workbench.annotations.Title;
+import org.drools.guvnor.client.workbench.annotations.WorkbenchWidget;
 import org.drools.guvnor.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,7 +33,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-//@WorkbenchWidget(nameToken="Test", format="test2")
+@WorkbenchWidget(nameToken = "Test2", format = "test2")
 public class TestPresenter2 {
 
     public interface View
@@ -39,37 +47,37 @@ public class TestPresenter2 {
     public TestPresenter2() {
     }
 
-    //@OnStart
+    @OnStart
     public void onStart(Path path) {
     }
 
-    //@MayClose
+    @OnMayClose
     public boolean mayClose() {
         return true;
     }
 
-    //@OnClose
+    @OnClose
     public void onClose() {
     }
 
-    //@OnReveal
+    @OnReveal
     public void onReveal() {
     }
 
-    //@LostFocus
+    @OnLostFocus
     public void onLostFocus() {
     }
 
-    //@OnFocus
+    @OnFocus
     public void onFocus() {
     }
 
-    //@Title
+    @Title
     public String getTitle() {
         return "Test2";
     }
 
-    //@View
+    @org.drools.guvnor.client.workbench.annotations.View
     public IsWidget getView() {
         return view;
     }

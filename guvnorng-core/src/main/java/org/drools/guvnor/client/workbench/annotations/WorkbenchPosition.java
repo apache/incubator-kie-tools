@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.workbench.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -28,8 +29,9 @@ import org.drools.guvnor.client.workbench.Position;
  * 
  */
 @Qualifier
+@Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.TYPE, ElementType.FIELD})
 public @interface WorkbenchPosition {
 
     Position position();
