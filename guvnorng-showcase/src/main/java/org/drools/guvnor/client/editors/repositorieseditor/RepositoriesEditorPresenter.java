@@ -67,18 +67,18 @@ public class RepositoriesEditorPresenter {
 
     @OnStart
     public void onStart() {
-        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
-            @Override
-            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-                for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
-                    view.addRepository( r.getRepositoryName(),
-                                        r.getGitURL(),
-                                        r.getDescription(),
-                                        link );
-                }
-            }
-        } ).listJGitRepositories();
+//        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
+//            @Override
+//            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+//                for ( final JGitRepositoryConfigurationVO r : repositories ) {
+//                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
+//                    view.addRepository( r.getRepositoryName(),
+//                                        r.getGitURL(),
+//                                        r.getDescription(),
+//                                        link );
+//                }
+//            }
+//        } ).listJGitRepositories();
 
         view.getCreateRepoButton().addClickHandler( new ClickHandler() {
             @Override

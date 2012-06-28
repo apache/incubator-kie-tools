@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.impl;
+package org.drools.guvnor.backend.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
+import org.drools.guvnor.backend.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;

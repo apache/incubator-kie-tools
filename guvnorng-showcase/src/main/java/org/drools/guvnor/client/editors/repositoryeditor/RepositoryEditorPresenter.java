@@ -64,15 +64,15 @@ public class RepositoryEditorPresenter {
         String repositoryName = placeRequest.getParameter( "repositoryName",
                                                            "" );
 
-        vfsService.call( new RemoteCallback<JGitRepositoryConfigurationVO>() {
-            @Override
-            public void callback(JGitRepositoryConfigurationVO repository) {
-                view.addRepository( repository.getRepositoryName(),
-                                    repository.getGitURL(),
-                                    repository.getDescription(),
-                                    repository.getRootURI() );
-            }
-        } ).loadJGitRepository( repositoryName );
+//        vfsService.call( new RemoteCallback<JGitRepositoryConfigurationVO>() {
+//            @Override
+//            public void callback(JGitRepositoryConfigurationVO repository) {
+//                view.addRepository( repository.getRepositoryName(),
+//                                    repository.getGitURL(),
+//                                    repository.getDescription(),
+//                                    repository.getRootURI() );
+//            }
+//        } ).loadJGitRepository( repositoryName );
     }
 
     @WorkbenchPartTitle

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.impl;
+package org.drools.guvnor.backend.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.server.StatusService;
+import org.drools.guvnor.backend.StatusService;
 
 @ApplicationScoped
 public class StatusServiceImpl implements StatusService {

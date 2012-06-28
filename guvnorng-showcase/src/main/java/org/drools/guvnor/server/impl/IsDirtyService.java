@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.impl;
+package org.drools.guvnor.backend.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

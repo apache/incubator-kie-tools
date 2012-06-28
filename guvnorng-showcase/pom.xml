@@ -3,92 +3,66 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>guvnorng</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire</artifactId>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnorng-showcase</artifactId>
   <packaging>war</packaging>
 
-  <name>GuvnorNG Showcase</name>
-  <description>GuvnorNG Showcase</description>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <errai.version>2.1-SNAPSHOT</errai.version>
-    <gwt.version>2.4.0</gwt.version>
-    <weld.version>1.1.6.Final</weld.version>
-    <gwt.maven.version>2.4.0</gwt.maven.version>
-    <mvel.version>2.1.Beta8</mvel.version>
-    <jetty.version>6.1.25</jetty.version>
-    <uel.impl.version>2.1.2-b04</uel.impl.version>
-  </properties>
+  <name>ÜberFire Showcase</name>
+  <description>ÜberFire Showcase</description>
 
   <dependencies>
   
-    <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
-    <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
-    <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
-    <!--  See https://community.jboss.org/thread/199952?tstart=0 -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>12.0</version>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnorng-core</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnorng-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
 
   	<dependency>
-  		<groupId>org.drools</groupId>
-  		<artifactId>guvnorng-annotations</artifactId>
+  		<groupId>org.uberfire</groupId>
+  		<artifactId>uberfire-annotations</artifactId>
   	</dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.uberfire</groupId>
       <artifactId>vfs-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.uberfire</groupId>
       <artifactId>vfs-jgit</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.uberfire</groupId>
       <artifactId>vfs-eclipse</artifactId>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
       <scope>test</scope>
     </dependency>
 
@@ -96,88 +70,57 @@
       <groupId>org.jboss.ejb3</groupId>
       <artifactId>jboss-ejb3-api</artifactId>
       <scope>provided</scope>
-      <version>3.1.0</version>
     </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
-      <version>1.0-SP4</version>
     </dependency>
 
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
-      <version>${errai.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
-      <version>${errai.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-tools</artifactId>
-      <version>${errai.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
-      <version>${mvel.version}</version>
     </dependency>
 
     <!-- CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
-      <version>${errai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-uibinder</artifactId>
-      <version>${errai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
-      <version>${errai.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-      <version>${errai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-jetty</artifactId>
-      <version>${errai.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -185,26 +128,22 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jaxrs-client</artifactId>
-      <version>${errai.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jaxrs-provider</artifactId>
-      <version>${errai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <version>2.3.3.Final</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
-      <version>2.3.3.Final</version>
     </dependency>
 
     <!-- CDI Development Utils -->
@@ -212,39 +151,33 @@
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-naming</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
 
     <!-- Weld Modules -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>${weld.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet</artifactId>
-      <version>${weld.version}</version>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -281,7 +214,6 @@
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-naming</artifactId>
-          <version>${jetty.version}</version>
           <scope>compile</scope>
         </dependency>
       </dependencies>
@@ -297,213 +229,30 @@
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-plus</artifactId>
-          <version>${jetty.version}</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-naming</artifactId>
-          <version>${jetty.version}</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-servlet</artifactId>
-          <version>7.2.1.v20101111</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
           <scope>provided</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>jboss6</id>
-      <properties>
-        <webDescriptor>jboss6</webDescriptor>
-      </properties>
-      <dependencies>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-bus</artifactId>
-          <exclusions>
-            <exclusion>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-log4j12</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>junit</groupId>
-              <artifactId>junit</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>com.google.collections</groupId>
-              <artifactId>google-collections</artifactId>
-            </exclusion>
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <!-- Exclude all the stuff provided by AS6 -->
-        <dependency>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-          <version>1</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-          <version>1.0</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.16</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>dom4j</groupId>
-          <artifactId>dom4j</artifactId>
-          <version>1.6</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-          <version>1.0.b2</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.javassist</groupId>
-          <artifactId>javassist</artifactId>
-          <version>3.15.0-GA</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <scope>provided</scope>
-          <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-ioc</artifactId>
-          <exclusions>
-            <exclusion>
-              <artifactId>jsr250-api</artifactId>
-              <groupId>javax.annotation</groupId>
-            </exclusion>
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <scope>compile</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-tools</artifactId>
-          <scope>provided</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-javax-enterprise</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <!-- exclude development tools -->
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.servlet</groupId>
-          <artifactId>weld-servlet</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-core</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.se</groupId>
-          <artifactId>weld-se-core</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-spi</artifactId>
-          <scope>provided</scope>
-          <version>1.1.Final</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-plus</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-naming</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.logging</groupId>
-          <artifactId>jboss-logging</artifactId>
-          <scope>provided</scope>
-          <version>3.0.0.Beta4</version>
         </dependency>
       </dependencies>
     </profile>
@@ -518,14 +267,12 @@
         <dependency>
           <groupId>org.jboss.resteasy</groupId>
           <artifactId>resteasy-jaxrs</artifactId>
-          <version>2.3.3.Final</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.resteasy</groupId>
           <artifactId>resteasy-cdi</artifactId>
-          <version>2.3.3.Final</version>
           <scope>provided</scope>
         </dependency>
 
@@ -542,20 +289,17 @@
               <groupId>javax.inject</groupId>
             </exclusion>
           </exclusions>
-          <version>${errai.version}</version>
         </dependency>
 
         <dependency>
           <groupId>xml-apis</groupId>
           <artifactId>xml-apis</artifactId>
-          <version>1.0.b2</version>
           <scope>provided</scope>
         </dependency>
 
         <dependency>
           <groupId>org.javassist</groupId>
           <artifactId>javassist</artifactId>
-          <version>3.15.0-GA</version>
           <scope>provided</scope>
         </dependency>
 
@@ -563,13 +307,11 @@
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-tools</artifactId>
           <scope>provided</scope>
-          <version>${errai.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-javax-enterprise</artifactId>
-          <version>${errai.version}</version>
           <scope>provided</scope>
         </dependency>
 
@@ -577,163 +319,6 @@
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.servlet</groupId>
-          <artifactId>weld-servlet</artifactId>
-          <version>${weld.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-core</artifactId>
-          <version>${weld.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.se</groupId>
-          <artifactId>weld-se-core</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <!-- Jetty is used for testing only -->
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-plus</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-naming</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <!-- Begin OpenShift Express Profiles -->
-    <profile>
-      <id>openshift</id>
-      <properties>
-        <webDescriptor>jboss7</webDescriptor>
-      </properties>
-
-      <dependencies>
-        <!-- All errai package are installed with the service archive -->
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-bus</artifactId>
-          <exclusions>
-
-            <exclusion>
-              <groupId>junit</groupId>
-              <artifactId>junit</artifactId>
-            </exclusion>
-
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-          <version>1.0.b2</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.javassist</groupId>
-          <artifactId>javassist</artifactId>
-          <version>3.15.0-GA</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mvel</groupId>
-          <artifactId>mvel2</artifactId>
-          <version>${mvel.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-ioc</artifactId>
-          <exclusions>
-            <exclusion>
-              <artifactId>jsr250-api</artifactId>
-              <groupId>javax.annotation</groupId>
-            </exclusion>
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <scope>compile</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-tools</artifactId>
-          <scope>provided</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-client</artifactId>
-          <version>${errai.version}</version>
-          <!--<scope>provided</scope> -->
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-uibinder</artifactId>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-javax-enterprise</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-weld-integration</artifactId>
-          <version>${errai.version}</version>
-        </dependency>
-        <!-- Exclude development tools -->
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <!-- Weld is installed within JBoss -->
-        <dependency>
-          <groupId>org.glassfish.web</groupId>
-          <artifactId>el-impl</artifactId>
-          <version>${uel.impl.version}</version>
           <scope>provided</scope>
         </dependency>
 
@@ -741,35 +326,24 @@
           <groupId>org.jboss.weld.servlet</groupId>
           <artifactId>weld-servlet</artifactId>
           <scope>provided</scope>
-          <version>${weld.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.weld</groupId>
           <artifactId>weld-core</artifactId>
           <scope>provided</scope>
-          <version>${weld.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.weld.se</groupId>
           <artifactId>weld-se-core</artifactId>
           <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-spi</artifactId>
-          <scope>provided</scope>
-          <version>1.1.Final</version>
         </dependency>
 
         <!-- Jetty is used for testing only -->
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
           <scope>provided</scope>
         </dependency>
 
@@ -777,305 +351,14 @@
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-plus</artifactId>
           <scope>provided</scope>
-          <version>${jetty.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-naming</artifactId>
           <scope>provided</scope>
-          <version>${jetty.version}</version>
         </dependency>
-    
       </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.1.1</version>
-            <configuration>
-              <warSourceDirectory>src/main/webapp/</warSourceDirectory>
-              <webappDirectory>src/main/webapp/</webappDirectory>
-              <webXml>src/jetty/web.xml</webXml>
-              <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
-              <outputDirectory>deployments</outputDirectory>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-              <execution>
-                <id>jboss.package</id>
-                <phase>prepare-package</phase>
-                <configuration>
-                  <tasks>
-                    <copy file="src/jboss/web.xml" toDir="src/main/webapp/WEB-INF" overwrite="true"/>
-
-                    <delete file="src/main/webapp/WEB-INF/jetty-env.xml"/>
-                    <delete file="src/main/webapp/WEB-INF/classes/jndi.properties"/>
-
-                    <copy todir="src/main/webapp/app/">
-                      <fileset dir="war.cache/app/"/>
-                    </copy>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <version>${gwt.maven.version}</version>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>openshift-prepare</id>
-      <properties>
-        <webDescriptor>jboss7</webDescriptor>
-      </properties>
-
-      <dependencies>
-        <!-- All errai package are installed with the service archive -->
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-bus</artifactId>
-          <exclusions>
-
-            <exclusion>
-              <groupId>junit</groupId>
-              <artifactId>junit</artifactId>
-            </exclusion>
-
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-          <version>1.0.b2</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.javassist</groupId>
-          <artifactId>javassist</artifactId>
-          <version>3.15.0-GA</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mvel</groupId>
-          <artifactId>mvel2</artifactId>
-          <version>${mvel.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-ioc</artifactId>
-          <exclusions>
-            <exclusion>
-              <artifactId>jsr250-api</artifactId>
-              <groupId>javax.annotation</groupId>
-            </exclusion>
-            <exclusion>
-              <artifactId>javax.inject</artifactId>
-              <groupId>javax.inject</groupId>
-            </exclusion>
-          </exclusions>
-          <scope>compile</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-tools</artifactId>
-          <scope>provided</scope>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-client</artifactId>
-          <version>${errai.version}</version>
-          <!--<scope>provided</scope> -->
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-uibinder</artifactId>
-          <version>${errai.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-javax-enterprise</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-weld-integration</artifactId>
-          <version>${errai.version}</version>
-        </dependency>
-        <!-- Exclude development tools -->
-        <dependency>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <!-- Weld is installed within JBoss -->
-        <dependency>
-          <groupId>org.glassfish.web</groupId>
-          <artifactId>el-impl</artifactId>
-          <version>${uel.impl.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.servlet</groupId>
-          <artifactId>weld-servlet</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-core</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld.se</groupId>
-          <artifactId>weld-se-core</artifactId>
-          <scope>provided</scope>
-          <version>${weld.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-spi</artifactId>
-          <scope>provided</scope>
-          <version>1.1.Final</version>
-        </dependency>
-
-        <!-- Jetty is used for testing only -->
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-plus</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-naming</artifactId>
-          <scope>provided</scope>
-          <version>${jetty.version}</version>
-        </dependency>
-        
-            
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
-    
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.1.1</version>
-            <configuration>
-              <warSourceDirectory>war.cache</warSourceDirectory>
-              <webappDirectory>war.cache</webappDirectory>
-              <webXml>src/jetty/web.xml</webXml>
-              <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
-
-              <archive>
-                <manifestEntries>
-                  <Dependencies>org.jboss.as.naming,org.jboss.as.server,org.jboss.msc</Dependencies>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-              <execution>
-                <id>jboss.package</id>
-                <phase>prepare-package</phase>
-                <configuration>
-                  <tasks>
-                    <copy file="src/jboss/web.xml" toDir="src/main/webapp/WEB-INF" overwrite="true"/>
-
-                    <delete file="src/main/webapp/WEB-INF/jetty-env.xml"/>
-
-                    <delete file="src/main/webapp/WEB-INF/classes/jndi.properties"/>
-
-                    <copy todir="war.cache/app/">
-                      <fileset dir="src/main/webapp/app/"/>
-                    </copy>
-
-                    <exec executable="git">
-                      <arg value="add"/>
-                      <arg value="war.cache"/>
-                    </exec>
-
-                    <exec executable="git">
-                      <arg value="commit"/>
-                      <arg value="-a"/>
-                      <arg value="-m"/>
-                      <arg value="'commit war.cache'"/>
-                    </exec>
-
-                    <echo message="Openshift Prepared!"/>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
 
     <!-- Begin Tomcat 6 and 7 support -->
@@ -1114,7 +397,6 @@
           </plugin>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.5</version>
             <configuration>
               <skipTests>false</skipTests>
               <additionalClasspathElements>
@@ -1149,43 +431,36 @@
         <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
-          <version>2.5</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>jsp-api</artifactId>
-          <version>2.0</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
-          <version>1.2.16</version>
         </dependency>
         <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
-          <version>4.8.1</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss.ejb3</groupId>
           <artifactId>jboss-ejb3-api</artifactId>
           <scope>provided</scope>
-          <version>3.1.0</version>
         </dependency>
 
         <!-- Errai Core -->
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-bus</artifactId>
-          <version>${errai.version}</version>
         </dependency>
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-ioc</artifactId>
-          <version>${errai.version}</version>
           <exclusions>
             <exclusion>
               <groupId>javax.inject</groupId>
@@ -1201,31 +476,26 @@
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-cdi-client</artifactId>
-          <version>${errai.version}</version>
           <scope>compile</scope>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-uibinder</artifactId>
-          <version>${errai.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-tools</artifactId>
-          <version>${errai.version}</version>
         </dependency>
         <dependency>
           <groupId>org.mvel</groupId>
           <artifactId>mvel2</artifactId>
-          <version>${mvel.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-cdi-jetty</artifactId>
-          <version>${errai.version}</version>
         </dependency>
 
         <!-- CDI Development Utils -->
@@ -1233,19 +503,16 @@
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-plus</artifactId>
-          <version>${jetty.version}</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-naming</artifactId>
-          <version>${jetty.version}</version>
           <scope>compile</scope>
         </dependency>
 
@@ -1253,48 +520,41 @@
         <dependency>
           <groupId>org.jboss.weld.se</groupId>
           <artifactId>weld-se-core</artifactId>
-          <version>${weld.version}</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss.weld.servlet</groupId>
           <artifactId>weld-servlet</artifactId>
-          <version>${weld.version}</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.glassfish.web</groupId>
           <artifactId>el-impl</artifactId>
           <scope>runtime</scope>
-          <version>2.1.2-b04</version>
         </dependency>
 
         <!-- GWT and GWT Extensions -->
         <dependency>
           <groupId>com.google.gwt</groupId>
           <artifactId>gwt-user</artifactId>
-          <version>${gwt.version}</version>
           <scope>compile</scope>
         </dependency>
 
         <dependency>
           <groupId>com.google.gwt</groupId>
           <artifactId>gwt-dev</artifactId>
-          <version>${gwt.version}</version>
           <scope>compile</scope>
         </dependency>
 
         <dependency>
           <groupId>javax.validation</groupId>
           <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
           <scope>compile</scope>
         </dependency>
 
         <dependency>
           <groupId>javax.validation</groupId>
           <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
           <classifier>sources</classifier>
           <scope>compile</scope>
         </dependency>
@@ -1303,19 +563,16 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
-          <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss</groupId>
           <artifactId>jboss-common-core</artifactId>
-          <version>2.2.14.GA</version>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-javax-enterprise</artifactId>
-          <version>${errai.version}</version>
           <scope>provided</scope>
         </dependency>
 
@@ -1341,7 +598,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwt.maven.version}</version>
         <configuration>
           <module>org.drools.guvnor.FastCompiledGuvnorNGShowcase</module>
           <logLevel>INFO</logLevel>
@@ -1375,7 +631,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.1.1</version>
         <configuration>
           <warName>${project.artifactId}</warName>
           <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
@@ -1394,25 +649,8 @@
         -Pintegration-test to enable testing. -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.5</version>
         <configuration>
           <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <!-- TODO {manstis} Ensure in porcelli's refactoring -->
-          <!-- 
-          The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
-          which causes the Java Annotation Processor mechanism to not process annotations 
-          on classes in guvnorng-showcase. Why IDK but this solves the issue
-          -->
-          <fork>false</fork>
-          <source>1.6</source>
-          <target>1.6</target>
         </configuration>
       </plugin>
 
@@ -1421,7 +659,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.4</version>
         <executions>
           <execution>
             <id>add-generated-source</id>
@@ -1441,8 +678,6 @@
       <plugin>
         <groupId>org.jboss.errai</groupId>
         <artifactId>jacoco-gwt-maven-plugin</artifactId>
-        <version>0.5.4.201202141554</version>
-
         <executions>
           <execution>
             <id>jacoco-gwt-prepare-agent</id>
@@ -1463,7 +698,6 @@
 
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
         <configuration>
           <filesets>
             <fileset>
@@ -1472,6 +706,7 @@
                 <include>www-test/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/**</include>
+                <include>src/main/webapp/org.drools.guvnor.GuvnorNGShowcase/**</include>
                 <include>src/main/webapp/app/**</include>
                 <include>src/main/webapp/WEB-INF/deploy/**</include>
                 <include>src/main/webapp/WEB-INF/lib/**</include>
@@ -1491,7 +726,6 @@
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
@@ -1529,49 +763,4 @@
     </pluginManagement>
   </build>
   
-  <!-- Repositories -->
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <!-- DistributionManagement -->
-  <distributionManagement>
-    <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
-
-    <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>

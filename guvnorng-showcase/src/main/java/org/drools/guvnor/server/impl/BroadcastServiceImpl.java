@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.impl;
+package org.drools.guvnor.backend.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.server.BroadcastService;
+import org.drools.guvnor.backend.BroadcastService;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 

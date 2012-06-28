@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler.drools;
+package org.drools.guvnor.backend.contenthandler.drools;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.backend.util.LoggingHelper;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;

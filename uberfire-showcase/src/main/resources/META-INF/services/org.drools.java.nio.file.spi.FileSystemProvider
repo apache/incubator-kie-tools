@@ -1,0 +1,2 @@
+org.drools.java.nio.fs.file.JGitFileSystemProvider  # file system provider, also default (1st)
+# org.drools.java.nio.fs.eclipse.EclipseFileSystemProvider  # eclipse provider

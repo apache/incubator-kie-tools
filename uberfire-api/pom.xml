@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>uberfire-api</artifactId>
+  <packaging>jar</packaging>
+
+  <name>ÜberFire API</name>
+  <description>ÜberFire API</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-marshalling</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+</project>

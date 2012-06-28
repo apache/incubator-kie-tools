@@ -76,8 +76,8 @@ public class FileExplorerPresenter {
     private static final String REPOSITORY_ID = "repositories";
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            IsWidget {
 
         TreeItem getRootItem();
 
@@ -103,7 +103,7 @@ public class FileExplorerPresenter {
                 view.getRootItem().removeItems();
                 for ( final JGitRepositoryConfigurationVO r : repositories ) {
                     final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(),
-                                                                                                    r.getRepositoryName() ) );
+                            r.getRepositoryName() ) );
                     repositoryRootItem.setState( true );
                     //repositoryRootItem.addItem( LAZY_LOAD );
                     repositoryRootItem.setUserObject( r );
@@ -120,11 +120,11 @@ public class FileExplorerPresenter {
                                         final TreeItem item;
                                         if ( attrs.isDirectory() ) {
                                             item = repositoryRootItem.addItem( Util.getHeader( images.openedFolder(),
-                                                                                               path.getFileName() ) );
+                                                    path.getFileName() ) );
                                             item.addItem( LAZY_LOAD );
                                         } else {
                                             item = repositoryRootItem.addItem( Util.getHeader( images.file(),
-                                                                                               path.getFileName() ) );
+                                                    path.getFileName() ) );
                                         }
                                         item.setUserObject( path );
                                     }
@@ -152,11 +152,11 @@ public class FileExplorerPresenter {
                                         final TreeItem item;
                                         if ( attrs.isDirectory() ) {
                                             item = event.getTarget().addItem( Util.getHeader( images.openedFolder(),
-                                                                                              path.getFileName() ) );
+                                                    path.getFileName() ) );
                                             item.addItem( LAZY_LOAD );
                                         } else {
                                             item = event.getTarget().addItem( Util.getHeader( images.file(),
-                                                                                              path.getFileName() ) );
+                                                    path.getFileName() ) );
                                         }
                                         item.setUserObject( path );
                                     }
@@ -190,11 +190,11 @@ public class FileExplorerPresenter {
                     final JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = (JGitRepositoryConfigurationVO) event.getSelectedItem().getUserObject();
                     PlaceRequest placeRequest = new PlaceRequest( "RepositoryEditor" );
                     placeRequest.addParameter( "description",
-                                               jGitRepositoryConfigurationVO.getDescription() );
+                            jGitRepositoryConfigurationVO.getDescription() );
                     placeRequest.addParameter( "gitURL",
-                                               jGitRepositoryConfigurationVO.getGitURL() );
+                            jGitRepositoryConfigurationVO.getGitURL() );
                     placeRequest.addParameter( "repositoryName",
-                                               jGitRepositoryConfigurationVO.getRepositoryName() );
+                            jGitRepositoryConfigurationVO.getRepositoryName() );
                     placeManager.goTo( placeRequest );
                 }
             }
@@ -217,7 +217,7 @@ public class FileExplorerPresenter {
         if ( activityBeans.size() > 0 ) {
             final IPlaceRequest place = new PlaceRequest( fileType );
             place.addParameter( "path",
-                                path.toURI() );
+                    path.toURI() );
             return place;
         }
 
@@ -228,7 +228,7 @@ public class FileExplorerPresenter {
     private PlaceRequest defaultPlace(final Path path) {
         PlaceRequest defaultPlace = new PlaceRequest();
         defaultPlace.addParameter( "path",
-                                   path.toURI() );
+                path.toURI() );
         return defaultPlace;
     }
 
