@@ -4,8 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools</groupId>
-  <version>5.5.0-SNAPSHOT</version>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>guvnorng</artifactId>
+    <version>5.5.0-SNAPSHOT</version>
+  </parent>
+
   <artifactId>guvnorng-showcase</artifactId>
   <packaging>war</packaging>
 
@@ -37,42 +41,37 @@
       <scope>compile</scope>
     </dependency>
 
-  	<dependency>
-  		<groupId>org.drools</groupId>
-  		<artifactId>guvnorng-annotations</artifactId>
-  		<version>5.5.0-SNAPSHOT</version>
-  	</dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-api</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-jgit</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-eclipse</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
-    </dependency>
-
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-core</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-api</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
     </dependency>
+
+  	<dependency>
+  		<groupId>org.drools</groupId>
+  		<artifactId>guvnorng-annotations</artifactId>
+  	</dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-jgit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-eclipse</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -1350,13 +1349,27 @@
     </resources>
 
     <plugins>
+    
+      <!-- 
+      The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
+      which causes the Java Annotation Processor mechanism to not process annotations 
+      on classes in guvnorng-showcase. Why IDK but this solves the issue
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <fork>false</fork>
+        </configuration>
+      </plugin>
+    
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${gwt.maven.version}</version>
         <configuration>
           <module>org.drools.guvnor.FastCompiledGuvnorNGShowcase</module>
-
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>
