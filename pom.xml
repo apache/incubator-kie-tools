@@ -66,6 +66,7 @@
 
   <modules>
     <module>guvnorng-vfs</module>
+    <module>guvnorng-annotations</module>    
     <module>guvnorng-api</module>
     <module>guvnorng-core</module>
     <module>guvnorng-showcase</module>
@@ -73,6 +74,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Annotations -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnorng-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- Internal VFS -->
       <dependency>
         <groupId>org.drools</groupId>

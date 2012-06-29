@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.annotations.SupportedFormat;
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
 import org.drools.guvnor.client.mvp.Activity;
@@ -33,7 +34,6 @@ import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.client.resources.ShowcaseImages;
-import org.drools.guvnor.client.workbench.annotations.SupportedFormat;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;

@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.annotations.DefaultPerspective;
+import org.drools.guvnor.client.annotations.DefaultPerspective;
 import org.drools.guvnor.client.workbench.menu.GuvnorMenu;
 import org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider;
 import org.drools.guvnor.client.workbench.widgets.dnd.CompassDropController;

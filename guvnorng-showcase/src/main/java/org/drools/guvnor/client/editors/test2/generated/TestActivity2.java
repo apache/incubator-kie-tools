@@ -3,11 +3,11 @@ package org.drools.guvnor.client.editors.test2.generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.annotations.SupportedFormat;
 import org.drools.guvnor.client.editors.test2.TestPresenter2;
 import org.drools.guvnor.client.mvp.AbstractEditorScreenActivity;
 import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.client.mvp.NameToken;
-import org.drools.guvnor.client.workbench.annotations.SupportedFormat;
 import org.drools.guvnor.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;

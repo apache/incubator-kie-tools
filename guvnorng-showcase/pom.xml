@@ -3,12 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>guvnorng</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
-  </parent>
 
+  <groupId>org.drools</groupId>
+  <version>5.5.0-SNAPSHOT</version>
   <artifactId>guvnorng-showcase</artifactId>
   <packaging>war</packaging>
 
@@ -40,31 +37,41 @@
       <scope>compile</scope>
     </dependency>
 
+  	<dependency>
+  		<groupId>org.drools</groupId>
+  		<artifactId>guvnorng-annotations</artifactId>
+  		<version>5.5.0-SNAPSHOT</version>
+  	</dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-api</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-jgit</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-eclipse</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-core</artifactId>
-      <scope>provided</scope>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-api</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -1329,7 +1336,6 @@
     </profile>
   </profiles>
 
-
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
@@ -1505,7 +1511,7 @@
       </plugins>
     </pluginManagement>
   </build>
-
+  
   <!-- Repositories -->
   <repositories>
     <repository>

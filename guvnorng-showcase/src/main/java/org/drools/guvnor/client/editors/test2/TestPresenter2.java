@@ -18,14 +18,14 @@ package org.drools.guvnor.client.editors.test2;
 
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.annotations.OnClose;
-import org.drools.guvnor.client.workbench.annotations.OnFocus;
-import org.drools.guvnor.client.workbench.annotations.OnLostFocus;
-import org.drools.guvnor.client.workbench.annotations.OnMayClose;
-import org.drools.guvnor.client.workbench.annotations.OnReveal;
-import org.drools.guvnor.client.workbench.annotations.OnStart;
-import org.drools.guvnor.client.workbench.annotations.Title;
-import org.drools.guvnor.client.workbench.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.OnClose;
+import org.drools.guvnor.client.annotations.OnFocus;
+import org.drools.guvnor.client.annotations.OnLostFocus;
+import org.drools.guvnor.client.annotations.OnMayClose;
+import org.drools.guvnor.client.annotations.OnReveal;
+import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchWidget;
 import org.drools.guvnor.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -77,7 +77,7 @@ public class TestPresenter2 {
         return "Test2";
     }
 
-    @org.drools.guvnor.client.workbench.annotations.View
+    @org.drools.guvnor.client.annotations.View
     public IsWidget getView() {
         return view;
     }
