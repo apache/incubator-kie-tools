@@ -68,6 +68,7 @@ public class GuvnorNGActivityMapperImpl
         } catch ( IOCResolutionException ioce ) {
             //Could not find a bean to handle the NameToken (or we found multiple!)
             //TODO {manstis} We could present the user with a list of choices
+            System.out.println( ioce.getMessage() );
         }
 
         return null;

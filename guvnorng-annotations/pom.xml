@@ -17,8 +17,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>guvnorng-api</artifactId>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
 		</dependency>
 	</dependencies>
 

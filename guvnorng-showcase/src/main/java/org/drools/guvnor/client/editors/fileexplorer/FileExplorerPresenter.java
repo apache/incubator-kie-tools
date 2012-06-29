@@ -235,6 +235,7 @@ public class FileExplorerPresenter
         } catch ( IOCResolutionException ioce ) {
             //Could not find a bean to handle the required format (or we found multiple!)
             //TODO {manstis} We could present the user with a list of choices
+            System.out.println( ioce.getMessage() );
         }
 
         //If a specific handler was not found use a TextEditor

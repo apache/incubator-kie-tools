@@ -20,6 +20,5 @@
   <inherits name="com.google.gwt.json.JSON"/>
 
   <source path='vfs'/>
-  <source path='client'/>
 
 </module>

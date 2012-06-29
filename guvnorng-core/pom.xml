@@ -37,6 +37,11 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>guvnorng-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>vfs-common</artifactId>
     </dependency>
 
