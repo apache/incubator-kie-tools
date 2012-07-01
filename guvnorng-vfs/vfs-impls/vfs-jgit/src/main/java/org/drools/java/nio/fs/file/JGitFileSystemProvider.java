@@ -122,9 +122,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private static Map<Path, File> inmemoryCommitCache = new HashMap<Path, File>();
 
     
-    public JGitFileSystemProvider() {
-        //TODO: initialize repositories from a configuration file or from a git repository
-        
+    public JGitFileSystemProvider() {        
         this.fileSystem = new JGitFileSystem(this);
     }    
 
@@ -142,8 +140,8 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return "jgit";
     }
 
-    @Override
     //Clone a git repository or create a new git repository if giturl parameter is not present. 
+    @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
         validateURI(uri);
         
@@ -153,21 +151,19 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " already exists");
         }       
         String gitURL = (String)env.get("giturl");
-/*        if (gitURL == null || "".equals(gitURL)) {
-            throw new IllegalArgumentException("giturl is undefined");
-        } */
         String userName = (String)env.get("username");
         String password = (String)env.get("password");
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
 
         if(gitURL == null || "".equals(gitURL)) {
             //Create a new git repository
+            System.out.print("Creating repository " + rootJGitRepositoryName + "... ");
             JGitUtils.createAndConfigRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName);
+            System.out.println("Creating done.");
         } else {
             // Clone an existing git repository
             try {
-                System.out.print("Fetching " + rootJGitRepositoryName + "... ");
-                //AwtCredentialsProvider credential = new AwtCredentialsProvider();
+                System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
                 JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, gitURL, true, credential);
                 System.out.println("Fetching done.");
             } catch (Exception e) {
@@ -203,24 +199,24 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         }        
     }
         
+    //Fetch an existing git repository. 
     @Override
     public FileSystem getFileSystem(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        //validateURI(uri);
-        
+        //validateURI(uri);        
         String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
 
         if(!repositoryConfigurations.containsKey(rootJGitRepositoryName)) {
             throw new FileSystemNotFoundException("FileSystem identifed by URI: " + uri + " does not exist");
         }
+        
         JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
         String userName = (String)jGitRepositoryConfiguration.getUserName();
         String password = (String)jGitRepositoryConfiguration.getPassword();
         UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);     
         try {
-                System.out.print("Fetching " + rootJGitRepositoryName + "... ");
-                //AwtCredentialsProvider credential = new AwtCredentialsProvider();
-                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, jGitRepositoryConfiguration.getGitURL(), true, credential);
-                System.out.println("Fetching done.");
+            System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
+            JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, jGitRepositoryConfiguration.getGitURL(), true, credential);
+            System.out.println("Fetching done.");
         } catch (Exception e) {
             throw new IOException();
         }       
@@ -394,7 +390,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                         @Override public Path next() {
                             if (i < files.size()) {
                                 PathModel pathModel = files.get(i);
-                                System.out.println(pathModel.path + "  isTree: " + pathModel.isTree());
+                                //System.out.println(pathModel.path + "  isTree: " + pathModel.isTree());
                                 i++;
                                 //String uri = "jgit:///" + rootJGitRepositoryName + "/" + pathModel.path;
                                 String uri = "/" + rootJGitRepositoryName + "/" + pathModel.path;
