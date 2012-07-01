@@ -17,6 +17,7 @@
 package org.drools.java.nio.fs.file;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +27,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,12 +78,15 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.DepthWalk.Commit;
 import org.eclipse.jgit.storage.file.FileRepository;
@@ -90,6 +95,7 @@ import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
 import org.eclipse.jgit.util.FS;
 
 import com.gitblit.FileSettings;
@@ -98,6 +104,7 @@ import com.gitblit.GitBlitException;
 import com.gitblit.models.PathModel;
 import com.gitblit.models.RefModel;
 import com.gitblit.models.RepositoryModel;
+import com.gitblit.utils.JGitOutputStream;
 import com.gitblit.utils.JGitUtils;
 import com.gitblit.utils.StringUtils;
 
@@ -109,10 +116,13 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private boolean isDefault;
     
     public static final String REPOSITORIES_ROOT_DIR = ".git";
+    public static final String CACHE_DIR = ".cache";
 
     //TODO: persistent repository list to a guvnorng info git repository or to some configuration files?
     private static Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
+    private static Map<Path, File> inmemoryCommitCache = new HashMap<Path, File>();
 
+    
     public JGitFileSystemProvider() {
         //TODO: initialize repositories from a configuration file or from a git repository
         
@@ -282,13 +292,29 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public OutputStream newOutputStream(final Path path, final OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+        //String relativePath = getPathRelativeToRootJGitRepository(path.toString());   
+        Repository repository;
         try {
-            return new FileOutputStream(path.toFile());
-        } catch (FileNotFoundException e) {
+            repository = getRepository(rootJGitRepositoryName);
+            
+            File rootCacheDir = new File(CACHE_DIR);        
+            if(!rootCacheDir.exists()) {
+                rootCacheDir.mkdir();
+            }
+            File tempFile = newTempFile();
+            inmemoryCommitCache.put(path, tempFile);     
+            return new JGitOutputStream(new FileOutputStream(tempFile), this);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
             throw new IOException();
         }
     }
 
+    static File newTempFile() throws java.io.IOException {
+        return File.createTempFile("noz", null, new File(CACHE_DIR));
+    }
+    
     @Override
     public FileChannel newFileChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -534,6 +560,28 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return fileSystem;
     }
 
+    public void commitAndPush(String commitMessage) {
+        try {
+            UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("guvnorngtestuser1", "test1234");
+
+            for (Path path : inmemoryCommitCache.keySet()) {
+                File tempFile = inmemoryCommitCache.get(path);
+                final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());                
+                String relativePath = getPathRelativeToRootJGitRepository(path.toString());      
+                
+                Repository repository = getRepository(rootJGitRepositoryName);
+
+                PathModel pathModel = new PathModel(path.getFileName().toString(), relativePath, 0, 0, "");
+                JGitUtils.commitAndPush(repository, pathModel,
+                        new FileInputStream(tempFile), commitMessage,
+                        credential);
+            }
+        } catch (java.io.IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+    }
+    
     public static void main(String[] args) throws Exception {
         JGitFileSystemProvider j = new JGitFileSystemProvider();
 
@@ -564,6 +612,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         
         Repository repository = getRepository(repositoryName); 
         
+        //Path p = new PathImpl("jgit:///guvnorng-playground");       
+
+        //OutputStream os = j.newOutputStream(p, null);
+  
+            
         File source = new File("pom.xml");
         System.out.println(source.getAbsolutePath());
         PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");

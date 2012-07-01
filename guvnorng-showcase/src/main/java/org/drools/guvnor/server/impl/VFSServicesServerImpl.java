@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -60,6 +62,8 @@ import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
 import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.jboss.errai.bus.server.annotations.Service;
+
+import com.gitblit.models.PathModel;
 
 
 @Service
@@ -506,8 +510,8 @@ public class VFSServicesServerImpl implements VFSService {
                 System.out.println("path.toURI() " + path.toURI());                
             }
         }
-/*       
-        Map<String, String> env = new HashMap<String, String>();
+       
+/*        Map<String, String> env = new HashMap<String, String>();
         String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         String userName = "guvnorngtestuser1";
         String password = "test1234";
@@ -517,8 +521,16 @@ public class VFSServicesServerImpl implements VFSService {
         env.put("password", password);
         URI uri = URI.create("jgit:///guvnorng-playground");
        
-        FileSystems.newFileSystem(uri, env);
+        FileSystems.newFileSystem(uri, env);*/
                 
+        Path p = new PathImpl("jgit:///guvnorng-playground/mortgagesSample/test.drl");     
+        vfs.write(p, "some test content", "UTF-8", null);
+/*     File source = new File("pom.xml");
+     System.out.println(source.getAbsolutePath());
+     PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");
+     String commitMessage = "test. pushed from jgit.";
+     InputStream inputStream = new FileInputStream(source);*/
+/*
         Path p = new PathImpl("jgit:///guvnorng-playground");       
         DirectoryStream<Path> response = vfs.newDirectoryStream(p);
         

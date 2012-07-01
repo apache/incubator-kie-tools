@@ -18,11 +18,16 @@ package com.gitblit.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.nio.channels.Channels;
 import java.nio.charset.Charset;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -58,6 +65,7 @@ import org.eclipse.jgit.errors.ConfigInvalidException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.NotSupportedException;
+import org.eclipse.jgit.errors.ObjectWritingException;
 import org.eclipse.jgit.errors.StopWalkException;
 import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.CommitBuilder;
@@ -1858,7 +1866,76 @@ public class JGitUtils {
         }
         return inCoreIndex;
     }
+    
+    public static DirCacheEntry createInmemoryIndex(Repository repo, PathModel pathModel, OutputStream os) throws IOException {
+        DirCache inCoreIndex = DirCache.newInCore();
+        DirCacheBuilder dcBuilder = inCoreIndex.builder();
+        ObjectInserter inserter = repo.newObjectInserter();
+        ObjectId headId = repo.resolve(Constants.HEAD);
 
+        // create an index entry for the file
+/*      final DirCacheEntry dcEntry = new DirCacheEntry(StringUtils.getRelativePath(sourceFolder.getPath(), file.getPath()));
+*/
+        DirCacheEntry dcEntry = new DirCacheEntry(pathModel.path);
+            
+        //TODO: Set length and last modified correctly during commit phase
+        //dcEntry.setLength(pathModel.size);
+        //dcEntry.setLastModified(file.lastModified());
+        dcEntry.setFileMode(FileMode.REGULAR_FILE);
+
+            //dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB, file.length(), inputStream));
+        MessageDigest digest = Constants.newMessageDigest();
+
+        os = createOutputStream(digest, (FileRepository)repo); 
+        ObjectId id = ObjectId.fromRaw(digest.digest());
+/*       
+        try {
+            dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB,
+                    pathModel.size, fis));
+        } finally {
+        }
+*/
+        return dcEntry;
+    }
+    
+    //Create a temp file in jgit object repository, create an OutputStream wrap on the temp file
+    private static OutputStream createOutputStream(MessageDigest digest, final FileRepository repo) throws IOException, FileNotFoundException, Error {
+        File tmp = newTempFile(repo.getObjectsDirectory());
+        try {
+            FileOutputStream fOut = new FileOutputStream(tmp);
+            try {
+                OutputStream out = fOut;
+                //TODO
+                //if (config.getFSyncObjectFiles())
+                    out = Channels.newOutputStream(fOut.getChannel());
+                DeflaterOutputStream cOut = compress(out);
+                
+                DigestOutputStream dOut = new DigestOutputStream(cOut, digest);
+                
+                return dOut;
+            } finally {
+            }            
+        } finally {
+        }
+    }
+
+    static File newTempFile(File objectsDirectory) throws IOException {
+        return File.createTempFile("noz", null, objectsDirectory);
+    }
+
+    static DeflaterOutputStream compress(final OutputStream out) {
+        Deflater deflate = new Deflater(5);
+        return new DeflaterOutputStream(out, deflate, 8192);
+    }
+
+    void writeHeader(OutputStream out, final int type, long len)
+            throws IOException {
+        out.write(Constants.encodedTypeString(type));
+        out.write((byte) ' ');
+        out.write(Constants.encodeASCII(len));
+        out.write((byte) 0);
+    }
+    
     private static List<File> listFiles(File folder) {
         List<File> files = new ArrayList<File>();
         for (File file : folder.listFiles()) {
