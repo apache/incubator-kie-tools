@@ -1715,7 +1715,7 @@ public class JGitUtils {
                 ObjectId indexTreeId = index.writeTree(odi);
 
                 // Create a commit object
-                PersonIdent author = new PersonIdent("jervisliu", "jervisliu@gmail.com");
+                PersonIdent author = new PersonIdent("guvnorngtestuser1", "guvnorngtestuser1@gmail.com");
                 CommitBuilder commit = new CommitBuilder();
                 commit.setAuthor(author);
                 commit.setCommitter(author);

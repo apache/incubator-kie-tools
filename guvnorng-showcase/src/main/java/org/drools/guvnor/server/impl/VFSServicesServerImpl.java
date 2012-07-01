@@ -524,7 +524,7 @@ public class VFSServicesServerImpl implements VFSService {
         FileSystems.newFileSystem(uri, env);*/
                 
         Path p = new PathImpl("jgit:///guvnorng-playground/mortgagesSample/test.drl");     
-        vfs.write(p, "some test content");
+        vfs.write(p, "some test content 123");
 /*     File source = new File("pom.xml");
      System.out.println(source.getAbsolutePath());
      PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");
