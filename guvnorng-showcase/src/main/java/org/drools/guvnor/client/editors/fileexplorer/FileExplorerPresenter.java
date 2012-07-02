@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.editors.fileexplorer;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -207,38 +208,34 @@ public class FileExplorerPresenter
         } );
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private IPlaceRequest getPlace(final Path path) {
 
-        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
         final String fileType = getFileType( path.getFileName() );
-        final Annotation qualifier = new SupportedFormat() {
+        if ( fileType == null ) {
+            return defaultPlace( path );
+        }
 
-            @Override
-            public Class< ? extends Annotation> annotationType() {
-                return SupportedFormat.class;
+        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
+        //NOTE: Not using iocManager.lookupBean(class, qualifier) as it throws a IOCResolutionException
+        //because it manages to find multiple Activities matching the qualifier (for some reason!?!)
+        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( Activity.class );
+        for ( IOCBeanDef activity : activities ) {
+            final String supportedFormat = getSupportedFormat( activity.getQualifiers() );
+            if ( fileType.equalsIgnoreCase( supportedFormat ) ) {
+                final String nameToken = getNameToken( activity.getQualifiers() );
+                final IPlaceRequest place = new PlaceRequest( nameToken );
+                place.addParameter( "path",
+                                    path.toURI() );
+                return place;
             }
-
-            @Override
-            public String value() {
-                return fileType;
-            }
-
-        };
-        try {
-            final IOCBeanDef<Activity> activity = iocManager.lookupBean( Activity.class,
-                                                                         qualifier );
-            final String nameToken = getNameToken( activity.getQualifiers() );
-            final IPlaceRequest place = new PlaceRequest( nameToken );
-            place.addParameter( "path",
-                                path.toURI() );
-            return place;
-        } catch ( IOCResolutionException ioce ) {
-            //Could not find a bean to handle the required format (or we found multiple!)
-            //TODO {manstis} We could present the user with a list of choices
-            System.out.println( ioce.getMessage() );
         }
 
         //If a specific handler was not found use a TextEditor
+        return defaultPlace( path );
+    }
+
+    private PlaceRequest defaultPlace(final Path path) {
         TextEditorPlace defaultPlace = new TextEditorPlace();
         defaultPlace.addParameter( "path",
                                    path.toURI() );
@@ -256,11 +253,21 @@ public class FileExplorerPresenter
     private String getNameToken(final Set<Annotation> annotations) {
         for ( Annotation a : annotations ) {
             if ( a instanceof NameToken ) {
-                NameToken token = (NameToken) a;
+                final NameToken token = (NameToken) a;
                 return token.value();
             }
         }
         return DEFAULT_NAME_TOKEN;
+    }
+
+    private String getSupportedFormat(final Set<Annotation> annotations) {
+        for ( Annotation a : annotations ) {
+            if ( a instanceof SupportedFormat ) {
+                final SupportedFormat supportedFormat = (SupportedFormat) a;
+                return supportedFormat.value();
+            }
+        }
+        return null;
     }
 
     @Override
