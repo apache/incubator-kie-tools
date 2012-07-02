@@ -109,7 +109,8 @@ public class PlaceManagerImpl
         placeHistoryHandler.onPlaceChange( request );
     }
 
-    public void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         final IPlaceRequest place = getPlaceForWorkbenchPart( part );
         if ( place == null ) {
@@ -133,7 +134,8 @@ public class PlaceManagerImpl
         return null;
     }
 
-    public void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         final IPlaceRequest place = getPlaceForWorkbenchPart( part );
         if ( place == null ) {
@@ -143,7 +145,8 @@ public class PlaceManagerImpl
         activity.onFocus();
     }
 
-    public void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
         final WorkbenchPart part = event.getDeselectedWorkbenchPart();
         final IPlaceRequest place = getPlaceForWorkbenchPart( part );
         if ( place == null ) {

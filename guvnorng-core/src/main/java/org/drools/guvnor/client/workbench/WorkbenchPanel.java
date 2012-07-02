@@ -173,8 +173,19 @@ public class WorkbenchPanel extends ResizeComposite {
         } );
     }
 
-    public void setFocus(boolean hasFocus) {
-        this.tabPanel.setFocus( hasFocus );
+    @SuppressWarnings("unused")
+    private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
+        final WorkbenchPanel panel = event.getWorkbenchPanel();
+        this.tabPanel.setFocus( panel == this );
+    }
+
+    @SuppressWarnings("unused")
+    private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        if ( contains( part ) ) {
+            tabPanel.selectTab( part );
+            workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
+        }
     }
 
     public boolean contains(WorkbenchPart workbenchPart) {
@@ -197,14 +208,6 @@ public class WorkbenchPanel extends ResizeComposite {
             }
         }
         return removed;
-    }
-
-    public void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        if ( contains( part ) ) {
-            tabPanel.selectTab( part );
-            workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
-        }
     }
 
     @Override

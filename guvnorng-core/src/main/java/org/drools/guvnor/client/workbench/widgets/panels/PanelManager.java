@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -41,28 +42,31 @@ public class PanelManager {
 
     @Inject
     @WorkbenchPosition(position = Position.NORTH)
-    private PanelHelper         helperNorth;
+    private PanelHelper                       helperNorth;
 
     @Inject
     @WorkbenchPosition(position = Position.SOUTH)
-    private PanelHelper         helperSouth;
+    private PanelHelper                       helperSouth;
 
     @Inject
     @WorkbenchPosition(position = Position.EAST)
-    private PanelHelper         helperEast;
+    private PanelHelper                       helperEast;
 
     @Inject
     @WorkbenchPosition(position = Position.WEST)
-    private PanelHelper         helperWest;
+    private PanelHelper                       helperWest;
 
     @Inject
-    private BeanFactory         factory;
+    private BeanFactory                       factory;
 
-    private WorkbenchPanel      focusPanel      = null;
+    @Inject
+    private Event<WorkbenchPanelOnFocusEvent> workbenchPanelOnFocusEvent;
 
-    private WorkbenchPanel      rootPanel       = null;
+    private WorkbenchPanel                    focusPanel      = null;
 
-    private Set<WorkbenchPanel> workbenchPanels = new HashSet<WorkbenchPanel>();
+    private WorkbenchPanel                    rootPanel       = null;
+
+    private Set<WorkbenchPanel>               workbenchPanels = new HashSet<WorkbenchPanel>();
 
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
@@ -182,32 +186,32 @@ public class PanelManager {
         }
     }
 
-    public void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
-        final WorkbenchPanel panel = event.getWorkbenchPanel();
-        setFocus( panel );
+    private void setFocus(final WorkbenchPanel panel) {
+        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( panel ) );
     }
 
-    private void setFocus(final WorkbenchPanel panel) {
-        for ( WorkbenchPanel wbp : this.workbenchPanels ) {
-            wbp.setFocus( wbp == panel );
-        }
+    @SuppressWarnings("unused")
+    private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
+        final WorkbenchPanel panel = event.getWorkbenchPanel();
         this.focusPanel = panel;
+    }
+
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        removeWorkbenchPart( part );
+    }
+
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        removeWorkbenchPart( part );
     }
 
     private void assertFocusPanel() {
         if ( this.focusPanel == null ) {
             this.focusPanel = rootPanel;
         }
-    }
-
-    public void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        removeWorkbenchPart( part );
-    }
-
-    public void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        removeWorkbenchPart( part );
     }
 
     private void removeWorkbenchPart(WorkbenchPart workbenchPart) {
