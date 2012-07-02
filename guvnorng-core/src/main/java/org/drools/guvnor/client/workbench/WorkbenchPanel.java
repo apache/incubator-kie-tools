@@ -17,10 +17,12 @@ package org.drools.guvnor.client.workbench;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.drools.guvnor.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
@@ -91,29 +93,18 @@ public class WorkbenchPanel extends ResizeComposite {
                                                                               FOCUS_BAR_HEIGHT,
                                                                               Unit.PX );
 
-        //Clicking on the TabPanel takes focus
-        tabPanel.addDomHandler( new ClickHandler() {
-
-                                    @Override
-                                    public void onClick(ClickEvent event) {
-                                        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
-                                    }
-
-                                },
-                                ClickEvent.getType() );
-
         //Selecting a tab causes the previously selected to receive a hide event
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
 
             @Override
             public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-
                 int previousTabIndex = tabPanel.getSelectedIndex();
-                if ( previousTabIndex >= 0 ) {
-                    final Widget w = tabPanel.getWidget( previousTabIndex );
-                    if ( w instanceof WorkbenchPart ) {
-                        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( (WorkbenchPart) w ) );
-                    }
+                if ( previousTabIndex < 0 ) {
+                    return;
+                }
+                final Widget w = tabPanel.getWidget( previousTabIndex );
+                if ( w instanceof WorkbenchPart ) {
+                    workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( (WorkbenchPart) w ) );
                 }
             }
         } );
@@ -130,7 +121,6 @@ public class WorkbenchPanel extends ResizeComposite {
                 if ( w instanceof WorkbenchPart ) {
                     workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( (WorkbenchPart) w ) );
                 }
-
             }
 
         } );
@@ -141,6 +131,17 @@ public class WorkbenchPanel extends ResizeComposite {
         final FlowPanel fp = new FlowPanel();
         final InlineLabel tabLabel = new InlineLabel( part.getPartTitle() );
         fp.add( tabLabel );
+
+        //Clicking on the Tab takes focus
+        fp.addDomHandler( new ClickHandler() {
+
+                              @Override
+                              public void onClick(ClickEvent event) {
+                                  workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
+                              }
+
+                          },
+                          ClickEvent.getType() );
 
         dndManager.makeDraggable( part,
                                   tabLabel );
@@ -196,6 +197,14 @@ public class WorkbenchPanel extends ResizeComposite {
             }
         }
         return removed;
+    }
+
+    public void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        if ( contains( part ) ) {
+            tabPanel.selectTab( part );
+            workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
+        }
     }
 
     @Override

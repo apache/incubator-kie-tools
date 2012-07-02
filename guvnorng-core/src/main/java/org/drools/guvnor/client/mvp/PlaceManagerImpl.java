@@ -11,6 +11,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
@@ -44,6 +45,9 @@ public class PlaceManagerImpl
     @Inject
     private Event<WorkbenchPartCloseEvent>          workbenchPartCloseEvent;
 
+    @Inject
+    private Event<SelectWorkbenchPartEvent>         selectWorkbenchPartEvent;
+
     private PlaceHistoryHandler                     placeHistoryHandler;
 
     IPlaceRequest                                   currentPlaceRequest;
@@ -74,10 +78,9 @@ public class PlaceManagerImpl
     private void revealPlace(final IPlaceRequest newPlace) {
 
         //If we're already showing this place exit.
-        //TODO What should we do if the Activity is hidden? Hidden Activities do not appear to
-        //be handled in PlaceManagerImpl. Are hidden Activities still stored here, or do we need
-        //some other mechanism?!?!
         if ( activeActivities.containsKey( newPlace ) ) {
+            final WorkbenchPart part = existingWorkbenchParts.get( newPlace );
+            selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
             return;
         }
 
