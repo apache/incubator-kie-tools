@@ -1350,20 +1350,6 @@
 
     <plugins>
     
-      <!-- 
-      The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
-      which causes the Java Annotation Processor mechanism to not process annotations 
-      on classes in guvnorng-showcase. Why IDK but this solves the issue
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <fork>false</fork>
-        </configuration>
-      </plugin>
-    
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -1430,10 +1416,43 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
+          <!-- TODO {manstis} Ensure in porcelli's refactoring -->
+          <!-- 
+          The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
+          which causes the Java Annotation Processor mechanism to not process annotations 
+          on classes in guvnorng-showcase. Why IDK but this solves the issue
+          -->
+          <fork>false</fork>
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
       </plugin>
+
+      <!-- TODO {manstis} Ensure in porcelli's refactoring -->
+      <!-- Ensure the generated source files are included in the source path -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>add-generated-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    
+
+
+
 
       <plugin>
         <groupId>org.jboss.errai</groupId>
