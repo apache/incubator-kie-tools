@@ -217,8 +217,7 @@ public class FileExplorerPresenter
         }
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
-        //NOTE: Not using iocManager.lookupBean(class, qualifier) as it throws a IOCResolutionException
-        //because it manages to find multiple Activities matching the qualifier (for some reason!?!)
+        //See https://issues.jboss.org/browse/ERRAI-336 for why we don't use lookupBean(class, qualifiers)
         final Collection<IOCBeanDef> activities = iocManager.lookupBeans( Activity.class );
         for ( IOCBeanDef activity : activities ) {
             final String supportedFormat = getSupportedFormat( activity.getQualifiers() );
