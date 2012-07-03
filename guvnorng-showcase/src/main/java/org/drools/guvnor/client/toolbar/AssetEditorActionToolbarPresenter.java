@@ -16,17 +16,17 @@
 
 package org.drools.guvnor.client.toolbar;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchWidget;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-@ApplicationScoped
-public class AssetEditorActionToolbarPresenter
-    implements
-    StaticScreenService {
+@Dependent
+@WorkbenchWidget(nameToken = "Toolbar")
+public class AssetEditorActionToolbarPresenter {
 
     public interface View
         extends
@@ -39,29 +39,14 @@ public class AssetEditorActionToolbarPresenter
     public AssetEditorActionToolbarPresenter() {
     }
 
-    @Override
-    public void onStart() {
+    @Title
+    public String getTitle() {
+        return "Toolbar";
     }
 
-    @Override
-    public boolean mayClose() {
-        return true;
+    @org.drools.guvnor.client.annotations.View
+    public IsWidget getView() {
+        return view;
     }
 
-    @Override
-    public void onClose() {
-    }
-
-    @Override
-    public void onReveal() {
-    }
-
-    @Override
-    public void onLostFocus() {
-    }
-
-    @Override
-    public void onFocus() {
-    }
-    
 }
