@@ -25,7 +25,6 @@ import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
 import org.drools.guvnor.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,7 +32,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchWidget(nameToken = "Test2", format = "test2")
+//@WorkbenchWidget(nameToken = "Test2", format = "test2")
 public class TestPresenter2 {
 
     public interface View

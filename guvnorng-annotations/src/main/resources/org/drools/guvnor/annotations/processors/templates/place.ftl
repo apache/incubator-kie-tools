@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test.generated;
+package ${packageName};
 
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
-//TODO {manstis} This class should be generated. See TestPlace.
-public class TestPlace extends PlaceRequest {
+/*
+ * WARNING! This class is generated. Do not modify.
+ */
+public class ${className} extends PlaceRequest {
 
-    private static final String PLACE_NAME = "Test";
+    private static final String PLACE_NAME = "${tokenName}";
 
-    public TestPlace() {
+    public ${className}() {
         super( PLACE_NAME );
     }
 
