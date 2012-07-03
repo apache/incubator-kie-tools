@@ -24,7 +24,8 @@ import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -71,12 +72,12 @@ public class TestPresenter2 {
     public void onFocus() {
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "Test2";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }

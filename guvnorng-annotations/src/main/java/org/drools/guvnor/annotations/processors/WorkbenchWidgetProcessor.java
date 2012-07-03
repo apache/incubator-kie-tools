@@ -31,12 +31,12 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
 
 /**
  * 
  */
-@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchWidget")
+@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchPart")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class WorkbenchWidgetProcessor extends AbstractProcessor {
 
@@ -47,7 +47,7 @@ public class WorkbenchWidgetProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchWidget.class ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchPart.class ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
                 TypeElement classElement = (TypeElement) e;
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();

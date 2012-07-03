@@ -26,7 +26,9 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface Title {
+@Target({ElementType.TYPE})
+public @interface WorkbenchPart {
+
+    String nameToken();
 
 }

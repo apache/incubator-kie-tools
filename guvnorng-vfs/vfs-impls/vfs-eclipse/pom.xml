@@ -4,9 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
-    <artifactId>guvnorng</artifactId>
+    <artifactId>guvnorng-vfs</artifactId>
     <version>5.5.0-SNAPSHOT</version>
-    <relativePath>../../../pom.xml</relativePath>
+    <!-- Don't delete the follow. It is needed to build with a clean maven repository -->
+    <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>vfs-eclipse</artifactId>

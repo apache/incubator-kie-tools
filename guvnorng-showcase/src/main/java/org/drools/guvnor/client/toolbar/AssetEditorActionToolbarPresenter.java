@@ -19,13 +19,14 @@ package org.drools.guvnor.client.toolbar;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchWidget(nameToken = "Toolbar")
+@WorkbenchPart(nameToken = "Toolbar")
 public class AssetEditorActionToolbarPresenter {
 
     public interface View
@@ -39,12 +40,12 @@ public class AssetEditorActionToolbarPresenter {
     public AssetEditorActionToolbarPresenter() {
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "Toolbar";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }

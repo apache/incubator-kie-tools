@@ -24,7 +24,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -41,7 +41,7 @@ public class PlaceGenerator extends AbstractGenerator {
                          final ProcessingEnvironment processingEnvironment,
                          final Writer w) {
 
-        final WorkbenchWidget wbw = classElement.getAnnotation( WorkbenchWidget.class );
+        final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
         final String tokenName = wbw.nameToken();
 
         System.out.println( "-----> Generating source code for Place [" + className + "]" );

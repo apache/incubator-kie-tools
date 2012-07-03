@@ -26,11 +26,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface WorkbenchWidget {
-
-    String nameToken();
-
-    String format() default "";
+@Target({ElementType.METHOD})
+public @interface WorkbenchPartView {
 
 }

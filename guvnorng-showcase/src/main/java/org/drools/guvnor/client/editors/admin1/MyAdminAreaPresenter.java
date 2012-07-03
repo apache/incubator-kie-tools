@@ -20,13 +20,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchWidget(nameToken = "MyAdminArea")
+@WorkbenchPart(nameToken = "MyAdminArea")
 public class MyAdminAreaPresenter {
 
     public interface View
@@ -47,12 +48,12 @@ public class MyAdminAreaPresenter {
         view.setName( "MyAdminArea" );
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "MyAdminArea";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }

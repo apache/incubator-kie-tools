@@ -19,13 +19,14 @@ package org.drools.guvnor.client.editors.monitoring;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchWidget(nameToken = "Monitoring")
+@WorkbenchPart(nameToken = "Monitoring")
 public class MonitoringPerspectivePresenter {
 
     public interface MyView
@@ -39,12 +40,12 @@ public class MonitoringPerspectivePresenter {
     public MonitoringPerspectivePresenter() {
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "Monitoring perspective";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }

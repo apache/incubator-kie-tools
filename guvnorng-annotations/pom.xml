@@ -18,6 +18,11 @@
 	<dependencies>
 	
 		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>guvnorng-api</artifactId>
+		</dependency>
+	
+		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 		</dependency>

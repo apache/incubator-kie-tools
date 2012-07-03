@@ -38,9 +38,9 @@ import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.View;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -56,7 +56,7 @@ public class ActivityGenerator extends AbstractGenerator {
                          final TypeElement classElement,
                          final ProcessingEnvironment processingEnvironment,
                          final Writer w) {
-        final WorkbenchWidget wbw = classElement.getAnnotation( WorkbenchWidget.class );
+        final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
         final String tokenName = wbw.nameToken();
 
         System.out.println( "-----> Generating source code for Activity [" + className + "]" );
@@ -97,11 +97,11 @@ public class ActivityGenerator extends AbstractGenerator {
         root.put( "getTitleMethodName",
                   getStringMethodName( classElement,
                                        processingEnvironment,
-                                       Title.class ) );
+                                       WorkbenchPartTitle.class ) );
         root.put( "getWidgetMethodName",
                   getIsWidgetMethodName( classElement,
                                          processingEnvironment,
-                                         View.class ) );
+                                         WorkbenchPartView.class ) );
         root.put( "isWidget",
                   false );
 

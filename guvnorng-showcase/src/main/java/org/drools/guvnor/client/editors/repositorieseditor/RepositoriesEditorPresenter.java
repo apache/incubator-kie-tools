@@ -22,8 +22,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchWidget(nameToken = "RepositoriesEditor")
+@WorkbenchPart(nameToken = "RepositoriesEditor")
 public class RepositoriesEditorPresenter {
 
     @Inject
@@ -96,12 +97,12 @@ public class RepositoriesEditorPresenter {
         } );
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "RepositoriesEditor";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }

@@ -24,15 +24,16 @@ import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.Title;
-import org.drools.guvnor.client.annotations.WorkbenchWidget;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchWidget(nameToken = "Test")
+@WorkbenchPart(nameToken = "Test")
 public class TestPresenter {
 
     public interface View
@@ -71,12 +72,12 @@ public class TestPresenter {
     public void onFocus() {
     }
 
-    @Title
+    @WorkbenchPartTitle
     public String getTitle() {
         return "Test";
     }
 
-    @org.drools.guvnor.client.annotations.View
+    @WorkbenchPartView
     public IsWidget getView() {
         return view;
     }
