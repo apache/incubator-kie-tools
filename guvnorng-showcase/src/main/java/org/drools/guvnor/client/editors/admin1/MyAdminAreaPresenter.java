@@ -46,7 +46,7 @@ public class MyAdminAreaPresenter {
     public void onStart() {
         view.setName( "MyAdminArea" );
     }
-    
+
     @Title
     public String getTitle() {
         return "MyAdminArea";
@@ -56,7 +56,5 @@ public class MyAdminAreaPresenter {
     public IsWidget getView() {
         return view;
     }
-
-
 
 }
