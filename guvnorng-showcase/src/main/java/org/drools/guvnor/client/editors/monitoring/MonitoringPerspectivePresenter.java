@@ -16,17 +16,17 @@
 
 package org.drools.guvnor.client.editors.monitoring;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchWidget;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-@ApplicationScoped
-public class MonitoringPerspectivePresenter
-    implements
-    StaticScreenService {
+@Dependent
+@WorkbenchWidget(nameToken = "Monitoring")
+public class MonitoringPerspectivePresenter {
 
     public interface MyView
         extends
@@ -39,29 +39,14 @@ public class MonitoringPerspectivePresenter
     public MonitoringPerspectivePresenter() {
     }
 
-    @Override
-    public void onStart() {
+    @Title
+    public String getTitle() {
+        return "Monitoring perspective";
     }
 
-    @Override
-    public boolean mayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-    }
-
-    @Override
-    public void onReveal() {
-    }
-
-    @Override
-    public void onLostFocus() {
-    }
-
-    @Override
-    public void onFocus() {
+    @org.drools.guvnor.client.annotations.View
+    public IsWidget getView() {
+        return view;
     }
 
 }
