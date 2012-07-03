@@ -21,7 +21,9 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchWidget;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -34,9 +36,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-public class RepositoriesEditorPresenter
-    implements
-    StaticScreenService {
+@WorkbenchWidget(nameToken = "RepositoriesEditor")
+public class RepositoriesEditorPresenter {
 
     @Inject
     Caller<VFSService>     vfsService;
@@ -63,7 +64,7 @@ public class RepositoriesEditorPresenter
     public RepositoriesEditorPresenter() {
     }
 
-    @Override
+    @OnStart
     public void onStart() {
         vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
             @Override
@@ -78,44 +79,31 @@ public class RepositoriesEditorPresenter
             }
         } ).listJGitRepositories();
 
-        view.getCreateRepoButton().addClickHandler(
-                                                    new ClickHandler() {
-                                                        @Override
-                                                        public void onClick(ClickEvent event) {
-                                                            NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
-                                                            newRepositoryWizard.show();
-                                                        }
-                                                    } );
+        view.getCreateRepoButton().addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                newRepositoryWizard.show();
+            }
+        } );
 
-        view.getCloneRepoButton().addClickHandler(
-                                                   new ClickHandler() {
-                                                       @Override
-                                                       public void onClick(ClickEvent event) {
-                                                           CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
-                                                           cloneRepositoryWizard.show();
-                                                       }
-                                                   } );
+        view.getCloneRepoButton().addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                cloneRepositoryWizard.show();
+            }
+        } );
     }
 
-    @Override
-    public boolean mayClose() {
-        return true;
+    @Title
+    public String getTitle() {
+        return "RepositoriesEditor";
     }
 
-    @Override
-    public void onClose() {
-    }
-
-    @Override
-    public void onReveal() {
-    }
-
-    @Override
-    public void onLostFocus() {
-    }
-
-    @Override
-    public void onFocus() {
+    @org.drools.guvnor.client.annotations.View
+    public IsWidget getView() {
+        return view;
     }
 
 }
