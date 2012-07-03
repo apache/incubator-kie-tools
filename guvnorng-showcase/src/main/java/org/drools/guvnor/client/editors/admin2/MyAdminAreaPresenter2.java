@@ -19,14 +19,15 @@ package org.drools.guvnor.client.editors.admin2;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.Title;
+import org.drools.guvnor.client.annotations.WorkbenchWidget;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-public class MyAdminAreaPresenter2
-    implements
-    StaticScreenService {
+@WorkbenchWidget(nameToken = "MyAdminArea2")
+public class MyAdminAreaPresenter2 {
 
     public interface View
         extends
@@ -41,30 +42,19 @@ public class MyAdminAreaPresenter2
     public MyAdminAreaPresenter2() {
     }
 
-    @Override
+    @OnStart
     public void onStart() {
         view.setName( "AdminArea2" );
     }
 
-    @Override
-    public boolean mayClose() {
-        return true;
+    @Title
+    public String getTitle() {
+        return "MyAdminArea2";
     }
 
-    @Override
-    public void onClose() {
-    }
-
-    @Override
-    public void onReveal() {
-    }
-
-    @Override
-    public void onLostFocus() {
-    }
-
-    @Override
-    public void onFocus() {
+    @org.drools.guvnor.client.annotations.View
+    public IsWidget getView() {
+        return view;
     }
 
 }
