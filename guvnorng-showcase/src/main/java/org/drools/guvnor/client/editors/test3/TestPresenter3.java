@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test2;
+package org.drools.guvnor.client.editors.test3;
 
 import javax.inject.Inject;
 
@@ -33,8 +33,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-//@WorkbenchWidget(nameToken = "Test2", format = "test2")
-public class TestPresenter2 {
+//@WorkbenchWidget(nameToken = "Test3", format = "test2")
+public class TestPresenter3 {
 
     public interface View
         extends
@@ -44,7 +44,7 @@ public class TestPresenter2 {
     @Inject
     public View view;
 
-    public TestPresenter2() {
+    public TestPresenter3() {
     }
 
     @OnStart
@@ -74,7 +74,7 @@ public class TestPresenter2 {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Test2";
+        return "Test3";
     }
 
     @WorkbenchPartView

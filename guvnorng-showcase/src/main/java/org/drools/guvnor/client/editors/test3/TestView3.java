@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test2;
+package org.drools.guvnor.client.editors.test3;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
-import org.drools.guvnor.client.annotations.WorkbenchPart;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,16 +29,16 @@ import com.google.gwt.user.client.ui.RequiresResize;
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
  */
-@WorkbenchPart(nameToken = "Test2")
-public class TestView2 extends Composite
+public class TestView3 extends Composite
     implements
-    RequiresResize {
+    RequiresResize,
+    TestPresenter3.View {
 
     @Inject
-    UiBinder<Panel, TestView2> uiBinder;
+    UiBinder<Panel, TestView3> uiBinder;
 
     @UiField
-    public HTMLPanel           panel;
+    public HTMLPanel          panel;
 
     @PostConstruct
     public void init() {
@@ -54,11 +51,6 @@ public class TestView2 extends Composite
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width,
                             height );
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Test2";
     }
 
 }

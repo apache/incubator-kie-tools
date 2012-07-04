@@ -18,12 +18,6 @@ package org.drools.guvnor.client.editors.test;
 
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.OnClose;
-import org.drools.guvnor.client.annotations.OnFocus;
-import org.drools.guvnor.client.annotations.OnLostFocus;
-import org.drools.guvnor.client.annotations.OnMayClose;
-import org.drools.guvnor.client.annotations.OnReveal;
-import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
@@ -45,31 +39,6 @@ public class TestPresenter {
     public View view;
 
     public TestPresenter() {
-    }
-
-    @OnStart
-    public void onStart() {
-    }
-
-    @OnMayClose
-    public boolean mayClose() {
-        return true;
-    }
-
-    @OnClose
-    public void onClose() {
-    }
-
-    @OnReveal
-    public void onReveal() {
-    }
-
-    @OnLostFocus
-    public void onLostFocus() {
-    }
-
-    @OnFocus
-    public void onFocus() {
     }
 
     @WorkbenchPartTitle

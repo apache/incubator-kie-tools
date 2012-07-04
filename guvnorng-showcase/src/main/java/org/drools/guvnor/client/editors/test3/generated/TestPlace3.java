@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test2.generated;
+package org.drools.guvnor.client.editors.test3.generated;
 
 import javax.enterprise.context.Dependent;
 
@@ -22,11 +22,11 @@ import org.drools.guvnor.client.mvp.PlaceRequest;
 
 //TODO {manstis} This class should be generated. See TestPlace.
 @Dependent
-public class TestPlace2 extends PlaceRequest {
+public class TestPlace3 extends PlaceRequest {
 
-    private static final String PLACE_NAME = "Test2";
+    private static final String PLACE_NAME = "Test3";
 
-    public TestPlace2() {
+    public TestPlace3() {
         super( PLACE_NAME );
     }
 

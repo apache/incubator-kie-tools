@@ -1,10 +1,10 @@
-package org.drools.guvnor.client.editors.test2.generated;
+package org.drools.guvnor.client.editors.test3.generated;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.SupportedFormat;
-import org.drools.guvnor.client.editors.test2.TestPresenter2;
+import org.drools.guvnor.client.editors.test3.TestPresenter3;
 import org.drools.guvnor.client.mvp.AbstractEditorScreenActivity;
 import org.drools.guvnor.client.mvp.EditorScreenService;
 import org.drools.guvnor.client.mvp.NameToken;
@@ -13,15 +13,15 @@ import org.drools.guvnor.vfs.Path;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("Test2")
-@SupportedFormat("test2")
-//TODO {manstis} This class should be generated. See TestPlace2.
-public class TestActivity2 extends AbstractEditorScreenActivity
+@NameToken("Test3")
+@SupportedFormat("test3")
+//TODO {manstis} This class should be generated. See TestPlace3.
+public class TestActivity3 extends AbstractEditorScreenActivity
     implements
     EditorScreenService {
 
     @Inject
-    private TestPresenter2 realPresenter;
+    private TestPresenter3 realPresenter;
 
     @Override
     public void onStart(Path path) {

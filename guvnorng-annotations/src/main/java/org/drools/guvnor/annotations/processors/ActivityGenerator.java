@@ -108,7 +108,8 @@ public class ActivityGenerator extends AbstractGenerator {
                                          processingEnvironment,
                                          WorkbenchPartView.class ) );
         root.put( "isWidget",
-                  false );
+                  getIsWidget( classElement,
+                               processingEnvironment ) );
 
         try {
             final Template template = config.getTemplate( "activity.ftl" );
@@ -259,6 +260,15 @@ public class ActivityGenerator extends AbstractGenerator {
             return e.getSimpleName().toString();
         }
         return null;
+    }
+
+    private boolean getIsWidget(final TypeElement classElement,
+                                final ProcessingEnvironment processingEnvironment) {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
+        return typeUtils.isAssignable( classElement.asType(),
+                                       requiredReturnType );
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -19,6 +19,6 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
   <g:HTMLPanel ui:field="panel">
-    <p>Some blurbage for TestView3 an editor based upon a IsWidget</p>
+    <p>Some blurbage for TestView3</p>
   </g:HTMLPanel>
 </ui:UiBinder> 
