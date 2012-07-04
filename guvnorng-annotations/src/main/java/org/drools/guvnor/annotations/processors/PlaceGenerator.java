@@ -15,8 +15,9 @@
  */
 package org.drools.guvnor.annotations.processors;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,28 +25,37 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
+import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * 
+ * A source code generator for Places
  */
 public class PlaceGenerator extends AbstractGenerator {
 
-    public void generate(final String packageName,
-                         final PackageElement packageElement,
-                         final String className,
-                         final TypeElement classElement,
-                         final ProcessingEnvironment processingEnvironment,
-                         final Writer w) {
+    private static final Logger logger = LoggerFactory.getLogger( PlaceGenerator.class );
 
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final TypeElement classElement,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        logger.debug( "Starting code generation for [" + className + "]" );
+
+        //Extract required information
         final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
         final String tokenName = wbw.nameToken();
 
-        System.out.println( "-----> Generating source code for Place [" + className + "]" );
+        logger.debug( "Package name: " + packageName );
+        logger.debug( "Class name: " + className );
+        logger.debug( "Token name: " + tokenName );
 
+        //Setup data for template sub-system
         Map<String, String> root = new HashMap<String, String>();
         root.put( "packageName",
                   packageName );
@@ -54,15 +64,28 @@ public class PlaceGenerator extends AbstractGenerator {
         root.put( "tokenName",
                   tokenName );
 
+        //Generate code
+        final StringWriter sw = new StringWriter();
+        final BufferedWriter bw = new BufferedWriter( sw );
         try {
             final Template template = config.getTemplate( "place.ftl" );
             template.process( root,
-                              w );
+                              bw );
         } catch ( IOException ioe ) {
-            System.out.println( ioe.getMessage() );
+            throw new GenerationException( ioe );
         } catch ( TemplateException te ) {
-            System.out.println( te.getMessage() );
+            throw new GenerationException( te );
+        } finally {
+            try {
+                bw.close();
+                sw.close();
+            } catch ( IOException ioe ) {
+                throw new GenerationException( ioe );
+            }
         }
+        logger.debug( "Successfully generated code for [" + className + "]" );
+
+        return sw.getBuffer();
     }
 
 }

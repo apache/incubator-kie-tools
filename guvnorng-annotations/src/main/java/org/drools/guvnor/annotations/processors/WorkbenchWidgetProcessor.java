@@ -31,14 +31,19 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
+import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Processor for {@code WorkbenchPart} and related annotations
  */
 @SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchPart")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class WorkbenchWidgetProcessor extends AbstractProcessor {
+
+    private static final Logger     logger            = LoggerFactory.getLogger( WorkbenchWidgetProcessor.class );
 
     private final PlaceGenerator    placeGenerator    = new PlaceGenerator();
 
@@ -47,62 +52,66 @@ public class WorkbenchWidgetProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
+        //We don't have any post-processing
+        if ( roundEnv.processingOver() ) {
+            return false;
+        }
+
+        //Scan for all classes with the WorkbenchPart annotation
         for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchPart.class ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
+
                 TypeElement classElement = (TypeElement) e;
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-                generatePlace( packageElement,
-                               classElement );
-                generateActivity( packageElement,
-                                  classElement );
+
+                logger.info( "Discovered class [" + classElement.getSimpleName() + "]" );
+
+                final String packageName = packageElement.getQualifiedName().toString();
+                final String classNamePlace = classElement.getSimpleName() + "Place";
+                final String classNameActivity = classElement.getSimpleName() + "Activity";
+
+                try {
+                    //Try generating code for each required class
+                    logger.info( "Generating generate code for [" + classNamePlace + "]" );
+                    final StringBuffer placeCode = placeGenerator.generate( packageName,
+                                                                            packageElement,
+                                                                            classNamePlace,
+                                                                            classElement,
+                                                                            processingEnv );
+
+                    logger.info( "Generating code for [" + classNameActivity + "]" );
+                    final StringBuffer activityCode = activityGenerator.generate( packageName,
+                                                                                  packageElement,
+                                                                                  classNameActivity,
+                                                                                  classElement,
+                                                                                  processingEnv );
+
+                    //If code is successfully created write files
+                    writeCode( packageName,
+                               classNamePlace,
+                               placeCode );
+                    writeCode( packageName,
+                               classNameActivity,
+                               activityCode );
+                } catch ( GenerationException ge ) {
+                    logger.error( "An error occurred generating code for [" + classElement.getSimpleName() + "]",
+                                  ge );
+                }
             }
         }
         return true;
     }
 
-    private void generatePlace(final PackageElement packageElement,
-                               final TypeElement classElement) {
+    private void writeCode(final String packageName,
+                           final String className,
+                           final StringBuffer code) {
         try {
-
-            final String packageName = packageElement.getQualifiedName().toString();
-            final String className = classElement.getSimpleName() + "Place";
-
             JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
             Writer w = jfo.openWriter();
             BufferedWriter bw = new BufferedWriter( w );
-            placeGenerator.generate( packageName,
-                                     packageElement,
-                                     className,
-                                     classElement,
-                                     processingEnv,
-                                     bw );
+            bw.append( code );
             bw.close();
             w.close();
-
-        } catch ( IOException ioe ) {
-            System.out.println( ioe.getMessage() );
-        }
-    }
-
-    private void generateActivity(final PackageElement packageElement,
-                                  final TypeElement classElement) {
-        try {
-
-            final String packageName = packageElement.getQualifiedName().toString();
-            final String className = classElement.getSimpleName() + "Activity";
-
-            JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
-            Writer w = jfo.openWriter();
-            BufferedWriter bw = new BufferedWriter( w );
-            activityGenerator.generate( packageName,
-                                        packageElement,
-                                        className,
-                                        classElement,
-                                        processingEnv,
-                                        bw );
-            bw.close();
-            w.close();
-
         } catch ( IOException ioe ) {
             System.out.println( ioe.getMessage() );
         }

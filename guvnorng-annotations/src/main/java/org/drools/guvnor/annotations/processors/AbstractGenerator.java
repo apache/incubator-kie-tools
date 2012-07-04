@@ -15,34 +15,33 @@
  */
 package org.drools.guvnor.annotations.processors;
 
-import java.io.Writer;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+
+import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 
 /**
- * 
+ * A class capable of generating source code using FreeMarker templates
  */
 public abstract class AbstractGenerator {
 
-    protected Configuration config;
+    protected static Configuration config;
 
-    public AbstractGenerator() {
+    {
         config = new Configuration();
         config.setClassForTemplateLoading( getClass(),
                                            "templates" );
         config.setObjectWrapper( new DefaultObjectWrapper() );
     }
 
-    public abstract void generate(final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final TypeElement classElement,
-                                  final ProcessingEnvironment processingEnvironment,
-                                  final Writer w);
+    public abstract StringBuffer generate(final String packageName,
+                                          final PackageElement packageElement,
+                                          final String className,
+                                          final TypeElement classElement,
+                                          final ProcessingEnvironment processingEnvironment) throws GenerationException;
 
 }

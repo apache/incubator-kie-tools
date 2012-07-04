@@ -15,8 +15,9 @@
  */
 package org.drools.guvnor.annotations.processors;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 import org.drools.guvnor.client.annotations.DefaultPosition;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnFocus;
@@ -39,29 +41,85 @@ import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * 
+ * A source code generator for Activities
  */
 public class ActivityGenerator extends AbstractGenerator {
 
-    public void generate(final String packageName,
-                         final PackageElement packageElement,
-                         final String className,
-                         final TypeElement classElement,
-                         final ProcessingEnvironment processingEnvironment,
-                         final Writer w) {
+    private static final Logger logger = LoggerFactory.getLogger( ActivityGenerator.class );
+
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final TypeElement classElement,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        logger.debug( "Starting code generation for [" + className + "]" );
+
+        //Extract required information
         final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
         final String tokenName = wbw.nameToken();
+        final String onStartMethodName = getVoidMethodName( classElement,
+                                                            processingEnvironment,
+                                                            OnStart.class );
+        final String mayCloseMethodName = getBooleanMethodName( classElement,
+                                                                processingEnvironment,
+                                                                OnMayClose.class );
+        final String onCloseMethodName = getVoidMethodName( classElement,
+                                                            processingEnvironment,
+                                                            OnClose.class );
+        final String onRevealMethodName = getVoidMethodName( classElement,
+                                                             processingEnvironment,
+                                                             OnReveal.class );
+        final String onLostFocusMethodName = getVoidMethodName( classElement,
+                                                                processingEnvironment,
+                                                                OnLostFocus.class );
+        final String onFocusMethodName = getVoidMethodName( classElement,
+                                                            processingEnvironment,
+                                                            OnFocus.class );
+        final String getDefaultPositionMethodName = getDefaultPositionMethodName( classElement,
+                                                                                  processingEnvironment,
+                                                                                  DefaultPosition.class );
+        final String getTitleMethodName = getStringMethodName( classElement,
+                                                               processingEnvironment,
+                                                               WorkbenchPartTitle.class );
+        final String getWidgetMethodName = getIsWidgetMethodName( classElement,
+                                                                  processingEnvironment,
+                                                                  WorkbenchPartView.class );
+        final boolean isWidget = getIsWidget( classElement,
+                                              processingEnvironment );
 
-        System.out.println( "-----> Generating source code for Activity [" + className + "]" );
+        logger.debug( "Package name: " + packageName );
+        logger.debug( "Class name: " + className );
+        logger.debug( "Token name: " + tokenName );
+        logger.debug( "onStartMethodName: " + onStartMethodName );
+        logger.debug( "mayCloseMethodName: " + mayCloseMethodName );
+        logger.debug( "onCloseMethodName: " + onCloseMethodName );
+        logger.debug( "onRevealMethodName: " + onRevealMethodName );
+        logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
+        logger.debug( "onFocusMethodName: " + onFocusMethodName );
+        logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
+        logger.debug( "getTitleMethodName: " + getTitleMethodName );
+        logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
+        logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
 
+        //Validate getWidgetMethodName and isWidget
+        if ( !isWidget && getWidgetMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return an IsWidget." );
+        }
+        if ( isWidget && getWidgetMethodName != null ) {
+            logger.warn( "The WorkbenchPart both extends isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+        }
+
+        //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
                   packageName );
@@ -72,65 +130,62 @@ public class ActivityGenerator extends AbstractGenerator {
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",
-                  getVoidMethodName( classElement,
-                                     processingEnvironment,
-                                     OnStart.class ) );
+                  onStartMethodName );
         root.put( "mayCloseMethodName",
-                  getBooleanMethodName( classElement,
-                                        processingEnvironment,
-                                        OnMayClose.class ) );
+                  mayCloseMethodName );
         root.put( "onCloseMethodName",
-                  getVoidMethodName( classElement,
-                                     processingEnvironment,
-                                     OnClose.class ) );
+                  onCloseMethodName );
         root.put( "onRevealMethodName",
-                  getVoidMethodName( classElement,
-                                     processingEnvironment,
-                                     OnReveal.class ) );
+                  onRevealMethodName );
         root.put( "onLostFocusMethodName",
-                  getVoidMethodName( classElement,
-                                     processingEnvironment,
-                                     OnLostFocus.class ) );
+                  onLostFocusMethodName );
         root.put( "onFocusMethodName",
-                  getVoidMethodName( classElement,
-                                     processingEnvironment,
-                                     OnFocus.class ) );
+                  onFocusMethodName );
         root.put( "getDefaultPositionMethodName",
-                  getDefaultPositionMethodName( classElement,
-                                                processingEnvironment,
-                                                DefaultPosition.class ) );
+                  getDefaultPositionMethodName );
         root.put( "getTitleMethodName",
-                  getStringMethodName( classElement,
-                                       processingEnvironment,
-                                       WorkbenchPartTitle.class ) );
+                  getTitleMethodName );
         root.put( "getWidgetMethodName",
-                  getIsWidgetMethodName( classElement,
-                                         processingEnvironment,
-                                         WorkbenchPartView.class ) );
+                  getWidgetMethodName );
         root.put( "isWidget",
-                  getIsWidget( classElement,
-                               processingEnvironment ) );
+                  isWidget );
 
+        //Generate code
+        final StringWriter sw = new StringWriter();
+        final BufferedWriter bw = new BufferedWriter( sw );
         try {
             final Template template = config.getTemplate( "activity.ftl" );
             template.process( root,
-                              w );
+                              bw );
         } catch ( IOException ioe ) {
-            System.out.println( ioe.getMessage() );
+            throw new GenerationException( ioe );
         } catch ( TemplateException te ) {
-            System.out.println( te.getMessage() );
+            throw new GenerationException( te );
+        } finally {
+            try {
+                bw.close();
+                sw.close();
+            } catch ( IOException ioe ) {
+                throw new GenerationException( ioe );
+            }
         }
+        logger.debug( "Successfully generated code for [" + className + "]" );
+
+        return sw.getBuffer();
     }
 
+    //Lookup a public method name with the given annotation. 
+    //The method must be public, non-static, have a return-type of void and take zero parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
     private String getVoidMethodName(final TypeElement classElement,
                                      final ProcessingEnvironment processingEnvironment,
-                                     final Class annotation) {
+                                     final Class annotation) throws GenerationException {
 
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final TypeMirror requiredReturnType = typeUtils.getNoType( TypeKind.VOID );
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
+        ExecutableElement match = null;
         for ( ExecutableElement e : methods ) {
 
             final TypeMirror actualReturnType = e.getReturnType();
@@ -152,20 +207,29 @@ public class ActivityGenerator extends AbstractGenerator {
             if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
                 continue;
             }
-            return e.getSimpleName().toString();
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        return null;
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
     }
 
+    //Lookup a public method name with the given annotation. 
+    //The method must be public, non-static, have a return-type of boolean and take zero parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
     private String getBooleanMethodName(final TypeElement classElement,
                                         final ProcessingEnvironment processingEnvironment,
-                                        final Class annotation) {
+                                        final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.Boolean" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
+        ExecutableElement match = null;
         for ( ExecutableElement e : methods ) {
 
             final TypeMirror actualReturnType = e.getReturnType();
@@ -187,20 +251,29 @@ public class ActivityGenerator extends AbstractGenerator {
             if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
                 continue;
             }
-            return e.getSimpleName().toString();
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        return null;
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
     }
 
+    //Lookup a public method name with the given annotation. 
+    //The method must be public, non-static, have a return-type of String and take zero parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
     private String getStringMethodName(final TypeElement classElement,
                                        final ProcessingEnvironment processingEnvironment,
-                                       final Class annotation) {
+                                       final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.String" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
+        ExecutableElement match = null;
         for ( ExecutableElement e : methods ) {
 
             final TypeMirror actualReturnType = e.getReturnType();
@@ -222,20 +295,29 @@ public class ActivityGenerator extends AbstractGenerator {
             if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
                 continue;
             }
-            return e.getSimpleName().toString();
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        return null;
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
     }
 
+    //Lookup a public method name with the given annotation. 
+    //The method must be public, non-static, have a return-type of IsWidget and take zero parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
     private String getIsWidgetMethodName(final TypeElement classElement,
                                          final ProcessingEnvironment processingEnvironment,
-                                         final Class annotation) {
+                                         final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
+        ExecutableElement match = null;
         for ( ExecutableElement e : methods ) {
 
             final TypeMirror actualReturnType = e.getReturnType();
@@ -257,11 +339,18 @@ public class ActivityGenerator extends AbstractGenerator {
             if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
                 continue;
             }
-            return e.getSimpleName().toString();
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        return null;
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
     }
 
+    //Check whether the provided type extends IsWidget.
     private boolean getIsWidget(final TypeElement classElement,
                                 final ProcessingEnvironment processingEnvironment) {
         final Types typeUtils = processingEnvironment.getTypeUtils();
@@ -271,15 +360,18 @@ public class ActivityGenerator extends AbstractGenerator {
                                        requiredReturnType );
     }
 
+    //Lookup a public method name with the given annotation. 
+    //The method must be public, non-static, have a return-type of Position and take zero parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
     private String getDefaultPositionMethodName(final TypeElement classElement,
                                                 final ProcessingEnvironment processingEnvironment,
-                                                final Class annotation) {
+                                                final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.drools.guvnor.client.workbench.Position" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
+        ExecutableElement match = null;
         for ( ExecutableElement e : methods ) {
 
             final TypeMirror actualReturnType = e.getReturnType();
@@ -301,9 +393,15 @@ public class ActivityGenerator extends AbstractGenerator {
             if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
                 continue;
             }
-            return e.getSimpleName().toString();
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        return null;
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
     }
 
 }
