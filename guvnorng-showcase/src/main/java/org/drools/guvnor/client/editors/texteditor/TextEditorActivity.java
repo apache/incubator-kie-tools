@@ -3,8 +3,8 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.AbstractEditorScreenActivity;
-import org.drools.guvnor.client.mvp.EditorScreenService;
+import org.drools.guvnor.client.mvp.AbstractEditorActivity;
+import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @NameToken("TextEditor")
-public class TextEditorActivity extends AbstractEditorScreenActivity {
+public class TextEditorActivity extends AbstractEditorActivity {
 
     @Inject
     private IOCBeanManager      manager;
@@ -28,7 +28,7 @@ public class TextEditorActivity extends AbstractEditorScreenActivity {
     }
 
     @Override
-    public EditorScreenService getPresenter() {
+    public EditorService getPresenter() {
         this.presenter = manager.lookupBean( TextEditorPresenter.class ).getInstance();
         return this.presenter;
     }

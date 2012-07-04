@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchPart(nameToken = "RepositoriesEditor")
+@WorkbenchScreen(nameToken = "RepositoriesEditor")
 public class RepositoriesEditorPresenter {
 
     @Inject

@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.AbstractScreenActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -38,12 +38,12 @@ public class GuvnorMenu extends Composite {
             @Override
             public void onClick(ClickEvent clickEvent) {
 
-                final Set<AbstractStaticScreenActivity> activities = new HashSet<AbstractStaticScreenActivity>();
+                final Set<AbstractScreenActivity> activities = new HashSet<AbstractScreenActivity>();
 
-                Collection<IOCBeanDef> activityBeans = iocManager.lookupBeans( AbstractStaticScreenActivity.class );
+                Collection<IOCBeanDef> activityBeans = iocManager.lookupBeans( AbstractScreenActivity.class );
 
                 for ( IOCBeanDef activityBean : activityBeans ) {
-                    final AbstractStaticScreenActivity instance = (AbstractStaticScreenActivity) activityBean.getInstance();
+                    final AbstractScreenActivity instance = (AbstractScreenActivity) activityBean.getInstance();
                     activities.add( instance );
                 }
 

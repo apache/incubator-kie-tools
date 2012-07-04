@@ -35,15 +35,17 @@ import javax.lang.model.util.Types;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 import org.drools.guvnor.client.annotations.DefaultPosition;
+import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
+import org.drools.guvnor.client.annotations.OnSave;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,9 +55,9 @@ import freemarker.template.TemplateException;
 /**
  * A source code generator for Activities
  */
-public class ActivityGenerator extends AbstractGenerator {
+public class EditorActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( ActivityGenerator.class );
+    private static final Logger logger = LoggerFactory.getLogger( EditorActivityGenerator.class );
 
     public StringBuffer generate(final String packageName,
                                  final PackageElement packageElement,
@@ -65,7 +67,7 @@ public class ActivityGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
+        final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
         final String tokenName = wbw.nameToken();
         final String onStartMethodName = getVoidMethodName( classElement,
                                                             processingEnvironment,
@@ -96,6 +98,12 @@ public class ActivityGenerator extends AbstractGenerator {
                                                                   WorkbenchPartView.class );
         final boolean isWidget = getIsWidget( classElement,
                                               processingEnvironment );
+        final String isDirtyMethodName = getBooleanMethodName( classElement,
+                                                               processingEnvironment,
+                                                               IsDirty.class );
+        final String onSaveMethodName = getVoidMethodName( classElement,
+                                                           processingEnvironment,
+                                                           OnSave.class );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -110,6 +118,8 @@ public class ActivityGenerator extends AbstractGenerator {
         logger.debug( "getTitleMethodName: " + getTitleMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
+        logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
+        logger.debug( "onSaveMethodName: " + onSaveMethodName );
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -149,12 +159,16 @@ public class ActivityGenerator extends AbstractGenerator {
                   getWidgetMethodName );
         root.put( "isWidget",
                   isWidget );
+        root.put( "isDirtyMethodName",
+                  isDirtyMethodName );
+        root.put( "onSaveMethodName",
+                  onSaveMethodName );
 
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
-            final Template template = config.getTemplate( "activity.ftl" );
+            final Template template = config.getTemplate( "activityEditor.ftl" );
             template.process( root,
                               bw );
         } catch ( IOException ioe ) {

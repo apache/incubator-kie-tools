@@ -22,11 +22,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * 
  */
-public abstract class AbstractStaticScreenActivity
+public abstract class AbstractScreenActivity
     implements
     Activity {
 
-    private StaticScreenService presenter;
+    private ScreenService presenter;
 
     @Override
     public Position getDefaultPosition() {
@@ -75,7 +75,7 @@ public abstract class AbstractStaticScreenActivity
         presenter.onReveal();
     }
 
-    public abstract StaticScreenService getPresenter();
+    public abstract ScreenService getPresenter();
 
     public abstract String getTitle();
 

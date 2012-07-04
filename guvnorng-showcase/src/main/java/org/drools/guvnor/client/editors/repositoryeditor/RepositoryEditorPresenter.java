@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.mvp.ScreenService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Dependent
 public class RepositoryEditorPresenter
     implements
-    StaticScreenService {
+    ScreenService {
 
     @Inject
     Caller<VFSService>   vfsService;

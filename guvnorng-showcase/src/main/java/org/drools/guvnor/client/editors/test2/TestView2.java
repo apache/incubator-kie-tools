@@ -19,7 +19,7 @@ package org.drools.guvnor.client.editors.test2;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
  */
-@WorkbenchPart(nameToken = "Test2")
+@WorkbenchScreen(nameToken = "Test2")
 public class TestView2 extends Composite
     implements
     RequiresResize {

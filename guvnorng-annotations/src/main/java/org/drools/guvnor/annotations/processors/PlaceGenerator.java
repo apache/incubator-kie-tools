@@ -26,7 +26,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class PlaceGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final WorkbenchPart wbw = classElement.getAnnotation( WorkbenchPart.class );
+        final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
         final String tokenName = wbw.nameToken();
 
         logger.debug( "Package name: " + packageName );

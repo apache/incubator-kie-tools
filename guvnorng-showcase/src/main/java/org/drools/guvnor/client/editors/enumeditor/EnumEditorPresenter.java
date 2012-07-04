@@ -18,7 +18,7 @@ package org.drools.guvnor.client.editors.enumeditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.EditorScreenService;
+import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Dependent
 public class EnumEditorPresenter
     implements
-    EditorScreenService {
+    EditorService {
 
     @Inject
     View                 view;

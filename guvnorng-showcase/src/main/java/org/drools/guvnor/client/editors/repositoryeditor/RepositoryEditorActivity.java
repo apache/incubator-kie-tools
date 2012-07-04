@@ -3,18 +3,18 @@ package org.drools.guvnor.client.editors.repositoryeditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.AbstractScreenActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.mvp.ScreenService;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @NameToken("RepositoryEditor")
-public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
+public class RepositoryEditorActivity extends AbstractScreenActivity {
 
     @Inject
     private IOCBeanManager            iocManager;
@@ -28,7 +28,7 @@ public class RepositoryEditorActivity extends AbstractStaticScreenActivity {
     }
 
     @Override
-    public StaticScreenService getPresenter() {
+    public ScreenService getPresenter() {
         this.presenter = iocManager.lookupBean( RepositoryEditorPresenter.class ).getInstance();
         return this.presenter;
     }

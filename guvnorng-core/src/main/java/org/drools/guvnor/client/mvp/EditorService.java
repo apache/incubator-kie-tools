@@ -18,9 +18,9 @@ package org.drools.guvnor.client.mvp;
 
 import org.drools.guvnor.vfs.Path;
 
-public interface EditorScreenService
+public interface EditorService
     extends
-    BaseScreenService {
+    BaseService {
 
     // onStart() is called right after the Presenter is constructed.
     public void onStart(Path path);

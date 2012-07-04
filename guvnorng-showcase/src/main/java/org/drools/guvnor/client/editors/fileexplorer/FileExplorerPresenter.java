@@ -30,7 +30,7 @@ import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.SupportedFormat;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.common.Util;
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
-@WorkbenchPart(nameToken = "FileExplorer")
+@WorkbenchScreen(nameToken = "FileExplorer")
 public class FileExplorerPresenter {
 
     @Inject

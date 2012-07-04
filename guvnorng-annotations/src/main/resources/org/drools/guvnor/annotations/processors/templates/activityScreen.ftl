@@ -20,9 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.editors.test.TestPresenter;
-import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.AbstractScreenActivity;
 import org.drools.guvnor.client.mvp.NameToken;
-import org.drools.guvnor.client.mvp.StaticScreenService;
+import org.drools.guvnor.client.mvp.ScreenService;
 <#if getDefaultPositionMethodName??>
 import org.drools.guvnor.client.workbench.Position;
 </#if>
@@ -34,9 +34,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractStaticScreenActivity
+public class ${className} extends AbstractScreenActivity
     implements
-    StaticScreenService {
+    ScreenService {
 
     @Inject
     private ${realClassName} realPresenter;
@@ -129,7 +129,7 @@ public class ${className} extends AbstractStaticScreenActivity
     
     </#if>
     @Override
-    public StaticScreenService getPresenter() {
+    public ScreenService getPresenter() {
         return this;
     }
 

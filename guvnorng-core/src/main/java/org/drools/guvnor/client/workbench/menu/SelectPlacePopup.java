@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
+import org.drools.guvnor.client.mvp.AbstractScreenActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 
@@ -26,23 +26,23 @@ public class SelectPlacePopup extends PopupPanel
 
     private final VerticalPanel layout = new VerticalPanel();
 
-    public SelectPlacePopup(Set<AbstractStaticScreenActivity> activities) {
+    public SelectPlacePopup(Set<AbstractScreenActivity> activities) {
         add( layout );
 
         //Sort Activities so they're always in the same sequence!
-        List<AbstractStaticScreenActivity> sortedActivities = new ArrayList<AbstractStaticScreenActivity>( activities );
+        List<AbstractScreenActivity> sortedActivities = new ArrayList<AbstractScreenActivity>( activities );
         Collections.sort( sortedActivities,
-                          new Comparator<AbstractStaticScreenActivity>() {
+                          new Comparator<AbstractScreenActivity>() {
 
                               @Override
-                              public int compare(AbstractStaticScreenActivity o1,
-                                                 AbstractStaticScreenActivity o2) {
+                              public int compare(AbstractScreenActivity o1,
+                                                 AbstractScreenActivity o2) {
                                   return o1.getTitle().compareTo( o2.getTitle() );
                               }
 
                           } );
 
-        for ( final AbstractStaticScreenActivity activity : sortedActivities ) {
+        for ( final AbstractScreenActivity activity : sortedActivities ) {
             Button button = new Button( activity.getTitle() );
             button.addClickHandler( new ClickHandler() {
                 @Override

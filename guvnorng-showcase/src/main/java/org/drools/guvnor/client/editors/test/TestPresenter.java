@@ -18,7 +18,7 @@ package org.drools.guvnor.client.editors.test;
 
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchPart(nameToken = "Test")
+@WorkbenchScreen(nameToken = "Test")
 public class TestPresenter {
 
     public interface View

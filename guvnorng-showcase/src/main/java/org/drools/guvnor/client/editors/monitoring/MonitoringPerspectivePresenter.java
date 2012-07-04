@@ -19,14 +19,14 @@ package org.drools.guvnor.client.editors.monitoring;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchPart(nameToken = "Monitoring")
+@WorkbenchScreen(nameToken = "Monitoring")
 public class MonitoringPerspectivePresenter {
 
     public interface MyView

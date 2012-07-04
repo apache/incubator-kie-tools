@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * 
  */
-public abstract class AbstractEditorScreenActivity
+public abstract class AbstractEditorActivity
     implements
     Activity {
 
     @Inject
     private PlaceManager        placeManager;
 
-    private EditorScreenService presenter;
+    private EditorService presenter;
 
     @Override
     public Position getDefaultPosition() {
@@ -79,7 +79,7 @@ public abstract class AbstractEditorScreenActivity
             String uri = placeRequest.getParameter( "path",
                                                     null );
             Path path = new PathImpl( uri );
-            ((EditorScreenService) presenter).onStart( path );
+            ((EditorService) presenter).onStart( path );
         }
 
         acceptPanel.add( getTitle(),
@@ -87,7 +87,7 @@ public abstract class AbstractEditorScreenActivity
         presenter.onReveal();
     }
 
-    public abstract EditorScreenService getPresenter();
+    public abstract EditorService getPresenter();
 
     public abstract String getTitle();
 

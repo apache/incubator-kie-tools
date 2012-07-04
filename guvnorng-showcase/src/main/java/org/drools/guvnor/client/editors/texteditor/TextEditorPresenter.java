@@ -19,7 +19,7 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.mvp.EditorScreenService;
+import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Dependent
 public class TextEditorPresenter
     implements
-    EditorScreenService {
+    EditorService {
 
     public interface View
         extends

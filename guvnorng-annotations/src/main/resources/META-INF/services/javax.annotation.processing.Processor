@@ -1,1 +1,2 @@
-org.drools.guvnor.annotations.processors.WorkbenchWidgetProcessor
+org.drools.guvnor.annotations.processors.WorkbenchScreenProcessor
+org.drools.guvnor.annotations.processors.WorkbenchEditorProcessor

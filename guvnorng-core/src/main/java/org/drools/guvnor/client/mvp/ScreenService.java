@@ -13,22 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.drools.guvnor.client.mvp;
 
 /**
  * 
  */
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface WorkbenchPart {
+public interface ScreenService
+    extends
+    BaseService {
 
-    String nameToken();
+    // onStart() is called right after the Presenter is constructed.
+    public void onStart();
 
 }

@@ -32,22 +32,22 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Processor for {@code WorkbenchPart} and related annotations
+ * Processor for {@code WorkbenchScreen} and related annotations
  */
-@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchPart")
+@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchScreen")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class WorkbenchWidgetProcessor extends AbstractProcessor {
+public class WorkbenchScreenProcessor extends AbstractProcessor {
 
-    private static final Logger     logger            = LoggerFactory.getLogger( WorkbenchWidgetProcessor.class );
+    private static final Logger           logger            = LoggerFactory.getLogger( WorkbenchScreenProcessor.class );
 
-    private final PlaceGenerator    placeGenerator    = new PlaceGenerator();
+    private final PlaceGenerator          placeGenerator    = new PlaceGenerator();
 
-    private final ActivityGenerator activityGenerator = new ActivityGenerator();
+    private final ScreenActivityGenerator activityGenerator = new ScreenActivityGenerator();
 
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
@@ -58,7 +58,7 @@ public class WorkbenchWidgetProcessor extends AbstractProcessor {
         }
 
         //Scan for all classes with the WorkbenchPart annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchPart.class ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchScreen.class ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;
