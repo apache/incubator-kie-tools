@@ -29,7 +29,7 @@ public abstract class AbstractStaticScreenActivity
     private StaticScreenService presenter;
 
     @Override
-    public Position getPreferredPosition() {
+    public Position getDefaultPosition() {
         return Position.ROOT;
     }
 

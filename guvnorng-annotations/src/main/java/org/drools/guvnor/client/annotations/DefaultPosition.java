@@ -21,19 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-
 import org.drools.guvnor.client.workbench.Position;
 
 /**
  * Default position for WorkbenchParts added to the Workbench
  */
-@Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.METHOD})
 public @interface DefaultPosition {
 
-    Position getPosition() default Position.SELF;
-    
+    Position getPosition() default Position.ROOT;
+
 }

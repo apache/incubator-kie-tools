@@ -99,7 +99,7 @@ public class PlaceManagerImpl
                                                     part );
 
                         panelManager.addWorkbenchPanel( part,
-                                                        activity.getPreferredPosition() );
+                                                        activity.getDefaultPosition() );
                     }
                 } );
         updateHistory( newPlace );

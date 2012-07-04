@@ -23,6 +23,9 @@ import org.drools.guvnor.client.editors.test.TestPresenter;
 import org.drools.guvnor.client.mvp.AbstractStaticScreenActivity;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.StaticScreenService;
+<#if getDefaultPositionMethodName??>
+import org.drools.guvnor.client.workbench.Position;
+</#if>
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -117,7 +120,14 @@ public class ${className} extends AbstractStaticScreenActivity
         return null;
         </#if>
     }
-
+    
+    <#if getDefaultPositionMethodName??>
+    @Override
+    public Position getDefaultPosition() {
+        return realPresenter.${getDefaultPositionMethodName}();
+    }
+    
+    </#if>
     @Override
     public StaticScreenService getPresenter() {
         return this;

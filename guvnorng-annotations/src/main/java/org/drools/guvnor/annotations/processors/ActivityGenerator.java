@@ -32,6 +32,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import org.drools.guvnor.client.annotations.DefaultPosition;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnLostFocus;
@@ -94,6 +95,10 @@ public class ActivityGenerator extends AbstractGenerator {
                   getVoidMethodName( classElement,
                                      processingEnvironment,
                                      OnFocus.class ) );
+        root.put( "getDefaultPositionMethodName",
+                  getDefaultPositionMethodName( classElement,
+                                                processingEnvironment,
+                                                DefaultPosition.class ) );
         root.put( "getTitleMethodName",
                   getStringMethodName( classElement,
                                        processingEnvironment,
@@ -228,6 +233,41 @@ public class ActivityGenerator extends AbstractGenerator {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
+        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
+
+        for ( ExecutableElement e : methods ) {
+
+            final TypeMirror actualReturnType = e.getReturnType();
+
+            //Check method
+            if ( e.getAnnotation( annotation ) == null ) {
+                continue;
+            }
+            if ( !typeUtils.isAssignable( actualReturnType,
+                                          requiredReturnType ) ) {
+                continue;
+            }
+            if ( e.getParameters().size() != 0 ) {
+                continue;
+            }
+            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
+                continue;
+            }
+            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
+                continue;
+            }
+            return e.getSimpleName().toString();
+        }
+        return null;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private String getDefaultPositionMethodName(final TypeElement classElement,
+                                                final ProcessingEnvironment processingEnvironment,
+                                                final Class annotation) {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.drools.guvnor.client.workbench.Position" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         for ( ExecutableElement e : methods ) {

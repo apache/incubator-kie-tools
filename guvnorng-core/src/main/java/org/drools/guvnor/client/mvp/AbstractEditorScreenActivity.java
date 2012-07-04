@@ -36,7 +36,7 @@ public abstract class AbstractEditorScreenActivity
     private EditorScreenService presenter;
 
     @Override
-    public Position getPreferredPosition() {
+    public Position getDefaultPosition() {
         return Position.ROOT;
     }
 

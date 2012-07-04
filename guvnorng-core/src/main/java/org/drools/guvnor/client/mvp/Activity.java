@@ -28,7 +28,7 @@ public interface Activity {
 
     public void onClosePlace();
 
-    public Position getPreferredPosition();
+    public Position getDefaultPosition();
     
     public void onRevealPlace(AcceptItem acceptPanel);
 

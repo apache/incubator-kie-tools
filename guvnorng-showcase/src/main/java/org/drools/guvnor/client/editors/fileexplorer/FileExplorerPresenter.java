@@ -25,7 +25,14 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.annotations.DefaultPosition;
+import org.drools.guvnor.client.annotations.OnFocus;
+import org.drools.guvnor.client.annotations.OnReveal;
+import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.SupportedFormat;
+import org.drools.guvnor.client.annotations.WorkbenchPart;
+import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
 import org.drools.guvnor.client.mvp.Activity;
@@ -33,8 +40,8 @@ import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.client.mvp.StaticScreenService;
 import org.drools.guvnor.client.resources.ShowcaseImages;
+import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
@@ -47,7 +54,6 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.jboss.errai.ioc.client.container.IOCResolutionException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -59,9 +65,8 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
-public class FileExplorerPresenter
-    implements
-    StaticScreenService {
+@WorkbenchPart(nameToken = "FileExplorer")
+public class FileExplorerPresenter {
 
     @Inject
     View                        view;
@@ -96,7 +101,7 @@ public class FileExplorerPresenter
     private static ShowcaseImages images    = GWT.create( ShowcaseImages.class );
     private static final String   LAZY_LOAD = "Loading...";
 
-    @Override
+    @OnStart
     public void onStart() {
         view.getRootItem().setUserObject( REPOSITORY_ID );
         view.getRootItem().addItem( LAZY_LOAD );
@@ -269,27 +274,29 @@ public class FileExplorerPresenter
         return null;
     }
 
-    @Override
-    public boolean mayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-    }
-
-    @Override
+    @OnReveal
     public void onReveal() {
         view.setFocus();
     }
 
-    @Override
-    public void onLostFocus() {
-    }
-
-    @Override
+    @OnFocus
     public void onFocus() {
         view.setFocus();
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "File Explorer";
+    }
+
+    @WorkbenchPartView
+    public IsWidget getWidget() {
+        return view;
+    }
+
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return Position.WEST;
     }
 
     private boolean needsLoading(TreeItem item) {

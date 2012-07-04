@@ -19,8 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.DefaultPerspective;
-import org.drools.guvnor.client.editors.fileexplorer.FileExplorerPlace;
 import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
@@ -50,7 +50,7 @@ public class FileExplorerPerspective
         //TODO {manstis} We should ideally be able to construct a perspective by adding panels to the Workbench root panel
         //This approach, however, does not currently register Activities within the MVP framework and hence unpredictable
         //results can occur.
-        placeManager.goTo( new FileExplorerPlace() );
+        placeManager.goTo( new PlaceRequest( "FileExplorer" ) );
     }
 
 }
