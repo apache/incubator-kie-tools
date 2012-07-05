@@ -29,13 +29,11 @@ import org.drools.guvnor.client.annotations.DefaultPosition;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.SupportedFormat;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
+import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.editors.texteditor.TextEditorPlace;
-import org.drools.guvnor.client.mvp.Activity;
+import org.drools.guvnor.client.mvp.AbstractEditorActivity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.NameToken;
 import org.drools.guvnor.client.mvp.PlaceManager;
@@ -223,12 +221,11 @@ public class FileExplorerPresenter {
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
         //See https://issues.jboss.org/browse/ERRAI-336 for why we don't use lookupBean(class, qualifiers)
-        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( Activity.class );
+        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( AbstractEditorActivity.class );
         for ( IOCBeanDef activity : activities ) {
-            final String supportedFormat = getSupportedFormat( activity.getQualifiers() );
-            if ( fileType.equalsIgnoreCase( supportedFormat ) ) {
-                final String nameToken = getNameToken( activity.getQualifiers() );
-                final IPlaceRequest place = new PlaceRequest( nameToken );
+            final String supportedFileType = getNameToken( activity.getQualifiers() );
+            if ( fileType.equalsIgnoreCase( supportedFileType ) ) {
+                final IPlaceRequest place = new PlaceRequest( supportedFileType );
                 place.addParameter( "path",
                                     path.toURI() );
                 return place;
@@ -240,7 +237,7 @@ public class FileExplorerPresenter {
     }
 
     private PlaceRequest defaultPlace(final Path path) {
-        TextEditorPlace defaultPlace = new TextEditorPlace();
+        PlaceRequest defaultPlace = new PlaceRequest( );
         defaultPlace.addParameter( "path",
                                    path.toURI() );
         return defaultPlace;
@@ -257,18 +254,8 @@ public class FileExplorerPresenter {
     private String getNameToken(final Set<Annotation> annotations) {
         for ( Annotation a : annotations ) {
             if ( a instanceof NameToken ) {
-                final NameToken token = (NameToken) a;
-                return token.value();
-            }
-        }
-        return DEFAULT_NAME_TOKEN;
-    }
-
-    private String getSupportedFormat(final Set<Annotation> annotations) {
-        for ( Annotation a : annotations ) {
-            if ( a instanceof SupportedFormat ) {
-                final SupportedFormat supportedFormat = (SupportedFormat) a;
-                return supportedFormat.value();
+                final NameToken nameToken = (NameToken) a;
+                return nameToken.value();
             }
         }
         return null;

@@ -27,10 +27,12 @@ import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.workbench.Position;
 </#if>
 
+import org.drools.guvnor.vfs.Path;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("${tokenName}")
+@NameToken("${fileType}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
@@ -40,11 +42,6 @@ public class ${className} extends AbstractEditorActivity
 
     @Inject
     private ${realClassName} realPresenter;
-
-    @Override
-    public String getNameToken() {
-        return "${tokenName}";
-    }
 
     @Override
     public void onStart(final Path path) {

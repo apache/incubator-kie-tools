@@ -30,6 +30,10 @@ public class PlaceRequest extends Place
 
     private final Map<String, String> parameters = new HashMap<String, String>();
 
+    public PlaceRequest() {
+        this.nameToken = "";
+    }
+
     public PlaceRequest(String nameToken) {
         this.nameToken = nameToken;
     }

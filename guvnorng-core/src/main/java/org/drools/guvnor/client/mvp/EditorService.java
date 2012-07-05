@@ -26,7 +26,7 @@ public interface EditorService
     public void onStart(Path path);
 
     // Perform a save.
-    public void doSave();
+    public void onSave();
 
     //Is the editor dirty, i.e. contains unsaved state
     public boolean isDirty();

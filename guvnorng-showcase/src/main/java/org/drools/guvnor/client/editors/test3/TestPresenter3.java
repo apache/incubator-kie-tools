@@ -18,12 +18,15 @@ package org.drools.guvnor.client.editors.test3;
 
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnLostFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
+import org.drools.guvnor.client.annotations.OnSave;
 import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.vfs.Path;
@@ -33,7 +36,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-//@WorkbenchWidget(nameToken = "Test3", format = "test2")
+@WorkbenchEditor(fileType = "test2")
 public class TestPresenter3 {
 
     public interface View
@@ -82,11 +85,11 @@ public class TestPresenter3 {
         return view;
     }
 
-    //@Save
+    @OnSave
     public void doSave() {
     }
 
-    //@IsDirty
+    @IsDirty
     public boolean isDirty() {
         return false;
     }

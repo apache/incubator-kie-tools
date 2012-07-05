@@ -26,7 +26,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +48,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
-        final String tokenName = wbw.nameToken();
+        final WorkbenchEditor wbw = classElement.getAnnotation( WorkbenchEditor.class );
+        final String fileType = wbw.fileType();
         final String onStartMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
                                                                                            processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
@@ -77,7 +77,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
-        logger.debug( "Token name: " + tokenName );
+        logger.debug( "File type: " + fileType );
         logger.debug( "onStartMethodName: " + onStartMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
@@ -105,8 +105,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
-        root.put( "tokenName",
-                  tokenName );
+        root.put( "fileType",
+                  fileType );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",

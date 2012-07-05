@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface WorkbenchEditor {
 
-    String fileType();
+    String fileType() default "";
 
 }

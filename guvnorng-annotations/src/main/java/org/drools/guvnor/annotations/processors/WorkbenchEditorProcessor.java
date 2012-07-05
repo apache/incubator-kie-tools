@@ -45,8 +45,6 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
 
     private static final Logger           logger            = LoggerFactory.getLogger( WorkbenchEditorProcessor.class );
 
-    private final PlaceGenerator          placeGenerator    = new PlaceGenerator();
-
     private final EditorActivityGenerator activityGenerator = new EditorActivityGenerator();
 
     @Override
@@ -67,18 +65,10 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
                 logger.info( "Discovered class [" + classElement.getSimpleName() + "]" );
 
                 final String packageName = packageElement.getQualifiedName().toString();
-                final String classNamePlace = classElement.getSimpleName() + "Place";
                 final String classNameActivity = classElement.getSimpleName() + "Activity";
 
                 try {
                     //Try generating code for each required class
-                    logger.info( "Generating generate code for [" + classNamePlace + "]" );
-                    final StringBuffer placeCode = placeGenerator.generate( packageName,
-                                                                            packageElement,
-                                                                            classNamePlace,
-                                                                            classElement,
-                                                                            processingEnv );
-
                     logger.info( "Generating code for [" + classNameActivity + "]" );
                     final StringBuffer activityCode = activityGenerator.generate( packageName,
                                                                                   packageElement,
@@ -87,9 +77,6 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
                                                                                   processingEnv );
 
                     //If code is successfully created write files
-                    writeCode( packageName,
-                               classNamePlace,
-                               placeCode );
                     writeCode( packageName,
                                classNameActivity,
                                activityCode );

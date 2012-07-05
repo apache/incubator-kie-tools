@@ -79,6 +79,7 @@ public abstract class AbstractScreenActivity
 
     public abstract String getTitle();
 
+    //TODO {manstis} This can be deleted once the static popup menu is removed
     public abstract String getNameToken();
 
     public abstract IsWidget getWidget();
