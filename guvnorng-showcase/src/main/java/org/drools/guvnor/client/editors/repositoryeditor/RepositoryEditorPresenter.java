@@ -74,7 +74,7 @@ public class RepositoryEditorPresenter
     }
 
     @Override
-    public boolean mayClose() {
+    public boolean onMayClose() {
         return true;
     }
 

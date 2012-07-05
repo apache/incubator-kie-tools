@@ -30,9 +30,9 @@ public class TestActivity3 extends AbstractEditorActivity
     }
 
     @Override
-    public boolean mayClose() {
+    public boolean onMayClose() {
         //This may do nothing if the real presenter does not have a @MayClose annotation
-        return realPresenter.mayClose();
+        return realPresenter.onMayClose();
     }
 
     @Override

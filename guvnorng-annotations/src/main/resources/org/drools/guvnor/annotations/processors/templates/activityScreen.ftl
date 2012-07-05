@@ -56,9 +56,9 @@ public class ${className} extends AbstractScreenActivity
     }
 
     @Override
-    public boolean mayClose() {
-        <#if mayCloseMethodName??>
-        return realPresenter.${mayCloseMethodName}();
+    public boolean onMayClose() {
+        <#if onMayCloseMethodName??>
+        return realPresenter.${onMayCloseMethodName}();
         <#else>
         return true;
         </#if>

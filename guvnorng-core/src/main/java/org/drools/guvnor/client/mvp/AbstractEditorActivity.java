@@ -31,7 +31,7 @@ public abstract class AbstractEditorActivity
     Activity {
 
     @Inject
-    private PlaceManager        placeManager;
+    private PlaceManager  placeManager;
 
     private EditorService presenter;
 
@@ -42,7 +42,7 @@ public abstract class AbstractEditorActivity
 
     public boolean mayStop() {
         if ( presenter != null ) {
-            return presenter.mayClose();
+            return presenter.onMayClose();
         }
         return true;
     }
@@ -54,7 +54,7 @@ public abstract class AbstractEditorActivity
     @Override
     public boolean mayClosePlace() {
         if ( presenter != null ) {
-            return presenter.mayClose();
+            return presenter.onMayClose();
         }
         return true;
     }

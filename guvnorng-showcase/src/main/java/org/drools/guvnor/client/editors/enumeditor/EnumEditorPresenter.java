@@ -79,7 +79,7 @@ public class EnumEditorPresenter
     }
 
     @Override
-    public boolean mayClose() {
+    public boolean onMayClose() {
         return Window.confirm( "Are you sure you want to close?" );
     }
 

@@ -19,32 +19,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.DefaultPosition;
-import org.drools.guvnor.client.annotations.IsDirty;
-import org.drools.guvnor.client.annotations.OnClose;
-import org.drools.guvnor.client.annotations.OnFocus;
-import org.drools.guvnor.client.annotations.OnLostFocus;
-import org.drools.guvnor.client.annotations.OnMayClose;
-import org.drools.guvnor.client.annotations.OnReveal;
-import org.drools.guvnor.client.annotations.OnSave;
-import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
-import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,47 +50,36 @@ public class EditorActivityGenerator extends AbstractGenerator {
         //Extract required information
         final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
         final String tokenName = wbw.nameToken();
-        final String onStartMethodName = getVoidMethodName( classElement,
-                                                            processingEnvironment,
-                                                            OnStart.class );
-        final String mayCloseMethodName = getBooleanMethodName( classElement,
-                                                                processingEnvironment,
-                                                                OnMayClose.class );
-        final String onCloseMethodName = getVoidMethodName( classElement,
-                                                            processingEnvironment,
-                                                            OnClose.class );
-        final String onRevealMethodName = getVoidMethodName( classElement,
-                                                             processingEnvironment,
-                                                             OnReveal.class );
-        final String onLostFocusMethodName = getVoidMethodName( classElement,
-                                                                processingEnvironment,
-                                                                OnLostFocus.class );
-        final String onFocusMethodName = getVoidMethodName( classElement,
-                                                            processingEnvironment,
-                                                            OnFocus.class );
-        final String getDefaultPositionMethodName = getDefaultPositionMethodName( classElement,
-                                                                                  processingEnvironment,
-                                                                                  DefaultPosition.class );
-        final String getTitleMethodName = getStringMethodName( classElement,
-                                                               processingEnvironment,
-                                                               WorkbenchPartTitle.class );
-        final String getWidgetMethodName = getIsWidgetMethodName( classElement,
-                                                                  processingEnvironment,
-                                                                  WorkbenchPartView.class );
-        final boolean isWidget = getIsWidget( classElement,
-                                              processingEnvironment );
-        final String isDirtyMethodName = getBooleanMethodName( classElement,
-                                                               processingEnvironment,
-                                                               IsDirty.class );
-        final String onSaveMethodName = getVoidMethodName( classElement,
-                                                           processingEnvironment,
-                                                           OnSave.class );
+        final String onStartMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
+                                                                                           processingEnvironment );
+        final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
+                                                                                    processingEnvironment );
+        final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
+                                                                              processingEnvironment );
+        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
+                                                                                processingEnvironment );
+        final String onLostFocusMethodName = GeneratorUtils.getOnLostFocusMethodName( classElement,
+                                                                                      processingEnvironment );
+        final String onFocusMethodName = GeneratorUtils.getOnFocusMethodName( classElement,
+                                                                              processingEnvironment );
+        final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName( classElement,
+                                                                                                 processingEnvironment );
+        final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
+                                                                             processingEnvironment );
+        final String getWidgetMethodName = GeneratorUtils.getWidgetMethodName( classElement,
+                                                                               processingEnvironment );
+        final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
+                                                             processingEnvironment );
+        final String isDirtyMethodName = GeneratorUtils.getIsDirtyMethodName( classElement,
+                                                                              processingEnvironment );
+        final String onSaveMethodName = GeneratorUtils.getOnSaveMethodName( classElement,
+                                                                            processingEnvironment );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Token name: " + tokenName );
         logger.debug( "onStartMethodName: " + onStartMethodName );
-        logger.debug( "mayCloseMethodName: " + mayCloseMethodName );
+        logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
         logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
@@ -141,8 +111,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",
                   onStartMethodName );
-        root.put( "mayCloseMethodName",
-                  mayCloseMethodName );
+        root.put( "onMayCloseMethodName",
+                  onMayCloseMethodName );
         root.put( "onCloseMethodName",
                   onCloseMethodName );
         root.put( "onRevealMethodName",
@@ -186,236 +156,6 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
-    }
-
-    //Lookup a public method name with the given annotation. 
-    //The method must be public, non-static, have a return-type of void and take zero parameters.
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String getVoidMethodName(final TypeElement classElement,
-                                     final ProcessingEnvironment processingEnvironment,
-                                     final Class annotation) throws GenerationException {
-
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final TypeMirror requiredReturnType = typeUtils.getNoType( TypeKind.VOID );
-        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
-
-        ExecutableElement match = null;
-        for ( ExecutableElement e : methods ) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if ( e.getAnnotation( annotation ) == null ) {
-                continue;
-            }
-            if ( !typeUtils.isSameType( actualReturnType,
-                                        requiredReturnType ) ) {
-                continue;
-            }
-            if ( e.getParameters().size() != 0 ) {
-                continue;
-            }
-            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                continue;
-            }
-            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-                continue;
-            }
-            if ( match != null ) {
-                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
-            }
-            match = e;
-        }
-        if ( match == null ) {
-            return null;
-        }
-        return match.getSimpleName().toString();
-    }
-
-    //Lookup a public method name with the given annotation. 
-    //The method must be public, non-static, have a return-type of boolean and take zero parameters.
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String getBooleanMethodName(final TypeElement classElement,
-                                        final ProcessingEnvironment processingEnvironment,
-                                        final Class annotation) throws GenerationException {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.Boolean" ).asType();
-        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
-
-        ExecutableElement match = null;
-        for ( ExecutableElement e : methods ) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if ( e.getAnnotation( annotation ) == null ) {
-                continue;
-            }
-            if ( !typeUtils.isAssignable( actualReturnType,
-                                          requiredReturnType ) ) {
-                continue;
-            }
-            if ( e.getParameters().size() != 0 ) {
-                continue;
-            }
-            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                continue;
-            }
-            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-                continue;
-            }
-            if ( match != null ) {
-                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
-            }
-            match = e;
-        }
-        if ( match == null ) {
-            return null;
-        }
-        return match.getSimpleName().toString();
-    }
-
-    //Lookup a public method name with the given annotation. 
-    //The method must be public, non-static, have a return-type of String and take zero parameters.
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String getStringMethodName(final TypeElement classElement,
-                                       final ProcessingEnvironment processingEnvironment,
-                                       final Class annotation) throws GenerationException {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.String" ).asType();
-        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
-
-        ExecutableElement match = null;
-        for ( ExecutableElement e : methods ) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if ( e.getAnnotation( annotation ) == null ) {
-                continue;
-            }
-            if ( !typeUtils.isAssignable( actualReturnType,
-                                          requiredReturnType ) ) {
-                continue;
-            }
-            if ( e.getParameters().size() != 0 ) {
-                continue;
-            }
-            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                continue;
-            }
-            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-                continue;
-            }
-            if ( match != null ) {
-                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
-            }
-            match = e;
-        }
-        if ( match == null ) {
-            return null;
-        }
-        return match.getSimpleName().toString();
-    }
-
-    //Lookup a public method name with the given annotation. 
-    //The method must be public, non-static, have a return-type of IsWidget and take zero parameters.
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String getIsWidgetMethodName(final TypeElement classElement,
-                                         final ProcessingEnvironment processingEnvironment,
-                                         final Class annotation) throws GenerationException {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
-        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
-
-        ExecutableElement match = null;
-        for ( ExecutableElement e : methods ) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if ( e.getAnnotation( annotation ) == null ) {
-                continue;
-            }
-            if ( !typeUtils.isAssignable( actualReturnType,
-                                          requiredReturnType ) ) {
-                continue;
-            }
-            if ( e.getParameters().size() != 0 ) {
-                continue;
-            }
-            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                continue;
-            }
-            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-                continue;
-            }
-            if ( match != null ) {
-                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
-            }
-            match = e;
-        }
-        if ( match == null ) {
-            return null;
-        }
-        return match.getSimpleName().toString();
-    }
-
-    //Check whether the provided type extends IsWidget.
-    private boolean getIsWidget(final TypeElement classElement,
-                                final ProcessingEnvironment processingEnvironment) {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
-        return typeUtils.isAssignable( classElement.asType(),
-                                       requiredReturnType );
-    }
-
-    //Lookup a public method name with the given annotation. 
-    //The method must be public, non-static, have a return-type of Position and take zero parameters.
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String getDefaultPositionMethodName(final TypeElement classElement,
-                                                final ProcessingEnvironment processingEnvironment,
-                                                final Class annotation) throws GenerationException {
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.drools.guvnor.client.workbench.Position" ).asType();
-        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
-
-        ExecutableElement match = null;
-        for ( ExecutableElement e : methods ) {
-
-            final TypeMirror actualReturnType = e.getReturnType();
-
-            //Check method
-            if ( e.getAnnotation( annotation ) == null ) {
-                continue;
-            }
-            if ( !typeUtils.isAssignable( actualReturnType,
-                                          requiredReturnType ) ) {
-                continue;
-            }
-            if ( e.getParameters().size() != 0 ) {
-                continue;
-            }
-            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                continue;
-            }
-            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-                continue;
-            }
-            if ( match != null ) {
-                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
-            }
-            match = e;
-        }
-        if ( match == null ) {
-            return null;
-        }
-        return match.getSimpleName().toString();
     }
 
 }

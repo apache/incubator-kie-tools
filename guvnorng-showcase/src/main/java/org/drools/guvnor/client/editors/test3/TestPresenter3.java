@@ -52,7 +52,7 @@ public class TestPresenter3 {
     }
 
     @OnMayClose
-    public boolean mayClose() {
+    public boolean onMayClose() {
         return true;
     }
 

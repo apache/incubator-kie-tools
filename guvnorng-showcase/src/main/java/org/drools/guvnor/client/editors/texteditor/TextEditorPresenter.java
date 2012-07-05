@@ -48,7 +48,7 @@ public class TextEditorPresenter
     }
 
     @Inject
-    public  View               view;
+    public View                view;
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -86,7 +86,7 @@ public class TextEditorPresenter
     }
 
     @Override
-    public boolean mayClose() {
+    public boolean onMayClose() {
         return true;
     }
 

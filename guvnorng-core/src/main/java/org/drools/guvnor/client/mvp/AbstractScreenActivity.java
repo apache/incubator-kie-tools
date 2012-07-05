@@ -35,7 +35,7 @@ public abstract class AbstractScreenActivity
 
     public boolean mayStop() {
         if ( presenter != null ) {
-            return presenter.mayClose();
+            return presenter.onMayClose();
         }
         return true;
     }
@@ -47,7 +47,7 @@ public abstract class AbstractScreenActivity
     @Override
     public boolean mayClosePlace() {
         if ( presenter != null ) {
-            return presenter.mayClose();
+            return presenter.onMayClose();
         }
         return true;
     }
