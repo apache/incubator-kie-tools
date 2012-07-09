@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.editors.fileexplorer;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,9 +31,9 @@ import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.mvp.AbstractEditorActivity;
+import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.mvp.IdentifierUtils;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ShowcaseImages;
@@ -50,8 +48,6 @@ import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -63,27 +59,25 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
-@WorkbenchScreen(nameToken = "FileExplorer")
+@WorkbenchScreen(identifier = "FileExplorer")
 public class FileExplorerPresenter {
 
     @Inject
-    View                        view;
+    private View                 view;
 
     @Inject
-    Caller<VFSService>          vfsService;
+    private Caller<VFSService>   vfsService;
 
     @Inject
-    Caller<AssetService>        assetService;
+    private Caller<AssetService> assetService;
 
     @Inject
-    private PlaceManager        placeManager;
+    private PlaceManager         placeManager;
 
     @Inject
-    IOCBeanManager              iocManager;
+    private IdentifierUtils      idUtils;
 
-    private static final String REPOSITORY_ID      = "repositories";
-
-    private static final String DEFAULT_NAME_TOKEN = "TextEditor";
+    private static final String  REPOSITORY_ID = "repositories";
 
     public interface View
         extends
@@ -211,7 +205,6 @@ public class FileExplorerPresenter {
         } );
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private IPlaceRequest getPlace(final Path path) {
 
         final String fileType = getFileType( path.getFileName() );
@@ -219,17 +212,17 @@ public class FileExplorerPresenter {
             return defaultPlace( path );
         }
 
-        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest
-        //See https://issues.jboss.org/browse/ERRAI-336 for why we don't use lookupBean(class, qualifiers)
-        final Collection<IOCBeanDef> activities = iocManager.lookupBeans( AbstractEditorActivity.class );
-        for ( IOCBeanDef activity : activities ) {
-            final String supportedFileType = getNameToken( activity.getQualifiers() );
-            if ( fileType.equalsIgnoreCase( supportedFileType ) ) {
-                final IPlaceRequest place = new PlaceRequest( supportedFileType );
-                place.addParameter( "path",
-                                    path.toURI() );
-                return place;
-            }
+        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
+        //We could simply construct a PlaceRequest for the fileType and leave PlaceManager to determine whether
+        //an Activity for the fileType exists however that would place the decision as to what default editor
+        //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
+        //Consequentially we check for an Activity here and, if none found, define the default editor.
+        final Set<Activity> activities = idUtils.getActivities( fileType );
+        if ( activities.size() > 0 ) {
+            final IPlaceRequest place = new PlaceRequest( fileType );
+            place.addParameter( "path",
+                                path.toURI() );
+            return place;
         }
 
         //If a specific handler was not found use a TextEditor
@@ -237,7 +230,7 @@ public class FileExplorerPresenter {
     }
 
     private PlaceRequest defaultPlace(final Path path) {
-        PlaceRequest defaultPlace = new PlaceRequest( );
+        PlaceRequest defaultPlace = new PlaceRequest();
         defaultPlace.addParameter( "path",
                                    path.toURI() );
         return defaultPlace;
@@ -247,16 +240,6 @@ public class FileExplorerPresenter {
         final int dotIndex = fileName.indexOf( "." );
         if ( dotIndex >= 0 ) {
             return fileName.substring( dotIndex + 1 );
-        }
-        return fileName;
-    }
-
-    private String getNameToken(final Set<Annotation> annotations) {
-        for ( Annotation a : annotations ) {
-            if ( a instanceof NameToken ) {
-                final NameToken nameToken = (NameToken) a;
-                return nameToken.value();
-            }
         }
         return null;
     }

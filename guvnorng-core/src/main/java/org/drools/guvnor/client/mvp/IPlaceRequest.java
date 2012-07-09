@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public interface IPlaceRequest {
 
-    String getNameToken();
+    String getIdentifier();
 
     PlaceRequest getPlace();
 

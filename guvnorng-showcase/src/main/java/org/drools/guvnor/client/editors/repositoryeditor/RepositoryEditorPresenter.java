@@ -33,7 +33,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchScreen(nameToken = "RepositoryEditor")
+@WorkbenchScreen(identifier = "RepositoryEditor")
 public class RepositoryEditorPresenter {
 
     @Inject

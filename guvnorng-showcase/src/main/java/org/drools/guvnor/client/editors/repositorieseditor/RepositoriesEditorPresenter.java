@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchScreen(nameToken = "RepositoriesEditor")
+@WorkbenchScreen(identifier = "RepositoriesEditor")
 public class RepositoriesEditorPresenter {
 
     @Inject

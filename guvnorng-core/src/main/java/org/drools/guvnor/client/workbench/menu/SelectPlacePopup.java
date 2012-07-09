@@ -48,7 +48,7 @@ public class SelectPlacePopup extends PopupPanel
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SelectionEvent.fire( SelectPlacePopup.this,
-                                         new PlaceRequest( activity.getNameToken() ) );
+                                         new PlaceRequest( activity.getIdentifier() ) );
 
                     SelectPlacePopup.this.hide();
 

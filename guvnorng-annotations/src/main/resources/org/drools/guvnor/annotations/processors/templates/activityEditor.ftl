@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.editors.test.TestPresenter;
 import org.drools.guvnor.client.mvp.AbstractEditorActivity;
-import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.mvp.Identifier;
 import org.drools.guvnor.client.mvp.EditorService;
 <#if getDefaultPositionMethodName??>
 import org.drools.guvnor.client.workbench.Position;
@@ -32,7 +32,7 @@ import org.drools.guvnor.vfs.Path;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("${fileType}")
+@Identifier("${fileType}")
 /*
  * WARNING! This class is generated. Do not modify.
  */

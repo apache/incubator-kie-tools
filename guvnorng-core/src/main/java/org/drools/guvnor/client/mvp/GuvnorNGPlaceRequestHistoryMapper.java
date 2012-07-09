@@ -12,13 +12,13 @@ public class GuvnorNGPlaceRequestHistoryMapper
     PlaceRequestHistoryMapper {
 
     @Override
-    public PlaceRequest getPlaceRequest(String token) {
-        String nameToken = token.indexOf( "?" ) != -1 ? token.substring( 0,
-                                                                         token.indexOf( "?" ) ) : token;
-        String query = token.indexOf( "?" ) != -1 ? token.substring( token.indexOf( "?" ) + 1 ) : "";
+    public PlaceRequest getPlaceRequest(String fullIdentifier) {
+        String identifier = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( 0,
+                                                                                            fullIdentifier.indexOf( "?" ) ) : fullIdentifier;
+        String query = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
         Map<String, String> parameters = getParameters( query );
 
-        PlaceRequest placeRequest = new PlaceRequest( nameToken );
+        PlaceRequest placeRequest = new PlaceRequest( identifier );
         for ( String parameterName : parameters.keySet() ) {
             placeRequest.addParameter( parameterName,
                                        parameters.get( parameterName ) );
@@ -28,9 +28,9 @@ public class GuvnorNGPlaceRequestHistoryMapper
     }
 
     @Override
-    public String getToken(IPlaceRequest placeRequest) {
+    public String getIdentifier(IPlaceRequest placeRequest) {
         StringBuilder token = new StringBuilder();
-        token.append( placeRequest.getNameToken() );
+        token.append( placeRequest.getIdentifier() );
 
         if ( placeRequest.getParameterNames().size() > 0 ) {
             token.append( "?" );

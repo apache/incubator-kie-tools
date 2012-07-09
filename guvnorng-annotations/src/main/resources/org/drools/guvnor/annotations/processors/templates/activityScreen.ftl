@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.editors.test.TestPresenter;
 import org.drools.guvnor.client.mvp.AbstractScreenActivity;
-import org.drools.guvnor.client.mvp.NameToken;
+import org.drools.guvnor.client.mvp.Identifier;
 import org.drools.guvnor.client.mvp.ScreenService;
 <#if getDefaultPositionMethodName??>
 import org.drools.guvnor.client.workbench.Position;
@@ -30,7 +30,7 @@ import org.drools.guvnor.client.workbench.Position;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@NameToken("${tokenName}")
+@Identifier("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
@@ -42,8 +42,8 @@ public class ${className} extends AbstractScreenActivity
     private ${realClassName} realPresenter;
 
     @Override
-    public String getNameToken() {
-        return "${tokenName}";
+    public String getIdentifier() {
+        return "${identifier}";
     }
 
     @Override

@@ -14,38 +14,44 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.test2;
+package org.drools.guvnor.client.editors.test4;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
  */
-@WorkbenchScreen(identifier = "Test2")
-public class TestView2 extends Composite
+public class TestView4 extends Composite
     implements
-    RequiresResize {
+    RequiresResize,
+    TestPresenter4.View {
 
     @Inject
-    UiBinder<Panel, TestView2> uiBinder;
+    UiBinder<Panel, TestView4> uiBinder;
 
     @UiField
     public HTMLPanel           panel;
 
+    @UiField
+    public Label               content;
+
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setContent(String content) {
+        this.content.setText( content );
     }
 
     @Override
@@ -54,11 +60,6 @@ public class TestView2 extends Composite
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width,
                             height );
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Test2";
     }
 
 }

@@ -16,62 +16,63 @@
 
 package org.drools.guvnor.client.mvp;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.jboss.errai.ioc.client.container.IOCResolutionException;
+import com.google.gwt.user.client.Window;
 
 @Dependent
 public class GuvnorNGActivityMapperImpl
     implements
     ActivityMapper {
+
     private final Map<IPlaceRequest, Activity> activeActivities = new HashMap<IPlaceRequest, Activity>();
 
     @Inject
-    private IOCBeanManager                     iocManager;
+    private IdentifierUtils                    idUtils;
 
     public Activity getActivity(final IPlaceRequest placeRequest) {
+        //Check and return any existing Activity for the PlaceRequest
         if ( activeActivities.containsKey( placeRequest ) ) {
             return activeActivities.get( placeRequest );
         }
 
-        final String nameToken = placeRequest.getNameToken();
-
-        //Lookup Activity by NameToken
-        final Annotation qualifier = new NameToken() {
-
-            @Override
-            public Class< ? extends Annotation> annotationType() {
-                return NameToken.class;
-            }
-
-            @Override
-            public String value() {
-                return nameToken;
-            }
-
-        };
-        try {
-            final IOCBeanDef<Activity> activity = iocManager.lookupBean( Activity.class,
-                                                                         qualifier );
-            final Activity instance = (Activity) activity.getInstance();
-            activeActivities.put( placeRequest,
-                                  instance );
-            return instance;
-
-        } catch ( IOCResolutionException ioce ) {
-            //Could not find a bean to handle the NameToken (or we found multiple!)
-            //TODO {manstis} We could present the user with a list of choices
-            System.out.println( ioce.getMessage() );
+        //Lookup an Activity for the PlaceRequest
+        Activity instance = null;
+        final String identifier = placeRequest.getIdentifier();
+        Set<Activity> activities = idUtils.getActivities( identifier );
+        switch ( activities.size() ) {
+            case 0 :
+                //TODO {manstis} No activities found. Show an error to the user.
+                Window.alert( "No Activity found to handle: [" + identifier + "]" );
+                break;
+            case 1 :
+                instance = getFirstActivity( activities );
+                activeActivities.put( placeRequest,
+                                      instance );
+                return instance;
+            default :
+                //TODO {manstis} Multiple activities found. Show a selector to the user.
+                Window.alert( "Multiple Activities found to handle: [" + identifier + "]. Using the first..." );
+                instance = getFirstActivity( activities );
+                activeActivities.put( placeRequest,
+                                      instance );
+                return instance;
         }
 
         return null;
+    }
+
+    private Activity getFirstActivity(final Set<Activity> activities) {
+        if ( activities == null || activities.size() == 0 ) {
+            return null;
+        }
+        final Activity instance = activities.iterator().next();
+        return instance;
     }
 
     public void removeActivity(final PlaceRequest placeRequest) {

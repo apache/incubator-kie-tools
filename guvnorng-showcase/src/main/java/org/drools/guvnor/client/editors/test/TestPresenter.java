@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchScreen(nameToken = "Test")
+@WorkbenchScreen(identifier = "Test")
 public class TestPresenter {
 
     public interface View

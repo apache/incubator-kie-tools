@@ -49,7 +49,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
-        final String tokenName = wbw.nameToken();
+        final String identifier = wbw.identifier();
         final String onStartMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
                                                                                            processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
@@ -73,7 +73,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
-        logger.debug( "Token name: " + tokenName );
+        logger.debug( "Identifier: " + identifier );
         logger.debug( "onStartMethodName: " + onStartMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
@@ -99,8 +99,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
-        root.put( "tokenName",
-                  tokenName );
+        root.put( "identifier",
+                  identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",

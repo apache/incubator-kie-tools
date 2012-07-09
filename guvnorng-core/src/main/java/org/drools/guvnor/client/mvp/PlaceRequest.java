@@ -26,40 +26,40 @@ public class PlaceRequest extends Place
     implements
     IPlaceRequest {
 
-    private final String              nameToken;
+    private final String              identifier;
 
     private final Map<String, String> parameters = new HashMap<String, String>();
 
     public PlaceRequest() {
-        this.nameToken = "";
+        this.identifier = "";
     }
 
-    public PlaceRequest(String nameToken) {
-        this.nameToken = nameToken;
+    public PlaceRequest(String identifier) {
+        this.identifier = identifier;
     }
 
-    public String getNameToken() {
-        return nameToken;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public String getFullToken() {
-        StringBuilder token = new StringBuilder();
-        token.append( this.getNameToken() );
+    public String getFullIdentifier() {
+        StringBuilder fullIdentifier = new StringBuilder();
+        fullIdentifier.append( this.getIdentifier() );
 
         if ( this.getParameterNames().size() > 0 ) {
-            token.append( "?" );
+            fullIdentifier.append( "?" );
         }
         for ( String name : this.getParameterNames() ) {
-            token.append( name ).append( "=" ).append( this.getParameter( name,
-                                                                          null ) );
-            token.append( "&" );
+            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name,
+                                                                                   null ) );
+            fullIdentifier.append( "&" );
         }
 
-        if ( token.length() != 0 && token.lastIndexOf( "&" ) + 1 == token.length() ) {
-            token.deleteCharAt( token.length() - 1 );
+        if ( fullIdentifier.length() != 0 && fullIdentifier.lastIndexOf( "&" ) + 1 == fullIdentifier.length() ) {
+            fullIdentifier.deleteCharAt( fullIdentifier.length() - 1 );
         }
 
-        return token.toString();
+        return fullIdentifier.toString();
     }
 
     public String getParameter(String key,
@@ -102,12 +102,12 @@ public class PlaceRequest extends Place
         if ( !(o instanceof PlaceRequest) ) return false;
 
         PlaceRequest that = (PlaceRequest) o;
-        return this.getFullToken().equals( that.getFullToken() );
+        return this.getFullIdentifier().equals( that.getFullIdentifier() );
     }
 
     @Override
     public int hashCode() {
-        return getFullToken() != null ? getFullToken().hashCode() : 0;
+        return getFullIdentifier() != null ? getFullIdentifier().hashCode() : 0;
     }
 
 }

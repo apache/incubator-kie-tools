@@ -26,7 +26,7 @@ import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchScreen(nameToken = "Monitoring")
+@WorkbenchScreen(identifier = "Monitoring")
 public class MonitoringPerspectivePresenter {
 
     public interface MyView

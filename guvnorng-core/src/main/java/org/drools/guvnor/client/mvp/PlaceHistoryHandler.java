@@ -183,7 +183,7 @@ public class PlaceHistoryHandler {
             return "";
         }
 
-        String token = mapper.getToken( newPlaceRequest );
+        String token = mapper.getIdentifier( newPlaceRequest );
         if ( token != null ) {
             return token;
         }

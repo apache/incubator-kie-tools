@@ -27,7 +27,7 @@ import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@WorkbenchScreen(nameToken = "MyAdminArea")
+@WorkbenchScreen(identifier = "MyAdminArea")
 public class MyAdminAreaPresenter {
 
     public interface View
