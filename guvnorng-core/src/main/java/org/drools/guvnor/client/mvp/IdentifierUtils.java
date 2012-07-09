@@ -17,6 +17,7 @@ package org.drools.guvnor.client.mvp;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,23 +55,26 @@ public class IdentifierUtils {
     }
 
     /**
-     * Get a set of Activities that can handle the @Identifier
+     * Get a set of Bean definitions that can handle the @Identifier
      * 
      * @param identifier
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public Set<Activity> getActivities(final String identifier) {
-        final Collection<IOCBeanDef> activityBeans = iocManager.lookupBeans( Activity.class );
-        final Set<Activity> activities = new HashSet<Activity>();
-        for ( IOCBeanDef activityBean : activityBeans ) {
+    //Don't return actual Activity instances as we'd need to release them later
+    public Set<IOCBeanDef< ? >> getActivities(final String identifier) {
+        if ( identifier == null ) {
+            return Collections.emptySet();
+        }
+        final Collection<IOCBeanDef> allActivityBeans = iocManager.lookupBeans( Activity.class );
+        final Set<IOCBeanDef< ? >> matchingActivityBeans = new HashSet<IOCBeanDef< ? >>();
+        for ( IOCBeanDef activityBean : allActivityBeans ) {
             final String activityIdentifier = getIdentifier( activityBean );
             if ( identifier.equalsIgnoreCase( activityIdentifier ) ) {
-                final Activity instance = (Activity) activityBean.getInstance();
-                activities.add( instance );
+                matchingActivityBeans.add( activityBean );
             }
         }
-        return activities;
+        return Collections.unmodifiableSet( matchingActivityBeans );
     }
 
 }

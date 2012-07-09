@@ -31,14 +31,12 @@ import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.mvp.Activity;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IdentifierUtils;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ShowcaseImages;
 import org.drools.guvnor.client.workbench.Position;
-import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.VFSService;
@@ -48,6 +46,7 @@ import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -63,21 +62,18 @@ import com.google.gwt.user.client.ui.TreeItem;
 public class FileExplorerPresenter {
 
     @Inject
-    private View                 view;
+    private View                view;
 
     @Inject
-    private Caller<VFSService>   vfsService;
+    private Caller<VFSService>  vfsService;
 
     @Inject
-    private Caller<AssetService> assetService;
+    private PlaceManager        placeManager;
 
     @Inject
-    private PlaceManager         placeManager;
+    private IdentifierUtils     idUtils;
 
-    @Inject
-    private IdentifierUtils      idUtils;
-
-    private static final String  REPOSITORY_ID = "repositories";
+    private static final String REPOSITORY_ID = "repositories";
 
     public interface View
         extends
@@ -217,8 +213,8 @@ public class FileExplorerPresenter {
         //an Activity for the fileType exists however that would place the decision as to what default editor
         //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
         //Consequentially we check for an Activity here and, if none found, define the default editor.
-        final Set<Activity> activities = idUtils.getActivities( fileType );
-        if ( activities.size() > 0 ) {
+        final Set<IOCBeanDef< ? >> activityBeans = idUtils.getActivities( fileType );
+        if ( activityBeans.size() > 0 ) {
             final IPlaceRequest place = new PlaceRequest( fileType );
             place.addParameter( "path",
                                 path.toURI() );
