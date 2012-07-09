@@ -24,7 +24,6 @@
     <gwt.maven.version>2.4.0</gwt.maven.version>
     <mvel.version>2.1.Beta8</mvel.version>
     <jetty.version>6.1.25</jetty.version>
-    <slf4j.version>1.6.1</slf4j.version>
     <uel.impl.version>2.1.2-b04</uel.impl.version>
   </properties>
 
@@ -103,6 +102,10 @@
           <groupId>javax.annotation</groupId>
           <artifactId>jsr250-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -155,6 +158,16 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
       <version>${errai.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -244,10 +257,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <version>3.0.0.Beta4</version>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-simple</artifactId>
     </dependency>
+ 
   </dependencies>
 
   <build>
@@ -311,9 +324,38 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
+          <!-- TODO {manstis} Ensure in porcelli's refactoring -->
+          <!-- 
+          The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
+          which causes the Java Annotation Processor mechanism to not process annotations 
+          on classes in guvnorng-showcase. Why IDK but this solves the issue
+          -->
+          <fork>false</fork>
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
+      </plugin>
+
+      <!-- TODO {manstis} Ensure in porcelli's refactoring -->
+      <!-- Ensure the generated source files are included in the source path -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>add-generated-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!--<plugin>-->
@@ -353,6 +395,7 @@
                 <include>src/main/webapp/**</include>
                 <include>**/gwt-unitCache/**</include>
                 <include>**/*.JUnit/**</include>
+                <include>target/generated-sources/**</include>
               </includes>
             </fileset>
           </filesets>

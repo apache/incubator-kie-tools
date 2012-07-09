@@ -24,7 +24,6 @@
     <gwt.maven.version>2.4.0</gwt.maven.version>
     <mvel.version>2.1.Beta8</mvel.version>
     <jetty.version>6.1.25</jetty.version>
-    <slf4j.version>1.6.1</slf4j.version>
     <uel.impl.version>2.1.2-b04</uel.impl.version>
   </properties>
 
@@ -72,7 +71,6 @@
       <artifactId>vfs-eclipse</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -85,12 +83,6 @@
       <artifactId>jsp-api</artifactId>
       <version>2.0</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
     </dependency>
 
     <dependency>
@@ -260,22 +252,19 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <version>3.0.0.Beta4</version>
-    </dependency>   
-           
-            
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-simple</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
       <version>5.4.0.Final</version>
     </dependency>
-    
+            
   </dependencies>
 
   <profiles>
@@ -1140,7 +1129,6 @@
               <!-- Note: to run the test in a real browser, set -DargLine='-Dgwt.args="-runStyle Manual:1"' -->
               <argLine>-Xmx2048m ${argLine}</argLine>
 
-
               <systemProperties>
                 <!-- Must disable long polling for automated tests to succeed -->
                 <property>
@@ -1449,10 +1437,6 @@
           </execution>
         </executions>
       </plugin>
-    
-
-
-
 
       <plugin>
         <groupId>org.jboss.errai</groupId>
@@ -1494,6 +1478,7 @@
                 <include>src/main/webapp/WEB-INF/classes/**</include>
                 <include>**/gwt-unitCache/**</include>
                 <include>**/*.JUnit/**</include>
+                <include>target/generated-sources/**</include>
               </includes>
             </fileset>
           </filesets>

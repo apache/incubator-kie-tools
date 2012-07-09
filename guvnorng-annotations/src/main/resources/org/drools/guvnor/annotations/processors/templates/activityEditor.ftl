@@ -19,7 +19,6 @@ package ${packageName};
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.editors.test.TestPresenter;
 import org.drools.guvnor.client.mvp.AbstractEditorActivity;
 import org.drools.guvnor.client.mvp.Identifier;
 import org.drools.guvnor.client.mvp.EditorService;

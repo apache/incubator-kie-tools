@@ -107,7 +107,8 @@ public class PlaceRequest extends Place
 
     @Override
     public int hashCode() {
-        return getFullIdentifier() != null ? getFullIdentifier().hashCode() : 0;
+        final String fullIdentifier = getFullIdentifier();
+        return fullIdentifier != null ? fullIdentifier.hashCode() : 0;
     }
 
 }

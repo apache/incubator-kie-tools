@@ -37,6 +37,9 @@ public class GuvnorNGActivityMapperImpl
     @Inject
     private IdentifierUtils                    idUtils;
 
+    @Inject
+    private PlaceManager                       placeManager;
+
     public Activity getActivity(final IPlaceRequest placeRequest) {
         //Check and return any existing Activity for the PlaceRequest
         if ( activeActivities.containsKey( placeRequest ) ) {
