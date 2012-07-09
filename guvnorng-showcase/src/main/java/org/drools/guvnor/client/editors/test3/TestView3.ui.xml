@@ -20,5 +20,7 @@
 
   <g:HTMLPanel ui:field="panel">
     <p>Some blurbage for TestView3</p>
+    <p>The content of the file is:</p>
+    <g:Label ui:field="content"></g:Label>
   </g:HTMLPanel>
 </ui:UiBinder> 
