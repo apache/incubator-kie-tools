@@ -19,8 +19,8 @@ package ${packageName};
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.guvnor.client.annotations.Identifier;
 import org.drools.guvnor.client.mvp.AbstractScreenActivity;
-import org.drools.guvnor.client.mvp.Identifier;
 import org.drools.guvnor.client.mvp.ScreenService;
 <#if getDefaultPositionMethodName??>
 import org.drools.guvnor.client.workbench.Position;
