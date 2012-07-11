@@ -55,7 +55,7 @@ public class ActivityNotFoundPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Warning";
+        return "Warning - Not Found";
     }
 
     @WorkbenchPartView
