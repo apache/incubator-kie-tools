@@ -1,494 +1,487 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>guvnorng</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.drools</groupId>
+		<artifactId>guvnorng</artifactId>
+		<version>5.5.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>guvnorng-core</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>guvnorng-core</artifactId>
+	<packaging>jar</packaging>
 
-  <name>GuvnorNG Core</name>
-  <description>GuvnorNG Core</description>
+	<name>GuvnorNG Core</name>
+	<description>GuvnorNG Core</description>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <errai.version>2.1-SNAPSHOT</errai.version>
-    <gwt.version>2.4.0</gwt.version>
-    <gwt-dnd.version>3.1.2</gwt-dnd.version>
-    <weld.version>1.1.6.Final</weld.version>
-    <gwt.maven.version>2.4.0</gwt.maven.version>
-    <mvel.version>2.1.Beta8</mvel.version>
-    <jetty.version>6.1.25</jetty.version>
-    <uel.impl.version>2.1.2-b04</uel.impl.version>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<errai.version>2.1-SNAPSHOT</errai.version>
+		<gwt.version>2.4.0</gwt.version>
+		<gwt-dnd.version>3.1.2</gwt-dnd.version>
+		<weld.version>1.1.6.Final</weld.version>
+		<gwt.maven.version>2.4.0</gwt.maven.version>
+		<mvel.version>2.1.Beta8</mvel.version>
+		<jetty.version>6.1.25</jetty.version>
+		<uel.impl.version>2.1.2-b04</uel.impl.version>
+	</properties>
 
-  <dependencies>
+	<dependencies>
 
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnorng-api</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>guvnorng-api</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnorng-annotations</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>guvnorng-annotations</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>vfs-common</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>vfs-common</artifactId>
+		</dependency>
 
-    <!-- TODO HACK - Remove once Errai's dependency has been resolved -->
-    <!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
-    <!-- Added additional compile time dependency for v12.0 which solves the compilation error -->
-    <!--  See https://community.jboss.org/thread/199952?tstart=0 -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>12.0</version>
-      <scope>compile</scope>
-    </dependency>
+		<!-- TODO HACK - Remove once Errai's dependency has been resolved -->
+		<!-- Errai 2.0.1-SNAPSHOT uses com.google.guava r06 which lacks com/google/common/reflect/TypeToken -->
+		<!-- Added additional compile time dependency for v12.0 which solves the 
+			compilation error -->
+		<!-- See https://community.jboss.org/thread/199952?tstart=0 -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0</version>
+			<scope>compile</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.ejb3</groupId>
-      <artifactId>jboss-ejb3-api</artifactId>
-      <scope>provided</scope>
-      <version>3.1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.ejb3</groupId>
+			<artifactId>jboss-ejb3-api</artifactId>
+			<scope>provided</scope>
+			<version>3.1.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-      <version>1.0-SP4</version>
-    </dependency>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+			<version>1.0-SP4</version>
+		</dependency>
 
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-      <version>${errai.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
-      <version>${errai.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-tools</artifactId>
-      <version>${errai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-      <version>${mvel.version}</version>
-    </dependency>
+		<!-- Errai Core -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-bus</artifactId>
+			<version>${errai.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.annotation</groupId>
+					<artifactId>jsr250-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-ioc</artifactId>
+			<version>${errai.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.annotation</groupId>
+					<artifactId>jsr250-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-tools</artifactId>
+			<version>${errai.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel2</artifactId>
+			<version>${mvel.version}</version>
+		</dependency>
 
-    <!-- CDI Integration Modules -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-client</artifactId>
-      <version>${errai.version}</version>
-    </dependency>
+		<!-- CDI Integration Modules -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-cdi-client</artifactId>
+			<version>${errai.version}</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-uibinder</artifactId>
-      <version>${errai.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-uibinder</artifactId>
+			<version>${errai.version}</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
-      <version>${errai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-javax-enterprise</artifactId>
+			<version>${errai.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-weld-integration</artifactId>
-      <version>${errai.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-weld-integration</artifactId>
+			<version>${errai.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jetty</artifactId>
-      <version>${errai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-cdi-jetty</artifactId>
+			<version>${errai.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <!-- Errai JAX-RS -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
-      <version>${errai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+		<!-- Errai JAX-RS -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-jaxrs-client</artifactId>
+			<version>${errai.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-provider</artifactId>
-      <version>${errai.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-jaxrs-provider</artifactId>
+			<version>${errai.version}</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <version>2.3.3.Final</version>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>2.3.3.Final</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-cdi</artifactId>
-      <version>2.3.3.Final</version>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-cdi</artifactId>
+			<version>2.3.3.Final</version>
+		</dependency>
 
-    <!-- CDI Development Utils -->
-    <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
+		<!-- CDI Development Utils -->
+		<!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty 
+			that is present there -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-plus</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-plus</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-naming</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-naming</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 
-    <!--&lt;!&ndash; Weld Modules &ndash;&gt;-->
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.weld.se</groupId>-->
-      <!--<artifactId>weld-se-core</artifactId>-->
-      <!--<version>${weld.version}</version>-->
-    <!--</dependency>-->
+		<!--&lt;!&ndash; Weld Modules &ndash;&gt; -->
+		<!--<dependency> -->
+		<!--<groupId>org.jboss.weld.se</groupId> -->
+		<!--<artifactId>weld-se-core</artifactId> -->
+		<!--<version>${weld.version}</version> -->
+		<!--</dependency> -->
 
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.weld.servlet</groupId>-->
-      <!--<artifactId>weld-servlet</artifactId>-->
-      <!--<version>${weld.version}</version>-->
-    <!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>org.jboss.weld.servlet</groupId> -->
+		<!--<artifactId>weld-servlet</artifactId> -->
+		<!--<version>${weld.version}</version> -->
+		<!--</dependency> -->
 
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope>
-    </dependency>
+		<!-- GWT and GWT Extensions -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>com.allen-sauer.gwt.dnd</groupId>
-      <artifactId>gwt-dnd</artifactId>
-      <version>${gwt-dnd.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>com.allen-sauer.gwt.dnd</groupId>
+			<artifactId>gwt-dnd</artifactId>
+			<version>${gwt-dnd.version}</version>
+		</dependency>
 
-    <!-- Runtime / Container dependencies -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
+		<!-- Runtime / Container dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 
-    <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-simple</artifactId>
-    </dependency>
- 
-  </dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.java</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
-      </resource>
-    </resources>
-    <plugins>
-      <!--<plugin>-->
-        <!--<groupId>org.codehaus.mojo</groupId>-->
-        <!--<artifactId>gwt-maven-plugin</artifactId>-->
-        <!--<version>${gwt.maven.version}</version>-->
-        <!--<configuration>-->
-          <!--<logLevel>INFO</logLevel>-->
-          <!--<runTarget>org.drools.guvnor.GuvnorNGCore/Guvnor.html</runTarget>-->
-          <!--<extraJvmArgs>-Xmx512m</extraJvmArgs>-->
-          <!--<soyc>false</soyc>-->
-          <!--<hostedWebapp>src/main/webapp/</hostedWebapp>-->
-          <!--<server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>-->
-        <!--</configuration>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>gwt-clean</id>-->
-            <!--<phase>clean</phase>-->
-            <!--<goals>-->
-              <!--<goal>clean</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-          <!--<execution>-->
-            <!--<id>gwt-compile</id>-->
-            <!--<goals>-->
-              <!--<goal>resources</goal>-->
-              <!--<goal>compile</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+	</dependencies>
 
-      <!-- Tests are skipped by default because they require additional GWT dependencies. Run mvn with
-        -Pintegration-test to enable testing. -->
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
+	<build>
+		<!-- ****************************** NOTE ******************************************* -->
+		<!-- We have to build a PROJECT.jar containing all source files for child -->
+		<!-- GWT modules to later compile. gwt-maven-plugin switch "compileSourcesArtifacts" -->
+		<!-- in the child GWT module should pull -sources.jars into the build. -->
+		<!-- However there are reports this does not currently work (IDK, I've -->
+		<!-- not tried!) in other Guvnor poms. -->
+		<!-- See http://mojo.codehaus.org/gwt-maven-plugin/user-guide/library.html -->
+		<!-- ******************************************************************************* -->
 
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <!-- TODO {manstis} Ensure in porcelli's refactoring -->
-          <!-- 
-          The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
-          which causes the Java Annotation Processor mechanism to not process annotations 
-          on classes in guvnorng-showcase. Why IDK but this solves the issue
-          -->
-          <fork>false</fork>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
+		<!-- Include all of the various types GWT considers "source" so "child" -->
+		<!-- GWT modules can successfully be (GWT) compiled. Failure to included -->
+		<!-- these in the resulting JAR causes GWT compilation errors -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.css</include>
+					<include>**/*.png</include>
+					<include>**/*.gif</include>
+					<include>**/*.java</include>
+					<include>**/*.gwt.xml</include>
+					<include>**/*.ui.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
 
-      <!-- TODO {manstis} Ensure in porcelli's refactoring -->
-      <!-- Ensure the generated source files are included in the source path -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <id>add-generated-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>target/generated-sources/annotations</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+		<plugins>
 
-      <!--<plugin>-->
-        <!--<groupId>org.jboss.errai</groupId>-->
-        <!--<artifactId>jacoco-gwt-maven-plugin</artifactId>-->
-        <!--<version>0.5.4.201202141554</version>-->
+			<!-- Kill any transient build artifacts -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>www-test/**</include>
+								<include>.gwt/**</include>
+								<include>.errai/**</include>
+								<include>src/main/webapp/**</include>
+								<include>**/gwt-unitCache/**</include>
+								<include>**/*.JUnit/**</include>
+								<include>target/generated-sources/**</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>jacoco-gwt-prepare-agent</id>-->
-            <!--<phase>initialize</phase>-->
-            <!--<goals>-->
-              <!--<goal>prepare-agent</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-          <!--<execution>-->
-            <!--<id>jacoco-gwt-report</id>-->
-            <!--<phase>site</phase>-->
-            <!--<goals>-->
-              <!--<goal>report</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+			<!-- Tests are skipped by default because they require additional GWT -->
+			<!-- dependencies. Run mvn with -Pintegration-test to enable testing. -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
 
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>www-test/**</include>
-                <include>.gwt/**</include>
-                <include>.errai/**</include>
-                <include>src/main/webapp/**</include>
-                <include>**/gwt-unitCache/**</include>
-                <include>**/*.JUnit/**</include>
-                <include>target/generated-sources/**</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-    </plugins>
+			<!-- Override some of the parent compilation settings -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<!-- TODO {manstis} Ensure in porcelli's refactoring -->
+					<!-- The parent-parent.pom (i.e. droolsjbpm-parent) contains <fork>true</fork> 
+						which causes the Java Annotation Processor mechanism to not process annotations 
+						on classes in guvnorng-showcase. Why IDK but this solves the issue -->
+					<fork>false</fork>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
 
-    <!--<pluginManagement>-->
-      <!--<plugins>-->
-        <!--<plugin>-->
-          <!--<groupId>org.eclipse.m2e</groupId>-->
-          <!--<artifactId>lifecycle-mapping</artifactId>-->
-          <!--<version>1.0.0</version>-->
-          <!--<configuration>-->
-            <!--<lifecycleMappingMetadata>-->
-              <!--<pluginExecutions>-->
-                <!--<pluginExecution>-->
-                  <!--<pluginExecutionFilter>-->
-                    <!--<groupId>org.codehaus.mojo</groupId>-->
-                    <!--<artifactId>gwt-maven-plugin</artifactId>-->
-                    <!--<versionRange>[2.3.0,)</versionRange>-->
-                    <!--<goals>-->
-                      <!--<goal>resources</goal>-->
-                    <!--</goals>-->
-                  <!--</pluginExecutionFilter>-->
-                  <!--<action>-->
-                    <!--<execute/>-->
-                  <!--</action>-->
-                <!--</pluginExecution>-->
-                <!--<pluginExecution>-->
-                  <!--<pluginExecutionFilter>-->
-                    <!--<groupId>org.jboss.errai</groupId>-->
-                    <!--<artifactId>jacoco-gwt-maven-plugin</artifactId>-->
-                    <!--<versionRange>[0.0,)</versionRange>-->
-                    <!--<goals>-->
-                      <!--<goal>prepare-agent</goal>-->
-                    <!--</goals>-->
-                  <!--</pluginExecutionFilter>-->
-                  <!--<action>-->
-                    <!--<ignore/>-->
-                  <!--</action>-->
-                <!--</pluginExecution>-->
-              <!--</pluginExecutions>-->
-            <!--</lifecycleMappingMetadata>-->
-          <!--</configuration>-->
-        <!--</plugin>-->
-      <!--</plugins>-->
-    <!--</pluginManagement>-->
-  </build>
+			<!-- TODO {manstis} Ensure in porcelli's refactoring -->
+			<!-- Ensure the generated source files are included in the source path -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>add-generated-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources/annotations</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-  <!-- Repositories -->
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
+			<!-- We need source files generated by our Java Annotations Processor -->
+			<!-- in the resulting JAR for GWT to reference in child projects. Consequentially -->
+			<!-- copy the source files to the target folder before packaging -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target/generated-sources/annotations</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+		</plugins>
 
-  <!-- DistributionManagement -->
-  <distributionManagement>
-    <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
+		<!--<pluginManagement> -->
+		<!--<plugins> -->
+		<!--<plugin> -->
+		<!--<groupId>org.eclipse.m2e</groupId> -->
+		<!--<artifactId>lifecycle-mapping</artifactId> -->
+		<!--<version>1.0.0</version> -->
+		<!--<configuration> -->
+		<!--<lifecycleMappingMetadata> -->
+		<!--<pluginExecutions> -->
+		<!--<pluginExecution> -->
+		<!--<pluginExecutionFilter> -->
+		<!--<groupId>org.codehaus.mojo</groupId> -->
+		<!--<artifactId>gwt-maven-plugin</artifactId> -->
+		<!--<versionRange>[2.3.0,)</versionRange> -->
+		<!--<goals> -->
+		<!--<goal>resources</goal> -->
+		<!--</goals> -->
+		<!--</pluginExecutionFilter> -->
+		<!--<action> -->
+		<!--<execute/> -->
+		<!--</action> -->
+		<!--</pluginExecution> -->
+		<!--<pluginExecution> -->
+		<!--<pluginExecutionFilter> -->
+		<!--<groupId>org.jboss.errai</groupId> -->
+		<!--<artifactId>jacoco-gwt-maven-plugin</artifactId> -->
+		<!--<versionRange>[0.0,)</versionRange> -->
+		<!--<goals> -->
+		<!--<goal>prepare-agent</goal> -->
+		<!--</goals> -->
+		<!--</pluginExecutionFilter> -->
+		<!--<action> -->
+		<!--<ignore/> -->
+		<!--</action> -->
+		<!--</pluginExecution> -->
+		<!--</pluginExecutions> -->
+		<!--</lifecycleMappingMetadata> -->
+		<!--</configuration> -->
+		<!--</plugin> -->
+		<!--</plugins> -->
+		<!--</pluginManagement> -->
+	</build>
 
-    <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
+	<!-- Repositories -->
+	<repositories>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- DistributionManagement -->
+	<distributionManagement>
+		<repository>
+			<id>jboss-releases-repository</id>
+			<name>JBoss Releases Repository</name>
+			<url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>jboss-snapshots-repository</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
