@@ -55,7 +55,7 @@ public class MultipleActivitiesFoundPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Warning";
+        return "Warning - Multiple";
     }
 
     @WorkbenchPartView
