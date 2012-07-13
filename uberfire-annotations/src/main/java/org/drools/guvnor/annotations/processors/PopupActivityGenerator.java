@@ -26,7 +26,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.WorkbenchEditor;
+import org.drools.guvnor.client.annotations.WorkbenchPopup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +36,9 @@ import freemarker.template.TemplateException;
 /**
  * A source code generator for Activities
  */
-public class EditorActivityGenerator extends AbstractGenerator {
+public class PopupActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( EditorActivityGenerator.class );
+    private static final Logger logger = LoggerFactory.getLogger( PopupActivityGenerator.class );
 
     public StringBuffer generate(final String packageName,
                                  final PackageElement packageElement,
@@ -48,55 +48,37 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final WorkbenchEditor wbw = classElement.getAnnotation( WorkbenchEditor.class );
-        final String fileType = wbw.fileType();
-        final String onStartMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
-                                                                                           processingEnvironment );
+        final WorkbenchPopup wbp = classElement.getAnnotation( WorkbenchPopup.class );
+        final String identifier = wbp.identifier();
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
                                                                               processingEnvironment );
         final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
                                                                                 processingEnvironment );
-        final String onLostFocusMethodName = GeneratorUtils.getOnLostFocusMethodName( classElement,
-                                                                                      processingEnvironment );
-        final String onFocusMethodName = GeneratorUtils.getOnFocusMethodName( classElement,
-                                                                              processingEnvironment );
-        final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName( classElement,
-                                                                                                 processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
         final String getWidgetMethodName = GeneratorUtils.getWidgetMethodName( classElement,
                                                                                processingEnvironment );
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
-        final String isDirtyMethodName = GeneratorUtils.getIsDirtyMethodName( classElement,
-                                                                              processingEnvironment );
-        final String onSaveMethodName = GeneratorUtils.getOnSaveMethodName( classElement,
-                                                                            processingEnvironment );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
-        logger.debug( "File type: " + fileType );
-        logger.debug( "onStartMethodName: " + onStartMethodName );
+        logger.debug( "Identifier: " + identifier );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
-        logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
-        logger.debug( "onFocusMethodName: " + onFocusMethodName );
-        logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
         logger.debug( "getTitleMethodName: " + getTitleMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
-        logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
-        logger.debug( "onSaveMethodName: " + onSaveMethodName );
 
-        //Validate getWidgetMethodName and isWidget
+        //Validate getPopupMethodName and isPopup
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchPart must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
-            logger.warn( "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+            logger.warn( "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         }
 
         //Validate getTitleMethodName
@@ -110,40 +92,28 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
-        root.put( "fileType",
-                  fileType );
+        root.put( "identifier",
+                  identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onStartMethodName",
-                  onStartMethodName );
         root.put( "onMayCloseMethodName",
                   onMayCloseMethodName );
         root.put( "onCloseMethodName",
                   onCloseMethodName );
         root.put( "onRevealMethodName",
                   onRevealMethodName );
-        root.put( "onLostFocusMethodName",
-                  onLostFocusMethodName );
-        root.put( "onFocusMethodName",
-                  onFocusMethodName );
-        root.put( "getDefaultPositionMethodName",
-                  getDefaultPositionMethodName );
         root.put( "getTitleMethodName",
                   getTitleMethodName );
         root.put( "getWidgetMethodName",
                   getWidgetMethodName );
         root.put( "isWidget",
                   isWidget );
-        root.put( "isDirtyMethodName",
-                  isDirtyMethodName );
-        root.put( "onSaveMethodName",
-                  onSaveMethodName );
 
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
-            final Template template = config.getTemplate( "activityEditor.ftl" );
+            final Template template = config.getTemplate( "popupScreen.ftl" );
             template.process( root,
                               bw );
         } catch ( IOException ioe ) {

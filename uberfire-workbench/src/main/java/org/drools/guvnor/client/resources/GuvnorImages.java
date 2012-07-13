@@ -46,5 +46,9 @@ public interface GuvnorImages
     //CompassDropController Centre
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
+    
+    //A warning triangle
+    @Source("images/warning-large.png")
+    ImageResource warningLarge();
 
 }

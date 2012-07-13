@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractEditorActivity
     implements
-    Activity {
+    WorkbenchActivity {
 
     @Inject
     private PlaceManager  placeManager;
@@ -40,6 +40,7 @@ public abstract class AbstractEditorActivity
         return Position.ROOT;
     }
 
+    @Override
     public boolean mayStop() {
         if ( presenter != null ) {
             return presenter.onMayClose();
@@ -47,6 +48,7 @@ public abstract class AbstractEditorActivity
         return true;
     }
 
+    @Override
     public void onStop() {
         presenter.onClose();
     }
@@ -68,6 +70,7 @@ public abstract class AbstractEditorActivity
         presenter = null;
     }
 
+    @Override
     public void onRevealPlace(AcceptItem acceptPanel) {
         if ( presenter == null ) {
             presenter = getPresenter();

@@ -13,24 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.screens.activities.multiple;
+package org.drools.guvnor.client.annotations;
 
-import org.drools.guvnor.client.mvp.PlaceRequest;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 
  */
-public class MultipleActivitiesFoundPlace extends PlaceRequest {
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface WorkbenchPopup {
 
-    public MultipleActivitiesFoundPlace(final String requestedPlaceIdentifier) {
-        super( "org.drools.guvnor.client.workbench.screens.activities.multiple" );
-        addParameter( "requestedPlaceIdentifier",
-                      requestedPlaceIdentifier );
-    }
-
-    public String getRequestedPlaceIdentifier() {
-        return getParameter( "requestedPlaceIdentifier",
-                             null );
-    }
+    String identifier();
 
 }

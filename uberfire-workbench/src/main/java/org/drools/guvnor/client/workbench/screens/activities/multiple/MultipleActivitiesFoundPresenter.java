@@ -15,13 +15,13 @@
  */
 package org.drools.guvnor.client.workbench.screens.activities.multiple;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import org.drools.guvnor.client.annotations.WorkbenchPopup;
 import org.drools.guvnor.client.mvp.PlaceManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,15 +29,17 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * 
  */
-@Dependent
-@WorkbenchScreen(identifier = "org.drools.guvnor.client.workbench.screens.activities.multiple")
+@ApplicationScoped
+@WorkbenchPopup(identifier = "org.drools.guvnor.client.workbench.screens.activities.multiple")
 public class MultipleActivitiesFoundPresenter {
 
     public interface View
         extends
         IsWidget {
 
-        void setIdentifer(final String identifier);
+        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+
+        void show();
     }
 
     @Inject
@@ -46,11 +48,12 @@ public class MultipleActivitiesFoundPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @OnStart
-    public void onStart() {
-        final String identifier = placeManager.getCurrentPlaceRequest().getParameter( "identifier",
-                                                                                      null );
-        view.setIdentifer( identifier );
+    @OnReveal
+    public void onReveal() {
+        final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter( "requestedPlaceIdentifier",
+                                                                                                    null );
+        view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
+        view.show();
     }
 
     @WorkbenchPartTitle

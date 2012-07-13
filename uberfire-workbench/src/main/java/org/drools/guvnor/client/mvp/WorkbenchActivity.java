@@ -15,10 +15,22 @@
  */
 package org.drools.guvnor.client.mvp;
 
-public interface Activity {
+import org.drools.guvnor.client.workbench.Position;
 
-    public boolean mayClosePlace();
+public interface WorkbenchActivity
+    extends
+    Activity {
 
-    public void onClosePlace();
+    public boolean mayStop();
+
+    public void onStop();
+
+    public Position getDefaultPosition();
+
+    public void onRevealPlace(AcceptItem acceptPanel);
+
+    public void onFocus();
+
+    public void onLostFocus();
 
 }

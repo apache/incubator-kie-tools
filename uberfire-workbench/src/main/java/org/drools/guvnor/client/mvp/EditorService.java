@@ -30,5 +30,11 @@ public interface EditorService
 
     //Is the editor dirty, i.e. contains unsaved state
     public boolean isDirty();
+    
+    //Called when the screen looses the focus
+    public void onLostFocus();
+
+    //Called when the screen gains the focus
+    public void onFocus();
 
 }

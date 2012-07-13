@@ -27,30 +27,30 @@ public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<IPlaceRequest, Activity>      activeActivities       = new HashMap<IPlaceRequest, Activity>();
-    private final Map<IPlaceRequest, WorkbenchPart> existingWorkbenchParts = new HashMap<IPlaceRequest, WorkbenchPart>();
+    private final Map<IPlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<IPlaceRequest, WorkbenchActivity>();
+    private final Map<IPlaceRequest, WorkbenchPart>     existingWorkbenchParts      = new HashMap<IPlaceRequest, WorkbenchPart>();
 
     @Inject
-    private ActivityMapper                          activityMapper;
+    private ActivityMapper                              activityMapper;
 
     @Inject
-    private PlaceRequestHistoryMapper               historyMapper;
+    private PlaceRequestHistoryMapper                   historyMapper;
 
     @Inject
-    private EventBus                                eventBus;
+    private EventBus                                    eventBus;
 
     @Inject
-    private PanelManager                            panelManager;
+    private PanelManager                                panelManager;
 
     @Inject
-    private Event<WorkbenchPartCloseEvent>          workbenchPartCloseEvent;
+    private Event<WorkbenchPartCloseEvent>              workbenchPartCloseEvent;
 
     @Inject
-    private Event<SelectWorkbenchPartEvent>         selectWorkbenchPartEvent;
+    private Event<SelectWorkbenchPartEvent>             selectWorkbenchPartEvent;
 
-    private PlaceHistoryHandler                     placeHistoryHandler;
+    private PlaceHistoryHandler                         placeHistoryHandler;
 
-    IPlaceRequest                                   currentPlaceRequest;
+    IPlaceRequest                                       currentPlaceRequest;
 
     @PostConstruct
     public void init() {
@@ -62,8 +62,21 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo(IPlaceRequest placeRequest) {
+
+        final Activity activity = activityMapper.getActivity( placeRequest );
+        if ( activity == null ) {
+            return;
+        }
+
         currentPlaceRequest = placeRequest;
-        revealPlace( placeRequest );
+
+        if ( activity instanceof WorkbenchActivity ) {
+            revealActivity( placeRequest,
+                            (WorkbenchActivity) activity );
+        } else if ( activity instanceof PopupActivity ) {
+            revealActivity( placeRequest,
+                            (PopupActivity) activity );
+        }
     }
 
     @Override
@@ -75,34 +88,39 @@ public class PlaceManagerImpl
         }
     }
 
-    private void revealPlace(final IPlaceRequest newPlace) {
-
+    private void revealActivity(final IPlaceRequest newPlace,
+                                final WorkbenchActivity activity) {
         //If we're already showing this place exit.
-        if ( activeActivities.containsKey( newPlace ) ) {
+        if ( existingWorkbenchActivities.containsKey( newPlace ) ) {
             final WorkbenchPart part = existingWorkbenchParts.get( newPlace );
             selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
             return;
         }
 
-        final Activity activity = activityMapper.getActivity( newPlace );
-        activeActivities.put( newPlace,
-                              activity );
+        //Record new activity
+        existingWorkbenchActivities.put( newPlace,
+                                         activity );
 
+        //Reveal activity with call-back to attach to Workbench
         activity.onRevealPlace(
-                new AcceptItem() {
-                    public void add(String tabTitle,
-                                    IsWidget widget) {
+                    new AcceptItem() {
+                        public void add(String tabTitle,
+                                        IsWidget widget) {
+                            final WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
+                                                                          tabTitle );
+                            existingWorkbenchParts.put( newPlace,
+                                                        part );
+                            panelManager.addWorkbenchPanel( part,
+                                                            activity.getDefaultPosition() );
+                        }
+                    } );
 
-                        WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
-                                                                tabTitle );
-                        existingWorkbenchParts.put( newPlace,
-                                                    part );
-
-                        panelManager.addWorkbenchPanel( part,
-                                                        activity.getDefaultPosition() );
-                    }
-                } );
         updateHistory( newPlace );
+    }
+
+    private void revealActivity(final IPlaceRequest newPlace,
+                                final PopupActivity activity) {
+        activity.onRevealPlace();
     }
 
     public void updateHistory(IPlaceRequest request) {
@@ -116,10 +134,10 @@ public class PlaceManagerImpl
         if ( place == null ) {
             return;
         }
-        final Activity activity = activeActivities.get( place );
+        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
         if ( activity.mayClosePlace() ) {
             activity.onClosePlace();
-            activeActivities.remove( place );
+            existingWorkbenchActivities.remove( place );
             existingWorkbenchParts.remove( place );
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
         }
@@ -141,7 +159,7 @@ public class PlaceManagerImpl
         if ( place == null ) {
             return;
         }
-        final Activity activity = activeActivities.get( place );
+        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
         activity.onFocus();
     }
 
@@ -152,7 +170,7 @@ public class PlaceManagerImpl
         if ( place == null ) {
             return;
         }
-        final Activity activity = activeActivities.get( place );
+        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
         activity.onLostFocus();
     }
 

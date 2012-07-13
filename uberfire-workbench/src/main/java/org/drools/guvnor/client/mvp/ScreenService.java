@@ -24,5 +24,11 @@ public interface ScreenService
 
     // onStart() is called right after the Presenter is constructed.
     public void onStart();
+    
+    //Called when the screen looses the focus
+    public void onLostFocus();
+
+    //Called when the screen gains the focus
+    public void onFocus();
 
 }

@@ -15,36 +15,16 @@
  */
 package org.drools.guvnor.client.mvp;
 
-import org.drools.guvnor.client.workbench.Position;
-
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * 
  */
-public abstract class AbstractScreenActivity
+public abstract class AbstractPopupActivity
     implements
-    WorkbenchActivity {
+    PopupActivity {
 
-    private ScreenService presenter;
-
-    @Override
-    public Position getDefaultPosition() {
-        return Position.ROOT;
-    }
-
-    @Override
-    public boolean mayStop() {
-        if ( presenter != null ) {
-            return presenter.onMayClose();
-        }
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        presenter.onClose();
-    }
+    private BaseService presenter;
 
     @Override
     public boolean mayClosePlace() {
@@ -64,37 +44,20 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public void onRevealPlace(AcceptItem acceptPanel) {
+    public void onRevealPlace() {
         if ( presenter == null ) {
             presenter = getPresenter();
             if ( presenter == null ) {
                 return;
             }
-            presenter.onStart();
         }
-
-        acceptPanel.add( getTitle(),
-                         getWidget() );
         presenter.onReveal();
     }
 
-    public abstract ScreenService getPresenter();
+    public abstract BaseService getPresenter();
 
     public abstract String getTitle();
 
-    //TODO {manstis} This can be deleted once the static popup menu is removed
-    public abstract String getIdentifier();
-
     public abstract IsWidget getWidget();
-
-    @Override
-    public void onLostFocus() {
-        presenter.onLostFocus();
-    }
-
-    @Override
-    public void onFocus() {
-        presenter.onFocus();
-    }
 
 }

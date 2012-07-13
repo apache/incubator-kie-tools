@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.mvp;
 
-public interface Activity {
+package org.drools.guvnor.client.resources.i18n;
 
-    public boolean mayClosePlace();
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.Messages;
 
-    public void onClosePlace();
+/**
+ * 
+ */
+public interface WorkbenchConstants
+        extends
+        Messages {
+
+    WorkbenchConstants INSTANCE = GWT.create( WorkbenchConstants.class );
+
+    String multipleMatchingActivitiesFound();
 
 }

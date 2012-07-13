@@ -198,7 +198,7 @@ public class GeneratorUtils {
 
     /**
      * Get the method name annotated with {@code @WorkbenchPartView}. The method
-     * must be public, non-static, have a return-type of void and take zero
+     * must be public, non-static, have a return-type of IsWidget and take zero
      * parameters.
      * 
      * @param classElement
@@ -208,9 +208,9 @@ public class GeneratorUtils {
      */
     public static String getWidgetMethodName(final TypeElement classElement,
                                              final ProcessingEnvironment processingEnvironment) throws GenerationException {
-        return getIsWidgetMethodName( classElement,
-                                      processingEnvironment,
-                                      WorkbenchPartView.class );
+        return getWidgetMethodName( classElement,
+                                    processingEnvironment,
+                                    WorkbenchPartView.class );
     }
 
     /**
@@ -225,6 +225,39 @@ public class GeneratorUtils {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
+        return typeUtils.isAssignable( classElement.asType(),
+                                       requiredReturnType );
+    }
+
+    /**
+     * Get the method name annotated with {@code @WorkbenchPartView}. The method
+     * must be public, non-static, have a return-type of PopupPanel and take
+     * zero parameters.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static String getPopupMethodName(final TypeElement classElement,
+                                            final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getPopupMethodName( classElement,
+                                   processingEnvironment,
+                                   WorkbenchPartView.class );
+    }
+
+    /**
+     * Check whether the provided type extends PopupPanel.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return
+     */
+    public static boolean getIsPopup(final TypeElement classElement,
+                                     final ProcessingEnvironment processingEnvironment) {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.PopupPanel" ).asType();
         return typeUtils.isAssignable( classElement.asType(),
                                        requiredReturnType );
     }
@@ -474,12 +507,57 @@ public class GeneratorUtils {
     // public, non-static, have a return-type of IsWidget and take zero
     // parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static String getIsWidgetMethodName(final TypeElement classElement,
-                                                final ProcessingEnvironment processingEnvironment,
-                                                final Class annotation) throws GenerationException {
+    private static String getWidgetMethodName(final TypeElement classElement,
+                                              final ProcessingEnvironment processingEnvironment,
+                                              final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
+        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
+
+        ExecutableElement match = null;
+        for ( ExecutableElement e : methods ) {
+
+            final TypeMirror actualReturnType = e.getReturnType();
+
+            //Check method
+            if ( e.getAnnotation( annotation ) == null ) {
+                continue;
+            }
+            if ( !typeUtils.isAssignable( actualReturnType,
+                                          requiredReturnType ) ) {
+                continue;
+            }
+            if ( e.getParameters().size() != 0 ) {
+                continue;
+            }
+            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
+                continue;
+            }
+            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
+                continue;
+            }
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
+        }
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
+    }
+
+    // Lookup a public method name with the given annotation. The method must be
+    // public, non-static, have a return-type of PopupPanel and take zero
+    // parameters.
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static String getPopupMethodName(final TypeElement classElement,
+                                             final ProcessingEnvironment processingEnvironment,
+                                             final Class annotation) throws GenerationException {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.PopupPanel" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

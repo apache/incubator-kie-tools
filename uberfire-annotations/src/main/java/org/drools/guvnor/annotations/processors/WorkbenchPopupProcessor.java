@@ -32,20 +32,20 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import org.drools.guvnor.client.annotations.WorkbenchPopup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Processor for {@code WorkbenchScreen} and related annotations
+ * Processor for {@code WorkbenchPopup} and related annotations
  */
-@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchScreen")
+@SupportedAnnotationTypes("org.drools.guvnor.client.annotations.WorkbenchPopup")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class WorkbenchScreenProcessor extends AbstractProcessor {
+public class WorkbenchPopupProcessor extends AbstractProcessor {
 
-    private static final Logger           logger            = LoggerFactory.getLogger( WorkbenchScreenProcessor.class );
+    private static final Logger          logger            = LoggerFactory.getLogger( WorkbenchPopupProcessor.class );
 
-    private final ScreenActivityGenerator activityGenerator = new ScreenActivityGenerator();
+    private final PopupActivityGenerator activityGenerator = new PopupActivityGenerator();
 
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
@@ -55,8 +55,8 @@ public class WorkbenchScreenProcessor extends AbstractProcessor {
             return false;
         }
 
-        //Scan for all classes with the WorkbenchScreen annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchScreen.class ) ) {
+        //Scan for all classes with the WorkbenchPopup annotation
+        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchPopup.class ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

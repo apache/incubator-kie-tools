@@ -11,10 +11,4 @@ public interface BaseService {
     //Called when the screen is displayed.
     public void onReveal();
 
-    //Called when the screen looses the focus
-    public void onLostFocus();
-
-    //Called when the screen gains the focus
-    public void onFocus();
-
 }
