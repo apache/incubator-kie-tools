@@ -9,10 +9,20 @@ target
 *.ipr
 *.iws
 *.iml
-/guvnorng-core/src/main/webapp/WEB-INF/classes
-/guvnorng-showcase/src/main/webapp/WEB-INF/classes
-/guvnorng-core/target
-/guvnorng-showcase/target
+/uberfire/.errai
+/uberfire/.git
+/uberfire/.settings
+/uberfire-showcase/src/main/gwt-unitCache/
+/uberfire-showcase/src/main/webapp/WEB-INF/classes/
+/uberfire-showcase/src/main/webapp/WEB-INF/deploy/
+/uberfire-showcase/src/main/webapp/WEB-INF/lib/
+/uberfire-showcase/src/main/webapp/org.drools.guvnor.GuvnorNGShowcase/
+/**/*/.classpath
+/**/*/.project
+/**/*/.settings/
+/**/*/*/.classpath
+/**/*/*/.project
+/**/*/*/.settings/
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
