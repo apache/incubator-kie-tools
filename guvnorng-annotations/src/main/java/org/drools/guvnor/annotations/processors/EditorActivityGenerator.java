@@ -93,10 +93,15 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return an IsWidget." );
+            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
             logger.warn( "The WorkbenchPart both extends isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+        }
+
+        //Validate getTitleMethodName
+        if ( getTitleMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPart must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         }
 
         //Setup data for template sub-system

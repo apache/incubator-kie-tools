@@ -156,7 +156,7 @@ public class GeneratorUtils {
      * @throws GenerationException
      */
     public static String getOnFocusMethodName(final TypeElement classElement,
-                                               final ProcessingEnvironment processingEnvironment) throws GenerationException {
+                                              final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   OnFocus.class );
@@ -190,7 +190,7 @@ public class GeneratorUtils {
      * @throws GenerationException
      */
     public static String getTitleMethodName(final TypeElement classElement,
-                                             final ProcessingEnvironment processingEnvironment) throws GenerationException {
+                                            final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getStringMethodName( classElement,
                                     processingEnvironment,
                                     WorkbenchPartTitle.class );
