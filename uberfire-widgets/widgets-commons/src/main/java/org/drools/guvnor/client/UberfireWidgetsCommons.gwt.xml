@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2012 JBoss Inc
   ~
@@ -16,14 +17,9 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.google.gwt.json.JSON"/>
-
-  <source path='channels'/>
-  <source path='file'/>
-  <source path='util'/>
-  <source path=''/>
-
-  <super-source path='jre'/>
+  <!-- Inherit the core Web Toolkit stuff. -->
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <inherits name="com.google.gwt.user.User"/>
 
 </module>

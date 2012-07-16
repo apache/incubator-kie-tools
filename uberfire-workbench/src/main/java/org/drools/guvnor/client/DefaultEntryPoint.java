@@ -19,19 +19,17 @@ package org.drools.guvnor.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.workbench.Workbench;
-import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.workbench.Workbench;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class DefaultEntryPoint {
@@ -43,7 +41,6 @@ public class DefaultEntryPoint {
 
     @PostConstruct
     public void init() {
-        RestClient.setApplicationRoot( "/" );
         if (!Window.Location.getPath().contains("Standalone.html")) {
             appWidget.add(workbench);
         }

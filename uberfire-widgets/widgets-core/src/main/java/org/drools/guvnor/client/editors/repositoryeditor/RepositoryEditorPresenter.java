@@ -19,6 +19,8 @@ package org.drools.guvnor.client.editors.repositoryeditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
@@ -26,11 +28,8 @@ import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
-import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoryEditor")

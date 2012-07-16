@@ -358,8 +358,8 @@
 		<module>uberfire-annotations</module>
 		<module>uberfire-api</module>
 		<module>uberfire-workbench</module>
-		<module>uberfire-widgets</module>
-		<module>uberfire-backend</module>
+    <module>uberfire-backend</module>
+    <module>uberfire-widgets</module>
 		<module>uberfire-showcase</module>
 	</modules>
 

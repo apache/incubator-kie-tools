@@ -29,10 +29,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.resources.ComponentCoreImages;
 import org.drools.guvnor.vfs.FileSystem;
-import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 

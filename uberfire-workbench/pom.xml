@@ -43,36 +43,32 @@
 			<artifactId>uberfire-annotations</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-model</artifactId>
-		</dependency>
+    <!-- CDI Integration Modules -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+    </dependency>
 
-		<!-- Errai Core -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-bus</artifactId>
-		</dependency>
+    <!-- Errai IoC -->
 
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-ioc</artifactId>
 		</dependency>
 
-		<!-- Errai JAX-RS -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-jaxrs-client</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <!-- Errai ui binder -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-uibinder</artifactId>
+    </dependency>
 
-		<!-- GWT and GWT Extensions -->
+    <!-- GWT and GWT Extensions -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>

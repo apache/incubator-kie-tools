@@ -32,7 +32,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.guvnor.vfs.FileSystem;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.VFSService;
+import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
 import org.drools.guvnor.vfs.impl.FileSystemImpl;
 import org.drools.guvnor.vfs.impl.PathImpl;

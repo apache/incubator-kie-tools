@@ -19,6 +19,8 @@ package org.drools.guvnor.client.editors.texteditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnReveal;
@@ -30,11 +32,8 @@ import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @WorkbenchEditor()

@@ -11,13 +11,9 @@
   <!-- inherit css based theme -->
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
 
-  <!-- Errai module inherits -->
-  <inherits name="org.jboss.errai.common.ErraiCommon"/>
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
-  <inherits name="org.jboss.errai.ioc.Container"/>
+  <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
-  <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
 
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
@@ -26,10 +22,7 @@
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
   <!-- GuvnorNG API common interfaces -->
-  <inherits name="org.drools.guvnor.APIGuvnorNG"/>
-
-  <!-- VFS common interfaces -->
-  <inherits name="org.drools.java.nio.VFSCommon"/>
+  <inherits name="org.drools.guvnor.UberfireAPI"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnorng-core.css'/>

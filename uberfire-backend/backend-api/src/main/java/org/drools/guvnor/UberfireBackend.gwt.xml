@@ -16,9 +16,9 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.google.gwt.json.JSON"/>
+  <inherits name='org.jboss.errai.bus.ErraiBus'/>
+  <inherits name='org.jboss.errai.enterprise.Jaxrs'/>
 
-  <source path='vfs'/>
+  <source path='backend'/>
 
 </module>

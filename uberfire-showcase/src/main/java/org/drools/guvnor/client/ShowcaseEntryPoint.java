@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
@@ -24,13 +22,9 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.drools.guvnor.client.editors.texteditor.TextEditorPresenter;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.resources.ShowcaseResources;
-import org.drools.guvnor.vfs.FileSystem;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.Paths;
-import org.drools.guvnor.vfs.VFSService;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 

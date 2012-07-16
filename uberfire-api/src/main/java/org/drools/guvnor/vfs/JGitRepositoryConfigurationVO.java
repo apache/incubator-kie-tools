@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.vfs;
 
-import java.net.URI;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
