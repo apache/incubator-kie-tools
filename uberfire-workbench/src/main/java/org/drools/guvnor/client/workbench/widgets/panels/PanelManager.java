@@ -32,6 +32,9 @@ import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPanelOnFocusEv
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -71,6 +74,7 @@ public class PanelManager {
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
         workbenchPanels.add( panel );
+        scheduleResize( panel );
         setFocus( panel );
     }
 
@@ -222,6 +226,17 @@ public class PanelManager {
                 return;
             }
         }
+    }
+
+    private void scheduleResize(final RequiresResize widget) {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                widget.onResize();
+            }
+
+        } );
     }
 
 }
