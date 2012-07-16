@@ -22,6 +22,12 @@ public interface EditorService
     extends
     BaseService {
 
+    //Called before a screen is closed. This gives the screen an opportunity to object to closure
+    public boolean onMayClose();
+
+    //Called when the screen is closed.
+    public void onClose();
+    
     // onStart() is called right after the Presenter is constructed.
     public void onStart(Path path);
 

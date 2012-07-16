@@ -13,37 +13,51 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.screens.activities.notfound;
+package org.drools.guvnor.client.popups.activities.multiple;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
  */
-public class ActivityNotFoundView extends SimplePanel
+public class MultipleActivitiesFoundView extends PopupPanel
     implements
-    ActivityNotFoundPresenter.View {
+    MultipleActivitiesFoundPresenter.View {
 
     @Inject
-    UiBinder<SimplePanel, ActivityNotFoundView> uiBinder;
+    UiBinder<PopupPanel, MultipleActivitiesFoundView> uiBinder;
 
     @UiField
-    public Label                                identifierLabel;
+    public Label                                      requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {
         setWidget( uiBinder.createAndBindUi( this ) );
+        setGlassEnabled( true );
     }
 
     @Override
-    public void setIdentifer(String identifier) {
-        identifierLabel.setText( identifier );
+    public void setRequestedPlaceIdentifier(String requestedPlaceIdentifier) {
+        requestedPlaceIdentifierLabel.setText( requestedPlaceIdentifier );
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        center();
+    }
+
+    @UiHandler("okButton")
+    public void onClickOkButton(final ClickEvent event) {
+        hide();
     }
 
 }

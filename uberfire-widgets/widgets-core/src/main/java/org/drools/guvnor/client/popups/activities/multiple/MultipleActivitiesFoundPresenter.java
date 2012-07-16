@@ -13,24 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.screens.activities.multiple;
+package org.drools.guvnor.client.popups.activities.multiple;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.OnReveal;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchPopup;
 import org.drools.guvnor.client.mvp.PlaceManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
  */
 @ApplicationScoped
-@WorkbenchPopup(identifier = "org.drools.guvnor.client.workbench.screens.activities.multiple")
+@WorkbenchPopup(identifier = "workbench.activities.multiple")
 public class MultipleActivitiesFoundPresenter {
 
     public interface View
@@ -56,14 +56,9 @@ public class MultipleActivitiesFoundPresenter {
         view.show();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Warning - Multiple";
-    }
-
     @WorkbenchPartView
-    public IsWidget getView() {
-        return view;
+    public PopupPanel getView() {
+        return (PopupPanel) view;
     }
 
 }

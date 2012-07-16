@@ -21,6 +21,10 @@ public interface WorkbenchActivity
     extends
     Activity {
 
+    public boolean mayClosePlace();
+
+    public void onClosePlace();
+
     public boolean mayStop();
 
     public void onStop();

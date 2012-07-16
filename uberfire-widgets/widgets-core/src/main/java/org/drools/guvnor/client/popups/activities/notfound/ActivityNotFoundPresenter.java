@@ -13,31 +13,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.screens.activities.notfound;
+package org.drools.guvnor.client.popups.activities.notfound;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
+import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import org.drools.guvnor.client.annotations.WorkbenchPopup;
 import org.drools.guvnor.client.mvp.PlaceManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
  */
 @Dependent
-@WorkbenchScreen(identifier = "org.drools.guvnor.client.workbench.screens.activities.notfound")
+@WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
     public interface View
         extends
         IsWidget {
 
-        void setIdentifer(final String identifier);
+        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+
+        void show();
     }
 
     @Inject
@@ -46,21 +48,16 @@ public class ActivityNotFoundPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @OnStart
-    public void onStart() {
+    @OnReveal
+    public void onReveal() {
         final String identifier = placeManager.getCurrentPlaceRequest().getParameter( "identifier",
                                                                                       null );
-        view.setIdentifer( identifier );
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Warning - Not Found";
+        view.setRequestedPlaceIdentifier( identifier );
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
-        return view;
+    public PopupPanel getView() {
+        return (PopupPanel) view;
     }
 
 }

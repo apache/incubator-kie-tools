@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.workbench.screens.activities.multiple;
+package org.drools.guvnor.client.popups.activities.notfound;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,25 +28,24 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /**
  * 
  */
-public class MultipleActivitiesFoundView extends PopupPanel
+public class ActivityNotFoundView extends PopupPanel
     implements
-    MultipleActivitiesFoundPresenter.View {
+    ActivityNotFoundPresenter.View {
 
     @Inject
-    UiBinder<PopupPanel, MultipleActivitiesFoundView> uiBinder;
+    UiBinder<PopupPanel, ActivityNotFoundView> uiBinder;
 
     @UiField
-    public Label                                      requestedPlaceIdentifierLabel;
+    public Label                               requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {
         setWidget( uiBinder.createAndBindUi( this ) );
-        setGlassEnabled( true );
     }
 
     @Override
-    public void setRequestedPlaceIdentifier(String requestedPlaceIdentifier) {
-        requestedPlaceIdentifierLabel.setText( requestedPlaceIdentifier );
+    public void setRequestedPlaceIdentifier(String identifier) {
+        requestedPlaceIdentifierLabel.setText( identifier );
     }
 
     @Override

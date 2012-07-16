@@ -23,7 +23,7 @@ import org.drools.guvnor.client.annotations.Identifier;
 import org.drools.guvnor.client.mvp.AbstractPopupActivity;
 import org.drools.guvnor.client.mvp.BaseService;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
 @Identifier("${identifier}")
@@ -38,24 +38,6 @@ public class ${className} extends AbstractPopupActivity
     private ${realClassName} realPresenter;
 
     @Override
-    public boolean onMayClose() {
-        <#if onMayCloseMethodName??>
-        return realPresenter.${onMayCloseMethodName}();
-        <#else>
-        return true;
-        </#if>
-    }
-
-    @Override
-    public void onClose() {
-        <#if onCloseMethodName??>
-        realPresenter.${onCloseMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnClose annotation
-        </#if>
-    }
-
-    @Override
     public void onReveal() {
         <#if onRevealMethodName??>
         realPresenter.${onRevealMethodName}();
@@ -65,20 +47,10 @@ public class ${className} extends AbstractPopupActivity
     }
 
     @Override
-    public String getTitle() {
-        <#if getTitleMethodName??>
-        return realPresenter.${getTitleMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @Title annotation
-        return null;
-        </#if>
-    }
-
-    @Override
-    public IsWidget getWidget() {
-        <#if getWidgetMethodName??>
-        return realPresenter.${getWidgetMethodName}();
-        <#elseif isWidget>
+    public PopupPanel getPopupPanel() {
+        <#if getPopupMethodName??>
+        return realPresenter.${getPopupMethodName}();
+        <#elseif isPopup>
         return realPresenter;
         <#else>
         return null;

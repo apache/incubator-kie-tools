@@ -17,8 +17,4 @@ package org.drools.guvnor.client.mvp;
 
 public interface Activity {
 
-    public boolean mayClosePlace();
-
-    public void onClosePlace();
-
 }

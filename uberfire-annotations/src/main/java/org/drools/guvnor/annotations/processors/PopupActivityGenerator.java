@@ -50,40 +50,26 @@ public class PopupActivityGenerator extends AbstractGenerator {
         //Extract required information
         final WorkbenchPopup wbp = classElement.getAnnotation( WorkbenchPopup.class );
         final String identifier = wbp.identifier();
-        final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
-                                                                                    processingEnvironment );
-        final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
-                                                                              processingEnvironment );
         final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
                                                                                 processingEnvironment );
-        final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
+        final String getPopupMethodName = GeneratorUtils.getPopupMethodName( classElement,
                                                                              processingEnvironment );
-        final String getWidgetMethodName = GeneratorUtils.getWidgetMethodName( classElement,
-                                                                               processingEnvironment );
-        final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
-                                                             processingEnvironment );
+        final boolean isPopup = GeneratorUtils.getIsPopup( classElement,
+                                                           processingEnvironment );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
-        logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
-        logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
-        logger.debug( "getTitleMethodName: " + getTitleMethodName );
-        logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
-        logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
+        logger.debug( "getPopupMethodName: " + getPopupMethodName );
+        logger.debug( "isPopup: " + Boolean.toString( isPopup ) );
 
         //Validate getPopupMethodName and isPopup
-        if ( !isWidget && getWidgetMethodName == null ) {
+        if ( !isPopup && getPopupMethodName == null ) {
             throw new GenerationException( "The WorkbenchPart must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
         }
-        if ( isWidget && getWidgetMethodName != null ) {
+        if ( isPopup && getPopupMethodName != null ) {
             logger.warn( "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
-        }
-
-        //Validate getTitleMethodName
-        if ( getTitleMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         }
 
         //Setup data for template sub-system
@@ -96,18 +82,12 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onMayCloseMethodName",
-                  onMayCloseMethodName );
-        root.put( "onCloseMethodName",
-                  onCloseMethodName );
         root.put( "onRevealMethodName",
                   onRevealMethodName );
-        root.put( "getTitleMethodName",
-                  getTitleMethodName );
-        root.put( "getWidgetMethodName",
-                  getWidgetMethodName );
-        root.put( "isWidget",
-                  isWidget );
+        root.put( "getPopupMethodName",
+                  getPopupMethodName );
+        root.put( "isPopup",
+                  isPopup );
 
         //Generate code
         final StringWriter sw = new StringWriter();

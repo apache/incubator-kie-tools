@@ -30,4 +30,6 @@ public interface WorkbenchConstants
 
     String multipleMatchingActivitiesFound();
 
+    String activityNotFound();
+    
 }

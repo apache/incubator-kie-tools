@@ -23,10 +23,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.workbench.screens.activities.multiple.MultipleActivitiesFoundPlace;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-
-import com.google.gwt.user.client.Window;
 
 @Dependent
 public class GuvnorNGActivityMapperImpl
@@ -53,8 +50,10 @@ public class GuvnorNGActivityMapperImpl
         Set<IOCBeanDef< ? >> activityBeans = idUtils.getActivities( identifier );
         switch ( activityBeans.size() ) {
             case 0 :
-                //TODO {manstis} No activities found. Show an error to the user.
-                Window.alert( "No Activity found to handle: [" + identifier + "]" );
+                //No activities found. Show an error to the user.
+            	final PlaceRequest notFoundPopup = new PlaceRequest( "workbench.activity.notfound" );
+            	notFoundPopup.addParameter("requestedPlaceIdentifier", identifier);
+                placeManager.goTo( notFoundPopup );
                 break;
             case 1 :
                 instance = getFirstActivity( activityBeans );
@@ -62,13 +61,10 @@ public class GuvnorNGActivityMapperImpl
                                       instance );
                 return instance;
             default :
-                placeManager.goTo( new MultipleActivitiesFoundPlace( identifier ) );
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
-//                Window.alert( "Multiple Activities found to handle: [" + identifier + "]. Using the first..." );
-//                instance = getFirstActivity( activityBeans );
-//                activeActivities.put( placeRequest,
-//                                      instance );
-//                return instance;
+            	final PlaceRequest multiplePopup = new PlaceRequest( "workbench.activities.multiple" );
+            	multiplePopup.addParameter("requestedPlaceIdentifier", identifier);
+                placeManager.goTo( multiplePopup );
         }
 
         return null;

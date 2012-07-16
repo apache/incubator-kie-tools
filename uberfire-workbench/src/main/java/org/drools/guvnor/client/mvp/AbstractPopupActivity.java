@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
@@ -27,23 +27,6 @@ public abstract class AbstractPopupActivity
     private BaseService presenter;
 
     @Override
-    public boolean mayClosePlace() {
-        if ( presenter != null ) {
-            return presenter.onMayClose();
-        }
-        return true;
-    }
-
-    @Override
-    public void onClosePlace() {
-        if ( presenter == null ) {
-            return;
-        }
-        presenter.onClose();
-        presenter = null;
-    }
-
-    @Override
     public void onRevealPlace() {
         if ( presenter == null ) {
             presenter = getPresenter();
@@ -52,12 +35,13 @@ public abstract class AbstractPopupActivity
             }
         }
         presenter.onReveal();
+        final PopupPanel popup = getPopupPanel();
+        popup.show();
+        popup.center();
     }
 
     public abstract BaseService getPresenter();
 
-    public abstract String getTitle();
-
-    public abstract IsWidget getWidget();
+    public abstract PopupPanel getPopupPanel();
 
 }
