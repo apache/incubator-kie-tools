@@ -16,7 +16,7 @@ target
 /uberfire-showcase/src/main/webapp/WEB-INF/classes/
 /uberfire-showcase/src/main/webapp/WEB-INF/deploy/
 /uberfire-showcase/src/main/webapp/WEB-INF/lib/
-/uberfire-showcase/src/main/webapp/org.drools.guvnor.GuvnorNGShowcase/
+/uberfire-showcase/src/main/webapp/org.drools.guvnor.UberfireShowcase/
 /**/*/.classpath
 /**/*/.project
 /**/*/.settings/

@@ -131,12 +131,12 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <module>org.drools.guvnor.FastCompiledGuvnorNGShowcase</module>
+          <module>org.drools.guvnor.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
-          <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>
-          </compileSourcesArtifacts>
-          <runTarget>org.drools.guvnor.GuvnorNGShowcase/Guvnor.html</runTarget>
+          <!--<compileSourcesArtifacts>-->
+            <!--<compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>-->
+          <!--</compileSourcesArtifacts>-->
+          <runTarget>org.drools.guvnor.UberfireShowcase/Uberfire.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
           <hostedWebapp>src/main/webapp/</hostedWebapp>
@@ -238,7 +238,7 @@
                 <include>www-test/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/**</include>
-                <include>src/main/webapp/org.drools.guvnor.GuvnorNGShowcase/**</include>
+                <include>src/main/webapp/org.drools.guvnor.UberfireShowcase/**</include>
                 <include>src/main/webapp/app/**</include>
                 <include>src/main/webapp/WEB-INF/deploy/**</include>
                 <include>src/main/webapp/WEB-INF/lib/**</include>

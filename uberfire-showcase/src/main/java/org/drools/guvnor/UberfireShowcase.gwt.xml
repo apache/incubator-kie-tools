@@ -7,7 +7,7 @@
   <inherits name="org.drools.guvnor.UberfireBackend"/>
 
   <!-- Specify the application specific style sheet. -->
-  <stylesheet src='css/guvnorng-showcase.css'/>
+  <stylesheet src='css/uberfire-showcase.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
