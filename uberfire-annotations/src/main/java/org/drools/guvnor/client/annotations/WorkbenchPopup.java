@@ -22,7 +22,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Classes annotated with this are considered Workbench popups.
+ * <p>
+ * At its simplest form the Class should extend
+ * {@code com.google.gwt.user.client.ui.PopupPanel} and provide a method
+ * annotated with {@code @OnReveal}.
+ * </p>
+ * <p>
+ * Developers wishing to separate view from logic (perhaps by implementing the
+ * MVP pattern) can further provide a zero-argument method annotated with
+ * {@code @WorkbenchPartView} with return type
+ * {@code com.google.gwt.user.client.ui.PopupPanel}.
+ * </p>
+ * <p>
+ * In this latter case the {@code @WorkbenchPopup} need not extend
+ * {@code com.google.gwt.user.client.ui.PopupPanel}.
+ * </p>
+ * <p>
+ * WorkbechPopups can receive the following life-cycle calls:
+ * <ul>
+ * <li>{@code @OnReveal}</li>
+ * </p>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

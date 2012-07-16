@@ -7,9 +7,14 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+/**
+ * An identifier for a Place (WorkbenchPart or Popup)
+ */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+@Target({ElementType.TYPE})
 public @interface Identifier {
-   String value();
+
+    String value();
+
 }

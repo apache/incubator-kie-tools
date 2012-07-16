@@ -22,7 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods annotated with this are called by the Workbench when a WorkbenchPart
+ * is displayed. OnReveal annotated methods are called after the WorkbenchPart's
+ * OnStart annotated method. The method should take zero arguments and return
+ * void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

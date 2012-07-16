@@ -22,7 +22,35 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Classes annotated with this are considered WorkbenchParts that perform
+ * display some form of read-only content. If the content can be edited and
+ * saved developers should consider using {@code @WorkbenchEditor}.
+ * <p>
+ * At its simplest form the Class should implement
+ * {@code com.google.gwt.user.client.ui.IsWidget} (e.g. extend
+ * {@code com.google.gwt.user.client.ui.Composite}) and provide a method
+ * annotated with {@code @WorkbenchPartTitle}.
+ * </p>
+ * <p>
+ * Developers wishing to separate view from logic (perhaps by implementing the
+ * MVP pattern) can further provide a zero-argument method annotated with
+ * {@code @WorkbenchPartView} with return type
+ * {@code com.google.gwt.user.client.ui.IsWidget}.
+ * </p>
+ * <p>
+ * In this latter case the {@code @WorkbenchScreen} need not implement
+ * {@code com.google.gwt.user.client.ui.IsWidget}.
+ * </p>
+ * <p>
+ * WorkbechEditors can receive the following life-cycle calls:
+ * <ul>
+ * <li>{@code @OnClose}</li>
+ * <li>{@code @OnFocus}</li>
+ * <li>{@code @OnLostFocus}</li>
+ * <li>{@code @OnMayClose}</li>
+ * <li>{@code @OnStart}</li>
+ * <li>{@code @OnReveal}</li>
+ * </p>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

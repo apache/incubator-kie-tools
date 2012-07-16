@@ -24,7 +24,9 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Marker annotation to set a Perspective as the default
+ * Marker annotation to set a class implementing
+ * {@code org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider}
+ * as the default provider.
  */
 @Qualifier
 @Inherited

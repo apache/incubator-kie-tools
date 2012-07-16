@@ -22,7 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods marked with this annotation will be called by the Workbench to check
+ * whether their content "is dirty", i.e. contains unsaved state. The method
+ * should take zero arguments and return boolean (true, the content "is dirty";
+ * false the content is not dirty).
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

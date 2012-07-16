@@ -26,7 +26,10 @@ import org.drools.guvnor.client.workbench.Position;
 import static org.drools.guvnor.client.workbench.Position.ROOT;
 
 /**
- * Default position for WorkbenchParts added to the Workbench
+ * Default position for WorkbenchParts added to the Workbench. Methods marked
+ * with this annotation should take zero arguments and return
+ * {@code org.drools.guvnor.client.workbench.Position} indicating the
+ * WorkbenchPart's default position.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

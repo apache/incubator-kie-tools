@@ -22,7 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods annotated with this will be called by the Workbench when a
+ * WorkbenchPart is closed. WorkbenchParts can perform any clean-up tasks in the
+ * annotated method. The method should take zero arguments and return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

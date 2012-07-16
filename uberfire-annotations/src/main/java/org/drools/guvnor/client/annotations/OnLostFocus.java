@@ -22,7 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods annotated with this will be called when the WorkbenchPart looses the
+ * focus. A WorkbenchPart looses the focus when another WorkbenchPart gains the
+ * focus by it's tab being clicked. The method should take zero arguments and
+ * return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,7 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * <p>
+ * Methods annotated with this are called by the Workbench before methods
+ * annotated with {@code @OnReveal}. WorkbenchParts should perform any
+ * initialisation activities here (for example load their content from a
+ * persistent store).
+ * </p>
+ * <p>
+ * For {@code @WorkbenchEditor}'s the method should take a single argument of
+ * type {@code org.drools.guvnor.vfs.Path}. The Path specifies the URI for the
+ * resource to be edited. For {@code @WorkbenchScreen} 's the method should have
+ * zero arguments. The method should return void.
+ * </p>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

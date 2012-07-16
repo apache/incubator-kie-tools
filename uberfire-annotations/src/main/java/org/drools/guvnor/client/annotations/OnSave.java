@@ -22,7 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods annotated with this are called by the Workbench to save the
+ * WorkbenchPart's state. The method should take zero arguments and return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,7 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Methods annotated with this will be called by the Workbench before the
+ * WorkbenchPart is closed. The method should take zero arguments and return a
+ * boolean indicating whether the WorkbenchPart can be closed (true, it can be
+ * closed; false it cannot be closed).
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
