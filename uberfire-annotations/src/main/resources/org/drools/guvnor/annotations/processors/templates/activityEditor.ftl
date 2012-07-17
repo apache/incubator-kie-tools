@@ -16,6 +16,7 @@
 
 package ${packageName};
 
+import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,6 +32,7 @@ import org.drools.guvnor.vfs.Path;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
+@Generated("org.drools.guvnor.annotations.processors.WorkbenchEditorProcessor")
 @Identifier("${fileType}")
 /*
  * WARNING! This class is generated. Do not modify.

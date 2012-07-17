@@ -16,6 +16,7 @@
 
 package ${packageName};
 
+import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -26,6 +27,7 @@ import org.drools.guvnor.client.mvp.BaseService;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
+@Generated("org.drools.guvnor.annotations.processors.WorkbenchPopupProcessor")
 @Identifier("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
