@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend.impl;
+package org.drools.guvnor.server.impl;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -28,15 +28,11 @@ import java.util.Map;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import org.drools.guvnor.vfs.FileSystem;
 import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.VFSService;
-import org.drools.guvnor.vfs.VFSTempUtil;
-import org.drools.guvnor.vfs.event.New;
+import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
 import org.drools.guvnor.vfs.impl.FileSystemImpl;
 import org.drools.guvnor.vfs.impl.PathImpl;
@@ -56,7 +52,6 @@ import org.drools.java.nio.file.NotLinkException;
 import org.drools.java.nio.file.Paths;
 import org.drools.java.nio.file.PatternSyntaxException;
 import org.drools.java.nio.file.ProviderNotFoundException;
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
@@ -71,13 +66,11 @@ public class VFSServicesServerImpl implements VFSService {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    @Inject @New Event<FileSystem> fsEvent;
-
-    final Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
+    private Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
 
     @PostConstruct
     public void init() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
-//        loadJGitConfiguration();
+        loadJGitConfiguration();
     }
 
     @Override
@@ -90,6 +83,7 @@ public class VFSServicesServerImpl implements VFSService {
         return convert(Paths.get(URI.create(path.toURI())));
     }
 
+    //TODO xxx
     private void loadJGitConfiguration() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
         //TODO: load guvnorng-configuration git repo configuration info from a property file.
         String repositoryName = "guvnorng-configuration";
@@ -171,16 +165,14 @@ public class VFSServicesServerImpl implements VFSService {
     public FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
         final org.drools.java.nio.file.FileSystem newFileSystem;
+        System.out.println("ABOUT TO CREA A NEW FILE SYSTEM!");
         try {
             newFileSystem = FileSystems.newFileSystem(URI.create(uri), env);
         } catch (java.io.IOException e) {
             throw new RuntimeException();
         }
 
-        final FileSystem fs = new FileSystemImpl(asList(new Path[]{new PathImpl(uri)}));
-        fsEvent.fire(fs);
-
-        return fs;
+        return new FileSystemImpl(asList(new Path[]{new PathImpl(uri)}));
     }
 
     public void createJGitFileSystem(String repositoryName, String description, String userName, String password) {
@@ -235,7 +227,8 @@ public class VFSServicesServerImpl implements VFSService {
         return result;
     }
 
-    private JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName) {
+    @Override
+    public JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName) {
         Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
         JGitRepositoryConfiguration j = repo.get(repositoryName);
 
@@ -503,63 +496,5 @@ public class VFSServicesServerImpl implements VFSService {
         String pathString = path.toURI();
         pathString = pathString.replaceAll(" ", "%20");
         return Paths.get(URI.create(pathString));
-    }
-
-    public static void main(String[] args) throws Exception {
-        VFSServicesServerImpl vfs = new VFSServicesServerImpl();
-        vfs.init();
-/*
-        URI u = new URI("");
-        URI u2 = new URI("default:///.");
-        URI u3 = URI.create("default:///.");        
-        URI u4 = new URI(null, null, ".", null, null);*/
-
-        List<JGitRepositoryConfigurationVO> repositories = vfs.listJGitRepositories();
-        for (final JGitRepositoryConfigurationVO r : repositories) {
-            PathImpl p = new PathImpl(r.getRootURI().toString());
-            DirectoryStream<Path> response = vfs.newDirectoryStream(p);
-            for (final Path path : response) {
-                Map<String, Object> attributes = vfs.readAttributes(path);
-
-                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(attributes);
-                System.out.println("path.getFileName() " + path.getFileName());
-                System.out.println("attrs.isDirectory() " + attrs.isDirectory());
-                System.out.println("attrs.isRegularFile() " + attrs.isRegularFile());
-                System.out.println("path.toURI() " + path.toURI());
-            }
-        }
-       
-/*        Map<String, String> env = new HashMap<String, String>();
-        String fromGitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-        String userName = "guvnorngtestuser1";
-        String password = "test1234";
-        
-        env.put("fromGitURL", fromGitURL);
-        env.put("userName", userName);
-        env.put("password", password);
-        URI uri = URI.create("jgit:///guvnorng-playground");
-       
-        FileSystems.newFileSystem(uri, env);*/
-                
-        Path p = new PathImpl("jgit:///guvnorng-playground/mortgagesSample/test.drl");     
-        vfs.write(p, "some test content 123");
-/*     File source = new File("pom.xml");
-     System.out.println(source.getAbsolutePath());
-     PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");
-     String commitMessage = "test. pushed from jgit.";
-     InputStream inputStream = new FileInputStream(source);*/
-/*
-        Path p = new PathImpl("jgit:///guvnorng-playground");       
-        DirectoryStream<Path> response = vfs.newDirectoryStream(p);
-        
-        for (final Path path : response) {
-            Map<String, Object> attributes = vfs.readAttributes(path);
-
-            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(attributes);
-            System.out.println("path.getFileName() " + path.getFileName());
-            System.out.println("attrs.isDirectory() " + attrs.isDirectory());
-            System.out.println("attrs.isRegularFile() " + attrs.isRegularFile());
-            System.out.println("path.toURI() " + path.toURI());
-        }*/
     }
 }

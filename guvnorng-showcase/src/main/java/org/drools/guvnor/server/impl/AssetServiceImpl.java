@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend.impl;
+package org.drools.guvnor.server.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.backend.contenthandler.drools.FactModelContentHandler;
+import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.VFSService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service

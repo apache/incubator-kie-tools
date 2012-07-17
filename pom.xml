@@ -51,7 +51,8 @@
 		<weld.version>1.1.6.Final</weld.version>
 		<jetty.version>6.1.25</jetty.version>
 		<gwt-dnd.version>3.1.2</gwt-dnd.version>
-	</properties>
+    <resteasy.version>2.3.3.Final</resteasy.version>
+  </properties>
 
 	<scm>
 		<connection>scm:git:git@github.com:droolsjbpm/guvnorng.git</connection>
@@ -638,14 +639,14 @@
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jaxrs</artifactId>
-				<version>2.3.3.Final</version>
+				<version>${resteasy.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-cdi</artifactId>
-				<version>2.3.3.Final</version>
-			</dependency>
+        <version>${resteasy.version}</version>
+      </dependency>
 
 			<!-- Weld Modules -->
 			<dependency>

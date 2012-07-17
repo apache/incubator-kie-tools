@@ -34,20 +34,6 @@ public interface Constants
 
     Constants INSTANCE = GWT.create( Constants.class );
 
-    String helloWorld();
-
-    String admin();
-
-    String Error();
-
-    String ShowDetail();
-
-    String SessionExpiredMessage(String url);
-
-    String SignOut();
-
-    String WelcomeUser();
-
     String Rename();
 
     String Delete();

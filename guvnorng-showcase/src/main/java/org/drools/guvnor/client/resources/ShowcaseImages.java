@@ -44,15 +44,6 @@ public interface ShowcaseImages
     @Source("images/config.png")
     ImageResource config();
 
-    @Source("images/open_folder.gif")
-    ImageResource openedFolder();
-    
-    @Source("images/package.gif")
-    ImageResource packageIcon();
-    
-    @Source("images/file.gif")
-    ImageResource file();
-
     @Source("images/collapse.gif")
     ImageResource collapse();
 

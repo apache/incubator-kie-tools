@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend.contenthandler.drools;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
