@@ -41,7 +41,7 @@
 
 	  	<dependency>
 	  		<groupId>org.uberfire</groupId>
-	  		<artifactId>uberfire-annotations</artifactId>
+	  		<artifactId>uberfire-annotations-processors</artifactId>
 	  	</dependency>
 
 		<dependency>
