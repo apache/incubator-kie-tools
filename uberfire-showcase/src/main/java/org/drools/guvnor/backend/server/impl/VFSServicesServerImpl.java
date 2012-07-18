@@ -497,4 +497,11 @@ public class VFSServicesServerImpl implements VFSService {
         pathString = pathString.replaceAll(" ", "%20");
         return Paths.get(URI.create(pathString));
     }
+    
+    @Override
+    public InputStream newInputStream(final Path p)
+            throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+        InputStream is = Files.newInputStream(fromPath(p), null);
+        return is;
+    }
 }

@@ -35,7 +35,13 @@
       <artifactId>backend-server</artifactId>
       <version>${uberfire.version}</version>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>widgets-core</artifactId>
@@ -160,6 +166,13 @@
       <version>5.4.0.Final</version>
     </dependency>
 
+    
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>droolsjbpm-ide-common</artifactId>
+      <version>5.4.0.Final</version>
+    </dependency>
+    
   </dependencies>
 
   <build>

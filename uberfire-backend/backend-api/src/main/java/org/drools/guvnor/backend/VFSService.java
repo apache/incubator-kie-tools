@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.backend;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -202,5 +203,7 @@ public interface VFSService {
 
     FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
+    
+    InputStream newInputStream(Path p) throws IllegalArgumentException,  NoSuchFileException, UnsupportedOperationException, IOException, SecurityException;
 
 }
