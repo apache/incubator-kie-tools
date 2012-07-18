@@ -62,7 +62,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-annotations</artifactId>
+      <artifactId>uberfire-annotations-processors</artifactId>
       <version>${uberfire.version}</version>
     </dependency>
 

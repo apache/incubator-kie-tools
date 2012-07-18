@@ -17,6 +17,11 @@ target
 /uberfire-showcase/src/main/webapp/WEB-INF/deploy/
 /uberfire-showcase/src/main/webapp/WEB-INF/lib/
 /uberfire-showcase/src/main/webapp/org.drools.guvnor.UberfireShowcase/
+/guvnorng-showcase/src/main/gwt-unitCache/
+/guvnorng-showcase/src/main/webapp/WEB-INF/classes/
+/guvnorng-showcase/src/main/webapp/WEB-INF/deploy/
+/guvnorng-showcase/src/main/webapp/WEB-INF/lib/
+/guvnorng-showcase/src/main/webapp/org.drools.guvnor.UberfireShowcase/
 /**/*/.classpath
 /**/*/.project
 /**/*/.settings/
