@@ -16,6 +16,7 @@
 package org.drools.guvnor.annotations.processors;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
@@ -42,13 +44,19 @@ import javax.tools.ToolProvider;
 public abstract class AbstractPopupGenerationTest {
 
     //Consistent with maven's default
-    private static final String TARGET_ROOT      = "target/generated-test-sources/test-annotations";
+    private static final String TARGET_ROOT     = "target/generated-test-sources/test-annotations";
 
-    private static final String TARGET_PATH_FULL = "target/generated-test-sources/test-annotations/org/drools/guvnor/annotations/processors";
+    private static final String SOURCE_FILETYPE = ".java";
 
-    private static final String SOURCE_FILETYPE  = ".java";
-
-    public void compile(final String compilationUnit) {
+    /**
+     * Compile a unit of source code with the specified annotation processor
+     * 
+     * @param annotationProcessor
+     * @param compilationUnit
+     * @return
+     */
+    public List<Diagnostic< ? extends JavaFileObject>> compile(final Processor annotationProcessor,
+                                                               final String compilationUnit) {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
@@ -60,6 +68,7 @@ public abstract class AbstractPopupGenerationTest {
             final StandardJavaFileManager fileManager = compiler.getStandardFileManager( diagnosticListener,
                                                                                          null,
                                                                                          null );
+            //House keeping: Make target folder for generated source
             final List<String> options = new ArrayList<String>();
             if ( !deleteFile( targetFolder ) ) {
                 fail( "Unable to delete target folder [" + TARGET_ROOT + "]." );
@@ -68,20 +77,22 @@ public abstract class AbstractPopupGenerationTest {
                 fail( "Unable to create target folder [" + TARGET_ROOT + "]." );
             }
 
+            //Set compiler's output folder to our target folder
             options.add( "-s" );
             options.add( targetFolder.getAbsolutePath() );
 
-            final String path = this.getClass().getResource( compilationUnit + SOURCE_FILETYPE ).getPath();
-
+            //Convert compilation unit to file path and add to items to compile
+            final String path = this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath();
             final Iterable< ? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects( path );
 
+            //Compile with provide annotation processor
             final CompilationTask task = compiler.getTask( null,
                                                            fileManager,
                                                            diagnosticListener,
                                                            options,
                                                            null,
                                                            compilationUnits );
-            task.setProcessors( Arrays.asList( new WorkbenchPopupProcessor() ) );
+            task.setProcessors( Arrays.asList( annotationProcessor ) );
             task.call();
 
             fileManager.close();
@@ -90,13 +101,20 @@ public abstract class AbstractPopupGenerationTest {
             fail( ioe.getMessage() );
         }
 
-        assertCompilationSuccessful( diagnosticListener.getDiagnostics() );
+        return diagnosticListener.getDiagnostics();
     }
 
+    /**
+     * Retrieve the generated source code for a compilation unit
+     * 
+     * @param compilationUnit
+     * @return
+     * @throws FileNotFoundException
+     */
     public String getGeneratedSourceCode(final String compilationUnit) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         try {
-            FileReader fr = new FileReader( TARGET_PATH_FULL + "/" + compilationUnit + "Activity" + SOURCE_FILETYPE );
+            FileReader fr = new FileReader( TARGET_ROOT + "/" + compilationUnit + "Activity" + SOURCE_FILETYPE );
             BufferedReader input = new BufferedReader( fr );
             try {
                 String line = null;
@@ -116,6 +134,7 @@ public abstract class AbstractPopupGenerationTest {
 
     }
 
+    //Recursive folder delete
     private boolean deleteFile(File file) {
         if ( !file.exists() ) {
             return true;
@@ -133,12 +152,71 @@ public abstract class AbstractPopupGenerationTest {
         return file.delete();
     }
 
-    private void assertCompilationSuccessful(List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
-        assert (diagnostics != null);
-        for ( Diagnostic< ? extends JavaFileObject> diagnostic : diagnostics ) {
-            assertFalse( diagnostic.getKind().equals( Kind.ERROR ) );
-        }
+    /**
+     * Assert that compilation was successful
+     * 
+     * @param diagnostics
+     */
+    public void assertSuccessfulCompilation(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
+        assertFalse( hasErrors( diagnostics ) );
+    }
 
+    /**
+     * Assert that compilation failed
+     * 
+     * @param diagnostics
+     */
+    public void assertFailedCompilation(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
+        assertTrue( hasErrors( diagnostics ) );
+    }
+
+    private boolean hasErrors(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
+        for ( Diagnostic< ? extends JavaFileObject> diagnostic : diagnostics ) {
+            if ( diagnostic.getKind().equals( Kind.ERROR ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Assert that the given error message is contained in the compilation
+     * diagnostics
+     * 
+     * @param diagnostics
+     * @param message
+     */
+    public void assertCompilationError(List<Diagnostic< ? extends JavaFileObject>> diagnostics,
+                                       final String message) {
+        final List<String> messages = getMessages( diagnostics,
+                                                   Kind.ERROR );
+        assertTrue( messages.contains( "error: " + message ) );
+    }
+
+    /**
+     * Assert that the given warning message is contained in the compilation
+     * diagnostics
+     * 
+     * @param diagnostics
+     * @param message
+     */
+    public void assertCompilationWarning(List<Diagnostic< ? extends JavaFileObject>> diagnostics,
+                                         final String message) {
+        final List<String> messages = getMessages( diagnostics,
+                                                   Kind.WARNING );
+        assertTrue( messages.contains( "warning: " + message ) );
+    }
+
+    private List<String> getMessages(final List<Diagnostic< ? extends JavaFileObject>> diagnostics,
+                                     final Kind kind) {
+        final List<String> messages = new ArrayList<String>();
+        for ( Diagnostic< ? extends JavaFileObject> diagnostic : diagnostics ) {
+            if ( diagnostic.getKind().equals( kind ) ) {
+                System.out.println( diagnostic.getMessage( null ) );
+                messages.add( diagnostic.getMessage( null ) );
+            }
+        }
+        return messages;
     }
 
 }

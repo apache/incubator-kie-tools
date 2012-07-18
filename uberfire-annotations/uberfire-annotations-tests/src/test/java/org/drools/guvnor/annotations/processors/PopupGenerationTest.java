@@ -18,6 +18,10 @@ package org.drools.guvnor.annotations.processors;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.util.List;
+
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import org.junit.Test;
 
@@ -28,14 +32,55 @@ public class PopupGenerationTest extends AbstractPopupGenerationTest {
 
     @Test(expected = java.io.FileNotFoundException.class)
     public void testNoWorkbenchPopupAnnotation() throws FileNotFoundException {
-        compile( "PopupTest1" );
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
+                                                                                 "org/drools/guvnor/annotations/processors/PopupTest1" );
+        assertSuccessfulCompilation( diagnostics );
+
+        //Check no source code was generated
         getGeneratedSourceCode( "PopupTest1" );
     }
 
     @Test
-    public void testWorkbenchPopupAnnotation1() throws FileNotFoundException {
-        compile( "PopupTest2" );
-        final String source = getGeneratedSourceCode( "PopupTest2" );
+    public void testWorkbenchPopupAnnotationMissingViewAnnotation() {
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
+                                                                                 "org/drools/guvnor/annotations/processors/PopupTest2" );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchPart must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
+    }
+
+    @Test
+    public void testWorkbenchPopupView() throws FileNotFoundException {
+        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest3";
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
+                                                                                 compilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+
+        final String source = getGeneratedSourceCode( compilationUnit );
+        assertNotNull( source );
+    }
+
+    @Test
+    public void testWorkbenchPopupPopupPanel() throws FileNotFoundException {
+        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest4";
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
+                                                                                 compilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+
+        final String source = getGeneratedSourceCode( compilationUnit );
+        assertNotNull( source );
+    }
+
+    @Test
+    public void testWorkbenchPopupViewAndPopupPanel() throws FileNotFoundException {
+        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest5";
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
+                                                                                 compilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertCompilationWarning( diagnostics,
+                                  "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+
+        final String source = getGeneratedSourceCode( compilationUnit );
         assertNotNull( source );
     }
 

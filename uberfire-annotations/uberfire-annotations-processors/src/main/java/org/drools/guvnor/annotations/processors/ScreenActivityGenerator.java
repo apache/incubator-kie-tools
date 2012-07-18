@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
@@ -90,7 +91,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
-            logger.warn( "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+            final String msg = "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
         }
 
         //Validate getTitleMethodName

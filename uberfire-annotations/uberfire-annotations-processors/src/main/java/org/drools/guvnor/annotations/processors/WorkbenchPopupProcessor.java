@@ -29,6 +29,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
@@ -52,6 +53,11 @@ public class WorkbenchPopupProcessor extends AbstractProcessor {
                            RoundEnvironment roundEnv) {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {
+            return false;
+        }
+
+        //If prior processing threw an error exit
+        if ( roundEnv.errorRaised() ) {
             return false;
         }
 
@@ -81,8 +87,10 @@ public class WorkbenchPopupProcessor extends AbstractProcessor {
                                classNameActivity,
                                activityCode );
                 } catch ( GenerationException ge ) {
-                    logger.error( "An error occurred generating code for [" + classElement.getSimpleName() + "]",
-                                  ge );
+                    final String msg = ge.getMessage();
+                    processingEnv.getMessager().printMessage( Kind.ERROR,
+                                                              msg );
+                    logger.error( msg );
                 }
             }
         }

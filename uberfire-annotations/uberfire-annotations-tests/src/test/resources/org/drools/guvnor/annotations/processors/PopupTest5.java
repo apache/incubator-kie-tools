@@ -5,7 +5,12 @@ import org.drools.guvnor.client.annotations.WorkbenchPopup;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
-@WorkbenchPopup(identifier = "test2")
-public class PopupTest2 {
+@WorkbenchPopup(identifier = "test5")
+public class PopupTest5 extends PopupPanel {
+
+    @WorkbenchPartView
+    public PopupPanel getView() {
+        return new PopupPanel();
+    }
 
 }
