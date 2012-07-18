@@ -41,7 +41,7 @@ import javax.tools.ToolProvider;
 /**
  * Base test to generate source code with an Annotation Processor
  */
-public abstract class AbstractPopupGenerationTest {
+public abstract class AbstractProcessorTest {
 
     //Consistent with maven's default
     private static final String TARGET_ROOT     = "target/generated-test-sources/test-annotations";
@@ -114,8 +114,39 @@ public abstract class AbstractPopupGenerationTest {
     public String getGeneratedSourceCode(final String compilationUnit) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         try {
-            FileReader fr = new FileReader( TARGET_ROOT + "/" + compilationUnit + "Activity" + SOURCE_FILETYPE );
-            BufferedReader input = new BufferedReader( fr );
+            final FileReader fr = new FileReader( TARGET_ROOT + "/" + compilationUnit + "Activity" + SOURCE_FILETYPE );
+            final BufferedReader input = new BufferedReader( fr );
+            try {
+                String line = null;
+                while ( (line = input.readLine()) != null ) {
+                    sb.append( line );
+                    sb.append( System.getProperty( "line.separator" ) );
+                }
+            } finally {
+                input.close();
+            }
+        } catch ( FileNotFoundException fnfe ) {
+            throw fnfe;
+        } catch ( IOException ioe ) {
+            fail( ioe.getMessage() );
+        }
+        return sb.toString();
+
+    }
+
+    /**
+     * Retrieve the expected source code for a compilation unit
+     * 
+     * @param compilationUnit
+     * @return
+     * @throws FileNotFoundException
+     */
+    public String getExpectedSourceCode(final String compilationUnit) throws FileNotFoundException {
+        StringBuilder sb = new StringBuilder();
+        try {
+            final String path = this.getClass().getResource( "/" + compilationUnit ).getPath();
+            final FileReader fr = new FileReader( path );
+            final BufferedReader input = new BufferedReader( fr );
             try {
                 String line = null;
                 while ( (line = input.readLine()) != null ) {

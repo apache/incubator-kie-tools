@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.annotations.processors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
@@ -28,7 +30,7 @@ import org.junit.Test;
 /**
  * Tests for Pop-up related class generation
  */
-public class PopupGenerationTest extends AbstractPopupGenerationTest {
+public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
 
     @Test(expected = java.io.FileNotFoundException.class)
     public void testNoWorkbenchPopupAnnotation() throws FileNotFoundException {
@@ -51,37 +53,52 @@ public class PopupGenerationTest extends AbstractPopupGenerationTest {
 
     @Test
     public void testWorkbenchPopupView() throws FileNotFoundException {
-        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest3";
+        final String pathCompilationUnit = "org/drools/guvnor/annotations/processors/PopupTest3";
+        final String pathExpectedResult = "org/drools/guvnor/annotations/processors/expected/PopupTest3.expected";
         final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
-                                                                                 compilationUnit );
+                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
 
-        final String source = getGeneratedSourceCode( compilationUnit );
+        final String source = getGeneratedSourceCode( pathCompilationUnit );
+        final String expected = getExpectedSourceCode( pathExpectedResult );
         assertNotNull( source );
+        assertNotNull( expected );
+        assertThat( source,
+                    equalToIgnoringWhiteSpace( expected ) );
     }
 
     @Test
     public void testWorkbenchPopupPopupPanel() throws FileNotFoundException {
-        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest4";
+        final String pathCompilationUnit = "org/drools/guvnor/annotations/processors/PopupTest4";
+        final String pathExpectedResult = "org/drools/guvnor/annotations/processors/expected/PopupTest4.expected";
         final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
-                                                                                 compilationUnit );
+                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
 
-        final String source = getGeneratedSourceCode( compilationUnit );
+        final String source = getGeneratedSourceCode( pathCompilationUnit );
+        final String expected = getExpectedSourceCode( pathExpectedResult );
         assertNotNull( source );
+        assertNotNull( expected );
+        assertThat( source,
+                    equalToIgnoringWhiteSpace( expected ) );
     }
 
     @Test
     public void testWorkbenchPopupViewAndPopupPanel() throws FileNotFoundException {
-        final String compilationUnit = "org/drools/guvnor/annotations/processors/PopupTest5";
+        final String pathCompilationUnit = "org/drools/guvnor/annotations/processors/PopupTest5";
+        final String pathExpectedResult = "org/drools/guvnor/annotations/processors/expected/PopupTest5.expected";
         final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor(),
-                                                                                 compilationUnit );
+                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                                   "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
 
-        final String source = getGeneratedSourceCode( compilationUnit );
+        final String source = getGeneratedSourceCode( pathCompilationUnit );
+        final String expected = getExpectedSourceCode( pathExpectedResult );
         assertNotNull( source );
+        assertNotNull( expected );
+        assertThat( source,
+                    equalToIgnoringWhiteSpace( expected ) );
     }
 
 }
