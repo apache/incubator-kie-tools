@@ -18,20 +18,8 @@ package org.drools.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;*/
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.java.nio.file.Path;
 
 /**
  * This contains logic for categorisable items

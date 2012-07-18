@@ -16,23 +16,17 @@
 
 package org.drools.guvnor.backend.server.impl;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.vfs.FileSystem;
-import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
-import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.vfs.FileSystem;
+import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
 import org.drools.guvnor.vfs.impl.FileSystemImpl;
 import org.drools.guvnor.vfs.impl.PathImpl;
@@ -55,7 +49,6 @@ import org.drools.java.nio.file.ProviderNotFoundException;
 import org.drools.java.nio.file.attribute.FileAttribute;
 import org.drools.java.nio.file.attribute.FileTime;
 import org.drools.java.nio.file.attribute.UserPrincipal;
-import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.jboss.errai.bus.server.annotations.Service;
 
 import static java.util.Arrays.*;
@@ -66,13 +59,6 @@ public class VFSServicesServerImpl implements VFSService {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
-
-    @PostConstruct
-    public void init() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
-        loadJGitConfiguration();
-    }
-
     @Override
     public Path get(final String first, final String... more) throws IllegalArgumentException {
         return convert(Paths.get(first, more));
@@ -81,78 +67,6 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public Path get(final Path path) throws IllegalArgumentException {
         return convert(Paths.get(URI.create(path.toURI())));
-    }
-
-    //TODO xxx
-    private void loadJGitConfiguration() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
-        //TODO: load guvnorng-configuration git repo configuration info from a property file.
-        String repositoryName = "guvnorng-configuration";
-        String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-configuration.git";
-        String userName = "guvnorngtestuser1";
-        String password = "test1234";
-
-        //this will create guvnorng-configuration git repo if it does not exist yet
-        cloneJGitFileSystem(repositoryName, gitURL, userName, password);
-
-        PathImpl p = new PathImpl("jgit:///guvnorng-configuration");
-        DirectoryStream<Path> response = newDirectoryStream(p);
-        for (final Path path : response) {
-            String fileName = path.getFileName();
-            if (fileName.endsWith(".properties")) {
-                JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
-                InputStream is = Files.newInputStream(fromPath(path), null);
-                Properties properties = new Properties();
-                properties.load(is);
-
-                //Clone or fetch the repo
-                cloneJGitFileSystem(properties.getProperty("repositoryname"), properties.getProperty("giturl"), properties.getProperty("username"), properties.getProperty("password"));
-
-                //Add this newly created repository configuration info to the in-memory cache of repository configuration list
-                jGitRepositoryConfiguration.setRepositoryName(properties.getProperty("repositoryname"));
-                jGitRepositoryConfiguration.setGitURL(properties.getProperty("giturl"));
-                jGitRepositoryConfiguration.setUserName(properties.getProperty("username"));
-                jGitRepositoryConfiguration.setPassword(properties.getProperty("password"));
-                jGitRepositoryConfiguration.setRootURI(URI.create(properties.getProperty("rooturi")));
-                addRepositoryConfiguration(jGitRepositoryConfiguration.getRepositoryName(), jGitRepositoryConfiguration);
-            }
-        }
-    }
-
-    private void cloneJGitFileSystem(String repositoryName, String gitURL, String userName, String password) {
-        if (getRepositoryConfiguration().get(repositoryName) != null) {
-            throw new FileSystemAlreadyExistsException("JGitFileSystem identifed by repositoryName: " + repositoryName + " already exists");
-        }
-
-        //Create the JGitFileSystem
-        Map<String, String> env = new HashMap<String, String>();
-        env.put("username", userName);
-        env.put("password", password);
-        env.put("giturl", gitURL);
-        URI rootURI = URI.create("jgit:///" + repositoryName);
-
-        try {
-            //This either clones the repository or creates a new git repository (locally). 
-            org.drools.java.nio.file.FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //Add this newly created repository configuration info to the in-memory cache of repository configuration list
-        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
-        jGitRepositoryConfiguration.setRepositoryName(repositoryName);
-        jGitRepositoryConfiguration.setUserName(userName);
-        jGitRepositoryConfiguration.setPassword(password);
-        jGitRepositoryConfiguration.setRootURI(rootURI);
-        addRepositoryConfiguration(repositoryName, jGitRepositoryConfiguration);
-
-        //TODO:Save this newly created repository's configuration info to guvnorng-config git repository using a property file whose name is "${repositoryName}.properties"
-        Properties properties = new Properties();
-        properties.setProperty("repositoryname", repositoryName);
-        properties.setProperty("username", userName);
-        properties.setProperty("password", password);
-        properties.setProperty("rooturi", rootURI.toString());
-
-        //return fileSystem;
     }
 
     @Override
@@ -165,100 +79,15 @@ public class VFSServicesServerImpl implements VFSService {
     public FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
         final org.drools.java.nio.file.FileSystem newFileSystem;
-        System.out.println("ABOUT TO CREA A NEW FILE SYSTEM!");
+        final URI furi = URI.create(uri);
+        System.out.println("ABOUT TO CREATE A NEW FILE SYSTEM!");
         try {
-            newFileSystem = FileSystems.newFileSystem(URI.create(uri), env);
+            newFileSystem = FileSystems.newFileSystem(furi, env);
         } catch (java.io.IOException e) {
             throw new RuntimeException();
         }
 
-        return new FileSystemImpl(asList(new Path[]{new PathImpl(uri)}));
-    }
-
-    public void createJGitFileSystem(String repositoryName, String description, String userName, String password) {
-        if (getRepositoryConfiguration().get(repositoryName) != null) {
-            throw new FileSystemAlreadyExistsException("JGitFileSystem identifed by repositoryName: " + repositoryName + " already exists");
-        }
-
-        //Create the JGitFileSystem
-        Map<String, String> env = new HashMap<String, String>();
-        env.put("userName", userName);
-        env.put("password", password);
-        URI rootURI = URI.create("jgit:///" + repositoryName);
-
-        try {
-            //This either clones the repository or creates a new git repository (locally). 
-            org.drools.java.nio.file.FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //Add this newly created repository configuration info to the in-memory cache of repository configuration list
-        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
-        //jGitRepositoryConfiguration.setGitURL(gitURL);
-        jGitRepositoryConfiguration.setRepositoryName(repositoryName);
-        jGitRepositoryConfiguration.setUserName(userName);
-        jGitRepositoryConfiguration.setPassword(password);
-        jGitRepositoryConfiguration.setRootURI(rootURI);
-        addRepositoryConfiguration(repositoryName, jGitRepositoryConfiguration);
-
-        //TODO:Save this newly created repository's configuration info to guvnorng-config git repository using a property file whose name is "${repositoryName}.properties"
-        Properties properties = new Properties();
-        properties.setProperty("repositoryname", repositoryName);
-        //properties.setProperty("giturl", gitURL);
-        properties.setProperty("username", userName);
-        properties.setProperty("password", password);
-        properties.setProperty("rooturi", rootURI.toString());
-    }
-
-    public List<JGitRepositoryConfigurationVO> listJGitRepositories() {
-        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
-        List<JGitRepositoryConfigurationVO> result = new ArrayList<JGitRepositoryConfigurationVO>();
-
-        for (JGitRepositoryConfiguration j : repo.values()) {
-            JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
-            jGitRepositoryConfigurationVO.setGitURL(j.getGitURL());
-            jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
-            jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
-
-            result.add(jGitRepositoryConfigurationVO);
-        }
-
-        return result;
-    }
-
-    @Override
-    public JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName) {
-        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
-        JGitRepositoryConfiguration j = repo.get(repositoryName);
-
-        JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
-        jGitRepositoryConfigurationVO.setGitURL(j.getGitURL());
-        jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
-        jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
-
-        return jGitRepositoryConfigurationVO;
-    }
-
-//    public List<FileSystem> listJGitFileSystems() {
-//        List<FileSystem> fileSystems = new ArrayList<FileSystem>();
-//
-//        Map<String, JGitRepositoryConfiguration> repositories = getRepositoryConfiguration();
-//        for (String repositoryName : repositories.keySet()) {
-//            URI uri = URI.create("jgit:///" + repositoryName);
-//            FileSystem f = FileSystems.getFileSystem(uri);
-//            fileSystems.add(f);
-//        }
-//
-//        return fileSystems;
-//    }
-
-    private Map<String, JGitRepositoryConfiguration> getRepositoryConfiguration() {
-        return repositories;
-    }
-
-    private void addRepositoryConfiguration(String repositoryName, JGitRepositoryConfiguration j) {
-        repositories.put(repositoryName, j);
+        return new FileSystemImpl(asList(new Path[]{new PathImpl(furi.getPath(), uri)}));
     }
 
     @Override
@@ -496,12 +325,5 @@ public class VFSServicesServerImpl implements VFSService {
         String pathString = path.toURI();
         pathString = pathString.replaceAll(" ", "%20");
         return Paths.get(URI.create(pathString));
-    }
-    
-    @Override
-    public InputStream newInputStream(final Path p)
-            throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
-        InputStream is = Files.newInputStream(fromPath(p), null);
-        return is;
     }
 }

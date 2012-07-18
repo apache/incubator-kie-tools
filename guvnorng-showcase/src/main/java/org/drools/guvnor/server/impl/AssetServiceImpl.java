@@ -16,16 +16,19 @@
 
 package org.drools.guvnor.server.impl;
 
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.guvnor.vfs.Path;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
@@ -33,8 +36,8 @@ import org.jboss.errai.bus.server.annotations.Service;
 public class AssetServiceImpl
     implements
     AssetService {
-    @Inject
-    VFSService vfsService;
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /*
      * @Override public <V> V loadAsset(Path path, Class<V> type) { if (type ==
@@ -43,21 +46,27 @@ public class AssetServiceImpl
      */
 
     @Override
-    public AbstractAsset loadAsset(Path path,
-                                   String type) {
+    public AbstractAsset loadAsset(final Path path,
+                                   final String type) {
         try {
-            String content = vfsService.readAllString( path );
+            final List<String> lines = Files.readAllLines( fromPath(path), UTF_8 );
+            final StringBuilder sb = new StringBuilder();
+            if (lines != null ){
+                for (final String s : lines) {
+                    sb.append(s).append('\n');
+                }
+            }
 
             if ( type.equals( "model.drl" ) ) {
                 FactModels asset = new FactModels();
                 FactModelContentHandler handler = new FactModelContentHandler();
                 handler.retrieveAssetContent( asset,
-                                              content );
+                                              sb.toString() );
                 return asset;
             }
             if ( type.equals( "enumeration" ) ) {
                 EnumModel asset = new EnumModel();
-                asset.setDefinitions( content );
+                asset.setDefinitions( sb.toString() );
                 return asset;
             }
         } catch ( Exception e ) {
@@ -82,4 +91,12 @@ public class AssetServiceImpl
      * repositories.add(jGitRepositoryConfiguration); } return repositories; }
      * catch (Exception e) { } return null; }
      */
+
+    private org.drools.java.nio.file.Path fromPath(final Path path) {
+        //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
+        String pathString = path.toURI();
+        pathString = pathString.replaceAll(" ", "%20");
+        return Paths.get(URI.create(pathString));
+    }
+
 }

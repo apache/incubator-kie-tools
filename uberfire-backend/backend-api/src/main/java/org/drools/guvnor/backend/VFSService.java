@@ -16,12 +16,10 @@
 
 package org.drools.guvnor.backend;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.vfs.FileSystem;
-import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
 import org.drools.guvnor.vfs.Path;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.AtomicMoveNotSupportedException;
@@ -192,18 +190,10 @@ public interface VFSService {
             String content)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-//    List<FileSystem> listJGitFileSystems();
-
-    List<JGitRepositoryConfigurationVO> listJGitRepositories();
-
-    JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName);
-
     FileSystem newFileSystem(final Path path, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
 
     FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
-    
-    InputStream newInputStream(Path p) throws IllegalArgumentException,  NoSuchFileException, UnsupportedOperationException, IOException, SecurityException;
 
 }

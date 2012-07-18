@@ -5,11 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.java.nio.file.Path;
 
 public class MetaDataUtil {
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";

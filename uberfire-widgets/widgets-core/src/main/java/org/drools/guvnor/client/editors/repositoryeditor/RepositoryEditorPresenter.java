@@ -16,39 +16,39 @@
 
 package org.drools.guvnor.client.editors.repositoryeditor;
 
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
+import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 @Dependent
-@WorkbenchScreen(identifier = "RepositoryEditor")
+@WorkbenchEditor(identifier = "RepositoryEditor")
 public class RepositoryEditorPresenter {
 
     @Inject
-    Caller<VFSService>   vfsService;
+    Caller<VFSService> vfsService;
 
-    @Inject
-    private PlaceManager placeManager;
+    private Path path = null;
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            IsWidget {
 
         void addRepository(String repositoryName,
-                           String gitURL,
-                           String description,
-                           String link);
+                String gitURL,
+                String description,
+                String link);
+
+        void clear();
     }
 
     @Inject
@@ -58,28 +58,24 @@ public class RepositoryEditorPresenter {
     }
 
     @OnStart
-    public void onStart() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String repositoryName = placeRequest.getParameter( "repositoryName",
-                                                           "" );
+    public void onStart(final Path path) {
+        this.path = path;
 
-        vfsService.call( new RemoteCallback<JGitRepositoryConfigurationVO>() {
+        vfsService.call(new RemoteCallback<Map>() {
             @Override
-            public void callback(JGitRepositoryConfigurationVO repository) {
-                view.addRepository( repository.getRepositoryName(),
-                                    repository.getGitURL(),
-                                    repository.getDescription(),
-                                    repository.getRootURI() );
+            public void callback(Map response) {
+                view.clear();
+                view.addRepository( path.getFileName(),
+                                    (String) response.get("giturl"),
+                                    (String) response.get("description"),
+                                    path.toURI() );
             }
-        } ).loadJGitRepository( repositoryName );
+        }).readAttributes(this.path);
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String repositoryName = placeRequest.getParameter( "repositoryName",
-                                                                 "RepositoryEditor" );
-        return repositoryName;
+        return "RepositoryEditor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

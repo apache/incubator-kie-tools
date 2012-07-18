@@ -16,25 +16,15 @@
 
 package org.drools.repository;
 
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
-import javax.inject.Inject;
-/*import javax.jcr.Binary;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;*/
-
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.backend.VFSService;
-
-//import org.drools.repository.events.StorageEventManager;
-import org.drools.repository.utils.IOUtils;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class AssetItem extends CategorisableItem {
-    @Inject
-    VFSService vfsService;
-    
+
     private Logger             log                                  = LoggerFactory.getLogger( AssetItem.class );
     /**
      * The name of the asset node type
@@ -71,6 +59,8 @@ public class AssetItem extends CategorisableItem {
     public static final String DATE_EXPIRED_PROPERTY_NAME           = "drools:dateExpired";
 
     public static final String MODULE_NAME_PROPERTY                = "drools:packageName";
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**
      * Constructs a AssetItem object, setting its node attribute to the specified
@@ -111,8 +101,14 @@ public class AssetItem extends CategorisableItem {
      * this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
-        return vfsService.readAllString(assetPath);
-        //return getContent( false );
+        final List<String> lines = Files.readAllLines(assetPath, UTF_8);
+        final StringBuilder sb = new StringBuilder();
+        if (lines != null ){
+            for (final String s : lines) {
+                sb.append(s).append('\n');
+            }
+        }
+        return sb.toString();
     }
 
     //JLIU: Not needed
@@ -155,7 +151,7 @@ public class AssetItem extends CategorisableItem {
      */
     public long getContentLength() {
         //JLIU: size is not implemented yet 
-        return vfsService.size(assetPath);
+        return Files.size(assetPath);
 /*        try {
             Node assetNode = getVersionContentNode();
             if ( assetNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
@@ -198,7 +194,7 @@ public class AssetItem extends CategorisableItem {
      * it will return null.
      */
     public InputStream getBinaryContentAttachment() {
-        return vfsService.newInputStream(assetPath);
+        return Files.newInputStream(assetPath);
 /*        try {
             if ( StorageEventManager.hasLoadEvent() ) {
                 return StorageEventManager.getLoadEvent().loadContent( this );
@@ -436,7 +432,7 @@ public class AssetItem extends CategorisableItem {
      */
     public AssetItem updateContent(String newRuleContent) throws RulesRepositoryException {
         //JLIU: check in and commit related
-        vfsService.write(assetPath, newRuleContent);
+        Files.write(assetPath, newRuleContent, UTF_8);
         return this;
         
 /*        checkout();
@@ -611,7 +607,7 @@ public class AssetItem extends CategorisableItem {
      * versioned before removing this, to make it easy to roll back.
      */
     public void remove() {
-        vfsService.delete(assetPath);
+        Files.delete(assetPath);
 
 /*        if ( StorageEventManager.hasSaveEvent() ) {
             StorageEventManager.getSaveEvent().onAssetDelete( this );

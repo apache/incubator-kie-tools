@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.java.nio;
+package org.drools.guvnor.client.editors.fileexplorer;
 
-public class IOException extends RuntimeException {
+import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.vfs.Path;
 
-    public IOException() {
-        super();
+public class Root {
+
+    private final Path path;
+    private final IPlaceRequest placeRequest;
+
+    public Root(final Path path, final IPlaceRequest placeRequest) {
+        this.path = path;
+        this.placeRequest = placeRequest;
     }
 
-    public IOException(Exception e) {
-        super(e);
+    public Path getPath() {
+        return path;
+    }
+
+    public IPlaceRequest getPlaceRequest() {
+        return placeRequest;
     }
 }

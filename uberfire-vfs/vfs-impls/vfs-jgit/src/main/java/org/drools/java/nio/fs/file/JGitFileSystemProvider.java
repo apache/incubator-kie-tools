@@ -167,7 +167,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, gitURL, true, credential);
                 System.out.println("Fetching done.");
             } catch (Exception e) {
-                throw new IOException();
+                throw new IOException(e);
             }
         }
 
@@ -523,7 +523,12 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             throw new IOException();
         }
         
-        if (attributes.equals("*")) {
+        if ( relativePath.length() == 0 ) {
+            final Map<String, Object> result = new HashMap<String, Object>();
+            result.put("giturl", repo.getConfig().getString("remote", "origin", "url"));
+            result.put("description", repo.getRepositoryState().getDescription());
+            return result;
+        } else if ( attributes.equals("*") ) {
             PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
             JGitlFileAttributes attrs = new JGitlFileAttributes(pathModel);
             final Map<String, Object> result = new HashMap<String, Object>();

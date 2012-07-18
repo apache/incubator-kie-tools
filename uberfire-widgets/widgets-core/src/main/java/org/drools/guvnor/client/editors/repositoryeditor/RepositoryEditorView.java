@@ -52,12 +52,17 @@ public class RepositoryEditorView extends Composite
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
                                "</h3>" +
                                "<div>" +
+                                   "<p> Origin: <a href=\"" + gitURL + "\" target=\"_blank\">" + gitURL + "</a></p>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
-                               "</div>" +
+                "</div>" +
                              "</li>"
 
         ) );
+    }
+
+    @Override public void clear() {
+        panel.clear();
     }
 
     @Override

@@ -1,25 +1,20 @@
 package org.drools.guvnor.server.builder;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.backend.VFSService;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.lang.dsl.DSLMappingParseException;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-
-
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
 public class DSLLoader {
-    @Inject
-    static VFSService vfsService;
-    
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 /*    
     public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(Path packageRootDir) {
         return loadDSLMappingFiles(packageRootDir, new BRMSPackageBuilder.DSLErrorEvent() {
@@ -38,7 +33,7 @@ public class DSLLoader {
     public static List<DSLTokenizedMappingFile> loadDSLMappingFiles(Path packageRootDir/*, BRMSPackageBuilder.DSLErrorEvent dslErrorEvent*/) {
         List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
 
-        DirectoryStream<Path> paths = vfsService.newDirectoryStream(packageRootDir);
+        final DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
         for ( final Path assetPath : paths ) {
             if(assetPath.getFileName().endsWith(AssetFormats.DSL)) {
                 addAsset(/*dslErrorEvent, */result, assetPath);
@@ -55,10 +50,17 @@ public class DSLLoader {
                                  List<DSLTokenizedMappingFile> result,
                                  Path assetPath) {
         //if (!assetItem.getDisabled()) {
-            DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+            final DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
             try {
-                String content = vfsService.readAllString( assetPath );
-                if (file.parseAndLoad(new StringReader(content))) {
+                List<String> lines = Files.readAllLines( assetPath, UTF_8 );
+                final StringBuilder sb = new StringBuilder();
+                if (lines != null ){
+                    for (final String s : lines) {
+                        sb.append(s).append('\n');
+                    }
+                }
+
+                if (file.parseAndLoad(new StringReader(sb.toString()))) {
                     result.add(file);
                 } else {
                     //logErrors(dslErrorEvent, assetItem, file);

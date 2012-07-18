@@ -29,8 +29,6 @@ import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -38,9 +36,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 @Dependent
 @WorkbenchEditor(identifier = "TextEditor")
 public class TextEditorPresenter {
-
-    @Inject
-    private PlaceManager placeManager;
 
     public interface View
         extends
@@ -108,10 +103,7 @@ public class TextEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String uriPath = placeRequest.getParameter( "path",
-                                                          null );
-        return "Text Editor [" + uriPath + "]";
+        return "Text Editor [" + path.toURI() + "]";
     }
 
     @WorkbenchPartView

@@ -56,6 +56,7 @@ public class IdentifierUtils {
                 ids.add( identifier.value() );
             } else if ( a instanceof ResourceType) {
                 final ResourceType resourceType = (ResourceType) a;
+                if ( resourceType.value().trim().length() > 0 )
                 ids.add(resourceType.value());
             }
         }

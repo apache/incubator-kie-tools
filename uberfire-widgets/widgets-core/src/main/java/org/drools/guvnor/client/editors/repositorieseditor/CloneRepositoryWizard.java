@@ -19,6 +19,7 @@ package org.drools.guvnor.client.editors.repositorieseditor;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -31,6 +32,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.editors.fileexplorer.Root;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ComponentCoreImages;
 import org.drools.guvnor.vfs.FileSystem;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -40,7 +43,10 @@ import org.jboss.errai.ioc.client.api.Caller;
 public class CloneRepositoryWizard extends FormStylePopup {
 
     @Inject
-    Caller<VFSService> vfsService;
+    private Caller<VFSService> vfsService;
+
+    @Inject
+    private Event<Root> event;
 
     private static ComponentCoreImages images = GWT.create(ComponentCoreImages.class);
 
@@ -84,7 +90,10 @@ public class CloneRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem fileSystem) {
                         Window.alert("The repository is cloned successfully");
                         hide();
-
+                        event.fire(new Root(fileSystem.getRootDirectories().get(0),
+                                new PlaceRequest("RepositoryEditor")
+                                        .addParameter("path:uri", uri)
+                                        .addParameter("path:name", nameTextBox.getText())));
                     }
                 }).newFileSystem(uri, env);
             }

@@ -59,7 +59,11 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo(IPlaceRequest placeRequest) {
+    public void goTo(final IPlaceRequest placeRequest) {
+
+        if ( placeRequest == null ){
+            return;
+        }
 
         final Activity activity = activityMapper.getActivity(placeRequest);
         if (activity == null) {

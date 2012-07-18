@@ -16,13 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.backend.VFSService;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.Files;
-import org.drools.rule.MapBackedClassLoader;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,19 +26,22 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import javax.inject.Inject;
+import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
+import org.drools.rule.MapBackedClassLoader;
 
 public class ClassLoaderBuilder {
-    @Inject
-    VFSService vfsService;
-    
+
     private final List<JarInputStream> jarInputStreams;
 
     public ClassLoaderBuilder(Path packageRootDir) {
         this.jarInputStreams = getJars(packageRootDir);
     }
+
     public ClassLoaderBuilder(VFSService vfsService, Path packageRootDir) {
-        this.vfsService = vfsService;
         this.jarInputStreams = getJars(packageRootDir);
     }
     
@@ -60,11 +56,12 @@ public class ClassLoaderBuilder {
      */
     private List<JarInputStream> getJars(Path packageRootDir) {
         List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
-        DirectoryStream<Path> paths = vfsService.newDirectoryStream(packageRootDir);
+
+        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
         for ( final Path assetPath : paths ) {
             if(assetPath.getFileName().endsWith(AssetFormats.MODEL)) {
                 try {
-                    InputStream is = vfsService.newInputStream(assetPath);
+                    final InputStream is = Files.newInputStream(assetPath);
                     jarInputStreams.add(new JarInputStream(is, false));
                 } catch (IOException e) {
                     //TODO: Not a place for RulesRepositoryException -Rikkola-

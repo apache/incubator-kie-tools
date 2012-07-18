@@ -4,21 +4,22 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <groupId>org.drools</groupId>
+    <artifactId>droolsjbpm-parent</artifactId>
+    <version>5.5.0-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>guvnorng-repository</artifactId>
   <packaging>jar</packaging>
 
   <name>Guvnor repository</name>
   <description>The DAO layer for Guvnor that uses the JCR API.</description>
-  
+
   <properties>
     <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+    <slf4j.version>1.6.6</slf4j.version>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -49,24 +50,53 @@
     </testResources>
   </build>
   <dependencies>
-    <!-- Internal dependencies -->
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>backend-server</artifactId>
+      <artifactId>vfs-api</artifactId>
       <version>${uberfire.version}</version>
     </dependency>
-    
+
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>backend-api</artifactId>
-      <version>${uberfire.version}</version>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>1.0-SP4</version>
+      <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>guvnor-api</artifactId>-->
+      <!--<version>5.5.0-SNAPSHOT</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.uberfire</groupId>-->
+      <!--<artifactId>backend-server</artifactId>-->
+      <!--<version>${uberfire.version}</version>-->
+    <!--</dependency>-->
+    <!---->
+    <!--<dependency>-->
+      <!--<groupId>org.uberfire</groupId>-->
+      <!--<artifactId>backend-api</artifactId>-->
+      <!--<version>${uberfire.version}</version>-->
+    <!--</dependency>-->
 <!-- 
     <dependency>
       <groupId>org.drools</groupId>

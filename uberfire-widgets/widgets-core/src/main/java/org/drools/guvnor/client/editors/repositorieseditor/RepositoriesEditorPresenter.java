@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.editors.repositorieseditor;
 
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,8 +28,6 @@ import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
-import org.drools.guvnor.vfs.JGitRepositoryConfigurationVO;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
@@ -65,18 +62,18 @@ public class RepositoriesEditorPresenter {
 
     @OnStart
     public void onStart() {
-        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
-            @Override
-            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-                for ( final JGitRepositoryConfigurationVO r : repositories ) {
-                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
-                    view.addRepository( r.getRepositoryName(),
-                                        r.getGitURL(),
-                                        r.getDescription(),
-                                        link );
-                }
-            }
-        } ).listJGitRepositories();
+//        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
+//            @Override
+//            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
+//                for ( final JGitRepositoryConfigurationVO r : repositories ) {
+//                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
+//                    view.addRepository( r.getRepositoryName(),
+//                                        r.getGitURL(),
+//                                        r.getDescription(),
+//                                        link );
+//                }
+//            }
+//        } ).listJGitRepositories();
 
         view.getCreateRepoButton().addClickHandler( new ClickHandler() {
             @Override

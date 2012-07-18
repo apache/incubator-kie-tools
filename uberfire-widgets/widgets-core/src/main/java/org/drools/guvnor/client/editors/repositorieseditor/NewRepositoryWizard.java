@@ -19,6 +19,7 @@ package org.drools.guvnor.client.editors.repositorieseditor;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -31,6 +32,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.editors.fileexplorer.Root;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ComponentCoreImages;
 import org.drools.guvnor.vfs.FileSystem;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -41,6 +44,9 @@ public class NewRepositoryWizard extends FormStylePopup {
 
     @Inject
     private Caller<VFSService> vfsService;
+
+    @Inject
+    private Event<Root> event;
 
     private static ComponentCoreImages images = GWT.create(ComponentCoreImages.class);
 
@@ -84,6 +90,10 @@ public class NewRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem v) {
                         Window.alert("The repository is created successfully");
                         hide();
+                        event.fire(new Root(v.getRootDirectories().get(0),
+                                new PlaceRequest("RepositoryEditor")
+                                        .addParameter("path:uri", uri)
+                                        .addParameter("path:name", nameTextBox.getText())));
                     }
                 }).newFileSystem(uri, env);
 

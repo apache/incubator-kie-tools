@@ -16,20 +16,27 @@
 
 package org.drools.repository;
 
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.backend.VFSService;
-import org.drools.guvnor.vfs.impl.PathImpl;
-import org.drools.repository.utils.NodeUtils;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
+import org.drools.java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 /*import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;*/
-import java.io.InputStream;
-import java.util.*;
 
 /**
  * A ModuleItem object aggregates a set of assets (for example, rules). This is
@@ -41,9 +48,7 @@ import java.util.*;
  * types of containers). This is a container "node".
  */
 public class ModuleItem extends VersionableItem {
-    @Inject
-    VFSService vfsService;
-    
+
     private static final Logger log = LoggerFactory.getLogger(ModuleItem.class);
 
     /**
@@ -276,8 +281,8 @@ public class ModuleItem extends VersionableItem {
                               String initialCategory,
                               String format) {
         
-        Path newAssetItemPath = new PathImpl(assetPath.toString() + assetName);        
-        vfsService.createFile(newAssetItemPath, null);
+        Path newAssetItemPath = Paths.get(assetPath.toString() + assetName);
+        Files.createFile( newAssetItemPath, null );
 
         AssetItem asset = new AssetItem(newAssetItemPath);
         asset.updateDescription(description);
@@ -807,7 +812,7 @@ public class ModuleItem extends VersionableItem {
      * Load a specific asset by name.
      */
     public AssetItem loadAsset(String name) {        
-        Path newAssetItemPath = new PathImpl(assetPath.toString() + name);        
+        Path newAssetItemPath = Paths.get(assetPath.toString() + name);
         AssetItem asset = new AssetItem(newAssetItemPath);
         return asset;
         

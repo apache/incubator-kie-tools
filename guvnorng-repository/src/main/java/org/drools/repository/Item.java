@@ -19,7 +19,7 @@ package org.drools.repository;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;*/
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

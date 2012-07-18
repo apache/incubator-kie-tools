@@ -15,11 +15,10 @@
  */
 package org.drools.guvnor.server.impl;
 
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
-import org.drools.guvnor.vfs.Path;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.java.nio.file.Path;
 
 public class SuggestionCompletionEngineLoaderInitializer {
 

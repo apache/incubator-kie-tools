@@ -19,36 +19,28 @@ package org.drools.guvnor.server.util;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.backend.VFSService;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
-
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * This decorates the suggestion completion loader with BRMS specific stuff.
  */
 public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
-    @Inject
-    VFSService vfsService;
-    
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
+
     public BRMSSuggestionCompletionLoader() {
         super();
     }
-    
-    public BRMSSuggestionCompletionLoader(VFSService vfsService) {
-        super();
-        this.vfsService = vfsService;
-    }
-    
+
     public BRMSSuggestionCompletionLoader(ClassLoader classLoader) {
         super(classLoader);
     }
@@ -58,11 +50,19 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
 
         StringBuilder buf = new StringBuilder();
         
-        DirectoryStream<Path> paths = vfsService.newDirectoryStream(packageRootDir);
+        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
         for ( final Path assetPath : paths ) {
             if(assetPath.getFileName().endsWith(AssetFormats.DRL_MODEL)) {
-                String content = vfsService.readAllString( assetPath );
-                buf.append(content);
+                final List<String> lines = Files.readAllLines( assetPath, UTF_8 );
+                final StringBuilder sb = new StringBuilder();
+                if (lines != null ){
+                    for (final String s : lines) {
+                        sb.append(s).append('\n');
+                    }
+                }
+
+
+                buf.append(sb.toString());
                 buf.append('\n');
             }
         }
@@ -75,7 +75,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         }
 */
 
-        ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(vfsService, packageRootDir);
+        ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageRootDir);
 
 //        String packageName = packageItem.getName();
 //        return super.getSuggestionEngine("package " + packageName + "\n\n" + droolsHeader + "\n" + buf.toString(),
@@ -93,11 +93,17 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     @SuppressWarnings("rawtypes")
     private List<String> getDataEnums(Path packageRootDir) {
         List<String> list = new ArrayList<String>();
-        DirectoryStream<Path> paths = vfsService.newDirectoryStream(packageRootDir);
+        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
         for ( final Path assetPath : paths ) {
             if(assetPath.getFileName().endsWith(AssetFormats.ENUMERATION)) {
-                String content = vfsService.readAllString( assetPath );
-                list.add(content);
+                final List<String> lines = Files.readAllLines( assetPath, UTF_8 );
+                final StringBuilder sb = new StringBuilder();
+                if (lines != null ){
+                    for (final String s : lines) {
+                        sb.append(s).append('\n');
+                    }
+                }
+                list.add(sb.toString());
             }
         }
         

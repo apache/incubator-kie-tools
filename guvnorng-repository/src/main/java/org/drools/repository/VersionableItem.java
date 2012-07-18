@@ -16,10 +16,11 @@
 
 package org.drools.repository;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
+
+import org.drools.guvnor.shared.api.Valid;
+import org.drools.java.nio.file.Path;
 
 /*import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
@@ -30,9 +31,6 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionManager;*/
-
-import org.drools.guvnor.shared.api.Valid;
-import org.drools.guvnor.vfs.Path;
 /*import org.drools.repository.events.StorageEventManager;*/
 
 

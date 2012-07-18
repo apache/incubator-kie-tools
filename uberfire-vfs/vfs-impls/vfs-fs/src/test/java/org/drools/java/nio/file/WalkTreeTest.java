@@ -76,6 +76,7 @@ public class WalkTreeTest {
     }
 
     @Test
+    @Ignore
     public void testStructure() {
         final Path top = setup();
         assertNotNull(top);
@@ -200,6 +201,7 @@ public class WalkTreeTest {
     }
 
     @Test
+    @Ignore
     public void simpleWalkerOverUserDir() {
 
         final Path top = Paths.get(System.getProperty("user.home"));

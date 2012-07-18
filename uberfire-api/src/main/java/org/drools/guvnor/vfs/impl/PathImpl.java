@@ -33,13 +33,21 @@ public class PathImpl implements Path {
     }
 
     public PathImpl(final String uri) {
-        this.uri = uri;
+        this(null, uri, null);
+    }
+
+    public PathImpl(final String fileName, final String uri) {
+        this(fileName, uri, null);
     }
 
     public PathImpl(final String fileName, final String uri, final Map<String, Object> attrs) {
         this.fileName = fileName;
         this.uri = uri;
-        this.attributes = new HashMap<String, Object>(attrs);
+        if (attrs == null){
+            this.attributes = new HashMap<String, Object>();
+        } else {
+            this.attributes = new HashMap<String, Object>(attrs);
+        }
     }
 
     @Override

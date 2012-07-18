@@ -16,10 +16,10 @@
 
 package org.drools.repository;
 
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.impl.PathImpl;
 /*import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.migration.MigrateDroolsPackage;*/
+import org.drools.java.nio.file.Path;
+import org.drools.java.nio.file.Paths;
 import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -433,7 +433,7 @@ public class RulesRepository {
      * @return a ModuleItem object
      */
     public ModuleItem loadModule(String name) throws RulesRepositoryException {
-        Path modulePath = new PathImpl(name);
+        Path modulePath = Paths.get(name);
         ModuleItem module = new ModuleItem(modulePath);
         return module;
         

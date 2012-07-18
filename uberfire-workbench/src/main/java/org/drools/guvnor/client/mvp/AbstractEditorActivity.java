@@ -79,9 +79,21 @@ public abstract class AbstractEditorActivity
             }
 
             IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-            String uri = placeRequest.getParameter( "path",
+            String simplePath = placeRequest.getParameter( "path",
                                                     null );
-            Path path = new PathImpl( uri );
+
+            String uri = placeRequest.getParameter( "path:uri",
+                                                    null );
+            String name = placeRequest.getParameter( "path:name",
+                                                    null );
+
+            final Path path;
+            if ( simplePath != null && ( uri == null || name == null ) ){
+                path = new PathImpl( simplePath );
+            } else {
+                path = new PathImpl( name, uri );
+            }
+
             ((EditorService) presenter).onStart( path );
         }
 
