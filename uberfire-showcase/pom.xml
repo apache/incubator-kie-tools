@@ -52,11 +52,6 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
-  	<dependency>
-  		<groupId>org.uberfire</groupId>
-  		<artifactId>uberfire-annotations-processors</artifactId>
-  	</dependency>
-
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
@@ -143,7 +138,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-annotations-processors</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.UberfireShowcase/Uberfire.html</runTarget>

@@ -19,13 +19,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-widgets</artifactId>
-    <version>0.1-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.uberfire</groupId>
+		<artifactId>uberfire-widgets</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>widgets-commons</artifactId>
+	<artifactId>widgets-commons</artifactId>
 	<packaging>jar</packaging>
 
 	<name>ÜberFire Widgets Commons</name>
@@ -33,16 +33,11 @@
 
 	<dependencies>
 
-	    <!-- Internal dependencies -->
-	    <dependency>
-	      <groupId>org.uberfire</groupId>
-	      <artifactId>uberfire-workbench</artifactId>
-	    </dependency>
-
-	  	<dependency>
-	  		<groupId>org.uberfire</groupId>
-	  		<artifactId>uberfire-annotations-processors</artifactId>
-	  	</dependency>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>uberfire-workbench</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -56,6 +51,7 @@
 			<artifactId>gwt-user</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>

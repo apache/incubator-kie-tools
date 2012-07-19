@@ -51,7 +51,8 @@
 		<weld.version>1.1.6.Final</weld.version>
 		<jetty.version>6.1.25</jetty.version>
 		<gwt-dnd.version>3.1.2</gwt-dnd.version>
-    <resteasy.version>2.3.3.Final</resteasy.version>
+        <resteasy.version>2.3.3.Final</resteasy.version>
+        <hamcrest.version>1.3</hamcrest.version>
   </properties>
 
 	<scm>
@@ -372,7 +373,6 @@
 
 	<modules>
 		<module>uberfire-vfs</module>
-		<module>uberfire-annotations</module>
 		<module>uberfire-api</module>
 		<module>uberfire-workbench</module>
         <module>uberfire-backend</module>
@@ -414,16 +414,6 @@
 
 			<!-- Annotations -->
 			<dependency>
-				<groupId>org.uberfire</groupId>
-				<artifactId>uberfire-annotations-processors</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-            <dependency>
-                <groupId>org.uberfire</groupId>
-                <artifactId>uberfire-annotations-tests</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-			<dependency>
 				<groupId>org.freemarker</groupId>
 				<artifactId>freemarker</artifactId>
 				<version>2.3.19</version>
@@ -436,7 +426,13 @@
 			<dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-integration</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <!-- JUnit 4.1 comes with hamcrest-core 1.1 but we need 1.3 -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
             </dependency>
 
 			<!-- Client Side API -->
@@ -526,9 +522,7 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 
-
 			<!-- Errai -->
-
 			<dependency>
 				<groupId>javax.enterprise</groupId>
 				<artifactId>cdi-api</artifactId>
@@ -648,10 +642,10 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-cdi</artifactId>
-        <version>${resteasy.version}</version>
-      </dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-cdi</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
 			<!-- Weld Modules -->
 			<dependency>
@@ -748,11 +742,11 @@
 				<version>3.15.0-GA</version>
 			</dependency>
 
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>1.9.0</version>
-      </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.0</version>
+            </dependency>
 
 		</dependencies>
 	</dependencyManagement>

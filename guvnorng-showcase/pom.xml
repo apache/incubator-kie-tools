@@ -62,12 +62,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-annotations-processors</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>guvnorng-repository</artifactId>
       <version>${uberfire.version}</version>
     </dependency>
@@ -208,7 +202,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-annotations-processors</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.GuvnorNGShowcase/Guvnor.html</runTarget>
