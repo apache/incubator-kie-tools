@@ -9,6 +9,10 @@ import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
 public class PlaceHistoryHandler {
     private static final Logger log = Logger.getLogger( PlaceHistoryHandler.class.getName() );
 
@@ -82,6 +86,7 @@ public class PlaceHistoryHandler {
      * @param mapper
      *            a {@link PlaceRequestHistoryMapper} instance
      */
+    @Inject
     public PlaceHistoryHandler(PlaceRequestHistoryMapper mapper) {
         this( mapper,
               (Historian) GWT.create( DefaultHistorian.class ) );
