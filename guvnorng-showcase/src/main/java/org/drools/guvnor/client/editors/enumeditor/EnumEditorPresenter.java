@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * 
  */
 @Dependent
-@WorkbenchEditor(fileType = "enumeration")
+@WorkbenchEditor( identifier = "EnumEditor", fileTypes = "enumeration")
 public class EnumEditorPresenter {
 
     @Inject

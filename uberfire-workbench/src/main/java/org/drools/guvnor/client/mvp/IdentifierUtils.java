@@ -16,9 +16,11 @@
 package org.drools.guvnor.client.mvp;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -42,21 +44,22 @@ public class IdentifierUtils {
      * Given a bean definition return it's @Identifier value
      * 
      * @param beanDefinition
-     * @return Identifier or null if none found
+     * @return List of possible identifier, empty if none
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public String getIdentifier(final IOCBeanDef beanDefinition) {
+    public List<String> getIdentifier(final IOCBeanDef beanDefinition) {
         final Set<Annotation> annotations = beanDefinition.getQualifiers();
+        final List ids = new ArrayList(2);
         for ( Annotation a : annotations ) {
             if ( a instanceof Identifier ) {
                 final Identifier identifier = (Identifier) a;
-                return identifier.value();
+                ids.add( identifier.value() );
             } else if ( a instanceof ResourceType) {
                 final ResourceType resourceType = (ResourceType) a;
-                return resourceType.value();
+                ids.add(resourceType.value());
             }
         }
-        return null;
+        return ids;
     }
 
     /**
@@ -74,9 +77,10 @@ public class IdentifierUtils {
         final Collection<IOCBeanDef> allActivityBeans = iocManager.lookupBeans( Activity.class );
         final Set<IOCBeanDef< ? >> matchingActivityBeans = new HashSet<IOCBeanDef< ? >>();
         for ( IOCBeanDef activityBean : allActivityBeans ) {
-            final String activityIdentifier = getIdentifier( activityBean );
-            if ( identifier.equalsIgnoreCase( activityIdentifier ) ) {
-                matchingActivityBeans.add( activityBean );
+            for (String id : getIdentifier( activityBean )) {
+                if ( identifier.equalsIgnoreCase( id ) ) {
+                    matchingActivityBeans.add( activityBean );
+                }
             }
         }
         return Collections.unmodifiableSet( matchingActivityBeans );

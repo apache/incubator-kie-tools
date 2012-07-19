@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * 
  */
 @Dependent
-@WorkbenchEditor(fileType = "model.drl")
+@WorkbenchEditor( identifier = "FactModel", fileTypes = "model.drl")
 public class FactModelEditorPresenter {
 
     @Inject
