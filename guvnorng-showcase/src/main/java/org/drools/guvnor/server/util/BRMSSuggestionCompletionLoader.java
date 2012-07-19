@@ -19,7 +19,6 @@ package org.drools.guvnor.server.util;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
-//import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
