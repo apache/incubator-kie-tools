@@ -2,12 +2,12 @@
 <module>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
-  <inherits name="org.drools.guvnor.client.UberfireWorkbench"/>
-  <inherits name="org.drools.guvnor.client.UberfireWidgetsCore"/>
+  <inherits name="org.drools.guvnor.UberfireWorkbench"/>
+  <inherits name="org.drools.guvnor.UberfireWidgetsCore"/>
   <inherits name="org.drools.guvnor.UberfireBackend"/>
 
   <!-- Specify the application specific style sheet. -->
-  <stylesheet src='css/guvnorng-showcase.css'/>
+  <stylesheet src='css/uberfire-showcase.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

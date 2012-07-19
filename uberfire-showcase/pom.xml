@@ -131,16 +131,6 @@
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
-    <resources>
-      <!-- TODO REVISIT guvnorNG: this is not needed if compileSourcesArtifact works -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-
     <plugins>
     
       <plugin>
@@ -149,9 +139,13 @@
         <configuration>
           <module>org.drools.guvnor.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
-          <!--<compileSourcesArtifacts>-->
-            <!--<compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>-->
-          <!--</compileSourcesArtifacts>-->
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-annotations-processors</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
+          </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.UberfireShowcase/Uberfire.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
