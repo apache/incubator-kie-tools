@@ -28,6 +28,7 @@ import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnSave;
 import org.drools.guvnor.client.annotations.OnStart;
+import org.drools.guvnor.client.annotations.ResourceType;
 import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
@@ -38,7 +39,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchEditor(fileType = "test3")
+@WorkbenchEditor( identifier = "Test3", fileTypes = {"test3"} )
 public class TestPresenter3 {
 
     public interface View

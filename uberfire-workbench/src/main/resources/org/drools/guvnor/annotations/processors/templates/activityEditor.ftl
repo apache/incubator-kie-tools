@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.Identifier;
+import org.drools.guvnor.client.annotations.ResourceType;
 import org.drools.guvnor.client.mvp.AbstractEditorActivity;
 import org.drools.guvnor.client.mvp.EditorService;
 <#if getDefaultPositionMethodName??>
@@ -33,7 +34,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.drools.guvnor.annotations.processors.WorkbenchEditorProcessor")
-@Identifier("${fileType}")
+@ResourceType(${fileTypes})
+@Identifier("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
@@ -43,6 +45,11 @@ public class ${className} extends AbstractEditorActivity
 
     @Inject
     private ${realClassName} realPresenter;
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
 
     @Override
     public void onStart(final Path path) {

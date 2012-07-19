@@ -36,7 +36,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 
 @Dependent
-@WorkbenchEditor()
+@WorkbenchEditor(identifier = "TextEditor")
 public class TextEditorPresenter {
 
     @Inject

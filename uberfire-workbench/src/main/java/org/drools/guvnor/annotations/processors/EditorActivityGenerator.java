@@ -50,7 +50,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final WorkbenchEditor wbw = classElement.getAnnotation( WorkbenchEditor.class );
-        final String fileType = wbw.fileType();
+        final String identifier = wbw.identifier();
+        final String[] fileTypes = wbw.fileTypes();
         final String onStartMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
                                                                                            processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
@@ -78,7 +79,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
-        logger.debug( "File type: " + fileType );
+        logger.debug( "Identifier: " + identifier );
+        logger.debug( "File types: " + fileTypes );
         logger.debug( "onStartMethodName: " + onStartMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
@@ -114,8 +116,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
-        root.put( "fileType",
-                  fileType );
+        root.put( "identifier",
+                  identifier );
+        root.put( "fileTypes",
+                  format(fileTypes) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",
@@ -165,6 +169,26 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
+    }
+
+    private String format(final String[] fileTypes) {
+        final StringBuilder sb = new StringBuilder();
+
+        if (fileTypes != null && fileTypes.length > 0){
+            sb.append('"');
+            for (int i = 0; i < fileTypes.length; i++) {
+                final String fileType = fileTypes[i];
+                //sb.append('"').append(fileType).append('"');
+                sb.append(fileType);
+                if (i != (fileTypes.length - 1)){
+                    sb.append(',');
+                }
+            }
+            sb.append('"');
+        } else {
+            sb.append("\"\"");
+        }
+        return sb.toString();
     }
 
 }

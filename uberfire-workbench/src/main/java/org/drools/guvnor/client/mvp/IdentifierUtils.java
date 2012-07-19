@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.Identifier;
+import org.drools.guvnor.client.annotations.ResourceType;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
@@ -50,6 +51,9 @@ public class IdentifierUtils {
             if ( a instanceof Identifier ) {
                 final Identifier identifier = (Identifier) a;
                 return identifier.value();
+            } else if ( a instanceof ResourceType) {
+                final ResourceType resourceType = (ResourceType) a;
+                return resourceType.value();
             }
         }
         return null;

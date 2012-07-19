@@ -38,7 +38,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchEditor(fileType = "test3")
+@WorkbenchEditor( identifier = "Test4", fileTypes = {"test3"} )
 public class TestPresenter4 {
 
     public interface View

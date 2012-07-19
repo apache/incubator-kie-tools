@@ -58,6 +58,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface WorkbenchEditor {
 
-    String fileType() default "";
+    String identifier();
+
+    String[] fileTypes() default {""};
 
 }

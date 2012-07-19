@@ -94,6 +94,9 @@ public abstract class AbstractEditorActivity
 
     public abstract String getTitle();
 
+    //TODO {manstis} This can be deleted once the static popup menu is removed
+    public abstract String getIdentifier();
+
     public abstract IsWidget getWidget();
 
     @Override
