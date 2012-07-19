@@ -67,6 +67,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>guvnorng-repository</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+    
+    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <version>1.0-SP4</version>

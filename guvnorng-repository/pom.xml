@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>guvnorng-repository</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Guvnor repository</name>
+  <description>The DAO layer for Guvnor that uses the JCR API.</description>
+  
+  <properties>
+    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>.</directory>
+              <includes>
+                <include>repository.xml</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>repository</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+  </build>
+  <dependencies>
+    <!-- Internal dependencies -->
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-api</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+<!-- 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>vfs-jgit</artifactId>
+    </dependency> -->
+    
+    <!-- External dependencies -->
+
+    <!-- Weld (Context and Dependency Injection) -->
+<!--     <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>Shadowed in JDK 1.5 (by JDK itself!), but needed in JDK 1.6 to run tests
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <scope>test</scope>
+    </dependency> -->
+  </dependencies>
+
+
+</project>
