@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,9 +42,6 @@ import javax.tools.ToolProvider;
  */
 public abstract class AbstractProcessorTest {
 
-    //Consistent with maven's default
-    private static final String TARGET_ROOT     = "target/generated-test-sources/test-annotations";
-
     private static final String SOURCE_FILETYPE = ".java";
 
     /**
@@ -60,26 +56,12 @@ public abstract class AbstractProcessorTest {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
-        final File targetFolder = new File( TARGET_ROOT );
-
         try {
 
             final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             final StandardJavaFileManager fileManager = compiler.getStandardFileManager( diagnosticListener,
                                                                                          null,
                                                                                          null );
-            //House keeping: Make target folder for generated source
-            final List<String> options = new ArrayList<String>();
-            if ( !deleteFile( targetFolder ) ) {
-                fail( "Unable to delete target folder [" + TARGET_ROOT + "]." );
-            }
-            if ( !targetFolder.mkdirs() ) {
-                fail( "Unable to create target folder [" + TARGET_ROOT + "]." );
-            }
-
-            //Set compiler's output folder to our target folder
-            options.add( "-s" );
-            options.add( targetFolder.getAbsolutePath() );
 
             //Convert compilation unit to file path and add to items to compile
             final String path = this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath();
@@ -89,7 +71,7 @@ public abstract class AbstractProcessorTest {
             final CompilationTask task = compiler.getTask( null,
                                                            fileManager,
                                                            diagnosticListener,
-                                                           options,
+                                                           null,
                                                            null,
                                                            compilationUnits );
             task.setProcessors( Arrays.asList( annotationProcessor ) );
@@ -102,36 +84,6 @@ public abstract class AbstractProcessorTest {
         }
 
         return diagnosticListener.getDiagnostics();
-    }
-
-    /**
-     * Retrieve the generated source code for a compilation unit
-     * 
-     * @param compilationUnit
-     * @return
-     * @throws FileNotFoundException
-     */
-    public String getGeneratedSourceCode(final String compilationUnit) throws FileNotFoundException {
-        StringBuilder sb = new StringBuilder();
-        try {
-            final FileReader fr = new FileReader( TARGET_ROOT + "/" + compilationUnit + "Activity" + SOURCE_FILETYPE );
-            final BufferedReader input = new BufferedReader( fr );
-            try {
-                String line = null;
-                while ( (line = input.readLine()) != null ) {
-                    sb.append( line );
-                    sb.append( System.getProperty( "line.separator" ) );
-                }
-            } finally {
-                input.close();
-            }
-        } catch ( FileNotFoundException fnfe ) {
-            throw fnfe;
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-        }
-        return sb.toString();
-
     }
 
     /**
@@ -163,24 +115,6 @@ public abstract class AbstractProcessorTest {
         }
         return sb.toString();
 
-    }
-
-    //Recursive folder delete
-    private boolean deleteFile(File file) {
-        if ( !file.exists() ) {
-            return true;
-        }
-        if ( file.isDirectory() ) {
-            String[] children = file.list();
-            for ( int i = 0; i < children.length; i++ ) {
-                boolean success = deleteFile( new File( file,
-                                                        children[i] ) );
-                if ( !success ) {
-                    return false;
-                }
-            }
-        }
-        return file.delete();
     }
 
     /**

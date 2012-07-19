@@ -48,6 +48,14 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
 
     private final EditorActivityGenerator activityGenerator = new EditorActivityGenerator();
 
+    private GenerationCompleteCallback    callback          = null;
+
+    //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
+    WorkbenchEditorProcessor(final GenerationCompleteCallback callback) {
+        this.callback = callback;
+        logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
+    }
+
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
@@ -82,10 +90,16 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
                                                                                   classElement,
                                                                                   processingEnv );
 
-                    //If code is successfully created write files
-                    writeCode( packageName,
-                               classNameActivity,
-                               activityCode );
+                    //If code is successfully created write files, or send generated code to call-back.
+                    //The call-back function is used primarily for testing when we don't necessarily want
+                    //the generated code to be stored as a compilable file for javac to process.
+                    if ( callback == null ) {
+                        writeCode( packageName,
+                                   classNameActivity,
+                                   activityCode );
+                    } else {
+                        callback.generationComplete( activityCode.toString() );
+                    }
                 } catch ( GenerationException ge ) {
                     final String msg = ge.getMessage();
                     processingEnv.getMessager().printMessage( Kind.ERROR,
@@ -97,6 +111,7 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
         return true;
     }
 
+    //Write generated code to javac's Filer
     private void writeCode(final String packageName,
                            final String className,
                            final StringBuffer code) {
@@ -108,7 +123,8 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
             bw.close();
             w.close();
         } catch ( IOException ioe ) {
-            System.out.println( ioe.getMessage() );
+            logger.error( ioe.getMessage(),
+                          ioe );
         }
     }
 
