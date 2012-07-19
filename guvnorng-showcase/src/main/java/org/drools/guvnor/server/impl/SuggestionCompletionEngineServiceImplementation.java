@@ -18,13 +18,13 @@ package org.drools.guvnor.server.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.backend.util.LoggingHelper;
 import org.drools.guvnor.shared.SuggestionCompletionEngineService;
-
 import org.drools.guvnor.vfs.Path;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.jboss.errai.bus.server.annotations.Service;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Service
 @ApplicationScoped
