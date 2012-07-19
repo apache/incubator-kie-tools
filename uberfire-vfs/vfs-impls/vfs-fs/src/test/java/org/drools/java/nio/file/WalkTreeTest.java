@@ -21,10 +21,12 @@ import java.util.List;
 
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.attribute.BasicFileAttributes;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class WalkTreeTest {
 
     private Path setup() {

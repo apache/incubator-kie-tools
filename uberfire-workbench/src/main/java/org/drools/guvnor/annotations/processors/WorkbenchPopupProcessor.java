@@ -50,6 +50,9 @@ public class WorkbenchPopupProcessor extends AbstractProcessor {
 
     private GenerationCompleteCallback   callback          = null;
 
+    public WorkbenchPopupProcessor() {
+    }
+
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
     WorkbenchPopupProcessor(final GenerationCompleteCallback callback) {
         this.callback = callback;

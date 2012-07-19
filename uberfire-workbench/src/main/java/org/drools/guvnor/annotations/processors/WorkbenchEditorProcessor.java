@@ -50,6 +50,9 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
 
     private GenerationCompleteCallback    callback          = null;
 
+    public WorkbenchEditorProcessor() {
+    }
+
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
     WorkbenchEditorProcessor(final GenerationCompleteCallback callback) {
         this.callback = callback;
