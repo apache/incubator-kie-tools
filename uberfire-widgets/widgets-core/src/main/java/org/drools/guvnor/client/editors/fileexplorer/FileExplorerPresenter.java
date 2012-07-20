@@ -16,7 +16,8 @@
 
 package org.drools.guvnor.client.editors.fileexplorer;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
@@ -31,6 +32,8 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import org.drools.guvnor.backend.FileExplorerRootService;
+import org.drools.guvnor.backend.Root;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.annotations.DefaultPosition;
 import org.drools.guvnor.client.annotations.OnFocus;
@@ -59,20 +62,22 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 public class FileExplorerPresenter {
 
     @Inject
-    private View                     view;
+    private View                            view;
 
     @Inject
-    private Caller<VFSService>       vfsService;
+    private Caller<VFSService>              vfsService;
+
 
     @Inject
-    private PlaceManager             placeManager;
+    private Caller<FileExplorerRootService> rootService;
 
     @Inject
-    private IdentifierUtils          idUtils;
+    private PlaceManager                    placeManager;
 
-    private final Map<Root, Boolean> rootDirectories = new HashMap<Root, Boolean>();
+    @Inject
+    private IdentifierUtils                 idUtils;
 
-    private static final String      REPOSITORY_ID   = "repositories";
+    private static final String             REPOSITORY_ID   = "repositories";
 
     public interface View
             extends
@@ -97,13 +102,13 @@ public class FileExplorerPresenter {
 
         placeManager.goTo( new PlaceRequest( "RepositoriesEditor" ) );
 
-        for ( final Map.Entry<Root, Boolean> rootEntry : rootDirectories.entrySet() ) {
-            if (!rootEntry.getValue()){
-                //TODO: clean if already exists
-                loadRoot ( rootEntry.getKey() );
-                rootDirectories.put(rootEntry.getKey(), true);
+        rootService.call(new RemoteCallback<Collection<Root>>() {
+            @Override public void callback(Collection<Root> response) {
+                for ( final Root root : response ) {
+                    loadRoot(root);
+                }
             }
-        }
+        }).listRoots();
 
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
@@ -164,6 +169,9 @@ public class FileExplorerPresenter {
     }
 
     private void loadRoot(final Root root) {
+
+        //TODO check if it already exists and cleanup
+
         final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader(images.packageIcon(),
                 root.getPath().getFileName()) );
         repositoryRootItem.setState( true );
@@ -262,7 +270,6 @@ public class FileExplorerPresenter {
     }
 
     public void newRootDirectory(@Observes Root root) {
-        rootDirectories.put( root, false );
         loadRoot( root );
     }
 

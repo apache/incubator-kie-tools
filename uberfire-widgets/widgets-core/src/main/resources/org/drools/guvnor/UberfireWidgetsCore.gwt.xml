@@ -22,7 +22,10 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.drools.guvnor.UberfireAPI"/>
   <inherits name="org.drools.guvnor.UberfireWorkbench"/>
   <inherits name="org.drools.guvnor.UberfireWidgetsCommons"/>
+
+  <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
 </module>

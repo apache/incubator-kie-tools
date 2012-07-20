@@ -168,8 +168,19 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
       <version>5.4.0.Final</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jdt.core.compiler</groupId>
+          <artifactId>ecj</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
+    <!--<dependency>-->
+      <!--<groupId>org.eclipse.jdt.core.compiler</groupId>-->
+      <!--<artifactId>ecj</artifactId>-->
+      <!--<scope>runtime</scope>-->
+    <!--</dependency>-->
     
     <dependency>
       <groupId>org.drools</groupId>

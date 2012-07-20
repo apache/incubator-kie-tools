@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.fileexplorer;
+package org.drools.guvnor.backend;
 
 import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.vfs.Path;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
+@Portable
 public class Root {
 
-    private final Path path;
-    private final IPlaceRequest placeRequest;
+    private Path path;
+    private IPlaceRequest placeRequest;
+
+    public Root() {
+    }
 
     public Root(final Path path, final IPlaceRequest placeRequest) {
         this.path = path;
         this.placeRequest = placeRequest;
+
+        this.placeRequest
+                .addParameter("path:uri", path.toURI())
+                .addParameter("path:name", path.getFileName());
     }
 
     public Path getPath() {

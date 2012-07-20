@@ -16,13 +16,14 @@
 
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.place.shared.Place;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class PlaceRequest extends Place
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
+public class PlaceRequest
     implements
     IPlaceRequest {
 

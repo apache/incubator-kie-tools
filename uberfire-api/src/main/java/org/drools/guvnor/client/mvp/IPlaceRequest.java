@@ -3,6 +3,8 @@ package org.drools.guvnor.client.mvp;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * Hack interface because Errai CDI does not currently support this for classes:
  * Collection<IOCBeanDef> beans = manager.lookupBeans(PlaceRequest.class); How
@@ -12,7 +14,7 @@ public interface IPlaceRequest {
 
     String getIdentifier();
 
-    PlaceRequest getPlace();
+    IPlaceRequest getPlace();
 
     String getParameter(String key,
                         String defaultValue);

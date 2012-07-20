@@ -30,9 +30,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import org.drools.guvnor.backend.FileExplorerRootService;
+import org.drools.guvnor.backend.Root;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.editors.fileexplorer.Root;
 import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.client.resources.ComponentCoreImages;
 import org.drools.guvnor.vfs.FileSystem;
@@ -44,6 +45,9 @@ public class CloneRepositoryWizard extends FormStylePopup {
 
     @Inject
     private Caller<VFSService> vfsService;
+
+    @Inject
+    private Caller<FileExplorerRootService> rootService;
 
     @Inject
     private Event<Root> event;
@@ -90,10 +94,16 @@ public class CloneRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem fileSystem) {
                         Window.alert("The repository is cloned successfully");
                         hide();
-                        event.fire(new Root(fileSystem.getRootDirectories().get(0),
+                        final Root newRoot = new Root(fileSystem.getRootDirectories().get(0),
                                 new PlaceRequest("RepositoryEditor")
                                         .addParameter("path:uri", uri)
-                                        .addParameter("path:name", nameTextBox.getText())));
+                                        .addParameter("path:name", nameTextBox.getText()));
+                        rootService.call(new RemoteCallback<Root>() {
+                            @Override
+                            public void callback(Root response) {
+                                event.fire(newRoot);
+                            }
+                        }).addRoot(newRoot);
                     }
                 }).newFileSystem(uri, env);
             }

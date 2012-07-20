@@ -33,7 +33,12 @@
 
 	<dependencies>
 
-		<dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
 			<groupId>org.uberfire</groupId>
 			<artifactId>vfs-api</artifactId>
 		</dependency>
@@ -65,7 +70,12 @@
 			<artifactId>errai-ioc</artifactId>
 		</dependency>
 
-		<!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <!-- GWT and GWT Extensions -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
