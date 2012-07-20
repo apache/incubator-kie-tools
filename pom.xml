@@ -377,6 +377,7 @@
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
     <module>uberfire-showcase</module>
+    <module>uberfire-jbpm</module>
   </modules>
 
   <dependencyManagement>
@@ -467,7 +468,18 @@
         <artifactId>vfs-eclipse</artifactId>
         <version>${project.version}</version>
       </dependency>
-
+      <!-- jBPM -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>jbpm-console-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>jbpm-console-shared</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
       <!-- VFS: Eclipse -->
       <dependency>
         <groupId>org.eclipse.core</groupId>

@@ -1,0 +1,2 @@
+org.drools.guvnor.client.editors.monitoring.MonitoringPerspectivePresenterActivity
+org.drools.guvnor.client.editors.jbpm.ServerStatusViewActivity

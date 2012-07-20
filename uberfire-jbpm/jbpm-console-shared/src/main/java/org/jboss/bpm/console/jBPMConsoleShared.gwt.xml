@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+  <inherits name="org.jboss.errai.enterprise.CDI"/>
+  <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
+
+  <!-- Specify the application specific style sheet. -->
+  <stylesheet src='css/uberfire-showcase.css'/>
+
+  <!-- Specify the paths for translatable code -->
+  <source path='client'/>
+  <source path='shared'/>
+
+</module>
