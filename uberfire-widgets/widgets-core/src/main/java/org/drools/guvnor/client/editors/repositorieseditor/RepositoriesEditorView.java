@@ -69,6 +69,11 @@ public class RepositoriesEditorView extends Composite
     }
 
     @Override
+    public void clear() {
+        panel.clear();
+    }
+
+    @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();

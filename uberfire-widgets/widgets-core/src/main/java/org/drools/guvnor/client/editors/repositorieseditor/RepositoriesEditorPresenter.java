@@ -16,18 +16,24 @@
 
 package org.drools.guvnor.client.editors.repositorieseditor;
 
+import java.util.Collection;
+import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.backend.FileExplorerRootService;
+import org.drools.guvnor.backend.Root;
 import org.drools.guvnor.backend.VFSService;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 
@@ -36,18 +42,24 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 public class RepositoriesEditorPresenter {
 
     @Inject
-    Caller<VFSService>     vfsService;
+    private Caller<VFSService>              vfsService;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private Caller<FileExplorerRootService> rootService;
+
+    @Inject
+    private IOCBeanManager                  iocManager;
 
     public interface View
         extends
         IsWidget {
+
         void addRepository(String repositoryName,
                            String gitURL,
                            String description,
                            String link);
+
+        void clear();
 
         Button getCreateRepoButton();
 
@@ -62,18 +74,24 @@ public class RepositoriesEditorPresenter {
 
     @OnStart
     public void onStart() {
-//        vfsService.call( new RemoteCallback<List<JGitRepositoryConfigurationVO>>() {
-//            @Override
-//            public void callback(List<JGitRepositoryConfigurationVO> repositories) {
-//                for ( final JGitRepositoryConfigurationVO r : repositories ) {
-//                    String link = "#RepositoryEditor?gitURL=null&description=null&repositoryName=" + r.getRepositoryName();
-//                    view.addRepository( r.getRepositoryName(),
-//                                        r.getGitURL(),
-//                                        r.getDescription(),
-//                                        link );
-//                }
-//            }
-//        } ).listJGitRepositories();
+
+        view.clear();
+
+        rootService.call(new RemoteCallback<Collection<Root>>() {
+            @Override public void callback(Collection<Root> response) {
+                for ( final Root root : response ) {
+                    vfsService.call(new RemoteCallback<Map>() {
+                        @Override
+                        public void callback(Map response) {
+                            view.addRepository( root.getPath().getFileName(),
+                                    (String) response.get("giturl"),
+                                    (String) response.get("description"),
+                                    root.getPath().toURI() );
+                        }
+                    }).readAttributes(root.getPath());
+                }
+            }
+        }).listRoots();
 
         view.getCreateRepoButton().addClickHandler( new ClickHandler() {
             @Override
@@ -102,4 +120,15 @@ public class RepositoriesEditorPresenter {
         return view;
     }
 
+    public void newRootDirectory(@Observes final Root root) {
+        vfsService.call(new RemoteCallback<Map>() {
+            @Override
+            public void callback(Map response) {
+                view.addRepository( root.getPath().getFileName(),
+                        (String) response.get("giturl"),
+                        (String) response.get("description"),
+                        root.getPath().toURI() );
+            }
+        }).readAttributes(root.getPath());
+    }
 }
