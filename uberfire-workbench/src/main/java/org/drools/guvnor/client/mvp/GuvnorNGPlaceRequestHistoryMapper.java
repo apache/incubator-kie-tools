@@ -28,7 +28,7 @@ public class GuvnorNGPlaceRequestHistoryMapper
     }
 
     @Override
-    public String getIdentifier(IPlaceRequest placeRequest) {
+    public String getIdentifier(PlaceRequest placeRequest) {
         StringBuilder token = new StringBuilder();
         token.append( placeRequest.getIdentifier() );
 

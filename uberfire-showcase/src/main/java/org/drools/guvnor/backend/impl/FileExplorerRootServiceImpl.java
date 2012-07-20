@@ -34,7 +34,7 @@ import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.FileSystems;
 import org.jboss.errai.bus.server.annotations.Service;
 
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.*;
 
 @Service
 @ApplicationScoped
@@ -65,8 +65,9 @@ public class FileExplorerRootServiceImpl implements FileExplorerRootService {
             throw new RuntimeException(e);
         }
 
+        final PlaceRequest repositoryEditor = new PlaceRequest("RepositoryEditor");
         final Root root = new Root(new PathImpl("guvnorng-playground", fsURI.toString()),
-                new PlaceRequest("RepositoryEditor"));
+                repositoryEditor);
 
         roots.add(root);
     }

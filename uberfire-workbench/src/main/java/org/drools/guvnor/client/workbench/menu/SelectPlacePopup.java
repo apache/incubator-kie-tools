@@ -6,10 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.mvp.AbstractScreenActivity;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
-import org.drools.guvnor.client.mvp.PlaceRequest;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -19,10 +15,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.mvp.AbstractScreenActivity;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 
 public class SelectPlacePopup extends PopupPanel
     implements
-    HasSelectionHandlers<IPlaceRequest> {
+    HasSelectionHandlers<PlaceRequest> {
 
     private final VerticalPanel layout = new VerticalPanel();
 
@@ -59,7 +57,7 @@ public class SelectPlacePopup extends PopupPanel
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<IPlaceRequest> handler) {
+    public HandlerRegistration addSelectionHandler(SelectionHandler<PlaceRequest> handler) {
         return addHandler( handler,
                            SelectionEvent.getType() );
     }

@@ -17,11 +17,10 @@ package org.drools.guvnor.client.mvp;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.workbench.Position;
 import org.drools.guvnor.vfs.Path;
 import org.drools.guvnor.vfs.impl.PathImpl;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * 
@@ -78,7 +77,7 @@ public abstract class AbstractEditorActivity
                 return;
             }
 
-            IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+            PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
             String simplePath = placeRequest.getParameter( "path",
                                                     null );
 

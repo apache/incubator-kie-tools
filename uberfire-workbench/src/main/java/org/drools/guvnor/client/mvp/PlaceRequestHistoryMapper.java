@@ -9,7 +9,7 @@ public interface PlaceRequestHistoryMapper {
      *            a String token
      * @return a {@link PlaceRequest} instance
      */
-    IPlaceRequest getPlaceRequest(String token);
+    PlaceRequest getPlaceRequest(String token);
 
     /**
      * Returns the String identifier associated with the given {@link PlaceRequest}.
@@ -18,5 +18,5 @@ public interface PlaceRequestHistoryMapper {
      *            a {@link PlaceRequest} instance
      * @return a String identifier
      */
-    String getIdentifier(IPlaceRequest placeRequest);
+    String getIdentifier(PlaceRequest placeRequest);
 }

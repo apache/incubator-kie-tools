@@ -1,6 +1,8 @@
 package org.drools.guvnor.client.mvp;
 
 import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -8,9 +10,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class PlaceHistoryHandler {
@@ -151,7 +150,7 @@ public class PlaceHistoryHandler {
         };
     }
 
-    public void onPlaceChange(IPlaceRequest placeRequest) {
+    public void onPlaceChange(PlaceRequest placeRequest) {
         historian.newItem( tokenForPlace( placeRequest ),
                            false );
     }
@@ -165,7 +164,7 @@ public class PlaceHistoryHandler {
 
     private void handleHistoryToken(String token) {
 
-        IPlaceRequest newPlaceRequest = null;
+        PlaceRequest newPlaceRequest = null;
 
         if ( "".equals( token ) ) {
             newPlaceRequest = defaultPlaceRequest;
@@ -183,7 +182,7 @@ public class PlaceHistoryHandler {
         placeManager.goTo( newPlaceRequest );
     }
 
-    private String tokenForPlace(IPlaceRequest newPlaceRequest) {
+    private String tokenForPlace(PlaceRequest newPlaceRequest) {
         if ( defaultPlaceRequest.equals( newPlaceRequest ) ) {
             return "";
         }

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.backend;
 
-import org.drools.guvnor.client.mvp.IPlaceRequest;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -24,14 +24,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class Root {
 
     private Path path;
-    private IPlaceRequest placeRequest;
+    private PlaceRequest placeRequest;
 
     public Root() {
     }
 
-    public Root(final Path path, final IPlaceRequest placeRequest) {
+    public Root(final Path path, PlaceRequest placeRequest1) {
         this.path = path;
-        this.placeRequest = placeRequest;
+        this.placeRequest = placeRequest1;
 
         this.placeRequest
                 .addParameter("path:uri", path.toURI())
@@ -42,7 +42,7 @@ public class Root {
         return path;
     }
 
-    public IPlaceRequest getPlaceRequest() {
+    public PlaceRequest getPlaceRequest() {
         return placeRequest;
     }
 }

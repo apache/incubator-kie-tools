@@ -94,10 +94,11 @@ public class CloneRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem fileSystem) {
                         Window.alert("The repository is cloned successfully");
                         hide();
+                        final PlaceRequest repositoryEditor = new PlaceRequest("RepositoryEditor")
+                                .addParameter("path:uri", uri)
+                                .addParameter("path:name", nameTextBox.getText());
                         final Root newRoot = new Root(fileSystem.getRootDirectories().get(0),
-                                new PlaceRequest("RepositoryEditor")
-                                        .addParameter("path:uri", uri)
-                                        .addParameter("path:name", nameTextBox.getText()));
+                                repositoryEditor);
                         rootService.call(new RemoteCallback<Root>() {
                             @Override
                             public void callback(Root response) {

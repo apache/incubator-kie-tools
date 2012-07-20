@@ -18,8 +18,8 @@ package org.drools.guvnor.client.mvp;
 
 public interface PlaceManager {
 
-    void goTo(IPlaceRequest request);
+    void goTo(PlaceRequest request);
 
-    public IPlaceRequest getCurrentPlaceRequest();
+    public PlaceRequest getCurrentPlaceRequest();
 
 }

@@ -18,6 +18,8 @@ package org.drools.guvnor.client.editors.enumeditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
@@ -26,17 +28,14 @@ import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.PlaceManager;
+import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
 import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * 
@@ -102,7 +101,7 @@ public class EnumEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        IPlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         final String uriPath = placeRequest.getParameter( "path",
                                                           null );
         return "Enumeration Editor [" + uriPath + "]";

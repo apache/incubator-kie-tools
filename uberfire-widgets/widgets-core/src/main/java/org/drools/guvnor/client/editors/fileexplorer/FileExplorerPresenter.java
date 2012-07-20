@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.editors.fileexplorer;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
@@ -43,7 +42,6 @@ import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
 import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.mvp.IPlaceRequest;
 import org.drools.guvnor.client.mvp.IdentifierUtils;
 import org.drools.guvnor.client.mvp.PlaceManager;
 import org.drools.guvnor.client.mvp.PlaceRequest;
@@ -153,7 +151,7 @@ public class FileExplorerPresenter {
                         public void callback(final Map response) {
                             final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
                             if ( attrs.isRegularFile() ) {
-                                IPlaceRequest placeRequest = getPlace( path );
+                                PlaceRequest placeRequest = getPlace( path );
                                 placeManager.goTo( placeRequest );
                             }
                         }
@@ -202,7 +200,7 @@ public class FileExplorerPresenter {
         } ).newDirectoryStream(root.getPath());
     }
 
-    private IPlaceRequest getPlace(final Path path) {
+    private PlaceRequest getPlace(final Path path) {
 
         final String fileType = getFileType(path.getFileName());
         if ( fileType == null ) {
@@ -216,7 +214,7 @@ public class FileExplorerPresenter {
         //Consequentially we check for an Activity here and, if none found, define the default editor.
         final Set<IOCBeanDef< ? >> activityBeans = idUtils.getActivities( fileType );
         if ( activityBeans.size() > 0 ) {
-            final IPlaceRequest place = new PlaceRequest( fileType );
+            final PlaceRequest place = new PlaceRequest( fileType );
             place.addParameter( "path:uri", path.toURI() ).addParameter( "path:name", path.getFileName() );
             return place;
         }

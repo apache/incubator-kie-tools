@@ -1,27 +1,31 @@
 package org.drools.guvnor.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
-import org.drools.guvnor.client.workbench.WorkbenchPart;
-import org.drools.guvnor.client.workbench.widgets.events.*;
-import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
+import org.drools.guvnor.client.workbench.WorkbenchPart;
+import org.drools.guvnor.client.workbench.widgets.events.SelectWorkbenchPartEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
 
 @ApplicationScoped
 public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<IPlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<IPlaceRequest, WorkbenchActivity>();
-    private final Map<IPlaceRequest, WorkbenchPart> existingWorkbenchParts = new HashMap<IPlaceRequest, WorkbenchPart>();
+    private final Map<PlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<PlaceRequest, WorkbenchActivity>();
+    private final Map<PlaceRequest, WorkbenchPart> existingWorkbenchParts = new HashMap<PlaceRequest, WorkbenchPart>();
 
     private final ActivityMapper activityMapper;
 
@@ -38,7 +42,7 @@ public class PlaceManagerImpl
 
     private final PlaceHistoryHandler placeHistoryHandler;
 
-    IPlaceRequest currentPlaceRequest;
+    PlaceRequest currentPlaceRequest;
 
 
     @Inject
@@ -59,7 +63,7 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo(final IPlaceRequest placeRequest) {
+    public void goTo(final PlaceRequest placeRequest) {
 
         if ( placeRequest == null ){
             return;
@@ -82,7 +86,7 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public IPlaceRequest getCurrentPlaceRequest() {
+    public PlaceRequest getCurrentPlaceRequest() {
         if (currentPlaceRequest != null) {
             return currentPlaceRequest;
         } else {
@@ -90,7 +94,7 @@ public class PlaceManagerImpl
         }
     }
 
-    private void revealActivity(final IPlaceRequest newPlace,
+    private void revealActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity) {
         //If we're already showing this place exit.
         if (existingWorkbenchActivities.containsKey(newPlace)) {
@@ -120,19 +124,19 @@ public class PlaceManagerImpl
         updateHistory(newPlace);
     }
 
-    private void revealActivity(final IPlaceRequest newPlace,
+    private void revealActivity(final PlaceRequest newPlace,
                                 final PopupActivity activity) {
         activity.onRevealPlace();
     }
 
-    public void updateHistory(IPlaceRequest request) {
+    public void updateHistory(PlaceRequest request) {
         placeHistoryHandler.onPlaceChange(request);
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
-        final IPlaceRequest place = getPlaceForWorkbenchPart(part);
+        final PlaceRequest place = getPlaceForWorkbenchPart(part);
         if (place == null) {
             return;
         }
@@ -145,8 +149,8 @@ public class PlaceManagerImpl
         }
     }
 
-    private IPlaceRequest getPlaceForWorkbenchPart(final WorkbenchPart part) {
-        for (Map.Entry<IPlaceRequest, WorkbenchPart> e : existingWorkbenchParts.entrySet()) {
+    private PlaceRequest getPlaceForWorkbenchPart(final WorkbenchPart part) {
+        for (Map.Entry<PlaceRequest, WorkbenchPart> e : existingWorkbenchParts.entrySet()) {
             if (e.getValue().equals(part)) {
                 return e.getKey();
             }
@@ -157,7 +161,7 @@ public class PlaceManagerImpl
     @SuppressWarnings("unused")
     private void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
-        final IPlaceRequest place = getPlaceForWorkbenchPart(part);
+        final PlaceRequest place = getPlaceForWorkbenchPart(part);
         if (place == null) {
             return;
         }
@@ -168,7 +172,7 @@ public class PlaceManagerImpl
     @SuppressWarnings("unused")
     private void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
         final WorkbenchPart part = event.getDeselectedWorkbenchPart();
-        final IPlaceRequest place = getPlaceForWorkbenchPart(part);
+        final PlaceRequest place = getPlaceForWorkbenchPart(part);
         if (place == null) {
             return;
         }

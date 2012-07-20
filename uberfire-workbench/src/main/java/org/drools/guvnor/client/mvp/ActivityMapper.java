@@ -17,6 +17,6 @@ package org.drools.guvnor.client.mvp;
 
 public interface ActivityMapper {
 
-    public Activity getActivity(IPlaceRequest placeRequest);
+    public Activity getActivity(PlaceRequest placeRequest);
 
 }

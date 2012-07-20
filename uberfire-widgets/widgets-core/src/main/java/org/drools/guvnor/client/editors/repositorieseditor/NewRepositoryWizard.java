@@ -94,10 +94,11 @@ public class NewRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem v) {
                         Window.alert("The repository is created successfully");
                         hide();
+                        final PlaceRequest repositoryEditor = new PlaceRequest("RepositoryEditor")
+                                .addParameter("path:uri", uri)
+                                .addParameter("path:name", nameTextBox.getText());
                         final Root newRoot = new Root(v.getRootDirectories().get(0),
-                                new PlaceRequest("RepositoryEditor")
-                                        .addParameter("path:uri", uri)
-                                        .addParameter("path:name", nameTextBox.getText()));
+                                repositoryEditor);
                         rootService.call(new RemoteCallback<Root>() {
                             @Override
                             public void callback(Root response) {

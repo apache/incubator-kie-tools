@@ -19,7 +19,6 @@ package org.drools.guvnor.client.mvp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -30,7 +29,7 @@ public class GuvnorNGActivityMapperImpl
     implements
     ActivityMapper {
 
-    private final Map<IPlaceRequest, Activity> activeActivities = new HashMap<IPlaceRequest, Activity>();
+    private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
     private IdentifierUtils                    idUtils;
@@ -38,7 +37,7 @@ public class GuvnorNGActivityMapperImpl
     @Inject
     private PlaceManager                       placeManager;
 
-    public Activity getActivity(final IPlaceRequest placeRequest) {
+    public Activity getActivity(final PlaceRequest placeRequest) {
         //Check and return any existing Activity for the PlaceRequest
         if ( activeActivities.containsKey( placeRequest ) ) {
             return activeActivities.get( placeRequest );
