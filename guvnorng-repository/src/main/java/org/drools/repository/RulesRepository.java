@@ -433,7 +433,7 @@ public class RulesRepository {
      * @return a ModuleItem object
      */
     public ModuleItem loadModule(String name) throws RulesRepositoryException {
-        Path modulePath = Paths.get(name);
+        Path modulePath = getModuleFullPath(name);
         ModuleItem module = new ModuleItem(modulePath);
         return module;
         
@@ -1957,6 +1957,12 @@ public class RulesRepository {
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }*/
+    }
+    
+    private Path getModuleFullPath(String moduleName) {
+    	//TODO:
+    	Path modulePath = Paths.get(moduleName);
+    	return modulePath;
     }
 
 }

@@ -16,13 +16,9 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.rule.MapBackedClassLoader;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -30,15 +26,26 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-public class ClassLoaderBuilder {
+import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.Path;
+import org.drools.rule.MapBackedClassLoader;
+
+public class ClassLoaderBuilderVFS {
 
     private final List<JarInputStream> jarInputStreams;
 
-    public ClassLoaderBuilder(AssetItemIterator assetItemIterator) {
-        this.jarInputStreams = getJars(assetItemIterator);
+    public ClassLoaderBuilderVFS(Path packageRootDir) {
+        this.jarInputStreams = getJars(packageRootDir);
     }
 
-    public ClassLoaderBuilder(List<JarInputStream> jarInputStreams) {
+    public ClassLoaderBuilderVFS(VFSService vfsService, Path packageRootDir) {
+        this.jarInputStreams = getJars(packageRootDir);
+    }
+    
+    public ClassLoaderBuilderVFS(List<JarInputStream> jarInputStreams) {
         this.jarInputStreams = jarInputStreams;
     }
 
@@ -47,9 +54,23 @@ public class ClassLoaderBuilder {
      *
      * @param assetItemIterator
      */
-    private List<JarInputStream> getJars(AssetItemIterator assetItemIterator) {
+    private List<JarInputStream> getJars(Path packageRootDir) {
         List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
-        while (assetItemIterator.hasNext()) {
+
+        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
+        for ( final Path assetPath : paths ) {
+            if(assetPath.getFileName().endsWith(AssetFormats.MODEL)) {
+                try {
+                    final InputStream is = Files.newInputStream(assetPath);
+                    jarInputStreams.add(new JarInputStream(is, false));
+                } catch (IOException e) {
+                    //TODO: Not a place for RulesRepositoryException -Rikkola-
+                    //throw new RulesRepositoryException(e);
+                }
+            }
+        }
+
+/*            
             AssetItem item = assetItemIterator.next();
             if (item.getBinaryContentAttachment() != null) {
                 try {
@@ -58,8 +79,8 @@ public class ClassLoaderBuilder {
                     //TODO: Not a place for RulesRepositoryException -Rikkola-
                     throw new RulesRepositoryException(e);
                 }
-            }
-        }
+            }*/
+        
         return jarInputStreams;
     }
 
@@ -92,7 +113,7 @@ public class ClassLoaderBuilder {
             }
         } catch (IOException e) {
             //TODO: Not a place for RulesRepositoryException -Rikkola-
-            throw new RulesRepositoryException(e);
+            //throw new RulesRepositoryException(e);
         }
 
         return mapBackedClassLoader;
@@ -109,7 +130,7 @@ public class ClassLoaderBuilder {
     private ClassLoader getParentClassLoader() {
         ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
         if (parentClassLoader == null) {
-        	//JLIU: TODO
+            //TODO:
             //parentClassLoader = BRMSPackageBuilder.class.getClassLoader();
         }
         return parentClassLoader;

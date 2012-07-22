@@ -17,29 +17,32 @@ package org.drools.guvnor.server.impl;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
+import org.drools.guvnor.server.builder.ClassLoaderBuilderVFS;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoaderVFS;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.java.nio.file.Path;
 import org.drools.repository.ModuleItem;
 
-public class SuggestionCompletionEngineLoaderInitializer {
-    protected SuggestionCompletionEngine loadFor(final ModuleItem packageItem) {
+public class SuggestionCompletionEngineLoaderInitializerVFS {
+    
+    protected SuggestionCompletionEngine loadFor(final Path packageRootDir) {
         SuggestionCompletionEngine result = null;
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {
-            BRMSSuggestionCompletionLoader loader = null;
-            //ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
-            ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsByFormat(AssetFormats.MODEL));
+        	BRMSSuggestionCompletionLoaderVFS loader = null;
+            ClassLoaderBuilderVFS classLoaderBuilder = new ClassLoaderBuilderVFS(packageRootDir);
             if (classLoaderBuilder.hasJars()) {
                 ClassLoader classLoader = classLoaderBuilder.buildClassLoader();
 
                 Thread.currentThread().setContextClassLoader(classLoader);
 
-                loader = new BRMSSuggestionCompletionLoader(classLoader);
+                loader = new BRMSSuggestionCompletionLoaderVFS(classLoader);
             } else {
-                loader = new BRMSSuggestionCompletionLoader();
+                loader = new BRMSSuggestionCompletionLoaderVFS();
             }
 
-            result = loader.getSuggestionEngine(packageItem);
+            result = loader.getSuggestionEngine(packageRootDir, "");
 
         } finally {
             Thread.currentThread().setContextClassLoader(originalCL);

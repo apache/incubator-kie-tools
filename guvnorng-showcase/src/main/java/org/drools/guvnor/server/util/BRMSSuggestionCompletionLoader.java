@@ -17,25 +17,25 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.guvnor.client.common.AssetFormats;
+//import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Path;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.ModuleItem;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * This decorates the suggestion completion loader with BRMS specific stuff.
  */
 public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
-
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     public BRMSSuggestionCompletionLoader() {
         super();
@@ -45,85 +45,52 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         super(classLoader);
     }
 
-    public SuggestionCompletionEngine getSuggestionEngine(Path packageRootDir,
+    public SuggestionCompletionEngine getSuggestionEngine(ModuleItem packageItem,
                                                           String droolsHeader) {
 
         StringBuilder buf = new StringBuilder();
-        
-        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
-        for ( final Path assetPath : paths ) {
-            if(assetPath.getFileName().endsWith(AssetFormats.DRL_MODEL)) {
-                final List<String> lines = Files.readAllLines( assetPath, UTF_8 );
-                final StringBuilder sb = new StringBuilder();
-                if (lines != null ){
-                    for (final String s : lines) {
-                        sb.append(s).append('\n');
-                    }
-                }
-
-
-                buf.append(sb.toString());
-                buf.append('\n');
-            }
-        }
-        
-/*      AssetItemIterator it = packageItem.listAssetsByFormat(AssetFormats.DRL_MODEL);
+        AssetItemIterator it = packageItem.listAssetsByFormat(AssetFormats.DRL_MODEL);
         while (it.hasNext()) {
             AssetItem as = it.next();
             buf.append(as.getContent());
             buf.append('\n');
         }
-*/
 
-        ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageRootDir);
+
+        ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsByFormat(AssetFormats.MODEL));
 
 //        String packageName = packageItem.getName();
 //        return super.getSuggestionEngine("package " + packageName + "\n\n" + droolsHeader + "\n" + buf.toString(),
         return super.getSuggestionEngine(droolsHeader + "\n" + buf.toString(),
                 classLoaderBuilder.getJarInputStreams(),
-                getDSLMappingFiles(packageRootDir),
-                getDataEnums(packageRootDir));
+                getDSLMappingFiles(packageItem),
+                getDataEnums(packageItem));
     }
-/*
+
     public SuggestionCompletionEngine getSuggestionEngine(ModuleItem pkg) {
         return getSuggestionEngine(pkg,
                 DroolsHeader.getDroolsHeader(pkg));
-    }*/
+    }
 
     @SuppressWarnings("rawtypes")
-    private List<String> getDataEnums(Path packageRootDir) {
-        List<String> list = new ArrayList<String>();
-        DirectoryStream<Path> paths = Files.newDirectoryStream(packageRootDir);
-        for ( final Path assetPath : paths ) {
-            if(assetPath.getFileName().endsWith(AssetFormats.ENUMERATION)) {
-                final List<String> lines = Files.readAllLines( assetPath, UTF_8 );
-                final StringBuilder sb = new StringBuilder();
-                if (lines != null ){
-                    for (final String s : lines) {
-                        sb.append(s).append('\n');
-                    }
-                }
-                list.add(sb.toString());
-            }
-        }
-        
-/*        Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
+    private List<String> getDataEnums(ModuleItem pkg) {
+        Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
         List<String> list = new ArrayList<String>();
         while (it.hasNext()) {
             AssetItem item = (AssetItem) it.next();
             list.add(item.getContent());
-        }*/
+        }
         return list;
     }
 
-    private List<DSLTokenizedMappingFile> getDSLMappingFiles(Path packageRootDir) {
-        return DSLLoader.loadDSLMappingFiles(packageRootDir/*,
+    private List<DSLTokenizedMappingFile> getDSLMappingFiles(ModuleItem pkg) {
+        return DSLLoader.loadDSLMappingFiles(pkg,
                 new BRMSPackageBuilder.DSLErrorEvent() {
 
                     public void recordError(AssetItem asset,
                                             String message) {
                         getErrors().add(asset.getName() + " : " + message);
                     }
-                }*/);
+                });
     }
 }

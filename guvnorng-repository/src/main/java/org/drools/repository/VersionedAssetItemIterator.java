@@ -16,6 +16,7 @@
 
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 /*
@@ -42,7 +43,7 @@ public class VersionedAssetItemIterator extends AssetItemIterator {
     public VersionedAssetItemIterator(/*NodeIterator nodes,*/
                             RulesRepository repo,
                             String[] dependencies) {
-    	super(repo);
+    	super(new ArrayList());
 /*        super(nodes, repo);
         //this.dependencies = dependencies;
         for(String dependency : dependencies) {

@@ -17,6 +17,7 @@
 package org.drools.repository;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -27,6 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.inject.Inject;
+
+import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.vfs.impl.PathImpl;
+import org.drools.java.nio.file.DirectoryStream;
 import org.drools.java.nio.file.Files;
 import org.drools.java.nio.file.Path;
 import org.drools.java.nio.file.Paths;
@@ -48,6 +54,9 @@ import javax.jcr.query.QueryResult;*/
  * types of containers). This is a container "node".
  */
 public class ModuleItem extends VersionableItem {
+    @Inject
+    private VFSService vfsService;
+
 
     private static final Logger log = LoggerFactory.getLogger(ModuleItem.class);
 
@@ -111,11 +120,8 @@ public class ModuleItem extends VersionableItem {
     /**
      * Return the name of the module.
      */
-    public String getName() {
-        //JLIU: return the directory name or get name from dot file?
-        return null;
-        
-        //return super.getName();
+    public String getName() {       
+        return super.getName();
     }
 
     /**
@@ -776,8 +782,27 @@ public class ModuleItem extends VersionableItem {
      * This will load an iterator for assets of the given format type.
      */
     public AssetItemIterator listAssetsByFormat(String... formats) {
+    	//JLIU: We do listAssetsByFormat manually until we figure out how to do query with jgit. 
+    	
+    	StringBuffer globPattern = new StringBuffer();
+    	for(String format : formats) {
+    		globPattern.append("*." + format);
+    		globPattern.append(",");
+    	}
 
-        if (formats.length == 1) {
+    	//TODO: in order to use VFSService, we have to convert nio.path to vfs.path again? 
+    	PathImpl vfsPath = new PathImpl(assetPath.toString());
+    	DirectoryStream<org.drools.guvnor.vfs.Path> directoryStream = vfsService.newDirectoryStream(vfsPath, globPattern.toString());
+    	List<org.drools.java.nio.file.Path> assetItemPaths = new ArrayList<org.drools.java.nio.file.Path>();
+    	
+    	for ( final org.drools.guvnor.vfs.Path path : directoryStream ) {
+    		org.drools.java.nio.file.Path nioPath = fromPath(path);
+    		assetItemPaths.add(nioPath);
+    	}
+    	
+    	return new AssetItemIterator(assetItemPaths);
+
+/*        if (formats.length == 1) {
             return queryAssets(FORMAT_PROPERTY_NAME + "='" + formats[0] + "'");
         } else {
             StringBuilder predicateBuilder = new StringBuilder(" ( ");
@@ -789,9 +814,14 @@ public class ModuleItem extends VersionableItem {
             }
             predicateBuilder.append(" ) ");
             return queryAssets(predicateBuilder.toString());
-        }
+        }*/
     }
-
+    private org.drools.java.nio.file.Path fromPath(final org.drools.guvnor.vfs.Path path) {
+        //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
+        String pathString = path.toURI();
+        pathString = pathString.replaceAll(" ", "%20");
+        return Paths.get(URI.create(pathString));
+    }
     public AssetItemIterator listAssetsNotOfFormat(String[] formats) {
         if (formats.length == 1) {
             return queryAssets("not drools:format='" + formats[0] + "'");

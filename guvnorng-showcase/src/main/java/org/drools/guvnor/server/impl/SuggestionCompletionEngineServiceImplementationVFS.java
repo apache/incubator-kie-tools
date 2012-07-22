@@ -16,41 +16,44 @@
 
 package org.drools.guvnor.server.impl;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.net.URI;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.backend.util.LoggingHelper;
 import org.drools.guvnor.shared.SuggestionCompletionEngineService;
+import org.drools.guvnor.shared.SuggestionCompletionEngineServiceVFS;
+import org.drools.guvnor.vfs.Path;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.repository.ModuleItem;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
+import org.drools.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
 
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Service
 @ApplicationScoped
-public class SuggestionCompletionEngineServiceImplementation
-        implements SuggestionCompletionEngineService {
+public class SuggestionCompletionEngineServiceImplementationVFS
+        implements SuggestionCompletionEngineServiceVFS {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SuggestionCompletionEngineService.class);
 
-    @Inject
-    private RulesRepository rulesRepository;
-
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(final Path packageRootDir) throws SerializationException {
         //No need to check role based permission here. Package auto completion suggestion should be available to everybody.
         //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
-            ModuleItem packageItem = rulesRepository.loadModule(packageName);
-            suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor(packageItem);
-        } catch (RulesRepositoryException e) {
+            suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializerVFS().loadFor( fromPath(packageRootDir) );
+        } catch (Exception e) {
             log.error("An error occurred loadSuggestionCompletionEngine: " + e.getMessage());
             throw new SerializationException(e.getMessage());
         }
         return suggestionCompletionEngine;
     }
+
+    private org.drools.java.nio.file.Path fromPath(final Path path) {
+        //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
+        String pathString = path.toURI();
+        pathString = pathString.replaceAll(" ", "%20");
+        return Paths.get(URI.create(pathString));
+    }
+
 }

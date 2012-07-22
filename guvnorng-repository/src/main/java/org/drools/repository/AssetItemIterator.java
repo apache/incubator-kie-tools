@@ -19,6 +19,7 @@ package org.drools.repository;
 /*import javax.jcr.Node;
 import javax.jcr.NodeIterator;*/
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This iterates over nodes and produces AssetItem's.
@@ -33,28 +34,29 @@ public class AssetItemIterator
         Iterator<AssetItem> {
 
     //protected NodeIterator it;
-    protected RulesRepository rulesRepository;
+    protected List<org.drools.java.nio.file.Path> assetItemPaths;
+    //protected RulesRepository rulesRepository;
+    protected Iterator<org.drools.java.nio.file.Path> it;
 
-    public AssetItemIterator(/*NodeIterator nodes,*/
-                             RulesRepository repo) {
+    public AssetItemIterator(List<org.drools.java.nio.file.Path> assetItemPaths) {
         //this.it = nodes;
-        this.rulesRepository = repo;
+        //this.rulesRepository = repo;
+        this.assetItemPaths = assetItemPaths;
+        it = this.assetItemPaths.iterator();
     }
 
     public AssetItemIterator(AssetItemIterator assetItemIterator) {
         //this.it = assetItemIterator.it;
-        this.rulesRepository = assetItemIterator.rulesRepository;
+        //this.rulesRepository = assetItemIterator.rulesRepository;
+        this.assetItemPaths = assetItemIterator.assetItemPaths;
     }
 
     public boolean hasNext() {
-    	//JLIU: TODO:
-    	return false;
-/*        return it.hasNext();*/
+        return it.hasNext();
     }
 
     public AssetItem next() {
-        //JLIU: TODO
-        return null;
+    	return new AssetItem(it.next());
 /*        
         return new AssetItem(rulesRepository,
                 it.nextNode());*/
@@ -81,11 +83,8 @@ public class AssetItemIterator
     //See http://markmail.org/message/mxmk5hkxrdtcc3hl to understand how an actual row count can be ensured
     //All queries have had the explicit "order by" added, however if you find something somewhere that 
     //still returns -1 you'll need to add the "order by" if required.
-    public long getSize() {
-    	//JLIU: TODO:
-    	return 0;
-    	
-        //return it.getSize();
+    public long getSize() {   	
+        return assetItemPaths.size();
     }
 
     /**

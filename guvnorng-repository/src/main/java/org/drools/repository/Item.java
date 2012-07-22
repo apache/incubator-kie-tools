@@ -73,8 +73,7 @@ public abstract class Item {
      * @throws RulesRepositoryException 
      */
     public String getName() throws RulesRepositoryException {
-    	//JLIU: TODO:
-    	return null;
+    	return assetPath.getFileName().toString();
     	
 /*        try {
             return this.node.getName();

@@ -24,13 +24,13 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
-public interface SuggestionCompletionEngineService {
+public interface SuggestionCompletionEngineServiceVFS {
 
     /**
      * Loads up the SuggestionCompletionEngine for the given package. As this
      * doesn't change that often, its safe to cache. However, if a change is
      * made to a package, should blow away the cache.
      */
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
+    //public SuggestionCompletionEngine loadSuggestionCompletionEngine(Path packageRootDir) throws SerializationException;
 
 }
