@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend;
+package org.drools.guvnor.backend.vfs;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import java.util.List;
 
-@Path("/broadcast")
-public interface BroadcastService {
+public interface FileSystem {
 
-    @GET
-    @Path("/save/{id}")
-    public void save(@PathParam("id") final String id);
-
-    @GET
-    @Path("/set_focus/{id}")
-    public void setFocus(@PathParam("id") final String id);
+    List<Path> getRootDirectories();
 
 }

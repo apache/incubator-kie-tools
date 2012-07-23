@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;

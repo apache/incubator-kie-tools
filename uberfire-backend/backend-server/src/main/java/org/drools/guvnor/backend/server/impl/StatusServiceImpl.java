@@ -21,7 +21,7 @@ import java.net.URLDecoder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.backend.StatusService;
+import org.drools.guvnor.backend.server.StatusService;
 
 @ApplicationScoped
 public class StatusServiceImpl implements StatusService {

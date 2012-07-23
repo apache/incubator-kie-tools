@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.annotations.DefaultPerspective;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.drools.guvnor.client.workbench.WorkbenchPanel;
 import org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;

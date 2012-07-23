@@ -373,7 +373,6 @@
 
   <modules>
     <module>uberfire-vfs</module>
-    <module>uberfire-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
@@ -433,13 +432,6 @@
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
         <version>${hamcrest.version}</version>
-      </dependency>
-
-      <!-- Client Side API -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-api</artifactId>
-        <version>${project.version}</version>
       </dependency>
 
       <!-- Workbench -->

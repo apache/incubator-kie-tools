@@ -35,25 +35,13 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
+      <artifactId>vfs-model</artifactId>
     </dependency>
 
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
-    </dependency>
-
-    <!-- Errai JAX-RS API -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
+      <artifactId>errai-bus</artifactId>
     </dependency>
   </dependencies>
 

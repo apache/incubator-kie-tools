@@ -29,6 +29,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import org.drools.guvnor.annotations.processors.exceptions.GenerationException;
+import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.client.annotations.DefaultPosition;
 import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnClose;
@@ -40,6 +41,7 @@ import org.drools.guvnor.client.annotations.OnSave;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
+import org.drools.guvnor.client.workbench.Position;
 
 /**
  * Utilities for code generation
@@ -76,7 +78,7 @@ public class GeneratorUtils {
                                                            final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  new String[]{"org.drools.guvnor.vfs.Path"},
+                                  new String[]{Path.class.getName()},
                                   OnStart.class );
     }
 
@@ -422,7 +424,7 @@ public class GeneratorUtils {
                                                final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.Boolean" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( Boolean.class.getName() ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -467,7 +469,7 @@ public class GeneratorUtils {
                                               final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "java.lang.String" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( String.class.getName() ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -602,7 +604,7 @@ public class GeneratorUtils {
                                                        final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.drools.guvnor.client.workbench.Position" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( Position.class.getName() ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

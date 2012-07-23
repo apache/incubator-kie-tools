@@ -2,6 +2,7 @@ package org.drools.guvnor.client.mvp;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.workbench.widgets.events.SelectWorkbenchPartEvent;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.junit.Before;
 import org.junit.Test;
 

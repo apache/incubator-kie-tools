@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.mvp.AbstractScreenActivity;
-import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 
 public class SelectPlacePopup extends PopupPanel
     implements

@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.backend.VFSService;
-import org.drools.guvnor.vfs.FileSystem;
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.impl.DirectoryStreamImpl;
-import org.drools.guvnor.vfs.impl.FileSystemImpl;
-import org.drools.guvnor.vfs.impl.PathImpl;
+import org.drools.guvnor.backend.vfs.VFSService;
+import org.drools.guvnor.backend.vfs.FileSystem;
+import org.drools.guvnor.backend.vfs.Path;
+import org.drools.guvnor.backend.vfs.impl.DirectoryStreamImpl;
+import org.drools.guvnor.backend.vfs.impl.FileSystemImpl;
+import org.drools.guvnor.backend.vfs.impl.PathImpl;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;

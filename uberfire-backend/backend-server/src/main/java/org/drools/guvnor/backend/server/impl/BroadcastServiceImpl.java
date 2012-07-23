@@ -21,7 +21,7 @@ import java.net.URLDecoder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.backend.BroadcastService;
+import org.drools.guvnor.backend.server.BroadcastService;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 

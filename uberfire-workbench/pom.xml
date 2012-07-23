@@ -28,7 +28,7 @@
 
 		<dependency>
 			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
+			<artifactId>backend-api</artifactId>
 		</dependency>
 
 		<!-- Annotations -->

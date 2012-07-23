@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs;
+package org.drools.guvnor.backend.vfs;
 
-import org.drools.guvnor.vfs.impl.PathImpl;
+public interface Path {
 
-public final class Paths {
+    String getFileName();
 
-    private Paths() {
-    }
-
-    public static Path fromURI(final String uri) {
-        return new PathImpl(uri);
-    }
-
+    String toURI();
 }

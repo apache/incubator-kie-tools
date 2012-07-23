@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.backend;
 
-import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
+import org.drools.guvnor.backend.vfs.Path;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

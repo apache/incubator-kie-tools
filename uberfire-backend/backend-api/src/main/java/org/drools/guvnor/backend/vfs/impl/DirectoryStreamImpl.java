@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs.impl;
+package org.drools.guvnor.backend.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.DirectoryStream;
 import org.jboss.errai.common.client.api.annotations.Portable;

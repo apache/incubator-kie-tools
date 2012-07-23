@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.client.mvp.AbstractScreenActivity;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 

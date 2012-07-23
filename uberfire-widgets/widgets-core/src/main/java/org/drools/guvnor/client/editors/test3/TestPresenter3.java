@@ -19,7 +19,7 @@ package org.drools.guvnor.client.editors.test3;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.backend.vfs.VFSService;
 import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnClose;
 import org.drools.guvnor.client.annotations.OnFocus;
@@ -28,11 +28,10 @@ import org.drools.guvnor.client.annotations.OnMayClose;
 import org.drools.guvnor.client.annotations.OnReveal;
 import org.drools.guvnor.client.annotations.OnSave;
 import org.drools.guvnor.client.annotations.OnStart;
-import org.drools.guvnor.client.annotations.ResourceType;
 import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 

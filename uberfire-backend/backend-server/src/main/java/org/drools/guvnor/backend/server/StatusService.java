@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs;
+package org.drools.guvnor.backend.server;
 
-import java.util.List;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
-public interface FileSystem {
+@Path("/status")
+public interface StatusService {
 
-    List<Path> getRootDirectories();
+    @GET
+    @Path("/is_dirty/{id}")
+    @Produces("text/plain")
+    public boolean checkDirty(@PathParam("id") final String id);
 
 }

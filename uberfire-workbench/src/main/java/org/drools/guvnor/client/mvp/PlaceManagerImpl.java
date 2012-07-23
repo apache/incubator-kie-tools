@@ -18,6 +18,7 @@ import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartCloseEvent
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.drools.guvnor.client.workbench.widgets.panels.PanelManager;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 
 @ApplicationScoped
 public class PlaceManagerImpl

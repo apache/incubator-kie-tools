@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs;
+package org.drools.guvnor.backend.vfs;
 
-import java.util.Map;
+import org.drools.guvnor.backend.vfs.impl.PathImpl;
 
-import org.drools.guvnor.vfs.impl.BasicAttributesVO;
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
+public final class Paths {
 
-public final class VFSTempUtil {
-
-    private VFSTempUtil() {
+    private Paths() {
     }
 
-    public static BasicFileAttributes toBasicFileAttributes(final Map attrs) {
-        return new BasicAttributesVO(attrs);
+    public static Path fromURI(final String uri) {
+        return new PathImpl(uri);
     }
 
 }

@@ -59,12 +59,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-repository</artifactId>
       <version>${project.version}</version>

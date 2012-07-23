@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.shared;
 
-
-import com.google.gwt.user.client.rpc.SerializationException;
-
-import org.drools.guvnor.vfs.Path;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote

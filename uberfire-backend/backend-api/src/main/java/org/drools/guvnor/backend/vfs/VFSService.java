@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend;
+package org.drools.guvnor.backend.vfs;
 
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.vfs.FileSystem;
-import org.drools.guvnor.vfs.Path;
 import org.drools.java.nio.IOException;
 import org.drools.java.nio.file.AtomicMoveNotSupportedException;
 import org.drools.java.nio.file.CopyOption;

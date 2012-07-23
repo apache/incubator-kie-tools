@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.mvp;
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 
 public interface EditorService
     extends

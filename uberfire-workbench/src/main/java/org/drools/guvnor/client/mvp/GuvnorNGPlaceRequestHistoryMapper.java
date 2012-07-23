@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.http.client.URL;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 
 public class GuvnorNGPlaceRequestHistoryMapper
     implements

@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.backend.FileExplorerRootService;
 import org.drools.guvnor.backend.Root;
-import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.backend.vfs.VFSService;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;

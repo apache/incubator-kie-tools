@@ -10,6 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 
 @Dependent
 public class PlaceHistoryHandler {
@@ -74,7 +75,7 @@ public class PlaceHistoryHandler {
 
     private PlaceManager                    placeManager;
 
-    private PlaceRequest                    defaultPlaceRequest = new PlaceRequest( "NOWHERE" );
+    private PlaceRequest defaultPlaceRequest = new PlaceRequest( "NOWHERE" );
 
     /**
      * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The

@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.client.annotations.IsDirty;
 import org.drools.guvnor.client.annotations.OnFocus;
 import org.drools.guvnor.client.annotations.OnMayClose;
@@ -29,11 +30,10 @@ import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.mvp.PlaceManager;
-import org.drools.guvnor.client.mvp.PlaceRequest;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 

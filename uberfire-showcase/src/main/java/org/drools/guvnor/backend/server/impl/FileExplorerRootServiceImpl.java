@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend.impl;
+package org.drools.guvnor.backend.server.impl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,8 +28,8 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.guvnor.backend.FileExplorerRootService;
 import org.drools.guvnor.backend.Root;
-import org.drools.guvnor.client.mvp.PlaceRequest;
-import org.drools.guvnor.vfs.impl.PathImpl;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
+import org.drools.guvnor.backend.vfs.impl.PathImpl;
 import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.FileSystems;
 import org.jboss.errai.bus.server.annotations.Service;

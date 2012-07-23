@@ -21,12 +21,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.backend.VFSService;
+import org.drools.guvnor.backend.vfs.VFSService;
 import org.drools.guvnor.client.annotations.OnStart;
 import org.drools.guvnor.client.annotations.WorkbenchEditor;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 

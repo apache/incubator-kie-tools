@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs.impl;
+package org.drools.guvnor.backend.vfs.impl;
 
 import java.util.Map;
 

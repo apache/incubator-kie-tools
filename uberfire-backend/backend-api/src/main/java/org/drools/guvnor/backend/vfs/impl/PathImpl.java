@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs.impl;
+package org.drools.guvnor.backend.vfs.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

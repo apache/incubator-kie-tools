@@ -28,7 +28,7 @@ import org.drools.guvnor.client.mvp.EditorService;
 import org.drools.guvnor.client.workbench.Position;
 </#if>
 
-import org.drools.guvnor.vfs.Path;
+import org.drools.guvnor.backend.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

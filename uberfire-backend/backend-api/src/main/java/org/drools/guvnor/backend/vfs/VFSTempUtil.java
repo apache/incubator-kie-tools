@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.vfs;
+package org.drools.guvnor.backend.vfs;
 
-public interface Path {
+import java.util.Map;
 
-    String getFileName();
+import org.drools.guvnor.backend.vfs.impl.BasicAttributesVO;
+import org.drools.java.nio.file.attribute.BasicFileAttributes;
 
-    String toURI();
+public final class VFSTempUtil {
+
+    private VFSTempUtil() {
+    }
+
+    public static BasicFileAttributes toBasicFileAttributes(final Map attrs) {
+        return new BasicAttributesVO(attrs);
+    }
+
 }

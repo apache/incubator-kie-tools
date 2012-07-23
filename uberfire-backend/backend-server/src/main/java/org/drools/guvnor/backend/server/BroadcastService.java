@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.backend;
+package org.drools.guvnor.backend.server;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
-@Path("/status")
-public interface StatusService {
+@Path("/broadcast")
+public interface BroadcastService {
 
     @GET
-    @Path("/is_dirty/{id}")
-    @Produces("text/plain")
-    public boolean checkDirty(@PathParam("id") final String id);
+    @Path("/save/{id}")
+    public void save(@PathParam("id") final String id);
+
+    @GET
+    @Path("/set_focus/{id}")
+    public void setFocus(@PathParam("id") final String id);
 
 }

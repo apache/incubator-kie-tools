@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.mvp;
+package org.drools.guvnor.shared.mvp;
 
 import java.util.HashMap;
 import java.util.Map;

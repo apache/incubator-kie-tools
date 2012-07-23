@@ -18,19 +18,20 @@ package org.drools.guvnor.client.mvp;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.backend.vfs.Path;
+import org.drools.guvnor.backend.vfs.impl.PathImpl;
 import org.drools.guvnor.client.workbench.Position;
-import org.drools.guvnor.vfs.Path;
-import org.drools.guvnor.vfs.impl.PathImpl;
+import org.drools.guvnor.shared.mvp.PlaceRequest;
 
 /**
- * 
+ *
  */
 public abstract class AbstractEditorActivity
-    implements
-    WorkbenchActivity {
+        implements
+        WorkbenchActivity {
 
     @Inject
-    private PlaceManager  placeManager;
+    private PlaceManager placeManager;
 
     private EditorService presenter;
 
@@ -41,7 +42,7 @@ public abstract class AbstractEditorActivity
 
     @Override
     public boolean mayStop() {
-        if ( presenter != null ) {
+        if (presenter != null) {
             return presenter.onMayClose();
         }
         return true;
@@ -54,7 +55,7 @@ public abstract class AbstractEditorActivity
 
     @Override
     public boolean mayClosePlace() {
-        if ( presenter != null ) {
+        if (presenter != null) {
             return presenter.onMayClose();
         }
         return true;
@@ -62,7 +63,7 @@ public abstract class AbstractEditorActivity
 
     @Override
     public void onClosePlace() {
-        if ( presenter == null ) {
+        if (presenter == null) {
             return;
         }
         presenter.onClose();
@@ -71,33 +72,33 @@ public abstract class AbstractEditorActivity
 
     @Override
     public void onRevealPlace(AcceptItem acceptPanel) {
-        if ( presenter == null ) {
+        if (presenter == null) {
             presenter = getPresenter();
-            if ( presenter == null ) {
+            if (presenter == null) {
                 return;
             }
 
             PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-            String simplePath = placeRequest.getParameter( "path",
-                                                    null );
+            String simplePath = placeRequest.getParameter("path",
+                    null);
 
-            String uri = placeRequest.getParameter( "path:uri",
-                                                    null );
-            String name = placeRequest.getParameter( "path:name",
-                                                    null );
+            String uri = placeRequest.getParameter("path:uri",
+                    null);
+            String name = placeRequest.getParameter("path:name",
+                    null);
 
             final Path path;
-            if ( simplePath != null && ( uri == null || name == null ) ){
-                path = new PathImpl( simplePath );
+            if (simplePath != null && (uri == null || name == null)) {
+                path = new PathImpl(simplePath);
             } else {
-                path = new PathImpl( name, uri );
+                path = new PathImpl(name, uri);
             }
 
-            ((EditorService) presenter).onStart( path );
+            ((EditorService) presenter).onStart(path);
         }
 
-        acceptPanel.add( getTitle(),
-                         getWidget() );
+        acceptPanel.add(getTitle(),
+                getWidget());
         presenter.onReveal();
     }
 

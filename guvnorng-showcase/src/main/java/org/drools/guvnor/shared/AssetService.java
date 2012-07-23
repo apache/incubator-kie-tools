@@ -16,9 +16,8 @@
 
 package org.drools.guvnor.shared;
 
-
+import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
-import org.drools.guvnor.vfs.Path;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
