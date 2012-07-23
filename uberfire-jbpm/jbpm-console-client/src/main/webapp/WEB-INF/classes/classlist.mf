@@ -1,2 +1,16 @@
-org.drools.guvnor.client.editors.monitoring.MonitoringPerspectivePresenterActivity
+org.drools.guvnor.client.editors.jbpm.HeaderLabel
 org.drools.guvnor.client.editors.jbpm.ServerStatusViewActivity
+org.drools.guvnor.client.editors.monitoring.MonitoringPerspectivePresenter
+org.drools.guvnor.client.ShowcaseEntryPoint
+org.drools.guvnor.client.editors.jbpm.ServerPlugins
+org.drools.guvnor.client.editors.jbpm.Controller
+org.drools.guvnor.client.i18n.Constants
+org.drools.guvnor.client.resources.ShowcaseCss
+org.drools.guvnor.client.editors.jbpm.LazyPanel
+org.drools.guvnor.client.resources.ShowcaseResources
+org.drools.guvnor.client.editors.monitoring.MonitoringPerspectiveViewImpl
+org.drools.guvnor.client.editors.monitoring.MonitoringPerspectivePresenterActivity
+org.drools.guvnor.client.editors.jbpm.Version
+org.drools.guvnor.client.resources.ShowcaseImages
+org.drools.guvnor.client.perspectives.FileExplorerPerspective
+org.drools.guvnor.client.editors.jbpm.ServerStatusView

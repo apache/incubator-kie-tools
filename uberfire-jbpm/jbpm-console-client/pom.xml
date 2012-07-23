@@ -54,11 +54,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-annotations-processors</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
@@ -161,9 +156,13 @@
         <configuration>
           <module>org.drools.guvnor.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
-          <!--<compileSourcesArtifacts>-->
-          <!--<compileSourcesArtifact>org.drools:guvnorng-core</compileSourcesArtifact>-->
-          <!--</compileSourcesArtifacts>-->
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:jbpm-console-shared</compileSourcesArtifact>
+          </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.UberfireShowcase/Uberfire.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>

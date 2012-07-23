@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.editors.jbpm;
 
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.annotations.Identifier;
 import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
 import org.drools.guvnor.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.annotations.WorkbenchScreen;
@@ -11,6 +12,7 @@ import javax.enterprise.context.Dependent;
 
 @Dependent
 @WorkbenchScreen(identifier = "Server Status")
+@Identifier("Server Status")
 public class ServerStatusView implements LazyPanel, IsWidget {
 
     private boolean initialized;

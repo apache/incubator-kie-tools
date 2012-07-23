@@ -576,6 +576,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-common</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-tools</artifactId>
         <version>${errai.version}</version>
       </dependency>

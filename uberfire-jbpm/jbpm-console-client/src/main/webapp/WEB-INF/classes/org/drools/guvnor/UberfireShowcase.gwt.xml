@@ -2,8 +2,8 @@
 <module>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
-  <inherits name="org.drools.guvnor.client.UberfireWorkbench"/>
-  <inherits name="org.drools.guvnor.client.UberfireWidgetsCore"/>
+  <inherits name="org.drools.guvnor.UberfireWorkbench"/>
+  <inherits name="org.drools.guvnor.UberfireWorkbench"/>
   <inherits name="org.drools.guvnor.UberfireBackend"/>
   <inherits name="org.jboss.bpm.console.jBPMConsoleShared"/>
 
