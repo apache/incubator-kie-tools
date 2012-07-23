@@ -31,6 +31,6 @@ public interface SuggestionCompletionEngineService {
      * doesn't change that often, its safe to cache. However, if a change is
      * made to a package, should blow away the cache.
      */
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
+    //public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
 
 }

@@ -167,7 +167,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
+      <version>5.4.0.Final</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jdt.core.compiler</groupId>
@@ -185,14 +185,14 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
-      <version>5.5.0-SNAPSHOT</version>
+      <version>5.4.0.Final</version>
     </dependency>
     
-    <dependency>
+<!--     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
       <version>5.5.0-SNAPSHOT</version>
-    </dependency>
+    </dependency> -->
   </dependencies>
 
   <build>
@@ -224,8 +224,8 @@
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
-          </compileSourcesArtifacts>
+ <!--            <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
+ -->          </compileSourcesArtifacts>
           <runTarget>org.drools.guvnor.GuvnorNGShowcase/Guvnor.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
