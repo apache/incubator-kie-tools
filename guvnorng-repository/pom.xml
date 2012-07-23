@@ -63,12 +63,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>backend-api</artifactId>
-      <version>${uberfire.version}</version>
-    </dependency>
-    
-    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <version>1.0-SP4</version>
@@ -97,13 +91,7 @@
       <!--<artifactId>backend-server</artifactId>-->
       <!--<version>${uberfire.version}</version>-->
     <!--</dependency>-->
-    <!---->
-    <!--<dependency>-->
-      <!--<groupId>org.uberfire</groupId>-->
-      <!--<artifactId>backend-api</artifactId>-->
-      <!--<version>${uberfire.version}</version>-->
-    <!--</dependency>-->
-<!-- 
+<!--
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>vfs-jgit</artifactId>
