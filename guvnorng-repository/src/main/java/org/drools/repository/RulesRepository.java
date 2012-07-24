@@ -18,13 +18,22 @@ package org.drools.repository;
 
 /*import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.migration.MigrateDroolsPackage;*/
+import org.drools.java.nio.file.DirectoryStream;
+import org.drools.java.nio.file.FileSystemAlreadyExistsException;
+import org.drools.java.nio.file.FileSystems;
+import org.drools.java.nio.file.Files;
+import org.drools.java.nio.file.NotDirectoryException;
 import org.drools.java.nio.file.Path;
 import org.drools.java.nio.file.Paths;
+import org.drools.java.nio.file.ProviderNotFoundException;
+import org.drools.java.nio.fs.base.GeneralPathImpl;
+import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 /*import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
@@ -39,6 +48,7 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;*/
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -73,6 +83,11 @@ import java.util.zip.ZipOutputStream;
  * scheme to be better aligned with JCR's versioning abilities.
  */
 public class RulesRepository {
+    Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
+    
+    private JGitRepositoryConfiguration config;
+    private org.drools.java.nio.file.FileSystem fileSystem;
+
 
     public static final String DEFAULT_PACKAGE = "defaultPackage";
     public static final String DEFAULT_WORKSPACE = "defaultWorkspace";
@@ -137,9 +152,132 @@ public class RulesRepository {
     /**
      * This requires a JCR session be setup, and the repository be configured.
      */
-    public RulesRepository(/*Session session*/) {
+    public RulesRepository(JGitRepositoryConfiguration config) {
         //this.session = session;
         //checkForDataMigration(this);
+    	this.config = config;
+    	
+    	try {
+    		loadRepository();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void loadRepository() throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, SecurityException, java.io.IOException {
+		// Clone or fetch the repo
+		cloneJGitFileSystem(config.getRepositoryName(), config.getGitURL(), config.getUserName(), config.getPassword());
+	}
+    
+    //@Override
+    public void cloneJGitFileSystem(String repositoryName, String gitURL, String userName, String password) {
+/*        if(getRepositoryConfiguration().get(repositoryName) != null) {
+            throw new FileSystemAlreadyExistsException("JGitFileSystem identifed by repositoryName: " + repositoryName + " already exists");
+        }*/
+
+        //Create the JGitFileSystem
+        Map<String, String> env = new HashMap<String, String>();
+        env.put("username", userName);
+        env.put("password", password);
+        env.put("giturl", gitURL);
+        URI rootURI = URI.create("jgit:///" + repositoryName);        
+        
+        try {
+            //This either clones the repository or creates a new git repository (locally). 
+        	fileSystem = FileSystems.newFileSystem(rootURI, env);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+    }
+    
+    //@Override
+    public void createJGitFileSystem(String repositoryName, String description, String userName, String password) {
+        if(getRepositoryConfiguration().get(repositoryName) != null) {
+            throw new FileSystemAlreadyExistsException("JGitFileSystem identifed by repositoryName: " + repositoryName + " already exists");
+        }
+
+        //Create the JGitFileSystem
+        Map<String, String> env = new HashMap<String, String>();
+        env.put("userName", userName);
+        env.put("password", password);
+        URI rootURI = URI.create("jgit:///" + repositoryName);
+        
+        try {
+            //This either clones the repository or creates a new git repository (locally). 
+        	org.drools.java.nio.file.FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }         
+        
+        //Add this newly created repository configuration info to the in-memory cache of repository configuration list
+        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
+        //jGitRepositoryConfiguration.setGitURL(gitURL);
+        jGitRepositoryConfiguration.setRepositoryName(repositoryName);
+        jGitRepositoryConfiguration.setUserName(userName);
+        jGitRepositoryConfiguration.setPassword(password);
+        jGitRepositoryConfiguration.setRootURI(rootURI);        
+        addRepositoryConfiguration(repositoryName, jGitRepositoryConfiguration);
+        
+        //TODO:Save this newly created repository's configuration info to guvnorng-config git repository using a property file whose name is "${repositoryName}.properties"
+        Properties properties = new Properties();
+        properties.setProperty("repositoryname", repositoryName);
+        //properties.setProperty("giturl", gitURL);
+        properties.setProperty("username", userName);
+        properties.setProperty("password", password);
+        properties.setProperty("rooturi", rootURI.toString());
+    }
+    
+/*    @Override
+    public List<JGitRepositoryConfigurationVO> listJGitRepositories() {
+        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
+        List<JGitRepositoryConfigurationVO> result = new ArrayList<JGitRepositoryConfigurationVO>();
+
+        for (JGitRepositoryConfiguration j : repo.values()) {
+            JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
+            jGitRepositoryConfigurationVO.setGitURL(j.getGitURL());
+            jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
+            jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
+
+            result.add(jGitRepositoryConfigurationVO);
+        }
+
+        return result;
+    }
+    
+    @Override
+    public JGitRepositoryConfigurationVO loadJGitRepository(String repositoryName) {
+        Map<String, JGitRepositoryConfiguration> repo = getRepositoryConfiguration();
+        JGitRepositoryConfiguration j = repo.get(repositoryName);
+
+        JGitRepositoryConfigurationVO jGitRepositoryConfigurationVO = new JGitRepositoryConfigurationVO();
+        jGitRepositoryConfigurationVO.setGitURL(j.getGitURL());
+        jGitRepositoryConfigurationVO.setRepositoryName(j.getRepositoryName());
+        jGitRepositoryConfigurationVO.setRootURI(j.getRootURI().toString());
+
+        return jGitRepositoryConfigurationVO;
+    }
+    
+    @Override
+    public List<FileSystem> listJGitFileSystems() {
+        List<FileSystem> fileSystems = new ArrayList<FileSystem>();
+
+        Map<String, JGitRepositoryConfiguration> repositories = getRepositoryConfiguration();
+        for (String repositoryName : repositories.keySet()) {
+            URI uri = URI.create("jgit:///" + repositoryName);
+            FileSystem f = FileSystems.getFileSystem(uri);
+            fileSystems.add(f);
+        }
+        
+        return fileSystems;
+    }*/
+    
+    private Map<String, JGitRepositoryConfiguration> getRepositoryConfiguration() {   
+        return repositories;       
+    }
+    
+    private void addRepositoryConfiguration(String repositoryName, JGitRepositoryConfiguration j) {       
+        repositories.put(repositoryName, j);       
     }
 
     //JLIU: surely we will have to write some migration tool to migrate old version of guvnor to guvnorng. 
@@ -1959,10 +2097,13 @@ public class RulesRepository {
         }*/
     }
     
-    private Path getModuleFullPath(String moduleName) {
-    	//TODO:
-    	Path modulePath = Paths.get(moduleName);
-    	return modulePath;
+    private org.drools.java.nio.file.Path getModuleFullPath(String moduleName) {
+    	URI rootURI = config.getRootURI();
+    	//TODO: Not working
+    	//Path path2 = FileSystems.getDefault().getPath(rootURI.toString(), moduleName);
+    	
+    	org.drools.java.nio.file.Path path = GeneralPathImpl.create(fileSystem, rootURI.toString() + "/" + moduleName, true);
+    	return path;
     }
 
 }

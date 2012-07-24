@@ -61,7 +61,19 @@
       <artifactId>vfs-api</artifactId>
       <version>${uberfire.version}</version>
     </dependency>
-
+    
+     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+       
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>

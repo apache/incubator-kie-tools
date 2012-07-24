@@ -16,13 +16,12 @@
 
 package org.drools.guvnor.server.impl;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
+import java.net.URI;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.backend.util.LoggingHelper;
-import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.shared.SuggestionCompletionEngineService;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -39,12 +38,23 @@ public class SuggestionCompletionEngineServiceImplementation
     private static final LoggingHelper log = LoggingHelper.getLogger(SuggestionCompletionEngineService.class);
 
     @Inject
-    private RulesRepository rulesRepository;
+    private RulesRepository rulesRepository = null;
 
+    
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
-        //No need to check role based permission here. Package auto completion suggestion should be available to everybody.
-        //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
+   	
+                JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
+                //Add this newly created repository configuration info to the in-memory cache of repository configuration list
+                jGitRepositoryConfiguration.setRepositoryName("guvnorng-playground");
+                jGitRepositoryConfiguration.setGitURL("https://github.com/guvnorngtestuser1/guvnorng-playground.git");
+                jGitRepositoryConfiguration.setUserName("guvnorngtestuser1");
+                jGitRepositoryConfiguration.setPassword("test1234");
+                jGitRepositoryConfiguration.setRootURI(URI.create("jgit:///guvnorng-playground"));
+                
+                rulesRepository = new RulesRepository(jGitRepositoryConfiguration);
+ 
         SuggestionCompletionEngine suggestionCompletionEngine = null;
+        
         try {
             ModuleItem packageItem = rulesRepository.loadModule(packageName);
             suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor(packageItem);
@@ -53,5 +63,10 @@ public class SuggestionCompletionEngineServiceImplementation
             throw new SerializationException(e.getMessage());
         }
         return suggestionCompletionEngine;
+    }
+    
+    public static void main(String[] args) throws Exception {
+    	SuggestionCompletionEngineServiceImplementation sceService = new SuggestionCompletionEngineServiceImplementation();
+    	SuggestionCompletionEngine sce = sceService.loadSuggestionCompletionEngine("mortgagesSample");
     }
 }

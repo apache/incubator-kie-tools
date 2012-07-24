@@ -768,21 +768,29 @@ public class ModuleItem extends VersionableItem {
     /**
      * This will load an iterator for assets of the given format type.
      */
-    public AssetItemIterator listAssetsByFormat(String... formats) {
-    	//JLIU: We do listAssetsByFormat manually until we figure out how to do query with jgit. 
-    	
-    	StringBuffer globPattern = new StringBuffer();
+    public AssetItemIterator listAssetsByFormat(String... formats) {   	
+    	//the glob pattern is: *.{jar,dsl,drl}
+    	StringBuffer globPatternBuffer = new StringBuffer();
+    	globPatternBuffer.append("*.{");
     	for(String format : formats) {
-    		globPattern.append("*." + format);
-    		globPattern.append(",");
+    		globPatternBuffer.append(format);
+    		globPatternBuffer.append(",");
     	}
 
-    	//TODO: in order to use VFSService, we have to convert nio.path to vfs.path again? 
-    	DirectoryStream<Path> directoryStream = Files.newDirectoryStream(assetPath, globPattern.toString());
-    	List<org.drools.java.nio.file.Path> assetItemPaths = new ArrayList<org.drools.java.nio.file.Path>();
-    	
-    	for ( final Path path : directoryStream ) {
-    		assetItemPaths.add(path);
+    	String globPattern = globPatternBuffer.toString();
+    	globPattern = globPattern.endsWith(",") ? globPattern.substring(0, globPattern.length() - 1) : globPattern;
+    	globPattern = globPattern + "}";
+
+    	DirectoryStream<org.drools.java.nio.file.Path> stream = Files.newDirectoryStream(assetPath/*, globPattern*/);
+    	List<org.drools.java.nio.file.Path> assetItemPaths =  new ArrayList<Path>();
+    		
+    	for ( final org.drools.java.nio.file.Path path : stream ) {
+    		//Until glob works: 
+    		for(String format : formats) {
+    			if(path.getFileName().toString().endsWith(format)) {
+    				assetItemPaths.add(path);
+    			}
+    		}
     	}
     	
     	return new AssetItemIterator(assetItemPaths);

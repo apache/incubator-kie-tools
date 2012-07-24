@@ -101,7 +101,6 @@ public class AssetItem extends CategorisableItem {
      * this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
-    	//JLIU:TODO: use VFSService instead
         final List<String> lines = Files.readAllLines(assetPath, UTF_8);
         final StringBuilder sb = new StringBuilder();
         if (lines != null ){

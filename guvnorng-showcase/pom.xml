@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnorng-repository</artifactId>
-      <version>${project.version}</version>
+      <version>5.5.0-SNAPSHOT</version>
     </dependency>
     
     <dependency>
