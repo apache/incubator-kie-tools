@@ -91,14 +91,6 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream()
-            throws IllegalArgumentException, NotDirectoryException, IOException {
-        Path p = new PathImpl("jgit:///guvnorng");
-
-        return newDirectoryStream(Files.newDirectoryStream(fromPath(p)).iterator());
-    }
-
-    @Override
     public DirectoryStream<Path> newDirectoryStream(final Path dir) throws IllegalArgumentException, NotDirectoryException, IOException {
         return newDirectoryStream(Files.newDirectoryStream(fromPath(dir)).iterator());
     }

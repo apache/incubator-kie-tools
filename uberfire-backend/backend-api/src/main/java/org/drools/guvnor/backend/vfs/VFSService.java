@@ -46,10 +46,6 @@ public interface VFSService {
     Path get(final Path path)
             throws IllegalArgumentException;
 
-    //TODO for demo purpose ONLY
-    DirectoryStream<Path> newDirectoryStream()
-            throws IllegalArgumentException, NotDirectoryException, IOException;
-
     DirectoryStream<Path> newDirectoryStream(Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException;
 
