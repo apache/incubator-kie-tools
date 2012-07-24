@@ -41,7 +41,7 @@ public class SuggestionCompletionEngineServiceImplementation
     private RulesRepository rulesRepository = null;
 
     
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) {
    	
                 JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
                 //Add this newly created repository configuration info to the in-memory cache of repository configuration list
@@ -60,7 +60,7 @@ public class SuggestionCompletionEngineServiceImplementation
             suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor(packageItem);
         } catch (RulesRepositoryException e) {
             log.error("An error occurred loadSuggestionCompletionEngine: " + e.getMessage());
-            throw new SerializationException(e.getMessage());
+            //throw new SerializationException(e.getMessage());
         }
         return suggestionCompletionEngine;
     }

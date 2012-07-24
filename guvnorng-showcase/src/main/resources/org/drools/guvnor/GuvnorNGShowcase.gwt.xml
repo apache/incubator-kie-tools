@@ -8,12 +8,14 @@
   <inherits name="org.drools.guvnor.UberfireWidgetsCore"/>
   <inherits name="org.drools.guvnor.UberfireBackend"/>
   <inherits name="org.drools.guvnor.backend.UberfireServerBackend"/>
-
+  <inherits name="org.drools.guvnor.backend.UberfireServerBackend"/>
+  <inherits name="org.drools.ide.common.Common"/>
+  
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnorng-showcase.css'/>
 
   <!-- Specify the paths for translatable code -->
-  <source path='client'/>
+  <source path='client'></source>
   <source path='shared'/>
 
 </module>

@@ -16,7 +16,10 @@
 
 package org.drools.guvnor.shared;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.jboss.errai.bus.server.annotations.Remote;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Remote
 public interface SuggestionCompletionEngineService {
@@ -26,6 +29,6 @@ public interface SuggestionCompletionEngineService {
      * doesn't change that often, its safe to cache. However, if a change is
      * made to a package, should blow away the cache.
      */
-    //public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName);
 
 }
