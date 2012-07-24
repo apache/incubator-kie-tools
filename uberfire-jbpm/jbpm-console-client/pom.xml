@@ -49,11 +49,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
@@ -137,16 +132,6 @@
 
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-
-    <resources>
-      <!-- TODO REVISIT guvnorNG: this is not needed if compileSourcesArtifact works -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
 
     <plugins>
 

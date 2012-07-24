@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<module rename-to="org.drools.guvnor.UberfireShowcase">
-
-  <inherits name="org.drools.guvnor.UberfireShowcase"/>
-
-  <set-property name="user.agent" value="gecko1_8"/>
-  <set-property name="locale" value="default"/>
-
-</module>
