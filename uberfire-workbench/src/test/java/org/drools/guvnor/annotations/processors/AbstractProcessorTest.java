@@ -45,6 +45,30 @@ public abstract class AbstractProcessorTest {
     private static final String SOURCE_FILETYPE = ".java";
 
     /**
+     * Container for test results.
+     */
+    class Result {
+        private String expectedCode;
+        private String actualCode;
+
+        String getExpectedCode() {
+            return expectedCode;
+        }
+
+        void setExpectedCode(final String expectedCode) {
+            this.expectedCode = expectedCode;
+        }
+
+        String getActualCode() {
+            return actualCode;
+        }
+
+        void setActualCode(final String actualCode) {
+            this.actualCode = actualCode;
+        }
+    }
+
+    /**
      * Compile a unit of source code with the specified annotation processor
      * 
      * @param annotationProcessor

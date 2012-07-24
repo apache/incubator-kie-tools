@@ -28,25 +28,25 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
 @Generated("org.drools.guvnor.annotations.processors.WorkbenchPopupProcessor")
-@Identifier("test4")
+@Identifier("test6")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PopupTest4Activity extends AbstractPopupActivity
+public class WorkbenchPopupTest6Activity extends AbstractPopupActivity
     implements
     BaseService {
 
     @Inject
-    private PopupTest4 realPresenter;
+    private WorkbenchPopupTest6 realPresenter;
 
     @Override
     public void onReveal() {
-        //Do nothing. The real presenter does not have a @OnReveal annotation
+        realPresenter.onReveal();
     }
 
     @Override
     public PopupPanel getPopupPanel() {
-        return realPresenter;
+        return realPresenter.getView();
     }
     
     @Override

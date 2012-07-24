@@ -28,16 +28,16 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
 @Generated("org.drools.guvnor.annotations.processors.WorkbenchPopupProcessor")
-@Identifier("test3")
+@Identifier("test5")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PopupTest3Activity extends AbstractPopupActivity
+public class WorkbenchPopupTest5Activity extends AbstractPopupActivity
     implements
     BaseService {
 
     @Inject
-    private PopupTest3 realPresenter;
+    private WorkbenchPopupTest5 realPresenter;
 
     @Override
     public void onReveal() {
