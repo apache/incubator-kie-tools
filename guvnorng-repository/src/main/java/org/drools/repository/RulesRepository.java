@@ -2102,7 +2102,7 @@ public class RulesRepository {
     	//TODO: Not working
     	//Path path2 = FileSystems.getDefault().getPath(rootURI.toString(), moduleName);
     	
-    	org.drools.java.nio.file.Path path = GeneralPathImpl.create(fileSystem, rootURI.toString() + "/" + moduleName, true);
+    	org.drools.java.nio.file.Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
     	return path;
     }
 

@@ -17,14 +17,17 @@
 package org.drools.repository;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.java.nio.file.FileSystems;
 import org.drools.java.nio.file.Files;
 import org.drools.java.nio.file.Path;
+import org.drools.java.nio.fs.base.GeneralPathImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -299,7 +302,12 @@ public class AssetItem extends CategorisableItem {
     }
     
     private Path getMetaDataFilePath(Path assetPath) {
-        return assetPath;
+    	Path fileName = assetPath.getFileName();
+    	Path parentName = assetPath.getParent();
+    	
+    	Path path = FileSystems.getFileSystem(URI.create("jgit:///guvnorng-playground")).getPath(parentName.toString(), fileName.toString());
+    	//Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
+        return path;
     }
 
     /**
