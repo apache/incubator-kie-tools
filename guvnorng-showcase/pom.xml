@@ -213,10 +213,11 @@
           <module>org.drools.guvnor.FastCompiledGuvnorNGShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:droolsjbpm-ide-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:guvnor-api</compileSourcesArtifact>
           </compileSourcesArtifacts>
