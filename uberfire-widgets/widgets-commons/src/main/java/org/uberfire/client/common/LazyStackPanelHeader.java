@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.common;
 
-import org.uberfire.client.resources.CommonWidgetsImages;
+import org.uberfire.client.resources.CommonImages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -110,9 +110,9 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( CommonWidgetsImages.INSTANCE.collapse() );
+            icon.setResource( CommonImages.INSTANCE.collapse() );
         } else {
-            icon.setResource( CommonWidgetsImages.INSTANCE.expand() );
+            icon.setResource( CommonImages.INSTANCE.expand() );
         }
 
     }

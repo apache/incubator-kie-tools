@@ -18,7 +18,7 @@ package org.drools.guvnor.client.editors.factmodel;
 import java.util.List;
 
 import org.drools.guvnor.client.i18n.Constants;
-import org.drools.guvnor.client.resources.ShowcaseImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
 import org.uberfire.client.common.AbstractLazyStackPanelHeader;
 
@@ -163,9 +163,9 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setResource( ShowcaseImages.INSTANCE.collapse() );
+            icon.setResource( GuvnorImages.INSTANCE.collapse() );
         } else {
-            icon.setResource( ShowcaseImages.INSTANCE.expand() );
+            icon.setResource( GuvnorImages.INSTANCE.expand() );
         }
     }
 

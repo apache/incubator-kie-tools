@@ -13,26 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client;
+package org.uberfire.client;
 
-import org.drools.guvnor.client.resources.GuvnorResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.resources.CoreResources;
 
 /**
- *
+ * Bootstrap widgets-core
  */
 @EntryPoint
-public class ShowcaseEntryPoint {
+public class CoreEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        loadStyles();
-    }
-
-    private void loadStyles() {
         //Ensure CSS has been loaded
-        GuvnorResources.INSTANCE.CSS().ensureInjected();
+        CoreResources.INSTANCE.CSS().ensureInjected();
     }
 
 }

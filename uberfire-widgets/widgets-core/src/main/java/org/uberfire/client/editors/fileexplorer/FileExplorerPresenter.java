@@ -51,7 +51,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.Util;
 import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.resources.ComponentCoreImages;
+import org.uberfire.client.resources.CoreImages;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -88,7 +88,7 @@ public class FileExplorerPresenter {
         void setFocus();
     }
 
-    private static ComponentCoreImages images    = GWT.create( ComponentCoreImages.class );
+    private static CoreImages images    = GWT.create( CoreImages.class );
     private static final String        LAZY_LOAD = "Loading...";
 
     @OnStart

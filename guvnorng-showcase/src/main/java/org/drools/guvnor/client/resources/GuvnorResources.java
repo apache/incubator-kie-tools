@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.resources;
+package org.drools.guvnor.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -24,9 +24,9 @@ public interface GuvnorResources
 
     GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
 
-    @Source("css/Guvnor.css")
-    GuvnorCss guvnorCss();
+    @Source("css/guvnor.css")
+    GuvnorCss CSS();
 
-    GuvnorImages guvnorImages();
+    GuvnorImages images();
 
 }

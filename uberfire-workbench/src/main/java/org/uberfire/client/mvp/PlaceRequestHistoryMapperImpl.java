@@ -9,7 +9,7 @@ import com.google.gwt.http.client.URL;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
-public class GuvnorNGPlaceRequestHistoryMapper
+public class PlaceRequestHistoryMapperImpl
     implements
     PlaceRequestHistoryMapper {
 

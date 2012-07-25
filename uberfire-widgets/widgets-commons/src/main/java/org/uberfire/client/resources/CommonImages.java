@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.uberfire.client.resources;
 
 import com.google.gwt.core.client.GWT;
@@ -21,11 +22,32 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-public interface RoundedCornersResource
-    extends
-    ClientBundle {
+public interface CommonImages
+        extends
+        ClientBundle {
 
-    RoundedCornersResource INSTANCE = GWT.create( RoundedCornersResource.class );
+    CommonImages INSTANCE = GWT.create( CommonImages.class );
+
+    @Source("images/new_item.gif")
+    ImageResource newItem();
+
+    @Source("images/new_item_disabled.gif")
+    ImageResource newItemDisabled();
+
+    @Source("images/collapse.gif")
+    ImageResource collapse();
+
+    @Source("images/collapseall.gif")
+    ImageResource collapseAll();
+
+    @Source("images/expand.gif")
+    ImageResource expand();
+
+    @Source("images/expandall.gif")
+    ImageResource expandAll();
+
+    @Source("images/close.gif")
+    ImageResource close();
 
     @Source("images/corners/whiteTopLeft.gif")
     ImageResource whiteTopLeftCorner();
@@ -66,8 +88,9 @@ public interface RoundedCornersResource
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
     @Source("images/corners/greyRightSide.gif")
     ImageResource greySideRight();
-
-    @Source("css/RoundCorners.css")
-    RoundCornersCss roundCornersCss();
+    
+    //A warning triangle
+    @Source("images/warning-large.png")
+    ImageResource warningLarge();
 
 }

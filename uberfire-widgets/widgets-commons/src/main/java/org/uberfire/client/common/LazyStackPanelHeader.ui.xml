@@ -19,32 +19,32 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
   xmlns:guvnor='urn:import:org.uberfire.client.common'>
 
-  <ui:with field='roundCornersResource' type='org.uberfire.client.resources.RoundedCornersResource'/>
+  <ui:with field='resources' type='org.uberfire.client.resources.CommonResources'/>
 
   <gwt:HTMLPanel>
     <table style='width:100%; border-collapse:collapse;'>
       <tr>
-        <td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.greyTopLeftCornerClass}'></div></td>
-        <td><div class='{roundCornersResource.roundCornersCss.greyTopClass}'></div></td>
-        <td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.greyTopRightCornerClass}'></div></td>
+        <td style='width:4px;'><div class='{resources.CSS.greyTopLeftCornerClass}'></div></td>
+        <td><div class='{resources.CSS.greyTopClass}'></div></td>
+        <td style='width:4px;'><div class='{resources.CSS.greyTopRightCornerClass}'></div></td>
       </tr>
 
       <tr>
-        <td class='{roundCornersResource.roundCornersCss.greySideLeftClass}'></td>
-        <td class='{roundCornersResource.roundCornersCss.greyCenterClass}'>
+        <td class='{resources.CSS.greySideLeftClass}'></td>
+        <td class='{resources.CSS.greyCenterClass}'>
           <gwt:HorizontalPanel ui:field="container">
             <gwt:SimplePanel styleName="guvnor-LazyStackPanel-row-header-icon">
               <gwt:Image ui:field="icon" />
             </gwt:SimplePanel>
           </gwt:HorizontalPanel>
         </td>
-        <td class='{roundCornersResource.roundCornersCss.greySideRightClass}'></td>
+        <td class='{resources.CSS.greySideRightClass}'></td>
       </tr>
 
       <tr>
-        <td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.greyBottomLeftCornerClass}'></div></td>
-        <td><div class='{roundCornersResource.roundCornersCss.greyBottomClass}'></div></td>
-        <td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.greyBottomRightCornerClass}'></div></td>
+        <td style='width:4px;'><div class='{resources.CSS.greyBottomLeftCornerClass}'></div></td>
+        <td><div class='{resources.CSS.greyBottomClass}'></div></td>
+        <td style='width:4px;'><div class='{resources.CSS.greyBottomRightCornerClass}'></div></td>
       </tr>
     </table>
   </gwt:HTMLPanel>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,18 @@ package org.uberfire.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
-public interface ShowcaseResources
+/**
+ * All GWT managed resources for Workbench
+ */
+public interface WorkbenchResources
         extends
         ClientBundle {
 
-    ShowcaseResources INSTANCE = GWT.create( ShowcaseResources.class );
+    WorkbenchResources INSTANCE = GWT.create( WorkbenchResources.class );
 
-    @Source("css/Showcase.css")
-    ShowcaseCss CSS();
+    @Source("css/workbench.css")
+    WorkbenchCss CSS();
 
-    ShowcaseImages images();
+    WorkbenchImages images();
 
 }

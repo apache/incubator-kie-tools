@@ -17,16 +17,16 @@ package org.uberfire.client;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.Paths;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.resources.RoundedCornersResource;
 import org.uberfire.client.resources.ShowcaseResources;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
  *
@@ -34,32 +34,32 @@ import org.uberfire.client.resources.ShowcaseResources;
 @EntryPoint
 public class ShowcaseEntryPoint {
 
-    @Inject private IOCBeanManager manager;
+    @Inject
+    private IOCBeanManager manager;
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
 
-        if (Window.Location.getPath().contains("Standalone.html")) {
+        if ( Window.Location.getPath().contains( "Standalone.html" ) ) {
             //TODO THIS SHOULD BE MOVED TO CORE SOON - LOOKUP SHOULD BE BASED ON CODE GEN!
-            final TextEditorPresenter presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();
-            RootLayoutPanel.get().add(presenter.view);
+            final TextEditorPresenter presenter = manager.lookupBean( TextEditorPresenter.class ).getInstance();
+            RootLayoutPanel.get().add( presenter.view );
 
             Path path = null;
-            final String pathURI = Window.Location.getParameter("path");
-            if (pathURI != null) {
-                path = Paths.fromURI(pathURI);
+            final String pathURI = Window.Location.getParameter( "path" );
+            if ( pathURI != null ) {
+                path = Paths.fromURI( pathURI );
             }
 
-            presenter.onStart(path);
+            presenter.onStart( path );
             presenter.onReveal();
         }
     }
 
     private void loadStyles() {
         //Ensure CSS has been loaded
-        ShowcaseResources.INSTANCE.showcaseCss().ensureInjected();
-        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
+        ShowcaseResources.INSTANCE.CSS().ensureInjected();
     }
 
 }

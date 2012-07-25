@@ -37,7 +37,7 @@ import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.resources.ComponentCoreImages;
+import org.uberfire.client.resources.CoreImages;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
@@ -52,7 +52,7 @@ public class NewRepositoryWizard extends FormStylePopup {
     @Inject
     private Event<Root> event;
 
-    private static ComponentCoreImages images = GWT.create(ComponentCoreImages.class);
+    private static CoreImages images = GWT.create(CoreImages.class);
 
     private TextBox nameTextBox = new TextBox();
     private TextBox descriptionTextArea = new TextBox();

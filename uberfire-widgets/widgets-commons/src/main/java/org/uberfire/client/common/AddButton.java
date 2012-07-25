@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.common;
 
-import org.uberfire.client.resources.CommonWidgetsImages;
+import org.uberfire.client.resources.CommonImages;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -29,7 +29,7 @@ public class AddButton extends Composite
     implements
     HasClickHandlers {
 
-    private Image plusButton = new Image( CommonWidgetsImages.INSTANCE.newItem() );
+    private Image plusButton = new Image( CommonImages.INSTANCE.newItem() );
 
     private Label textLabel  = new Label();
 

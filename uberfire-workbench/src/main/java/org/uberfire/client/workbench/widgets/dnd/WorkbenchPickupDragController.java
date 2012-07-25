@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.widgets.dnd;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.GuvnorResources;
+import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.WorkbenchPart;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class WorkbenchPickupDragController extends PickupDragController {
 
-    private final Image                 dragProxy = new Image( GuvnorResources.INSTANCE.guvnorImages().workbenchPanelDragProxy() );
+    private final Image                 dragProxy = new Image( WorkbenchResources.INSTANCE.images().workbenchPanelDragProxy() );
 
     @Inject
     private WorkbenchDragAndDropManager dndManager;

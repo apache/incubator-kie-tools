@@ -20,7 +20,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.GuvnorResources;
+import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
@@ -149,7 +149,7 @@ public class WorkbenchPanel extends ResizeComposite {
         final FocusPanel image = new FocusPanel();
         image.getElement().getStyle().setFloat( Style.Float.RIGHT );
 
-        image.setStyleName( GuvnorResources.INSTANCE.guvnorCss().closeTabImage() );
+        image.setStyleName( WorkbenchResources.INSTANCE.CSS().closeTabImage() );
         image.addClickHandler( new ClickHandler() {
 
             @Override

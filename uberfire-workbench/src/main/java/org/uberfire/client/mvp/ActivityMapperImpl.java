@@ -26,7 +26,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-public class GuvnorNGActivityMapperImpl
+public class ActivityMapperImpl
     implements
     ActivityMapper {
 

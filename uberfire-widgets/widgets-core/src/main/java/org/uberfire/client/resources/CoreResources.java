@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package org.uberfire.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
-public interface ShowcaseResources
-        extends
-        ClientBundle {
+public interface CoreResources
+    extends
+    ClientBundle {
 
-    ShowcaseResources INSTANCE = GWT.create( ShowcaseResources.class );
+    CoreResources INSTANCE = GWT.create( CoreResources.class );
 
-    @Source("css/Showcase.css")
-    ShowcaseCss CSS();
+    @Source("css/core.css")
+    CoreCss CSS();
 
-    ShowcaseImages images();
+    CoreImages images();
 
 }

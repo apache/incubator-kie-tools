@@ -3,7 +3,7 @@ package org.drools.guvnor.client.editors.enumeditor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.guvnor.client.resources.ShowcaseImages;
+import org.drools.guvnor.client.resources.GuvnorImages;
 
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -14,7 +14,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class DeleteButtonCell extends ImageResourceCell {
 
-    private static final ImageResource icon = ShowcaseImages.INSTANCE.deleteItemSmall();
+    private static final ImageResource icon = GuvnorImages.INSTANCE.deleteItemSmall();
 
     @Override
     public void render(Context context,

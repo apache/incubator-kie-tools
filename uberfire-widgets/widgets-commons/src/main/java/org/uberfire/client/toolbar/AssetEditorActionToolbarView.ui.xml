@@ -10,7 +10,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
-  <ui:with field='roundCornersResource' type='org.uberfire.client.resources.RoundedCornersResource' />
+  <ui:with field='resources' type='org.uberfire.client.resources.CommonResources' />
 
   <ui:style>
     .menu-bar {
@@ -40,20 +40,20 @@
       <tr>
         <td style='width:4px;'>
           <div
-            class='{roundCornersResource.roundCornersCss.greyTopLeftCornerClass}'></div>
+            class='{resources.CSS.greyTopLeftCornerClass}'></div>
         </td>
         <td>
-          <div class='{roundCornersResource.roundCornersCss.greyTopClass}'></div>
+          <div class='{resources.CSS.greyTopClass}'></div>
         </td>
         <td style='width:4px;'>
           <div
-            class='{roundCornersResource.roundCornersCss.greyTopRightCornerClass}'></div>
+            class='{resources.CSS.greyTopRightCornerClass}'></div>
         </td>
       </tr>
 
       <tr>
-        <td class='{roundCornersResource.roundCornersCss.greySideLeftClass}'></td>
-        <td class='{roundCornersResource.roundCornersCss.greyCenterClass}'>
+        <td class='{resources.CSS.greySideLeftClass}'></td>
+        <td class='{resources.CSS.greyCenterClass}'>
           <div style="float:left;">
             <gwt:MenuBar styleName="{style.menu-bar}">
               <gwt:MenuItem styleName="{style.menuItem}">
@@ -118,20 +118,20 @@
           </div>
           <div style="clear:both;"></div>
         </td>
-        <td class='{roundCornersResource.roundCornersCss.greySideRightClass}'></td>
+        <td class='{resources.CSS.greySideRightClass}'></td>
       </tr>
 
       <tr>
         <td style='width:4px;'>
           <div
-            class='{roundCornersResource.roundCornersCss.greyBottomLeftCornerClass}'></div>
+            class='{resources.CSS.greyBottomLeftCornerClass}'></div>
         </td>
         <td>
-          <div class='{roundCornersResource.roundCornersCss.greyBottomClass}'></div>
+          <div class='{resources.CSS.greyBottomClass}'></div>
         </td>
         <td style='width:4px;'>
           <div
-            class='{roundCornersResource.roundCornersCss.greyBottomRightCornerClass}'></div>
+            class='{resources.CSS.greyBottomRightCornerClass}'></div>
         </td>
       </tr>
     </table>

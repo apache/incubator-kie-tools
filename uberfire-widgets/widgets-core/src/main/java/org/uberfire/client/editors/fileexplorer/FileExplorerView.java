@@ -19,7 +19,7 @@ package org.uberfire.client.editors.fileexplorer;
 import javax.annotation.PostConstruct;
 
 import org.uberfire.client.common.Util;
-import org.uberfire.client.resources.ComponentCoreImages;
+import org.uberfire.client.resources.CoreImages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,7 +32,7 @@ public class FileExplorerView extends Composite
 
     final Tree                    tree   = new Tree();
     TreeItem                      rootTreeItem;
-    private static ComponentCoreImages images = GWT.create( ComponentCoreImages.class );
+    private static CoreImages images = GWT.create( CoreImages.class );
 
     @PostConstruct
     public void init() {

@@ -30,12 +30,12 @@
   </ui:style>
 
   <gwt:VerticalPanel width="100%">
-    <gwt:HTMLPanel ui:field="titlePanel" styleName='{resources.showcaseCss.mainClass}'>
-      <div class='{resources.showcaseCss.logoClass}'>
-        <gwt:Image resource='{resources.showcaseImages.hdrlogoDrools}'/>
+    <gwt:HTMLPanel ui:field="titlePanel" styleName='{resources.CSS.mainClass}'>
+      <div class='{resources.CSS.logoClass}'>
+        <gwt:Image resource='{resources.images.hdrlogoDrools}'/>
       </div>
-      <div class='{resources.showcaseCss.controlsClass}'>
-        <div class='{resources.showcaseCss.userInfoClass}'>
+      <div class='{resources.CSS.controlsClass}'>
+        <div class='{resources.CSS.userInfoClass}'>
           <small>
             <ui:text from='{i18n.WelcomeUser}'/>
             <span ui:field="userName"/>
@@ -47,7 +47,7 @@
       <div style="clear:both;"></div>
     </gwt:HTMLPanel>
     <gwt:HTMLPanel>
-      <gwt:Image resource='{resources.showcaseImages.monitoringScreenshot}'/>
+      <gwt:Image resource='{resources.images.monitoringScreenshot}'/>
       <gwt:Button ui:field="backWorkspace">Back to Workspace</gwt:Button>
       <gwt:Button ui:field="callService">CallService</gwt:Button>
     </gwt:HTMLPanel>

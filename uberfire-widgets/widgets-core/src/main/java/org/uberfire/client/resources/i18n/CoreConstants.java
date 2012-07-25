@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.resources;
+
+package org.uberfire.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
+import com.google.gwt.i18n.client.Messages;
 
-public interface ShowcaseResources
+/**
+ * 
+ */
+public interface CoreConstants
         extends
-        ClientBundle {
+        Messages {
 
-    ShowcaseResources INSTANCE = GWT.create( ShowcaseResources.class );
+    CoreConstants INSTANCE = GWT.create( CoreConstants.class );
 
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    @Source("images/jbossrulesBlue.gif")
-    ImageResource jbossrulesBlue();
+    String multipleMatchingActivitiesFound();
 
-    @Source("css/Showcase.css")
-    ShowcaseCss showcaseCss();
-
-    ShowcaseImages showcaseImages();
-
+    String activityNotFound();
+    
 }

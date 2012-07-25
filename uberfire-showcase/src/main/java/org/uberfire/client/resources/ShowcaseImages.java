@@ -19,6 +19,8 @@ package org.uberfire.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 public interface ShowcaseImages
         extends
@@ -31,5 +33,9 @@ public interface ShowcaseImages
 
     @Source("images/hdrlogo_drools.gif")
     ImageResource hdrlogoDrools();
+    
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Source("images/jbossrulesBlue.gif")
+    ImageResource jbossrulesBlue();
 
 }

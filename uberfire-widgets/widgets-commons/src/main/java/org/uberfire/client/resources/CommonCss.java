@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.uberfire.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
 
-public interface RoundCornersCss
+public interface CommonCss
     extends
     CssResource {
 

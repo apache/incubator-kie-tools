@@ -19,7 +19,7 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
   xmlns:guvnor='urn:import:org.uberfire.client.common'>
 
-  <ui:with field='images' type='org.uberfire.client.resources.CommonWidgetsImages'/>
+  <ui:with field='resources' type='org.uberfire.client.resources.CommonResources'/>
 
   <gwt:HTMLPanel>
     <div id="titleBar" class='guvnor-PopupTitleBar-bar'>
@@ -27,7 +27,7 @@
         <gwt:Label ui:field="titleLabel"></gwt:Label>
       </div>
       <div class='guvnor-PopupTitleBar-close-button' style='float:right;'>
-        <guvnor:ImageButton ui:field="closeButton" img='{images.close}'></guvnor:ImageButton>
+        <guvnor:ImageButton ui:field="closeButton" img='{resources.images.close}'></guvnor:ImageButton>
       </div>
       <div style='clear:both;'></div>
     </div>

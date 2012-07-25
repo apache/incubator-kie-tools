@@ -28,11 +28,11 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.client.resources.GuvnorResources;
+import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 
 @EntryPoint
-public class DefaultEntryPoint {
+public class WorkbenchEntryPoint {
 
     @Inject
     private Workbench         workbench;
@@ -57,7 +57,7 @@ public class DefaultEntryPoint {
 
     private void loadStyles() {
         //Ensure CSS has been loaded
-        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
+        WorkbenchResources.INSTANCE.CSS().ensureInjected();
     }
 
     //Fade out the "Loading application" pop-up

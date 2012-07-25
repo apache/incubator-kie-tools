@@ -19,12 +19,14 @@ package org.drools.guvnor.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-public interface ShowcaseImages
+public interface GuvnorImages
         extends
         ClientBundle {
 
-    ShowcaseImages INSTANCE = GWT.create( ShowcaseImages.class );
+    GuvnorImages INSTANCE = GWT.create( GuvnorImages.class );
 
     @Source("images/monitoring.png")
     ImageResource monitoringScreenshot();
@@ -76,4 +78,9 @@ public interface ShowcaseImages
     
     @Source("images/backup_large.png")
     ImageResource backupLarge();
+    
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Source("images/jbossrulesBlue.gif")
+    ImageResource jbossrulesBlue();
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 @sprite .whiteTopLeftCornerClass {
-    gwt-image: 'whiteTopLeftCorner';
+    gwt-image: 'images.whiteTopLeftCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .whiteTopRightCornerClass {
-    gwt-image: 'whiteTopRightCorner';
+    gwt-image: 'images.whiteTopRightCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .whiteBottomLeftCornerClass {
-    gwt-image: 'whiteBottomLeftCorner';
+    gwt-image: 'images.whiteBottomLeftCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .whiteBottomRightCornerClass {
-    gwt-image: 'whiteBottomRightCorner';
+    gwt-image: 'images.whiteBottomRightCorner';
     height: 4px;
     width: 4px;
 }
@@ -65,49 +65,49 @@
 }
 
 @sprite .greyTopLeftCornerClass {
-    gwt-image: 'greyTopLeftCorner';
+    gwt-image: 'images.greyTopLeftCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .greyTopRightCornerClass {
-    gwt-image: 'greyTopRightCorner';
+    gwt-image: 'images.greyTopRightCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .greyBottomLeftCornerClass {
-    gwt-image: 'greyBottomLeftCorner';
+    gwt-image: 'images.greyBottomLeftCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .greyBottomRightCornerClass {
-    gwt-image: 'greyBottomRightCorner';
+    gwt-image: 'images.greyBottomRightCorner';
     height: 4px;
     width: 4px;
 }
 
 @sprite .greyBottomClass {
-    gwt-image: 'greyBottom';
+    gwt-image: 'images.greyBottom';
     height: 4px;
     width: 100%;
 }
 
 @sprite .greyTopClass {
-    gwt-image: 'greyTop';
+    gwt-image: 'images.greyTop';
     height: 4px;
     width: 100%;
 }
 
 @sprite .greySideLeftClass {
-    gwt-image: 'greySideLeft';
+    gwt-image: 'images.greySideLeft';
     height: 100%;
     width: 4px;
 }
 
 @sprite .greySideRightClass {
-    gwt-image: 'greySideRight';
+    gwt-image: 'images.greySideRight';
     height: 100%;
     width: 4px;
 }

@@ -21,7 +21,7 @@ import com.google.gwt.resources.client.CssResource;
  * General CSS for Guvnor. Use of standalone CSS files should be migrated to
  * here
  */
-public interface ShowcaseCss
+public interface GuvnorCss
         extends
         CssResource {
     

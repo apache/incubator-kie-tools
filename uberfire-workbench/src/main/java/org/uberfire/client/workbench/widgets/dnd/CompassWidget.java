@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
-import org.uberfire.client.resources.GuvnorResources;
+import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Position;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
@@ -47,11 +47,11 @@ public class CompassWidget extends PopupPanel
 
     private static Element       dropTargetHighlight;
 
-    private final Image          northWidget        = new Image( GuvnorResources.INSTANCE.guvnorImages().compassNorth() );
-    private final Image          southWidget        = new Image( GuvnorResources.INSTANCE.guvnorImages().compassSouth() );
-    private final Image          eastWidget         = new Image( GuvnorResources.INSTANCE.guvnorImages().compassEast() );
-    private final Image          westWidget         = new Image( GuvnorResources.INSTANCE.guvnorImages().compassWest() );
-    private final Image          centreWidget       = new Image( GuvnorResources.INSTANCE.guvnorImages().compassCentre() );
+    private final Image          northWidget        = new Image( WorkbenchResources.INSTANCE.images().compassNorth() );
+    private final Image          southWidget        = new Image( WorkbenchResources.INSTANCE.images().compassSouth() );
+    private final Image          eastWidget         = new Image( WorkbenchResources.INSTANCE.images().compassEast() );
+    private final Image          westWidget         = new Image( WorkbenchResources.INSTANCE.images().compassWest() );
+    private final Image          centreWidget       = new Image( WorkbenchResources.INSTANCE.images().compassCentre() );
 
     private final FlexTable      container          = new FlexTable();
 

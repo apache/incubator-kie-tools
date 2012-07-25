@@ -20,30 +20,21 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface CommonWidgetsImages
+public interface CoreImages
         extends
         ClientBundle {
 
-    CommonWidgetsImages INSTANCE = GWT.create( CommonWidgetsImages.class );
+    CoreImages INSTANCE = GWT.create( CoreImages.class );
 
-    @Source("images/new_item.gif")
-    ImageResource newItem();
+    @Source("images/open_folder.gif")
+    ImageResource openedFolder();
+    
+    @Source("images/package.gif")
+    ImageResource packageIcon();
+    
+    @Source("images/file.gif")
+    ImageResource file();
 
-    @Source("images/new_item_disabled.gif")
-    ImageResource newItemDisabled();
-
-    @Source("images/collapse.gif")
-    ImageResource collapse();
-
-    @Source("images/collapseall.gif")
-    ImageResource collapseAll();
-
-    @Source("images/expand.gif")
-    ImageResource expand();
-
-    @Source("images/expandall.gif")
-    ImageResource expandAll();
-
-    @Source("images/close.gif")
-    ImageResource close();
+    @Source("images/backup_large.png")
+    ImageResource backupLarge();
 }
