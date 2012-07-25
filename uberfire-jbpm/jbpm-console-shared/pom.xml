@@ -20,60 +20,14 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.uberfire</groupId>
-    <version>0.1-SNAPSHOT</version>
-    <artifactId>uberfire-jbpm</artifactId>
-    <relativePath>../pom.xml</relativePath>
+      <groupId>org.drools</groupId>
+      <artifactId>uberfire-jbpm</artifactId>
+      <version>5.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>jbpm-console-shared</artifactId>
 
   <name>jBPM Console - Shared</name>
   <description>jBPM Console - Shared files</description>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-
-    <!-- CDI Integration Modules -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-client</artifactId>
-    </dependency>
-    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-uibinder</artifactId>
-    </dependency>
-
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
-
 
 </project>

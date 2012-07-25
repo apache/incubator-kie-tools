@@ -1,18 +1,24 @@
 package org.drools.guvnor.client.editors.jbpm;
 
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.annotations.Identifier;
-import org.drools.guvnor.client.annotations.WorkbenchPartTitle;
-import org.drools.guvnor.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.annotations.WorkbenchScreen;
+import javax.enterprise.context.Dependent;
+
 import org.jboss.bpm.console.client.model.PluginInfo;
 import org.jboss.bpm.console.client.model.ServerStatus;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
-import javax.enterprise.context.Dependent;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 @WorkbenchScreen(identifier = "Server Status")
-@Identifier("Server Status")
 public class ServerStatusView implements LazyPanel, IsWidget {
 
     private boolean initialized;
@@ -22,7 +28,7 @@ public class ServerStatusView implements LazyPanel, IsWidget {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Monitoring perspective";
+        return "Server status";
     }
 
     @WorkbenchPartView
@@ -54,7 +60,7 @@ public class ServerStatusView implements LazyPanel, IsWidget {
 
         layoutPanel.add(layout2);
 
-        update(ServerPlugins.getStatus());
+        //update(ServerPlugins.getStatus());
 
         return layoutPanel;
     }

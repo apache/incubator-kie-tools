@@ -17,16 +17,17 @@ package org.drools.guvnor.client;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import org.drools.guvnor.backend.vfs.Path;
-import org.drools.guvnor.backend.vfs.Paths;
-import org.drools.guvnor.client.editors.texteditor.TextEditorPresenter;
-import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.resources.ShowcaseResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.Paths;
+import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.resources.RoundedCornersResource;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
  *

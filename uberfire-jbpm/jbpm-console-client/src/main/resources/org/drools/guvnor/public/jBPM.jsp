@@ -25,7 +25,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="gwt:property" content="locale=<%=request.getLocale().toString()%>">
   
-  <title>JBoss UberFire</title>
+  <title>JBoss jBPM Console</title>
   <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
   <link rel="icon" href="images/drools.gif" type="image/gif"/>
   
@@ -45,7 +45,7 @@
 </div>
 
 <!-- The GWT js file generated at run time -->
-<script type="text/javascript" src='org.drools.guvnor.UberfireShowcase.nocache.js'></script>
+<script type="text/javascript" src='org.drools.guvnor.jBPMShowcase.nocache.js'></script>
 
 </body>
 </html>
