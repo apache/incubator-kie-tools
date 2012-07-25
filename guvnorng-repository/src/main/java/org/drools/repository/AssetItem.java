@@ -305,7 +305,9 @@ public class AssetItem extends CategorisableItem {
     	Path fileName = assetPath.getFileName();
     	Path parentName = assetPath.getParent();
     	
-    	Path path = FileSystems.getFileSystem(URI.create("jgit:///guvnorng-playground")).getPath(parentName.toString(), fileName.toString());
+    	String fullPathName = assetPath.toString();
+    	
+    	Path path = assetPath.getFileSystem().getPath(parentName.toString(), fileName.toString());
     	//Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
         return path;
     }

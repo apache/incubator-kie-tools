@@ -37,7 +37,7 @@ public class SuggestionCompletionEngineServiceImplementation
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SuggestionCompletionEngineService.class);
 
-    @Inject
+    //@Inject
     private RulesRepository rulesRepository = null;
 
     
