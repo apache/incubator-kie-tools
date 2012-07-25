@@ -18,8 +18,6 @@ package org.drools.guvnor.client.editors.enumeditor;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
@@ -34,14 +32,15 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.PlaceRequest;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * 
  */
 @Dependent
-@WorkbenchEditor( identifier = "EnumEditor", fileTypes = "enumeration")
+@WorkbenchEditor(identifier = "EnumEditor", fileTypes = "enumeration")
 public class EnumEditorPresenter {
 
     @Inject
@@ -50,8 +49,7 @@ public class EnumEditorPresenter {
     @Inject
     Caller<AssetService> assetService;
 
-    @Inject
-    private PlaceManager placeManager;
+    private Path         path;
 
     public interface View
         extends
@@ -70,6 +68,7 @@ public class EnumEditorPresenter {
 
     @OnStart
     public void onStart(Path path) {
+        this.path = path;
         assetService.call( new RemoteCallback<AbstractAsset>() {
             @Override
             public void callback(AbstractAsset response) {
@@ -101,10 +100,7 @@ public class EnumEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        final String uriPath = placeRequest.getParameter( "path",
-                                                          null );
-        return "Enumeration Editor [" + uriPath + "]";
+        return "Enumeration Editor [" + path.toURI() + "]";
     }
 
     @WorkbenchPartView
