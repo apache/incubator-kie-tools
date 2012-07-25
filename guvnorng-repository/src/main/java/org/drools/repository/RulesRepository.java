@@ -18,22 +18,22 @@ package org.drools.repository;
 
 /*import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.migration.MigrateDroolsPackage;*/
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.FileSystemAlreadyExistsException;
-import org.drools.java.nio.file.FileSystems;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.NotDirectoryException;
-import org.drools.java.nio.file.Path;
-import org.drools.java.nio.file.Paths;
-import org.drools.java.nio.file.ProviderNotFoundException;
-import org.drools.java.nio.fs.base.GeneralPathImpl;
-import org.drools.java.nio.fs.file.JGitRepositoryConfiguration;
-import org.drools.repository.utils.NodeUtils;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystems;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.fs.jgit.JGitRepositoryConfiguration;
 
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 /*import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
@@ -47,11 +47,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;*/
-import java.io.*;
-import java.net.URI;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * RulesRepository is the class that defines the behavior for the JBoss Rules
@@ -86,7 +81,7 @@ public class RulesRepository {
     Map<String, JGitRepositoryConfiguration> repositories = new HashMap<String, JGitRepositoryConfiguration>();
     
     private JGitRepositoryConfiguration config;
-    private org.drools.java.nio.file.FileSystem fileSystem;
+    private org.uberfire.java.nio.file.FileSystem fileSystem;
 
 
     public static final String DEFAULT_PACKAGE = "defaultPackage";
@@ -205,7 +200,7 @@ public class RulesRepository {
         
         try {
             //This either clones the repository or creates a new git repository (locally). 
-        	org.drools.java.nio.file.FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
+        	org.uberfire.java.nio.file.FileSystem fileSystem = FileSystems.newFileSystem(rootURI, env);
         } catch (Exception e) {
             e.printStackTrace();
         }         
@@ -2097,12 +2092,9 @@ public class RulesRepository {
         }*/
     }
     
-    private org.drools.java.nio.file.Path getModuleFullPath(String moduleName) {
+    private org.uberfire.java.nio.file.Path getModuleFullPath(String moduleName) {
     	URI rootURI = config.getRootURI();
-    	//TODO: Not working
-    	//Path path2 = FileSystems.getDefault().getPath(rootURI.toString(), moduleName);
-    	
-    	org.drools.java.nio.file.Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
+    	org.uberfire.java.nio.file.Path path = Paths.get(URI.create(rootURI.getPath() + "/" + moduleName));
     	return path;
     }
 

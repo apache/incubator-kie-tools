@@ -4,7 +4,7 @@
 <module>
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
-  <inherits name='org.drools.java.nio.UberfireVFSModel'/>
+  <inherits name='org.uberfire.java.nio.UberfireVFSModel'/>
 
   <source path='backend'/>
 

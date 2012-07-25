@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.guvnor.shared.SuggestionCompletionEngineService;
 import org.drools.guvnor.shared.SuggestionCompletionEngineServiceVFS;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.java.nio.file.Paths;
+import org.uberfire.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.util.LoggingHelper;
 import org.uberfire.backend.vfs.Path;
@@ -49,7 +49,7 @@ public class SuggestionCompletionEngineServiceImplementationVFS
         return suggestionCompletionEngine;
     }
 
-    private org.drools.java.nio.file.Path fromPath(final Path path) {
+    private org.uberfire.java.nio.file.Path fromPath(final Path path) {
         //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
         String pathString = path.toURI();
         pathString = pathString.replaceAll(" ", "%20");

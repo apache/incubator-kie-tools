@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 public class MetaDataUtil {
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";

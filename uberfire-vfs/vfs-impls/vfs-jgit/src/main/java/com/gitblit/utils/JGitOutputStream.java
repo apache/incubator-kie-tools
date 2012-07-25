@@ -3,7 +3,7 @@ package com.gitblit.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.FilterOutputStream;
-import org.drools.java.nio.fs.file.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 public class JGitOutputStream extends FilterOutputStream {
     private JGitFileSystemProvider jGitFileSystemProvider;

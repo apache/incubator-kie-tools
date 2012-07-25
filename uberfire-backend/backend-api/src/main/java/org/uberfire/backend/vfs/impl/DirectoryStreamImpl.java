@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.drools.java.nio.IOException;
-import org.drools.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 

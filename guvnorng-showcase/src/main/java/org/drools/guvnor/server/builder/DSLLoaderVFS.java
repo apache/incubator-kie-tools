@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
 public class DSLLoaderVFS {

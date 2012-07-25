@@ -23,9 +23,9 @@ import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.guvnor.server.builder.DSLLoaderVFS;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
 import java.nio.charset.Charset;

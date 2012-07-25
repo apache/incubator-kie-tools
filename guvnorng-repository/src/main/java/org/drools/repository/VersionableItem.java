@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 import org.drools.guvnor.shared.api.Valid;
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 /*import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;

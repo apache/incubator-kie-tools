@@ -1,1 +1,0 @@
-org.drools.java.nio.fs.file.SimpleFileSystemProvider  # file system provider, also default (1st)

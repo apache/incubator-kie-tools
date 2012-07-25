@@ -24,25 +24,25 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.java.nio.IOException;
-import org.drools.java.nio.file.AtomicMoveNotSupportedException;
-import org.drools.java.nio.file.CopyOption;
-import org.drools.java.nio.file.DirectoryNotEmptyException;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.FileAlreadyExistsException;
-import org.drools.java.nio.file.FileSystemAlreadyExistsException;
-import org.drools.java.nio.file.FileSystems;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.LinkOption;
-import org.drools.java.nio.file.NoSuchFileException;
-import org.drools.java.nio.file.NotDirectoryException;
-import org.drools.java.nio.file.NotLinkException;
-import org.drools.java.nio.file.Paths;
-import org.drools.java.nio.file.PatternSyntaxException;
-import org.drools.java.nio.file.ProviderNotFoundException;
-import org.drools.java.nio.file.attribute.FileAttribute;
-import org.drools.java.nio.file.attribute.FileTime;
-import org.drools.java.nio.file.attribute.UserPrincipal;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
+import org.uberfire.java.nio.file.CopyOption;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystems;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.LinkOption;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.NotLinkException;
+import org.uberfire.java.nio.file.Paths;
+import org.uberfire.java.nio.file.PatternSyntaxException;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.attribute.UserPrincipal;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
@@ -78,7 +78,7 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        final org.drools.java.nio.file.FileSystem newFileSystem;
+        final org.uberfire.java.nio.file.FileSystem newFileSystem;
         final URI furi = URI.create(uri);
         System.out.println("ABOUT TO CREATE A NEW FILE SYSTEM!");
         try {
@@ -295,7 +295,7 @@ public class VFSServicesServerImpl implements VFSService {
         return convert(Files.write(fromPath(path), content, UTF_8, null));
     }
 
-    private Path convert(final org.drools.java.nio.file.Path path) {
+    private Path convert(final org.uberfire.java.nio.file.Path path) {
         final Map<String, Object> attributes = Files.readAttributes(path, "*");
 
         //REVISIT - JLIU: Path.toUri constructs an absolute URI with a scheme equal to the URI scheme that identifies the provider. In order to support
@@ -304,7 +304,7 @@ public class VFSServicesServerImpl implements VFSService {
         //return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
     }
 
-    private DirectoryStream<Path> newDirectoryStream(final Iterator<org.drools.java.nio.file.Path> iterator) {
+    private DirectoryStream<Path> newDirectoryStream(final Iterator<org.uberfire.java.nio.file.Path> iterator) {
         final List<Path> content = new LinkedList<Path>();
         while (iterator.hasNext()) {
             content.add(convert(iterator.next()));
@@ -312,7 +312,7 @@ public class VFSServicesServerImpl implements VFSService {
         return new DirectoryStreamImpl(content);
     }
 
-    private org.drools.java.nio.file.Path fromPath(final Path path) {
+    private org.uberfire.java.nio.file.Path fromPath(final Path path) {
         //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
         String pathString = path.toURI();
         pathString = pathString.replaceAll(" ", "%20");

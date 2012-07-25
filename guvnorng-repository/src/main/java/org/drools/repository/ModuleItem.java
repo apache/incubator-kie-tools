@@ -27,10 +27,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Path;
-import org.drools.java.nio.file.Paths;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -781,10 +781,10 @@ public class ModuleItem extends VersionableItem {
     	globPattern = globPattern.endsWith(",") ? globPattern.substring(0, globPattern.length() - 1) : globPattern;
     	globPattern = globPattern + "}";
 
-    	DirectoryStream<org.drools.java.nio.file.Path> stream = Files.newDirectoryStream(assetPath/*, globPattern*/);
-    	List<org.drools.java.nio.file.Path> assetItemPaths =  new ArrayList<Path>();
+    	DirectoryStream<org.uberfire.java.nio.file.Path> stream = Files.newDirectoryStream(assetPath/*, globPattern*/);
+    	List<org.uberfire.java.nio.file.Path> assetItemPaths =  new ArrayList<Path>();
     		
-    	for ( final org.drools.java.nio.file.Path path : stream ) {
+    	for ( final org.uberfire.java.nio.file.Path path : stream ) {
     		//Until glob works: 
     		for(String format : formats) {
     			if(path.getFileName().toString().endsWith(format)) {

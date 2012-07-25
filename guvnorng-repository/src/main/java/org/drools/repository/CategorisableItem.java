@@ -19,7 +19,7 @@ package org.drools.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * This contains logic for categorisable items

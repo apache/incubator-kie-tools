@@ -26,8 +26,8 @@ import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.drools.guvnor.shared.common.vo.assets.enums.EnumModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Paths;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
 
@@ -92,7 +92,7 @@ public class AssetServiceImpl
      * catch (Exception e) { } return null; }
      */
 
-    private org.drools.java.nio.file.Path fromPath(final Path path) {
+    private org.uberfire.java.nio.file.Path fromPath(final Path path) {
         //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
         String pathString = path.toURI();
         pathString = pathString.replaceAll(" ", "%20");

@@ -18,7 +18,7 @@ package org.uberfire.backend.vfs;
 
 import java.util.Map;
 
-import org.drools.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.backend.vfs.impl.BasicAttributesVO;
 
 public final class VFSTempUtil {

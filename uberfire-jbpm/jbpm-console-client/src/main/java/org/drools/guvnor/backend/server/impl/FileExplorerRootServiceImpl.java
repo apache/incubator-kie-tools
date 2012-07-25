@@ -26,8 +26,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.java.nio.file.FileSystem;
-import org.drools.java.nio.file.FileSystems;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystems;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;

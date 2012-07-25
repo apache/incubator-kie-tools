@@ -21,7 +21,7 @@ import org.drools.guvnor.server.builder.ClassLoaderBuilderVFS;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoaderVFS;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 import org.drools.repository.ModuleItem;
 
 public class SuggestionCompletionEngineLoaderInitializerVFS {

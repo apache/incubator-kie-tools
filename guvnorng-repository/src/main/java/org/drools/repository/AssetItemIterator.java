@@ -34,11 +34,11 @@ public class AssetItemIterator
         Iterator<AssetItem> {
 
     //protected NodeIterator it;
-    protected List<org.drools.java.nio.file.Path> assetItemPaths;
+    protected List<org.uberfire.java.nio.file.Path> assetItemPaths;
     //protected RulesRepository rulesRepository;
-    protected Iterator<org.drools.java.nio.file.Path> it;
+    protected Iterator<org.uberfire.java.nio.file.Path> it;
 
-    public AssetItemIterator(List<org.drools.java.nio.file.Path> assetItemPaths) {
+    public AssetItemIterator(List<org.uberfire.java.nio.file.Path> assetItemPaths) {
         //this.it = nodes;
         //this.rulesRepository = repo;
         this.assetItemPaths = assetItemPaths;

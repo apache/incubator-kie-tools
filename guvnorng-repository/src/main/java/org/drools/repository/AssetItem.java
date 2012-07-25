@@ -17,19 +17,16 @@
 package org.drools.repository;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.java.nio.file.FileSystems;
-import org.drools.java.nio.file.Files;
-import org.drools.java.nio.file.Path;
-import org.drools.java.nio.fs.base.GeneralPathImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * The AssetItem class is used to abstract away the details of the underlying JCR

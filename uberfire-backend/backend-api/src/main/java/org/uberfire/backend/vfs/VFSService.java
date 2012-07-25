@@ -19,22 +19,22 @@ package org.uberfire.backend.vfs;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.java.nio.IOException;
-import org.drools.java.nio.file.AtomicMoveNotSupportedException;
-import org.drools.java.nio.file.CopyOption;
-import org.drools.java.nio.file.DirectoryNotEmptyException;
-import org.drools.java.nio.file.DirectoryStream;
-import org.drools.java.nio.file.FileAlreadyExistsException;
-import org.drools.java.nio.file.FileSystemAlreadyExistsException;
-import org.drools.java.nio.file.LinkOption;
-import org.drools.java.nio.file.NoSuchFileException;
-import org.drools.java.nio.file.NotDirectoryException;
-import org.drools.java.nio.file.NotLinkException;
-import org.drools.java.nio.file.PatternSyntaxException;
-import org.drools.java.nio.file.ProviderNotFoundException;
-import org.drools.java.nio.file.attribute.FileAttribute;
-import org.drools.java.nio.file.attribute.FileTime;
-import org.drools.java.nio.file.attribute.UserPrincipal;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
+import org.uberfire.java.nio.file.CopyOption;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.LinkOption;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.NotLinkException;
+import org.uberfire.java.nio.file.PatternSyntaxException;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.attribute.UserPrincipal;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
