@@ -28,6 +28,7 @@ import org.uberfire.java.nio.file.PathMatcher;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.java.nio.fs.base.EclipsePathImpl;
 
 public final class EclipseFileSystem implements FileSystem {
 

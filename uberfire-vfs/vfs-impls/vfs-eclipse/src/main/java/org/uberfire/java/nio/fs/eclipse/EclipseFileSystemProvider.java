@@ -52,6 +52,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.java.nio.fs.base.EclipsePathImpl;
 import org.uberfire.java.nio.fs.base.GeneralFileAttributes;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

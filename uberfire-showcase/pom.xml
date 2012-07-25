@@ -53,6 +53,11 @@
       <scope>provided</scope>
     </dependency>
 
+	<dependency>
+	  <groupId>org.uberfire</groupId>
+	  <artifactId>vfs-jgit</artifactId>
+	</dependency>
+
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -64,6 +69,7 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
     </dependency>
+
     <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

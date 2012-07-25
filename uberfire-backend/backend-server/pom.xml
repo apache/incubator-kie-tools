@@ -39,12 +39,6 @@
       <artifactId>vfs-api</artifactId>
     </dependency>
 
-    <!-- TODO remove later -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-jgit</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>backend-api</artifactId>

@@ -38,21 +38,6 @@ import java.util.regex.PatternSyntaxException;
 
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
-import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
-import org.uberfire.java.nio.file.CopyOption;
-import org.uberfire.java.nio.file.DirectoryNotEmptyException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileStore;
-import org.uberfire.java.nio.file.FileVisitOption;
-import org.uberfire.java.nio.file.FileVisitor;
-import org.uberfire.java.nio.file.LinkOption;
-import org.uberfire.java.nio.file.NoSuchFileException;
-import org.uberfire.java.nio.file.NotDirectoryException;
-import org.uberfire.java.nio.file.NotLinkException;
-import org.uberfire.java.nio.file.OpenOption;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
@@ -358,18 +343,32 @@ public final class Files {
 
     //copying and moving
 
-    //TODO impl
     public static Path copy(final Path source, final Path target, final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException, SecurityException {
-        throw new UnsupportedOperationException("feature not available");
+        checkNotNull("source", source);
+        checkNotNull("target", target);
+
+        final FileSystemProvider provider = providerOf(source);
+        if (providerOf(target) == provider) {
+            provider.copy(source, target, options);
+            return target;
+        }
+        throw new UnsupportedOperationException("can't copy from different providers");
     }
 
-    //TODO impl
     public static Path move(final Path source, final Path target, final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException,
             AtomicMoveNotSupportedException, IOException, SecurityException {
-        throw new UnsupportedOperationException("feature not available");
+        checkNotNull("source", source);
+        checkNotNull("target", target);
+
+        final FileSystemProvider provider = providerOf(source);
+        if (providerOf(target) == provider) {
+            provider.move(source, target, options);
+            return target;
+        }
+        throw new UnsupportedOperationException("can't move from different providers");
     }
 
     //misc

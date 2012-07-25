@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.file.attribute;
+package org.uberfire.java.nio.fs.base;
 
-import org.uberfire.java.nio.IOException;
+public class NotImplementedException extends RuntimeException {
 
-public interface BasicFileAttributeView extends FileAttributeView {
-
-    <T extends BasicFileAttributes> T readAttributes() throws IOException;
-
-    void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime, FileTime createTime) throws IOException;
+    public NotImplementedException() {
+    }
 }

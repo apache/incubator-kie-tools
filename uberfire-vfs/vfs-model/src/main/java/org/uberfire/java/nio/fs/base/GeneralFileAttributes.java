@@ -26,7 +26,7 @@ import static org.uberfire.java.nio.util.Preconditions.*;
 
 public class GeneralFileAttributes implements BasicFileAttributes {
 
-    private final Path generalPath;
+    private final Path path;
     private final FileTime lastModifiedTime;
     private final boolean exists;
     private final boolean isRegularFile;
@@ -36,9 +36,9 @@ public class GeneralFileAttributes implements BasicFileAttributes {
     private final boolean isReadable;
     private long fileLenght = -1;
 
-    GeneralFileAttributes(final Path generalPath) {
-        this.generalPath = checkNotNull("generalPath", generalPath);
-        final long lastModified = generalPath.toFile().lastModified();
+    GeneralFileAttributes(final Path path) {
+        this.path = checkNotNull("path", path);
+        final long lastModified = path.toFile().lastModified();
         this.lastModifiedTime = new FileTime() {
 
             @Override
@@ -56,12 +56,12 @@ public class GeneralFileAttributes implements BasicFileAttributes {
                 return 0;
             }
         };
-        this.exists = generalPath.toFile().exists();
-        this.isRegularFile = generalPath.toFile().isFile();
-        this.isDirectory = generalPath.toFile().isDirectory();
-        this.isHidden = generalPath.toFile().isHidden();
-        this.isExecutable = generalPath.toFile().canExecute();
-        this.isReadable = generalPath.toFile().canRead();
+        this.exists = path.toFile().exists();
+        this.isRegularFile = path.toFile().isFile();
+        this.isDirectory = path.toFile().isDirectory();
+        this.isHidden = path.toFile().isHidden();
+        this.isExecutable = path.toFile().canExecute();
+        this.isReadable = path.toFile().canRead();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class GeneralFileAttributes implements BasicFileAttributes {
     @Override
     public long size() {
         if (fileLenght == -1) {
-            fileLenght = generalPath.toFile().length();
+            fileLenght = path.toFile().length();
         }
         return fileLenght;
     }

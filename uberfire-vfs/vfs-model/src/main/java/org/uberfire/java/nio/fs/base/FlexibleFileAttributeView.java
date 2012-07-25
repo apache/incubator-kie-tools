@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.file.attribute;
+package org.uberfire.java.nio.fs.base;
+
+import java.util.Map;
 
 import org.uberfire.java.nio.IOException;
 
-public interface BasicFileAttributeView extends FileAttributeView {
+public interface FlexibleFileAttributeView {
 
-    <T extends BasicFileAttributes> T readAttributes() throws IOException;
+    Map<String, Object> readAttributes(final String[] attributes) throws IOException;
 
-    void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime, FileTime createTime) throws IOException;
+    void setAttribute(final String attribute, final Object value) throws IOException;
 }

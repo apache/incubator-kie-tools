@@ -19,6 +19,13 @@
       <groupId>org.uberfire</groupId>
       <artifactId>vfs-model</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

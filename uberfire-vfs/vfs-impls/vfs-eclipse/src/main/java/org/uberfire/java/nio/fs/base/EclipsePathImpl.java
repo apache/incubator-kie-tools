@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.fs.eclipse;
+package org.uberfire.java.nio.fs.base;
 
 import java.io.File;
 
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.base.AbstractPathImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 
 import static org.uberfire.java.nio.util.Preconditions.*;
 
-public class EclipsePathImpl extends AbstractPathImpl {
+public class EclipsePathImpl extends AbstractPath {
 
     protected EclipsePathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
         super(fs, path, isRoot, isRealPath);
@@ -46,13 +45,11 @@ public class EclipsePathImpl extends AbstractPathImpl {
         return new EclipsePathImpl(fs, path, false, isRealPath);
     }
 
-    @Override
-    protected Path newRoot(FileSystem fs, String substring, boolean realPath) {
+    @Override Path newRoot(FileSystem fs, String substring, boolean realPath) {
         return new EclipsePathImpl(fs, substring, true, realPath);
     }
 
-    @Override
-    protected Path newPath(FileSystem fs, String substring, boolean realPath) {
+    @Override Path newPath(FileSystem fs, String substring, boolean realPath) {
         return new EclipsePathImpl(fs, substring, false, realPath);
     }
 

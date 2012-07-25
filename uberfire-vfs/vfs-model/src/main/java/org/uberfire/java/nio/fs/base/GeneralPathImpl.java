@@ -23,21 +23,14 @@ import org.uberfire.java.nio.file.Path;
 
 import static org.uberfire.java.nio.util.Preconditions.*;
 
-public class GeneralPathImpl extends AbstractPathImpl {
+public class GeneralPathImpl extends AbstractPath {
 
-    protected GeneralPathImpl(final FileSystem fs, final File file) {
+    private GeneralPathImpl(final FileSystem fs, final File file) {
         super(fs, file);
     }
 
-    protected GeneralPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
+    private GeneralPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
         super(fs, path, isRoot, isRealPath);
-    }
-
-    public static GeneralPathImpl createRoot(final FileSystem fs, final String root, boolean isRealPath) {
-        checkNotNull("fs", fs);
-        checkNotNull("path", root);
-
-        return new GeneralPathImpl(fs, root, true, isRealPath);
     }
 
     public static GeneralPathImpl newFromFile(final FileSystem fs, final File file) {
@@ -54,13 +47,11 @@ public class GeneralPathImpl extends AbstractPathImpl {
         return new GeneralPathImpl(fs, path, false, isRealPath);
     }
 
-    @Override
-    protected Path newRoot(FileSystem fs, String substring, boolean realPath) {
+    @Override Path newRoot(FileSystem fs, String substring, boolean realPath) {
         return new GeneralPathImpl(fs, substring, true, realPath);
     }
 
-    @Override
-    protected Path newPath(FileSystem fs, String substring, boolean realPath) {
+    @Override Path newPath(FileSystem fs, String substring, boolean realPath) {
         return new GeneralPathImpl(fs, substring, false, realPath);
     }
 }

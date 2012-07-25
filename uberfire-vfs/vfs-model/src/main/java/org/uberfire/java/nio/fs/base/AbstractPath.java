@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -38,9 +39,10 @@ import org.uberfire.java.nio.file.WatchService;
 import static org.uberfire.java.nio.file.WatchEvent.*;
 import static org.uberfire.java.nio.util.Preconditions.*;
 
-public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAttributes> {
+public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttributes> {
 
     private static final Pattern WINDOWS_DRIVER = Pattern.compile("^/?[A-Z|a-z]+(:).*");
+    private static final String DEFAULT_WINDOWS_DRIVER = "C:";
 
     protected final FileSystem fs;
     protected final boolean usesWindowsFormat;
@@ -55,15 +57,15 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
     protected File file;
     protected GeneralFileAttributes attrs;
 
-    protected abstract Path newPath(FileSystem fs, String substring, boolean realPath);
+    abstract Path newPath(FileSystem fs, String substring, boolean realPath);
 
-    protected abstract Path newRoot(FileSystem fs, String substring, boolean realPath);
+    abstract Path newRoot(FileSystem fs, String substring, boolean realPath);
 
-    protected AbstractPathImpl(final FileSystem fs, final File file) {
+    protected AbstractPath(final FileSystem fs, final File file) {
         this(checkNotNull("fs", fs), checkNotNull("file", file).getAbsolutePath(), true, false);
     }
 
-    protected AbstractPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
+    protected AbstractPath(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
         this.fs = checkNotNull("fs", fs);
         this.path = checkNotNull("path", path).getBytes();
         this.isRealPath = isRealPath;
@@ -78,32 +80,37 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
             this.isAbsolute = false;
         }
 
-        int lastOffset = 0;
+        int lastOffset = this.isAbsolute ? 1 : 0;
         int windowsDriveEndsAt = -1;
-        if (isRooted && hasWindowsDrive.matches()) {
-            windowsDriveEndsAt = hasWindowsDrive.toMatchResult().end(1);
-            lastOffset = 1;
+        if (isAbsolute && hasWindowsDrive.matches()) {
+            windowsDriveEndsAt = hasWindowsDrive.toMatchResult().end(1) + 1;
+            lastOffset = windowsDriveEndsAt;
         }
 
-        for (int i = 0; i < this.path.length; i++) {
+        for (int i = lastOffset; i < this.path.length; i++) {
             final byte b = this.path[i];
             if (b == getSeparator() && i >= windowsDriveEndsAt) {
-                if (i > 1) {
-                    offsets.add(new Pair(lastOffset, i - 1));
-                } else {
-                    offsets.add(new Pair(lastOffset, i));
-                }
+                offsets.add(new Pair(lastOffset, i));
                 i++;
                 lastOffset = i;
             }
         }
-        offsets.add(new Pair(lastOffset, this.path.length - 1));
+        if (lastOffset < this.path.length) {
+            offsets.add(new Pair(lastOffset, this.path.length));
+        }
 
-        if (!hasWindowsDrive.matches() && isRooted && this.path.length == 1) {
+        if (this.path.length == 1 && offsets.size() == 0) {
+            this.isRoot = true;
+        } else if (hasWindowsDrive.matches() && offsets.size() == 0) {
             this.isRoot = true;
         } else {
             this.isRoot = isRoot;
         }
+    }
+
+    private boolean hasWindowsDriver(final String text) {
+        checkNotEmpty("text", text);
+        return WINDOWS_DRIVER.matcher(text).matches();
     }
 
     @Override
@@ -122,39 +129,56 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
             return this;
         }
         if (isAbsolute) {
-            return newRoot(fs, substring(0), isRealPath);
+            return newRoot(fs, substring(-1), isRealPath);
         }
         return null;
     }
 
     private String substring(int index) {
-        final Pair offset = offsets.get(index);
-        byte[] result = new byte[offset.getB() - offset.getA() + 1];
-        System.arraycopy(path, offset.getA(), result, 0, result.length);
+        final byte[] result;
+        if (index == -1) {
+            result = new byte[offsets.get(0).getA()];
+            System.arraycopy(path, 0, result, 0, result.length);
+        } else {
+            final Pair offset = offsets.get(index);
+            result = new byte[offset.getB() - offset.getA()];
+            System.arraycopy(path, offset.getA(), result, 0, result.length);
+        }
 
         return new String(result);
     }
 
     private String substring(int beginIndex, int endIndex) {
-        final Pair offsetBegin = offsets.get(beginIndex);
+        final int initPos;
+        if (beginIndex == -1) {
+            initPos = 0;
+        } else {
+            initPos = offsets.get(beginIndex).getA();
+        }
         final Pair offsetEnd = offsets.get(endIndex);
-        byte[] result = new byte[offsetEnd.getB() - offsetBegin.getA()];
-        System.arraycopy(path, offsetBegin.getA(), result, 0, offsetEnd.getB());
+        byte[] result = new byte[offsetEnd.getB() - initPos];
+        System.arraycopy(path, initPos, result, 0, result.length);
 
         return new String(result);
     }
 
     @Override
     public Path getFileName() {
+        if (getNameCount() == 0) {
+            return null;
+        }
         return getName(getNameCount() - 1);
     }
 
     @Override
     public Path getParent() {
-        if (getNameCount() < 2) {
+        if (getNameCount() <= 0) {
             return null;
         }
-        return subpath(0, getNameCount() - 1);
+        if (getNameCount() == 1) {
+            return getRoot();
+        }
+        return newPath(fs, substring(-1, getNameCount() - 2), isRealPath);
     }
 
     @Override
@@ -189,68 +213,14 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
             throw new IllegalArgumentException();
         }
 
-        if (isAbsolute && beginIndex == 0 && endIndex == 0) {
-            return getRoot();
-        }
-
-        return newPath(fs, substring(beginIndex, endIndex), isRealPath);
-    }
-
-    @Override
-    public boolean startsWith(Path other) {
-        return false;
-    }
-
-    @Override
-    public boolean startsWith(String other) throws InvalidPathException {
-        return false;
-    }
-
-    @Override
-    public boolean endsWith(Path other) {
-        return false;
-    }
-
-    @Override
-    public boolean endsWith(String other) throws InvalidPathException {
-        return false;
-    }
-
-    @Override
-    public Path normalize() {
-        return null;
-    }
-
-    @Override
-    public Path resolve(final Path other) {
-        if (other.isAbsolute()) {
-            return other;
-        }
-        return newPath(fs, toString() + getSeparator() + other.toString(), isRealPath);
-    }
-
-    @Override
-    public Path resolve(String other) throws InvalidPathException {
-        return resolve(getFileSystem().getPath(other));
-    }
-
-    @Override
-    public Path resolveSibling(Path other) {
-        return null;
-    }
-
-    @Override
-    public Path resolveSibling(String other) throws InvalidPathException {
-        return null;
-    }
-
-    @Override
-    public Path relativize(Path other) throws IllegalArgumentException {
-        return null;
+        return newPath(fs, substring(beginIndex, endIndex - 1), isRealPath);
     }
 
     @Override
     public URI toUri() throws IOException, SecurityException {
+        if (!isAbsolute()) {
+            return toAbsolutePath().toUri();
+        }
         if (fs.provider().isDefault() && !isRealPath) {
             try {
                 return new URI("default", "", toURIString(), null);
@@ -266,12 +236,10 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
     }
 
     private String toURIString() {
-        final StringBuilder result = new StringBuilder();
-        if (!toString().startsWith("/")) {
-            result.append("/");
+        if (usesWindowsFormat) {
+            return "/" + toString().replace("\\", "/");
         }
-        result.append(toString().toString().replace("\\", "/"));
-        return result.toString();
+        return toString();
     }
 
     @Override
@@ -279,7 +247,20 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
         if (isAbsolute()) {
             return this;
         }
-        return null;
+
+        return newPath(fs, defaultDirectory() + toString(), isRealPath);
+    }
+
+    private String defaultDirectory() {
+        if (usesWindowsFormat) {
+            final String result = new File("").getAbsolutePath().replaceAll("/", "\\\\") + "\\";
+
+            if (!hasWindowsDriver(result)) {
+                return DEFAULT_WINDOWS_DRIVER + result;
+            }
+            return result;
+        }
+        return new File("").getAbsolutePath() + "/";
     }
 
     @Override
@@ -300,11 +281,6 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
             }
         }
         return file;
-    }
-
-    @Override
-    public int compareTo(Path o) {
-        return 0;
     }
 
     @Override
@@ -333,6 +309,74 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    @Override
+    public boolean startsWith(final Path other) {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean startsWith(final String other) throws InvalidPathException {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean endsWith(final Path other) {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean endsWith(final String other) throws InvalidPathException {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path normalize() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path resolve(final Path other) {
+        checkNotNull("other", other);
+        if (other.isAbsolute()) {
+            return other;
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path resolve(final String other) throws InvalidPathException {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path resolveSibling(final Path other) {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path resolveSibling(final String other) throws InvalidPathException {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Path relativize(final Path other) throws IllegalArgumentException {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int compareTo(final Path other) {
+        checkNotNull("other", other);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -374,6 +418,52 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
     public void clearCache() {
         attrs = null;
         file = null;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        checkNotNull("o", o);
+
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractPath)) {
+            return false;
+        }
+
+        AbstractPath paths = (AbstractPath) o;
+
+        if (isAbsolute != paths.isAbsolute) {
+            return false;
+        }
+        if (isRealPath != paths.isRealPath) {
+            return false;
+        }
+        if (isRoot != paths.isRoot) {
+            return false;
+        }
+        if (usesWindowsFormat != paths.usesWindowsFormat) {
+            return false;
+        }
+        if (!fs.equals(paths.fs)) {
+            return false;
+        }
+        if (!Arrays.equals(path, paths.path)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fs != null ? fs.hashCode() : 0;
+        result = 31 * result + (usesWindowsFormat ? 1 : 0);
+        result = 31 * result + (isAbsolute ? 1 : 0);
+        result = 31 * result + (path != null ? Arrays.hashCode(path) : 0);
+        result = 31 * result + (isRoot ? 1 : 0);
+        result = 31 * result + (isRealPath ? 1 : 0);
+        return result;
     }
 
     private static class Pair {

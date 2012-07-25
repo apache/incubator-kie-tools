@@ -16,11 +16,13 @@
 
 package org.uberfire.java.nio.fs.file;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.Path;
@@ -30,12 +32,36 @@ import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 
-public final class SimpleFileSystem implements FileSystem {
+import static org.uberfire.java.nio.util.Preconditions.*;
+
+public abstract class BaseSimpleFileSystem implements FileSystem {
 
     private final FileSystemProvider provider;
+    private final String defaultDirectory;
+    private final Set<String> supportedFileAttributeViews;
+    private final File[] roots;
 
-    SimpleFileSystem(final FileSystemProvider provider) {
+    BaseSimpleFileSystem(final FileSystemProvider provider, final String path) {
+        this(File.listRoots(), provider, path);
+    }
+
+    BaseSimpleFileSystem(final File[] roots, final FileSystemProvider provider, final String path) {
+        checkNotNull("roots", roots);
+        checkCondition("should have at least one root", roots.length > 0);
+        this.roots = roots;
         this.provider = provider;
+        this.defaultDirectory = validateDefaultDir(path);
+        this.supportedFileAttributeViews = Collections.unmodifiableSet(new HashSet<String>() {{
+            add("basic");
+        }});
+    }
+
+    private String validateDefaultDir(final String path) throws IllegalArgumentException {
+        checkNotEmpty("path", path);
+        if (!GeneralPathImpl.create(this, path, false).isAbsolute()) {
+            throw new IllegalArgumentException();
+        }
+        return path;
     }
 
     @Override
@@ -59,19 +85,8 @@ public final class SimpleFileSystem implements FileSystem {
     }
 
     @Override
-    public Iterable<Path> getRootDirectories() {
-//        return File.listRoots();
-        return null;
-    }
-
-    @Override
-    public Iterable<FileStore> getFileStores() {
-        return null;
-    }
-
-    @Override
     public Set<String> supportedFileAttributeViews() {
-        return null;
+        return supportedFileAttributeViews;
     }
 
     @Override
@@ -93,22 +108,29 @@ public final class SimpleFileSystem implements FileSystem {
     }
 
     @Override
-    public PathMatcher getPathMatcher(String syntaxAndPattern) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-        return null;
+    public PathMatcher getPathMatcher(String syntaxAndPattern)
+            throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException {
-        return null;
+    public UserPrincipalLookupService getUserPrincipalLookupService()
+            throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public WatchService newWatchService() throws UnsupportedOperationException, IOException {
-        return null;
+    public WatchService newWatchService()
+            throws UnsupportedOperationException, IOException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void close() throws IOException, UnsupportedOperationException {
         throw new UnsupportedOperationException("can't close this file system.");
+    }
+
+    File[] listRoots() {
+        return roots;
     }
 }
