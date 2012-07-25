@@ -66,7 +66,6 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
     protected AbstractPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
         this.fs = checkNotNull("fs", fs);
         this.path = checkNotNull("path", path).getBytes();
-        this.isRoot = isRoot;
         this.isRealPath = isRealPath;
         this.usesWindowsFormat = path.matches(".*\\\\.*");
 
@@ -99,6 +98,12 @@ public abstract class AbstractPathImpl implements Path, AttrHolder<GeneralFileAt
             }
         }
         offsets.add(new Pair(lastOffset, this.path.length - 1));
+
+        if (!hasWindowsDrive.matches() && isRooted && this.path.length == 1) {
+            this.isRoot = true;
+        } else {
+            this.isRoot = isRoot;
+        }
     }
 
     @Override

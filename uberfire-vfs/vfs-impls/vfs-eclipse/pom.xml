@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>vfs-api</artifactId>
+      <artifactId>vfs-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.core</groupId>

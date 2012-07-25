@@ -18,13 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>vfs-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <artifactId>vfs-model</artifactId>
     </dependency>
   </dependencies>
 </project>

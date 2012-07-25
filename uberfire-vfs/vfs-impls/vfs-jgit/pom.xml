@@ -31,17 +31,10 @@
   <name>VFS JGIT Impl</name>
   <description>VFS JGIT Impl</description>
 
-  <!--<repositories>-->
-  <!--<repository>-->
-  <!--<id>jgit-repository</id>-->
-  <!--<url>http://download.eclipse.org/jgit/maven</url>-->
-  <!--</repository>-->
-  <!--</repositories>-->
-
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>vfs-api</artifactId>
+      <artifactId>vfs-model</artifactId>
     </dependency>
 
     <!-- Core Library -->

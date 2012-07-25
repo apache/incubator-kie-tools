@@ -134,6 +134,7 @@
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
