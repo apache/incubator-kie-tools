@@ -1,0 +1,106 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.uberfire.annotations.processors;
+
+import javax.annotation.Generated;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.uberfire.client.annotations.Identifier;
+import org.uberfire.client.annotations.ResourceType;
+import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.client.mvp.EditorService;
+
+import org.uberfire.backend.vfs.Path;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
+@Dependent
+@Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
+@ResourceType("test7")
+@Identifier("test7")
+/*
+ * WARNING! This class is generated. Do not modify.
+ */
+public class WorkbenchEditorTest7Activity extends AbstractEditorActivity
+    implements
+    EditorService {
+
+    @Inject
+    private WorkbenchEditorTest7 realPresenter;
+
+    @Override
+    public String getIdentifier() {
+        return "test7";
+    }
+
+    @Override
+    public void onStart(final Path path) {
+        //Do nothing. The real presenter does not have a @OnStart annotation
+    }
+
+    @Override
+    public boolean onMayClose() {
+        return true;
+    }
+
+    @Override
+    public void onClose() {
+        //Do nothing. The real presenter does not have a @OnClose annotation
+    }
+
+    @Override
+    public void onReveal() {
+        //Do nothing. The real presenter does not have a @OnReveal annotation
+    }
+
+    @Override
+    public void onLostFocus() {
+        //Do nothing. The real presenter does not have a @OnLostFocus annotation
+    }
+
+    @Override
+    public void onFocus() {
+        //Do nothing. The real presenter does not have a @OnFocus annotation
+    }
+
+    @Override
+    public String getTitle() {
+        return realPresenter.getTitle();
+    }
+
+    @Override
+    public IsWidget getWidget() {
+        return realPresenter.getView();
+    }
+    
+    @Override
+    public boolean isDirty() {
+        return false;
+    }
+    
+    @Override
+    public void onSave() {
+        //Do nothing. The real presenter does not have a @OnSave annotation
+    }
+
+    @Override
+    public EditorService getPresenter() {
+        return this;
+    }
+
+}

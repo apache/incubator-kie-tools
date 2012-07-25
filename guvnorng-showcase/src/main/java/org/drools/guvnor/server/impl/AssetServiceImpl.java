@@ -21,7 +21,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.shared.AssetService;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
@@ -30,6 +29,7 @@ import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
 import org.drools.java.nio.file.Files;
 import org.drools.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped

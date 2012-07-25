@@ -19,13 +19,13 @@ package org.drools.guvnor.server.impl;
 import java.net.URI;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.backend.util.LoggingHelper;
-import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.shared.SuggestionCompletionEngineService;
 import org.drools.guvnor.shared.SuggestionCompletionEngineServiceVFS;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.java.nio.file.Paths;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.util.LoggingHelper;
+import org.uberfire.backend.vfs.Path;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

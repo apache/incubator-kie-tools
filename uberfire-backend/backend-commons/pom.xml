@@ -43,34 +43,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <!-- ****************************** NOTE ******************************************* -->
-    <!-- We have to build a PROJECT.jar containing all source files for child -->
-    <!-- GWT modules to later compile. gwt-maven-plugin switch "compileSourcesArtifacts" -->
-    <!-- in the child GWT module should pull -sources.jars into the build. -->
-    <!-- However there are reports this does not currently work (IDK, I've -->
-    <!-- not tried!) in other Guvnor poms. -->
-    <!-- See http://mojo.codehaus.org/gwt-maven-plugin/user-guide/library.html -->
-    <!-- ******************************************************************************* -->
-
-    <!-- Include all of the various types GWT considers "source" so "child" -->
-    <!-- GWT modules can successfully be (GWT) compiled. Failure to included -->
-    <!-- these in the resulting JAR causes GWT compilation errors -->
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.java</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
-
 </project>

@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.editors.plaintext;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.EditorWidget;
 import org.drools.guvnor.shared.common.vo.assets.plaintext.RuleContentText;
+import org.uberfire.client.common.DirtyableComposite;
+import org.uberfire.client.common.EditorWidget;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;

@@ -18,7 +18,6 @@ package org.drools.guvnor.server.contenthandler.drools;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.backend.util.LoggingHelper;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactModels;
@@ -28,6 +27,7 @@ import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.uberfire.backend.util.LoggingHelper;
 
 
 import java.util.ArrayList;

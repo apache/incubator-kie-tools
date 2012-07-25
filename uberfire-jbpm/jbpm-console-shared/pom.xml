@@ -28,8 +28,8 @@
 
   <artifactId>jbpm-console-shared</artifactId>
 
-  <name>jBPM Console Shared</name>
-  <description>jBPM Console Shared files</description>
+  <name>jBPM Console - Shared</name>
+  <description>jBPM Console - Shared files</description>
 
   <dependencies>
 

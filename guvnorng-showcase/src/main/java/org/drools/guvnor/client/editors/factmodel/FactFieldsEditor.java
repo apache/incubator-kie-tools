@@ -17,10 +17,10 @@ package org.drools.guvnor.client.editors.factmodel;
 
 import java.util.List;
 
-import org.drools.guvnor.client.common.AddButton;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FieldMetaModel;
+import org.uberfire.client.common.AddButton;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

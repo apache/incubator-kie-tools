@@ -21,9 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
+import org.uberfire.client.common.FormStylePopup;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;

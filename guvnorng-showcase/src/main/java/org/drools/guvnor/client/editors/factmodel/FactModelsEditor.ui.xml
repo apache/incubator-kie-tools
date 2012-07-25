@@ -17,12 +17,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
-  xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
+  xmlns:uberfire='urn:import:org.uberfire.client.common'>
 
   <gwt:HTMLPanel>
     <div style="margin-bottom:20px;">
-      <guvnor:AddButton ui:field="addFactIcon" ></guvnor:AddButton>
-      <guvnor:LazyStackPanel ui:field="factModelsPanel"></guvnor:LazyStackPanel>
+      <uberfire:AddButton ui:field="addFactIcon" ></uberfire:AddButton>
+      <uberfire:LazyStackPanel ui:field="factModelsPanel"></uberfire:LazyStackPanel>
     </div>
   </gwt:HTMLPanel>
 

@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guvnor.client.common.AbstractLazyStackPanelHeader;
-import org.drools.guvnor.client.common.AddButton;
-import org.drools.guvnor.client.common.LazyStackPanel;
-import org.drools.guvnor.client.common.LoadContentCommand;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.FactMetaModel;
+import org.uberfire.client.common.AbstractLazyStackPanelHeader;
+import org.uberfire.client.common.AddButton;
+import org.uberfire.client.common.LazyStackPanel;
+import org.uberfire.client.common.LoadContentCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

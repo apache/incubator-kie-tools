@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.shared;
 
-import org.drools.guvnor.backend.vfs.Path;
 import org.drools.guvnor.shared.common.vo.asset.AbstractAsset;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface AssetService {

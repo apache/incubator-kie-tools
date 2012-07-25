@@ -29,8 +29,7 @@
   <artifactId>jbpm-console-client</artifactId>
   <packaging>war</packaging>
 
-  <name>ÜberFire Showcase</name>
-  <description>ÜberFire Showcase</description>
+  <name>jBPM Console - Client</name>
 
   <dependencies>
     <dependency>
@@ -130,6 +129,7 @@
 
   </dependencies>
 
+  <description>jBPM Console - Client</description>
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 

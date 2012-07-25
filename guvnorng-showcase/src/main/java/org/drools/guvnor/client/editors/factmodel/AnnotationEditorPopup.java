@@ -18,9 +18,9 @@ package org.drools.guvnor.client.editors.factmodel;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.i18n.Constants;
 import org.drools.guvnor.shared.common.vo.assets.factmodel.AnnotationMetaModel;
+import org.uberfire.client.common.FormStylePopup;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

@@ -15,10 +15,10 @@
  */
 package org.drools.guvnor.client;
 
-import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.resources.ShowcaseResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.resources.RoundedCornersResource;
 
 /**
  *

@@ -377,7 +377,7 @@
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
     <module>uberfire-showcase</module>
-    <module>uberfire-jbpm</module>
+    <!-- <module>uberfire-jbpm</module> -->
   </modules>
 
   <dependencyManagement>

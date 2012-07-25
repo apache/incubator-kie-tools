@@ -26,13 +26,13 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.guvnor.backend.FileExplorerRootService;
-import org.drools.guvnor.backend.Root;
-import org.drools.guvnor.backend.vfs.impl.PathImpl;
-import org.drools.guvnor.shared.mvp.PlaceRequest;
 import org.drools.java.nio.file.FileSystem;
 import org.drools.java.nio.file.FileSystems;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.impl.PathImpl;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import static java.util.Collections.*;
 

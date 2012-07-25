@@ -17,14 +17,14 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
-  xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
+  xmlns:uberfire='urn:import:org.uberfire.client.common'>
 
   <gwt:HTMLPanel>
     <div class="guvnor-modelview-button-bar" >
       <div style="float:right;padding-right:20px;">
         <gwt:HorizontalPanel ui:spacing="5">
-          <guvnor:AddButton ui:field="addFieldIcon"></guvnor:AddButton>
-          <guvnor:AddButton ui:field="addAnnotationIcon"></guvnor:AddButton>
+          <uberfire:AddButton ui:field="addFieldIcon"></uberfire:AddButton>
+          <uberfire:AddButton ui:field="addAnnotationIcon"></uberfire:AddButton>
         </gwt:HorizontalPanel>
       </div>
       <div style="clear:both;">
