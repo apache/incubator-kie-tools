@@ -32,6 +32,7 @@ import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 import org.uberfire.java.nio.fs.jgit.JGitRepositoryConfiguration;
 
 /*import javax.jcr.ImportUUIDBehavior;
@@ -2094,7 +2095,10 @@ public class RulesRepository {
     
     private org.uberfire.java.nio.file.Path getModuleFullPath(String moduleName) {
     	URI rootURI = config.getRootURI();
-    	org.uberfire.java.nio.file.Path path = Paths.get(URI.create(rootURI.getPath() + "/" + moduleName));
+    	//TODO: Not working
+    	//Path path2 = fileSystem.getPath( rootURI.getPath(), moduleName);
+
+    	Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
     	return path;
     }
 

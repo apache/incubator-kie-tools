@@ -66,5 +66,6 @@ public class SuggestionCompletionEngineServiceImplementation
     public static void main(String[] args) throws Exception {
     	SuggestionCompletionEngineServiceImplementation sceService = new SuggestionCompletionEngineServiceImplementation();
     	SuggestionCompletionEngine sce = sceService.loadSuggestionCompletionEngine("mortgagesSample");
+    	sce.getFactTypes();
     }
 }

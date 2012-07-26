@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 
 /**
  * The AssetItem class is used to abstract away the details of the underlying JCR
@@ -277,7 +278,7 @@ public class AssetItem extends CategorisableItem {
      */
     public Calendar getDateEffective() throws RulesRepositoryException {
         Path metadataFile = getMetaDataFilePath(assetPath);
-        Date value =  MetaDataUtil.getProperty(metadataFile, DATE_EFFECTIVE_PROPERTY_NAME, Date.class);
+        Date value =  MetaDataUtil.getProperty(metadataFile, DATE_EFFECTIVE_PROPERTY_NAME, Date.class, null);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(value);
         return calendar;       
@@ -303,10 +304,15 @@ public class AssetItem extends CategorisableItem {
     	Path parentName = assetPath.getParent();
     	
     	String fullPathName = assetPath.toString();
-    	
-    	Path path = assetPath.getFileSystem().getPath(parentName.toString(), fileName.toString());
-    	//Path path = GeneralPathImpl.create(fileSystem, rootURI.getPath() + "/" + moduleName, false);
-        return path;
+    	if(fullPathName.endsWith("/")) {
+    		fullPathName.substring(0, fullPathName.length());
+    	}
+    	int indexOfLastSeparator = fullPathName.lastIndexOf("/");
+    	String fileOrDirName = indexOfLastSeparator > 0 ? fullPathName.substring(indexOfLastSeparator+1) : "";
+    	String pathName = indexOfLastSeparator > 0 ? fullPathName.substring(0, indexOfLastSeparator) : "";
+    	//Path path = assetPath.getFileSystem().getPath(pathName, "." + fileOrDirName);
+    	Path path = GeneralPathImpl.create(assetPath.getFileSystem(), pathName + "/" + "." + fileOrDirName, false);
+    	return path;
     }
 
     /**
@@ -314,9 +320,8 @@ public class AssetItem extends CategorisableItem {
      * @throws RulesRepositoryException
      */
     public boolean getDisabled() throws RulesRepositoryException {
-        //JLIU: read from metadata file (dot file)
         Path metadataFile = getMetaDataFilePath(assetPath);
-        boolean value = MetaDataUtil.getProperty(metadataFile, DISABLED_PROPERTY_NAME, Boolean.class);
+        boolean value = MetaDataUtil.getProperty(metadataFile, DISABLED_PROPERTY_NAME, Boolean.class, false);
         return value;
         
 /*        try {

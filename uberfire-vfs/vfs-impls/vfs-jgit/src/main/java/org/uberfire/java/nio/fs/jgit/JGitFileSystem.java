@@ -55,6 +55,7 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public String getSeparator() {
+    	//REVIST: always use "/" as separator
         return System.getProperty("file.separator", "/");
     }
 

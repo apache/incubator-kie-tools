@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.LinkOption;
 import org.uberfire.java.nio.file.Path;
 
 public class MetaDataUtil {
@@ -17,6 +19,10 @@ public class MetaDataUtil {
     public static String getProperty(Path metaDataFilePath, String propertyName) {
         Properties prop = new Properties();
         try {
+        	if(!Files.exists(metaDataFilePath, LinkOption.NOFOLLOW_LINKS)) {
+        		return null;
+        	}
+        	
             prop.load(new FileInputStream(metaDataFilePath.toString()));
             return prop.getProperty(propertyName);
         } catch (FileNotFoundException e) {
@@ -30,10 +36,14 @@ public class MetaDataUtil {
         return null;
     }
     
-    public static <T> T getProperty(Path metaDataFilePath, String propertyName, Class<T> resultClass) {
+    public static <T> T getProperty(Path metaDataFilePath, String propertyName, Class<T> resultClass, T defaultValue) {
         Properties prop = new Properties();
         try {
-            prop.load(new FileInputStream(metaDataFilePath.toString()));
+        	if(!Files.exists(metaDataFilePath, LinkOption.NOFOLLOW_LINKS)) {
+        		return (T)defaultValue;
+        	}
+        	
+        	prop.load(new FileInputStream(metaDataFilePath.toString()));
             String value =  prop.getProperty(propertyName);
             if(resultClass == Date.class) {
                 SimpleDateFormat formatter = new SimpleDateFormat(MetaDataUtil.dateFormat);
