@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.moduleeditor.drools;
+package org.drools.guvnor.client.editors;
 
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.gwt.user.client.Command;
+import org.drools.guvnor.client.editors.SuggestionCompletionCache;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 public class SuggestionCompletionCacheTest {
 
