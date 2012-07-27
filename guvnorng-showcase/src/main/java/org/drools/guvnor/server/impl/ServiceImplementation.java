@@ -36,6 +36,8 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.Module;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewAssetWithContentConfiguration;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
@@ -52,9 +54,8 @@ import org.drools.guvnor.server.util.AssetPopulator;
 import org.drools.guvnor.server.util.DateUtil;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.TableDisplayHandler;
+import org.drools.guvnor.shared.RepositoryService;
 import org.drools.guvnor.shared.api.PortableObject;
-import org.drools.guvnor.shared.common.vo.asset.NewAssetConfiguration;
-import org.drools.guvnor.shared.common.vo.asset.NewAssetWithContentConfiguration;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -85,8 +86,8 @@ import freemarker.template.Template;
 @Service
 @ApplicationScoped
 public class ServiceImplementation
-   /* implements
-    RepositoryService*/ {
+    implements
+    RepositoryService {
 
     private static final long          serialVersionUID = 510l;
 
