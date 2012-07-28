@@ -40,3 +40,16 @@
 .perspectives {
 	text-align: right;
 }
+
+.warningContainer {
+    background-color: orange;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+.warningMessage {
+    margin-left: 10px;
+    margin-top: 6px;
+}

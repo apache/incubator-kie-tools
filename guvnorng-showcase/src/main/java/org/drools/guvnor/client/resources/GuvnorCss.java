@@ -39,5 +39,9 @@ public interface GuvnorCss
 
     @ClassName("logo")
     String logoClass();
+    
+    String warningContainer();
+
+    String warningMessage();
 
 }

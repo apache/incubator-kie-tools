@@ -25,7 +25,7 @@ public interface GuvnorResources
     GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
 
     @Source("css/guvnor.css")
-    GuvnorCss CSS();
+    GuvnorCss guvnorCss();
 
     GuvnorImages images();
 

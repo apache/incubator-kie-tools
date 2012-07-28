@@ -16,6 +16,7 @@
 
 package org.uberfire.client.resources;
 
+
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -50,4 +51,5 @@ public interface WorkbenchImages
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
     
+    CollapseExpand collapseExpand();    
 }

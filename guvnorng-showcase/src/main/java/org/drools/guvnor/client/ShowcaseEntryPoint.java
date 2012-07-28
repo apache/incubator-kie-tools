@@ -32,7 +32,7 @@ public class ShowcaseEntryPoint {
 
     private void loadStyles() {
         //Ensure CSS has been loaded
-        GuvnorResources.INSTANCE.CSS().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
     }
 
 }
