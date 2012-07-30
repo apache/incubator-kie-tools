@@ -45,6 +45,7 @@ import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.shared.ModuleService;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetItem;
@@ -580,4 +581,10 @@ public class RepositoryModuleService
         }
     }
 
+    
+    public static void main(String[] args) throws Exception {
+    	RepositoryModuleService moduleService = new RepositoryModuleService();
+    	Module module = moduleService.loadModule("mortgagesSample");
+    	module.getName();
+    }
 }
