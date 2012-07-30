@@ -14,9 +14,7 @@
 
   <modules>
     <module>vfs-model</module>
+    <module>vfs-impls</module>
     <module>vfs-api</module>
-    <module>vfs-impls/vfs-fs</module>
-    <module>vfs-impls/vfs-jgit</module>
-    <module>vfs-impls/vfs-eclipse</module>
   </modules>
 </project>

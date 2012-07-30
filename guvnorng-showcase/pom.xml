@@ -323,17 +323,7 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>www-test/**</include>
-                <include>.gwt/**</include>
                 <include>.errai/**</include>
-                <include>src/main/webapp/org.drools.guvnor.GuvnorNGShowcase/**</include>
-                <include>src/main/webapp/app/**</include>
-                <include>src/main/webapp/WEB-INF/deploy/**</include>
-                <include>src/main/webapp/WEB-INF/lib/**</include>
-                <include>src/main/webapp/WEB-INF/classes/**</include>
-                <include>**/gwt-unitCache/**</include>
-                <include>**/*.JUnit/**</include>
-                <include>target/generated-sources/**</include>
               </includes>
             </fileset>
           </filesets>

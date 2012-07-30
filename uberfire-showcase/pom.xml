@@ -119,8 +119,6 @@
   </dependencies>
 
   <build>
-    <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-
     <plugins>
     
       <plugin>
@@ -140,7 +138,6 @@
           <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
-          <hostedWebapp>src/main/webapp/</hostedWebapp>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
@@ -236,17 +233,7 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>www-test/**</include>
-                <include>.gwt/**</include>
                 <include>.errai/**</include>
-                <include>src/main/webapp/org.uberfire.UberfireShowcase/**</include>
-                <include>src/main/webapp/app/**</include>
-                <include>src/main/webapp/WEB-INF/deploy/**</include>
-                <include>src/main/webapp/WEB-INF/lib/**</include>
-                <include>src/main/webapp/WEB-INF/classes/**</include>
-                <include>**/gwt-unitCache/**</include>
-                <include>**/*.JUnit/**</include>
-                <include>target/generated-sources/**</include>
               </includes>
             </fileset>
           </filesets>
