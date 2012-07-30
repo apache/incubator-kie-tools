@@ -21,14 +21,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.messages.ConstantsCore;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.widgets.MetaDataWidget;
 import org.drools.guvnor.shared.ModuleService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -47,7 +44,7 @@ import org.uberfire.client.common.LoadingPopup;
  * This is the module editor.
  */
 @Dependent
-@WorkbenchEditor(identifier = "FactModel", fileTypes = "model.drl")
+@WorkbenchEditor(identifier = "RepositoryEditor")
 public class ModuleEditorWrapperPresenter extends Composite {
     private ConstantsCore constants = GWT.create(ConstantsCore.class);
 
@@ -93,7 +90,7 @@ public class ModuleEditorWrapperPresenter extends Composite {
             	artifact = response;
             	//render();
             }
-        } ).loadModule( "uuid" );
+        } ).loadModule( path.getFileName() );
     }    
     
 /*    *//**

@@ -230,15 +230,21 @@ public class RepositoryModuleService
                                                            parentNode );*/
     }
 
-    public Module loadModule(String uuid) {
+    //JLIU: no more UUID?
+/*    public Module loadModule(String uuid) {
         ModuleItem moduleItem = rulesRepository.loadModuleByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
         // module uudi.
         // we have to figure out the module name.
        // serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( moduleItem.getName() );
         return repositoryModuleOperations.loadModule( moduleItem );
-    }
+    }*/
 
+    public Module loadModule(String moduleName) {
+        ModuleItem moduleItem = rulesRepository.loadModule( moduleName );
+        return repositoryModuleOperations.loadModule( moduleItem );
+    }
+    
     public void saveModule(Module data) throws SerializationException {
         //serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         repositoryModuleOperations.saveModule( data );

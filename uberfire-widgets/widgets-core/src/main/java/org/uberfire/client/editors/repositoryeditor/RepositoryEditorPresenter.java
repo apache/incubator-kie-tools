@@ -31,7 +31,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 @Dependent
-@WorkbenchEditor(identifier = "RepositoryEditor")
+@WorkbenchEditor(identifier = "RepositoryEditor1")
 public class RepositoryEditorPresenter {
 
     @Inject
