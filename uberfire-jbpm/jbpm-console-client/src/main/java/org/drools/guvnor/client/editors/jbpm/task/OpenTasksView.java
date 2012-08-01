@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.common.CustomizableListBox;
 import org.drools.guvnor.client.common.DataDriven;
+import org.drools.guvnor.client.common.LoadingOverlay;
 import org.drools.guvnor.client.common.PagingCallback;
 import org.drools.guvnor.client.common.PagingPanel;
 import org.drools.guvnor.client.util.SimpleDateFormat;
@@ -62,8 +63,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
     public final static String ID = OpenTasksView.class.getName();
 
-    //JLIU
-    //private TaskDetailView detailsView;
+    private TaskDetailView detailsView;
 
     //private final ApplicationContext appContext;
 
@@ -109,12 +109,11 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
    assignedDetailView.initialize();
    registerView(controller, tabPanel, AssignedTasksView.ID, new AssignedTasksView(appContext, assignedDetailView));*/
 
-        //JLIU
-/*        controller.addView(OpenTasksView.ID, this);
+        //controller.addView(OpenTasksView.ID, this);
 
         // ----
 
-        panel.add(detailsView, DockPanel.SOUTH);*/
+        panel.add(detailsView, DockPanel.SOUTH);
         panel.add(taskList, DockPanel.CENTER);
 
         return panel;
@@ -156,19 +155,19 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
             listBox.setFirstLine("Priority, Process, Task Name, Status, Due Date");
 
-            //JLIU
-/*            listBox.addChangeHandler(
+            listBox.addChangeHandler(
                     new ChangeHandler() {
                         public void onChange(ChangeEvent event) {
                             TaskRef task = getSelection(); // first call always null?
                             if (task != null) {
-                                controller.handleEvent(
+                            	  //JLIU: TODO: Send out event using Errai way
+/*                                controller.handleEvent(
                                         new Event(UpdateDetailsAction.ID, new DetailViewEvent("OpenDetailView", task))
-                                );
+                                );*/
                             }
                         }
                     }
-            );*/
+            );
 
             // toolbar
             final VerticalPanel toolBox = new VerticalPanel();
@@ -188,19 +187,19 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
                     "Claim",
                     new Command() {
                         public void execute() {
-                        	//JLIU
-/*                            TaskRef selection = getSelection();
+                            TaskRef selection = getSelection();
 
                             if (selection != null) {
-                                controller.handleEvent(
+                            	  //JLIU: TODO: Send out event using Errai way
+/*                                controller.handleEvent(
                                         new Event(
                                                 ClaimTaskAction.ID,
                                                 new TaskIdentityEvent(appContext.getAuthentication().getUsername(), selection)
                                         )
-                                );
+                                );*/
                             } else {
                                 Window.alert("Missing selection. Please select a task");
-                            }*/
+                            }
                         }
                     }
             );
@@ -228,12 +227,13 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
             // create and register views
             //JLIU
-/*            detailsView = new TaskDetailView(true);
-            controller.addView("OpenDetailView", detailsView);
+            detailsView = new TaskDetailView(true);
+            //controller.addView("OpenDetailView", detailsView);
             detailsView.initialize();
 
             // deployments model listener
-            ErraiBus.get().subscribe(Model.SUBJECT,
+            //JLIU: TODO: We will try to reuse server jar
+/*            ErraiBus.get().subscribe(Model.SUBJECT,
                     new MessageCallback() {
                         public void callback(Message message) {
                             switch (ModelCommands.valueOf(message.getCommandType())) {
@@ -284,9 +284,9 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
     }
 
     public void setLoading(boolean isLoading) {
-/*        if (panel.isVisible()) {
+        if (panel.isVisible()) {
             LoadingOverlay.on(taskList, isLoading);
-        }*/
+        }
     }
 
     private void renderUpdate() {
@@ -326,7 +326,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Module Editor []";
+        return "OpenTasksView";
     }
 
     @WorkbenchPartView
