@@ -226,7 +226,6 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
             // ----
 
             // create and register views
-            //JLIU
             detailsView = new TaskDetailView(true);
             //controller.addView("OpenDetailView", detailsView);
             detailsView.initialize();
