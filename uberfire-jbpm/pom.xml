@@ -16,169 +16,196 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-	    <groupId>org.drools</groupId>
-	    <artifactId>droolsjbpm-parent</artifactId>
-	    <version>5.5.0-SNAPSHOT</version>
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>droolsjbpm-parent</artifactId>
+    <version>5.5.0-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>uberfire-jbpm</artifactId>
-	<packaging>pom</packaging>
+  <artifactId>uberfire-jbpm</artifactId>
+  <packaging>pom</packaging>
 
-	<name>jBPM ÜberFire Modules</name>
-	<description>jBPM ÜberFire Modules</description>
+  <name>jBPM ÜberFire Modules</name>
+  <description>jBPM ÜberFire Modules</description>
 
-	<properties>
-		<errai.version>2.1.0-SNAPSHOT</errai.version>
-		<uberfire.version>0.1-SNAPSHOT</uberfire.version>
-		<jetty.version>6.1.25</jetty.version>
-		<gwt.maven.version>2.4.0</gwt.maven.version>
-		<jetty.version>6.1.25</jetty.version>
-		<weld.version>1.1.6.Final</weld.version>
-		<uberfire.version>0.1-SNAPSHOT</uberfire.version>
-		<resteasy.version>2.3.3.Final</resteasy.version>
-		<gwt.version>2.4.0</gwt.version>
-	</properties>
+  <properties>
+    <errai.version>2.1.0-SNAPSHOT</errai.version>
+    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+    <jetty.version>6.1.25</jetty.version>
+    <gwt.maven.version>2.4.0</gwt.maven.version>
+    <jetty.version>6.1.25</jetty.version>
+    <weld.version>1.1.6.Final</weld.version>
+    <uberfire.version>0.1-SNAPSHOT</uberfire.version>
+    <resteasy.version>2.3.3.Final</resteasy.version>
+    <gwt.version>2.4.0</gwt.version>
+  </properties>
 
-	<modules>
-		<module>jbpm-console-shared</module>
-		<module>jbpm-console-client</module>
-	</modules>
+  <modules>
+    <module>jbpm-console-shared</module>
+    <module>jbpm-console-client</module>
+  </modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-api</artifactId>
-			<version>${uberfire.version}</version>
-		</dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>jbpm-console-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-server</artifactId>
-			<version>${uberfire.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-human-task-core-cdi</artifactId>
+        <version>5.4.0-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>ecj</artifactId>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-api</artifactId>
-			<version>${uberfire.version}</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>widgets-core</artifactId>
-			<version>${uberfire.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>vfs-api</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-workbench</artifactId>
-			<version>${uberfire.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>backend-server</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>guvnorng-repository</artifactId>
-			<version>5.5.0-SNAPSHOT</version>
-		</dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>backend-api</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<version>1.0-SP4</version>
-			<scope>provided</scope>
-		</dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>widgets-core</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
 
-		<!-- Errai Core -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-bus</artifactId>
-			<version>${errai.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-workbench</artifactId>
+        <version>${uberfire.version}</version>
+      </dependency>
 
-		<!-- CDI Integration Modules -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-cdi-client</artifactId>
-			<version>${errai.version}</version>
-		</dependency>
-		<!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-javax-enterprise</artifactId>
-			<scope>provided</scope>
-			<version>${errai.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnorng-repository</artifactId>
+        <version>5.5.0-SNAPSHOT</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-uibinder</artifactId>
-			<version>${errai.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.0-SP4</version>
+        <scope>provided</scope>
+      </dependency>
 
-		<!-- CDI Development Utils -->
-		<!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty 
-			that is present there -->
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
+      <!-- Errai Core -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-plus</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-bus</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-naming</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
+      <!-- CDI Integration Modules -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-client</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
+      <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javax-enterprise</artifactId>
+        <scope>provided</scope>
+        <version>${errai.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-weld-integration</artifactId>
-			<version>${errai.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-uibinder</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
-			<version>${weld.version}</version>
-		</dependency>
+      <!-- CDI Development Utils -->
+      <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty
+  that is present there -->
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>org.jboss.weld.servlet</groupId>
-			<artifactId>weld-servlet</artifactId>
-			<version>${weld.version}</version>
-		</dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-plus</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
 
-		<!-- GWT and GWT Extensions -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>${gwt.version}</version>
-			<scope>provided</scope>
-		</dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-naming</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
 
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-			<version>${gwt.version}</version>
-			<scope>provided</scope>
-		</dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-weld-integration</artifactId>
+        <version>${errai.version}</version>
+      </dependency>
 
-		<!-- TODO weird! -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>12.0</version>
-		</dependency>
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${weld.version}</version>
+      </dependency>
 
-	</dependencies>
+      <dependency>
+        <groupId>org.jboss.weld.servlet</groupId>
+        <artifactId>weld-servlet</artifactId>
+        <version>${weld.version}</version>
+      </dependency>
+
+      <!-- GWT and GWT Extensions -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${gwt.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${gwt.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- TODO weird! -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>12.0</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
 </project>

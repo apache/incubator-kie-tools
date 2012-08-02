@@ -15,13 +15,11 @@
  */
 package org.drools.guvnor.client.editors.jbpm.inbox;
 
-import com.google.gwt.core.client.GWT;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.PlaceManager;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -38,10 +36,8 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionModel;
-import javax.enterprise.event.Event;
-import org.drools.guvnor.client.editors.jbpm.inbox.events.AddTaskUIEvent;
 import org.drools.guvnor.client.editors.jbpm.inbox.events.InboxAction;
-import org.drools.guvnor.client.editors.jbpm.inbox.events.RefreshTasksUIEvent;
+import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
 public class InboxViewImpl extends Composite implements InboxPresenter.InboxView {
@@ -62,8 +58,9 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     public DataGrid<TaskSummary> dataGrid;
     @UiField(provided = true)
     public SimplePager pager;
-    @Inject
-    private Event<InboxAction> inboxEvents;
+
+    private InboxPresenter presenter;
+
     public static final ProvidesKey<TaskSummary> KEY_PROVIDER = new ProvidesKey<TaskSummary>() {
         public Object getKey(TaskSummary item) {
             return item == null ? null : item.getId();
@@ -94,37 +91,27 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
         dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager
                 .<TaskSummary>createCheckboxManager());
 
-
         initWidget(uiBinder.createAndBindUi(this));
-
-
 
     }
 
     @UiHandler("addTaskButton")
     public void addTaskButton(ClickEvent e) {
-        inboxEvents.select(new AddTaskUIEvent() {
-            @Override
-            public Class annotationType() {
-                return AddTaskUIEvent.class;
-            }
-        })
-                .fire(new InboxAction());
-
+        presenter.addTask(new InboxAction());
     }
 
     @UiHandler("refreshTasksButton")
     public void refreshTasksButton(ClickEvent e) {
-        inboxEvents.select(new RefreshTasksUIEvent() {
-            @Override
-            public Class annotationType() {
-                return RefreshTasksUIEvent.class;
-            }
-        })
-                .fire(new InboxAction());
+        presenter.refreshTasks(new InboxAction());
     }
 
-    public DataGrid<TaskSummary> getDataGrid() {
-        return dataGrid;
+    @Override
+    public void setPresenter(InboxPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void addTaskToGrid(TaskSummary task) {
+
     }
 }

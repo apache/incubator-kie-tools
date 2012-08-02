@@ -40,20 +40,6 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         loadStyles();
-        if (Window.Location.getPath().contains("Standalone.html")) {
-            //TODO THIS SHOULD BE MOVED TO CORE SOON - LOOKUP SHOULD BE BASED ON CODE GEN!
-            final TextEditorPresenter presenter = manager.lookupBean(TextEditorPresenter.class).getInstance();
-            RootLayoutPanel.get().add(presenter.view);
-
-            Path path = null;
-            final String pathURI = Window.Location.getParameter("path");
-            if (pathURI != null) {
-                path = Paths.fromURI(pathURI);
-            }
-
-            presenter.onStart(path);
-            presenter.onReveal();
-        }
     }
 
     private void loadStyles() {
