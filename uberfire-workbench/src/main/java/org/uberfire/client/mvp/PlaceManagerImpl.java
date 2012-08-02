@@ -30,8 +30,7 @@ public class PlaceManagerImpl
 
     private final ActivityMapper activityMapper;
 
-    @Inject
-    private EventBus eventBus;
+    private EventBus tempBus = null;
 
     @Inject
     private PanelManager panelManager;
@@ -45,11 +44,10 @@ public class PlaceManagerImpl
 
     PlaceRequest currentPlaceRequest;
 
-
     @Inject
     public PlaceManagerImpl(ActivityMapper activityMapper,
-                            PlaceHistoryHandler placeHistoryHandler,
-                            Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
+            PlaceHistoryHandler placeHistoryHandler,
+            Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
         this.activityMapper = activityMapper;
         this.placeHistoryHandler = placeHistoryHandler;
         this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
@@ -59,14 +57,14 @@ public class PlaceManagerImpl
 
     public void initPlaceHistoryHandler() {
         placeHistoryHandler.register(this,
-                eventBus,
+                produceEventBus(),
                 new PlaceRequest("NOWHERE"));
     }
 
     @Override
     public void goTo(final PlaceRequest placeRequest) {
 
-        if ( placeRequest == null ){
+        if (placeRequest == null) {
             return;
         }
 
@@ -96,7 +94,7 @@ public class PlaceManagerImpl
     }
 
     private void revealActivity(final PlaceRequest newPlace,
-                                final WorkbenchActivity activity) {
+            final WorkbenchActivity activity) {
         //If we're already showing this place exit.
         if (existingWorkbenchActivities.containsKey(newPlace)) {
             final WorkbenchPart part = existingWorkbenchParts.get(newPlace);
@@ -112,7 +110,7 @@ public class PlaceManagerImpl
         activity.onRevealPlace(
                 new AcceptItem() {
                     public void add(String tabTitle,
-                                    IsWidget widget) {
+                            IsWidget widget) {
                         final WorkbenchPart part = new WorkbenchPart(widget.asWidget(),
                                 tabTitle);
                         existingWorkbenchParts.put(newPlace,
@@ -126,7 +124,7 @@ public class PlaceManagerImpl
     }
 
     private void revealActivity(final PlaceRequest newPlace,
-                                final PopupActivity activity) {
+            final PopupActivity activity) {
         activity.onRevealPlace();
     }
 
@@ -182,9 +180,11 @@ public class PlaceManagerImpl
     }
 
     @Produces
-    @ApplicationScoped
-    EventBus makeEventBus() {
-        return new SimpleEventBus();
+    @ApplicationScoped EventBus produceEventBus() {
+        if (tempBus == null) {
+            tempBus = new SimpleEventBus();
+        }
+        return tempBus;
     }
 
 }

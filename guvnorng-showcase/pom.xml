@@ -16,7 +16,7 @@
   <description>GuvnorNG Showcase</description>
 
   <properties>
-    <errai.version>2.1-SNAPSHOT</errai.version>
+    <errai.version>2.1.0-SNAPSHOT</errai.version>
     <uberfire.version>0.1-SNAPSHOT</uberfire.version>
     <jetty.version>6.1.25</jetty.version>
     <gwt.maven.version>2.4.0</gwt.maven.version>
