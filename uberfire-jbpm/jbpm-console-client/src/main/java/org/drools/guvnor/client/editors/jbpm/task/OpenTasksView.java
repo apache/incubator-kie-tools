@@ -160,7 +160,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
                         public void onChange(ChangeEvent event) {
                             TaskRef task = getSelection(); // first call always null?
                             if (task != null) {
-                            	  //JLIU: TODO: Send out event using Errai way
+                            	detailsView.update(task);
 /*                                controller.handleEvent(
                                         new Event(UpdateDetailsAction.ID, new DetailViewEvent("OpenDetailView", task))
                                 );*/
@@ -190,7 +190,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
                             TaskRef selection = getSelection();
 
                             if (selection != null) {
-                            	  //JLIU: TODO: Send out event using Errai way
+                            	  //JLIU: TODO: This calls backend to assign task. It also refresh AllTaskLists if the request succeeds. 
 /*                                controller.handleEvent(
                                         new Event(
                                                 ClaimTaskAction.ID,
@@ -231,7 +231,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
             detailsView.initialize();
 
             // deployments model listener
-            //JLIU: TODO: We will try to reuse server jar
+            //JLIU: TODO: We will try to reuse guvnor-jbpm-console-server 
 /*            ErraiBus.get().subscribe(Model.SUBJECT,
                     new MessageCallback() {
                         public void callback(Message message) {
@@ -260,6 +260,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
     }
 
     private void reload() {
+    	//JLIU: TODO: This calls backend to load tasks for a participant. Callbacks calls public void update(Object... data).  
         // force loading
 /*        controller.handleEvent(
                 new Event(LoadTasksParticipationAction.ID, getAssignedIdentity())
@@ -268,7 +269,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
     public void reset() {
         listBox.clear();
-
+        detailsView.clearView();
         // clear details
 /*        controller.handleEvent(
                 new Event(UpdateDetailsAction.ID, new DetailViewEvent("OpenDetailView", null))
