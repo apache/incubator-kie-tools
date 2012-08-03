@@ -46,6 +46,9 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     private UiBinder<Widget, InboxViewImpl> uiBinder;
     @Inject
     private PlaceManager placeManager;
+    @Inject
+    private InboxPresenter presenter;
+
     @UiField
     public HTMLPanel titlePanel;
     @UiField
@@ -58,8 +61,6 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     public DataGrid<TaskSummary> dataGrid;
     @UiField(provided = true)
     public SimplePager pager;
-
-    private InboxPresenter presenter;
 
     public static final ProvidesKey<TaskSummary> KEY_PROVIDER = new ProvidesKey<TaskSummary>() {
         public Object getKey(TaskSummary item) {
@@ -103,11 +104,6 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     @UiHandler("refreshTasksButton")
     public void refreshTasksButton(ClickEvent e) {
         presenter.refreshTasks(new InboxAction());
-    }
-
-    @Override
-    public void setPresenter(InboxPresenter presenter) {
-        this.presenter = presenter;
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.drools.guvnor.client.editors.jbpm.inbox;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,15 +30,13 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
-@ApplicationScoped
+@Dependent
 @WorkbenchScreen(identifier = "Inbox")
 public class InboxPresenter {
 
     public interface InboxView
             extends
             IsWidget {
-
-        void setPresenter(InboxPresenter presenter);
 
         void addTaskToGrid(TaskSummary task);
     }
@@ -47,11 +46,6 @@ public class InboxPresenter {
 
     @Inject
     Caller<TaskServiceEntryPoint> taskServices;
-
-    @PostConstruct
-    public void init() {
-        view.setPresenter(this);
-    }
 
     @WorkbenchPartTitle
     public String getTitle() {
