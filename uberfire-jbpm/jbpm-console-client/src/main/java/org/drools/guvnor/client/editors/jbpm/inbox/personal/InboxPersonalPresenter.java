@@ -38,6 +38,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "Personal Tasks")
 public class InboxPersonalPresenter {
 
+    
     public interface InboxView
             extends
             IsWidget {
@@ -112,19 +113,20 @@ public class InboxPersonalPresenter {
         
 
     }
-
-    public void claimTasks(Set<TaskSummary> selectedTasks, final String userId) {
+    
+    public void releaseTasks(Set<TaskSummary> selectedTasks, final String userId) {
         for (TaskSummary ts : selectedTasks) {
             taskServices.call(new RemoteCallback<List<TaskSummary>>() {
                 @Override
                 public void callback(List<TaskSummary> tasks) {
                     refreshTasks(userId);
                 }
-            }).claim(ts.getId(), userId);
+            }).release(ts.getId(), userId);
         }
-        
-
     }
+
+
+   
 
     public void completeTasks(Set<TaskSummary> selectedTasks, final String userId) {
         for (TaskSummary ts : selectedTasks) {

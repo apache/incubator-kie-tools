@@ -115,5 +115,10 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint{
         taskInstanceService.claim(taskId, user);
     }
     
+    @Override
+    public void release(long taskId, String user) {
+        taskInstanceService.release(taskId, user);
+    }
+    
     
 }

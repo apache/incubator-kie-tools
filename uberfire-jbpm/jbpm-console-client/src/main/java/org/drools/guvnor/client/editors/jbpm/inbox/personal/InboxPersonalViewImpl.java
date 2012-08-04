@@ -64,8 +64,7 @@ public class InboxPersonalViewImpl extends Composite implements InboxPersonalPre
     private PlaceManager placeManager;
     @Inject
     private InboxPersonalPresenter presenter;
-    @UiField
-    public Button addTaskButton;
+   
     @UiField
     public Button refreshTasksButton;
     @UiField
@@ -73,9 +72,10 @@ public class InboxPersonalViewImpl extends Composite implements InboxPersonalPre
     @UiField
     public Button completeTaskButton;
     @UiField
-    public TextBox userText;
+    public Button releaseTaskButton;
     @UiField
-    public TextBox groupText;
+    public TextBox userText;
+    
     @UiField(provided = true)
     public DataGrid<TaskSummary> myTaskListGrid;
     @UiField(provided = true)
@@ -131,11 +131,7 @@ public class InboxPersonalViewImpl extends Composite implements InboxPersonalPre
        
     }
 
-    @UiHandler("addTaskButton")
-    public void addTaskButton(ClickEvent e) {
-        presenter.addTask(userText.getText(), groupText.getText());
-    }
-
+    
     @UiHandler("refreshTasksButton")
     public void refreshTasksButton(ClickEvent e) {
         presenter.refreshTasks(userText.getText());
@@ -151,6 +147,13 @@ public class InboxPersonalViewImpl extends Composite implements InboxPersonalPre
     @UiHandler("completeTaskButton")
     public void completeTaskButton(ClickEvent e) {
         presenter.completeTasks(selectedTasks, userText.getText());
+
+    }
+    
+    @UiHandler("releaseTaskButton")
+    public void releaseTaskButton(ClickEvent e) {
+        presenter.releaseTasks(selectedTasks, userText.getText());
+
 
     }
 

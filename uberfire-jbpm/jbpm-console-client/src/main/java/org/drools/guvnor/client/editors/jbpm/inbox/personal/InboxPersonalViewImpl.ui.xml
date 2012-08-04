@@ -28,25 +28,21 @@
     <gwt:VerticalPanel width="100%">
         <gwt:HorizontalPanel width="100%">
             <gwt:HTMLPanel>
-                User: 
+                <gwt:Label>User: </gwt:Label>
                 <gwt:TextBox
                     ui:field='userText'>
-                </gwt:TextBox>
-                Group:
-                <gwt:TextBox
-                    ui:field='groupText'>
-                </gwt:TextBox>
-                <gwt:Button
-                    ui:field='addTaskButton'>Add Task
-                </gwt:Button>
+                </gwt:TextBox>  
                 <gwt:Button
                     ui:field='refreshTasksButton' >Refresh Tasks
                 </gwt:Button>
                 <gwt:Button
-                    ui:field='completeTaskButton' >Complete Tasks
+                    ui:field='startTaskButton' >Start Task
                 </gwt:Button>
                 <gwt:Button
-                    ui:field='startTaskButton' >Start Task
+                    ui:field='completeTaskButton' >Complete Task
+                </gwt:Button>
+                <gwt:Button
+                    ui:field='releaseTaskButton' >Relese Task
                 </gwt:Button>
             </gwt:HTMLPanel>
         </gwt:HorizontalPanel>

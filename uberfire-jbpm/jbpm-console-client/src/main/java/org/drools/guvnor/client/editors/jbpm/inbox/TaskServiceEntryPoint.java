@@ -46,4 +46,5 @@ public interface TaskServiceEntryPoint {
     
     public void complete(long taskId, String user, Map<String, Object> params);
   
+    public void release(long taskId, String user);
 }

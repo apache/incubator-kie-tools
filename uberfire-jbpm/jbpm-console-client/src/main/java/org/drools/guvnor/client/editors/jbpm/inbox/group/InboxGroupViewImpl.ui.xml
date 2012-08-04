@@ -28,17 +28,18 @@
     <gwt:VerticalPanel width="100%">
         <gwt:HorizontalPanel width="100%">
             <gwt:HTMLPanel>
-                User: 
-                <gwt:TextBox
-                    ui:field='userText'>
-                </gwt:TextBox>
-                Group:
+               
+                <gwt:Label>Group:</gwt:Label>
                 <gwt:TextBox
                     ui:field='groupText'>
                 </gwt:TextBox>
                 <gwt:Button
                     ui:field='refreshTasksButton'>Refresh Tasks
                 </gwt:Button>
+                <gwt:Label>User:</gwt:Label> 
+                <gwt:TextBox
+                    ui:field='userText'>
+                </gwt:TextBox>
                 <gwt:Button
                     ui:field='claimTaskButton'>Claim Task
                 </gwt:Button>
@@ -47,7 +48,7 @@
         
         <gwt:HorizontalPanel width="100%">
             <gwt:HTMLPanel>
-                Group Tasks:
+                <gwt:Label>Group Tasks:</gwt:Label>
             </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
         

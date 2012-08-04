@@ -25,44 +25,55 @@
     <ui:with field="i18n" type="org.drools.guvnor.client.i18n.Constants"/>
     <ui:with field='resources' type='org.drools.guvnor.client.resources.ShowcaseResources'/>
 
-    
+    <gwt:DecoratorPanel>
     <gwt:VerticalPanel width="100%">
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
-                User: 
-                <gwt:TextBox
-                    ui:field='userText'>
-                </gwt:TextBox>
-                Group:
-                <gwt:TextBox
-                    ui:field='groupText'>
-                </gwt:TextBox>
-                Task Name:
-                <gwt:TextBox
-                    ui:field='taskNameText'>
-                </gwt:TextBox>
-                Task Description:
-                <gwt:TextBox
-                    ui:field='taskDescriptionText'>
-                </gwt:TextBox>
-                Task Priority (0 - 10):
-                <gwt:TextBox
-                    ui:field='taskPriorityText'>
-                </gwt:TextBox>
-                Due Date:
-                <dp:DatePicker ui:field='dueDate'></dp:DatePicker>
-                <gwt:Button
-                    ui:field='addTaskButton'>Add Task
-                </gwt:Button>
-                <gwt:Button
-                    ui:field='clearButton'>Clear
-                </gwt:Button>
-                
-            </gwt:HTMLPanel>
-        </gwt:HorizontalPanel>
+        <gwt:HTMLPanel>
+            <gwt:Label>User: </gwt:Label>
+            <gwt:TextBox
+                ui:field='userText'>
+            </gwt:TextBox>
+        </gwt:HTMLPanel>
+        <gwt:HTMLPanel>
+            <gwt:Label>Group: </gwt:Label>
+            <gwt:TextBox
+                ui:field='groupText'>
+            </gwt:TextBox>
+        </gwt:HTMLPanel>
+        <gwt:HTMLPanel>
+            <gwt:Label>Task Name: </gwt:Label>
+            <gwt:TextBox
+                ui:field='taskNameText'>
+            </gwt:TextBox>
+        </gwt:HTMLPanel>
         
+        <gwt:HTMLPanel>
+            <gwt:Label>Task Description </gwt:Label>
+            <gwt:TextBox
+                ui:field='taskDescriptionText'>
+            </gwt:TextBox>
+        </gwt:HTMLPanel>
+        
+        <gwt:HTMLPanel>
+            <gwt:Label>Task Priority (0 - 10): </gwt:Label>
+            <gwt:TextBox
+                ui:field='taskPriorityText'>
+            </gwt:TextBox>
+        </gwt:HTMLPanel>
+        <gwt:HTMLPanel>
+            <gwt:Label>Due Date: </gwt:Label>
+            <dp:DatePicker ui:field='dueDate'></dp:DatePicker>
+        </gwt:HTMLPanel>
+        <gwt:HTMLPanel>
+            <gwt:Label>Actions: </gwt:Label>
+            <gwt:Button
+                ui:field='addTaskButton'>Add Task
+            </gwt:Button>
+            <gwt:Button
+                ui:field='clearButton'>Clear
+            </gwt:Button>        
+        </gwt:HTMLPanel>    
         
     </gwt:VerticalPanel>
-    
+    </gwt:DecoratorPanel>
 
 </ui:UiBinder>
