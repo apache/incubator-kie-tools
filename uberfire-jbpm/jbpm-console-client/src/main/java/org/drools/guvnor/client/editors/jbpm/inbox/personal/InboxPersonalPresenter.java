@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.editors.jbpm.inbox;
+package org.drools.guvnor.client.editors.jbpm.inbox.personal;
 
+import com.google.gwt.user.client.Timer;
 import org.jboss.bpm.console.client.model.TaskSummary;
 import java.util.List;
 import javax.enterprise.context.Dependent;
@@ -26,6 +27,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import java.util.Date;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import org.drools.guvnor.client.editors.jbpm.inbox.TaskServiceEntryPoint;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -33,8 +35,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchScreen(identifier = "Inbox")
-public class InboxPresenter {
+@WorkbenchScreen(identifier = "Personal Tasks")
+public class InboxPersonalPresenter {
 
     public interface InboxView
             extends
@@ -48,7 +50,7 @@ public class InboxPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Inbox";
+        return "Personal Tasks";
     }
 
     @WorkbenchPartView
@@ -56,89 +58,84 @@ public class InboxPresenter {
         return view;
     }
 
-    public InboxPresenter() {
+    public InboxPersonalPresenter() {
     }
 
     @PostConstruct
     public void init() {
-        dataProvider.getList().add(new TaskSummary(999, 1, "My First Hardcoded Task", "Needs to be Done", "Task Desc", "Reserved", 1, false, "salaboy", "salaboy", new Date(), new Date(), new Date(), "haha2", 1));
-        dataProvider.refresh();
+        
     }
 
-    public void addTask(String userId, String groupId) {
+    public void addTask(final String userId, String groupId) {
         String str = "(with (new Task()) { priority = " + Math.random() % 5 + ", taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = ";
-        if(userId != null && !userId.equals("")){
-                str += " [new User('"+userId+"')  ], }),";
+        if (userId != null && !userId.equals("")) {
+            str += " [new User('" + userId + "')  ], }),";
         }
-        if(groupId != null && !groupId.equals("")){
-                str += " [new Group('"+groupId+"')  ], }),";
+        if (groupId != null && !groupId.equals("")) {
+            str += " [new Group('" + groupId + "')  ], }),";
         }
+        
         str += "names = [ new I18NText( 'en-UK', 'This is my task " + Math.random() + " name " + new Date() + "')] })";
         taskServices.call(new RemoteCallback<Long>() {
             @Override
             public void callback(Long taskId) {
                 System.out.println("The returned Task Id is = " + taskId);
-                dataProvider.refresh();
+                refreshTasks(userId);
             }
         }).addTask(str, null);
-        dataProvider.refresh();
+        
     }
 
     public void refreshTasks(String userId) {
         taskServices.call(new RemoteCallback<List<TaskSummary>>() {
             @Override
             public void callback(List<TaskSummary> tasks) {
-                System.out.println("Number of tasks returned = " + tasks.size() + " -> " + System.identityHashCode(this));
+                System.out.println(" XXX Number of personal tasks returned = " + tasks.size());
                 dataProvider.setList(tasks);
                 dataProvider.refresh();
 
             }
-        }).getTasksAssignedAsPotentialOwner(userId, "en-UK");
-        dataProvider.refresh();
+        }).getTasksOwned(userId);
+        
     }
 
-    public void startTasks(Set<TaskSummary> selectedTasks, String userId) {
+    public void startTasks(Set<TaskSummary> selectedTasks, final String userId) {
         for (TaskSummary ts : selectedTasks) {
             taskServices.call(new RemoteCallback<List<TaskSummary>>() {
                 @Override
                 public void callback(List<TaskSummary> tasks) {
-
-                    dataProvider.refresh();
-
+                    refreshTasks(userId);
                 }
             }).start(ts.getId(), userId);
         }
-        dataProvider.refresh();
+        
 
     }
-    public void claimTasks(Set<TaskSummary> selectedTasks, String userId) {
+
+    public void claimTasks(Set<TaskSummary> selectedTasks, final String userId) {
         for (TaskSummary ts : selectedTasks) {
             taskServices.call(new RemoteCallback<List<TaskSummary>>() {
                 @Override
                 public void callback(List<TaskSummary> tasks) {
-
-                    dataProvider.refresh();
-
+                    refreshTasks(userId);
                 }
             }).claim(ts.getId(), userId);
         }
-        dataProvider.refresh();
+        
 
     }
 
-    public void completeTasks(Set<TaskSummary> selectedTasks, String userId) {
+    public void completeTasks(Set<TaskSummary> selectedTasks, final String userId) {
         for (TaskSummary ts : selectedTasks) {
             taskServices.call(new RemoteCallback<List<TaskSummary>>() {
                 @Override
                 public void callback(List<TaskSummary> tasks) {
-
-                    dataProvider.refresh();
-
+                    refreshTasks(userId);
                 }
             }).complete(ts.getId(), userId, null);
         }
-        dataProvider.refresh();
+        
     }
 
     public void addDataDisplay(HasData<TaskSummary> display) {

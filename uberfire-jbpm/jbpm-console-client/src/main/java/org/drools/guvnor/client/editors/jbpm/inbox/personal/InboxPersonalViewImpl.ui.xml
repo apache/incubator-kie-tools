@@ -52,11 +52,6 @@
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel width="100%">
             <gwt:HTMLPanel>
-                Personal Tasks:
-            </gwt:HTMLPanel>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
                 <c:DataGrid
                     ui:field='myTaskListGrid'  />
             </gwt:HTMLPanel>
@@ -78,42 +73,7 @@
             
             </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
-                Group Tasks:
-            </gwt:HTMLPanel>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
-                <gwt:Button
-                    ui:field='claimTaskButton'>Claim Task
-                </gwt:Button>
-            </gwt:HTMLPanel>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
-                <c:DataGrid
-                    ui:field='myGroupTaskListGrid'  />
-            </gwt:HTMLPanel>
-
-        </gwt:HorizontalPanel>
-       
-        <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel>
-                <table
-                    style="width:100%">
-                    <tr>
-                        <td
-                            align='center'>
-                            <c:SimplePager
-                                ui:field='pagerGroup' />
-                        </td>
-                    </tr>
-                </table>
-             
-            
-            </gwt:HTMLPanel>
-        </gwt:HorizontalPanel>
+        
     </gwt:VerticalPanel>
     
 

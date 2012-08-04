@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.editors.jbpm.inbox;
+package org.drools.guvnor.client.editors.jbpm.inbox.personal;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -38,6 +38,7 @@ import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.SafeHtmlHeader;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -55,18 +56,16 @@ import org.drools.guvnor.client.editors.jbpm.inbox.events.InboxAction;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
-public class InboxViewImpl extends Composite implements InboxPresenter.InboxView {
+public class InboxPersonalViewImpl extends Composite implements InboxPersonalPresenter.InboxView {
 
     @Inject
-    private UiBinder<Widget, InboxViewImpl> uiBinder;
+    private UiBinder<Widget, InboxPersonalViewImpl> uiBinder;
     @Inject
     private PlaceManager placeManager;
     @Inject
-    private InboxPresenter presenter;
+    private InboxPersonalPresenter presenter;
     @UiField
     public Button addTaskButton;
-    @UiField
-    public Button claimTaskButton;
     @UiField
     public Button refreshTasksButton;
     @UiField
@@ -80,17 +79,8 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     @UiField(provided = true)
     public DataGrid<TaskSummary> myTaskListGrid;
     @UiField(provided = true)
-    public DataGrid<TaskSummary> myGroupTaskListGrid;
-    
-    @UiField(provided = true)
     public SimplePager pager;
-    
-    @UiField(provided = true)
-    public SimplePager pagerGroup;
-    
     private Set<TaskSummary> selectedTasks;
-    private Set<TaskSummary> selectedGroupTasks;
-    
     public static final ProvidesKey<TaskSummary> KEY_PROVIDER = new ProvidesKey<TaskSummary>() {
         public Object getKey(TaskSummary item) {
             return item == null ? null : item.getId();
@@ -112,12 +102,12 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
         ListHandler<TaskSummary> sortHandler =
                 new ListHandler<TaskSummary>(presenter.getDataProvider().getList());
         myTaskListGrid.addColumnSortHandler(sortHandler);
-        myTaskListGrid.setPageSize(10);
+        myTaskListGrid.setPageSize(6);
         // Create a Pager to control the table.
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
         pager.setDisplay(myTaskListGrid);
-        pager.setPageSize(10);
+        pager.setPageSize(6);
 
         // Add a selection model so we can select cells.
         final MultiSelectionModel<TaskSummary> selectionModel =
@@ -126,7 +116,7 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
             public void onSelectionChange(SelectionChangeEvent event) {
 
                 selectedTasks = selectionModel.getSelectedSet();
-               
+
             }
         });
 
@@ -134,23 +124,11 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
                 .<TaskSummary>createCheckboxManager());
 
         initTableColumns(selectionModel, sortHandler);
-        
-        myGroupTaskListGrid = new DataGrid<TaskSummary>(KEY_PROVIDER);
-        myGroupTaskListGrid.setWidth("100%");
-        myGroupTaskListGrid.setHeight("300px");
 
-        // Set the message to display when the table is empty.
-        myGroupTaskListGrid.setEmptyTableWidget(new Label("Hooray you don't have any Group Task to Claim!!"));
-        myTaskListGrid.setPageSize(10);
-        // Create a Pager to control the table.
-        SimplePager.Resources pagerGroupResources = GWT.create(SimplePager.Resources.class);
-        pagerGroup = new SimplePager(TextLocation.CENTER, pagerGroupResources, false, 0, true);
-        pagerGroup.setDisplay(myTaskListGrid);
-        pagerGroup.setPageSize(10);
-        
         initWidget(uiBinder.createAndBindUi(this));
 
         presenter.addDataDisplay(myTaskListGrid);
+       
     }
 
     @UiHandler("addTaskButton")
@@ -166,20 +144,14 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
     @UiHandler("startTaskButton")
     public void startTaskButton(ClickEvent e) {
         presenter.startTasks(selectedTasks, userText.getText());
-        
-       
+
+
     }
 
     @UiHandler("completeTaskButton")
     public void completeTaskButton(ClickEvent e) {
-       presenter.completeTasks(selectedTasks, userText.getText());
-       
-    }
-    
-     @UiHandler("claimTaskButton")
-    public void claimTaskButton(ClickEvent e) {
-       presenter.claimTasks(selectedGroupTasks, userText.getText());
-       
+        presenter.completeTasks(selectedTasks, userText.getText());
+
     }
 
     private void initTableColumns(final SelectionModel<TaskSummary> selectionModel,
@@ -264,7 +236,7 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
         myTaskListGrid.addColumn(taskPriorityColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Priority")));
         myTaskListGrid.setColumnWidth(taskPriorityColumn, 40, Unit.PCT);
 
-         // Status.
+        // Status.
         Column<TaskSummary, String> statusColumn = new Column<TaskSummary, String>(new TextCell()) {
             @Override
             public String getValue(TaskSummary object) {
@@ -280,7 +252,7 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
 
         myTaskListGrid.addColumn(statusColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Status")));
         myTaskListGrid.setColumnWidth(statusColumn, 50, Unit.PCT);
-        
+
         // User.
         Column<TaskSummary, String> userColumn = new Column<TaskSummary, String>(new TextCell()) {
             @Override
@@ -297,10 +269,10 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
 
         myTaskListGrid.addColumn(userColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Actual Owner")));
         myTaskListGrid.setColumnWidth(userColumn, 50, Unit.PCT);
+        
+       
 
 
-        
-        
         // Description.
         Column<TaskSummary, String> descriptionColumn = new Column<TaskSummary, String>(new TextCell()) {
             @Override
@@ -309,10 +281,10 @@ public class InboxViewImpl extends Composite implements InboxPresenter.InboxView
             }
         };
         descriptionColumn.setSortable(true);
-        
+
 
         myTaskListGrid.addColumn(descriptionColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Description")));
         myTaskListGrid.setColumnWidth(descriptionColumn, 150, Unit.PCT);
-        
+
     }
 }
