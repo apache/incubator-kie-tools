@@ -20,8 +20,8 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.drools.guvnor.client.editors.jbpm.inbox.TaskServiceEntryPoint;
-import org.drools.guvnor.client.editors.jbpm.inbox.TaskSummary;
-import org.drools.guvnor.client.editors.jbpm.inbox.TaskSummaryHelper;
+import org.jboss.bpm.console.client.model.TaskSummary;
+import org.jboss.bpm.console.client.model.TaskSummaryHelper;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
@@ -99,7 +99,21 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint{
         Task task = TaskFactory.evalTask(taskString, params, true);
         return taskInstanceService.addTask(task, params);
     }
+
+    @Override
+    public void start(long taskId, String user) {
+        taskInstanceService.start(taskId, user);
+    }
     
+    @Override
+    public void complete(long taskId, String user, Map<String, Object> params) {
+        taskInstanceService.complete(taskId, user, params);
+    }
+
+    @Override
+    public void claim(long taskId, String user) {
+        taskInstanceService.claim(taskId, user);
+    }
     
     
 }

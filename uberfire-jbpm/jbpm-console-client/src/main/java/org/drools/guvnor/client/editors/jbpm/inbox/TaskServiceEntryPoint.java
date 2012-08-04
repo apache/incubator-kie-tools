@@ -4,6 +4,7 @@
  */
 package org.drools.guvnor.client.editors.jbpm.inbox;
 
+import org.jboss.bpm.console.client.model.TaskSummary;
 import java.util.List;
 import java.util.Map;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -39,5 +40,10 @@ public interface TaskServiceEntryPoint {
     
     public long addTask(String taskString, Map<String, Object> params);
 
+    public void start(long taskId, String user);
+    
+    public void claim(long taskId, String user);
+    
+    public void complete(long taskId, String user, Map<String, Object> params);
   
 }

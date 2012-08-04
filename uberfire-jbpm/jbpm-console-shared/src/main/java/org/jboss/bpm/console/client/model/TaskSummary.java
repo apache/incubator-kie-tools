@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.editors.jbpm.inbox;
+package org.jboss.bpm.console.client.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-
+@Portable
 public class TaskSummary
     implements
     Serializable {

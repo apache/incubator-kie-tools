@@ -24,58 +24,97 @@
     <ui:with field="i18n" type="org.drools.guvnor.client.i18n.Constants"/>
     <ui:with field='resources' type='org.drools.guvnor.client.resources.ShowcaseResources'/>
 
-    <ui:style>
-        .resetDockPanel > div {
-        position: static !important;
-        }
     
-        .cellTable {
-        border-bottom: 1px solid #ccc;
-        text-align: left;
-        margin-bottom: 4px;
-        }
-    </ui:style>
-
     <gwt:VerticalPanel width="100%">
-        <gwt:HTMLPanel ui:field="titlePanel" styleName='{resources.showcaseCss.mainClass}'>
-     
-      
-            <div style="clear:both;"></div>
-        </gwt:HTMLPanel>
-        <gwt:DockLayoutPanel
-            unit="EM">
-            <!-- DataGrid. -->
-            <gwt:center>
-                <c:DataGrid
-                    ui:field='dataGrid' />
-            </gwt:center>
-
-            <!-- Pager. -->
-            <gwt:south
-                size="3">
-                <gwt:HTMLPanel>
-                    <table
-                        style="width:100%">
-                        <tr>
-                            <td
-                                align='center'>
-                                <c:SimplePager
-                                    ui:field='pager' />
-                            </td>
-                        </tr>
-                    </table>
-                </gwt:HTMLPanel>
-            </gwt:south>
-        </gwt:DockLayoutPanel>
-        <gwt:Button
-          ui:field='addTaskButton'> Add Task
-        </gwt:Button>
-        <gwt:Button
-          ui:field='refreshTasksButton' >Refresh Tasks
-        </gwt:Button>
         <gwt:HorizontalPanel width="100%">
-            <gwt:HTMLPanel ui:field="footerPanel"/>
+            <gwt:HTMLPanel>
+                User: 
+                <gwt:TextBox
+                    ui:field='userText'>
+                </gwt:TextBox>
+                Group:
+                <gwt:TextBox
+                    ui:field='groupText'>
+                </gwt:TextBox>
+                <gwt:Button
+                    ui:field='addTaskButton'>Add Task
+                </gwt:Button>
+                <gwt:Button
+                    ui:field='refreshTasksButton' >Refresh Tasks
+                </gwt:Button>
+                <gwt:Button
+                    ui:field='completeTaskButton' >Complete Tasks
+                </gwt:Button>
+                <gwt:Button
+                    ui:field='startTaskButton' >Start Task
+                </gwt:Button>
+            </gwt:HTMLPanel>
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                Personal Tasks:
+            </gwt:HTMLPanel>
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                <c:DataGrid
+                    ui:field='myTaskListGrid'  />
+            </gwt:HTMLPanel>
+
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                <table
+                    style="width:100%">
+                    <tr>
+                        <td
+                            align='center'>
+                            <c:SimplePager
+                                ui:field='pager' />
+                        </td>
+                    </tr>
+                </table>
+             
+            
+            </gwt:HTMLPanel>
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                Group Tasks:
+            </gwt:HTMLPanel>
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                <gwt:Button
+                    ui:field='claimTaskButton'>Claim Task
+                </gwt:Button>
+            </gwt:HTMLPanel>
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                <c:DataGrid
+                    ui:field='myGroupTaskListGrid'  />
+            </gwt:HTMLPanel>
+
+        </gwt:HorizontalPanel>
+       
+        <gwt:HorizontalPanel width="100%">
+            <gwt:HTMLPanel>
+                <table
+                    style="width:100%">
+                    <tr>
+                        <td
+                            align='center'>
+                            <c:SimplePager
+                                ui:field='pagerGroup' />
+                        </td>
+                    </tr>
+                </table>
+             
+            
+            </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
     </gwt:VerticalPanel>
+    
 
 </ui:UiBinder>
