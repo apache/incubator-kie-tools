@@ -33,6 +33,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -48,6 +49,8 @@ import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.StringRef;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.util.SimpleDateFormat;
 
 /**
@@ -288,5 +291,15 @@ public class InstanceDetailView extends HorizontalPanel {
 
     private ProcessInstanceRef getCurrentInstance() {
         return currentInstance;
-    }
+    }    
+    
+	@WorkbenchPartTitle
+	public String getTitle() {
+		return "InstanceDetailView";
+	}
+
+	@WorkbenchPartView
+	public IsWidget getView() {
+		return asWidget();
+	}
 }

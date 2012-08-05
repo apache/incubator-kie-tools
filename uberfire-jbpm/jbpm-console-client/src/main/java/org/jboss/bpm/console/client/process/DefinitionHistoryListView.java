@@ -50,6 +50,8 @@ import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
  * Maciej Swiderski <swiderski.maciej@gmail.com>
@@ -279,6 +281,15 @@ public class DefinitionHistoryListView implements IsWidget, DataDriven {
         }
         return selection;
     }
+    
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "DefinitionHistoryListView";
+    }
 
+    @WorkbenchPartView
+    public IsWidget getView() {
+    	return asWidget();
+    }
 }
 

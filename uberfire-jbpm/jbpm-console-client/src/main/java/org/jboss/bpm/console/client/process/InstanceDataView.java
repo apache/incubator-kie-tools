@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -36,6 +37,8 @@ import org.drools.guvnor.client.common.CustomizableListBox;
 import org.drools.guvnor.client.util.ConsoleLog;
 import org.drools.guvnor.client.util.DOMUtil;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
  * @author Heiko.Braun <heiko.braun@jboss.com>
@@ -166,4 +169,15 @@ public class InstanceDataView extends SimplePanel implements LazyPanel {
         String java;
         String value;
     }
+    
+	@WorkbenchPartTitle
+	public String getTitle() {
+		return "InstanceDataView";
+	}
+
+	@WorkbenchPartView
+	public IsWidget getView() {
+		return asWidget();
+	}
+    
 }

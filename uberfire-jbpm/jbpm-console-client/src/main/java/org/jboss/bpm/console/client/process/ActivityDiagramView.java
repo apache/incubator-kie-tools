@@ -26,12 +26,15 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import org.jboss.bpm.console.client.model.ActiveNodeInfo;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.process.events.ActivityDiagramResultEvent;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
  * @author Heiko.Braun <heiko.braun@jboss.com>
@@ -96,5 +99,15 @@ public class ActivityDiagramView extends ScrollPanel {
         this.add(html);
         //TODO: -Rikkola-
 //        invalidate();
+    }
+    
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "ActivityDiagramView";
+    }
+
+    @WorkbenchPartView
+    public IsWidget getView() {
+    	return asWidget();
     }
 }

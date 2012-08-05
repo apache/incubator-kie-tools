@@ -25,12 +25,15 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.PropertyGrid;
 import org.drools.guvnor.client.editors.jbpm.ServerPlugins;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
  * @author Heiko.Braun <heiko.braun@jboss.com>
@@ -126,4 +129,14 @@ public class ProcessDetailView extends VerticalPanel {
         }
         this.currentProcess = null;
     }
+    
+	@WorkbenchPartTitle
+	public String getTitle() {
+		return "ProcessDetailView";
+	}
+
+	@WorkbenchPartView
+	public IsWidget getView() {
+		return asWidget();
+	}
 }

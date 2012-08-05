@@ -53,6 +53,8 @@ import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 /**
  * @author Heiko.Braun <heiko.braun@jboss.com>
@@ -346,5 +348,14 @@ public class DefinitionListView implements IsWidget, DataDriven {
         }
         return selection;
     }
+    
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "DefinitionListView";
+    }
 
+    @WorkbenchPartView
+    public IsWidget getView() {
+    	return asWidget();
+    }
 }

@@ -56,6 +56,8 @@ import org.jboss.bpm.console.client.model.TokenReference;
 import org.jboss.bpm.console.client.process.events.InstanceEvent;
 import org.jboss.bpm.console.client.process.events.SignalInstanceEvent;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.util.SimpleDateFormat;
 
 /**
@@ -593,5 +595,14 @@ public class InstanceListView implements IsWidget, DataDriven {
             listBoxTokenSignals.addItem(signal);
         }
     }
+    
+	@WorkbenchPartTitle
+	public String getTitle() {
+		return "InstanceListView";
+	}
 
+	@WorkbenchPartView
+	public IsWidget getView() {
+		return asWidget();
+	}
 }

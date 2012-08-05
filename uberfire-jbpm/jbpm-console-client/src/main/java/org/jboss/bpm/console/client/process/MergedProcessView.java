@@ -24,6 +24,8 @@ package org.jboss.bpm.console.client.process;
 import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -54,4 +56,14 @@ public class MergedProcessView implements IsWidget {
 
         return splitPanel;
     }
+        
+	@WorkbenchPartTitle
+	public String getTitle() {
+		return "MergedProcessView";
+	}
+
+	@WorkbenchPartView
+	public IsWidget getView() {
+		return asWidget();
+	}
 }

@@ -51,6 +51,8 @@ import org.jboss.bpm.console.client.model.HistoryProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.process.events.HistoryActivityDiagramEvent;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.drools.guvnor.client.util.SimpleDateFormat;
 
 /**
@@ -389,6 +391,16 @@ public class HistoryInstanceListView implements IsWidget, DataDriven {
                 layout, true
         );
 
+    }
+        
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "HistoryInstanceListView";
+    }
+
+    @WorkbenchPartView
+    public IsWidget getView() {
+    	return asWidget();
     }
 }
 
