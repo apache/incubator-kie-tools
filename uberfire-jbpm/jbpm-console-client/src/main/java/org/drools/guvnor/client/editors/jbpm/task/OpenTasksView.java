@@ -39,6 +39,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.CustomizableListBox;
 import org.drools.guvnor.client.common.DataDriven;
 import org.drools.guvnor.client.common.LoadingOverlay;
+import org.drools.guvnor.client.common.Model;
+import org.drools.guvnor.client.common.ModelCommands;
+import org.drools.guvnor.client.common.ModelParts;
 import org.drools.guvnor.client.common.PagingCallback;
 import org.drools.guvnor.client.common.PagingPanel;
 import org.drools.guvnor.client.util.SimpleDateFormat;
@@ -232,7 +235,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
 
             // deployments model listener
             //JLIU: TODO: We will try to reuse guvnor-jbpm-console-server 
-/*            ErraiBus.get().subscribe(Model.SUBJECT,
+            ErraiBus.get().subscribe(Model.SUBJECT,
                     new MessageCallback() {
                         public void callback(Message message) {
                             switch (ModelCommands.valueOf(message.getCommandType())) {
@@ -243,7 +246,7 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
                                     break;
                             }
                         }
-                    });*/
+                    });
 
             Timer t = new Timer() {
                 @Override
