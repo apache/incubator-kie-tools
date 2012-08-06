@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.DefaultPerspective;
-import org.uberfire.client.workbench.menu.GuvnorMenu;
 import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
@@ -21,13 +20,10 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -41,6 +37,8 @@ public class Workbench extends Composite {
     private final VerticalPanel           container = new VerticalPanel();
 
     private final SimplePanel             workbench = new SimplePanel();
+
+    private AbsolutePanel                 workbenchContainer;
 
     @Inject
     private PanelManager                  panelManager;
@@ -56,34 +54,18 @@ public class Workbench extends Composite {
 
     @Inject
     private BeanFactory                   factory;
-    
+
     @Inject
-    private WorkbenchMenuBar menuBar;
+    private WorkbenchMenuBar              menuBar;
 
     @PostConstruct
     public void setup() {
 
-        //Spoof for now, would probably be a banner or something
-        HorizontalPanel debugBar = new HorizontalPanel();
-        debugBar.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-        debugBar.getElement().getStyle().setBackgroundColor( "#c0c0c0" );
-        debugBar.getElement().getStyle().setHeight( 48.0,
-                                                    Unit.PX );
-        debugBar.setWidth( WIDTH + "px" );
-
-        final GuvnorMenu menu = iocManager.lookupBean( GuvnorMenu.class ).getInstance();
-        debugBar.add( menu );
-        container.add( debugBar );
-
-        //Menubar
+        //Menu bar
         container.add( menuBar );
 
         //Container panels for workbench
-        final AbsolutePanel workbenchContainer = dragController.getBoundaryPanel();
-        workbenchContainer.setPixelSize( WIDTH,
-                                         HEIGHT - 48 );
-        workbench.setPixelSize( WIDTH,
-                                HEIGHT - 48 );
+        workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
 
@@ -107,8 +89,17 @@ public class Workbench extends Composite {
     }
 
     private void bootstrap() {
+
+        //Clear environment
         workbench.clear();
         dndManager.unregisterDropControllers();
+
+        //Size environment
+        final int menuBarHeight = menuBar.getOffsetHeight();
+        workbenchContainer.setPixelSize( WIDTH,
+                                         HEIGHT - menuBarHeight );
+        workbench.setPixelSize( WIDTH,
+                                HEIGHT - menuBarHeight );
 
         //Add default workbench widget
         final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel();

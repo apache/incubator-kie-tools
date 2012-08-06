@@ -16,16 +16,25 @@
 package org.uberfire.client.workbench;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -41,11 +50,33 @@ public class WorkbenchMenuBar extends MenuBar {
     @Inject
     private PlaceManager   placeManager;
 
+    @Inject
+    private IOCBeanManager iocManager;
+
     private List<MenuItem> items = new ArrayList<MenuItem>();
 
     @SuppressWarnings("unused")
     @AfterInitialization
     private void setup() {
+        final MenuBar placesMenuBar = new MenuBar( true );
+        final MenuItem placesMenu = new MenuItem( "Places",
+                                                  placesMenuBar );
+        final List<AbstractScreenActivity> activities = getScreenActivities();
+        for ( AbstractScreenActivity activity : activities ) {
+            final String identifier = activity.getIdentifier();
+            final Command cmd = new Command() {
+
+                @Override
+                public void execute() {
+                    placeManager.goTo( new PlaceRequest( identifier ) );
+                }
+
+            };
+            placesMenuBar.addItem( identifier,
+                                   cmd );
+        }
+
+        addItem( placesMenu );
         addItem( new MenuItem( "About",
                                new Command() {
 
@@ -55,6 +86,32 @@ public class WorkbenchMenuBar extends MenuBar {
                                    }
 
                                } ) );
+    }
+
+    private List<AbstractScreenActivity> getScreenActivities() {
+
+        //Get Screen Activities
+        final Set<AbstractScreenActivity> activities = new HashSet<AbstractScreenActivity>();
+        Collection<IOCBeanDef<AbstractScreenActivity>> activityBeans = iocManager.lookupBeans( AbstractScreenActivity.class );
+        for ( IOCBeanDef<AbstractScreenActivity> activityBean : activityBeans ) {
+            final AbstractScreenActivity instance = (AbstractScreenActivity) activityBean.getInstance();
+            activities.add( instance );
+        }
+
+        //Sort Activities so they're always in the same sequence!
+        List<AbstractScreenActivity> sortedActivities = new ArrayList<AbstractScreenActivity>( activities );
+        Collections.sort( sortedActivities,
+                          new Comparator<AbstractScreenActivity>() {
+
+                              @Override
+                              public int compare(AbstractScreenActivity o1,
+                                                 AbstractScreenActivity o2) {
+                                  return o1.getTitle().compareTo( o2.getTitle() );
+                              }
+
+                          } );
+
+        return sortedActivities;
     }
 
     @SuppressWarnings("unused")
