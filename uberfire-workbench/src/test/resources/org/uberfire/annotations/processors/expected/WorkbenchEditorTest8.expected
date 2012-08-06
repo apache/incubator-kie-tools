@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
-import org.uberfire.client.mvp.EditorService;
 
 import org.uberfire.backend.vfs.Path;
 
@@ -36,9 +35,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest8Activity extends AbstractEditorActivity
-    implements
-    EditorService {
+public class WorkbenchEditorTest8Activity extends AbstractEditorActivity {
 
     @Inject
     private WorkbenchEditorTest8 realPresenter;
@@ -88,19 +85,4 @@ public class WorkbenchEditorTest8Activity extends AbstractEditorActivity
         return realPresenter.getView();
     }
     
-    @Override
-    public boolean isDirty() {
-        return false;
-    }
-    
-    @Override
-    public void onSave() {
-        //Do nothing. The real presenter does not have a @OnSave annotation
-    }
-
-    @Override
-    public EditorService getPresenter() {
-        return this;
-    }
-
 }

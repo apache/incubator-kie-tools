@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.mvp.BaseService;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -32,9 +31,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchPopupTest6Activity extends AbstractPopupActivity
-    implements
-    BaseService {
+public class WorkbenchPopupTest6Activity extends AbstractPopupActivity {
 
     @Inject
     private WorkbenchPopupTest6 realPresenter;
@@ -49,9 +46,4 @@ public class WorkbenchPopupTest6Activity extends AbstractPopupActivity
         return realPresenter.getView();
     }
     
-    @Override
-    public BaseService getPresenter() {
-        return this;
-    }
-
 }

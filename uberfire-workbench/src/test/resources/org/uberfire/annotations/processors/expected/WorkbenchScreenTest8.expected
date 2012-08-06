@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
-import org.uberfire.client.mvp.ScreenService;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -32,9 +31,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest8Activity extends AbstractScreenActivity
-    implements
-    ScreenService {
+public class WorkbenchScreenTest8Activity extends AbstractScreenActivity {
 
     @Inject
     private WorkbenchScreenTest8 realPresenter;
@@ -84,9 +81,4 @@ public class WorkbenchScreenTest8Activity extends AbstractScreenActivity
         return realPresenter.getView();
     }
     
-    @Override
-    public ScreenService getPresenter() {
-        return this;
-    }
-
 }

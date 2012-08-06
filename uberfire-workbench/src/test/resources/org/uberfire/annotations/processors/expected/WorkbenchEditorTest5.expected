@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
-import org.uberfire.client.mvp.EditorService;
 
 import org.uberfire.backend.vfs.Path;
 
@@ -36,9 +35,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest5Activity extends AbstractEditorActivity
-    implements
-    EditorService {
+public class WorkbenchEditorTest5Activity extends AbstractEditorActivity {
 
     @Inject
     private WorkbenchEditorTest5 realPresenter;
@@ -46,36 +43,6 @@ public class WorkbenchEditorTest5Activity extends AbstractEditorActivity
     @Override
     public String getIdentifier() {
         return "test5";
-    }
-
-    @Override
-    public void onStart(final Path path) {
-        //Do nothing. The real presenter does not have a @OnStart annotation
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing. The real presenter does not have a @OnClose annotation
-    }
-
-    @Override
-    public void onReveal() {
-        //Do nothing. The real presenter does not have a @OnReveal annotation
-    }
-
-    @Override
-    public void onLostFocus() {
-        //Do nothing. The real presenter does not have a @OnLostFocus annotation
-    }
-
-    @Override
-    public void onFocus() {
-        //Do nothing. The real presenter does not have a @OnFocus annotation
     }
 
     @Override
@@ -88,19 +55,4 @@ public class WorkbenchEditorTest5Activity extends AbstractEditorActivity
         return realPresenter.getView();
     }
     
-    @Override
-    public boolean isDirty() {
-        return false;
-    }
-    
-    @Override
-    public void onSave() {
-        //Do nothing. The real presenter does not have a @OnSave annotation
-    }
-
-    @Override
-    public EditorService getPresenter() {
-        return this;
-    }
-
 }

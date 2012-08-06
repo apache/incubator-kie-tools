@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
-import org.uberfire.client.mvp.ScreenService;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -32,9 +31,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest6Activity extends AbstractScreenActivity
-    implements
-    ScreenService {
+public class WorkbenchScreenTest6Activity extends AbstractScreenActivity {
 
     @Inject
     private WorkbenchScreenTest6 realPresenter;
@@ -42,36 +39,6 @@ public class WorkbenchScreenTest6Activity extends AbstractScreenActivity
     @Override
     public String getIdentifier() {
         return "test6";
-    }
-
-    @Override
-    public void onStart() {
-        //Do nothing. The real presenter does not have a @OnStart annotation
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing. The real presenter does not have a @OnClose annotation
-    }
-
-    @Override
-    public void onReveal() {
-        //Do nothing. The real presenter does not have a @OnReveal annotation
-    }
-
-    @Override
-    public void onLostFocus() {
-        //Do nothing. The real presenter does not have a @OnLostFocus annotation
-    }
-
-    @Override
-    public void onFocus() {
-        //Do nothing. The real presenter does not have a @OnFocus annotation
     }
 
     @Override
@@ -84,9 +51,4 @@ public class WorkbenchScreenTest6Activity extends AbstractScreenActivity
         return realPresenter;
     }
     
-    @Override
-    public ScreenService getPresenter() {
-        return this;
-    }
-
 }
