@@ -234,7 +234,6 @@ public class OpenTasksView extends AbstractTaskList implements IsWidget, DataDri
             detailsView.initialize();
 
             // deployments model listener
-            //JLIU: TODO: We will try to reuse guvnor-jbpm-console-server 
             ErraiBus.get().subscribe(Model.SUBJECT,
                     new MessageCallback() {
                         public void callback(Message message) {
