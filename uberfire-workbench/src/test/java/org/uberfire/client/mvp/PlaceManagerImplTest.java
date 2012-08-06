@@ -8,7 +8,7 @@ import org.uberfire.client.mvp.ActivityMapper;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
-import org.uberfire.client.mvp.WorkbenchActivity;
+import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -35,7 +35,7 @@ public class PlaceManagerImplTest {
     @Test
     public void testGoToSomeWhere() throws Exception {
         PlaceRequest somewhere = new PlaceRequest("Somewhere");
-        WorkbenchActivity activity = mock(WorkbenchActivity.class);
+        WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
         when(
                 activityMapper.getActivity(somewhere)
         ).thenReturn(
@@ -66,7 +66,7 @@ public class PlaceManagerImplTest {
     @Test
     public void testGoToPreviouslyOpenedPlace() throws Exception {
         PlaceRequest somewhere = new PlaceRequest("Somewhere");
-        WorkbenchActivity activity = mock(WorkbenchActivity.class);
+        WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
         when(
                 activityMapper.getActivity(somewhere)
         ).thenReturn(

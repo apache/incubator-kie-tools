@@ -119,7 +119,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         root.put( "identifier",
                   identifier );
         root.put( "fileTypes",
-                  format(fileTypes) );
+                  format( fileTypes ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartMethodName",
@@ -174,19 +174,19 @@ public class EditorActivityGenerator extends AbstractGenerator {
     private String format(final String[] fileTypes) {
         final StringBuilder sb = new StringBuilder();
 
-        if (fileTypes != null && fileTypes.length > 0){
-            sb.append('"');
-            for (int i = 0; i < fileTypes.length; i++) {
+        if ( fileTypes != null && fileTypes.length > 0 ) {
+            sb.append( '"' );
+            for ( int i = 0; i < fileTypes.length; i++ ) {
                 final String fileType = fileTypes[i];
                 //sb.append('"').append(fileType).append('"');
-                sb.append(fileType);
-                if (i != (fileTypes.length - 1)){
-                    sb.append(',');
+                sb.append( fileType );
+                if ( i != (fileTypes.length - 1) ) {
+                    sb.append( ',' );
                 }
             }
-            sb.append('"');
+            sb.append( '"' );
         } else {
-            sb.append("\"\"");
+            sb.append( "\"\"" );
         }
         return sb.toString();
     }

@@ -83,8 +83,8 @@ public class ActivityMapperImpl
 
     public void removeActivity(final PlaceRequest placeRequest) {
         final Activity activity = activeActivities.remove( placeRequest );
-        if ( activity instanceof WorkbenchActivity ) {
-            final WorkbenchActivity wbActivity = (WorkbenchActivity) activity;
+        if ( activity instanceof WorkbenchEditorActivity ) {
+            final WorkbenchEditorActivity wbActivity = (WorkbenchEditorActivity) activity;
             wbActivity.onStop();
         }
     }

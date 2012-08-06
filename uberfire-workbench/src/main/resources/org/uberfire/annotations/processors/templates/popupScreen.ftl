@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.mvp.BaseService;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -32,22 +31,18 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractPopupActivity
-    implements
-    BaseService {
+public class ${className} extends AbstractPopupActivity {
 
     @Inject
     private ${realClassName} realPresenter;
 
+    <#if onRevealMethodName??>
     @Override
     public void onReveal() {
-        <#if onRevealMethodName??>
         realPresenter.${onRevealMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnReveal annotation
-        </#if>
     }
 
+    </#if>
     @Override
     public PopupPanel getPopupPanel() {
         <#if getPopupMethodName??>
@@ -59,9 +54,4 @@ public class ${className} extends AbstractPopupActivity
         </#if>
     }
     
-    @Override
-    public BaseService getPresenter() {
-        return this;
-    }
-
 }

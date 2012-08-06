@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,34 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
 
-public interface EditorService
+public interface WorkbenchEditorActivity
     extends
-    BaseService {
+    WorkbenchActivity {
 
-    //Called before a screen is closed. This gives the screen an opportunity to object to closure
-    public boolean onMayClose();
+    public void onStart(final Path path);
 
-    //Called when the screen is closed.
-    public void onClose();
-    
-    // onStart() is called right after the Presenter is constructed.
-    public void onStart(Path path);
-
-    // Perform a save.
     public void onSave();
 
-    //Is the editor dirty, i.e. contains unsaved state
     public boolean isDirty();
-    
-    //Called when the screen looses the focus
-    public void onLostFocus();
-
-    //Called when the screen gains the focus
-    public void onFocus();
 
 }

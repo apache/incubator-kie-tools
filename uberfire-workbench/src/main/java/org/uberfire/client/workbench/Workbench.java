@@ -56,21 +56,27 @@ public class Workbench extends Composite {
 
     @Inject
     private BeanFactory                   factory;
+    
+    @Inject
+    private WorkbenchMenuBar menuBar;
 
     @PostConstruct
     public void setup() {
 
-        //Menubar -> Spoof for now, would probably be a banner or something
-        HorizontalPanel menubar = new HorizontalPanel();
-        menubar.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-        menubar.getElement().getStyle().setBackgroundColor( "#c0c0c0" );
-        menubar.getElement().getStyle().setHeight( 48.0,
-                                                   Unit.PX );
-        menubar.setWidth( WIDTH + "px" );
+        //Spoof for now, would probably be a banner or something
+        HorizontalPanel debugBar = new HorizontalPanel();
+        debugBar.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        debugBar.getElement().getStyle().setBackgroundColor( "#c0c0c0" );
+        debugBar.getElement().getStyle().setHeight( 48.0,
+                                                    Unit.PX );
+        debugBar.setWidth( WIDTH + "px" );
 
         final GuvnorMenu menu = iocManager.lookupBean( GuvnorMenu.class ).getInstance();
-        menubar.add( menu );
-        container.add( menubar );
+        debugBar.add( menu );
+        container.add( debugBar );
+
+        //Menubar
+        container.add( menuBar );
 
         //Container panels for workbench
         final AbsolutePanel workbenchContainer = dragController.getBoundaryPanel();

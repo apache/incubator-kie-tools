@@ -24,23 +24,18 @@ public abstract class AbstractPopupActivity
     implements
     PopupActivity {
 
-    private BaseService presenter;
-
     @Override
     public void onRevealPlace() {
-        if ( presenter == null ) {
-            presenter = getPresenter();
-            if ( presenter == null ) {
-                return;
-            }
-        }
-        presenter.onReveal();
+        onReveal();
         final PopupPanel popup = getPopupPanel();
         popup.show();
         popup.center();
     }
 
-    public abstract BaseService getPresenter();
+    @Override
+    public void onReveal() {
+        //Do nothing.   
+    }
 
     public abstract PopupPanel getPopupPanel();
 

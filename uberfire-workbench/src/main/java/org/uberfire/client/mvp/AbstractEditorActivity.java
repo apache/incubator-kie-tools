@@ -15,9 +15,14 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.MenuItem;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.workbench.Position;
@@ -28,12 +33,10 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 public abstract class AbstractEditorActivity
         implements
-        WorkbenchActivity {
+        WorkbenchEditorActivity {
 
     @Inject
     private PlaceManager placeManager;
-
-    private EditorService presenter;
 
     @Override
     public Position getDefaultPosition() {
@@ -41,68 +44,60 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public boolean mayStop() {
-        if (presenter != null) {
-            return presenter.onMayClose();
-        }
+    public boolean onMayStop() {
         return true;
     }
 
     @Override
     public void onStop() {
-        presenter.onClose();
+        //Do nothing.
     }
 
     @Override
-    public boolean mayClosePlace() {
-        if (presenter != null) {
-            return presenter.onMayClose();
-        }
+    public boolean onMayClose() {
         return true;
     }
 
     @Override
-    public void onClosePlace() {
-        if (presenter == null) {
-            return;
-        }
-        presenter.onClose();
-        presenter = null;
+    public void onClose() {
+        //Do nothing.
     }
 
     @Override
     public void onRevealPlace(AcceptItem acceptPanel) {
-        if (presenter == null) {
-            presenter = getPresenter();
-            if (presenter == null) {
-                return;
-            }
+        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
+        String simplePath = placeRequest.getParameter( "path",
+                                                       null );
 
-            PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-            String simplePath = placeRequest.getParameter("path",
-                    null);
+        String uri = placeRequest.getParameter( "path:uri",
+                                                null );
+        String name = placeRequest.getParameter( "path:name",
+                                                 null );
 
-            String uri = placeRequest.getParameter("path:uri",
-                    null);
-            String name = placeRequest.getParameter("path:name",
-                    null);
-
-            final Path path;
-            if (simplePath != null && (uri == null || name == null)) {
-                path = new PathImpl(simplePath);
-            } else {
-                path = new PathImpl(name, uri);
-            }
-
-            ((EditorService) presenter).onStart(path);
+        final Path path;
+        if ( simplePath != null && (uri == null || name == null) ) {
+            path = new PathImpl( simplePath );
+        } else {
+            path = new PathImpl( name,
+                                 uri );
         }
 
-        acceptPanel.add(getTitle(),
-                getWidget());
-        presenter.onReveal();
+        onStart( path );
+
+        acceptPanel.add( getTitle(),
+                         getWidget() );
+        onReveal();
     }
 
-    public abstract EditorService getPresenter();
+    @Override
+    public void onStart(final Path path) {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onReveal() {
+        //Do nothing.   
+    }
 
     public abstract String getTitle();
 
@@ -112,13 +107,29 @@ public abstract class AbstractEditorActivity
     public abstract IsWidget getWidget();
 
     @Override
+    public void onSave() {
+        //Do nothing.  
+    }
+
+    @Override
+    public boolean isDirty() {
+        return false;
+    }
+
+    @Override
     public void onLostFocus() {
-        presenter.onLostFocus();
+        //Do nothing.  
     }
 
     @Override
     public void onFocus() {
-        presenter.onFocus();
+        //Do nothing.   
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        final List<MenuItem> items = Collections.emptyList();
+        return items;
     }
 
 }

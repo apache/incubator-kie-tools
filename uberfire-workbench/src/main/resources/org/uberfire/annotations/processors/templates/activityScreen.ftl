@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
-import org.uberfire.client.mvp.ScreenService;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
@@ -35,9 +34,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractScreenActivity
-    implements
-    ScreenService {
+public class ${className} extends AbstractScreenActivity {
 
     @Inject
     private ${realClassName} realPresenter;
@@ -47,81 +44,68 @@ public class ${className} extends AbstractScreenActivity
         return "${identifier}";
     }
 
+    <#if onStartMethodName??>
     @Override
     public void onStart() {
-        <#if onStartMethodName??>
         realPresenter.${onStartMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnStart annotation
-        </#if>
     }
 
+    </#if>
+    <#if onMayCloseMethodName??>
     @Override
     public boolean onMayClose() {
-        <#if onMayCloseMethodName??>
         return realPresenter.${onMayCloseMethodName}();
-        <#else>
-        return true;
-        </#if>
     }
 
+    </#if>
+    <#if onCloseMethodName??>
     @Override
     public void onClose() {
-        <#if onCloseMethodName??>
         realPresenter.${onCloseMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnClose annotation
-        </#if>
     }
 
+    </#if>
+    <#if onRevealMethodName??>
     @Override
     public void onReveal() {
-        <#if onRevealMethodName??>
         realPresenter.${onRevealMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnReveal annotation
-        </#if>
     }
 
+    </#if>
+    <#if onLostFocusMethodName??>
     @Override
     public void onLostFocus() {
-        <#if onLostFocusMethodName??>
         realPresenter.${onLostFocusMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnLostFocus annotation
-        </#if>
     }
 
+    </#if>
+    <#if onFocusMethodName??>
     @Override
     public void onFocus() {
-        <#if onFocusMethodName??>
         realPresenter.${onFocusMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @OnFocus annotation
-        </#if>
     }
 
+    </#if>
+    <#if getTitleMethodName??>
     @Override
     public String getTitle() {
-        <#if getTitleMethodName??>
         return realPresenter.${getTitleMethodName}();
-        <#else>
-        //Do nothing. The real presenter does not have a @Title annotation
-        return null;
-        </#if>
     }
 
+    </#if>
+    <#if getWidgetMethodName??>
     @Override
     public IsWidget getWidget() {
-        <#if getWidgetMethodName??>
         return realPresenter.${getWidgetMethodName}();
-        <#elseif isWidget>
-        return realPresenter;
-        <#else>
-        return null;
-        </#if>
     }
     
+    <#elseif isWidget>
+    @Override
+    public IsWidget getWidget() {
+        return realPresenter;
+    }
+    
+    </#if>
     <#if getDefaultPositionMethodName??>
     @Override
     public Position getDefaultPosition() {
@@ -129,9 +113,4 @@ public class ${className} extends AbstractScreenActivity
     }
     
     </#if>
-    @Override
-    public ScreenService getPresenter() {
-        return this;
-    }
-
 }

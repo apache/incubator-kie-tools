@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,31 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.List;
+
 import org.uberfire.client.workbench.Position;
+
+import com.google.gwt.user.client.ui.MenuItem;
 
 public interface WorkbenchActivity
     extends
     Activity {
 
-    public boolean mayClosePlace();
+    public void onRevealPlace(final AcceptItem acceptItem);
 
-    public void onClosePlace();
+    public boolean onMayClose();
 
-    public boolean mayStop();
+    public void onClose();
+
+    public boolean onMayStop();
 
     public void onStop();
 
     public Position getDefaultPosition();
 
-    public void onRevealPlace(AcceptItem acceptPanel);
-
     public void onFocus();
 
     public void onLostFocus();
 
+    public List<MenuItem> getMenuItems();
 }

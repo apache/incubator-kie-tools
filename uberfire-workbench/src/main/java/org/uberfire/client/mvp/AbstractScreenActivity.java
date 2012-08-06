@@ -15,18 +15,20 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.uberfire.client.workbench.Position;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.MenuItem;
 
 /**
  * 
  */
 public abstract class AbstractScreenActivity
     implements
-    WorkbenchActivity {
-
-    private ScreenService presenter;
+    WorkbenchScreenActivity {
 
     @Override
     public Position getDefaultPosition() {
@@ -34,51 +36,42 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public boolean mayStop() {
-        if ( presenter != null ) {
-            return presenter.onMayClose();
-        }
+    public boolean onMayStop() {
         return true;
     }
 
     @Override
     public void onStop() {
-        presenter.onClose();
+        //Do nothing.
     }
 
     @Override
-    public boolean mayClosePlace() {
-        if ( presenter != null ) {
-            return presenter.onMayClose();
-        }
+    public boolean onMayClose() {
         return true;
     }
 
     @Override
-    public void onClosePlace() {
-        if ( presenter == null ) {
-            return;
-        }
-        presenter.onClose();
-        presenter = null;
+    public void onClose() {
+        //Do nothing.
     }
 
     @Override
     public void onRevealPlace(AcceptItem acceptPanel) {
-        if ( presenter == null ) {
-            presenter = getPresenter();
-            if ( presenter == null ) {
-                return;
-            }
-            presenter.onStart();
-        }
-
+        onStart();
         acceptPanel.add( getTitle(),
                          getWidget() );
-        presenter.onReveal();
+        onReveal();
     }
 
-    public abstract ScreenService getPresenter();
+    @Override
+    public void onStart() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onReveal() {
+        //Do nothing.   
+    }
 
     public abstract String getTitle();
 
@@ -89,12 +82,18 @@ public abstract class AbstractScreenActivity
 
     @Override
     public void onLostFocus() {
-        presenter.onLostFocus();
+        //Do nothing.
     }
 
     @Override
     public void onFocus() {
-        presenter.onFocus();
+        //Do nothing.
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        final List<MenuItem> items = Collections.emptyList();
+        return items;
     }
 
 }
