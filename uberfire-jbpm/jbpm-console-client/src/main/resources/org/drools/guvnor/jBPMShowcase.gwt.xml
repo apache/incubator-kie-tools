@@ -9,6 +9,7 @@
   <inherits name="org.uberfire.UberfireBackend"/>
   <inherits name="org.uberfire.backend.UberfireServerBackend"/>
   <inherits name="org.jboss.bpm.console.jBPMConsoleShared"/>
+  <inherits name="com.google.gwt.xml.XML" />
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
