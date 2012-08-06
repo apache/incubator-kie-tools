@@ -100,7 +100,6 @@ public class Workbench extends Composite {
         } );
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private void bootstrap() {
         workbench.clear();
         dndManager.unregisterDropControllers();
@@ -119,15 +118,15 @@ public class Workbench extends Composite {
         boolean foundDefaultPerspective = false;
         IPerspectiveProvider defaultPerspective = null;
 
-        Collection<IOCBeanDef> perspectives = iocManager.lookupBeans( IPerspectiveProvider.class );
-        Iterator<IOCBeanDef> perspectivesIterator = perspectives.iterator();
+        Collection<IOCBeanDef<IPerspectiveProvider>> perspectives = iocManager.lookupBeans( IPerspectiveProvider.class );
+        Iterator<IOCBeanDef<IPerspectiveProvider>> perspectivesIterator = perspectives.iterator();
         while ( !foundDefaultPerspective && perspectivesIterator.hasNext() ) {
-            IOCBeanDef perspective = perspectivesIterator.next();
+            IOCBeanDef<IPerspectiveProvider> perspective = perspectivesIterator.next();
             Set<Annotation> annotations = perspective.getQualifiers();
             for ( Annotation a : annotations ) {
                 if ( a instanceof DefaultPerspective ) {
                     if ( defaultPerspective == null ) {
-                        defaultPerspective = (IPerspectiveProvider) perspective.getInstance();
+                        defaultPerspective = perspective.getInstance();
                         foundDefaultPerspective = true;
                         break;
                     }

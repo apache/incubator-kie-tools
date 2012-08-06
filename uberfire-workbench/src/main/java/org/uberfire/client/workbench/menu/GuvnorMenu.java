@@ -38,7 +38,7 @@ public class GuvnorMenu extends Composite {
 
                 final Set<AbstractScreenActivity> activities = new HashSet<AbstractScreenActivity>();
 
-                Collection<IOCBeanDef> activityBeans = iocManager.lookupBeans( AbstractScreenActivity.class );
+                Collection<IOCBeanDef<AbstractScreenActivity>> activityBeans = iocManager.lookupBeans( AbstractScreenActivity.class );
 
                 for ( IOCBeanDef activityBean : activityBeans ) {
                     final AbstractScreenActivity instance = (AbstractScreenActivity) activityBean.getInstance();

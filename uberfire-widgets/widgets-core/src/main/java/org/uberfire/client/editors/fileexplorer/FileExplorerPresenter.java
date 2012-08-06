@@ -19,20 +19,11 @@ package org.uberfire.client.editors.fileexplorer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -49,11 +40,23 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.Util;
+import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileExplorer")
@@ -65,7 +68,6 @@ public class FileExplorerPresenter {
     @Inject
     private Caller<VFSService>              vfsService;
 
-
     @Inject
     private Caller<FileExplorerRootService> rootService;
 
@@ -75,7 +77,7 @@ public class FileExplorerPresenter {
     @Inject
     private IdentifierUtils                 idUtils;
 
-    private static final String             REPOSITORY_ID   = "repositories";
+    private static final String             REPOSITORY_ID = "repositories";
 
     public interface View
             extends
@@ -88,8 +90,8 @@ public class FileExplorerPresenter {
         void setFocus();
     }
 
-    private static CoreImages images    = GWT.create( CoreImages.class );
-    private static final String        LAZY_LOAD = "Loading...";
+    private static CoreImages   images    = GWT.create( CoreImages.class );
+    private static final String LAZY_LOAD = "Loading...";
 
     @OnStart
     public void onStart() {
@@ -100,13 +102,14 @@ public class FileExplorerPresenter {
 
         placeManager.goTo( new PlaceRequest( "RepositoriesEditor" ) );
 
-        rootService.call(new RemoteCallback<Collection<Root>>() {
-            @Override public void callback(Collection<Root> response) {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
+            @Override
+            public void callback(Collection<Root> response) {
                 for ( final Root root : response ) {
-                    loadRoot(root);
+                    loadRoot( root );
                 }
             }
-        }).listRoots();
+        } ).listRoots();
 
         view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
@@ -124,11 +127,11 @@ public class FileExplorerPresenter {
                                         final TreeItem item;
                                         if ( attrs.isDirectory() ) {
                                             item = event.getTarget().addItem( Util.getHeader( images.openedFolder(),
-                                                    path.getFileName() ) );
+                                                                                              path.getFileName() ) );
                                             item.addItem( LAZY_LOAD );
                                         } else {
                                             item = event.getTarget().addItem( Util.getHeader( images.file(),
-                                                    path.getFileName() ) );
+                                                                                              path.getFileName() ) );
                                         }
                                         item.setUserObject( path );
                                     }
@@ -170,8 +173,8 @@ public class FileExplorerPresenter {
 
         //TODO check if it already exists and cleanup
 
-        final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader(images.packageIcon(),
-                root.getPath().getFileName()) );
+        final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(),
+                                                                                        root.getPath().getFileName() ) );
         repositoryRootItem.setState( true );
         repositoryRootItem.setUserObject( root );
 
@@ -186,25 +189,25 @@ public class FileExplorerPresenter {
                             final TreeItem item;
                             if ( attrs.isDirectory() ) {
                                 item = repositoryRootItem.addItem( Util.getHeader( images.openedFolder(),
-                                        path.getFileName() ) );
+                                                                                   path.getFileName() ) );
                                 item.addItem( LAZY_LOAD );
                             } else {
                                 item = repositoryRootItem.addItem( Util.getHeader( images.file(),
-                                        path.getFileName() ) );
+                                                                                   path.getFileName() ) );
                             }
                             item.setUserObject( path );
                         }
                     } ).readAttributes( path );
                 }
             }
-        } ).newDirectoryStream(root.getPath());
+        } ).newDirectoryStream( root.getPath() );
     }
 
     private PlaceRequest getPlace(final Path path) {
 
-        final String fileType = getFileType(path.getFileName());
+        final String fileType = getFileType( path.getFileName() );
         if ( fileType == null ) {
-            return defaultPlace(path);
+            return defaultPlace( path );
         }
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
@@ -212,10 +215,12 @@ public class FileExplorerPresenter {
         //an Activity for the fileType exists however that would place the decision as to what default editor
         //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
         //Consequentially we check for an Activity here and, if none found, define the default editor.
-        final Set<IOCBeanDef< ? >> activityBeans = idUtils.getActivities( fileType );
+        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( fileType );
         if ( activityBeans.size() > 0 ) {
             final PlaceRequest place = new PlaceRequest( fileType );
-            place.addParameter( "path:uri", path.toURI() ).addParameter( "path:name", path.getFileName() );
+            place.addParameter( "path:uri",
+                                path.toURI() ).addParameter( "path:name",
+                                                             path.getFileName() );
             return place;
         }
 
@@ -224,8 +229,10 @@ public class FileExplorerPresenter {
     }
 
     private PlaceRequest defaultPlace(final Path path) {
-        PlaceRequest defaultPlace = new PlaceRequest("TextEditor");
-        defaultPlace.addParameter( "path:uri", path.toURI() ).addParameter( "path:name", path.getFileName() );
+        PlaceRequest defaultPlace = new PlaceRequest( "TextEditor" );
+        defaultPlace.addParameter( "path:uri",
+                                   path.toURI() ).addParameter( "path:name",
+                                                                path.getFileName() );
         return defaultPlace;
     }
 

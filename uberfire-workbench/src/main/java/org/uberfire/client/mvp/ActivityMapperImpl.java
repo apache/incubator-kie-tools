@@ -33,10 +33,10 @@ public class ActivityMapperImpl
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
-    private IdentifierUtils                    idUtils;
+    private IdentifierUtils                   idUtils;
 
     @Inject
-    private PlaceManager                       placeManager;
+    private PlaceManager                      placeManager;
 
     public Activity getActivity(final PlaceRequest placeRequest) {
         //Check and return any existing Activity for the PlaceRequest
@@ -47,12 +47,13 @@ public class ActivityMapperImpl
         //Lookup an Activity for the PlaceRequest
         Activity instance = null;
         final String identifier = placeRequest.getIdentifier();
-        Set<IOCBeanDef< ? >> activityBeans = idUtils.getActivities( identifier );
+        Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( identifier );
         switch ( activityBeans.size() ) {
             case 0 :
                 //No activities found. Show an error to the user.
-            	final PlaceRequest notFoundPopup = new PlaceRequest( "workbench.activity.notfound" );
-            	notFoundPopup.addParameter("requestedPlaceIdentifier", identifier);
+                final PlaceRequest notFoundPopup = new PlaceRequest( "workbench.activity.notfound" );
+                notFoundPopup.addParameter( "requestedPlaceIdentifier",
+                                            identifier );
                 placeManager.goTo( notFoundPopup );
                 break;
             case 1 :
@@ -62,20 +63,21 @@ public class ActivityMapperImpl
                 return instance;
             default :
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
-            	final PlaceRequest multiplePopup = new PlaceRequest( "workbench.activities.multiple" );
-            	multiplePopup.addParameter("requestedPlaceIdentifier", identifier);
+                final PlaceRequest multiplePopup = new PlaceRequest( "workbench.activities.multiple" );
+                multiplePopup.addParameter( "requestedPlaceIdentifier",
+                                            identifier );
                 placeManager.goTo( multiplePopup );
         }
 
         return null;
     }
 
-    private Activity getFirstActivity(final Set<IOCBeanDef< ? >> activityBeans) {
+    private Activity getFirstActivity(final Set<IOCBeanDef<Activity>> activityBeans) {
         if ( activityBeans == null || activityBeans.size() == 0 ) {
             return null;
         }
-        final IOCBeanDef< ? > activityBean = activityBeans.iterator().next();
-        final Activity instance = (Activity) activityBean.getInstance();
+        final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
+        final Activity instance = activityBean.getInstance();
         return instance;
     }
 

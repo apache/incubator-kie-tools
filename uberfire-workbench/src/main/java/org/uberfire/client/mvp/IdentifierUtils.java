@@ -49,15 +49,14 @@ public class IdentifierUtils {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public List<String> getIdentifier(final IOCBeanDef beanDefinition) {
         final Set<Annotation> annotations = beanDefinition.getQualifiers();
-        final List ids = new ArrayList(2);
+        final List ids = new ArrayList( 2 );
         for ( Annotation a : annotations ) {
             if ( a instanceof Identifier ) {
                 final Identifier identifier = (Identifier) a;
                 ids.add( identifier.value() );
-            } else if ( a instanceof ResourceType) {
+            } else if ( a instanceof ResourceType ) {
                 final ResourceType resourceType = (ResourceType) a;
-                if ( resourceType.value().trim().length() > 0 )
-                ids.add(resourceType.value());
+                if ( resourceType.value().trim().length() > 0 ) ids.add( resourceType.value() );
             }
         }
         return ids;
@@ -69,16 +68,15 @@ public class IdentifierUtils {
      * @param identifier
      * @return
      */
-    @SuppressWarnings("rawtypes")
     //Don't return actual Activity instances as we'd need to release them later
-    public Set<IOCBeanDef< ? >> getActivities(final String identifier) {
+    public Set<IOCBeanDef<Activity>> getActivities(final String identifier) {
         if ( identifier == null ) {
             return Collections.emptySet();
         }
-        final Collection<IOCBeanDef> allActivityBeans = iocManager.lookupBeans( Activity.class );
-        final Set<IOCBeanDef< ? >> matchingActivityBeans = new HashSet<IOCBeanDef< ? >>();
-        for ( IOCBeanDef activityBean : allActivityBeans ) {
-            for (String id : getIdentifier( activityBean )) {
+        final Collection<IOCBeanDef<Activity>> allActivityBeans = iocManager.lookupBeans( Activity.class );
+        final Set<IOCBeanDef<Activity>> matchingActivityBeans = new HashSet<IOCBeanDef<Activity>>();
+        for ( IOCBeanDef<Activity> activityBean : allActivityBeans ) {
+            for ( String id : getIdentifier( activityBean ) ) {
                 if ( identifier.equalsIgnoreCase( id ) ) {
                     matchingActivityBeans.add( activityBean );
                 }
