@@ -25,6 +25,10 @@ import org.uberfire.client.mvp.AbstractScreenActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
+<#if getMenuConfigMethodName??>
+import java.util.List;
+import com.google.gwt.user.client.ui.MenuItem;
+</#if>
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -110,6 +114,13 @@ public class ${className} extends AbstractScreenActivity {
     @Override
     public Position getDefaultPosition() {
         return realPresenter.${getDefaultPositionMethodName}();
+    }
+    
+    </#if>
+    <#if getMenuConfigMethodName??>
+    @Override
+    public List<MenuItem> getMenuItems() {
+        return realPresenter.${getMenuConfigMethodName}();
     }
     
     </#if>

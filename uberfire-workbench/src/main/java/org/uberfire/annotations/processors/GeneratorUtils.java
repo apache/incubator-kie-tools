@@ -39,6 +39,7 @@ import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.Position;
@@ -294,6 +295,23 @@ public class GeneratorUtils {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   OnSave.class );
+    }
+
+    /**
+     * Get the method name annotated with {@code @WorkbenchMenu}. The method
+     * must be public, non-static, have a return-type of List<MenuItem> and take
+     * zero parameters.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static String getMenuConfigMethodName(final TypeElement classElement,
+                                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getMenuConfigMethodName( classElement,
+                                        processingEnvironment,
+                                        WorkbenchMenu.class );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -605,6 +623,52 @@ public class GeneratorUtils {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( Position.class.getName() ).asType();
+        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
+
+        ExecutableElement match = null;
+        for ( ExecutableElement e : methods ) {
+
+            final TypeMirror actualReturnType = e.getReturnType();
+
+            //Check method
+            if ( e.getAnnotation( annotation ) == null ) {
+                continue;
+            }
+            if ( !typeUtils.isAssignable( actualReturnType,
+                                          requiredReturnType ) ) {
+                continue;
+            }
+            if ( e.getParameters().size() != 0 ) {
+                continue;
+            }
+            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
+                continue;
+            }
+            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
+                continue;
+            }
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
+        }
+        if ( match == null ) {
+            return null;
+        }
+        return match.getSimpleName().toString();
+    }
+
+    // Lookup a public method name with the given annotation. The method must be
+    // public, non-static, have a return-type of PopupPanel and take zero
+    // parameters.
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static String getMenuConfigMethodName(final TypeElement classElement,
+                                                  final ProcessingEnvironment processingEnvironment,
+                                                  final Class annotation) throws GenerationException {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = typeUtils.getDeclaredType( elementUtils.getTypeElement( "java.util.List" ),
+                                                                         elementUtils.getTypeElement( "com.google.gwt.user.client.ui.MenuItem" ).asType() );
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

@@ -71,6 +71,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                                                processingEnvironment );
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
+        final String getMenuConfigMethodName = GeneratorUtils.getMenuConfigMethodName( classElement,
+                                                                                       processingEnvironment );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -85,6 +87,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "getTitleMethodName: " + getTitleMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
+        logger.debug( "getMenuConfigMethodName: " + getMenuConfigMethodName );
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -132,6 +135,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   getWidgetMethodName );
         root.put( "isWidget",
                   isWidget );
+        root.put( "getMenuConfigMethodName",
+                  getMenuConfigMethodName );
 
         //Generate code
         final StringWriter sw = new StringWriter();

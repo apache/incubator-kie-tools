@@ -16,13 +16,21 @@
 
 package org.uberfire.client.editors.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -49,6 +57,28 @@ public class TestPresenter {
     @WorkbenchPartView
     public IsWidget getView() {
         return view;
+    }
+
+    @WorkbenchMenu
+    public List<MenuItem> getMenu() {
+        final List<MenuItem> items = new ArrayList<MenuItem>();
+        final MenuBar menuBar = new MenuBar( true );
+        items.add( new MenuItem( "TestPresenter menu",
+                                 menuBar ) );
+        for ( int i = 0; i < 3; i++ ) {
+            final String caption = "Item:" + i;
+            menuBar.addItem( new MenuItem( caption,
+                                           new Command() {
+
+                                               @Override
+                                               public void execute() {
+                                                   Window.alert( "You clicked " + caption );
+                                               }
+
+                                           } ) );
+        }
+
+        return items;
     }
 
 }

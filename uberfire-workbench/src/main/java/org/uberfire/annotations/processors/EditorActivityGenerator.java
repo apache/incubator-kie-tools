@@ -76,6 +76,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                               processingEnvironment );
         final String onSaveMethodName = GeneratorUtils.getOnSaveMethodName( classElement,
                                                                             processingEnvironment );
+        final String getMenuConfigMethodName = GeneratorUtils.getMenuConfigMethodName( classElement,
+                                                                                       processingEnvironment );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -93,6 +95,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
         logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
         logger.debug( "onSaveMethodName: " + onSaveMethodName );
+        logger.debug( "getMenuConfigMethodName: " + getMenuConfigMethodName );
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -146,6 +149,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   isDirtyMethodName );
         root.put( "onSaveMethodName",
                   onSaveMethodName );
+        root.put( "getMenuConfigMethodName",
+                  getMenuConfigMethodName );
 
         //Generate code
         final StringWriter sw = new StringWriter();

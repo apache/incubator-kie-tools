@@ -22,13 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with this provide the view for the WorkbenchPart. The
+ * Methods annotated with this provide the Menus for the WorkbenchPart. The
  * method should have zero arguments and return a
- * {@code com.google.gwt.user.client.ui.IsWidget}.
+ * {@code java.util.List<com.google.gwt.user.client.ui.MenuItem>}.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface WorkbenchPartView {
+public @interface WorkbenchMenu {
 
 }
