@@ -21,48 +21,33 @@
  */
 package org.jboss.bpm.console.client.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.Dependent;
-
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-/*import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.BpmConsoleClientFactory;*/
-import org.drools.guvnor.client.common.CustomizableListBox;
-import org.drools.guvnor.client.common.DataDriven;
-import org.drools.guvnor.client.common.IFrameWindowCallback;
-import org.drools.guvnor.client.common.IFrameWindowPanel;
-import org.drools.guvnor.client.common.LoadingOverlay;
-import org.drools.guvnor.client.common.WidgetWindowPanel;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.ListDataProvider;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.util.SimpleDateFormat;
 import org.jboss.bpm.console.client.icons.ConsoleIconBundle;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.TokenReference;
-import org.jboss.bpm.console.client.process.events.InstanceEvent;
-import org.jboss.bpm.console.client.process.events.SignalInstanceEvent;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.drools.guvnor.client.util.SimpleDateFormat;
 
-/**
- * @author Heiko.Braun <heiko.braun@jboss.com>
- */
+import javax.enterprise.context.Dependent;
+import java.util.ArrayList;
+import java.util.List;
+
 @Dependent
 @WorkbenchEditor(identifier = "InstanceListView")
 public class InstanceListView implements IsWidget, DataDriven {
@@ -71,7 +56,8 @@ public class InstanceListView implements IsWidget, DataDriven {
 
     private VerticalPanel instanceList = null;
 
-    private CustomizableListBox<ProcessInstanceRef> listBox;
+    private CellTable<ProcessInstanceRef> listBox = new CellTable<ProcessInstanceRef>();
+    private ListDataProvider<ProcessInstanceRef> dataProvider = new ListDataProvider<ProcessInstanceRef>();
 
     private ProcessDefinitionRef currentDefinition;
 
@@ -105,21 +91,11 @@ public class InstanceListView implements IsWidget, DataDriven {
     private CustomizableListBox<String> listBoxTokenSignals;
 
     private ImageResource greenIcon;
-    // final BpmConsoleClientFactory clientFactory;
-
-    public InstanceListView(/*BpmConsoleClientFactory clientFactory*/) {
-    	//JLIU: TODO
-/*        this.appContext = clientFactory.getApplicationContext();
-        this.clientFactory = clientFactory;
-        this.isRiftsawInstance = clientFactory.getApplicationContext().getConfig().getProfileName().equals("BPEL Console");
-        this.controller = clientFactory.getController();*/
-    }
 
     public Widget asWidget() {
 
         panel = new SimplePanel();
 
-        //controller.addView(ID, this);
         initialize();
 
         ConsoleIconBundle imageBundle = (ConsoleIconBundle) GWT.create(ConsoleIconBundle.class);
@@ -136,53 +112,81 @@ public class InstanceListView implements IsWidget, DataDriven {
         if (!isInitialized) {
             instanceList = new VerticalPanel();
 
-            listBox =
-                    new CustomizableListBox<ProcessInstanceRef>(
-                            new CustomizableListBox.ItemFormatter<ProcessInstanceRef>() {
-                                public String format(ProcessInstanceRef processInstanceRef) {
+            TextColumn<ProcessInstanceRef> instanceColumn = new TextColumn<ProcessInstanceRef>() {
+                @Override
+                public String getValue(ProcessInstanceRef processInstanceRef) {
+                    return processInstanceRef.getId();
+                }
+            };
+            TextColumn<ProcessInstanceRef> stateColumn = new TextColumn<ProcessInstanceRef>() {
+                @Override
+                public String getValue(ProcessInstanceRef processInstanceRef) {
+                    return processInstanceRef.getState().toString();
+                }
+            };
+            TextColumn<ProcessInstanceRef> startDateColumn = new TextColumn<ProcessInstanceRef>() {
+                @Override
+                public String getValue(ProcessInstanceRef processInstanceRef) {
+                    return processInstanceRef.getStartDate() != null ? dateFormat.format(processInstanceRef.getStartDate()) : "";
+                }
+            };
+            Column<ProcessInstanceRef, String> actionColumn = new Column<ProcessInstanceRef, String>(new ButtonCell()) {
+                @Override
+                public String getValue(ProcessInstanceRef processInstanceRef) {
+                    return "*";
+                }
+            };
+            actionColumn.setFieldUpdater(new FieldUpdater<ProcessInstanceRef, String>() {
 
-                                    String result = "";
+                public void update(int index, final ProcessInstanceRef processInstanceRef, String value) {
 
-                                    result += processInstanceRef.getId();
-                                    result += " ";
-                                    result += processInstanceRef.getState().toString();
-                                    result += " ";
-                                    result += processInstanceRef.getStartDate() != null ? dateFormat.format(processInstanceRef.getStartDate()) : "";
+                    PopupPanel popupPanel = new PopupPanel();
+                    VerticalPanel widgets = new VerticalPanel();
+                    popupPanel.add(widgets);
+                    widgets.add(new Button("Start"));
+                    widgets.add(new Button("Signal"));
+                    widgets.add(new Button("Delete"));
+                    widgets.add(new Button("Terminate"));
 
-                                    return result;
-                                }
-                            }
-                    );
+                    popupPanel.show();
+                }
+            });
 
-            listBox.setFirstLine("<b>Instance</b>, State, Start Date");
+            listBox.addColumn(instanceColumn, "Instance");
+            listBox.addColumn(stateColumn, "State");
+            listBox.addColumn(startDateColumn, "Start Date");
+            listBox.addColumn(actionColumn);
 
-            listBox.addChangeHandler(
-                    new ChangeHandler() {
-                        public void onChange(ChangeEvent event) {
-                            int index = listBox.getSelectedIndex();
-                            if (index != -1) {
-                                ProcessInstanceRef item = listBox.getItem(index);
+            dataProvider.addDataDisplay(listBox);
 
-                                // enable or disable signal button depending on current activity
-                                if (isSignalable(item)) {
-                                    signalBtn.setEnabled(true);
-                                } else {
-                                    signalBtn.setEnabled(false);
-                                }
-
-                                terminateBtn.setEnabled(true);
-
-                                //JLIU: TODO
-                                // update details
-/*                                controller.handleEvent(
-                                        new Event(UpdateInstanceDetailAction.ID,
-                                                new InstanceEvent(currentDefinition, item)
-                                        )
-                                );*/
-                            }
-                        }
-                    }
-            );
+            //TODO: -Rikkola-
+//            listBox.addChangeHandler(
+//                    new ChangeHandler() {
+//                        public void onChange(ChangeEvent event) {
+//                            int index = listBox.getSelectedIndex();
+//                            if (index != -1) {
+//                                ProcessInstanceRef item = listBox.getItem(index);
+//
+//                                // enable or disable signal button depending on current activity
+//                                if (isSignalable(item)) {
+//                                    signalBtn.setEnabled(true);
+//                                } else {
+//                                    signalBtn.setEnabled(false);
+//                                }
+//
+//                                terminateBtn.setEnabled(true);
+//
+//                                //JLIU: TODO
+//                                // update details
+///*                                controller.handleEvent(
+//                                        new Event(UpdateInstanceDetailAction.ID,
+//                                                new InstanceEvent(currentDefinition, item)
+//                                        )
+//                                );*/
+//                            }
+//                        }
+//                    }
+//            );
 
             // toolbar
             final VerticalPanel toolBox = new VerticalPanel();
@@ -190,12 +194,14 @@ public class InstanceListView implements IsWidget, DataDriven {
             toolBox.setSpacing(5);
 
             final MenuBar toolBar = new MenuBar();
-            refreshBtn = new MenuItem(
+            refreshBtn = new
+
+                    MenuItem(
                     "Refresh",
                     new Command() {
 
                         public void execute() {
-                        	//JLIU:TODO
+                            //JLIU:TODO
 /*                            controller.handleEvent(
                                     new Event(
                                             UpdateInstancesAction.ID,
@@ -204,12 +210,15 @@ public class InstanceListView implements IsWidget, DataDriven {
                             );*/
                         }
                     }
+
             );
             toolBar.addItem(refreshBtn);
             refreshBtn.setEnabled(false);
             toolBar.addSeparator();
 
-            startBtn = new MenuItem(
+            startBtn = new
+
+                    MenuItem(
                     "Start",
                     new Command() {
                         public void execute() {
@@ -225,7 +234,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                                     iframeWindow.setCallback(
                                             new IFrameWindowCallback() {
                                                 public void onWindowClosed() {
-                                                	//JLIU:TODO
+                                                    //JLIU:TODO
 /*                                                    controller.handleEvent(
                                                             new Event(UpdateInstancesAction.ID, getCurrentDefinition())
                                                     );*/
@@ -235,7 +244,7 @@ public class InstanceListView implements IsWidget, DataDriven {
 
                                     iframeWindow.show();
                                 } else {
-                                	//JLIU: TODO
+                                    //JLIU: TODO
 /*                                    controller.handleEvent(
                                             new Event(
                                                     StartNewInstanceAction.ID,
@@ -246,9 +255,13 @@ public class InstanceListView implements IsWidget, DataDriven {
                             }
 
                         }
-                    });
+                    }
 
-            terminateBtn = new MenuItem(
+            );
+
+            terminateBtn = new
+
+                    MenuItem(
                     "Terminate",
                     new Command() {
                         public void execute() {
@@ -274,7 +287,9 @@ public class InstanceListView implements IsWidget, DataDriven {
 
             );
 
-            deleteBtn = new MenuItem(
+            deleteBtn = new
+
+                    MenuItem(
                     "Delete",
                     new Command() {
                         public void execute() {
@@ -300,16 +315,20 @@ public class InstanceListView implements IsWidget, DataDriven {
 
             );
 
-            signalBtn = new MenuItem(
+            signalBtn = new
+
+                    MenuItem(
                     "Signal",
                     new Command() {
                         public void execute() {
                             createSignalWindow();
                         }
                     }
+
             );
 
             if (!isRiftsawInstance)  // riftsaw doesn't support instance operations
+
             {
                 toolBar.addItem(startBtn);
                 toolBar.addItem(signalBtn);
@@ -358,19 +377,16 @@ public class InstanceListView implements IsWidget, DataDriven {
 
     public ProcessInstanceRef getSelection() {
         ProcessInstanceRef selection = null;
-        if (listBox.getSelectedIndex() != -1) {
-            selection = listBox.getItem(listBox.getSelectedIndex());
-        }
+        // TODO: -Rikkola-
+//        if (listBox.getSelectedIndex() != -1) {
+//            selection = listBox.getItem(listBox.getSelectedIndex());
+//        }
         return selection;
     }
 
     public ProcessDefinitionRef getCurrentDefinition() {
         return this.currentDefinition;
     }
-/*
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }*/
 
     public void reset() {
         this.currentDefinition = null;
@@ -414,16 +430,12 @@ public class InstanceListView implements IsWidget, DataDriven {
     }
 
     private void bindData(List<ProcessInstanceRef> instances) {
-        listBox.clear();
+        dataProvider.flush();
 
         List<ProcessInstanceRef> list = instances;//pagingPanel.trim(instances);
         for (ProcessInstanceRef inst : list) {
-            listBox.addItem(inst);
+            dataProvider.getList().add(inst);
         }
-
-        // layout again
-        //TODO: -Rikkola-
-//        panel.invalidate();
     }
 
     private boolean isSignalable(ProcessInstanceRef processInstance) {
@@ -479,7 +491,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                         int selectedSignal = listBoxTokenSignals.getSelectedIndex();
                         if (selectedToken != -1 && selectedSignal != -1) {
 
-                        	//JLIU: TODO
+                            //JLIU: TODO
 /*                            controller.handleEvent(
                                     new Event(SignalExecutionAction.ID,
                                             new SignalInstanceEvent(getCurrentDefinition(), getSelection(), listBoxTokens.getItem(selectedToken), listBoxTokenSignals.getItem(selectedSignal), selectedToken)));
@@ -595,14 +607,14 @@ public class InstanceListView implements IsWidget, DataDriven {
             listBoxTokenSignals.addItem(signal);
         }
     }
-    
-	@WorkbenchPartTitle
-	public String getTitle() {
-		return "InstanceListView";
-	}
 
-	@WorkbenchPartView
-	public IsWidget getView() {
-		return asWidget();
-	}
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "InstanceListView";
+    }
+
+    @WorkbenchPartView
+    public IsWidget getView() {
+        return asWidget();
+    }
 }
