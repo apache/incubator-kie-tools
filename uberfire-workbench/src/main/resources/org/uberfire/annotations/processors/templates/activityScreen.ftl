@@ -25,9 +25,8 @@ import org.uberfire.client.mvp.AbstractScreenActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
-<#if getMenuConfigMethodName??>
-import java.util.List;
-import com.google.gwt.user.client.ui.MenuItem;
+<#if getMenuBarMethodName??>
+import org.uberfire.client.workbench.WorkbenchMenuBar;
 </#if>
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -117,10 +116,10 @@ public class ${className} extends AbstractScreenActivity {
     }
     
     </#if>
-    <#if getMenuConfigMethodName??>
+    <#if getMenuBarMethodName??>
     @Override
-    public List<MenuItem> getMenuItems() {
-        return realPresenter.${getMenuConfigMethodName}();
+    public WorkbenchMenuBar getMenuBar() {
+        return realPresenter.${getMenuBarMethodName}();
     }
     
     </#if>

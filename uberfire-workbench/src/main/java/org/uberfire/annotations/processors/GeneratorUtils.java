@@ -299,19 +299,19 @@ public class GeneratorUtils {
 
     /**
      * Get the method name annotated with {@code @WorkbenchMenu}. The method
-     * must be public, non-static, have a return-type of List<MenuItem> and take
-     * zero parameters.
+     * must be public, non-static, have a return-type of WorkbenchMenuBar and
+     * take zero parameters.
      * 
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getMenuConfigMethodName(final TypeElement classElement,
-                                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
-        return getMenuConfigMethodName( classElement,
-                                        processingEnvironment,
-                                        WorkbenchMenu.class );
+    public static String getMenuBarMethodName(final TypeElement classElement,
+                                              final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getMenuBarMethodName( classElement,
+                                     processingEnvironment,
+                                     WorkbenchMenu.class );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -659,16 +659,15 @@ public class GeneratorUtils {
     }
 
     // Lookup a public method name with the given annotation. The method must be
-    // public, non-static, have a return-type of PopupPanel and take zero
+    // public, non-static, have a return-type of WorkbenchMenuBar and take zero
     // parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static String getMenuConfigMethodName(final TypeElement classElement,
-                                                  final ProcessingEnvironment processingEnvironment,
-                                                  final Class annotation) throws GenerationException {
+    private static String getMenuBarMethodName(final TypeElement classElement,
+                                               final ProcessingEnvironment processingEnvironment,
+                                               final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = typeUtils.getDeclaredType( elementUtils.getTypeElement( "java.util.List" ),
-                                                                         elementUtils.getTypeElement( "com.google.gwt.user.client.ui.MenuItem" ).asType() );
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.WorkbenchMenuBar" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

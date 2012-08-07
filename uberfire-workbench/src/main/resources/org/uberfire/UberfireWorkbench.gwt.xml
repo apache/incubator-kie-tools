@@ -6,7 +6,6 @@
   <inherits name="com.google.gwt.i18n.I18N"/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
-  <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
   <inherits name="com.google.gwt.resources.Resources"/>
   <inherits name="com.google.gwt.activity.Activity"/>
 

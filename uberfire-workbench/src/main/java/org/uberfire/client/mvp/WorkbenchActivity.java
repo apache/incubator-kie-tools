@@ -15,11 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.List;
-
 import org.uberfire.client.workbench.Position;
-
-import com.google.gwt.user.client.ui.MenuItem;
+import org.uberfire.client.workbench.WorkbenchMenuBar;
 
 public interface WorkbenchActivity
     extends
@@ -41,5 +38,5 @@ public interface WorkbenchActivity
 
     public void onLostFocus();
 
-    public List<MenuItem> getMenuItems();
+    public WorkbenchMenuBar getMenuBar();
 }

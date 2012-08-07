@@ -15,13 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.WorkbenchMenuBar;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuItem;
 
 /**
  * 
@@ -91,9 +88,8 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public List<MenuItem> getMenuItems() {
-        final List<MenuItem> items = Collections.emptyList();
-        return items;
+    public WorkbenchMenuBar getMenuBar() {
+        return new WorkbenchMenuBar();
     }
 
 }

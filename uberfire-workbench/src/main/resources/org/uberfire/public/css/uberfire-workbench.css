@@ -81,3 +81,7 @@
 	border-style: none;
 	line-height: 0px;
 }
+
+.gwt-MenuItem-disabled {
+    color: #cdcdcd !important; 
+}

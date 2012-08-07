@@ -56,7 +56,7 @@ public class Workbench extends Composite {
     private BeanFactory                   factory;
 
     @Inject
-    private WorkbenchMenuBar              menuBar;
+    private WorkbenchMenuBarManager              menuBar;
 
     @PostConstruct
     public void setup() {

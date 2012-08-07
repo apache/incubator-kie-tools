@@ -16,9 +16,6 @@
 
 package org.uberfire.client.editors.test5;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -30,11 +27,12 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.WorkbenchMenuBar;
+import org.uberfire.client.workbench.WorkbenchMenuItem;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 
 /**
@@ -84,40 +82,27 @@ public class TestPresenter5 {
     }
 
     @WorkbenchMenu
-    public List<MenuItem> getMenu() {
-        final List<MenuItem> items = new ArrayList<MenuItem>();
-        final MenuBar menuBar1 = new MenuBar( true );
-        items.add( new MenuItem( "TestPresenter5 menu1",
-                                 menuBar1 ) );
+    public WorkbenchMenuBar getMenuBar() {
+        final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
+        final WorkbenchMenuBar subMenuBar = new WorkbenchMenuBar( true );
+        menuBar.addItem( new MenuItem( "TestPresenter5 menu",
+                                       subMenuBar ) );
         for ( int i = 0; i < 3; i++ ) {
-            final String caption = "Menu1:Item:" + i;
-            menuBar1.addItem( new MenuItem( caption,
-                                            new Command() {
+            final String caption = "TestPresenter5:Item:" + i;
+            final WorkbenchMenuItem item = new WorkbenchMenuItem( caption,
+                                                                  new Command() {
 
-                                                @Override
-                                                public void execute() {
-                                                    Window.alert( "You clicked " + caption );
-                                                }
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          Window.alert( "You clicked " + caption );
+                                                                      }
 
-                                            } ) );
-        }
-        final MenuBar menuBar2 = new MenuBar( true );
-        items.add( new MenuItem( "TestPresenter5 menu2",
-                                 menuBar2 ) );
-        for ( int i = 0; i < 3; i++ ) {
-            final String caption = "Menu2:Item:" + i;
-            menuBar2.addItem( new MenuItem( caption,
-                                            new Command() {
-
-                                                @Override
-                                                public void execute() {
-                                                    Window.alert( "You clicked " + caption );
-                                                }
-
-                                            } ) );
+                                                                  } );
+            item.setHasPermission( i > 0 );
+            subMenuBar.addItem( item );
         }
 
-        return items;
+        return menuBar;
     }
 
 }

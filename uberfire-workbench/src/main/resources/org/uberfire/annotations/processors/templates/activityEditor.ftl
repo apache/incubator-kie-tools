@@ -26,9 +26,8 @@ import org.uberfire.client.mvp.AbstractEditorActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
-<#if getMenuConfigMethodName??>
-import java.util.List;
-import com.google.gwt.user.client.ui.MenuItem;
+<#if getMenuBarMethodName??>
+import org.uberfire.client.workbench.WorkbenchMenuBar;
 </#if>
 
 import org.uberfire.backend.vfs.Path;
@@ -135,10 +134,10 @@ public class ${className} extends AbstractEditorActivity {
     }
 
     </#if>
-    <#if getMenuConfigMethodName??>
+    <#if getMenuBarMethodName??>
     @Override
-    public List<MenuItem> getMenuItems() {
-        return realPresenter.${getMenuConfigMethodName}();
+    public WorkbenchMenuBar getMenuBar() {
+        return realPresenter.${getMenuBarMethodName}();
     }
     
     </#if>

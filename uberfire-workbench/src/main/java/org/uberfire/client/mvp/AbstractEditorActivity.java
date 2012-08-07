@@ -15,18 +15,15 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuItem;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.WorkbenchMenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  *
@@ -127,9 +124,8 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public List<MenuItem> getMenuItems() {
-        final List<MenuItem> items = Collections.emptyList();
-        return items;
+    public WorkbenchMenuBar getMenuBar() {
+        return new WorkbenchMenuBar();
     }
 
 }
