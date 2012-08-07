@@ -1,0 +1,562 @@
+/*** mosaic overrides ***/
+
+
+.mosaic-Label {
+  font-weight:bold;
+}
+
+.gwt-Button {
+    font-size: 10px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+
+/*** tab bar ***/
+
+
+.gwt-TabPanelBottom {
+  border-left: 1px solid #bcbcbc;
+  border-right: 1px solid #bcbcbc;
+  border-bottom: 1px solid #bcbcbc;
+  border-top: 0px solid #ffffff;
+  overflow: hidden;
+  padding: 5px;
+  background:#ffffff;
+}
+
+/*** decorated tabs ***/
+
+.gwt-DecoratedTabBar {
+}
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+  width: 5px;  /* first tab distance from the left */
+}
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+  border-collapse: collapse;
+  margin-left: 0px;
+
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected {
+
+}
+
+.gwt-DecoratedTabBar .tabTopCenter {
+  padding: 0px;
+  background: #ffffff;
+  border-top:1px solid #c4c4c4;
+}
+.gwt-DecoratedTabBar .tabTopLeft,
+.gwt-DecoratedTabBar .tabTopRight {
+  padding: 0px;
+  zoom: 1;
+}
+.gwt-DecoratedTabBar .tabTopLeftInner,
+.gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+}
+.gwt-DecoratedTabBar .tabTopLeft {
+   background: #ffffff;
+   border-left:1px solid #c4c4c4;
+   border-top:1px solid #c4c4c4;
+}
+.gwt-DecoratedTabBar .tabTopRight {
+    background: #ffffff;
+    border-right:1px solid #c4c4c4;
+    border-top:1px solid #c4c4c4;
+}
+* html .gwt-DecoratedTabBar .tabTopLeftInner,
+* html .gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+.gwt-DecoratedTabBar .tabMiddleLeft{
+  width: 6px;
+  padding: 0px;
+  border-left:1px solid #c4c4c4;
+  background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+}
+.gwt-DecoratedTabBar .tabMiddleRight {
+  width: 6px;
+  padding: 0px;
+  border-right:1px solid #c4c4c4;
+  background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+}
+.gwt-DecoratedTabBar .tabMiddleLeftInner,
+.gwt-DecoratedTabBar .tabMiddleRightInner {
+  width: 0px;
+  height: 0px;
+}
+.gwt-DecoratedTabBar .tabMiddleCenter {
+  padding: 0px 4px 2px 4px;
+  font-weight: bold;
+  text-align: center;
+  background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+  background: #ffffff;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopLeft {
+  /*background-position: 0px -61px;*/
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopRight {
+  /*background-position: -6px -61px;*/
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+    background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleRight {
+  background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+  /*background: #e3e8f3 url(images/hborder.png) repeat-x 0px -2003px;*/
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+  cursor: default;
+  color:#000000;
+  background: #E3E8F3 url(gwt/chrome/images/hborder.png) repeat-x 0px -2003px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter div { /*tab text*/
+   color:#000000;
+}
+
+.gwt-DecoratedTabBar .tabMiddleCenter div { /*tab text*/
+  color:#ccc;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+  cursor: hand;
+  cursor: pointer;
+}
+
+
+
+.gwt-TabBarItem-wrapper {
+  padding-left:6px;
+  border-bottom: 1px solid #bcbcbc;
+}
+
+.gwt-TabBarItem-wrapper-selected {
+  /*border-bottom: 1px solid #bcbcbc;*/
+}
+
+.gwt-TabBarFirst-wrapper {
+ border-bottom: 1px solid #bcbcbc;
+}
+
+.gwt-TabBarRest-wrapper {
+ border-bottom: 1px solid #bcbcbc;
+}
+
+/*** StackLayoutPanel ***/
+
+.mosaic-StackLayoutPanel {
+}
+
+.mosaic-StackLayoutPanel .mosaic-StackLayoutPanelItem {
+	cursor: pointer;
+	cursor: hand;
+	background:#ffffff;
+}
+.mosaic-StackLayoutPanel .mosaic-StackLayoutPanelItem-selected {
+	cursor: pointer;
+	cursor: hand;
+}
+.mosaic-StackLayoutPanelContent {
+	padding-left:10px;
+	background:#ffffff;
+	border-bottom:1px solid #ccc;
+}
+
+/* decorator panel */
+
+.gwt-DecoratorPanel {
+
+}
+.gwt-DecoratorPanel .topCenter {
+    background:#ffffff;
+    border-top:1px solid #c4c4c4;
+}
+.gwt-DecoratorPanel .bottomCenter {
+    background:#ffffff;
+    border-bottom:1px solid #c4c4c4;
+}
+.gwt-DecoratorPanel .middleLeft {
+   border-left:1px solid #c4c4c4;
+   background:#fff;
+   overflow:hidden;
+   *zoom:1;
+   *padding-bottom:0.5em
+}
+.gwt-DecoratorPanel .middleRight {
+   border-right:1px solid #c4c4c4;
+   background:#fff;
+   overflow:hidden;
+   *zoom:1;
+   *padding-bottom:0.5em
+}
+
+.gwt-DecoratorPanel .topLeftInner,
+.gwt-DecoratorPanel .topRightInner,
+.gwt-DecoratorPanel .bottomLeftInner,
+.gwt-DecoratorPanel .bottomRightInner {
+  width: 0px;
+  height: 0px;
+  zoom: 1;
+}
+.gwt-DecoratorPanel .topLeft {
+    background:#ffffff;
+}
+.gwt-DecoratorPanel .topRight {
+    background:#ffffff;
+}
+.gwt-DecoratorPanel .bottomLeft {
+    background:#ffffff;
+}
+.gwt-DecoratorPanel .bottomRight {
+    background:#ffffff;
+}
+* html .gwt-DecoratorPanel .topLeftInner,
+* html .gwt-DecoratorPanel .topRightInner,
+* html .gwt-DecoratorPanel .bottomLeftInner,
+* html .gwt-DecoratorPanel .bottomRightInner {
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+}
+
+/* this way analytics does it*/
+
+.round_border{
+	display:block
+}
+
+.round_border * {
+	background:#fff;
+	display:block;
+	height:1px;
+	overflow:hidden
+}
+
+.round_border_layer3{
+	background:#c4c4c4;
+	border-left:1px solid #d3d4d5;
+	border-right:1px solid #d3d4d5;
+	margin:0 3px;padding:0 1px;
+}
+
+.round_border_layer2{
+	border-left:1px solid #d3d4d5;
+	border-right:1px solid #d3d4d5;
+	margin:0 2px;padding:0;
+}
+.round_border_layer1{
+	border-left:1px solid #c4c4c4;
+	border-right:1px solid #c4c4c4;
+	margin:0 1px;
+}
+
+.round_border_content{
+	border-left:1px solid #c4c4c4;
+	border-right:1px solid #c4c4c4;
+	background:#fff;
+	overflow:hidden;
+	/*padding:4px 10px;*/
+	*zoom:1;
+	*padding-bottom:0.5em;
+}
+
+.round_border_content.min_size{
+	min-height:450px
+}
+
+/*** ScrollTable ***/
+
+.gwt-ScrollTable {
+  border: 1px solid #CCC;
+}
+
+.mosaic-ColumnWidget,
+.mosaic-ScrollTreeTable {
+	border-color: #aaa;
+	border-style: solid;
+	border-width: 1px 0px 1px 1px;
+}
+
+.gwt-ScrollTable .headerWrapper,
+.mosaic-ColumnWidget .headerWrapper,
+.mosaic-ScrollTreeTable .headerWrapper {
+	background: #666;
+}
+
+.gwt-ScrollTable .footerWrapper,
+.mosaic-ColumnWidget .footerWrapper,
+.mosaic-ScrollTreeTable .footerWrapper {
+	border-top: 1px solid #aaa;
+	background: #666;
+}
+
+.gwt-ScrollTable .dataTable td,
+.gwt-ScrollTable .headerTable td,
+.gwt-ScrollTable .footerTable td,
+.mosaic-ColumnWidget .dataTable td,
+.mosaic-ColumnWidget .headerTable td,
+.mosaic-ColumnWidget .footerTable td,
+.mosaic-ScrollTreeTable .dataTable td,
+.mosaic-ScrollTreeTable .headerTable td,
+.mosaic-ScrollTreeTable .footerTable td {
+	border-color: #ccc;
+	border-style: solid;
+	border-width: 0px 1px 1px 0px;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size:12px;
+}
+
+.gwt-ScrollTable .headerTable td,
+.gwt-ScrollTable .footerTable td,
+.mosaic-ColumnWidget .headerTable td,
+.mosaic-ColumnWidget .footerTable td,
+.mosaic-ScrollTreeTable .headerTable td,
+.mosaic-ScrollTreeTable .footerTable td {
+	color: #fff;
+}
+
+.gwt-ScrollTable .dataTable tr.highlighted, /* gen2 */
+.gwt-ScrollTable .dataTable tr.hovering,
+.mosaic-ColumnWidget .dataTable tr.hovering,
+.mosaic-ScrollTreeTable .dataTable tr.hovering {
+	background: #C3D9FF;   /*#C3D9FF*/ /*lighter blue*/
+}
+
+.gwt-ScrollTable .dataTable td.highlighted, /* gen2 */
+.gwt-ScrollTable .dataTable td.hovering,
+.mosaic-ColumnWidget .dataTable td.hovering,
+.mosaic-ScrollTreeTable .dataTable td.hovering {
+	background: #EFF5F9;/*#FFFFAA; */   /*yellow*/
+	cursor: hand;
+	cursor: pointer;
+}
+
+.gwt-ScrollTable .dataTable tr.selected,
+.mosaic-ColumnWidget .dataTable tr.selected,
+.mosaic-ScrollTreeTable .dataTable tr.selected {
+	background: #7AA5D6;/*#7AA5D6;*/ /*light blue*/
+}
+
+.gwt-ScrollTable .pagingOptions {
+	background: #e8eef7; /**/
+	border-top: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	padding: 1px 0px;
+}
+
+.gwt-ScrollTable .pagingOptions .errorMessage {
+	color: red;
+}
+
+.gwt-PagingOptions .gwt-Image {
+	cursor: hand;
+	cursor: pointer;
+}
+
+.gwt-InlineCellEditor {
+	border: 3px solid #7AA5D6;
+	padding: 4px;
+	background: white;
+	overflow: auto;
+}
+.gwt-InlineCellEditor .accept {
+	cursor: pointer;
+	cursor: hand;
+}
+.gwt-InlineCellEditor .cancel {
+	cursor: pointer;
+	cursor: hand;
+}
+
+
+/*** DropDownPanel ***/
+
+.mosaic-DropDownPanel {
+
+}
+
+.mosaic-DropDownPanel .mosaic-ComboBoxList {
+	background: white;
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable,
+.mosaic-DropDownPanel .mosaic-ColumnWidget,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable {
+	border-color: #aaa;
+	border-style: solid;
+	border-width: 1px 0px 1px 1px;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .headerWrapper,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .headerWrapper,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .headerWrapper {
+	background: #666;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .footerWrapper,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .footerWrapper,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .footerWrapper {
+	border-top: 1px solid #aaa;
+	background: #666;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable td,
+.mosaic-DropDownPanel .gwt-ScrollTable .headerTable td,
+.mosaic-DropDownPanel .gwt-ScrollTable .footerTable td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .headerTable td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .footerTable td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .headerTable td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .footerTable td {
+	border-color: #aaa;
+	border-style: solid;
+	border-width: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 1px 3px;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .headerTable td,
+.mosaic-DropDownPanel .gwt-ScrollTable .footerTable td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .headerTable td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .footerTable td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .headerTable td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .footerTable td {
+	color: #fff;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable tr.hovering,
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable tr.highlighted,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable tr.hovering,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable tr.highlighted,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable tr.hovering,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable tr.highlighted {
+	background: #C3D9FF;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable tr.hovering,
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable tr.highlighted,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable tr.hovering,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable tr.highlighted,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable tr.hovering,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable tr.highlighted {
+	/*background: #FFFFAA;*/
+	cursor: hand;
+	cursor: pointer;
+}
+
+.mosaic-DropDownPanel .gwt-ScrollTable .dataTable tr.selected td,
+.mosaic-DropDownPanel .mosaic-ColumnWidget .dataTable tr.selected td,
+.mosaic-DropDownPanel .mosaic-ScrollTreeTable .dataTable tr.selected td {
+	background: #7AA5D6;
+}
+
+
+/** popup panel **/
+
+.gwt-DecoratedPopupPanel .popupContent {
+}
+.gwt-DecoratedPopupPanel .popupMiddleCenter {
+  padding: 0px;
+  border: 1px solid #ccc;
+  background: #ffffff;
+}
+.gwt-DecoratedPopupPanel .popupTopCenter {
+  /*background: url(images/hborder.png) repeat-x;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupBottomCenter {
+  /*background: url(images/hborder.png) repeat-x 0px -4px;
+  -background: url(images/hborder_ie6.png) repeat-x 0px -4px;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupMiddleLeft {
+  /*background: url(images/vborder.png) repeat-y;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupMiddleRight {
+  /*background: url(images/vborder.png) repeat-y -4px 0px;
+  -background: url(images/vborder_ie6.png) repeat-y -4px 0px;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupTopLeftInner {
+  width: 0px;
+  height: 0px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupTopRightInner {
+  width: 0px;
+  height: 0px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomLeftInner {
+  width: 0px;
+  height: 0px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomRightInner {
+  width: 0px;
+  height: 0px;
+  zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupTopLeft {
+  /*background: url(images/corner.png) no-repeat 0px -10px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -10px;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupTopRight {
+  /*background: url(images/corner.png) no-repeat -5px -10px;
+  -background: url(images/corner_ie6.png) no-repeat -5px -10px;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupBottomLeft {
+  /*background: url(images/corner.png) no-repeat 0px -15px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -15px;*/
+  background:#ffffff;
+}
+.gwt-DecoratedPopupPanel .popupBottomRight {
+  /*background: url(images/corner.png) no-repeat -5px -15px;
+  -background: url(images/corner_ie6.png) no-repeat -5px -15px;*/
+  background:#ffffff;
+}
+* html .gwt-DecoratedPopupPanel .popupTopLeftInner {
+  width: 5px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupTopRightInner {
+  width: 8px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomRightInner {
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+}

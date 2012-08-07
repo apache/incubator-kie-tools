@@ -1,0 +1,271 @@
+body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background:#edf0f4 url(header_background.png) repeat-x;
+}
+
+.bpm-login {
+   background: #F0F0F0;
+}
+
+
+.bpm-layout {
+  border: 1px solid green;
+  margin: 10px;
+}
+
+.bpm-lazy-header {
+  height:35px;
+  margin-bottom:5px;
+  border:1px solid black;
+}
+
+.bpm-label-header {
+  background-color:#F8F8F8;
+  font-weight:BOLD;
+  font-size:14px;
+  color:#989898;
+  padding-bottom:2px;
+  padding-left:5px;
+  margin-bottom:5px;
+}
+
+.bpm-label-header-invert {
+  background-color:#F8F8F8;
+  font-weight:bold;
+  font-size:14px;
+  padding-bottom:2px;
+  padding-left:5px;
+  margin-bottom:10px;
+}
+
+.bpm-headline {
+  font-weight:BOLD;
+  font-size:14px;
+  padding:10px;
+}
+
+.bpm-header-userinfo {
+  font-family: sans-serif;
+  width:150px;
+}
+
+.bpm-header-versioninfo {
+  font-family: sans-serif;
+  color: #C8C8C8;
+}
+
+.bpm-login-info {
+  font-family: sans-serif;
+  color: #000000;
+  font-size:9px;
+  width:95%;
+  margin-top:5px;
+  text-align:right;
+}
+
+.bpm-user-info-popup {
+  font-family: sans-serif;
+  color: #000000;
+  font-size:9px;
+  margin:5px;
+}
+
+.bpm-property-image {
+  padding-top:10px;
+}
+
+.bpm-operation-ui {
+    font-size:10px;
+}
+
+.bpm-editor-info {
+  font-family: sans-serif;
+  font-size:18px;
+}
+
+.bpm-editor-header {
+  font-family: sans-serif;
+  background-color: #E0E0E0;
+}
+
+.bpm-label {
+  font-family: sans-serif;
+  font-size: small;
+}
+
+.bpm-ListHeaderRow {
+  font-weight: bold;
+}
+
+.bpm-EvenRow {
+  background-color: #f0f4f8;
+}
+
+.bpm-FieldValue {
+
+}
+
+.bpm-EditorHeader {
+
+}
+
+.bpm-loading-color {
+  background-color:#FF6600;
+}
+
+.bpm-loading-image {
+  background-color:#ffffff;
+  width:43px;
+  height:11px;
+}
+
+.bpm-ProcessImage {
+  border: 0px;
+}
+
+.bpm-SplitPanel {
+  border: 1px dashed green;
+  vertical-align: top;
+  position:relative; top:5px; left:5px;
+}
+
+.piechart-types {
+  font-size: small;
+  list-style-type:decimal;
+  font-family: sans-serif;
+}
+
+.login-panel-content {
+  text-align: center;
+}
+
+div.activeNode {
+  position:absolute;
+  border-width:1px;
+  border-style:solid;
+  border-color:#339933;
+}
+
+div.activeNode-header {
+  position:absolute;
+  overflow:hidden;
+}
+
+div.activeNode-header-link  {
+  cursor:default;
+  font-family:sans-serif;
+  font-size:10px;
+  white-space:nowrap;
+  color:#ffffff;
+  padding-left:3px;
+  padding-right:3px;
+  border-width:1px;
+  border-style:solid;
+  border-color:#339933;
+  background-color:#339933;
+}
+
+div.activeNode-header-link a {
+  color:#ffffff;
+  text-decoration:none;
+}
+
+div.activeNode-header-link a:hover {
+  text-decoration:underline;
+}
+
+/* start - override gwt-log styles */
+.log-panel {
+  background-color: #ECF2FC;
+  border: 0px solid black;
+  margin: 0px;
+  padding:10px;
+}
+
+.log-panel .log-scroll-panel {
+  width: 100% !important;
+  height: 80px !important;
+}
+
+.log-panel .log-text-area,.log-panel BUTTON {
+  font-size: 8pt;
+  margin: 0em;
+}
+
+.log-resize-se {
+  visibility:hidden;
+}
+
+/* end - override gwt-log styles */
+
+/* start - custom widgets */
+.bpm-detail-panel {
+  border:1px solid #E8E8E8;
+}
+
+.bpm-property-box
+{
+  padding:5px;
+  width:100%;
+  border:1px solid #cccccc;
+  background: #F8F8F8;
+}
+
+.bpm-prop-grid {
+  width:100%;
+  border:1px solid #cccccc;
+}
+
+.bpm-prop-grid-even {
+  background: #F8F8F8;
+}
+
+.bpm-prop-grid-odd {
+  background:#F0F0F0;
+}
+
+.bpm-prop-grid-label {
+
+}
+
+/* end - custom widgets */
+
+.bpm-graphView-activityImage {
+  background-image: url(images/icons/play_red_big.png);
+  background-repeat:no-repeat;
+  width:16px;
+  height:16px;
+}
+
+.bpm-window-layout {
+  margin: 1px;
+}
+
+.bpm-paging-panel {
+  padding:2px;
+  font-size:8px;
+  background-color:#F8F8F8;
+}
+
+.bpm-loading-overlay {
+    font-size: 10px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    width: 25px;
+    height: 25px;
+    margin:0px;
+    padding:0px;
+}
+
+
+/*merge these with workspaces*/
+
+
+.gwt-menubar .gwt-menuitem-selected {
+    background: #7AA5D6;
+}

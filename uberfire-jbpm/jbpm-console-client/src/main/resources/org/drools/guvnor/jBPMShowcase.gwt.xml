@@ -13,6 +13,8 @@
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
+  <stylesheet src='css/chome-override.css'/>
+  <stylesheet src='css/console.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
