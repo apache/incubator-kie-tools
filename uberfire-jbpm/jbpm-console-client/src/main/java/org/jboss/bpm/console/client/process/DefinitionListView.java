@@ -21,33 +21,19 @@
  */
 package org.jboss.bpm.console.client.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.Dependent;
-
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-/*import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.BpmConsoleClientFactory;*/
-import org.drools.guvnor.client.common.CustomizableListBox;
-import org.drools.guvnor.client.common.DataDriven;
-import org.drools.guvnor.client.common.LoadingOverlay;
-import org.drools.guvnor.client.common.Model;
-import org.drools.guvnor.client.common.ModelCommands;
-import org.drools.guvnor.client.common.ModelParts;
-import org.drools.guvnor.client.common.PagingCallback;
-import org.drools.guvnor.client.common.PagingPanel;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.ListDataProvider;
+import org.drools.guvnor.client.common.*;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.Message;
@@ -55,6 +41,13 @@ import org.jboss.errai.bus.client.api.MessageCallback;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+
+import javax.enterprise.context.Dependent;
+import java.util.ArrayList;
+import java.util.List;
+
+/*import org.jboss.bpm.console.client.ApplicationContext;
+import org.jboss.bpm.console.client.BpmConsoleClientFactory;*/
 
 /**
  * @author Heiko.Braun <heiko.braun@jboss.com>
@@ -68,7 +61,8 @@ public class DefinitionListView implements IsWidget, DataDriven {
 
     private VerticalPanel definitionList = null;
 
-    private CustomizableListBox<ProcessDefinitionRef> listBox;
+    private CellTable<ProcessDefinitionRef> listBox = new CellTable<ProcessDefinitionRef>();
+    private ListDataProvider<ProcessDefinitionRef> dataProvider = new ListDataProvider<ProcessDefinitionRef>();
 
     private boolean isInitialized;
 
@@ -82,17 +76,11 @@ public class DefinitionListView implements IsWidget, DataDriven {
 
     private final SimplePanel panel = new SimplePanel();
 
-    //private final ApplicationContext applicationContext;
-
-    public DefinitionListView(/*BpmConsoleClientFactory clientFactory*/) {
-        //applicationContext = clientFactory.getApplicationContext();
-    }
-
     public Widget asWidget() {
 
         panel.clear();
 
-        listBox = createListBox();
+        fillListBox();
 /*
         controller.addView(ID, this);
 
@@ -108,7 +96,7 @@ public class DefinitionListView implements IsWidget, DataDriven {
         Timer t = new Timer() {
             @Override
             public void run() {
-            	//JLIU: TODO
+                //JLIU: TODO
 /*                controller.handleEvent(
                         new Event(UpdateDefinitionsAction.ID, null)
                 );*/
@@ -231,7 +219,7 @@ public class DefinitionListView implements IsWidget, DataDriven {
         DeferredCommand.addCommand(
                 new Command() {
                     public void execute() {
-                        listBox.clear();
+                        dataProvider.flush();
 
                         //JLIU: TODO
                         // force loading
@@ -243,60 +231,52 @@ public class DefinitionListView implements IsWidget, DataDriven {
         );
     }
 
-    private CustomizableListBox createListBox() {
-        final CustomizableListBox<ProcessDefinitionRef> listBox =
-                new CustomizableListBox<ProcessDefinitionRef>(
-                        new CustomizableListBox.ItemFormatter<ProcessDefinitionRef>() {
-                            public String format(ProcessDefinitionRef processDefinitionRef) {
-                                String result = "";
+    private void fillListBox() {
 
-                                String name = processDefinitionRef.getName();
-                                String s = name.indexOf("}") > 0 ?
-                                        name.substring(name.lastIndexOf("}") + 1, name.length()) : name;
+        dataProvider.addDataDisplay(listBox);
 
-                                String color = processDefinitionRef.isSuspended() ? "#CCCCCC" : "#000000";
-                                String text = "<div style=\"color:" + color + "\">" + s + "</div>";
+        TextColumn<ProcessDefinitionRef> instanceColumn = new TextColumn<ProcessDefinitionRef>() {
+            @Override
+            public String getValue(ProcessDefinitionRef processDefinitionRef) {
+                String name = processDefinitionRef.getName();
+                return name.indexOf("}") > 0 ? name.substring(name.lastIndexOf("}") + 1, name.length()) : name;
+            }
+        };
+        TextColumn<ProcessDefinitionRef> versionColumn = new TextColumn<ProcessDefinitionRef>() {
+            @Override
+            public String getValue(ProcessDefinitionRef processDefinitionRef) {
+                return String.valueOf(processDefinitionRef.getVersion());
+            }
+        };
+        TextColumn<ProcessDefinitionRef> isSuspendedColumn = new TextColumn<ProcessDefinitionRef>() {
+            @Override
+            public String getValue(ProcessDefinitionRef processDefinitionRef) {
+                return String.valueOf(processDefinitionRef.isSuspended());
+            }
+        };
+        Column<ProcessDefinitionRef, String> actionColumn = new Column<ProcessDefinitionRef, String>(new ButtonCell()) {
+            @Override
+            public String getValue(ProcessDefinitionRef processDefinitionRef) {
+                return "->";
+            }
+        };
+        actionColumn.setFieldUpdater(new FieldUpdater<ProcessDefinitionRef, String>() {
 
-                                result += new HTML(text);
-                                result += " ";
-                                result += String.valueOf(processDefinitionRef.getVersion());
-                                result += " ";
-                                result += String.valueOf(processDefinitionRef.isSuspended());
+            public void update(int index, final ProcessDefinitionRef processDefinitionRef, String value) {
 
-                                return result;
-                            }
-                        });
+                // TODO: Open the View -Rikkola-
+            }
+        });
 
-        listBox.setFirstLine("<b>Process</b>, v.");//, "Version", "Suspended"
 
-        listBox.setFocus(true);
-
-        listBox.addChangeHandler(
-                new ChangeHandler() {
-                    public void onChange(ChangeEvent event) {
-                        int index = listBox.getSelectedIndex();
-                        if (index != -1) {
-                            ProcessDefinitionRef item = listBox.getItem(index);
-
-                            //JLIU: TODO
-/*                            // load instances
-                            controller.handleEvent(
-                                    new Event(
-                                            UpdateInstancesAction.ID,
-                                            item
-                                    )
-                            );*/
-
-                        }
-                    }
-                }
-        );
-
-        return listBox;
+        listBox.addColumn(instanceColumn, "Process");
+        listBox.addColumn(versionColumn, "Version");
+        listBox.addColumn(isSuspendedColumn, "Suspended");
+        listBox.addColumn(actionColumn);
     }
 
     public void reset() {
-        listBox.clear();
+        dataProvider.flush();
 
         //JLIU: TODO
 /*        // clear instance panel
@@ -336,19 +316,11 @@ public class DefinitionListView implements IsWidget, DataDriven {
             }
 
             for (ProcessDefinitionRef def : (List<ProcessDefinitionRef>) pagingPanel.trim(tmp)) {
-                listBox.addItem(def);
+                dataProvider.getList().add(def);
             }
         }
     }
 
-    public ProcessDefinitionRef getSelection() {
-        ProcessDefinitionRef selection = null;
-        if (isInitialized() && listBox.getSelectedIndex() != -1) {
-            selection = listBox.getItem(listBox.getSelectedIndex());
-        }
-        return selection;
-    }
-    
     @WorkbenchPartTitle
     public String getTitle() {
         return "DefinitionListView";
@@ -356,6 +328,6 @@ public class DefinitionListView implements IsWidget, DataDriven {
 
     @WorkbenchPartView
     public IsWidget getView() {
-    	return asWidget();
+        return asWidget();
     }
 }
