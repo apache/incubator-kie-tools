@@ -37,7 +37,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A pop-up "compass" widget that appears centralised on it's parent Drop Target
+ * and permits drop events on the compass points.
  */
 public class CompassWidget extends PopupPanel
     implements

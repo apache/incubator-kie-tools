@@ -38,7 +38,9 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * Manager responsible for adding or removing WorkbenchParts to WorkbenchPanels;
+ * either as a consequence of explicitly opening or closing WorkbenchParts or
+ * implicitly as part of a drag operation.
  */
 @ApplicationScoped
 public class PanelManager {

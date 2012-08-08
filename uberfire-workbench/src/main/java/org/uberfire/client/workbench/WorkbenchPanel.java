@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
+ * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
 public class WorkbenchPanel extends ResizeComposite {

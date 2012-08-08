@@ -19,7 +19,7 @@ import org.uberfire.client.workbench.WorkbenchPart;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 /**
- * 
+ * The context of a drag and drop operation within the Workbench.
  */
 public class WorkbenchDragContext {
 

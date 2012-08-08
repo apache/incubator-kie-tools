@@ -20,14 +20,14 @@ import org.uberfire.client.workbench.Position;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * Common operations for Workbench Split Panels.
  */
 public interface SplitPanel {
 
-    //TODO {manstis} This needs to come from the Editor being added to the panel really
+    //TODO {manstis} This needs to come from the Editor being added to the panel
     public static final int MIN_SIZE     = 32;
 
-    //TODO {manstis} This needs to come from the Editor being added to the panel really
+    //TODO {manstis} This needs to come from the Editor being added to the panel
     public static final int INITIAL_SIZE = 64;
 
     public void clear();

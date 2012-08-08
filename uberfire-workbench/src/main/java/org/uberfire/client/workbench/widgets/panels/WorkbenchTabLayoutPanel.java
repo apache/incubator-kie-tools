@@ -59,9 +59,11 @@ import com.google.gwt.user.client.ui.Widget;
  * declaration.
  * </p>
  * <p>
- * This is a fork of the standard TabLayoutPanel with the following changes:- 1)
- * Addition of a focus indicator to indicate whether the TabLayoutPanel has the
- * focus.
+ * This is a fork of the standard TabLayoutPanel with the following changes:-
+ * <ol>
+ * <li>Addition of a focus indicator to indicate whether the TabLayoutPanel has
+ * the focus.</li>
+ * </ol>
  * </p>
  * <h3>CSS Style Rules</h3>
  * <dl>

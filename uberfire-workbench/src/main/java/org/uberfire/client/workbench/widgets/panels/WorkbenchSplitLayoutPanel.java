@@ -33,7 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
  * widgets.
  * <p>
  * This is a fork of the standard SplitLayoutPanel with the following changes:-
- * 1) http://code.google.com/p/google-web-toolkit/issues/detail?id=7135
+ * <ol>
+ * <li>http://code.google.com/p/google-web-toolkit/issues/detail?id=7135</li>
+ * </ol>
  * </p>
  * <p>
  * This panel is used in the same way as {@link DockLayoutPanel}, except that

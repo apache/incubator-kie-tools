@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A Drag Controller for the Workbench. 
  */
 @ApplicationScoped
 public class WorkbenchPickupDragController extends PickupDragController {

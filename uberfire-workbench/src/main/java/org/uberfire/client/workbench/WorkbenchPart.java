@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
+ * A Workbench panel part.
  */
 public class WorkbenchPart extends SimpleLayoutPanel {
 

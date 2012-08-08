@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A Drop Controller for the boundaries (North, South, East or West) of a panel.
  */
 @Dependent
 public class BoundaryDropController

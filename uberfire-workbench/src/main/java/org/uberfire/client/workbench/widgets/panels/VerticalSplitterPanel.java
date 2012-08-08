@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A split panel to contain WorkbenchPanels split vertically.
  */
 @Dependent
 public class VerticalSplitterPanel extends ResizeComposite

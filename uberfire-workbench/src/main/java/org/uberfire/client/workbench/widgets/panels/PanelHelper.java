@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.widgets.panels;
 import org.uberfire.client.workbench.WorkbenchPanel;
 
 /**
- * 
+ * Operations to add or remove WorkbenchPanels from the Workbench.
  */
 public interface PanelHelper {
 

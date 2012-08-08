@@ -31,7 +31,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * Helper to add or remove WorkbenchPanels from the South of a
+ * VerticalSplitterPanel.
  */
 @ApplicationScoped
 @WorkbenchPosition(position = Position.SOUTH)

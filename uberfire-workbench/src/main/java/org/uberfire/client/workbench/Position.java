@@ -16,7 +16,7 @@
 package org.uberfire.client.workbench;
 
 /**
- * 
+ * Positions to which a WorkbenchPanel can be added to the Workbench
  */
 public enum Position {
 

@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ * A Manager of drag and drop operations within the Workbench.
  */
 @ApplicationScoped
 public class WorkbenchDragAndDropManager {

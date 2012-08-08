@@ -26,7 +26,7 @@ import javax.inject.Qualifier;
 import org.uberfire.client.workbench.Position;
 
 /**
- * 
+ * Qualifier for injection of PanelHelpers.
  */
 @Qualifier
 @Inherited

@@ -32,7 +32,7 @@ import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A DragController covering the entire WorkbenchPanel that renders a Compass
+ * A Drop Controller covering the entire WorkbenchPanel that renders a Compass
  * with which to select the target position of the drag operation.
  */
 @Dependent

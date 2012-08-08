@@ -19,7 +19,7 @@ import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
- * 
+ * A Perspective Provider sets the default layout of the Workbench.
  */
 public interface IPerspectiveProvider {
 
