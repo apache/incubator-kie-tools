@@ -38,23 +38,16 @@ import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 
 import javax.enterprise.context.Dependent;
 import java.util.ArrayList;
 import java.util.List;
 
-/*import org.jboss.bpm.console.client.ApplicationContext;
-import org.jboss.bpm.console.client.BpmConsoleClientFactory;*/
-
-/**
- * @author Heiko.Braun <heiko.braun@jboss.com>
- */
-@Deprecated
 @Dependent
-@WorkbenchEditor(identifier = "DefinitionListView")
+@WorkbenchScreen(identifier = "DefinitionListView")
 public class DefinitionListView implements IsWidget, DataDriven {
 
     public final static String ID = DefinitionListView.class.getName();
@@ -76,12 +69,17 @@ public class DefinitionListView implements IsWidget, DataDriven {
 
     private final SimplePanel panel = new SimplePanel();
 
+    private UpdateDefinitionsAction updateDefinitionsAction;
+
     public Widget asWidget() {
 
         panel.clear();
 
+        updateDefinitionsAction = new UpdateDefinitionsAction(this);
+
         fillListBox();
-/*
+
+        /*
         controller.addView(ID, this);
 
         controller.addAction(UpdateInstancesAction.ID, new UpdateInstancesAction(applicationContext));
@@ -96,10 +94,7 @@ public class DefinitionListView implements IsWidget, DataDriven {
         Timer t = new Timer() {
             @Override
             public void run() {
-                //JLIU: TODO
-/*                controller.handleEvent(
-                        new Event(UpdateDefinitionsAction.ID, null)
-                );*/
+                updateDefinitionsAction.execute(null);
             }
         };
 
@@ -221,11 +216,7 @@ public class DefinitionListView implements IsWidget, DataDriven {
                     public void execute() {
                         dataProvider.flush();
 
-                        //JLIU: TODO
-                        // force loading
-/*                        controller.handleEvent(
-                                new Event(UpdateDefinitionsAction.ID, null)
-                        );*/
+                        updateDefinitionsAction.execute(null);
                     }
                 }
         );
@@ -290,6 +281,8 @@ public class DefinitionListView implements IsWidget, DataDriven {
     }
 
     public void update(Object... data) {
+
+
         this.definitions = (List<ProcessDefinitionRef>) data[0];
         pagingPanel.reset();
         renderFiltered();
