@@ -349,7 +349,11 @@ public class InstanceListView implements IsWidget, DataDriven {
 
             instanceList.add(toolBox);
             instanceList.add(listBox);
-
+            instanceList.setCellVerticalAlignment(listBox, HasVerticalAlignment.ALIGN_TOP);
+            instanceList.setHeight("500px");
+            instanceList.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+            instanceList.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+            
             // cached data?
             if (this.cachedInstances != null)
 

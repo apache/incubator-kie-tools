@@ -159,6 +159,7 @@ public class InstanceDetailView extends HorizontalPanel {
         );
         instanceDataBtn.setEnabled(false);
         buttonPanel.add(instanceDataBtn);
+        this.add(new HTML("&nbsp&nbsp"));
         this.add(buttonPanel);
 
         // plugin availability
