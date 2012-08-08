@@ -93,7 +93,7 @@ public class WorkbenchPanel extends ResizeComposite {
                                                                               FOCUS_BAR_HEIGHT,
                                                                               Unit.PX );
 
-        //Selecting a tab causes the previously selected to receive a hide event
+        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
 
             @Override
@@ -109,7 +109,7 @@ public class WorkbenchPanel extends ResizeComposite {
             }
         } );
 
-        //When tab is selected ensure content is resized and set focus
+        //When a tab is selected ensure content is resized and set focus
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
 
             @Override

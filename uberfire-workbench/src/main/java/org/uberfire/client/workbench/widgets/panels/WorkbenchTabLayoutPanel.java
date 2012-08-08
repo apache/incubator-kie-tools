@@ -939,6 +939,10 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
             this.focusBar.getElement().setClassName( "workbenchFocusIndicatorHasFocus" );
         } else {
             this.focusBar.getElement().setClassName( "workbenchFocusIndicator" );
+            if ( selectedIndex != -1 ) {
+                tabs.get( selectedIndex ).setSelected( false );
+                selectedIndex = -1;
+            }
         }
     }
 
