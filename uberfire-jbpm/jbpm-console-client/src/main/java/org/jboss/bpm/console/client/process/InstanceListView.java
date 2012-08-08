@@ -46,6 +46,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 
 import javax.enterprise.context.Dependent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Dependent
@@ -95,6 +96,7 @@ public class InstanceListView implements IsWidget, DataDriven {
     public Widget asWidget() {
 
         panel = new SimplePanel();
+        panel.setWidth("100%");
 
         initialize();
 
@@ -356,11 +358,16 @@ public class InstanceListView implements IsWidget, DataDriven {
             }
 
             // layout
-            HorizontalPanel layout = new HorizontalPanel();
+            VerticalPanel layout = new VerticalPanel();
+            instanceList.setWidth("100%");
             layout.add(instanceList);
 
+            Label detailLabel = new Label("Execution details");
+            layout.add(detailLabel);
+            
             // details
             InstanceDetailView detailsView = new InstanceDetailView();
+            detailsView.setWidth("100%");
             //JLIU: TODO
 /*            controller.addView(InstanceDetailView.ID, detailsView);
             controller.addAction(UpdateInstanceDetailAction.ID, new UpdateInstanceDetailAction());
@@ -373,6 +380,25 @@ public class InstanceListView implements IsWidget, DataDriven {
             isInitialized = true;
 
         }
+        
+        
+        ProcessDefinitionRef mockCurrentDefinition = new ProcessDefinitionRef();
+        List<ProcessInstanceRef> mockCachedInstances = new ArrayList<ProcessInstanceRef>();
+        ProcessInstanceRef mockProcessInstanceRef = new ProcessInstanceRef();
+        mockProcessInstanceRef.setDefinitionId("1");
+        mockProcessInstanceRef.setStartDate(new Date());
+        mockProcessInstanceRef.setSuspended(true);
+        mockProcessInstanceRef.setState("RUNNING");
+        mockCachedInstances.add(mockProcessInstanceRef);
+        ProcessInstanceRef mockProcessInstanceRef2 = new ProcessInstanceRef();
+        mockProcessInstanceRef2.setDefinitionId("3");
+        mockProcessInstanceRef2.setStartDate(new Date());
+        mockProcessInstanceRef2.setSuspended(true);
+        mockProcessInstanceRef2.setState("RUNNING");
+        mockCachedInstances.add(mockProcessInstanceRef2);        
+        
+        Object[] data = new Object[]{mockCurrentDefinition, mockCachedInstances};
+        update(data);
     }
 
     public ProcessInstanceRef getSelection() {

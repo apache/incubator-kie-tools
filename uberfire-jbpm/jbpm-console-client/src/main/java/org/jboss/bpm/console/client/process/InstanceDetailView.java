@@ -164,6 +164,10 @@ public class InstanceDetailView extends HorizontalPanel {
         // plugin availability
         this.hasDiagramPlugin =
                 ServerPlugins.has("org.jboss.bpm.console.server.plugin.GraphViewerPlugin");
+        
+        ProcessInstanceRef mockProcessInstanceRef = new ProcessInstanceRef();
+        mockProcessInstanceRef.setRootToken(null);
+        update(null, mockProcessInstanceRef);
 
     }
 
@@ -259,14 +263,22 @@ public class InstanceDetailView extends HorizontalPanel {
         String currentNodeName = instance.getRootToken() != null ?
                 instance.getRootToken().getCurrentNodeName() : "n/a";
 
-        String[] values = new String[]{
+/*        String[] values = new String[]{
                 def.getName(),
                 instance.getId(),
                 String.valueOf(instance.getState()),
                 dateFormat.format(instance.getStartDate()),
                 currentNodeName
+        };*/
+        
+        String[] values = new String[]{
+                "process 1",
+                "id1",
+                "state",
+                "2012-08-08",
+                "nodename1"
         };
-
+        
         grid.update(values);
 
         if (hasDiagramPlugin) {
