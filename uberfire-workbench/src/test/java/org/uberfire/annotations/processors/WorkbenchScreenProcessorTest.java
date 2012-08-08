@@ -28,6 +28,7 @@ import javax.tools.JavaFileObject;
 import org.junit.Test;
 import org.uberfire.annotations.processors.GenerationCompleteCallback;
 import org.uberfire.annotations.processors.WorkbenchScreenProcessor;
+import org.uberfire.annotations.processors.AbstractProcessorTest.Result;
 
 /**
  * Tests for Screen related class generation
@@ -175,6 +176,52 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     public void testWorkbenchScreenAllAnnotations() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest8";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest8.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenWorkbenchMenuAnnotationCorrectReturnType() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest9";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest9.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenWorkbenchMenuAnnotationWrongReturnType() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest10";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest10.expected";
 
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
