@@ -26,9 +26,6 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
-import org.uberfire.annotations.processors.GenerationCompleteCallback;
-import org.uberfire.annotations.processors.WorkbenchScreenProcessor;
-import org.uberfire.annotations.processors.AbstractProcessorTest.Result;
 
 /**
  * Tests for Screen related class generation
