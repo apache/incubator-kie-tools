@@ -26,7 +26,7 @@ import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.workbench.Position;
 </#if>
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 </#if>
 
 import com.google.gwt.user.client.ui.IsWidget;

@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;

@@ -17,14 +17,19 @@
 package org.uberfire.client.editors.test;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -35,10 +40,13 @@ public class TestView extends Composite
     TestPresenter.View {
 
     @Inject
-    UiBinder<Panel, TestView> uiBinder;
+    UiBinder<Panel, TestView>        uiBinder;
 
     @UiField
-    public HTMLPanel          panel;
+    public SimplePanel               panel;
+
+    @Inject
+    private Event<NotificationEvent> notification;
 
     @PostConstruct
     public void init() {
@@ -51,6 +59,11 @@ public class TestView extends Composite
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width,
                             height );
+    }
+
+    @UiHandler("notificationButton")
+    public void onClickNotificationButton(final ClickEvent event) {
+        notification.fire( new NotificationEvent( "Something happened" ) );
     }
 
 }

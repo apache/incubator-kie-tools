@@ -27,7 +27,7 @@ import org.uberfire.client.mvp.AbstractEditorActivity;
 import org.uberfire.client.workbench.Position;
 </#if>
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 </#if>
 
 import org.uberfire.backend.vfs.Path;

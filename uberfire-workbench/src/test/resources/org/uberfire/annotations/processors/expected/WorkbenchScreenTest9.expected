@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
-import org.uberfire.client.workbench.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

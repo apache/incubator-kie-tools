@@ -22,8 +22,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.WorkbenchMenuBar;
-import org.uberfire.client.workbench.WorkbenchMenuItem;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuItem;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
