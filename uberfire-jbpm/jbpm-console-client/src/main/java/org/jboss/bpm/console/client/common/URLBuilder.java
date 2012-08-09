@@ -21,7 +21,8 @@ public class URLBuilder {
     }
 
     public String getProcessDefinitionsURL() {
-        return getConsoleServerUrl() + "/rs/process/definitions";
+//        return getConsoleServerUrl() + "/rs/process/definitions";
+        return getConsoleServerUrl() + "/process/definitions";
     }
 
     private String getConsoleServerUrl() {
