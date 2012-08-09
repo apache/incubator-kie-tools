@@ -17,6 +17,7 @@
 package org.uberfire.java.nio.fs.base;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -29,8 +30,8 @@ public class GeneralPathImpl extends AbstractPath {
         super(fs, file);
     }
 
-    private GeneralPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
-        super(fs, path, isRoot, isRealPath);
+    private GeneralPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath, boolean isNormalized) {
+        super(fs, path, isRoot, isRealPath, isNormalized);
     }
 
     public static GeneralPathImpl newFromFile(final FileSystem fs, final File file) {
@@ -41,17 +42,21 @@ public class GeneralPathImpl extends AbstractPath {
     }
 
     public static GeneralPathImpl create(final FileSystem fs, final String path, boolean isRealPath) {
+        return create(fs, path, isRealPath, false);
+    }
+
+    public static GeneralPathImpl create(final FileSystem fs, final String path, boolean isRealPath, boolean isNormalized) {
         checkNotNull("fs", fs);
         checkNotNull("path", path);
 
-        return new GeneralPathImpl(fs, path, false, isRealPath);
+        return new GeneralPathImpl(fs, path, false, isRealPath, isNormalized);
     }
 
     @Override Path newRoot(FileSystem fs, String substring, boolean realPath) {
-        return new GeneralPathImpl(fs, substring, true, realPath);
+        return new GeneralPathImpl(fs, substring, true, realPath, true);
     }
 
-    @Override Path newPath(FileSystem fs, String substring, boolean realPath) {
-        return new GeneralPathImpl(fs, substring, false, realPath);
+    @Override Path newPath(final FileSystem fs, final String substring, final boolean isRealPath, final boolean isNormalized) {
+        return new GeneralPathImpl(fs, substring, false, isRealPath, isNormalized);
     }
 }

@@ -353,7 +353,6 @@ public class EclipseFileSystemProvider implements FileSystemProvider {
             result.put("isOther", attrs.isOther());
             result.put("size", new Long(attrs.size()));
             result.put("fileKey", attrs.fileKey());
-            result.put("exists", attrs.exists());
             result.put("isReadable", attrs.isReadable());
             result.put("isExecutable", attrs.isExecutable());
             result.put("isHidden", attrs.isHidden());

@@ -102,7 +102,7 @@ public interface FileSystemProvider {
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
     void delete(Path path)
-            throws DirectoryNotEmptyException, IOException, SecurityException;
+            throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException;
 
     boolean deleteIfExists(Path path)
             throws DirectoryNotEmptyException, IOException, SecurityException;
@@ -127,12 +127,13 @@ public interface FileSystemProvider {
             throws IOException, SecurityException;
 
     void checkAccess(Path path, AccessMode... modes)
-            throws UnsupportedOperationException, AccessDeniedException, IOException, SecurityException;
+            throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException;
 
-    <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options);
+    <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options)
+            throws NoSuchFileException;
 
     <A extends BasicFileAttributes> A readAttributes(Path path, Class<A> type, LinkOption... options)
-            throws UnsupportedOperationException, IOException, SecurityException;
+            throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException;
 
     Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException;

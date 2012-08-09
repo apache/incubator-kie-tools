@@ -36,6 +36,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.NotLinkException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 import org.uberfire.java.nio.fs.base.NotImplementedException;
@@ -338,7 +339,7 @@ public class SimpleFileSystemProviderTest {
         assertThat(path.toFile().exists()).isFalse();
     }
 
-    @Test
+    @Test(expected = FileAlreadyExistsException.class)
     public void checkCreateDirectoryAlreadyExists() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
@@ -350,10 +351,6 @@ public class SimpleFileSystemProviderTest {
         fsProvider.createDirectory(path);
         assertThat(path.toFile().exists()).isTrue();
         fsProvider.createDirectory(path);
-        assertThat(path.toFile().exists()).isTrue();
-
-        path.toFile().delete();
-        assertThat(path.toFile().exists()).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -474,7 +471,7 @@ public class SimpleFileSystemProviderTest {
         assertThat(path.toFile().exists()).isFalse();
     }
 
-    @Test
+    @Test(expected = NoSuchFileException.class)
     public void checkDeleteNonExistent() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
@@ -482,7 +479,6 @@ public class SimpleFileSystemProviderTest {
 
         assertThat(path.toFile().exists()).isFalse();
         fsProvider.delete(path);
-        assertThat(path.toFile().exists()).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -529,10 +525,20 @@ public class SimpleFileSystemProviderTest {
         fsProvider.readSymbolicLink(null);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void readSymbolicLinkUnsupportedOp() {
+    @Test(expected = NotLinkException.class)
+    public void readSymbolicLinkNotLink() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/path/to/file.txt", false);
+
+        fsProvider.readSymbolicLink(path);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void readSymbolicLinkUnsupportedOp() throws IOException {
+        final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
+
+        final File tempFile = File.createTempFile("foo", "bar");
+        final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")), tempFile);
 
         fsProvider.readSymbolicLink(path);
     }

@@ -58,13 +58,8 @@ public class FileExplorerRootServiceImpl implements FileExplorerRootService {
         env.put("password", password);
         env.put("giturl", gitURL);
 
-        final FileSystem fs;
-        try {
-            fs = FileSystems.newFileSystem(fsURI, env);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
+        final FileSystem fs = FileSystems.newFileSystem(fsURI, env);
         final PlaceRequest repositoryEditor = new PlaceRequest("RepositoryEditor");
         final Root root = new Root(new PathImpl("guvnorng-playground", fsURI.toString()),
                 repositoryEditor);

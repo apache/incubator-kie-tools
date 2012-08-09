@@ -63,7 +63,6 @@ public class GeneralFileAttributeViewTest {
 
         assertThat(view).isNotNull();
         assertThat(view.name()).isNotNull().isEqualTo("basic");
-        assertThat(attrs.exists()).isTrue();
         assertThat(attrs.isHidden()).isFalse();
         assertThat(attrs.isExecutable()).isFalse();
         assertThat(attrs.isReadable()).isTrue();
@@ -90,13 +89,12 @@ public class GeneralFileAttributeViewTest {
         final GeneralFileAttributeView view = new GeneralFileAttributeView(path);
         final Map<String, Object> result = view.readAttributes("*");
 
-        assertThat(result).isNotNull().hasSize(13);
+        assertThat(result).isNotNull().hasSize(12);
         assertThat(result.get(IS_REGULAR_FILE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(IS_DIRECTORY)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_HIDDEN)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_SYMBOLIC_LINK)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_OTHER)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
-        assertThat(result.get(EXISTS)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(IS_EXECUTABLE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_READABLE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(SIZE)).isInstanceOf(Long.class).isEqualTo(0L);
@@ -115,17 +113,16 @@ public class GeneralFileAttributeViewTest {
 
         final GeneralFileAttributeView view = new GeneralFileAttributeView(path);
         final Map<String, Object> result = view.readAttributes(IS_REGULAR_FILE,
-                IS_DIRECTORY, IS_SYMBOLIC_LINK, IS_OTHER, SIZE, FILE_KEY, EXISTS,
+                IS_DIRECTORY, IS_SYMBOLIC_LINK, IS_OTHER, SIZE, FILE_KEY,
                 IS_READABLE, IS_EXECUTABLE, IS_HIDDEN, LAST_MODIFIED_TIME,
                 LAST_ACCESS_TIME, CREATION_TIME);
 
-        assertThat(result).isNotNull().hasSize(13);
+        assertThat(result).isNotNull().hasSize(12);
         assertThat(result.get(IS_REGULAR_FILE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(IS_DIRECTORY)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_HIDDEN)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_SYMBOLIC_LINK)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_OTHER)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
-        assertThat(result.get(EXISTS)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(IS_EXECUTABLE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.FALSE);
         assertThat(result.get(IS_READABLE)).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
         assertThat(result.get(SIZE)).isInstanceOf(Long.class).isEqualTo(0L);
@@ -243,44 +240,8 @@ public class GeneralFileAttributeViewTest {
         view.setTimes(dummyFileTime, dummyFileTime, dummyFileTime);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setTimesNull1() throws IOException {
-        when(fs.getSeparator()).thenReturn("/");
-
-        final File file = File.createTempFile("foo", "bar");
-        final GeneralPathImpl path = GeneralPathImpl.newFromFile(fs, file);
-
-        final GeneralFileAttributeView view = new GeneralFileAttributeView(path);
-
-        view.setTimes(null, dummyFileTime, dummyFileTime);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setTimesNull2() throws IOException {
-        when(fs.getSeparator()).thenReturn("/");
-
-        final File file = File.createTempFile("foo", "bar");
-        final GeneralPathImpl path = GeneralPathImpl.newFromFile(fs, file);
-
-        final GeneralFileAttributeView view = new GeneralFileAttributeView(path);
-
-        view.setTimes(dummyFileTime, null, dummyFileTime);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setTimesNull3() throws IOException {
-        when(fs.getSeparator()).thenReturn("/");
-
-        final File file = File.createTempFile("foo", "bar");
-        final GeneralPathImpl path = GeneralPathImpl.newFromFile(fs, file);
-
-        final GeneralFileAttributeView view = new GeneralFileAttributeView(path);
-
-        view.setTimes(dummyFileTime, dummyFileTime, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setTimesNull4() throws IOException {
+    @Test(expected = NotImplementedException.class)
+    public void setTimesNullOk() throws IOException {
         when(fs.getSeparator()).thenReturn("/");
 
         final File file = File.createTempFile("foo", "bar");

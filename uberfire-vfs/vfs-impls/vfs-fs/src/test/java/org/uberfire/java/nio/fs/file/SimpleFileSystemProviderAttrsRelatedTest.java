@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.junit.Test;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -159,7 +160,8 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessNull4() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
-        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/path/to/file.txt", false);
+        final File tempFile = File.createTempFile("foo", "bar");
+        final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")), tempFile);
 
         fsProvider.checkAccess(path, null, READ);
     }
@@ -190,7 +192,6 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
         final GeneralFileAttributeView view = fsProvider.getFileAttributeView(path, GeneralFileAttributeView.class);
         assertThat(view).isNotNull();
         assertThat(view.readAttributes()).isNotNull();
-        assertThat(view.readAttributes().exists()).isTrue();
         assertThat(view.readAttributes().isRegularFile()).isTrue();
         assertThat(view.readAttributes().isDirectory()).isFalse();
         assertThat(view.readAttributes().isSymbolicLink()).isFalse();
@@ -219,7 +220,8 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
     public void getFileAttributeViewInvalidView() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
-        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/path/to/file.txt", false);
+        final File tempFile = File.createTempFile("foo", "bar");
+        final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")), tempFile);
 
         assertThat(fsProvider.getFileAttributeView(path, MyAttrsView.class)).isNull();
     }
@@ -255,7 +257,6 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
 
         final GeneralFileAttributes attrs = fsProvider.readAttributes(path, GeneralFileAttributes.class);
         assertThat(attrs).isNotNull();
-        assertThat(attrs.exists()).isTrue();
         assertThat(attrs.isRegularFile()).isTrue();
         assertThat(attrs.isDirectory()).isFalse();
         assertThat(attrs.isSymbolicLink()).isFalse();
@@ -280,11 +281,21 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
         assertThat(attrs.size()).isEqualTo(0L);
     }
 
+    @Test(expected = NoSuchFileException.class)
+    public void readAttributesNonExistentFile() throws IOException {
+        final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
+
+        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/path/to/file.txt", false);
+
+        fsProvider.readAttributes(path, BasicFileAttributes.class);
+    }
+
     @Test
     public void readAttributesInvalid() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
-        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/path/to/file.txt", false);
+        final File tempFile = File.createTempFile("foo", "bar");
+        final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")), tempFile);
 
         assertThat(fsProvider.readAttributes(path, MyAttrs.class)).isNull();
     }
@@ -318,8 +329,8 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
         final File tempFile = File.createTempFile("foo", "bar");
         final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")), tempFile);
 
-        assertThat(fsProvider.readAttributes(path, "*")).isNotNull().hasSize(13);
-        assertThat(fsProvider.readAttributes(path, "basic:*")).isNotNull().hasSize(13);
+        assertThat(fsProvider.readAttributes(path, "*")).isNotNull().hasSize(12);
+        assertThat(fsProvider.readAttributes(path, "basic:*")).isNotNull().hasSize(12);
         assertThat(fsProvider.readAttributes(path, "basic:isRegularFile")).isNotNull().hasSize(1);
         assertThat(fsProvider.readAttributes(path, "basic:isRegularFile,isDirectory")).isNotNull().hasSize(2);
         assertThat(fsProvider.readAttributes(path, "basic:isRegularFile,isDirectory,someThing")).isNotNull().hasSize(2);
@@ -347,8 +358,6 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
     public void readAttributesMapNull1() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
-        final File tempFile = File.createTempFile("foo", "bar");
-
         fsProvider.readAttributes(null, "*");
     }
 
@@ -365,8 +374,6 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
     @Test(expected = IllegalArgumentException.class)
     public void readAttributesMapNull3() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
-
-        final File tempFile = File.createTempFile("foo", "bar");
 
         fsProvider.readAttributes(null, (String) null);
     }

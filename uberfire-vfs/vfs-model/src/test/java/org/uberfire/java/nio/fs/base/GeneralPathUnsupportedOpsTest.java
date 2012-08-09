@@ -65,42 +65,6 @@ public class GeneralPathUnsupportedOpsTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void normalize() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.normalize();
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void resolve() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.resolve("");
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void resolvePath() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.resolve(param);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void resolveSibling() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.resolveSibling("");
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void resolveSiblingPath() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.resolveSibling(param);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void relativize() {
-        final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
-        path.relativize(param);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
     public void compareTo() {
         final Path path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
         path.compareTo(param);

@@ -38,7 +38,6 @@ public class GeneralPathAttrsTest {
         final GeneralPathImpl path = GeneralPathImpl.newFromFile(fs, file);
 
         assertThat(path.getAttrs()).isNotNull();
-        assertThat(path.getAttrs().exists()).isTrue();
         assertThat(path.getAttrs().isHidden()).isFalse();
         assertThat(path.getAttrs().isExecutable()).isFalse();
         assertThat(path.getAttrs().isReadable()).isTrue();
@@ -63,7 +62,6 @@ public class GeneralPathAttrsTest {
         final GeneralPathImpl path = GeneralPathImpl.newFromFile(fs, file);
 
         assertThat(path.getAttrs()).isNotNull();
-        assertThat(path.getAttrs().exists()).isTrue();
         assertThat(path.getAttrs().isHidden()).isFalse();
         assertThat(path.getAttrs().isExecutable()).isTrue();
         assertThat(path.getAttrs().isReadable()).isTrue();
@@ -87,7 +85,6 @@ public class GeneralPathAttrsTest {
         final GeneralPathImpl path = GeneralPathImpl.create(fs, "/path/to/file.txt", false);
 
         assertThat(path.getAttrs()).isNotNull();
-        assertThat(path.getAttrs().exists()).isFalse();
     }
 
 }

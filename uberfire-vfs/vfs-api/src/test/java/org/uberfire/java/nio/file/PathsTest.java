@@ -16,62 +16,107 @@
 
 package org.uberfire.java.nio.file;
 
+import java.net.URI;
+
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.*;
 
 public class PathsTest {
 
-//    @Test
+    @Test
     public void simpleGet() {
         final Path path = Paths.get("/path/to/file.txt");
 
         assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.toString()).isEqualTo("/path/to/file.txt");
+    }
 
-        assertThat(path.getFileName()).isNotNull();
-        assertThat(path.getFileName().toString()).isEqualTo("file.txt");
+    @Test
+    public void simplePartitionedGet() {
+        final Path path = Paths.get("/path", "to", "file.txt");
 
-        assertThat(path.getNameCount()).isEqualTo(3);
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("/path/to/file.txt");
 
-        assertThat(path.getName(0)).isNotNull();
-        assertThat(path.getName(0).toString()).isEqualTo("path");
+        assertThat(path).isEqualTo(Paths.get("/path/to/file.txt"));
+    }
 
-        assertThat(path.getName(1)).isNotNull();
-        assertThat(path.getName(1).toString()).isEqualTo("to");
+    @Test
+    public void simpleWindowsGet() {
+        final Path path = Paths.get("c:\\path\\to\\file.txt");
 
-        assertThat(path.getName(2)).isNotNull().isEqualTo(path.getFileName());
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("c:\\path\\to\\file.txt");
+    }
 
-        assertThat(path.subpath(0, 1)).isNotNull();
-        assertThat(path.subpath(0, 1).toString()).isEqualTo("path");
+    @Test
+    public void simplePartitionedWindowsGet() {
+        final Path path = Paths.get("c:\\path", "to", "file.txt");
 
-        assertThat(path.subpath(1, 2)).isNotNull();
-        assertThat(path.subpath(1, 2).toString()).isEqualTo("to");
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
 
-        assertThat(path.subpath(0, 2)).isNotNull();
-        assertThat(path.subpath(0, 2).toString()).isEqualTo("path/to");
+        assertThat(path.toString()).isEqualTo("c:\\path" + separator() + "to" + separator() + "file.txt");
+    }
 
-        assertThat(path.subpath(1, 3)).isNotNull();
-        assertThat(path.subpath(1, 3).toString()).isEqualTo("to/file.txt");
+    @Test
+    public void simpleGetButUsingURIAsString() {
+        final Path path = Paths.get("file:///path/to/file.txt");
 
-        int i = 0;
-        for (final Path currentPath : path) {
-            assertThat(currentPath).isEqualTo(path.getName(i));
-            i++;
-        }
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("/path/to/file.txt");
 
-        assertThat(path.getParent()).isNotNull();
-        assertThat(path.getParent().toString()).isEqualTo("/path/to");
+        assertThat(path).isEqualTo(Paths.get("/path/to/file.txt"));
+    }
 
-        assertThat(path.getParent().getParent()).isNotNull();
-        assertThat(path.getParent().getParent().toString()).isEqualTo("/path");
+    @Test
+    public void simpleGetButUsingURIAsStringAndDefaultScheme() {
+        final Path path = Paths.get("default:///path/to/file.txt");
 
-        assertThat(path.getParent().getParent().getParent()).isNotNull();
-        assertThat(path.getParent().getParent().getParent().toString()).isEqualTo("/");
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("/path/to/file.txt");
 
-        assertThat(path.getRoot()).isNotNull();
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat(path).isEqualTo(Paths.get("/path/to/file.txt"));
+    }
+
+    @Test
+    public void simpleGetURI() {
+        final Path path = Paths.get(URI.create("file:///path/to/file.txt"));
+
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("/path/to/file.txt");
+
+        assertThat(path).isEqualTo(Paths.get("/path/to/file.txt"));
+    }
+
+    @Test
+    public void simpleGetEmpty() {
+        final Path path = Paths.get("");
+
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isFalse();
+        assertThat(path.toString()).isEqualTo("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void simpleGetNull1() {
+        Paths.get((String) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void simpleGetNull2() {
+        Paths.get((URI) null);
+    }
+
+    private String separator() {
+        return System.getProperty("file.separator", "/");
     }
 
 }

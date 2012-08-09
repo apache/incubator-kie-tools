@@ -17,8 +17,6 @@
 package org.uberfire.java.nio.file;
 
 import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.FileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 import static org.uberfire.java.nio.util.Preconditions.*;
@@ -50,6 +48,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     public FileVisitResult visitFileFailed(T file, IOException exc)
             throws IOException {
         checkNotNull("file", file);
+        checkNotNull("exc", exc);
 
         throw exc;
     }

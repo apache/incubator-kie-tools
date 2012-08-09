@@ -16,16 +16,11 @@
 
 package org.uberfire.java.nio.file;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystemNotFoundException;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 
 import static java.util.Collections.*;
@@ -83,25 +78,9 @@ public final class FileSystems {
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
             IOException, SecurityException {
         checkNotNull("uri", uri);
+        checkNotNull("env", env);
 
         return newFileSystem(uri, env, null);
-    }
-
-    /**
-     * @throws IllegalArgumentException
-     * @throws FileSystemAlreadyExistsException
-     * @throws ProviderNotFoundException
-     * @throws ServiceConfigurationError
-     * @throws IOException
-     * @throws SecurityException
-     * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html#newFileSystem(java.net.URI, java.util.Map, java.lang.ClassLoader)">Original JavaDoc</a>
-     */
-    public static FileSystem newFileSystem(final URI uri, final Map<String, ?> env, final ClassLoader loader)
-            throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
-            ServiceConfigurationError, IOException, SecurityException {
-        checkNotNull("uri", uri);
-
-        return FileSystemProviders.resolveProvider(uri).newFileSystem(uri, env);
     }
 
     /**
@@ -117,6 +96,24 @@ public final class FileSystems {
         checkNotNull("path", path);
 
         final Map<String, ?> env = emptyMap();
-        return FileSystemProviders.resolveProvider(path.toUri()).newFileSystem(path, env);
+        return newFileSystem(path.toUri(), env, null);
+    }
+
+    /**
+     * @throws IllegalArgumentException
+     * @throws FileSystemAlreadyExistsException
+     * @throws ProviderNotFoundException
+     * @throws ServiceConfigurationError
+     * @throws IOException
+     * @throws SecurityException
+     * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html#newFileSystem(java.net.URI, java.util.Map, java.lang.ClassLoader)">Original JavaDoc</a>
+     */
+    public static FileSystem newFileSystem(final URI uri, final Map<String, ?> env, final ClassLoader loader)
+            throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
+            ServiceConfigurationError, IOException, SecurityException {
+        checkNotNull("uri", uri);
+        checkNotNull("env", env);
+
+        return FileSystemProviders.resolveProvider(uri).newFileSystem(uri, env);
     }
 }

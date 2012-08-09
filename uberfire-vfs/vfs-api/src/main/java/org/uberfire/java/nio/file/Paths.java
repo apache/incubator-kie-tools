@@ -19,8 +19,6 @@ package org.uberfire.java.nio.file;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.uberfire.java.nio.file.FileSystemNotFoundException;
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 
 import static org.uberfire.java.nio.util.Preconditions.*;
@@ -58,12 +56,10 @@ public final class Paths {
                 }
             }
         }
-        if (uri != null) {
-            try {
-                return get(uri);
-            } catch (Exception ex) {
-            }
+        if (uri != null && uri.getScheme() != null) {
+            return get(uri);
         }
+
         return FileSystems.getDefault().getPath(first, more);
     }
 

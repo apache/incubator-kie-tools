@@ -18,14 +18,12 @@ package org.uberfire.java.nio.file;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
@@ -38,6 +36,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
@@ -56,12 +55,18 @@ import static org.uberfire.java.nio.util.Preconditions.*;
  */
 public final class Files {
 
+    //TODO remove it
+    private static File BASE_TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+    private static final Path TEMP_PATH = Paths.get(BASE_TEMP_DIR.toURI());
+
     private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
 
     /**
      * Maximum loop count when creating temp directories.
      */
     private static final int TEMP_DIR_ATTEMPTS = 10000;
+
+    private static final int BUFFER_SIZE = 8192;
 
     private Files() {
     }
@@ -161,6 +166,13 @@ public final class Files {
     //TODO impl
     public static DirectoryStream<Path> newDirectoryStream(final Path dir, final String glob)
             throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException, SecurityException {
+        checkNotNull("dir", dir);
+        checkNotEmpty("glob", glob);
+
+        if (!isDirectory(dir)) {
+            throw new NotDirectoryException(dir.toString());
+        }
+
         throw new UnsupportedOperationException("feature not available");
     }
 
@@ -197,7 +209,7 @@ public final class Files {
         try {
             newByteChannel(path, CREATE_NEW_FILE_OPTIONS, attrs).close();
         } catch (java.io.IOException e) {
-            throw new IOException();
+            throw new IOException(e);
         }
 
         return path;
@@ -221,10 +233,39 @@ public final class Files {
         return dir;
     }
 
-    //TODO impl
     public static Path createDirectories(final Path dir, final FileAttribute<?>... attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return null;
+        checkNotNull("dir", dir);
+
+        final Path absoluteDir = dir.toAbsolutePath();
+
+        if (!notExists(absoluteDir)) {
+            throw new FileAlreadyExistsException(absoluteDir.toString());
+        }
+
+        Path parent = absoluteDir.getParent();
+
+        while (parent != null) {
+            try {
+                providerOf(parent).checkAccess(parent);
+                break;
+            } catch (NoSuchFileException x) {
+            }
+            parent = parent.getParent();
+        }
+
+        if (parent == null) {
+            throw new IOException("Root directory does not exist");
+        }
+
+        // create directories
+        Path child = parent;
+        for (final Path name : parent.relativize(dir)) {
+            child = child.resolve(name);
+            providerOf(child).createDirectory(child, attrs);
+        }
+
+        return dir;
     }
 
     /**
@@ -295,54 +336,90 @@ public final class Files {
         return providerOf(path).deleteIfExists(path);
     }
 
-    //temp related
+    //temp implemantation are based on google's guava lib
+    public static Path createTempFile(final String prefix, final String suffix, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        return createTempFile(TEMP_PATH, prefix, suffix, attrs);
+    }
 
     public static Path createTempFile(final Path dir, final String prefix,
             final String suffix, final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        try {
-            return Paths.get(File.createTempFile(prefix, suffix, dir.toFile()).toURI());
-        } catch (java.io.IOException e) {
-            throw new IOException();
+        checkNotNull("dir", dir);
+
+        if (notExists(dir)) {
+            throw new NoSuchFileException(dir.toString());
         }
-    }
 
-    //TODO impl
-    public static Path createTempFile(final String prefix, final String suffix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        try {
-            return Paths.get(File.createTempFile(prefix, suffix).toURI());
-        } catch (java.io.IOException e) {
-            throw new IOException();
+        final StringBuilder sb = new StringBuilder();
+
+        if (prefix != null && prefix.trim().length() > 0) {
+            sb.append(prefix).append("-");
         }
-    }
 
-    //TODO impl
-    public static Path createTempDirectory(final Path dir, final String prefix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        throw new UnsupportedOperationException("feature not available");
-    }
+        final String baseName = sb.append(System.currentTimeMillis()).append("-").toString();
 
-    //implemantation based on google's guava lib
-    public static Path createTempDirectory(final String prefix, final FileAttribute<?>... attrs)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-
-        final File baseDir = new File(System.getProperty("java.io.tmpdir"));
-        final String baseName = prefix + "-" + System.currentTimeMillis() + "-";
+        final String realSufix;
+        if (suffix != null && suffix.trim().length() > 0) {
+            realSufix = normalizeSuffix(suffix);
+        } else {
+            realSufix = ".tmp";
+        }
 
         for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
-            final File tempDir = new File(baseDir, baseName + counter);
-            if (tempDir.mkdir()) {
-                return Paths.get(tempDir.toURI());
+            try {
+                return createFile(dir.resolve(baseName + counter + realSufix), attrs);
+            } catch (Exception ex) {
             }
         }
+
+        throw new IllegalStateException("Failed to create directory within "
+                + TEMP_DIR_ATTEMPTS + " attempts (tried "
+                + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
+    }
+
+    private static String normalizeSuffix(final String suffix) {
+        if (suffix.startsWith(".")) {
+            return suffix;
+        }
+        return "." + suffix;
+    }
+
+    public static Path createTempDirectory(final String prefix, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        return createTempDirectory(TEMP_PATH, prefix, attrs);
+    }
+
+    public static Path createTempDirectory(final Path dir, final String prefix, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        checkNotNull("dir", dir);
+
+        if (notExists(dir)) {
+            throw new NoSuchFileException(dir.toString());
+        }
+
+        final StringBuilder sb = new StringBuilder();
+
+        if (prefix != null && prefix.trim().length() > 0) {
+            sb.append(prefix).append("-");
+        }
+
+        final String baseName = sb.append(System.currentTimeMillis()).append("-").toString();
+
+        for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
+            final Path path2Create = dir.resolve(baseName + counter);
+            try {
+                return createDirectory(path2Create, attrs);
+            } catch (Exception ex) {
+            }
+        }
+
         throw new IllegalStateException("Failed to create directory within "
                 + TEMP_DIR_ATTEMPTS + " attempts (tried "
                 + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
     }
 
     //copying and moving
-
     public static Path copy(final Path source, final Path target, final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException, SecurityException {
@@ -354,6 +431,7 @@ public final class Files {
             provider.copy(source, target, options);
             return target;
         }
+
         throw new UnsupportedOperationException("can't copy from different providers");
     }
 
@@ -405,6 +483,16 @@ public final class Files {
     //TODO impl
     public static String probeContentType(final Path path)
             throws UnsupportedOperationException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        if (!isRegularFile(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
         throw new UnsupportedOperationException("feature not available");
     }
 
@@ -432,7 +520,7 @@ public final class Files {
      */
     public static <A extends BasicFileAttributes> A readAttributes(final Path path,
             final Class<A> type, final LinkOption... options)
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+            throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
         checkNotNull("path", path);
         checkNotNull("type", type);
 
@@ -447,9 +535,13 @@ public final class Files {
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#readAttributes(java.nio.file.Path, java.lang.String, java.nio.file.LinkOption...)">Original JavaDoc</a>
      */
     public static Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
-            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+            throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
         checkNotNull("path", path);
         checkNotEmpty("attributes", attributes);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
 
         return providerOf(path).readAttributes(path, attributes, options);
     }
@@ -474,34 +566,76 @@ public final class Files {
         return path;
     }
 
-    //TODO impl
     public static Object getAttribute(final Path path, final String attribute, final LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
-        throw new UnsupportedOperationException("feature not available");
+        checkNotNull("path", path);
+        checkNotEmpty("attribute", attribute);
+
+        if (attribute.indexOf('*') >= 0 || attribute.indexOf(',') >= 0) {
+            throw new IllegalArgumentException(attribute);
+        }
+
+        final Map<String, Object> map = readAttributes(path, attribute, options);
+        final String name;
+
+        final int pos = attribute.indexOf(':');
+        if (pos == -1) {
+            name = attribute;
+        } else {
+            name = (pos == attribute.length()) ? "" : attribute.substring(pos + 1);
+        }
+
+        return map.get(name);
     }
 
     //TODO impl
     public static Set<PosixFilePermission> getPosixFilePermissions(final Path path, final LinkOption... options)
             throws UnsupportedOperationException, IOException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        throw new UnsupportedOperationException("feature not available");
     }
 
     //TODO impl
     public static Path setPosixFilePermissions(final Path path, final Set<PosixFilePermission> perms)
             throws UnsupportedOperationException, ClassCastException, IOException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+        checkNotNull("perms", perms);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        throw new UnsupportedOperationException("feature not available");
     }
 
     //TODO impl
     public static UserPrincipal getOwner(final Path path, final LinkOption... options)
             throws UnsupportedOperationException, IOException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        throw new UnsupportedOperationException("feature not available");
     }
 
     //TODO impl
     public static Path setOwner(final Path path, final UserPrincipal owner)
             throws UnsupportedOperationException, IOException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+        checkNotNull("owner", owner);
+
+        if (notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        throw new UnsupportedOperationException("feature not available");
     }
 
     /**
@@ -517,10 +651,13 @@ public final class Files {
         return readAttributes(path, BasicFileAttributes.class, options).lastModifiedTime();
     }
 
-    //TODO impl
     public static Path setLastModifiedTime(final Path path, final FileTime time)
             throws IOException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+
+        getFileAttributeView(path, BasicFileAttributeView.class).setTimes(time, null, null);
+
+        return path;
     }
 
     /**
@@ -702,7 +839,6 @@ public final class Files {
 
     //recursive operations
 
-    //TODO impl
     public static Path walkFileTree(final Path start, final Set<FileVisitOption> options,
             final int maxDepth, final FileVisitor<Path> visitor)
             throws IllegalArgumentException, SecurityException, IOException {
@@ -741,8 +877,7 @@ public final class Files {
         checkNotNull("path", path);
         checkNotNull("cs", cs);
 
-        final Reader reader = new InputStreamReader(newInputStream(path), cs.newDecoder());
-        return new BufferedReader(reader);
+        return new BufferedReader(new InputStreamReader(newInputStream(path), cs.newDecoder()));
     }
 
     /**
@@ -758,31 +893,105 @@ public final class Files {
         checkNotNull("path", path);
         checkNotNull("cs", cs);
 
-        try {
-            final Writer writer = new OutputStreamWriter(newOutputStream(path, options), cs.name());
-            return new BufferedWriter(writer);
-        } catch (UnsupportedEncodingException e) {
-            throw new IOException();
-        }
+        return new BufferedWriter(new OutputStreamWriter(newOutputStream(path, options), cs));
     }
 
-    //TODO impl
     public static long copy(final InputStream in, final Path target, final CopyOption... options)
             throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException,
             UnsupportedOperationException, SecurityException {
-        return -1;
+        checkNotNull("in", in);
+        checkNotNull("target", target);
+        checkNotNull("options", options);
+
+        boolean replaceExisting = false;
+        for (final CopyOption opt : options) {
+            if (opt == StandardCopyOption.REPLACE_EXISTING) {
+                replaceExisting = true;
+                break;
+            } else {
+                checkNotNull("opt", opt);
+                throw new UnsupportedOperationException(opt + " not supported");
+            }
+        }
+
+        if (replaceExisting) {
+            deleteIfExists(target);
+        }
+
+        final OutputStream out = newOutputStream(target, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+
+        try {
+            return internalCopy(in, out);
+        } finally {
+            try {
+                out.close();
+            } catch (java.io.IOException e) {
+                throw new IOException(e);
+            }
+        }
     }
 
-    //TODO impl
     public static long copy(final Path source, final OutputStream out)
             throws IOException, SecurityException {
-        return -1;
+        checkNotNull("source", source);
+        checkNotNull("out", out);
+
+        final InputStream in = newInputStream(source);
+
+        try {
+            return internalCopy(in, out);
+        } finally {
+            try {
+                in.close();
+            } catch (java.io.IOException e) {
+                throw new IOException(e);
+            }
+        }
     }
 
-    //TODO impl
+    private static long internalCopy(InputStream in, OutputStream out) {
+        long read = 0L;
+        byte[] buf = new byte[BUFFER_SIZE];
+        int n;
+        try {
+            while ((n = in.read(buf)) > 0) {
+                out.write(buf, 0, n);
+                read += n;
+            }
+        } catch (java.io.IOException e) {
+            throw new IOException(e);
+        }
+        return read;
+    }
+
     public static byte[] readAllBytes(final Path path)
             throws IOException, OutOfMemoryError, SecurityException {
-        return null;
+        long size = size(path);
+        if (size > (long) Integer.MAX_VALUE) {
+            throw new OutOfMemoryError("Required array size too large");
+        }
+
+        final InputStream in = newInputStream(path);
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream((int) size);
+
+        int read;
+        byte[] data = new byte[BUFFER_SIZE];
+
+        try {
+            while ((read = in.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, read);
+            }
+            buffer.flush();
+            return buffer.toByteArray();
+        } catch (java.io.IOException e) {
+            throw new IOException(e);
+        } finally {
+            try {
+                in.close();
+            } catch (java.io.IOException e) {
+                throw new IOException(e);
+            }
+        }
     }
 
     /**
@@ -808,7 +1017,7 @@ public final class Files {
             }
             return result;
         } catch (java.io.IOException ex) {
-            throw new IOException();
+            throw new IOException(ex);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -820,10 +1029,30 @@ public final class Files {
         }
     }
 
-    //TODO impl
     public static Path write(final Path path, final byte[] bytes, final OpenOption... options)
             throws IOException, UnsupportedOperationException, SecurityException {
-        return null;
+        checkNotNull("path", path);
+        checkNotNull("bytes", bytes);
+
+        final OutputStream out = newOutputStream(path, options);
+        int len = bytes.length;
+        int rem = len;
+        try {
+            while (rem > 0) {
+                int n = (rem <= BUFFER_SIZE) ? rem : BUFFER_SIZE;
+                out.write(bytes, (len - rem), n);
+                rem -= n;
+            }
+            return path;
+        } catch (java.io.IOException e) {
+            throw new IOException(e);
+        } finally {
+            try {
+                out.close();
+            } catch (java.io.IOException e) {
+                throw new IOException(e);
+            }
+        }
     }
 
     /**
@@ -853,46 +1082,6 @@ public final class Files {
                 } catch (java.io.IOException e) {
                     throw new IOException();
                 }
-            }
-        } catch (final IOException ex) {
-            throw ex;
-        } finally {
-            if (bufferedWriter != null) {
-                try {
-                    bufferedWriter.close();
-                } catch (java.io.IOException e) {
-                    throw new IOException();
-                }
-            }
-        }
-
-        return path;
-    }
-
-    /**
-     * This is a non standard method to write a string.
-     * @throws IllegalArgumentException
-     * @throws IOException
-     * @throws UnsupportedOperationException
-     * @throws SecurityException
-     */
-    public static Path write(final Path path,
-            final String content, final Charset cs, final OpenOption... options)
-            throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        checkNotNull("path", path);
-        checkNotNull("content", content);
-        checkNotNull("cs", cs);
-
-        final CharsetEncoder encoder = cs.newEncoder();
-        final OutputStream out = newOutputStream(path, options);
-
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(out, encoder));
-            try {
-                bufferedWriter.write(content);
-            } catch (java.io.IOException e) {
-                throw new IOException();
             }
         } catch (final IOException ex) {
             throw ex;

@@ -17,10 +17,6 @@
 package org.uberfire.java.nio.file;
 
 import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.FileVisitor;
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 import static org.uberfire.java.nio.util.Preconditions.*;
@@ -36,7 +32,7 @@ class FileTreeWalker {
     private final int maxDepth;
 
     FileTreeWalker(final FileVisitor<? super Path> visitor, final int maxDepth) {
-        this.visitor = visitor;
+        this.visitor = checkNotNull("visitor", visitor);
         this.maxDepth = maxDepth;
     }
 
@@ -44,8 +40,8 @@ class FileTreeWalker {
      * Walk file tree starting at the given file
      */
     void walk(final Path start) throws IOException {
-        FileVisitResult result = walk(start, 0);
-        checkNotNull("result", result);
+        checkNotNull("start", start);
+        walk(start, 0);
     }
 
     private FileVisitResult walk(final Path file, final int depth)
@@ -68,7 +64,7 @@ class FileTreeWalker {
         }
 
         DirectoryStream<? extends Path> stream = null;
-        FileVisitResult result;
+        FileVisitResult result = null;
 
         try {
             stream = Files.newDirectoryStream(file);

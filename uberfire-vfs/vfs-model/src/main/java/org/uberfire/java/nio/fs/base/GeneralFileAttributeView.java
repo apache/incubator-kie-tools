@@ -36,7 +36,6 @@ public class GeneralFileAttributeView<T extends GeneralFileAttributes>
     static final String IS_OTHER = "isOther";
     static final String SIZE = "size";
     static final String FILE_KEY = "fileKey";
-    static final String EXISTS = "exists";
     static final String IS_READABLE = "isReadable";
     static final String IS_EXECUTABLE = "isExecutable";
     static final String IS_HIDDEN = "isHidden";
@@ -51,7 +50,6 @@ public class GeneralFileAttributeView<T extends GeneralFileAttributes>
         add(IS_OTHER);
         add(SIZE);
         add(FILE_KEY);
-        add(EXISTS);
         add(IS_READABLE);
         add(IS_EXECUTABLE);
         add(IS_HIDDEN);
@@ -90,7 +88,6 @@ public class GeneralFileAttributeView<T extends GeneralFileAttributes>
                 result.put(IS_OTHER, holder.getAttrs().isOther());
                 result.put(SIZE, new Long(holder.getAttrs().size()));
                 result.put(FILE_KEY, holder.getAttrs().fileKey());
-                result.put(EXISTS, holder.getAttrs().exists());
                 result.put(IS_READABLE, holder.getAttrs().isReadable());
                 result.put(IS_EXECUTABLE, holder.getAttrs().isExecutable());
                 result.put(IS_HIDDEN, holder.getAttrs().isHidden());
@@ -112,8 +109,6 @@ public class GeneralFileAttributeView<T extends GeneralFileAttributes>
                 result.put(SIZE, new Long(holder.getAttrs().size()));
             } else if (attribute.equals(FILE_KEY)) {
                 result.put(FILE_KEY, holder.getAttrs().fileKey());
-            } else if (attribute.equals(EXISTS)) {
-                result.put(EXISTS, holder.getAttrs().exists());
             } else if (attribute.equals(IS_READABLE)) {
                 result.put(IS_READABLE, holder.getAttrs().isReadable());
             } else if (attribute.equals(IS_EXECUTABLE)) {
@@ -134,10 +129,6 @@ public class GeneralFileAttributeView<T extends GeneralFileAttributes>
     @Override
     public void setTimes(final FileTime lastModifiedTime, final FileTime lastAccessTime, final FileTime createTime)
             throws IOException {
-        checkNotNull("lastModifiedTime", lastModifiedTime);
-        checkNotNull("lastAccessTime", lastAccessTime);
-        checkNotNull("createTime", createTime);
-
         throw new NotImplementedException();
     }
 

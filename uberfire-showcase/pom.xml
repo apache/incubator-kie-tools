@@ -53,10 +53,15 @@
       <scope>provided</scope>
     </dependency>
 
-	<dependency>
-	  <groupId>org.uberfire</groupId>
-	  <artifactId>vfs-jgit</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
+    </dependency>
 
     <!-- Errai Core -->
     <dependency>
@@ -126,7 +131,7 @@
 
   <build>
     <plugins>
-    
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -173,10 +178,10 @@
           <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
 
           <!--<webResources>-->
-            <!--<resource>-->
-              <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
-              <!--<directory>src/${webDescriptor}</directory>-->
-            <!--</resource>-->
+          <!--<resource>-->
+          <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
+          <!--<directory>src/${webDescriptor}</directory>-->
+          <!--</resource>-->
           <!--</webResources>-->
         </configuration>
       </plugin>
@@ -240,6 +245,7 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>.errai/**</include>
+                <include>.vfsjgit/**</include>
               </includes>
             </fileset>
           </filesets>
@@ -288,5 +294,5 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
 </project>

@@ -28,7 +28,6 @@ public class GeneralFileAttributes implements BasicFileAttributes {
 
     private final Path path;
     private final FileTime lastModifiedTime;
-    private final boolean exists;
     private final boolean isRegularFile;
     private final boolean isDirectory;
     private final boolean isHidden;
@@ -56,7 +55,6 @@ public class GeneralFileAttributes implements BasicFileAttributes {
                 return 0;
             }
         };
-        this.exists = path.toFile().exists();
         this.isRegularFile = path.toFile().isFile();
         this.isDirectory = path.toFile().isDirectory();
         this.isHidden = path.toFile().isHidden();
@@ -110,10 +108,6 @@ public class GeneralFileAttributes implements BasicFileAttributes {
     @Override
     public Object fileKey() {
         return null;
-    }
-
-    public boolean exists() {
-        return exists;
     }
 
     public boolean isReadable() {

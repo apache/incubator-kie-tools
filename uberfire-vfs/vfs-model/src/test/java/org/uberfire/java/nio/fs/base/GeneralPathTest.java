@@ -428,4 +428,425 @@ public class GeneralPathTest {
         assertThat(path.toRealPath().toUri().toString()).isEqualTo("file:///" + "C:" + DEFAULT_PATH + "path/to/file.txt");
     }
 
+    @Test
+    public void testResolve() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to/", false);
+
+        final Path resolvedPath = path.resolve("some/file.text");
+
+        assertThat(resolvedPath).isNotNull();
+        assertThat(resolvedPath.toString()).isEqualTo("/path/to/some/file.text");
+
+        final Path resolvedPath2 = path.resolve("/some/file.text");
+
+        assertThat(resolvedPath2).isNotNull();
+        assertThat(resolvedPath2.toString()).isEqualTo("/some/file.text");
+
+        final Path path2 = GeneralPathImpl.create(fs, "/path/to", false);
+
+        final Path resolvedPath3 = path2.resolve("/some/file.text");
+        assertThat(resolvedPath3).isNotNull();
+        assertThat(resolvedPath3.toString()).isEqualTo("/some/file.text");
+
+        final Path resolvedPath4 = path2.resolve("some/file.text");
+        assertThat(resolvedPath4).isNotNull();
+        assertThat(resolvedPath4.toString()).isEqualTo("/path/to/some/file.text");
+
+        final Path resolvedPath5 = path2.resolve("");
+        assertThat(resolvedPath5).isNotNull();
+        assertThat(resolvedPath5.toString()).isEqualTo(path2.toString());
+        assertThat(resolvedPath5).isEqualTo(path2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkResolveNull() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to/", false);
+
+        path.resolve((String) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkResolveNull2() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to/", false);
+
+        path.resolve((Path) null);
+    }
+
+    @Test
+    public void testNormalize() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to/", false);
+
+        assertThat(path.normalize()).isNotNull().isEqualTo(path);
+        assertThat(path.normalize().normalize()).isNotNull().isEqualTo(path.normalize());
+
+        final Path path2 = GeneralPathImpl.create(fs, "/some/path/../../to", false);
+
+        assertThat(path2.normalize()).isNotNull();
+        assertThat(path2.normalize().toString()).isEqualTo("/to");
+        assertThat(path2.normalize().normalize()).isNotNull().isEqualTo(path2.normalize());
+    }
+
+    @Test
+    public void testNormalizeWindows() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("\\");
+
+        final Path path = GeneralPathImpl.create(fs, "c:\\path\\to\\", false);
+
+        assertThat(path.normalize()).isNotNull().isEqualTo(path);
+        assertThat(path.normalize().normalize()).isNotNull().isEqualTo(path.normalize());
+
+        final Path path2 = GeneralPathImpl.create(fs, "c:\\some\\path\\..\\..\\to", false);
+
+        assertThat(path2.normalize()).isNotNull();
+        assertThat(path2.normalize().toString()).isEqualTo("c:\\to");
+        assertThat(path2.normalize().normalize()).isNotNull().isEqualTo(path2.normalize());
+    }
+
+    @Test
+    public void testResolveSibling() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to/", false);
+
+        final Path resolvedPath = path.resolveSibling("some/file.text");
+
+        assertThat(resolvedPath).isNotNull();
+        assertThat(resolvedPath.toString()).isEqualTo("/path/some/file.text");
+
+        final Path resolvedPath2 = path.resolveSibling("/some/file.text");
+
+        assertThat(resolvedPath2).isNotNull();
+        assertThat(resolvedPath2.toString()).isEqualTo("/some/file.text");
+
+        final Path path2 = GeneralPathImpl.create(fs, "/path/to", false);
+
+        final Path resolvedPath3 = path2.resolveSibling("/some/file.text");
+        assertThat(resolvedPath3).isNotNull();
+        assertThat(resolvedPath3.toString()).isEqualTo("/some/file.text");
+
+        final Path resolvedPath4 = path2.resolveSibling("some/file.text");
+        assertThat(resolvedPath4).isNotNull();
+        assertThat(resolvedPath4.toString()).isEqualTo("/path/some/file.text");
+
+        final Path resolvedPath5 = path2.resolveSibling("");
+        assertThat(resolvedPath5).isNotNull();
+        assertThat(resolvedPath5.toString()).isEqualTo(path2.getParent().toString());
+        assertThat(resolvedPath5).isEqualTo(path2.getParent());
+    }
+
+    @Test
+    public void testRelativize() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to", false);
+        final Path other = GeneralPathImpl.create(fs, "/path/to/some/place", false);
+
+        final Path relative = path.relativize(other);
+        assertThat(relative).isNotNull();
+        assertThat(relative.toString()).isEqualTo("some/place");
+
+        final Path path2 = GeneralPathImpl.create(fs, "/path/to/some/place", false);
+        final Path other2 = GeneralPathImpl.create(fs, "/path/to", false);
+
+        final Path relative2 = path2.relativize(other2);
+        assertThat(relative2).isNotNull();
+        assertThat(relative2.toString()).isEqualTo("../..");
+
+        final Path path3 = GeneralPathImpl.create(fs, "/path/to", false);
+        final Path other3 = GeneralPathImpl.create(fs, "/path/to", false);
+
+        final Path relative3 = path3.relativize(other3);
+        assertThat(relative3).isNotNull();
+        assertThat(relative3.toString()).isEqualTo("");
+
+        final Path path4 = GeneralPathImpl.create(fs, "path/to", false);
+        final Path other4 = GeneralPathImpl.create(fs, "path/to/some/place", false);
+
+        final Path relative4 = path4.relativize(other4);
+        assertThat(relative4).isNotNull();
+        assertThat(relative4.toString()).isEqualTo("some/place");
+
+        final Path path5 = GeneralPathImpl.create(fs, "path/to", false);
+        final Path other5 = GeneralPathImpl.create(fs, "some/place", false);
+
+        final Path relative5 = path5.relativize(other5);
+        assertThat(relative5).isNotNull();
+        assertThat(relative5.toString()).isEqualTo("../../some/place");
+
+        final Path path6 = GeneralPathImpl.create(fs, "some/place", false);
+        final Path other6 = GeneralPathImpl.create(fs, "path/to", false);
+
+        final Path relative6 = path6.relativize(other6);
+        assertThat(relative6).isNotNull();
+        assertThat(relative6.toString()).isEqualTo("../../path/to");
+
+        final Path path7 = GeneralPathImpl.create(fs, "path/to/some/thing/here", false);
+        final Path other7 = GeneralPathImpl.create(fs, "some/place", false);
+
+        final Path relative7 = path7.relativize(other7);
+        assertThat(relative7).isNotNull();
+        assertThat(relative7.toString()).isEqualTo("../../../../../some/place");
+
+        final Path path8 = GeneralPathImpl.create(fs, "some/place", false);
+        final Path other8 = GeneralPathImpl.create(fs, "path/to/some/thing/here", false);
+
+        final Path relative8 = path8.relativize(other8);
+        assertThat(relative8).isNotNull();
+        assertThat(relative8.toString()).isEqualTo("../../path/to/some/thing/here");
+
+        final Path path9 = GeneralPathImpl.create(fs, "/path/to", false);
+        final Path other9 = GeneralPathImpl.create(fs, "/path/to", false);
+
+        final Path relative9 = path9.relativize(other9);
+        assertThat(relative9).isNotNull();
+        assertThat(relative9.toString()).isEqualTo("");
+
+        final Path path10 = GeneralPathImpl.create(fs, "path/to", false);
+        final Path other10 = GeneralPathImpl.create(fs, "path/to", false);
+
+        final Path relative10 = path10.relativize(other10);
+        assertThat(relative10).isNotNull();
+        assertThat(relative10.toString()).isEqualTo("");
+
+        final Path path11 = GeneralPathImpl.create(fs, "", false);
+        final Path other11 = GeneralPathImpl.create(fs, "path/to", false);
+
+        final Path relative11 = path11.relativize(other11);
+        assertThat(relative11).isNotNull().isEqualTo(other11);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeIlegal1() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "/path/to", false);
+        final Path other = GeneralPathImpl.create(fs, "some/place", false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeIlegal2() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "some/place", false);
+        final Path other = GeneralPathImpl.create(fs, "/path/to", false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeIlegal3() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "", false);
+        final Path other = GeneralPathImpl.create(fs, "/path/to", false);
+
+        path.relativize(other);
+    }
+
+    @Test
+    public void testRelativizeWindows() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("\\");
+
+        final Path path = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+        final Path other = GeneralPathImpl.create(fs, "c:\\path\\to\\some\\place", false);
+
+        final Path relative = path.relativize(other);
+        assertThat(relative).isNotNull();
+        assertThat(relative.toString()).isEqualTo("some\\place");
+
+        final Path path2 = GeneralPathImpl.create(fs, "c:\\path\\to\\some\\place", false);
+        final Path other2 = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+
+        final Path relative2 = path2.relativize(other2);
+        assertThat(relative2).isNotNull();
+        assertThat(relative2.toString()).isEqualTo("..\\..");
+
+        final Path path3 = GeneralPathImpl.create(fs, "c:\\path/to", false);
+        final Path other3 = GeneralPathImpl.create(fs, "c:\\path/to", false);
+
+        final Path relative3 = path3.relativize(other3);
+        assertThat(relative3).isNotNull();
+        assertThat(relative3.toString()).isEqualTo("");
+
+        final Path path4 = GeneralPathImpl.create(fs, "path\\to", false);
+        final Path other4 = GeneralPathImpl.create(fs, "path\\to\\some\\place", false);
+
+        final Path relative4 = path4.relativize(other4);
+        assertThat(relative4).isNotNull();
+        assertThat(relative4.toString()).isEqualTo("some\\place");
+
+        final Path path5 = GeneralPathImpl.create(fs, "path\\to", false);
+        final Path other5 = GeneralPathImpl.create(fs, "some\\place", false);
+
+        final Path relative5 = path5.relativize(other5);
+        assertThat(relative5).isNotNull();
+        assertThat(relative5.toString()).isEqualTo("..\\..\\some\\place");
+
+        final Path path6 = GeneralPathImpl.create(fs, "some\\place", false);
+        final Path other6 = GeneralPathImpl.create(fs, "path\\to", false);
+
+        final Path relative6 = path6.relativize(other6);
+        assertThat(relative6).isNotNull();
+        assertThat(relative6.toString()).isEqualTo("..\\..\\path\\to");
+
+        final Path path7 = GeneralPathImpl.create(fs, "path\\to\\some\\thing\\here", false);
+        final Path other7 = GeneralPathImpl.create(fs, "some\\place", false);
+
+        final Path relative7 = path7.relativize(other7);
+        assertThat(relative7).isNotNull();
+        assertThat(relative7.toString()).isEqualTo("..\\..\\..\\..\\..\\some\\place");
+
+        final Path path8 = GeneralPathImpl.create(fs, "some\\place", false);
+        final Path other8 = GeneralPathImpl.create(fs, "path\\to\\some\\thing\\here", false);
+
+        final Path relative8 = path8.relativize(other8);
+        assertThat(relative8).isNotNull();
+        assertThat(relative8.toString()).isEqualTo("..\\..\\path\\to\\some\\thing\\here");
+
+        final Path path9 = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+        final Path other9 = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+
+        final Path relative9 = path9.relativize(other9);
+        assertThat(relative9).isNotNull();
+        assertThat(relative9.toString()).isEqualTo("");
+
+        final Path path10 = GeneralPathImpl.create(fs, "path\\to", false);
+        final Path other10 = GeneralPathImpl.create(fs, "path\\to", false);
+
+        final Path relative10 = path10.relativize(other10);
+        assertThat(relative10).isNotNull();
+        assertThat(relative10.toString()).isEqualTo("");
+
+        final Path path11 = GeneralPathImpl.create(fs, "", false);
+        final Path other11 = GeneralPathImpl.create(fs, "path\\to", false);
+
+        final Path relative11 = path11.relativize(other11);
+        assertThat(relative11).isNotNull().isEqualTo(other11);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeWindowsIllegal1() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+        final Path other = GeneralPathImpl.create(fs, "some\\place", false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeWindowsIllegal2() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "some\\place", false);
+        final Path other = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeWindowsIllegal3() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "", false);
+        final Path other = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeWindowsIllegal4() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("/");
+
+        final Path path = GeneralPathImpl.create(fs, "d:\\path\\to", false);
+        final Path other = GeneralPathImpl.create(fs, "c:\\path\\to", false);
+
+        path.relativize(other);
+    }
+
 }

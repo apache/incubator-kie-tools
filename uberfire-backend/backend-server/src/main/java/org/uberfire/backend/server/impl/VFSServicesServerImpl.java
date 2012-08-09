@@ -24,6 +24,13 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
+import org.uberfire.backend.vfs.impl.FileSystemImpl;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
 import org.uberfire.java.nio.file.CopyOption;
@@ -43,13 +50,6 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.file.attribute.UserPrincipal;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.backend.vfs.FileSystem;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 
 import static java.util.Arrays.*;
 
@@ -78,21 +78,18 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public FileSystem newFileSystem(final String uri, final Map<String, Object> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        final org.uberfire.java.nio.file.FileSystem newFileSystem;
         final URI furi = URI.create(uri);
-        System.out.println("ABOUT TO CREATE A NEW FILE SYSTEM!");
-        try {
-            newFileSystem = FileSystems.newFileSystem(furi, env);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException();
-        }
+        final org.uberfire.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem(furi, env);
 
         return new FileSystemImpl(asList(new Path[]{new PathImpl(furi.getPath(), uri)}));
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir) throws IllegalArgumentException, NotDirectoryException, IOException {
-        return newDirectoryStream(Files.newDirectoryStream(fromPath(dir)).iterator());
+    public DirectoryStream<Path> newDirectoryStream(final Path dir)
+            throws IllegalArgumentException, NotDirectoryException, IOException {
+        final Iterator<org.uberfire.java.nio.file.Path> content = Files.newDirectoryStream(fromPath(dir)).iterator();
+
+        return newDirectoryStream(content);
     }
 
     @Override
@@ -292,16 +289,13 @@ public class VFSServicesServerImpl implements VFSService {
 
     @Override
     public Path write(Path path, String content) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert(Files.write(fromPath(path), content, UTF_8, null));
+        return convert(Files.write(fromPath(path), content.getBytes()));
     }
 
     private Path convert(final org.uberfire.java.nio.file.Path path) {
         final Map<String, Object> attributes = Files.readAttributes(path, "*");
 
-        //REVISIT - JLIU: Path.toUri constructs an absolute URI with a scheme equal to the URI scheme that identifies the provider. In order to support
-        //relative path, shall we avoid using Path.toUri? or shall we always use absolute path?
-        return new PathImpl(path.getFileName().toString(), path.toString(), attributes);
-        //return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
+        return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
     }
 
     private DirectoryStream<Path> newDirectoryStream(final Iterator<org.uberfire.java.nio.file.Path> iterator) {

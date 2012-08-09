@@ -27,30 +27,34 @@ import static org.uberfire.java.nio.util.Preconditions.*;
 
 public class EclipsePathImpl extends AbstractPath {
 
-    protected EclipsePathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
-        super(fs, path, isRoot, isRealPath);
+    protected EclipsePathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath, boolean isNormalized) {
+        super(fs, path, isRoot, isRealPath, isNormalized);
     }
 
     public static EclipsePathImpl createRoot(final FileSystem fs, final String root, boolean isRealPath) {
         checkNotNull("fs", fs);
         checkNotNull("path", root);
 
-        return new EclipsePathImpl(fs, root, true, isRealPath);
+        return new EclipsePathImpl(fs, root, true, isRealPath, true);
     }
 
     public static EclipsePathImpl create(final FileSystem fs, final String path, boolean isRealPath) {
+        return create(fs, path, isRealPath, false);
+    }
+
+    public static EclipsePathImpl create(final FileSystem fs, final String path, boolean isRealPath, boolean isNormalized) {
         checkNotNull("fs", fs);
         checkNotNull("path", path);
 
-        return new EclipsePathImpl(fs, path, false, isRealPath);
+        return new EclipsePathImpl(fs, path, false, isRealPath, isNormalized);
     }
 
     @Override Path newRoot(FileSystem fs, String substring, boolean realPath) {
-        return new EclipsePathImpl(fs, substring, true, realPath);
+        return new EclipsePathImpl(fs, substring, true, realPath, true);
     }
 
-    @Override Path newPath(FileSystem fs, String substring, boolean realPath) {
-        return new EclipsePathImpl(fs, substring, false, realPath);
+    @Override Path newPath(FileSystem fs, String substring, boolean realPath, boolean isNormalized) {
+        return new EclipsePathImpl(fs, substring, false, realPath, isNormalized);
     }
 
     @Override

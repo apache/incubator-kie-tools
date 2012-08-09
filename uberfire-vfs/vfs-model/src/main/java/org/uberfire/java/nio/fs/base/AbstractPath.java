@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -52,23 +53,25 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
     protected final List<Pair> offsets = new ArrayList<Pair>();
     protected final boolean isRoot;
     protected final boolean isRealPath;
+    protected final boolean isNormalized;
 
     protected String toStringFormat;
     protected File file;
     protected GeneralFileAttributes attrs;
 
-    abstract Path newPath(FileSystem fs, String substring, boolean realPath);
+    abstract Path newPath(FileSystem fs, String substring, boolean realPath, boolean isNormalized);
 
     abstract Path newRoot(FileSystem fs, String substring, boolean realPath);
 
     protected AbstractPath(final FileSystem fs, final File file) {
-        this(checkNotNull("fs", fs), checkNotNull("file", file).getAbsolutePath(), true, false);
+        this(checkNotNull("fs", fs), checkNotNull("file", file).getAbsolutePath(), true, false, true);
     }
 
-    protected AbstractPath(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath) {
+    protected AbstractPath(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath, boolean isNormalized) {
         this.fs = checkNotNull("fs", fs);
         this.path = checkNotNull("path", path).getBytes();
         this.isRealPath = isRealPath;
+        this.isNormalized = isNormalized;
         this.usesWindowsFormat = path.matches(".*\\\\.*");
 
         final boolean isRooted = isRoot ? true : path.startsWith("/");
@@ -178,7 +181,7 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
         if (getNameCount() == 1) {
             return getRoot();
         }
-        return newPath(fs, substring(-1, getNameCount() - 2), isRealPath);
+        return newPath(fs, substring(-1, getNameCount() - 2), isRealPath, isNormalized);
     }
 
     @Override
@@ -195,7 +198,7 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
             throw new IllegalArgumentException();
         }
 
-        return newPath(fs, substring(index), isRealPath);
+        return newPath(fs, substring(index), isRealPath, false);
     }
 
     @Override
@@ -213,7 +216,7 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
             throw new IllegalArgumentException();
         }
 
-        return newPath(fs, substring(beginIndex, endIndex - 1), isRealPath);
+        return newPath(fs, substring(beginIndex, endIndex - 1), isRealPath, false);
     }
 
     @Override
@@ -248,7 +251,7 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
             return this;
         }
 
-        return newPath(fs, defaultDirectory() + toString(), isRealPath);
+        return newPath(fs, FilenameUtils.normalize(defaultDirectory() + toString(), !usesWindowsFormat), isRealPath, true);
     }
 
     private String defaultDirectory() {
@@ -269,7 +272,7 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
         if (isRealPath) {
             return this;
         }
-        return newPath(fs, toString(), true);
+        return newPath(fs, FilenameUtils.normalize(toString(), !usesWindowsFormat), true, true);
     }
 
     @Override
@@ -337,7 +340,11 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
 
     @Override
     public Path normalize() {
-        throw new UnsupportedOperationException();
+        if (isNormalized) {
+            return this;
+        }
+
+        return newPath(fs, FilenameUtils.normalize(new String(path), !usesWindowsFormat), isRealPath, true);
     }
 
     @Override
@@ -346,31 +353,101 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
         if (other.isAbsolute()) {
             return other;
         }
-        throw new UnsupportedOperationException();
+        if (other.toString().trim().length() == 0) {
+            return this;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        sb.append(new String(path));
+        if (path[path.length - 1] != getSeparator()) {
+            sb.append(getSeparator());
+        }
+        sb.append(other.toString());
+
+        return newPath(fs, sb.toString(), isRealPath, false);
     }
 
     @Override
     public Path resolve(final String other) throws InvalidPathException {
         checkNotNull("other", other);
-        throw new UnsupportedOperationException();
+        return resolve(newPath(fs, other, isRealPath, false));
     }
 
     @Override
     public Path resolveSibling(final Path other) {
         checkNotNull("other", other);
-        throw new UnsupportedOperationException();
+
+        final Path parent = this.getParent();
+        if (parent == null || other.isAbsolute()) {
+            return other;
+        }
+
+        return parent.resolve(other);
     }
 
     @Override
     public Path resolveSibling(final String other) throws InvalidPathException {
         checkNotNull("other", other);
-        throw new UnsupportedOperationException();
+
+        return resolveSibling(newPath(fs, other, isRealPath, false));
     }
 
     @Override
     public Path relativize(final Path other) throws IllegalArgumentException {
         checkNotNull("other", other);
-        throw new UnsupportedOperationException();
+
+        if (this.equals(other)) {
+            return emptyPath();
+        }
+
+        if (isAbsolute() != other.isAbsolute()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (isAbsolute() && !this.getRoot().equals(other.getRoot())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (this.path.length == 0) {
+            return other;
+        }
+
+        int n = (getNameCount() > other.getNameCount()) ? other.getNameCount() : getNameCount();
+        int i = 0;
+        while (i < n) {
+            if (!this.getName(i).equals(other.getName(i))) {
+                break;
+            }
+            i++;
+        }
+
+        int numberOfDots = getNameCount() - i;
+
+        if (numberOfDots == 0 && i < other.getNameCount()) {
+            return other.subpath(i, other.getNameCount());
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        while (numberOfDots > 0) {
+            sb.append("..");
+            if (numberOfDots > 1) {
+                sb.append(getSeparator());
+            }
+            numberOfDots--;
+        }
+
+        if (i < other.getNameCount()) {
+            if (sb.length() > 0) {
+                sb.append(getSeparator());
+            }
+            sb.append(other.subpath(i, other.getNameCount()).toString());
+        }
+
+        return newPath(fs, sb.toString(), isRealPath, false);
+    }
+
+    private Path emptyPath() {
+        return newPath(fs, "", isRealPath, true);
     }
 
     @Override
@@ -448,7 +525,12 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
         if (!fs.equals(paths.fs)) {
             return false;
         }
-        if (!Arrays.equals(path, paths.path)) {
+
+        if (!usesWindowsFormat && !Arrays.equals(path, paths.path)) {
+            return false;
+        }
+
+        if (usesWindowsFormat && !(new String(path).equalsIgnoreCase(new String(paths.path)))) {
             return false;
         }
 
@@ -460,9 +542,16 @@ public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttrib
         int result = fs != null ? fs.hashCode() : 0;
         result = 31 * result + (usesWindowsFormat ? 1 : 0);
         result = 31 * result + (isAbsolute ? 1 : 0);
-        result = 31 * result + (path != null ? Arrays.hashCode(path) : 0);
+
+        if (!usesWindowsFormat) {
+            result = 31 * result + (path != null ? Arrays.hashCode(path) : 0);
+        } else {
+            result = 31 * result + (path != null ? new String(path).toLowerCase().hashCode() : 0);
+        }
+
         result = 31 * result + (isRoot ? 1 : 0);
         result = 31 * result + (isRealPath ? 1 : 0);
+        result = 31 * result + (isNormalized ? 1 : 0);
         return result;
     }
 

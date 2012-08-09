@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio;
+package org.uberfire.java.nio.file;
 
-public class IOException extends RuntimeException {
-
-    public IOException() {
-        super();
-    }
-
-    public IOException(Exception e) {
-        super(e);
-    }
-
-    public IOException(final String description) {
-        super(description);
-    }
+public enum StandardCopyOption implements CopyOption {
+    REPLACE_EXISTING;
 }
