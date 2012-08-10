@@ -50,7 +50,7 @@ public class FileExplorerPerspective
         //TODO {manstis} We should ideally be able to construct a perspective by adding panels to the Workbench root panel
         //This approach, however, does not currently register Activities within the MVP framework and hence unpredictable
         //results can occur.
-        placeManager.goTo( new PlaceRequest( "InstanceListView" ) );
+        placeManager.goTo( new PlaceRequest( "DefinitionListView" ) );
     }
 
 }

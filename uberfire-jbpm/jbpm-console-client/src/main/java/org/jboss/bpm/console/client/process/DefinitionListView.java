@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.guvnor.client.common.*;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
+import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
@@ -44,6 +45,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 
 import javax.enterprise.context.Dependent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Dependent
@@ -131,10 +133,10 @@ public class DefinitionListView implements IsWidget, DataDriven {
             toolBox.add(toolBar);
 
             // filter
-            VerticalPanel filterPanel = new VerticalPanel();
-            filterPanel.setStyleName("mosaic-ToolBar");
+            //VerticalPanel filterPanel = new VerticalPanel();
+            //filterPanel.setStyleName("mosaic-ToolBar");
             final com.google.gwt.user.client.ui.ListBox dropBox = new com.google.gwt.user.client.ui.ListBox(false);
-            dropBox.setStyleName("bpm-operation-ui");
+            //dropBox.setStyleName("bpm-operation-ui");
             dropBox.addItem("All");
             dropBox.addItem("Active");
             dropBox.addItem("Retired");
@@ -159,9 +161,9 @@ public class DefinitionListView implements IsWidget, DataDriven {
                     renderFiltered();
                 }
             });
-            filterPanel.add(dropBox);
+            //filterPanel.add(dropBox);
 
-            toolBox.add(filterPanel);
+            toolBox.add(dropBox);
 
             definitionList.add(toolBox);
             definitionList.add(listBox);
@@ -207,6 +209,27 @@ public class DefinitionListView implements IsWidget, DataDriven {
                     });
 
             isInitialized = true;
+            
+            
+
+            List<ProcessDefinitionRef> mockDefinitions = new ArrayList<ProcessDefinitionRef>();
+            ProcessDefinitionRef mockProcessDefinitionRef = new ProcessDefinitionRef();
+            mockProcessDefinitionRef.setSuspended(true);
+            mockProcessDefinitionRef.setVersion(FILTER_ACTIVE);
+            mockProcessDefinitionRef.setName("process1");
+            mockDefinitions.add(mockProcessDefinitionRef);
+            ProcessDefinitionRef mockProcessDefinitionRef2 = new ProcessDefinitionRef();
+            mockProcessDefinitionRef2.setSuspended(false);
+            mockProcessDefinitionRef2.setVersion(FILTER_ACTIVE);
+            mockProcessDefinitionRef2.setName("process2");
+            mockDefinitions.add(mockProcessDefinitionRef2);
+            ProcessDefinitionRef mockProcessDefinitionRef3 = new ProcessDefinitionRef();
+            mockProcessDefinitionRef3.setSuspended(true);
+            mockProcessDefinitionRef3.setVersion(FILTER_SUSPENDED);
+            mockProcessDefinitionRef3.setName("process3");
+            mockDefinitions.add(mockProcessDefinitionRef3);
+                       
+            update(mockDefinitions);
         }
     }
 
