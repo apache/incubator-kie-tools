@@ -33,7 +33,7 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarManager;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.core.client.Scheduler;
@@ -74,13 +74,13 @@ public class Workbench extends Composite {
     private BeanFactory                   factory;
 
     @Inject
-    private WorkbenchMenuBarManager       menuBar;
+    private WorkbenchMenuBarPresenter     menuBarPresenter;
 
     @PostConstruct
     public void setup() {
 
         //Menu bar
-        container.add( menuBar );
+        container.add( menuBarPresenter.getView() );
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
@@ -113,7 +113,7 @@ public class Workbench extends Composite {
         dndManager.unregisterDropControllers();
 
         //Size environment
-        final int menuBarHeight = menuBar.getOffsetHeight();
+        final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
         workbenchContainer.setPixelSize( WIDTH,
                                          HEIGHT - menuBarHeight );
         workbench.setPixelSize( WIDTH,

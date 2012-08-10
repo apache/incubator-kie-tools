@@ -33,21 +33,32 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.security.RequiresPermission;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Manager for mediating changes to the Workbench MenuBar in GWT. An alternative
- * implementation should be considered for use within Eclipse
+ * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar
+ * in response to changes to the selected WorkbenchPart. The menu structure is
+ * cloned and items that lack permission are removed. This implementation is
+ * specific to GWT. An alternative implementation should be considered for use
+ * within Eclipse.
  */
 @ApplicationScoped
-public class WorkbenchMenuBarManager extends SimplePanel {
+public class WorkbenchMenuBarPresenter {
+
+    public interface View
+        extends
+        IsWidget {
+
+        void addMenuItem(final AbstractMenuItem menuItem);
+
+        void removeMenuItem(final AbstractMenuItem menuItem);
+    }
+
+    private final View     view;
 
     @Inject
     private PlaceManager   placeManager;
@@ -55,22 +66,27 @@ public class WorkbenchMenuBarManager extends SimplePanel {
     @Inject
     private IOCBeanManager iocManager;
 
-    private List<MenuItem> items   = new ArrayList<MenuItem>();
+    @Inject
+    public WorkbenchMenuBarPresenter(final View view) {
+        this.view = view;
+    }
 
-    private final MenuBar  menuBar = new MenuBar();
+    //Transient items currently held with the menu bar (i.e. not the "core" entries)
+    private List<AbstractMenuItem> items = new ArrayList<AbstractMenuItem>();
 
     @SuppressWarnings("unused")
     @AfterInitialization
     //Configure the default menu items
-    private void setup() {
-        setWidget( menuBar );
-        final MenuBar placesMenuBar = new MenuBar( true );
-        final MenuItem placesMenu = new MenuItem( "Places",
-                                                  placesMenuBar );
+    private void setupCoreItems() {
+
+        //Static places
+        final WorkbenchMenuBar placesMenuBar = new WorkbenchMenuBar();
+        final SubMenuItem placesMenu = new SubMenuItem( "Places",
+                                                        placesMenuBar );
         final List<AbstractScreenActivity> activities = getScreenActivities();
         for ( AbstractScreenActivity activity : activities ) {
             final String identifier = activity.getIdentifier();
-            final com.google.gwt.user.client.Command cmd = new com.google.gwt.user.client.Command() {
+            final Command cmd = new Command() {
 
                 @Override
                 public void execute() {
@@ -78,20 +94,26 @@ public class WorkbenchMenuBarManager extends SimplePanel {
                 }
 
             };
-            placesMenuBar.addItem( identifier,
-                                   cmd );
+            final CommandMenuItem item = new CommandMenuItem( identifier,
+                                                              cmd );
+            placesMenuBar.addItem( item );
         }
+        view.addMenuItem( placesMenu );
 
-        menuBar.addItem( placesMenu );
-        menuBar.addItem( new MenuItem( "About",
-                                       new com.google.gwt.user.client.Command() {
+        //Simple "About" dialog
+        view.addMenuItem( new CommandMenuItem( "About",
+                                               new Command() {
 
-                                           @Override
-                                           public void execute() {
-                                               Window.alert( "Uberfire" );
-                                           }
+                                                   @Override
+                                                   public void execute() {
+                                                       Window.alert( "Uberfire" );
+                                                   }
 
-                                       } ) );
+                                               } ) );
+    }
+
+    public IsWidget getView() {
+        return this.view;
     }
 
     private List<AbstractScreenActivity> getScreenActivities() {
@@ -129,77 +151,54 @@ public class WorkbenchMenuBarManager extends SimplePanel {
         }
 
         //Remove items from previous WorkbenchPart
-        for ( MenuItem item : items ) {
-            menuBar.removeItem( item );
+        for ( AbstractMenuItem item : items ) {
+            view.removeMenuItem( item );
         }
 
         //Add items for current WorkbenchPart
-        items = new ArrayList<MenuItem>();
-        for ( MenuItem item : makeMenuItems( activity.getMenuBar().getItems() ) ) {
-            menuBar.addItem( item );
+        items = new ArrayList<AbstractMenuItem>();
+        for ( AbstractMenuItem item : filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
+            view.addMenuItem( item );
             items.add( item );
         }
     }
 
-    //Make an individual menu item for use within GWT. This either simply creates a MenuItem 
-    //for CommandMenuItems or a new MenuItem containing a MenuBar for SubMenuItems. Items that 
-    //do not have permissions to be added are excluded (i.e. they will not be rendered). 
-    //The call is recursive.
-    private MenuItem makeMenuItem(final AbstractMenuItem item) {
-        boolean hasPermission = true;
-        if ( item instanceof RequiresPermission ) {
-            final RequiresPermission wbItem = (RequiresPermission) item;
-            hasPermission = wbItem.hasPermission();
+    //Remove menu bar items for which there are insufficient permissions
+    private List<AbstractMenuItem> filterMenuItemsByPermission(final List<AbstractMenuItem> items) {
+        final List<AbstractMenuItem> itemsClone = new ArrayList<AbstractMenuItem>();
+        for ( AbstractMenuItem item : items ) {
+            final AbstractMenuItem itemClone = filterMenuItemByPermission( item );
+            if ( itemClone != null ) {
+                itemsClone.add( itemClone );
+            }
         }
-        if ( !hasPermission ) {
+        return itemsClone;
+    }
+
+    //Remove menu bar items for which there are insufficient permissions
+    private AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
+        if ( !item.hasPermission() ) {
             return null;
         }
         if ( item instanceof CommandMenuItem ) {
-            final CommandMenuItem cmdItem = (CommandMenuItem) item;
-            final MenuItem gwtItem = new MenuItem( cmdItem.getCaption(),
-                                                   wrapCommand( cmdItem.getCommand() ) );
-            gwtItem.setEnabled( item.isEnabled() );
-            return gwtItem;
+            return item;
+
         } else if ( item instanceof SubMenuItem ) {
             final SubMenuItem subMenuItem = (SubMenuItem) item;
-            final MenuBar gwtMenuBar = makeMenuBar( makeMenuItems( subMenuItem.getSubMenu().getItems() ) );
-            final MenuItem gwtItem = new MenuItem( subMenuItem.getCaption(),
-                                                   gwtMenuBar );
-            gwtItem.setEnabled( item.isEnabled() );
-            return gwtItem;
+            final WorkbenchMenuBar menuBarClone = cloneMenuBar( filterMenuItemsByPermission( subMenuItem.getSubMenu().getItems() ) );
+            final SubMenuItem itemClone = new SubMenuItem( subMenuItem.getCaption(),
+                                                           menuBarClone );
+            return itemClone;
         }
         throw new IllegalArgumentException( "item type [" + item.getClass().getName() + "] is not recognised." );
     }
 
-    private com.google.gwt.user.client.Command wrapCommand(final Command command) {
-        final com.google.gwt.user.client.Command wrappedCommand = new com.google.gwt.user.client.Command() {
-
-            @Override
-            public void execute() {
-                command.execute();
-            }
-
-        };
-        return wrappedCommand;
-    }
-
-    private List<MenuItem> makeMenuItems(final List<AbstractMenuItem> items) {
-        final List<MenuItem> gwtItems = new ArrayList<MenuItem>();
+    private WorkbenchMenuBar cloneMenuBar(final List<AbstractMenuItem> items) {
+        final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
         for ( AbstractMenuItem item : items ) {
-            final MenuItem gwtItem = makeMenuItem( item );
-            if ( gwtItem != null ) {
-                gwtItems.add( gwtItem );
-            }
+            menuBar.addItem( item );
         }
-        return gwtItems;
-    }
-
-    private MenuBar makeMenuBar(final List<MenuItem> items) {
-        final MenuBar gwtMenuBar = new MenuBar( true );
-        for ( MenuItem item : items ) {
-            gwtMenuBar.addItem( item );
-        }
-        return gwtMenuBar;
+        return menuBar;
     }
 
 }
