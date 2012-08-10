@@ -142,9 +142,8 @@ public class WorkbenchMenuBarPresenter {
         return sortedActivities;
     }
 
-    @SuppressWarnings("unused")
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
-    private void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
+    void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
         final WorkbenchActivity activity = placeManager.getActivity( event.getWorkbenchPart() );
         if ( activity == null ) {
             return;
@@ -157,48 +156,10 @@ public class WorkbenchMenuBarPresenter {
 
         //Add items for current WorkbenchPart
         items = new ArrayList<AbstractMenuItem>();
-        for ( AbstractMenuItem item : filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
+        for ( AbstractMenuItem item : WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
             view.addMenuItem( item );
             items.add( item );
         }
-    }
-
-    //Remove menu bar items for which there are insufficient permissions
-    private List<AbstractMenuItem> filterMenuItemsByPermission(final List<AbstractMenuItem> items) {
-        final List<AbstractMenuItem> itemsClone = new ArrayList<AbstractMenuItem>();
-        for ( AbstractMenuItem item : items ) {
-            final AbstractMenuItem itemClone = filterMenuItemByPermission( item );
-            if ( itemClone != null ) {
-                itemsClone.add( itemClone );
-            }
-        }
-        return itemsClone;
-    }
-
-    //Remove menu bar items for which there are insufficient permissions
-    private AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
-        if ( !item.hasPermission() ) {
-            return null;
-        }
-        if ( item instanceof CommandMenuItem ) {
-            return item;
-
-        } else if ( item instanceof SubMenuItem ) {
-            final SubMenuItem subMenuItem = (SubMenuItem) item;
-            final WorkbenchMenuBar menuBarClone = cloneMenuBar( filterMenuItemsByPermission( subMenuItem.getSubMenu().getItems() ) );
-            final SubMenuItem itemClone = new SubMenuItem( subMenuItem.getCaption(),
-                                                           menuBarClone );
-            return itemClone;
-        }
-        throw new IllegalArgumentException( "item type [" + item.getClass().getName() + "] is not recognised." );
-    }
-
-    private WorkbenchMenuBar cloneMenuBar(final List<AbstractMenuItem> items) {
-        final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
-        for ( AbstractMenuItem item : items ) {
-            menuBar.addItem( item );
-        }
-        return menuBar;
     }
 
 }
