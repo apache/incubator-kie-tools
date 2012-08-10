@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.drools.guvnor.client.editors.jbpm.inbox;
+package org.jboss.bpm.console.client;
 
 import org.jboss.bpm.console.client.model.TaskSummary;
 import java.util.List;

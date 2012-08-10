@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import java.util.Date;
 import javax.annotation.PostConstruct;
-import org.drools.guvnor.client.editors.jbpm.inbox.TaskServiceEntryPoint;
+import org.jboss.bpm.console.client.TaskServiceEntryPoint;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;

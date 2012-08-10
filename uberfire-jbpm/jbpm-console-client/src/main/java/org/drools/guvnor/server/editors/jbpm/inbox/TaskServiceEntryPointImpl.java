@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.drools.guvnor.client.editors.jbpm.inbox.TaskServiceEntryPoint;
+import org.jboss.bpm.console.client.TaskServiceEntryPoint;
 import org.jboss.bpm.console.client.model.TaskSummary;
 import org.jboss.bpm.console.client.model.TaskSummaryHelper;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -36,7 +36,7 @@ import org.jbpm.task.impl.factories.TaskFactory;
 @Service
 @ApplicationScoped
 @Transactional
-public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint{
+public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     @Inject TaskQueryService taskQueryService;
     @Inject TaskInstanceService taskInstanceService;
     

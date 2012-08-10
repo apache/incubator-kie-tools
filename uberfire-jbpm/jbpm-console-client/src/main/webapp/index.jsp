@@ -1,5 +1,5 @@
 <%
 	String queryString = request.getQueryString();
-    String redirectURL = "org.drools.guvnor.UberfireShowcase/Uberfire.jsp?"+(queryString==null?"":queryString);
+    String redirectURL = "org.drools.guvnor.jBPMShowcase/jBPM.html?"+(queryString==null?"":queryString);
     response.sendRedirect(redirectURL);
 %>

@@ -137,22 +137,10 @@
   <description>jBPM Console - Client</description>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <fork>false</fork>
-          <meminitial>128m</meminitial>
-          <maxmem>512m</maxmem>
-        </configuration>
-      </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwt.maven.version}</version>
         <configuration>
           <module>org.drools.guvnor.FastCompiledjBPMShowcase</module>
           <logLevel>INFO</logLevel>
@@ -222,7 +210,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
         <executions>
           <execution>
             <id>add-generated-source</id>
@@ -242,7 +229,6 @@
       <plugin>
         <groupId>org.jboss.errai</groupId>
         <artifactId>jacoco-gwt-maven-plugin</artifactId>
-        <version>0.5.4.201202141554</version>
         <executions>
           <execution>
             <id>jacoco-gwt-prepare-agent</id>

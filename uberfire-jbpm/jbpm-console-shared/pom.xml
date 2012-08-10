@@ -39,6 +39,12 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core-cdi</artifactId>
     </dependency>
+
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
   </dependencies>
 
 
