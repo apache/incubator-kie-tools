@@ -37,14 +37,14 @@ import org.uberfire.client.workbench.security.RequiresPermission;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Manager for mediating changes to the Workbench MenuBar
+ * Manager for mediating changes to the Workbench MenuBar in GWT. An alternative
+ * implementation should be considered for use within Eclipse
  */
 @ApplicationScoped
 public class WorkbenchMenuBarManager extends SimplePanel {
@@ -70,7 +70,7 @@ public class WorkbenchMenuBarManager extends SimplePanel {
         final List<AbstractScreenActivity> activities = getScreenActivities();
         for ( AbstractScreenActivity activity : activities ) {
             final String identifier = activity.getIdentifier();
-            final Command cmd = new Command() {
+            final com.google.gwt.user.client.Command cmd = new com.google.gwt.user.client.Command() {
 
                 @Override
                 public void execute() {
@@ -84,7 +84,7 @@ public class WorkbenchMenuBarManager extends SimplePanel {
 
         menuBar.addItem( placesMenu );
         menuBar.addItem( new MenuItem( "About",
-                                       new Command() {
+                                       new com.google.gwt.user.client.Command() {
 
                                            @Override
                                            public void execute() {
@@ -135,29 +135,71 @@ public class WorkbenchMenuBarManager extends SimplePanel {
 
         //Add items for current WorkbenchPart
         items = new ArrayList<MenuItem>();
-        for ( MenuItem item : activity.getMenuBar().getItems() ) {
-            enableMenuItem( item );
+        for ( MenuItem item : makeMenuItems( activity.getMenuBar().getItems() ) ) {
             menuBar.addItem( item );
             items.add( item );
         }
     }
 
-    private void enableMenuItem(final MenuItem item) {
-        boolean enabled = true;
+    //Make an individual menu item for use within GWT. This either simply creates a MenuItem 
+    //for CommandMenuItems or a new MenuItem containing a MenuBar for SubMenuItems. Items that 
+    //do not have permissions to be added are excluded (i.e. they will not be rendered). 
+    //The call is recursive.
+    private MenuItem makeMenuItem(final AbstractMenuItem item) {
+        boolean hasPermission = true;
         if ( item instanceof RequiresPermission ) {
             final RequiresPermission wbItem = (RequiresPermission) item;
-            enabled = wbItem.hasPermission();
+            hasPermission = wbItem.hasPermission();
         }
-        item.setEnabled( enabled );
-        final MenuBar subMenu = item.getSubMenu();
-        if ( subMenu != null ) {
-            if ( subMenu instanceof WorkbenchMenuBar ) {
-                final WorkbenchMenuBar wbSubMenu = (WorkbenchMenuBar) subMenu;
-                for ( MenuItem childItem : wbSubMenu.getItems() ) {
-                    enableMenuItem( childItem );
-                }
+        if ( !hasPermission ) {
+            return null;
+        }
+        if ( item instanceof CommandMenuItem ) {
+            final CommandMenuItem cmdItem = (CommandMenuItem) item;
+            final MenuItem gwtItem = new MenuItem( cmdItem.getCaption(),
+                                                   wrapCommand( cmdItem.getCommand() ) );
+            gwtItem.setEnabled( item.isEnabled() );
+            return gwtItem;
+        } else if ( item instanceof SubMenuItem ) {
+            final SubMenuItem subMenuItem = (SubMenuItem) item;
+            final MenuBar gwtMenuBar = makeMenuBar( makeMenuItems( subMenuItem.getSubMenu().getItems() ) );
+            final MenuItem gwtItem = new MenuItem( subMenuItem.getCaption(),
+                                                   gwtMenuBar );
+            gwtItem.setEnabled( item.isEnabled() );
+            return gwtItem;
+        }
+        throw new IllegalArgumentException( "item type [" + item.getClass().getName() + "] is not recognised." );
+    }
+
+    private com.google.gwt.user.client.Command wrapCommand(final Command command) {
+        final com.google.gwt.user.client.Command wrappedCommand = new com.google.gwt.user.client.Command() {
+
+            @Override
+            public void execute() {
+                command.execute();
+            }
+
+        };
+        return wrappedCommand;
+    }
+
+    private List<MenuItem> makeMenuItems(final List<AbstractMenuItem> items) {
+        final List<MenuItem> gwtItems = new ArrayList<MenuItem>();
+        for ( AbstractMenuItem item : items ) {
+            final MenuItem gwtItem = makeMenuItem( item );
+            if ( gwtItem != null ) {
+                gwtItems.add( gwtItem );
             }
         }
+        return gwtItems;
+    }
+
+    private MenuBar makeMenuBar(final List<MenuItem> items) {
+        final MenuBar gwtMenuBar = new MenuBar( true );
+        for ( MenuItem item : items ) {
+            gwtMenuBar.addItem( item );
+        }
+        return gwtMenuBar;
     }
 
 }

@@ -27,13 +27,14 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
+import org.uberfire.client.workbench.widgets.menu.Command;
+import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
+import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuItem;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuItem;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -84,20 +85,20 @@ public class TestPresenter5 {
     @WorkbenchMenu
     public WorkbenchMenuBar getMenuBar() {
         final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
-        final WorkbenchMenuBar subMenuBar = new WorkbenchMenuBar( true );
-        menuBar.addItem( new MenuItem( "TestPresenter5 menu",
-                                       subMenuBar ) );
+        final WorkbenchMenuBar subMenuBar = new WorkbenchMenuBar();
+        menuBar.addItem( new SubMenuItem( "TestPresenter5 menu",
+                                                   subMenuBar ) );
         for ( int i = 0; i < 3; i++ ) {
             final String caption = "TestPresenter5:Item:" + i;
-            final WorkbenchMenuItem item = new WorkbenchMenuItem( caption,
-                                                                  new Command() {
+            final AbstractMenuItem item = new CommandMenuItem( caption,
+                                                                         new Command() {
 
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          Window.alert( "You clicked " + caption );
-                                                                      }
+                                                                             @Override
+                                                                             public void execute() {
+                                                                                 Window.alert( "You clicked " + caption );
+                                                                             }
 
-                                                                  } );
+                                                                         } );
             item.setHasPermission( i > 0 );
             subMenuBar.addItem( item );
         }

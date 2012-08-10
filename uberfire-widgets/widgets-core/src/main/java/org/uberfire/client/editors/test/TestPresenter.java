@@ -22,13 +22,14 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
+import org.uberfire.client.workbench.widgets.menu.Command;
+import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
+import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuItem;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuItem;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -61,50 +62,73 @@ public class TestPresenter {
     public WorkbenchMenuBar getMenuBar() {
         final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
 
-        //Sub-menu#1 - All items enabled
-        final WorkbenchMenuBar subMenuBar1 = new WorkbenchMenuBar( true );
-        menuBar.addItem( new MenuItem( "TestPresenter menu-1",
-                                       subMenuBar1 ) );
+        //Sub-menu#1 - No sub-menu
+        menuBar.addItem( new CommandMenuItem( "TestPresenter menu-1",
+                                                       new Command() {
+
+                                                           @Override
+                                                           public void execute() {
+                                                               Window.alert( "You clicked me" );
+                                                           }
+
+                                                       } ) );
+
+        //Sub-menu#2 - All items have permission and are enabled
+        final WorkbenchMenuBar subMenuBar2 = new WorkbenchMenuBar();
+        menuBar.addItem( new SubMenuItem( "TestPresenter menu-2",
+                                                   subMenuBar2 ) );
         for ( int i = 0; i < 3; i++ ) {
-            final String caption = "TestPresenter menu-1:Item:" + i;
-            final WorkbenchMenuItem item = new WorkbenchMenuItem( caption,
-                                                                  new Command() {
-
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          Window.alert( "You clicked " + caption );
-                                                                      }
-
-                                                                  } );
-            item.setHasPermission( true );
-            subMenuBar1.addItem( item );
-        }
-
-        //Sub-menu#2 - The first three items enabled
-        final WorkbenchMenuBar subMenuBar2 = new WorkbenchMenuBar( true );
-        menuBar.addItem( new MenuItem( "TestPresenter menu-2",
-                                       subMenuBar2 ) );
-        for ( int i = 0; i < 5; i++ ) {
             final String caption = "TestPresenter menu-2:Item:" + i;
-            final WorkbenchMenuItem item = new WorkbenchMenuItem( caption,
-                                                                  new Command() {
+            final AbstractMenuItem item = new CommandMenuItem( caption,
+                                                                         new Command() {
 
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          Window.alert( "You clicked " + caption );
-                                                                      }
+                                                                             @Override
+                                                                             public void execute() {
+                                                                                 Window.alert( "You clicked " + caption );
+                                                                             }
 
-                                                                  } );
-            item.setHasPermission( i < 3 );
+                                                                         } );
             subMenuBar2.addItem( item );
         }
 
-        //Sub-menu#3 - Disabled
-        final WorkbenchMenuBar subMenuBar3 = new WorkbenchMenuBar( true );
-        final WorkbenchMenuItem subMenuBar3Item = new WorkbenchMenuItem( "TestPresenter menu-3",
-                                                                         subMenuBar3 );
-        subMenuBar3Item.setHasPermission( false );
-        menuBar.addItem( subMenuBar3Item );
+        //Sub-menu#3 - Last two items have permission, last one item is enabled
+        final WorkbenchMenuBar subMenuBar3a = new WorkbenchMenuBar();
+        menuBar.addItem( new SubMenuItem( "TestPresenter menu-3a",
+                                                   subMenuBar3a ) );
+        for ( int i = 0; i < 3; i++ ) {
+            final String caption = "TestPresenter menu-3a:Item:" + i;
+            final AbstractMenuItem item = new CommandMenuItem( caption,
+                                                                         new Command() {
+
+                                                                             @Override
+                                                                             public void execute() {
+                                                                                 Window.alert( "You clicked " + caption );
+                                                                             }
+
+                                                                         } );
+            item.setHasPermission( i > 0 );
+            item.setEnabled( i > 1 );
+            subMenuBar3a.addItem( item );
+        }
+
+        //Sub-menu#4 - Append as child of subMenu3a and enable first item
+        final WorkbenchMenuBar subMenuBar3b = new WorkbenchMenuBar();
+        subMenuBar3a.addItem( new SubMenuItem( "TestPresenter menu-3b",
+                                               subMenuBar3b ) );
+        for ( int i = 0; i < 3; i++ ) {
+            final String caption = "TestPresenter menu-3b:Item:" + i;
+            final AbstractMenuItem item = new CommandMenuItem( caption,
+                                                                         new Command() {
+
+                                                                             @Override
+                                                                             public void execute() {
+                                                                                 Window.alert( "You clicked " + caption );
+                                                                             }
+
+                                                                         } );
+            item.setHasPermission( i == 0 );
+            subMenuBar3b.addItem( item );
+        }
 
         return menuBar;
     }

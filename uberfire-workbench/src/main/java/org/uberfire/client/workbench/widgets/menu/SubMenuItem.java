@@ -15,34 +15,27 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.uberfire.client.workbench.security.RequiresPermission;
-
 /**
- * Meta-data for a Workbench MenuBar including permissions
+ * Meta-data for a menu item that represents a sub-menu
  */
-public class WorkbenchMenuBar
-    implements
-    RequiresPermission {
+public class SubMenuItem extends AbstractMenuItem {
 
-    private List<AbstractMenuItem> items = new ArrayList<AbstractMenuItem>();
+    private final WorkbenchMenuBar subMenu;
 
-    public void addItem(final AbstractMenuItem item) {
-        if ( item == null ) {
-            throw new NullPointerException( "WorkbenchMenuItem cannot be null" );
+    public SubMenuItem(final String caption,
+                       final WorkbenchMenuBar subMenu) {
+        super( caption );
+        if ( subMenu == null ) {
+            throw new NullPointerException( "subMenu cannot be null" );
         }
-        this.items.add( item );
+        this.subMenu = subMenu;
     }
 
-    public List<AbstractMenuItem> getItems() {
-        return items;
-    }
-
-    @Override
-    public boolean hasPermission() {
-        return true;
+    /**
+     * @return the subMenu
+     */
+    public WorkbenchMenuBar getSubMenu() {
+        return subMenu;
     }
 
 }
