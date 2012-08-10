@@ -149,7 +149,7 @@ public class InstanceDetailView extends HorizontalPanel {
                     public void onClick(ClickEvent clickEvent) {
                         if (currentInstance != null) {
                             createDataWindow(currentInstance);
-                            //JLIU: TODO
+                           	//JLIU: TODO: This calls backend REST service. then call ActivityDiagramView.update(url) with the imageurl retrieved from server. 
 /*                            controller.handleEvent(
                                     new Event(UpdateInstanceDataAction.ID, currentInstance.getId())
                             );*/
@@ -211,7 +211,7 @@ public class InstanceDetailView extends HorizontalPanel {
                 layout, true
         );
 
-        //JLIU: TODO
+       	//JLIU: TODO: This calls backend REST service. then call InstanceDetailView.populateProcessInstanceEvents(List<StringRef> refs). 
 /*        controller.handleEvent(new Event(GetProcessInstanceEventsAction.ID, inst.getId()));*/
     }
 
@@ -272,6 +272,7 @@ public class InstanceDetailView extends HorizontalPanel {
                 currentNodeName
         };*/
         
+        //TODO: mocked data        
         String[] values = new String[]{
                 "process 1",
                 "id1",

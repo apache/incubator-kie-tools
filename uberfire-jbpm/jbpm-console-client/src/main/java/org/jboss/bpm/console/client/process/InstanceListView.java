@@ -34,6 +34,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
+
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.util.SimpleDateFormat;
 import org.jboss.bpm.console.client.icons.ConsoleIconBundle;
@@ -203,7 +204,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                     new Command() {
 
                         public void execute() {
-                            //JLIU:TODO
+                            //JLIU: TODO: This calls backend REST service. then call InstanceListView.update(def, instances) in the callback (def is the getCurrentDefinition() passed in here). 
 /*                            controller.handleEvent(
                                     new Event(
                                             UpdateInstancesAction.ID,
@@ -236,7 +237,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                                     iframeWindow.setCallback(
                                             new IFrameWindowCallback() {
                                                 public void onWindowClosed() {
-                                                    //JLIU:TODO
+                                                    //JLIU: TODO: This calls backend REST service. then call InstanceListView.update(def, instances) in the callback (def is the getCurrentDefinition() passed in here). 
 /*                                                    controller.handleEvent(
                                                             new Event(UpdateInstancesAction.ID, getCurrentDefinition())
                                                     );*/
@@ -246,7 +247,7 @@ public class InstanceListView implements IsWidget, DataDriven {
 
                                     iframeWindow.show();
                                 } else {
-                                    //JLIU: TODO
+                                    //JLIU: TODO: This calls backend REST service. then call  new Event(UpdateInstancesAction.ID, def) in the callback (def is the getCurrentDefinition() passed in here). 
 /*                                    controller.handleEvent(
                                             new Event(
                                                     StartNewInstanceAction.ID,
@@ -273,7 +274,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                                     ProcessInstanceRef selection = getSelection();
                                     selection.setState(ProcessInstanceRef.STATE.ENDED);
                                     selection.setEndResult(ProcessInstanceRef.RESULT.OBSOLETE);
-                                    //JLIU:TODO
+                                    //JLIU: TODO: This calls backend REST service. then call Event(UpdateInstancesAction.ID, def) in the callback. 
 /*                                    controller.handleEvent(
                                             new Event(
                                                     StateChangeAction.ID,
@@ -299,8 +300,8 @@ public class InstanceListView implements IsWidget, DataDriven {
                                 if (Window.confirm("Delete instance. Deleting this instance will remove any history information and associated tasks as well.")) {
                                     ProcessInstanceRef selection = getSelection();
                                     selection.setState(ProcessInstanceRef.STATE.ENDED);
-
-                                    //JLIU:TODO
+                                    
+                                    //JLIU: TODO: This calls backend REST service. then call Event(UpdateInstancesAction.ID, def) in the callback. 
 /*                                    controller.handleEvent(
                                             new Event(
                                                     DeleteInstanceAction.ID,
@@ -372,7 +373,7 @@ public class InstanceListView implements IsWidget, DataDriven {
             // details
             InstanceDetailView detailsView = new InstanceDetailView();
             detailsView.setWidth("100%");
-            //JLIU: TODO
+            //JLIU: No more MVC4g
 /*            controller.addView(InstanceDetailView.ID, detailsView);
             controller.addAction(UpdateInstanceDetailAction.ID, new UpdateInstanceDetailAction());
             controller.addAction(ClearInstancesAction.ID, new ClearInstancesAction());
@@ -446,7 +447,7 @@ public class InstanceListView implements IsWidget, DataDriven {
             bindData(this.cachedInstances);
 
 // clear details
-            //JLIU: TODO
+          //JLIU: TODO: This calls backend REST service. then call Event(UpdateInstancesAction.ID, def) in the callback.
 /*            controller.handleEvent(
                     new Event(UpdateInstanceDetailAction.ID,
                             new InstanceEvent(this.currentDefinition, null)
@@ -521,7 +522,7 @@ public class InstanceListView implements IsWidget, DataDriven {
                         int selectedSignal = listBoxTokenSignals.getSelectedIndex();
                         if (selectedToken != -1 && selectedSignal != -1) {
 
-                            //JLIU: TODO
+                        	//JLIU: TODO: This calls backend REST service. then call InstanceListView.renderSignalListBox and Event(UpdateInstancesAction.ID, def) in the callback.
 /*                            controller.handleEvent(
                                     new Event(SignalExecutionAction.ID,
                                             new SignalInstanceEvent(getCurrentDefinition(), getSelection(), listBoxTokens.getItem(selectedToken), listBoxTokenSignals.getItem(selectedSignal), selectedToken)));
