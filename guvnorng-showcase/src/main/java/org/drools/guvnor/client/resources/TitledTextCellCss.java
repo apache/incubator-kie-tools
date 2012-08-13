@@ -15,21 +15,16 @@
  */
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ClientBundle.Source;
+import com.google.gwt.resources.client.CssResource;
 
-public interface GuvnorResources
+public interface TitledTextCellCss
         extends
-        ClientBundle {
+        CssResource {
 
-    GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
+    @ClassName("container")
+    String container();
 
-    @Source("css/guvnor.css")
-    GuvnorCss guvnorCss();
+    @ClassName("description")
+    String description();
 
-    GuvnorImages images();
-
-    @Source("css/TitledTextCell.css")
-    TitledTextCellCss titledTextCellCss();
 }
