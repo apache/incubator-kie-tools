@@ -18,8 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
                    
-  <g:DecoratedPopupPanel>
+  <g:SimplePanel ui:field="container">
     <g:Label ui:field="notification"></g:Label>
-  </g:DecoratedPopupPanel>
+  </g:SimplePanel>
   
 </ui:UiBinder> 

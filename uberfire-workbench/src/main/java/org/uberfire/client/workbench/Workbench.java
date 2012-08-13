@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -32,7 +31,6 @@ import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
@@ -104,6 +102,7 @@ public class Workbench extends Composite {
             }
 
         } );
+
     }
 
     private void bootstrap() {
@@ -154,11 +153,6 @@ public class Workbench extends Composite {
             defaultPerspective.buildWorkbench( panelManager,
                                                workbenchRootPanel );
         }
-    }
-
-    @SuppressWarnings("unused")
-    private void onNotification(@Observes final NotificationEvent event) {
-        Window.alert( event.getNotification() );
     }
 
 }
