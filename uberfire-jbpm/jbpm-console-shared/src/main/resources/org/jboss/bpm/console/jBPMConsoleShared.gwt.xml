@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<module>
-  <inherits name="org.jboss.errai.marshalling.ErraiMarshalling"/>
-
-  <!-- Specify the paths for translatable code -->
-  <source path='client'/>
-  <source path='shared'/>
-
-</module>
