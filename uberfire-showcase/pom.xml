@@ -142,7 +142,7 @@
             <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
-          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
+          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m -Derrai.compile.perf.perform_reachability_analysis=true</extraJvmArgs>
           <soyc>false</soyc>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
