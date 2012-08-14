@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.animations;
+package org.uberfire.client.animations;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,6 +31,11 @@ public class LinearFadeInAnimation extends SequencedAnimation {
     @Override
     public void onUpdate(double progress) {
         this.widget.getElement().getStyle().setOpacity( progress );
+    }
+
+    @Override
+    public double interpolate(double progress) {
+        return progress;
     }
 
 }

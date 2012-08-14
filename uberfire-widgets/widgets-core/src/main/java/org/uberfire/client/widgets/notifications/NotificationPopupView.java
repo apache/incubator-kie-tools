@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.workbench.widgets.notifications;
+package org.uberfire.client.widgets.notifications;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.widgets.animations.LinearFadeInAnimation;
-import org.uberfire.client.workbench.widgets.animations.Pause;
-import org.uberfire.client.workbench.widgets.animations.Sequencer;
+import org.uberfire.client.animations.LinearFadeInAnimation;
+import org.uberfire.client.animations.Pause;
+import org.uberfire.client.animations.Sequencer;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

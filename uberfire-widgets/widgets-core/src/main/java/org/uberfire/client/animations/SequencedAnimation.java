@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.animations;
+package org.uberfire.client.animations;
 
 import com.google.gwt.animation.client.Animation;
 
