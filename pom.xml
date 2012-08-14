@@ -48,7 +48,7 @@
 
   <properties>
     <slf4j.version>1.6.6</slf4j.version>
-    <errai.version>2.1.0-SNAPSHOT</errai.version>
+    <errai.version>2.1.0.Beta1</errai.version>
     <gwt.version>2.4.0</gwt.version>
     <gwt.maven.version>2.4.0</gwt.maven.version>
     <mvel.version>2.1.Beta8</mvel.version>
