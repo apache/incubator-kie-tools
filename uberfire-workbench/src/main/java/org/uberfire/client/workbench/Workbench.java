@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.DefaultPerspective;
-import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
+import org.uberfire.client.workbench.perspectives.PerspectiveProvider;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
@@ -130,12 +130,12 @@ public class Workbench extends Composite {
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         boolean foundDefaultPerspective = false;
-        IPerspectiveProvider defaultPerspective = null;
+        PerspectiveProvider defaultPerspective = null;
 
-        Collection<IOCBeanDef<IPerspectiveProvider>> perspectives = iocManager.lookupBeans( IPerspectiveProvider.class );
-        Iterator<IOCBeanDef<IPerspectiveProvider>> perspectivesIterator = perspectives.iterator();
+        Collection<IOCBeanDef<PerspectiveProvider>> perspectives = iocManager.lookupBeans( PerspectiveProvider.class );
+        Iterator<IOCBeanDef<PerspectiveProvider>> perspectivesIterator = perspectives.iterator();
         while ( !foundDefaultPerspective && perspectivesIterator.hasNext() ) {
-            IOCBeanDef<IPerspectiveProvider> perspective = perspectivesIterator.next();
+            IOCBeanDef<PerspectiveProvider> perspective = perspectivesIterator.next();
             Set<Annotation> annotations = perspective.getQualifiers();
             for ( Annotation a : annotations ) {
                 if ( a instanceof DefaultPerspective ) {

@@ -20,10 +20,23 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
 /**
  * A Perspective Provider sets the default layout of the Workbench.
  */
-public interface IPerspectiveProvider {
+public interface PerspectiveProvider {
 
+    /**
+     * The name of the perspective
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * Called by the Workbench for the Perspective Provider to build the
+     * applicable panels etc. Implementations should add WorkbenchPanels to the
+     * root panel obtained by calling panelManager.getRoot(). All existing
+     * panels will be closed.
+     * 
+     * @param panelManager
+     */
     void buildWorkbench(final PanelManager panelManager);
 
 }

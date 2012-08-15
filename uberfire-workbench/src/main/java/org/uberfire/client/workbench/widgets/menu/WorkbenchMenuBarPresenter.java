@@ -33,7 +33,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
+import org.uberfire.client.workbench.perspectives.PerspectiveProvider;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -109,8 +109,8 @@ public class WorkbenchMenuBarPresenter {
         final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
         final SubMenuItem perspectivesMenu = new SubMenuItem( "Perspectives",
                                                               perspectivesMenuBar );
-        final List<IPerspectiveProvider> perspectives = getPerspectiveProviders();
-        for ( final IPerspectiveProvider perspective : perspectives ) {
+        final List<PerspectiveProvider> perspectives = getPerspectiveProviders();
+        for ( final PerspectiveProvider perspective : perspectives ) {
             final String name = perspective.getName();
             final Command cmd = new Command() {
 
@@ -169,24 +169,24 @@ public class WorkbenchMenuBarPresenter {
         return sortedActivities;
     }
 
-    private List<IPerspectiveProvider> getPerspectiveProviders() {
+    private List<PerspectiveProvider> getPerspectiveProviders() {
 
         //Get Perspective Providers
-        final Set<IPerspectiveProvider> perspectives = new HashSet<IPerspectiveProvider>();
-        Collection<IOCBeanDef<IPerspectiveProvider>> perspectiveProviderBeans = iocManager.lookupBeans( IPerspectiveProvider.class );
-        for ( IOCBeanDef<IPerspectiveProvider> perspectiveProviderBean : perspectiveProviderBeans ) {
-            final IPerspectiveProvider instance = (IPerspectiveProvider) perspectiveProviderBean.getInstance();
+        final Set<PerspectiveProvider> perspectives = new HashSet<PerspectiveProvider>();
+        Collection<IOCBeanDef<PerspectiveProvider>> perspectiveProviderBeans = iocManager.lookupBeans( PerspectiveProvider.class );
+        for ( IOCBeanDef<PerspectiveProvider> perspectiveProviderBean : perspectiveProviderBeans ) {
+            final PerspectiveProvider instance = (PerspectiveProvider) perspectiveProviderBean.getInstance();
             perspectives.add( instance );
         }
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<IPerspectiveProvider> sortedPerspectiveProviders = new ArrayList<IPerspectiveProvider>( perspectives );
+        List<PerspectiveProvider> sortedPerspectiveProviders = new ArrayList<PerspectiveProvider>( perspectives );
         Collections.sort( sortedPerspectiveProviders,
-                          new Comparator<IPerspectiveProvider>() {
+                          new Comparator<PerspectiveProvider>() {
 
                               @Override
-                              public int compare(IPerspectiveProvider o1,
-                                                 IPerspectiveProvider o2) {
+                              public int compare(PerspectiveProvider o1,
+                                                 PerspectiveProvider o2) {
                                   return o1.getName().compareTo( o2.getName() );
                               }
 

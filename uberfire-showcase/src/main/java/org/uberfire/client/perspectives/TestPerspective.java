@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
+import org.uberfire.client.workbench.perspectives.PerspectiveProvider;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -29,7 +29,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @ApplicationScoped
 public class TestPerspective
     implements
-    IPerspectiveProvider {
+    PerspectiveProvider {
 
     @Inject
     PlaceManager                placeManager;
