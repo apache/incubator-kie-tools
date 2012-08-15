@@ -15,7 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -107,6 +109,15 @@ public class PlaceManagerImpl
             return currentPlaceRequest;
         } else {
             return new PlaceRequest( "NOWHERE" );
+        }
+    }
+
+    @Override
+    public void closeAllPlaces() {
+        final List<WorkbenchPart> partsToBeClosed = new ArrayList<WorkbenchPart>( existingWorkbenchParts.values() );
+        for ( WorkbenchPart part : partsToBeClosed ) {
+            final WorkbenchPartBeforeCloseEvent beforeCloseEvent = new WorkbenchPartBeforeCloseEvent( part );
+            onWorkbenchPartClosed( beforeCloseEvent );
         }
     }
 

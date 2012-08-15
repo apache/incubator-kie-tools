@@ -88,6 +88,10 @@ public class WorkbenchPanel extends ResizeComposite {
         tabPanel.selectTab( part );
     }
 
+    public void clear() {
+        tabPanel.clear();
+    }
+
     private WorkbenchTabLayoutPanel makeTabPanel() {
         final WorkbenchTabLayoutPanel tabPanel = new WorkbenchTabLayoutPanel( TAB_BAR_HEIGHT,
                                                                               FOCUS_BAR_HEIGHT,

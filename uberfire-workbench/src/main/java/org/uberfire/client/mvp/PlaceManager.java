@@ -26,5 +26,7 @@ public interface PlaceManager {
     public PlaceRequest getCurrentPlaceRequest();
 
     public WorkbenchActivity getActivity(final WorkbenchPart part);
+    
+    public void closeAllPlaces();
 
 }

@@ -18,25 +18,23 @@ package org.uberfire.client.perspectives;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.DefaultPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * A default Perspective to load the File Explorer
+ * A Perspective to show all Test widgets
  */
 @ApplicationScoped
-@DefaultPerspective
-public class FileExplorerPerspective
+public class TestPerspective
     implements
     IPerspectiveProvider {
 
     @Inject
     PlaceManager                placeManager;
 
-    private static final String NAME = "File explorer";
+    private static final String NAME = "Tests";
 
     @Override
     public String getName() {
@@ -48,7 +46,7 @@ public class FileExplorerPerspective
         //TODO {manstis} We should ideally be able to construct a perspective by adding panels to the Workbench root panel
         //This approach, however, does not currently register Activities within the MVP framework and hence unpredictable
         //results can occur.
-        placeManager.goTo( new PlaceRequest( "FileExplorer" ) );
+        placeManager.goTo( new PlaceRequest( "Test" ) );
     }
 
 }

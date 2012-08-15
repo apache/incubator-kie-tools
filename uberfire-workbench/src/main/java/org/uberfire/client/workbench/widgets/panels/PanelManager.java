@@ -80,6 +80,10 @@ public class PanelManager {
         setFocus( panel );
     }
 
+    public WorkbenchPanel getRoot() {
+        return this.rootPanel;
+    }
+
     public void addWorkbenchPanel(final WorkbenchPart part,
                                   final Position position) {
         assertFocusPanel();

@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.workbench.perspectives;
 
-import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
@@ -25,7 +24,6 @@ public interface IPerspectiveProvider {
 
     String getName();
 
-    void buildWorkbench(final PanelManager panelManager,
-                        final WorkbenchPanel root);
+    void buildWorkbench(final PanelManager panelManager);
 
 }

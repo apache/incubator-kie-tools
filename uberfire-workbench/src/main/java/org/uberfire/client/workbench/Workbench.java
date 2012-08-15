@@ -104,7 +104,7 @@ public class Workbench extends Composite {
         } );
 
     }
-
+    
     private void bootstrap() {
 
         //Clear environment
@@ -150,8 +150,7 @@ public class Workbench extends Composite {
 
         //If a default perspective was found load it up!
         if ( foundDefaultPerspective ) {
-            defaultPerspective.buildWorkbench( panelManager,
-                                               workbenchRootPanel );
+            defaultPerspective.buildWorkbench( panelManager );
         }
     }
 

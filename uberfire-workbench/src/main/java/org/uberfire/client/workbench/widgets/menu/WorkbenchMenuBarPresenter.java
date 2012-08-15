@@ -33,7 +33,9 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
+import org.uberfire.client.workbench.perspectives.IPerspectiveProvider;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Window;
@@ -62,6 +64,9 @@ public class WorkbenchMenuBarPresenter {
 
     @Inject
     private PlaceManager   placeManager;
+
+    @Inject
+    private PanelManager   panelManager;
 
     @Inject
     private IOCBeanManager iocManager;
@@ -99,6 +104,28 @@ public class WorkbenchMenuBarPresenter {
             placesMenuBar.addItem( item );
         }
         view.addMenuItem( placesMenu );
+
+        //Perspectives
+        final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
+        final SubMenuItem perspectivesMenu = new SubMenuItem( "Perspectives",
+                                                              perspectivesMenuBar );
+        final List<IPerspectiveProvider> perspectives = getPerspectiveProviders();
+        for ( final IPerspectiveProvider perspective : perspectives ) {
+            final String name = perspective.getName();
+            final Command cmd = new Command() {
+
+                @Override
+                public void execute() {
+                    placeManager.closeAllPlaces();
+                    perspective.buildWorkbench( panelManager );
+                }
+
+            };
+            final CommandMenuItem item = new CommandMenuItem( name,
+                                                              cmd );
+            perspectivesMenuBar.addItem( item );
+        }
+        view.addMenuItem( perspectivesMenu );
 
         //Simple "About" dialog
         view.addMenuItem( new CommandMenuItem( "About",
@@ -140,6 +167,32 @@ public class WorkbenchMenuBarPresenter {
                           } );
 
         return sortedActivities;
+    }
+
+    private List<IPerspectiveProvider> getPerspectiveProviders() {
+
+        //Get Perspective Providers
+        final Set<IPerspectiveProvider> perspectives = new HashSet<IPerspectiveProvider>();
+        Collection<IOCBeanDef<IPerspectiveProvider>> perspectiveProviderBeans = iocManager.lookupBeans( IPerspectiveProvider.class );
+        for ( IOCBeanDef<IPerspectiveProvider> perspectiveProviderBean : perspectiveProviderBeans ) {
+            final IPerspectiveProvider instance = (IPerspectiveProvider) perspectiveProviderBean.getInstance();
+            perspectives.add( instance );
+        }
+
+        //Sort Perspective Providers so they're always in the same sequence!
+        List<IPerspectiveProvider> sortedPerspectiveProviders = new ArrayList<IPerspectiveProvider>( perspectives );
+        Collections.sort( sortedPerspectiveProviders,
+                          new Comparator<IPerspectiveProvider>() {
+
+                              @Override
+                              public int compare(IPerspectiveProvider o1,
+                                                 IPerspectiveProvider o2) {
+                                  return o1.getName().compareTo( o2.getName() );
+                              }
+
+                          } );
+
+        return sortedPerspectiveProviders;
     }
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
