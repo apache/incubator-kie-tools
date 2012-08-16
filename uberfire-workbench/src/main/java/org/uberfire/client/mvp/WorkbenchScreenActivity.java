@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+/**
+ * Workbench Screen Activity life-cycles
+ */
 public interface WorkbenchScreenActivity
     extends
     WorkbenchActivity {

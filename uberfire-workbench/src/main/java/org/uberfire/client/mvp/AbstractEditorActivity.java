@@ -26,7 +26,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
+ * Base class for Editor Activities
  */
 public abstract class AbstractEditorActivity
         implements
@@ -98,7 +98,6 @@ public abstract class AbstractEditorActivity
 
     public abstract String getTitle();
 
-    //TODO {manstis} This can be deleted once the static popup menu is removed
     public abstract String getIdentifier();
 
     public abstract IsWidget getWidget();

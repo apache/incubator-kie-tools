@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+/**
+ * Base Activity life-cycles
+ */
 public interface Activity {
 
     public void onReveal();

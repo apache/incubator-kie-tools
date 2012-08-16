@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+/**
+ * Pop-up Activity life-cycles
+ */
 public interface PopupActivity
     extends
     Activity {

@@ -30,12 +30,11 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.perspectives.PerspectiveProvider;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Window;
@@ -64,9 +63,6 @@ public class WorkbenchMenuBarPresenter {
 
     @Inject
     private PlaceManager   placeManager;
-
-    @Inject
-    private PanelManager   panelManager;
 
     @Inject
     private IOCBeanManager iocManager;
@@ -109,15 +105,14 @@ public class WorkbenchMenuBarPresenter {
         final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
         final SubMenuItem perspectivesMenu = new SubMenuItem( "Perspectives",
                                                               perspectivesMenuBar );
-        final List<PerspectiveProvider> perspectives = getPerspectiveProviders();
-        for ( final PerspectiveProvider perspective : perspectives ) {
-            final String name = perspective.getName();
+        final List<AbstractPerspectiveActivity> perspectives = getPerspectiveActivities();
+        for ( final AbstractPerspectiveActivity perspective : perspectives ) {
+            final String name = perspective.getPerspective().getName();
             final Command cmd = new Command() {
 
                 @Override
                 public void execute() {
-                    placeManager.closeAllPlaces();
-                    perspective.buildWorkbench( panelManager );
+                    placeManager.goTo( new PlaceRequest( perspective.getIdentifier() ) );
                 }
 
             };
@@ -169,30 +164,30 @@ public class WorkbenchMenuBarPresenter {
         return sortedActivities;
     }
 
-    private List<PerspectiveProvider> getPerspectiveProviders() {
+    private List<AbstractPerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<PerspectiveProvider> perspectives = new HashSet<PerspectiveProvider>();
-        Collection<IOCBeanDef<PerspectiveProvider>> perspectiveProviderBeans = iocManager.lookupBeans( PerspectiveProvider.class );
-        for ( IOCBeanDef<PerspectiveProvider> perspectiveProviderBean : perspectiveProviderBeans ) {
-            final PerspectiveProvider instance = (PerspectiveProvider) perspectiveProviderBean.getInstance();
-            perspectives.add( instance );
+        final Set<AbstractPerspectiveActivity> activities = new HashSet<AbstractPerspectiveActivity>();
+        Collection<IOCBeanDef<AbstractPerspectiveActivity>> activityBeans = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
+        for ( IOCBeanDef<AbstractPerspectiveActivity> activityBean : activityBeans ) {
+            final AbstractPerspectiveActivity instance = (AbstractPerspectiveActivity) activityBean.getInstance();
+            activities.add( instance );
         }
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<PerspectiveProvider> sortedPerspectiveProviders = new ArrayList<PerspectiveProvider>( perspectives );
-        Collections.sort( sortedPerspectiveProviders,
-                          new Comparator<PerspectiveProvider>() {
+        List<AbstractPerspectiveActivity> sortedActivities = new ArrayList<AbstractPerspectiveActivity>( activities );
+        Collections.sort( sortedActivities,
+                          new Comparator<AbstractPerspectiveActivity>() {
 
                               @Override
-                              public int compare(PerspectiveProvider o1,
-                                                 PerspectiveProvider o2) {
-                                  return o1.getName().compareTo( o2.getName() );
+                              public int compare(AbstractPerspectiveActivity o1,
+                                                 AbstractPerspectiveActivity o2) {
+                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
                               }
 
                           } );
 
-        return sortedPerspectiveProviders;
+        return sortedActivities;
     }
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected

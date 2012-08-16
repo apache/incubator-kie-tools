@@ -15,19 +15,15 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.perspectives.Perspective;
 
 /**
- * Workbench Editor Activity life-cycles
+ * Perspective Activity life-cycles
  */
-public interface WorkbenchEditorActivity
+public interface PerspectiveActivity
     extends
-    WorkbenchActivity {
+    Activity {
 
-    public void onStart(final Path path);
-
-    public void onSave();
-
-    public boolean isDirty();
+    Perspective getPerspective();
 
 }

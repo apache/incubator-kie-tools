@@ -27,6 +27,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.perspectives.Perspective;
+import org.uberfire.client.workbench.perspectives.PerspectivePart;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -92,14 +94,15 @@ public class PlaceManagerImpl
             return;
         }
 
-        currentPlaceRequest = placeRequest;
-
         if ( activity instanceof WorkbenchActivity ) {
             revealActivity( placeRequest,
                             (WorkbenchActivity) activity );
         } else if ( activity instanceof PopupActivity ) {
             revealActivity( placeRequest,
                             (PopupActivity) activity );
+        } else if ( activity instanceof PerspectiveActivity ) {
+            revealActivity( placeRequest,
+                            (PerspectiveActivity) activity );
         }
     }
 
@@ -131,6 +134,7 @@ public class PlaceManagerImpl
         }
 
         //Record new activity
+        currentPlaceRequest = newPlace;
         existingWorkbenchActivities.put( newPlace,
                                          activity );
 
@@ -156,6 +160,19 @@ public class PlaceManagerImpl
         activity.onRevealPlace();
     }
 
+    private void revealActivity(final PlaceRequest newPlace,
+                                final PerspectiveActivity activity) {
+        closeAllPlaces();
+        //TODO {manstis} Need to use the Perspective's Position setting
+        //TODO {manstis} What does PerspectiveActivity.onReveal() do? Might need to move onReveal up the hierarchy
+        //TODO {manstis} Support for nesting of Places within the Perspective
+        final Perspective perspective = activity.getPerspective();
+        for ( PerspectivePart part : perspective.getParts() ) {
+            goTo( part.getPlace() );
+        }
+        activity.onReveal();
+    }
+
     public void updateHistory(PlaceRequest request) {
         placeHistoryHandler.onPlaceChange( request );
     }
@@ -176,7 +193,6 @@ public class PlaceManagerImpl
         return activity;
     }
 
-    @SuppressWarnings("unused")
     private void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         final PlaceRequest place = getPlaceForWorkbenchPart( part );

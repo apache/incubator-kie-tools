@@ -21,7 +21,7 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * 
+ * Base class for Screen Activities
  */
 public abstract class AbstractScreenActivity
     implements
@@ -72,7 +72,6 @@ public abstract class AbstractScreenActivity
 
     public abstract String getTitle();
 
-    //TODO {manstis} This can be deleted once the static popup menu is removed
     public abstract String getIdentifier();
 
     public abstract IsWidget getWidget();

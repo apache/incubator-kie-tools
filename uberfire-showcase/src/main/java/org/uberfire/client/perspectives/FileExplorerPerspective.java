@@ -15,13 +15,15 @@
  */
 package org.uberfire.client.perspectives;
 
+import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.uberfire.client.annotations.DefaultPerspective;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.perspectives.PerspectiveProvider;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.annotations.Identifier;
+import org.uberfire.client.mvp.AbstractPerspectiveActivity;
+import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.perspectives.Perspective;
+import org.uberfire.client.workbench.perspectives.PerspectivePart;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -29,26 +31,26 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 @ApplicationScoped
 @DefaultPerspective
-public class FileExplorerPerspective
-    implements
-    PerspectiveProvider {
-
-    @Inject
-    PlaceManager                placeManager;
-
-    private static final String NAME = "File explorer";
+@Generated("org.uberfire.annotations.processors.PerspectiveProcessor")
+@Identifier("FileExplorerPerspective")
+////////////////////////////////////////
+// *** THIS WILL BECOME GENERATED *** //
+////////////////////////////////////////
+public class FileExplorerPerspective extends AbstractPerspectiveActivity {
 
     @Override
-    public String getName() {
-        return NAME;
+    public String getIdentifier() {
+        return "FileExplorerPerspective";
     }
 
     @Override
-    public void buildWorkbench(final PanelManager panelManager) {
-        //TODO {manstis} We should ideally be able to construct a perspective by adding panels to the Workbench root panel
-        //This approach, however, does not currently register Activities within the MVP framework and hence unpredictable
-        //results can occur.
-        placeManager.goTo( new PlaceRequest( "FileExplorer" ) );
+    public Perspective getPerspective() {
+        final Perspective p = new Perspective();
+        p.setName( "Resource explorer" );
+        p.addPart( new PerspectivePart( Position.WEST,
+                                        new PlaceRequest( "FileExplorer" ) ) );
+
+        return p;
     }
 
 }

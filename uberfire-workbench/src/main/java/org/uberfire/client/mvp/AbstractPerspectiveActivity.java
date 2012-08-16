@@ -15,28 +15,22 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import org.uberfire.client.workbench.perspectives.Perspective;
 
 /**
- * Base class for Pop-up Activities
+ * Base class for Perspective Activities
  */
-public abstract class AbstractPopupActivity
+public abstract class AbstractPerspectiveActivity
     implements
-    PopupActivity {
-
-    @Override
-    public void onRevealPlace() {
-        onReveal();
-        final PopupPanel popup = getPopupPanel();
-        popup.show();
-        popup.center();
-    }
+    PerspectiveActivity {
 
     @Override
     public void onReveal() {
         //Do nothing.   
     }
 
-    public abstract PopupPanel getPopupPanel();
+    public abstract Perspective getPerspective();
 
+    public abstract String getIdentifier();
+    
 }

@@ -15,28 +15,32 @@
  */
 package org.uberfire.client.workbench.perspectives;
 
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.Position;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * A Perspective Provider sets the default layout of the Workbench.
+ * 
  */
-public interface PerspectiveProvider {
+public class PerspectivePart {
 
-    /**
-     * The name of the perspective
-     * 
-     * @return
-     */
-    String getName();
+    private Position     position;
+    private PlaceRequest place;
 
-    /**
-     * Called by the Workbench for the Perspective Provider to build the
-     * applicable panels etc. Implementations should add WorkbenchPanels to the
-     * root panel obtained by calling panelManager.getRoot(). All existing
-     * panels will be closed.
-     * 
-     * @param panelManager
-     */
-    void buildWorkbench(final PanelManager panelManager);
+    public PerspectivePart() {
+    }
+
+    public PerspectivePart(final Position position,
+                           final PlaceRequest place) {
+        this.position = position;
+        this.place = place;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public PlaceRequest getPlace() {
+        return place;
+    }
 
 }

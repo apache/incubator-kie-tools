@@ -18,6 +18,9 @@ package org.uberfire.client.mvp;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
+/**
+ * Base Workbench Part Activity life-cycles
+ */
 public interface WorkbenchActivity
     extends
     Activity {
