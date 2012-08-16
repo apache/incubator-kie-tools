@@ -21,15 +21,15 @@ import org.uberfire.shared.mvp.PlaceRequest;
 /**
  * 
  */
-public class PerspectivePart {
+public class PerspectivePartDefinition {
 
     private Position     position;
     private PlaceRequest place;
 
-    public PerspectivePart() {
+    public PerspectivePartDefinition() {
     }
 
-    public PerspectivePart(final Position position,
+    public PerspectivePartDefinition(final Position position,
                            final PlaceRequest place) {
         this.position = position;
         this.place = place;

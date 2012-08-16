@@ -25,12 +25,11 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.annotations.Perspective;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -38,9 +37,9 @@ import freemarker.template.TemplateException;
 /**
  * A source code generator for Activities
  */
-public class PopupActivityGenerator extends AbstractGenerator {
+public class PerspectiveActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( PopupActivityGenerator.class );
+    private static final Logger logger = LoggerFactory.getLogger( PerspectiveActivityGenerator.class );
 
     public StringBuffer generate(final String packageName,
                                  final PackageElement packageElement,
@@ -51,33 +50,19 @@ public class PopupActivityGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final TypeElement classElement = (TypeElement) element;
-        final WorkbenchPopup wbp = classElement.getAnnotation( WorkbenchPopup.class );
-        final String identifier = wbp.identifier();
-        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
-                                                                                processingEnvironment );
-        final String getPopupMethodName = GeneratorUtils.getPopupMethodName( classElement,
-                                                                             processingEnvironment );
-        final boolean isPopup = GeneratorUtils.getIsPopup( classElement,
-                                                           processingEnvironment );
+        final TypeElement classElement = (TypeElement) element.getEnclosingElement();
+        final String methodName = element.getSimpleName().toString();
+        final String realClassName = classElement.getSimpleName().toString();
+        final Perspective perspective = element.getAnnotation( Perspective.class );
+        final String identifier = perspective.identifier();
+        final boolean isDefault = perspective.isDefault();
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
+        logger.debug( "realClassName: " + realClassName );
         logger.debug( "Identifier: " + identifier );
-        logger.debug( "onRevealMethodName: " + onRevealMethodName );
-        logger.debug( "getPopupMethodName: " + getPopupMethodName );
-        logger.debug( "isPopup: " + Boolean.toString( isPopup ) );
-
-        //Validate getPopupMethodName and isPopup
-        if ( !isPopup && getPopupMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
-        }
-        if ( isPopup && getPopupMethodName != null ) {
-            final String msg = "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
-        }
+        logger.debug( "isDefault: " + isDefault );
+        logger.debug( "methodName: " + methodName );
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
@@ -85,22 +70,20 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
+        root.put( "realClassName",
+                  realClassName );
         root.put( "identifier",
                   identifier );
-        root.put( "realClassName",
-                  classElement.getSimpleName().toString() );
-        root.put( "onRevealMethodName",
-                  onRevealMethodName );
-        root.put( "getPopupMethodName",
-                  getPopupMethodName );
-        root.put( "isPopup",
-                  isPopup );
+        root.put( "isDefault",
+                  isDefault );
+        root.put( "methodName",
+                  methodName );
 
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
-            final Template template = config.getTemplate( "popupScreen.ftl" );
+            final Template template = config.getTemplate( "perspective.ftl" );
             template.process( root,
                               bw );
         } catch ( IOException ioe ) {

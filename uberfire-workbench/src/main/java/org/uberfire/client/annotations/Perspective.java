@@ -13,24 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.mvp;
+package org.uberfire.client.annotations;
 
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Base class for Perspective Activities
+ * Methods annotated with this define Perspectives for the Workbench.
  */
-public abstract class AbstractPerspectiveActivity
-    implements
-    PerspectiveActivity {
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface Perspective {
 
-    @Override
-    public void onReveal() {
-        //Do nothing.   
-    }
+    String identifier();
 
-    public abstract PerspectiveDefinition getPerspective();
+    boolean isDefault() default false;
 
-    public abstract String getIdentifier();
-    
 }

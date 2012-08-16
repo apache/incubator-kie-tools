@@ -23,7 +23,7 @@ import java.util.Set;
  * and WorkbenchParts arranged within the Workbench. Each WorkbenchPart
  * containing a PlaceRequest. Perspectives can be persisted.
  */
-public class Perspective {
+public class PerspectiveDefinition {
 
     private String name;
 
@@ -35,13 +35,13 @@ public class Perspective {
         this.name = name;
     }
 
-    private Set<PerspectivePart> parts = new HashSet<PerspectivePart>();
+    private Set<PerspectivePartDefinition> parts = new HashSet<PerspectivePartDefinition>();
 
-    public void addPart(final PerspectivePart part) {
+    public void addPart(final PerspectivePartDefinition part) {
         parts.add( part );
     }
 
-    public Set<PerspectivePart> getParts() {
+    public Set<PerspectivePartDefinition> getParts() {
         return this.parts;
     }
 

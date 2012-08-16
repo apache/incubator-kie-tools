@@ -27,8 +27,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.WorkbenchPart;
-import org.uberfire.client.workbench.perspectives.Perspective;
-import org.uberfire.client.workbench.perspectives.PerspectivePart;
+import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
+import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -166,8 +166,8 @@ public class PlaceManagerImpl
         //TODO {manstis} Need to use the Perspective's Position setting
         //TODO {manstis} What does PerspectiveActivity.onReveal() do? Might need to move onReveal up the hierarchy
         //TODO {manstis} Support for nesting of Places within the Perspective
-        final Perspective perspective = activity.getPerspective();
-        for ( PerspectivePart part : perspective.getParts() ) {
+        final PerspectiveDefinition perspective = activity.getPerspective();
+        for ( PerspectivePartDefinition part : perspective.getParts() ) {
             goTo( part.getPlace() );
         }
         activity.onReveal();

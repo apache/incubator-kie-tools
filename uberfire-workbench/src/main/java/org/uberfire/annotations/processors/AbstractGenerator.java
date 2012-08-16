@@ -16,8 +16,8 @@
 package org.uberfire.annotations.processors;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
 
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
@@ -41,7 +41,7 @@ public abstract class AbstractGenerator {
     public abstract StringBuffer generate(final String packageName,
                                           final PackageElement packageElement,
                                           final String className,
-                                          final TypeElement classElement,
+                                          final Element element,
                                           final ProcessingEnvironment processingEnvironment) throws GenerationException;
 
 }

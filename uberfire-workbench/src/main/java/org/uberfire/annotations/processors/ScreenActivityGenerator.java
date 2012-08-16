@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
@@ -44,11 +45,13 @@ public class ScreenActivityGenerator extends AbstractGenerator {
     public StringBuffer generate(final String packageName,
                                  final PackageElement packageElement,
                                  final String className,
-                                 final TypeElement classElement,
+                                 final Element element,
                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
+
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
+        final TypeElement classElement = (TypeElement) element;
         final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
         final String identifier = wbw.identifier();
         final String onStartMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,

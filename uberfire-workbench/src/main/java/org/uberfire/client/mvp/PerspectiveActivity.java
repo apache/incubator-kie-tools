@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.perspectives.Perspective;
+import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 
 /**
  * Perspective Activity life-cycles
@@ -24,6 +24,6 @@ public interface PerspectiveActivity
     extends
     Activity {
 
-    Perspective getPerspective();
+    PerspectiveDefinition getPerspective();
 
 }

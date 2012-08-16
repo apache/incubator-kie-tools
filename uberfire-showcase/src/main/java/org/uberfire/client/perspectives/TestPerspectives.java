@@ -24,18 +24,26 @@ import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * Test Perspectives. Multiple Perspectives can be defined in one class
  */
 @ApplicationScoped
-public class FileExplorerPerspective {
+public class TestPerspectives {
 
-    @Perspective(identifier = "FileExplorerPerspective", isDefault = true)
-    public PerspectiveDefinition getPerspective() {
+    @Perspective(identifier = "TestPerspective")
+    public PerspectiveDefinition getPerspective1() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
-        p.setName( "File Explorer" );
-        p.addPart( new PerspectivePartDefinition( Position.WEST,
-                                                  new PlaceRequest( "FileExplorer" ) ) );
+        p.setName( "Show TestWidgets-1" );
+        p.addPart( new PerspectivePartDefinition( Position.ROOT,
+                                                  new PlaceRequest( "Test" ) ) );
+        return p;
+    }
 
+    @Perspective(identifier = "TestPerspective2")
+    public PerspectiveDefinition getPerspective2() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-2" );
+        p.addPart( new PerspectivePartDefinition( Position.ROOT,
+                                                  new PlaceRequest( "Test2" ) ) );
         return p;
     }
 
