@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ${packageName};
+package org.uberfire.annotations.processors;
 
 import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
@@ -24,32 +24,25 @@ import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 
-<#if isDefault>
-import org.uberfire.client.annotations.DefaultPerspective;
-
-</#if>
 @ApplicationScoped
-<#if isDefault>
-@DefaultPerspective
-</#if>
 @Generated("org.uberfire.annotations.processors.PerspectiveProcessor")
-@Identifier("${identifier}")
+@Identifier("PerspectiveTest4")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractPerspectiveActivity {
+public class PerspectiveTest4Activity_getPerspective extends AbstractPerspectiveActivity {
 
     @Inject
-    private ${realClassName} realClass;
+    private PerspectiveTest4 realClass;
 
     @Override
     public String getIdentifier() {
-        return "${identifier}";
+        return "PerspectiveTest4";
     }
 
     @Override
     public PerspectiveDefinition getPerspective() {
-        return realClass.${methodName}(); 
+        return realClass.getPerspective(); 
     }
     
 }

@@ -80,6 +80,12 @@ public class PerspectiveProcessor extends AbstractProcessor {
                 TypeElement classElement = (TypeElement) e.getEnclosingElement();
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
 
+                //Validate method
+                if ( !GeneratorUtils.isPerspectiveMethodValid( e,
+                                                               processingEnv ) ) {
+                    continue;
+                }
+
                 logger.info( "Discovered method [" + e.getSimpleName() + "] in [" + classElement.getSimpleName() + "]" );
 
                 final String packageName = packageElement.getQualifiedName().toString();

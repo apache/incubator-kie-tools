@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -312,6 +314,22 @@ public class GeneratorUtils {
         return getMenuBarMethodName( classElement,
                                      processingEnvironment,
                                      WorkbenchMenu.class );
+    }
+
+    /**
+     * Check whether the provided Element is suitable for annotation with
+     * {@code @Perspective}. The method must be public, non-static, have a
+     * return-type of PerspectiveDefinition and take zero parameters.
+     * 
+     * @param element
+     * @param processingEnvironment
+     * @return true if method is valid
+     * @throws GenerationException
+     */
+    public static boolean isPerspectiveMethodValid(final Element element,
+                                                   final ProcessingEnvironment processingEnvironment) {
+        return validatePerspectiveMethod( element,
+                                          processingEnvironment );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -701,6 +719,39 @@ public class GeneratorUtils {
             return null;
         }
         return match.getSimpleName().toString();
+    }
+
+    // Check whether the provided Element is suitable for annotation with
+    // {@code @Perspective}. The method must be public, non-static, have a 
+    // return-type of WorkbenchMenuBar and take zero parameters.
+    private static boolean validatePerspectiveMethod(final Element element,
+                                                     final ProcessingEnvironment processingEnvironment) {
+        if ( element.getKind() != ElementKind.METHOD ) {
+            return false;
+        }
+
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.perspectives.PerspectiveDefinition" ).asType();
+        
+        final ExecutableElement e = (ExecutableElement) element;
+        final TypeMirror actualReturnType = e.getReturnType();
+
+        //Check method
+        if ( !typeUtils.isAssignable( actualReturnType,
+                                      requiredReturnType ) ) {
+            return false;
+        }
+        if ( e.getParameters().size() != 0 ) {
+            return false;
+        }
+        if ( e.getModifiers().contains( Modifier.STATIC ) ) {
+            return false;
+        }
+        if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
+            return false;
+        }
+        return true;
     }
 
 }
