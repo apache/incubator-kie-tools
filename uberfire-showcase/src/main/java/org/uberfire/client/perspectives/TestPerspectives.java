@@ -47,4 +47,41 @@ public class TestPerspectives {
         return p;
     }
 
+    @Perspective(identifier = "TestPerspective3")
+    public PerspectiveDefinition getPerspective3() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-3" );
+        p.addPart( new PerspectivePartDefinition( Position.SOUTH,
+                                                  new PlaceRequest( "Test" ) ) );
+        return p;
+    }
+
+    @Perspective(identifier = "TestPerspective4")
+    public PerspectiveDefinition getPerspective4() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-4" );
+        final PerspectivePartDefinition south = new PerspectivePartDefinition( Position.SOUTH,
+                                                                               new PlaceRequest( "Test" ) );
+        south.addPart( new PerspectivePartDefinition( Position.EAST,
+                                                      new PlaceRequest( "Test2" ) ) );
+        p.addPart( south );
+        return p;
+    }
+
+    @Perspective(identifier = "TestPerspective5")
+    public PerspectiveDefinition getPerspective5() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-5" );
+        p.addPart( new PerspectivePartDefinition( Position.SOUTH,
+                                                  new PlaceRequest( "Monitoring" ) ) );
+        p.addPart( new PerspectivePartDefinition( Position.SELF,
+                                                  new PlaceRequest( "MyAdminArea" ) ) );
+        final PerspectivePartDefinition west = new PerspectivePartDefinition( Position.WEST,
+                                                                              new PlaceRequest( "Test" ) );
+        west.addPart( new PerspectivePartDefinition( Position.SOUTH,
+                                                     new PlaceRequest( "Test2" ) ) );
+        p.addPart( west );
+        return p;
+    }
+
 }

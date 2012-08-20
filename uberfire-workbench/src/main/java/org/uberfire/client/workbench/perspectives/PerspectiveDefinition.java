@@ -27,6 +27,8 @@ public class PerspectiveDefinition {
 
     private String name;
 
+    private Set<PerspectivePartDefinition> parts = new HashSet<PerspectivePartDefinition>();
+
     public String getName() {
         return name;
     }
@@ -34,8 +36,6 @@ public class PerspectiveDefinition {
     public void setName(final String name) {
         this.name = name;
     }
-
-    private Set<PerspectivePartDefinition> parts = new HashSet<PerspectivePartDefinition>();
 
     public void addPart(final PerspectivePartDefinition part) {
         parts.add( part );

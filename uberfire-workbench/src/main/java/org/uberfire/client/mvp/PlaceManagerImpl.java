@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -26,6 +27,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
@@ -84,19 +87,44 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo(final PlaceRequest placeRequest) {
-
         if ( placeRequest == null ) {
             return;
         }
-
         final Activity activity = activityMapper.getActivity( placeRequest );
         if ( activity == null ) {
             return;
         }
 
         if ( activity instanceof WorkbenchActivity ) {
+            final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
             revealActivity( placeRequest,
-                            (WorkbenchActivity) activity );
+                            workbenchActivity,
+                            workbenchActivity.getDefaultPosition() );
+        } else if ( activity instanceof PopupActivity ) {
+            revealActivity( placeRequest,
+                            (PopupActivity) activity );
+        } else if ( activity instanceof PerspectiveActivity ) {
+            revealActivity( placeRequest,
+                            (PerspectiveActivity) activity );
+        }
+    }
+
+    @Override
+    public void goTo(final PlaceRequest placeRequest,
+                     final WorkbenchPanel targetPanel) {
+        if ( placeRequest == null ) {
+            return;
+        }
+        final Activity activity = activityMapper.getActivity( placeRequest );
+        if ( activity == null ) {
+            return;
+        }
+
+        if ( activity instanceof WorkbenchActivity ) {
+            final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
+            revealActivity( placeRequest,
+                            workbenchActivity,
+                            targetPanel );
         } else if ( activity instanceof PopupActivity ) {
             revealActivity( placeRequest,
                             (PopupActivity) activity );
@@ -125,7 +153,8 @@ public class PlaceManagerImpl
     }
 
     private void revealActivity(final PlaceRequest newPlace,
-                                final WorkbenchActivity activity) {
+                                final WorkbenchActivity activity,
+                                final Position position) {
         //If we're already showing this place exit.
         if ( existingWorkbenchActivities.containsKey( newPlace ) ) {
             final WorkbenchPart part = existingWorkbenchParts.get( newPlace );
@@ -148,7 +177,40 @@ public class PlaceManagerImpl
                         existingWorkbenchParts.put( newPlace,
                                                     part );
                         panelManager.addWorkbenchPanel( part,
-                                                        activity.getDefaultPosition() );
+                                                        position );
+                    }
+                } );
+
+        updateHistory( newPlace );
+    }
+
+    private void revealActivity(final PlaceRequest newPlace,
+                                final WorkbenchActivity activity,
+                                final WorkbenchPanel targetPanel) {
+        //If we're already showing this place exit.
+        if ( existingWorkbenchActivities.containsKey( newPlace ) ) {
+            final WorkbenchPart part = existingWorkbenchParts.get( newPlace );
+            selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
+            return;
+        }
+
+        //Record new activity
+        currentPlaceRequest = newPlace;
+        existingWorkbenchActivities.put( newPlace,
+                                         activity );
+
+        //Reveal activity with call-back to attach to Workbench
+        activity.onRevealPlace(
+                new AcceptItem() {
+                    public void add(String tabTitle,
+                                    IsWidget widget) {
+                        final WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
+                                                                      tabTitle );
+                        existingWorkbenchParts.put( newPlace,
+                                                    part );
+                        panelManager.addWorkbenchPanel( part,
+                                                        targetPanel,
+                                                        Position.SELF );
                     }
                 } );
 
@@ -163,14 +225,31 @@ public class PlaceManagerImpl
     private void revealActivity(final PlaceRequest newPlace,
                                 final PerspectiveActivity activity) {
         closeAllPlaces();
-        //TODO {manstis} Need to use the Perspective's Position setting
-        //TODO {manstis} What does PerspectiveActivity.onReveal() do? Might need to move onReveal up the hierarchy
-        //TODO {manstis} Support for nesting of Places within the Perspective
+        final WorkbenchPanel root = panelManager.getRoot();
         final PerspectiveDefinition perspective = activity.getPerspective();
-        for ( PerspectivePartDefinition part : perspective.getParts() ) {
-            goTo( part.getPlace() );
-        }
+        revealPerspective( root,
+                           perspective.getParts() );
         activity.onReveal();
+    }
+
+    private void revealPerspective(final WorkbenchPanel target,
+                                   final Set<PerspectivePartDefinition> parts) {
+        for ( PerspectivePartDefinition part : parts ) {
+            final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( target,
+                                                                               part.getPosition() );
+            goTo( part.getPlace(),
+                  targetPanel );
+            switch ( part.getPosition() ) {
+                case NORTH :
+                case SOUTH :
+                case EAST :
+                case WEST :
+                    revealPerspective( targetPanel,
+                                       part.getParts() );
+                    break;
+            }
+
+        }
     }
 
     public void updateHistory(PlaceRequest request) {
