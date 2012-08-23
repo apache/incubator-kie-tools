@@ -15,10 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
 import java.util.Set;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface ActivityManager {

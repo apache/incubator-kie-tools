@@ -46,11 +46,6 @@ public class ${className} extends AbstractEditorActivity {
     @Inject
     private ${realClassName} realPresenter;
 
-    @Override
-    public String getIdentifier() {
-        return "${identifier}";
-    }
-
     <#if onStartMethodName??>
     @Override
     public void onStart(final Path path) {

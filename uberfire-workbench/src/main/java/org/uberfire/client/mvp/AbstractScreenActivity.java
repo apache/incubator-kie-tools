@@ -82,8 +82,6 @@ public abstract class AbstractScreenActivity
 
     public abstract String getTitle();
 
-    public abstract String getIdentifier();
-
     public abstract IsWidget getWidget();
 
     @Override

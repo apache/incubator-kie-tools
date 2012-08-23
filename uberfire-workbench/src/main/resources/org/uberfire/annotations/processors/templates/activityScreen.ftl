@@ -42,11 +42,6 @@ public class ${className} extends AbstractScreenActivity {
     @Inject
     private ${realClassName} realPresenter;
 
-    @Override
-    public String getIdentifier() {
-        return "${identifier}";
-    }
-
     <#if onStartMethodName??>
     @Override
     public void onStart() {

@@ -41,11 +41,6 @@ public class WorkbenchEditorTest8Activity extends AbstractEditorActivity {
     private WorkbenchEditorTest8 realPresenter;
 
     @Override
-    public String getIdentifier() {
-        return "test8";
-    }
-
-    @Override
     public void onStart(final Path path) {
         realPresenter.onStart( path );
     }

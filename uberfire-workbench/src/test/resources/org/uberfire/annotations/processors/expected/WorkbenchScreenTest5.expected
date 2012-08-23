@@ -37,11 +37,6 @@ public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
     private WorkbenchScreenTest5 realPresenter;
 
     @Override
-    public String getIdentifier() {
-        return "test5";
-    }
-
-    @Override
     public String getTitle() {
         return realPresenter.getTitle();
     }

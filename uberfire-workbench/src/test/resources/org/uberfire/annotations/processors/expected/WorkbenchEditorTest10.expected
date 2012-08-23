@@ -41,11 +41,6 @@ public class WorkbenchEditorTest10Activity extends AbstractEditorActivity {
     private WorkbenchEditorTest10 realPresenter;
 
     @Override
-    public String getIdentifier() {
-        return "test10";
-    }
-
-    @Override
     public String getTitle() {
         return realPresenter.getTitle();
     }
