@@ -29,6 +29,16 @@ public abstract class AbstractPerspectiveActivity
         //Do nothing.   
     }
 
+    @Override
+    public String[] getRoles() {
+        return null;
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return null;
+    }
+
     public abstract PerspectiveDefinition getPerspective();
 
     public abstract String getIdentifier();

@@ -96,6 +96,16 @@ public abstract class AbstractEditorActivity
         //Do nothing.   
     }
 
+    @Override
+    public String[] getRoles() {
+        return null;
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return null;
+    }
+
     public abstract String getTitle();
 
     public abstract String getIdentifier();

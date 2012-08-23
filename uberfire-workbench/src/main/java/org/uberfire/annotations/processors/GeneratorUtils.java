@@ -15,6 +15,7 @@
  */
 package org.uberfire.annotations.processors;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.security.annotations.AllRoles;
+import org.uberfire.security.annotations.AnyRole;
 
 /**
  * Utilities for code generation
@@ -54,7 +57,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @OnStart}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -71,7 +74,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @OnStart}. The method must be
      * public, non-static, have a return-type of void and take one parameter of
      * type {@code org.drools.guvnor.vfs.Path}.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -89,7 +92,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @OnMayClose}. The method must
      * be public, non-static, have a return-type of void and take zero
      * parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -105,7 +108,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @OnClose}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -121,7 +124,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @OnReveal}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -138,7 +141,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @OnLostFocus}. The method must
      * be public, non-static, have a return-type of void and take zero
      * parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -154,7 +157,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @OnFocus}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -171,7 +174,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @DefaultPosition}. The method
      * must be public, non-static, have a return-type of void and take zero
      * parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -188,7 +191,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @WorkbenchPartTitle}. The
      * method must be public, non-static, have a return-type of void and take
      * zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -205,7 +208,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @WorkbenchPartView}. The method
      * must be public, non-static, have a return-type of IsWidget and take zero
      * parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -220,7 +223,7 @@ public class GeneratorUtils {
 
     /**
      * Check whether the provided type extends IsWidget.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return
@@ -238,7 +241,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @WorkbenchPartView}. The method
      * must be public, non-static, have a return-type of PopupPanel and take
      * zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -253,7 +256,7 @@ public class GeneratorUtils {
 
     /**
      * Check whether the provided type extends PopupPanel.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return
@@ -270,7 +273,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @IsDirty}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -286,7 +289,7 @@ public class GeneratorUtils {
     /**
      * Get the method name annotated with {@code @OnSave}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -303,7 +306,7 @@ public class GeneratorUtils {
      * Get the method name annotated with {@code @WorkbenchMenu}. The method
      * must be public, non-static, have a return-type of WorkbenchMenuBar and
      * take zero parameters.
-     * 
+     *
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
@@ -320,7 +323,7 @@ public class GeneratorUtils {
      * Check whether the provided Element is suitable for annotation with
      * {@code @Perspective}. The method must be public, non-static, have a
      * return-type of PerspectiveDefinition and take zero parameters.
-     * 
+     *
      * @param element
      * @param processingEnvironment
      * @return true if method is valid
@@ -733,7 +736,7 @@ public class GeneratorUtils {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.perspectives.PerspectiveDefinition" ).asType();
-        
+
         final ExecutableElement e = (ExecutableElement) element;
         final TypeMirror actualReturnType = e.getReturnType();
 
@@ -754,4 +757,43 @@ public class GeneratorUtils {
         return true;
     }
 
+
+    public static Annotation getRestrictedType(final Element element,
+            final ProcessingEnvironment processingEnvironment) {
+        Annotation annotation;
+        annotation = element.getAnnotation( AnyRole.class );
+        if ( annotation == null ) {
+            annotation = element.getAnnotation( AllRoles.class );
+        }
+
+        return annotation;
+    }
+
+    public static String getRolesList(final Element element,
+                                      final ProcessingEnvironment processingEnvironment,
+                                      final Annotation annotation) {
+        if (annotation == null){
+            return null;
+        }
+
+        String[] values = null;
+        if (annotation instanceof AnyRole){
+            values = ((AnyRole) annotation).value();
+        } else if (annotation instanceof AllRoles) {
+            values = ((AllRoles) annotation).value();
+        }
+        if (values == null){
+            return null;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < values.length; i++) {
+            sb.append('"').append(values[i]).append('"');
+            if (i + 1 < values.length ){
+                sb.append(", ");
+            }
+        }
+
+        return sb.toString();
+    }
 }

@@ -123,4 +123,15 @@ public class ${className} extends AbstractScreenActivity {
     }
     
     </#if>
+    <#if getRestrictedTypeName??>
+    @Override
+    public String[] getRoles() {
+        return new String[]{${rolesList}};
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "${getRestrictedTypeName}";
+    }
+    </#if>
 }

@@ -51,4 +51,13 @@ public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
         return realPresenter.getView();
     }
     
+    @Override
+    public String[] getRoles() {
+        return new String[]{"ADMIN", "SUDO"};
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "org.uberfire.security.annotations.AnyRole";
+    }
 }

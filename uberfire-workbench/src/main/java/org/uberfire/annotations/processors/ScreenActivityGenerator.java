@@ -18,6 +18,7 @@ package org.uberfire.annotations.processors;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,13 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                              processingEnvironment );
         final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
                                                                                  processingEnvironment );
+        final Annotation getRestrictedType = GeneratorUtils.getRestrictedType( classElement,
+                                                                               processingEnvironment );
+        final String rolesList = GeneratorUtils.getRolesList( classElement,
+                                                              processingEnvironment,
+                                                              getRestrictedType );
+
+        final String getRestrictedTypeName = getRestrictedType == null ? null : getRestrictedType.annotationType().getName();
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -91,6 +99,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
         logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
+        logger.debug( "getRestrictedTypeName: " + getRestrictedTypeName );
+        logger.debug( "rolesList: " + rolesList );
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -140,6 +150,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   isWidget );
         root.put( "getMenuBarMethodName",
                   getMenuBarMethodName );
+        root.put( "getRestrictedTypeName",
+                  getRestrictedTypeName );
+        root.put( "rolesList",
+                  rolesList );
 
         //Generate code
         final StringWriter sw = new StringWriter();

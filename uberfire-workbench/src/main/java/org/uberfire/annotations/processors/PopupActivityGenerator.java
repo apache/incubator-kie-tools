@@ -18,6 +18,7 @@ package org.uberfire.annotations.processors;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +61,13 @@ public class PopupActivityGenerator extends AbstractGenerator {
                                                                              processingEnvironment );
         final boolean isPopup = GeneratorUtils.getIsPopup( classElement,
                                                            processingEnvironment );
+        final Annotation getRestrictedType = GeneratorUtils.getRestrictedType( classElement,
+                                                                               processingEnvironment );
+        final String rolesList = GeneratorUtils.getRolesList( classElement,
+                                                              processingEnvironment,
+                                                              getRestrictedType );
+
+        final String getRestrictedTypeName = getRestrictedType == null ? null : getRestrictedType.annotationType().getName();
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -67,6 +75,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
         logger.debug( "getPopupMethodName: " + getPopupMethodName );
         logger.debug( "isPopup: " + Boolean.toString( isPopup ) );
+        logger.debug( "getRestrictedTypeName: " + getRestrictedTypeName );
+        logger.debug( "rolesList: " + rolesList );
 
         //Validate getPopupMethodName and isPopup
         if ( !isPopup && getPopupMethodName == null ) {
@@ -95,6 +105,10 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   getPopupMethodName );
         root.put( "isPopup",
                   isPopup );
+        root.put( "getRestrictedTypeName",
+                  getRestrictedTypeName );
+        root.put( "rolesList",
+                  rolesList );
 
         //Generate code
         final StringWriter sw = new StringWriter();

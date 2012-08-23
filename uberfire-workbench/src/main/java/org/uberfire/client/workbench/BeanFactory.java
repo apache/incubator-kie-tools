@@ -46,7 +46,7 @@ public class BeanFactory {
     public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanel eastPanel,
                                                               final WorkbenchPanel westPanel,
                                                               final Position position) {
-        final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
+        final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
         hsp.setup( eastPanel,
                    westPanel,
                    position );
@@ -56,7 +56,7 @@ public class BeanFactory {
     public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanel northPanel,
                                                           final WorkbenchPanel southPanel,
                                                           final Position position) {
-        final VerticalSplitterPanel vsp = (VerticalSplitterPanel) iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
+        final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
         vsp.setup( northPanel,
                    southPanel,
                    position );
@@ -64,7 +64,7 @@ public class BeanFactory {
     }
 
     public CompassDropController newDropController(final WorkbenchPanel panel) {
-        final CompassDropController dropController = (CompassDropController) iocManager.lookupBean( CompassDropController.class ).getInstance();
+        final CompassDropController dropController = iocManager.lookupBean( CompassDropController.class ).getInstance();
         dropController.setup( panel );
         return dropController;
     }

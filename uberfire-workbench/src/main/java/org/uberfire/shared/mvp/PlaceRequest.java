@@ -25,6 +25,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class PlaceRequest {
 
+    public static final PlaceRequest  NOWHERE = new PlaceRequest( "NOWHERE" );
+
     private final String              identifier;
 
     private final Map<String, String> parameters = new HashMap<String, String>();

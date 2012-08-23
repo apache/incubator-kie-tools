@@ -44,6 +44,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
+import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
+
 @ApplicationScoped
 public class PlaceManagerImpl
         implements
@@ -52,7 +54,7 @@ public class PlaceManagerImpl
     private final Map<PlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<PlaceRequest, WorkbenchActivity>();
     private final Map<PlaceRequest, WorkbenchPart>     existingWorkbenchParts      = new HashMap<PlaceRequest, WorkbenchPart>();
 
-    private final ActivityMapper                       activityMapper;
+    private final ActivityManager activityManager;
 
     private EventBus                                   tempBus                     = null;
 
@@ -69,10 +71,10 @@ public class PlaceManagerImpl
     PlaceRequest                                       currentPlaceRequest;
 
     @Inject
-    public PlaceManagerImpl(ActivityMapper activityMapper,
+    public PlaceManagerImpl(ActivityManager activityManager,
                             PlaceHistoryHandler placeHistoryHandler,
                             Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
-        this.activityMapper = activityMapper;
+        this.activityManager = activityManager;
         this.placeHistoryHandler = placeHistoryHandler;
         this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
 
@@ -82,15 +84,15 @@ public class PlaceManagerImpl
     public void initPlaceHistoryHandler() {
         placeHistoryHandler.register( this,
                                       produceEventBus(),
-                                      new PlaceRequest( "NOWHERE" ) );
+                                      NOWHERE );
     }
 
     @Override
     public void goTo(final PlaceRequest placeRequest) {
-        if ( placeRequest == null ) {
+        if ( placeRequest == null || placeRequest.equals( NOWHERE ) ) {
             return;
         }
-        final Activity activity = activityMapper.getActivity( placeRequest );
+        final Activity activity = activityManager.getActivity( placeRequest );
         if ( activity == null ) {
             return;
         }
@@ -115,7 +117,7 @@ public class PlaceManagerImpl
         if ( placeRequest == null ) {
             return;
         }
-        final Activity activity = activityMapper.getActivity( placeRequest );
+        final Activity activity = activityManager.getActivity( placeRequest );
         if ( activity == null ) {
             return;
         }
@@ -139,7 +141,7 @@ public class PlaceManagerImpl
         if ( currentPlaceRequest != null ) {
             return currentPlaceRequest;
         } else {
-            return new PlaceRequest( "NOWHERE" );
+            return NOWHERE;
         }
     }
 

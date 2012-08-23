@@ -21,6 +21,7 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
+import org.uberfire.security.annotations.AnyRole;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -69,6 +70,7 @@ public class TestPerspectives {
     }
 
     @Perspective(identifier = "TestPerspective5")
+    @AnyRole({"ADMIN"})
     public PerspectiveDefinition getPerspective5() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-5" );

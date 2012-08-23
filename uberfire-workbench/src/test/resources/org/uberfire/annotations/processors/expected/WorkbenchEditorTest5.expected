@@ -55,4 +55,13 @@ public class WorkbenchEditorTest5Activity extends AbstractEditorActivity {
         return realPresenter.getView();
     }
     
+    @Override
+    public String[] getRoles() {
+        return new String[]{"ADMIN", "SUDO"};
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "org.uberfire.security.annotations.AnyRole";
+    }
 }

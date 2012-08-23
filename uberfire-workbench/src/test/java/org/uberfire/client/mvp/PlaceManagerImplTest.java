@@ -3,12 +3,6 @@ package org.uberfire.client.mvp;
 import com.google.gwt.event.shared.EventBus;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.client.mvp.AcceptItem;
-import org.uberfire.client.mvp.ActivityMapper;
-import org.uberfire.client.mvp.PlaceHistoryHandler;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceManagerImpl;
-import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -17,18 +11,19 @@ import javax.enterprise.event.Event;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
 
 public class PlaceManagerImplTest {
 
 
     private PlaceHistoryHandler placeHistoryHandler;
-    private ActivityMapper activityMapper;
+    private ActivityManager activityManager;
     private Event event;
 
     @Before
     public void setUp() throws Exception {
         placeHistoryHandler = mock(PlaceHistoryHandler.class);
-        activityMapper = mock(ActivityMapper.class);
+        activityManager = mock(ActivityManager.class);
         event = mock(Event.class);
     }
 
@@ -37,12 +32,12 @@ public class PlaceManagerImplTest {
         PlaceRequest somewhere = new PlaceRequest("Somewhere");
         WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
         when(
-                activityMapper.getActivity(somewhere)
+                activityManager.getActivity(somewhere)
         ).thenReturn(
                 activity
         );
 
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityMapper, placeHistoryHandler, event);
+        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
         placeManager.goTo(somewhere);
 
         verify(activity).onRevealPlace(any(AcceptItem.class));
@@ -51,15 +46,15 @@ public class PlaceManagerImplTest {
 
     @Test
     public void testGoToNoWhere() throws Exception {
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityMapper, placeHistoryHandler, event);
-        placeManager.goTo(new PlaceRequest("Nowhere"));
+        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
+        placeManager.goTo(NOWHERE);
 
         assertTrue("Just checking we get no NPEs", true);
     }
 
     @Test
     public void testPlaceManagerGetInitializedToADefaultPlace() throws Exception {
-        new PlaceManagerImpl(activityMapper, placeHistoryHandler, event);
+        new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
         verify(placeHistoryHandler).register(any(PlaceManager.class), any(EventBus.class), any(PlaceRequest.class));
     }
 
@@ -68,12 +63,12 @@ public class PlaceManagerImplTest {
         PlaceRequest somewhere = new PlaceRequest("Somewhere");
         WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
         when(
-                activityMapper.getActivity(somewhere)
+                activityManager.getActivity(somewhere)
         ).thenReturn(
                 activity
         );
 
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityMapper, placeHistoryHandler, event);
+        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
         placeManager.goTo(somewhere);
         verify(activity, times(1)).onRevealPlace(any(AcceptItem.class));
 

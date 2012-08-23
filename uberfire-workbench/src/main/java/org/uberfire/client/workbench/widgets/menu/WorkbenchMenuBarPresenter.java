@@ -16,10 +16,8 @@
 package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,10 +26,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.AbstractScreenActivity;
+import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
@@ -65,7 +62,7 @@ public class WorkbenchMenuBarPresenter {
     private PlaceManager   placeManager;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private ActivityManager activityManager;
 
     @Inject
     public WorkbenchMenuBarPresenter(final View view) {
@@ -141,12 +138,7 @@ public class WorkbenchMenuBarPresenter {
     private List<AbstractScreenActivity> getScreenActivities() {
 
         //Get Screen Activities
-        final Set<AbstractScreenActivity> activities = new HashSet<AbstractScreenActivity>();
-        Collection<IOCBeanDef<AbstractScreenActivity>> activityBeans = iocManager.lookupBeans( AbstractScreenActivity.class );
-        for ( IOCBeanDef<AbstractScreenActivity> activityBean : activityBeans ) {
-            final AbstractScreenActivity instance = (AbstractScreenActivity) activityBean.getInstance();
-            activities.add( instance );
-        }
+        final Set<AbstractScreenActivity> activities = activityManager.getActivities( AbstractScreenActivity.class );
 
         //Sort Activities so they're always in the same sequence!
         List<AbstractScreenActivity> sortedActivities = new ArrayList<AbstractScreenActivity>( activities );
@@ -167,12 +159,7 @@ public class WorkbenchMenuBarPresenter {
     private List<AbstractPerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<AbstractPerspectiveActivity> activities = new HashSet<AbstractPerspectiveActivity>();
-        Collection<IOCBeanDef<AbstractPerspectiveActivity>> activityBeans = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
-        for ( IOCBeanDef<AbstractPerspectiveActivity> activityBean : activityBeans ) {
-            final AbstractPerspectiveActivity instance = (AbstractPerspectiveActivity) activityBean.getInstance();
-            activities.add( instance );
-        }
+        final Set<AbstractPerspectiveActivity> activities = activityManager.getActivities(AbstractPerspectiveActivity.class);
 
         //Sort Perspective Providers so they're always in the same sequence!
         List<AbstractPerspectiveActivity> sortedActivities = new ArrayList<AbstractPerspectiveActivity>( activities );

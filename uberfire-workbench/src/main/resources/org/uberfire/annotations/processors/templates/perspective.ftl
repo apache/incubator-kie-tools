@@ -52,4 +52,15 @@ public class ${className} extends AbstractPerspectiveActivity {
         return realClass.${methodName}(); 
     }
     
+    <#if getRestrictedTypeName??>
+    @Override
+    public String[] getRoles() {
+        return new String[]{${rolesList}};
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "${getRestrictedTypeName}";
+    }
+    </#if>
 }

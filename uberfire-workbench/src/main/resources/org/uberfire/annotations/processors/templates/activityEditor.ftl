@@ -141,4 +141,15 @@ public class ${className} extends AbstractEditorActivity {
     }
     
     </#if>
+    <#if getRestrictedTypeName??>
+    @Override
+    public String[] getRoles() {
+        return new String[]{${rolesList}};
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "${getRestrictedTypeName}";
+    }
+    </#if>
 }

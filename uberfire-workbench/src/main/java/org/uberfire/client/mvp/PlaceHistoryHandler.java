@@ -28,6 +28,8 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
+
 @Dependent
 public class PlaceHistoryHandler {
     private static final Logger log = Logger.getLogger( PlaceHistoryHandler.class.getName() );
@@ -91,7 +93,7 @@ public class PlaceHistoryHandler {
 
     private PlaceManager                    placeManager;
 
-    private PlaceRequest defaultPlaceRequest = new PlaceRequest( "NOWHERE" );
+    private PlaceRequest defaultPlaceRequest = NOWHERE;
 
     /**
      * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
@@ -159,7 +161,7 @@ public class PlaceHistoryHandler {
 
         return new HandlerRegistration() {
             public void removeHandler() {
-                PlaceHistoryHandler.this.defaultPlaceRequest = new PlaceRequest( "NOWHERE" );
+                PlaceHistoryHandler.this.defaultPlaceRequest = NOWHERE;
                 PlaceHistoryHandler.this.placeManager = null;
                 //placeReg.removeHandler();
                 historyReg.removeHandler();

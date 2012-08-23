@@ -134,27 +134,24 @@ public class Workbench extends Composite {
                                            workbenchDropController );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
-        boolean foundDefaultPerspective = false;
         AbstractPerspectiveActivity defaultPerspective = null;
 
         Collection<IOCBeanDef<AbstractPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
         Iterator<IOCBeanDef<AbstractPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        while ( !foundDefaultPerspective && perspectivesIterator.hasNext() ) {
+        outer_loop:
+        while ( perspectivesIterator.hasNext() ) {
             IOCBeanDef<AbstractPerspectiveActivity> perspective = perspectivesIterator.next();
             Set<Annotation> annotations = perspective.getQualifiers();
             for ( Annotation a : annotations ) {
                 if ( a instanceof DefaultPerspective ) {
-                    if ( defaultPerspective == null ) {
-                        defaultPerspective = perspective.getInstance();
-                        foundDefaultPerspective = true;
-                        break;
-                    }
+                    defaultPerspective = perspective.getInstance();
+                    break outer_loop;
                 }
             }
         }
 
         //If a default perspective was found load it up!
-        if ( foundDefaultPerspective ) {
+        if ( defaultPerspective != null ) {
             placeManager.goTo( new PlaceRequest( defaultPerspective.getIdentifier() ) );
         }
     }

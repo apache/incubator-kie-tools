@@ -218,6 +218,7 @@
 
   <modules>
     <module>uberfire-vfs</module>
+    <module>uberfire-security</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
@@ -226,6 +227,19 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- Security -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>security-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>security-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Backend -->
       <dependency>

@@ -37,6 +37,16 @@ public abstract class AbstractPopupActivity
         //Do nothing.   
     }
 
+    @Override
+    public String[] getRoles() {
+        return null;
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return null;
+    }
+
     public abstract PopupPanel getPopupPanel();
 
 }

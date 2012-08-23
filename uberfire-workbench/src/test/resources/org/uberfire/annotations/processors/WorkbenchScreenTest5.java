@@ -6,8 +6,10 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.security.annotations.AnyRole;
 
 @WorkbenchScreen(identifier = "test5")
+@AnyRole({"ADMIN", "SUDO"})
 public class WorkbenchScreenTest5 {
 
     @WorkbenchPartView
