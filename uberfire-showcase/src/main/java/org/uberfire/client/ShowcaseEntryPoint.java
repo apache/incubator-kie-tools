@@ -15,6 +15,8 @@
  */
 package org.uberfire.client;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -23,23 +25,39 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.Paths;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.ShowcaseResources;
+import org.uberfire.client.workbench.widgets.menu.Command;
+import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
+import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
- *
+ * GWT's Entry-point for Uberfire-showcase
  */
 @EntryPoint
 public class ShowcaseEntryPoint {
 
     @Inject
-    private IOCBeanManager manager;
+    private IOCBeanManager            manager;
+
+    @Inject
+    private WorkbenchMenuBarPresenter menubar;
+
+    @Inject
+    private PlaceManager              placeManager;
+
+    private String[]                  menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "FileExplorer", "RepositoriesEditor"};
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
+        setupMenu();
 
         if ( Window.Location.getPath().contains( "Standalone.html" ) ) {
             //TODO THIS SHOULD BE MOVED TO CORE SOON - LOOKUP SHOULD BE BASED ON CODE GEN!
@@ -60,6 +78,29 @@ public class ShowcaseEntryPoint {
     private void loadStyles() {
         //Ensure CSS has been loaded
         ShowcaseResources.INSTANCE.CSS().ensureInjected();
+    }
+
+    private void setupMenu() {
+        //Places sub-menu
+        final WorkbenchMenuBar placesMenuBar = new WorkbenchMenuBar();
+        final SubMenuItem placesMenu = new SubMenuItem( "Places",
+                                                        placesMenuBar );
+
+        //Add places
+        Arrays.sort( menuItems );
+        for ( final String menuItem : menuItems ) {
+            final CommandMenuItem item = new CommandMenuItem( menuItem,
+                                                              new Command() {
+
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      placeManager.goTo( new PlaceRequest( menuItem ) );
+                                                                  }
+
+                                                              } );
+            placesMenuBar.addItem( item );
+        }
+        menubar.addMenuItem( placesMenu );
     }
 
 }

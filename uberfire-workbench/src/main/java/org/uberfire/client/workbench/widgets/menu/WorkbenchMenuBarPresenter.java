@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
-import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
@@ -56,10 +55,10 @@ public class WorkbenchMenuBarPresenter {
         void removeMenuItem(final AbstractMenuItem menuItem);
     }
 
-    private final View     view;
+    private final View      view;
 
     @Inject
-    private PlaceManager   placeManager;
+    private PlaceManager    placeManager;
 
     @Inject
     private ActivityManager activityManager;
@@ -76,27 +75,6 @@ public class WorkbenchMenuBarPresenter {
     @AfterInitialization
     //Configure the default menu items
     private void setupCoreItems() {
-
-        //Static places
-        final WorkbenchMenuBar placesMenuBar = new WorkbenchMenuBar();
-        final SubMenuItem placesMenu = new SubMenuItem( "Places",
-                                                        placesMenuBar );
-        final List<AbstractScreenActivity> activities = getScreenActivities();
-        for ( AbstractScreenActivity activity : activities ) {
-            final String identifier = activity.getIdentifier();
-            final Command cmd = new Command() {
-
-                @Override
-                public void execute() {
-                    placeManager.goTo( new PlaceRequest( identifier ) );
-                }
-
-            };
-            final CommandMenuItem item = new CommandMenuItem( identifier,
-                                                              cmd );
-            placesMenuBar.addItem( item );
-        }
-        view.addMenuItem( placesMenu );
 
         //Perspectives
         final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
@@ -135,31 +113,10 @@ public class WorkbenchMenuBarPresenter {
         return this.view;
     }
 
-    private List<AbstractScreenActivity> getScreenActivities() {
-
-        //Get Screen Activities
-        final Set<AbstractScreenActivity> activities = activityManager.getActivities( AbstractScreenActivity.class );
-
-        //Sort Activities so they're always in the same sequence!
-        List<AbstractScreenActivity> sortedActivities = new ArrayList<AbstractScreenActivity>( activities );
-        Collections.sort( sortedActivities,
-                          new Comparator<AbstractScreenActivity>() {
-
-                              @Override
-                              public int compare(AbstractScreenActivity o1,
-                                                 AbstractScreenActivity o2) {
-                                  return o1.getTitle().compareTo( o2.getTitle() );
-                              }
-
-                          } );
-
-        return sortedActivities;
-    }
-
     private List<AbstractPerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<AbstractPerspectiveActivity> activities = activityManager.getActivities(AbstractPerspectiveActivity.class);
+        final Set<AbstractPerspectiveActivity> activities = activityManager.getActivities( AbstractPerspectiveActivity.class );
 
         //Sort Perspective Providers so they're always in the same sequence!
         List<AbstractPerspectiveActivity> sortedActivities = new ArrayList<AbstractPerspectiveActivity>( activities );
@@ -195,6 +152,10 @@ public class WorkbenchMenuBarPresenter {
             view.addMenuItem( item );
             items.add( item );
         }
+    }
+
+    public void addMenuItem(final AbstractMenuItem menuItem) {
+        view.addMenuItem( menuItem );
     }
 
 }
