@@ -91,16 +91,17 @@ public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
                 }
             }
         } else if (AllRoles.class.getName().equals(object.getRestrictedType())) {
-//            all_roles:
-//            for (final String mandatoryRole : object.getRoles()) {
-//                for (final Role role : principal.getRoles()) {
-//                    if (role.getName().equals(mandatoryRole)) {
-//                        grant = true;
-//                        break all_roles;
-//                    }
-//                }
-//            }
-            return false;
+            for (final String mandatoryRole : object.getRoles()) {
+                for (final Role role : principal.getRoles()) {
+                    if (role.getName().equals(mandatoryRole)) {
+                        grant = true;
+                        break;
+                    }
+                }
+                if (!grant){
+                    break;
+                }
+            }
         }
 
         return grant;
