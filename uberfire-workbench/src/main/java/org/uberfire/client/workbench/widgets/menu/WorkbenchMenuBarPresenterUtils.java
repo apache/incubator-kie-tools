@@ -18,13 +18,26 @@ package org.uberfire.client.workbench.widgets.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.uberfire.security.authz.AccessDecisionManager;
+
 /**
  * Utilities for WorkbenchMenuBarPresenter to filter menu items
  */
+@ApplicationScoped
 public class WorkbenchMenuBarPresenterUtils {
 
+    private final AccessDecisionManager accessDecisionManager;
+
+    @Inject
+    public WorkbenchMenuBarPresenterUtils(final AccessDecisionManager accessDecisionManager) {
+        this.accessDecisionManager = accessDecisionManager;
+    }
+
     //Remove menu bar items for which there are insufficient permissions
-    public static List<AbstractMenuItem> filterMenuItemsByPermission(final List<AbstractMenuItem> items) {
+    public List<AbstractMenuItem> filterMenuItemsByPermission(final List<AbstractMenuItem> items) {
         final List<AbstractMenuItem> itemsClone = new ArrayList<AbstractMenuItem>();
         for ( AbstractMenuItem item : items ) {
             final AbstractMenuItem itemClone = filterMenuItemByPermission( item );
@@ -36,8 +49,8 @@ public class WorkbenchMenuBarPresenterUtils {
     }
 
     //Remove menu bar items for which there are insufficient permissions
-    public static AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
-        if ( !item.hasPermission() ) {
+    public AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
+        if ( !accessDecisionManager.grantAccess( item ) ) {
             return null;
         }
         if ( item instanceof CommandMenuItem ) {

@@ -20,16 +20,61 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.security.Principal;
+import org.uberfire.security.authz.AccessDecisionManager;
+import org.uberfire.security.authz.Role;
+import org.uberfire.security.impl.DefaultAccessDecisionManagerImpl;
 
 /**
  * Tests for WorkbenchMenuBarPresenterUtils
  */
 public class WorkbenchMenuBarPresenterUtilsTests {
 
-    private final Command mockCommand = mock( Command.class );
+    private final Command                         mockCommand       = mock( Command.class );
+
+    private static WorkbenchMenuBarPresenterUtils menuBarUtils;
+
+    private static String[]                       PERMISSIONS_ADMIN = new String[]{"ADMIN"};
+
+    @BeforeClass
+    public static void setupMenuBarPresenterUtils() {
+        final Principal principle = new Principal() {
+
+            private String           NAME = "user";
+
+            private Collection<Role> ROLES;
+            {
+                ROLES = new HashSet<Role>();
+                ROLES.add( new Role() {
+
+                    @Override
+                    public String getName() {
+                        return "user-permissions";
+                    }
+
+                } );
+            }
+
+            @Override
+            public String getName() {
+                return NAME;
+            }
+
+            @Override
+            public Collection<Role> getRoles() {
+                return ROLES;
+            }
+
+        };
+        final AccessDecisionManager accessDecisionManager = new DefaultAccessDecisionManagerImpl( principle );
+        menuBarUtils = new WorkbenchMenuBarPresenterUtils( accessDecisionManager );
+    }
 
     @Test
     public void testFilterPermissionsLevel0AllGrantedAllEnabled() {
@@ -44,7 +89,7 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         menuBar.addItem( m0i1 );
         menuBar.addItem( m0i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 3,
                       items.size() );
@@ -54,9 +99,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       items.get( 1 ).getCaption() );
         assertEquals( "m0i2",
                       items.get( 2 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
-        assertTrue( items.get( 1 ).hasPermission() );
-        assertTrue( items.get( 2 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
         assertTrue( items.get( 1 ).isEnabled() );
         assertTrue( items.get( 2 ).isEnabled() );
@@ -71,14 +113,14 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m0i2 = new CommandMenuItem( "m0i2",
                                                           mockCommand );
-        m0i0.setHasPermission( false );
-        m0i1.setHasPermission( false );
-        m0i2.setHasPermission( false );
+        m0i0.setRoles( PERMISSIONS_ADMIN );
+        m0i1.setRoles( PERMISSIONS_ADMIN );
+        m0i2.setRoles( PERMISSIONS_ADMIN );
         menuBar.addItem( m0i0 );
         menuBar.addItem( m0i1 );
         menuBar.addItem( m0i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 0,
                       items.size() );
@@ -100,7 +142,7 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         menuBar.addItem( m0i1 );
         menuBar.addItem( m0i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 3,
                       items.size() );
@@ -110,9 +152,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       items.get( 1 ).getCaption() );
         assertEquals( "m0i2",
                       items.get( 2 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
-        assertTrue( items.get( 1 ).hasPermission() );
-        assertTrue( items.get( 2 ).hasPermission() );
         assertFalse( items.get( 0 ).isEnabled() );
         assertFalse( items.get( 1 ).isEnabled() );
         assertFalse( items.get( 2 ).isEnabled() );
@@ -127,12 +166,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m0i2 = new CommandMenuItem( "m0i2",
                                                           mockCommand );
-        m0i0.setHasPermission( false );
+        m0i0.setRoles( PERMISSIONS_ADMIN );
         menuBar.addItem( m0i0 );
         menuBar.addItem( m0i1 );
         menuBar.addItem( m0i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 2,
                       items.size() );
@@ -140,8 +179,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       items.get( 0 ).getCaption() );
         assertEquals( "m0i2",
                       items.get( 1 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
-        assertTrue( items.get( 1 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
         assertTrue( items.get( 1 ).isEnabled() );
     }
@@ -165,13 +202,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         subMenuBar.addItem( m1i1 );
         subMenuBar.addItem( m1i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -180,15 +216,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m1i1",
                       m1i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
         assertEquals( "m1i2",
                       m1i0Clone.getSubMenu().getItems().get( 2 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 2 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 2 ).isEnabled() );
     }
 
@@ -207,20 +240,19 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m1i2 = new CommandMenuItem( "m1i2",
                                                           mockCommand );
-        m1i0.setHasPermission( false );
-        m1i1.setHasPermission( false );
-        m1i2.setHasPermission( false );
+        m1i0.setRoles( PERMISSIONS_ADMIN );
+        m1i1.setRoles( PERMISSIONS_ADMIN );
+        m1i2.setRoles( PERMISSIONS_ADMIN );
         subMenuBar.addItem( m1i0 );
         subMenuBar.addItem( m1i1 );
         subMenuBar.addItem( m1i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -251,13 +283,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         subMenuBar.addItem( m1i1 );
         subMenuBar.addItem( m1i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -266,15 +297,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertFalse( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m1i1",
                       m1i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertFalse( m1i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
         assertEquals( "m1i2",
                       m1i0Clone.getSubMenu().getItems().get( 2 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 2 ).hasPermission() );
         assertFalse( m1i0Clone.getSubMenu().getItems().get( 2 ).isEnabled() );
     }
 
@@ -293,18 +321,17 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m1i2 = new CommandMenuItem( "m1i2",
                                                           mockCommand );
-        m1i0.setHasPermission( false );
+        m1i0.setRoles( PERMISSIONS_ADMIN );
         subMenuBar.addItem( m1i0 );
         subMenuBar.addItem( m1i1 );
         subMenuBar.addItem( m1i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -313,11 +340,9 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i1",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m1i2",
                       m1i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
     }
 
@@ -344,13 +369,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         subMenuBar1.addItem( m2i1 );
         subMenuBar1.addItem( m2i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -359,7 +383,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
 
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ) instanceof SubMenuItem );
@@ -368,15 +391,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m2i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m2i0",
                       m2i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m2i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m2i1",
                       m2i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertTrue( m2i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
         assertEquals( "m2i2",
                       m2i0Clone.getSubMenu().getItems().get( 2 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 2 ).hasPermission() );
         assertTrue( m2i0Clone.getSubMenu().getItems().get( 2 ).isEnabled() );
     }
 
@@ -399,20 +419,19 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m2i2 = new CommandMenuItem( "m2i2",
                                                           mockCommand );
-        m2i0.setHasPermission( false );
-        m2i1.setHasPermission( false );
-        m2i2.setHasPermission( false );
+        m2i0.setRoles( PERMISSIONS_ADMIN );
+        m2i1.setRoles( PERMISSIONS_ADMIN );
+        m2i2.setRoles( PERMISSIONS_ADMIN );
         subMenuBar1.addItem( m2i0 );
         subMenuBar1.addItem( m2i1 );
         subMenuBar1.addItem( m2i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -421,7 +440,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
 
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ) instanceof SubMenuItem );
@@ -456,13 +474,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
         subMenuBar1.addItem( m2i1 );
         subMenuBar1.addItem( m2i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -471,7 +488,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
 
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ) instanceof SubMenuItem );
@@ -480,15 +496,12 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m2i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m2i0",
                       m2i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertFalse( m2i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m2i1",
                       m2i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertFalse( m2i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
         assertEquals( "m2i2",
                       m2i0Clone.getSubMenu().getItems().get( 2 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 2 ).hasPermission() );
         assertFalse( m2i0Clone.getSubMenu().getItems().get( 2 ).isEnabled() );
     }
 
@@ -511,18 +524,17 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                                                           mockCommand );
         final CommandMenuItem m2i2 = new CommandMenuItem( "m2i2",
                                                           mockCommand );
-        m2i0.setHasPermission( false );
+        m2i0.setRoles( PERMISSIONS_ADMIN );
         subMenuBar1.addItem( m2i0 );
         subMenuBar1.addItem( m2i1 );
         subMenuBar1.addItem( m2i2 );
 
-        List<AbstractMenuItem> items = WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( menuBar.getItems() );
+        List<AbstractMenuItem> items = menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() );
 
         assertEquals( 1,
                       items.size() );
         assertEquals( "m0i0",
                       items.get( 0 ).getCaption() );
-        assertTrue( items.get( 0 ).hasPermission() );
         assertTrue( items.get( 0 ).isEnabled() );
 
         assertTrue( items.get( 0 ) instanceof SubMenuItem );
@@ -531,7 +543,6 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m1i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m1i0",
                       m1i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
 
         assertTrue( m1i0Clone.getSubMenu().getItems().get( 0 ) instanceof SubMenuItem );
@@ -540,11 +551,9 @@ public class WorkbenchMenuBarPresenterUtilsTests {
                       m2i0Clone.getSubMenu().getItems().size() );
         assertEquals( "m2i1",
                       m2i0Clone.getSubMenu().getItems().get( 0 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 0 ).hasPermission() );
         assertTrue( m2i0Clone.getSubMenu().getItems().get( 0 ).isEnabled() );
         assertEquals( "m2i2",
                       m2i0Clone.getSubMenu().getItems().get( 1 ).getCaption() );
-        assertTrue( m2i0Clone.getSubMenu().getItems().get( 1 ).hasPermission() );
         assertTrue( m2i0Clone.getSubMenu().getItems().get( 1 ).isEnabled() );
     }
 

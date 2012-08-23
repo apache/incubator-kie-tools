@@ -55,6 +55,10 @@ public class TestPresenter5 {
     @Inject
     private Caller<VFSService> vfsServices;
 
+    private static String[]    PERMISSIONS_NIL   = new String[]{};
+
+    private static String[]    PERMISSIONS_ADMIN = new String[]{"ADMIN"};
+
     public TestPresenter5() {
     }
 
@@ -99,7 +103,7 @@ public class TestPresenter5 {
                                                                              }
 
                                                                          } );
-            item.setHasPermission( i > 0 );
+            item.setRoles( i > 0 ? PERMISSIONS_NIL : PERMISSIONS_ADMIN );
             subMenuBar.addItem( item );
         }
 

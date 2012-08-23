@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import org.uberfire.client.workbench.security.RequiresPermission;
+import org.uberfire.security.authz.SimpleRestrictedAccess;
 
 /**
  * Meta-data for a Workbench MenuItem including permissions. The default is that
@@ -23,11 +23,11 @@ import org.uberfire.client.workbench.security.RequiresPermission;
  */
 public abstract class AbstractMenuItem
     implements
-    RequiresPermission {
+    SimpleRestrictedAccess {
 
-    private boolean      hasPermission = true;
+    private boolean      enabled = true;
 
-    private boolean      enabled       = true;
+    private String[]     roles   = new String[]{};
 
     private final String caption;
 
@@ -46,13 +46,6 @@ public abstract class AbstractMenuItem
     }
 
     /**
-     * @return the hasPermission
-     */
-    public boolean hasPermission() {
-        return hasPermission;
-    }
-
-    /**
      * @return the enabled
      */
     public boolean isEnabled() {
@@ -67,12 +60,24 @@ public abstract class AbstractMenuItem
         this.enabled = enabled;
     }
 
-    /**
-     * @param hasPermission
-     *            the hasPermission to set
-     */
-    public void setHasPermission(boolean hasPermission) {
-        this.hasPermission = hasPermission;
+    public void setRoles(final String[] roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public String[] getRoles() {
+        String[] clone = new String[roles.length];
+        System.arraycopy( roles,
+                          0,
+                          clone,
+                          0,
+                          roles.length );
+        return clone;
+    }
+
+    @Override
+    public String getRestrictedType() {
+        return "org.uberfire.security.annotations.AnyRole";
     }
 
 }

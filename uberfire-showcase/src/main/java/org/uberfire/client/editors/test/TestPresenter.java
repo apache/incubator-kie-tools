@@ -43,7 +43,11 @@ public class TestPresenter {
     }
 
     @Inject
-    public View view;
+    public View             view;
+
+    private static String[] PERMISSIONS_NIL   = new String[]{};
+
+    private static String[] PERMISSIONS_ADMIN = new String[]{"ADMIN"};
 
     public TestPresenter() {
     }
@@ -106,7 +110,7 @@ public class TestPresenter {
                                                                              }
 
                                                                          } );
-            item.setHasPermission( i > 0 );
+            item.setRoles( i > 0 ? PERMISSIONS_NIL : PERMISSIONS_ADMIN );
             item.setEnabled( i > 1 );
             subMenuBar3a.addItem( item );
         }
@@ -126,7 +130,7 @@ public class TestPresenter {
                                                                              }
 
                                                                          } );
-            item.setHasPermission( i == 0 );
+            item.setRoles( i == 0 ? PERMISSIONS_NIL : PERMISSIONS_ADMIN );
             subMenuBar3b.addItem( item );
         }
 

@@ -55,13 +55,16 @@ public class WorkbenchMenuBarPresenter {
         void removeMenuItem(final AbstractMenuItem menuItem);
     }
 
-    private final View      view;
+    private final View                     view;
 
     @Inject
-    private PlaceManager    placeManager;
+    private PlaceManager                   placeManager;
 
     @Inject
-    private ActivityManager activityManager;
+    private ActivityManager                activityManager;
+
+    @Inject
+    private WorkbenchMenuBarPresenterUtils menuBarUtils;
 
     @Inject
     public WorkbenchMenuBarPresenter(final View view) {
@@ -148,14 +151,16 @@ public class WorkbenchMenuBarPresenter {
 
         //Add items for current WorkbenchPart
         items = new ArrayList<AbstractMenuItem>();
-        for ( AbstractMenuItem item : WorkbenchMenuBarPresenterUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
+        for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
             view.addMenuItem( item );
             items.add( item );
         }
     }
 
     public void addMenuItem(final AbstractMenuItem menuItem) {
-        view.addMenuItem( menuItem );
+        if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
+            view.addMenuItem( menuItem );
+        }
     }
 
 }

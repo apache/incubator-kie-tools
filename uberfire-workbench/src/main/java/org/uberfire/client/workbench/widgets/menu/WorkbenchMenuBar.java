@@ -18,14 +18,14 @@ package org.uberfire.client.workbench.widgets.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.client.workbench.security.RequiresPermission;
+import org.uberfire.security.authz.RestrictedAccess;
 
 /**
  * Meta-data for a Workbench MenuBar including permissions
  */
 public class WorkbenchMenuBar
     implements
-    RequiresPermission {
+    RestrictedAccess {
 
     private List<AbstractMenuItem> items = new ArrayList<AbstractMenuItem>();
 
@@ -38,11 +38,6 @@ public class WorkbenchMenuBar
 
     public List<AbstractMenuItem> getItems() {
         return items;
-    }
-
-    @Override
-    public boolean hasPermission() {
-        return true;
     }
 
 }
