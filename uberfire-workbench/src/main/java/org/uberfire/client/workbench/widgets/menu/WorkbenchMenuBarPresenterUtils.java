@@ -50,7 +50,7 @@ public class WorkbenchMenuBarPresenterUtils {
 
     //Remove menu bar items for which there are insufficient permissions
     public AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
-        if ( !accessDecisionManager.grantAccess( item ) ) {
+        if ( accessDecisionManager.accessDenied( item ) ) {
             return null;
         }
         if ( item instanceof CommandMenuItem ) {

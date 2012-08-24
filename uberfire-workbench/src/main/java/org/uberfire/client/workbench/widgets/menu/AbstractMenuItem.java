@@ -76,8 +76,8 @@ public abstract class AbstractMenuItem
     }
 
     @Override
-    public String getRestrictedType() {
-        return "org.uberfire.security.annotations.AnyRole";
+    public String[] getTraitTypes() {
+        return new String[]{};
     }
 
 }
