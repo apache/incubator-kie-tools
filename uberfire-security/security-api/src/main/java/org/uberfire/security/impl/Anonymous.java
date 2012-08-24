@@ -19,7 +19,7 @@ package org.uberfire.security.impl;
 import java.util.Collection;
 
 import org.uberfire.security.Identity;
-import org.uberfire.security.authz.Role;
+import org.uberfire.security.Role;
 
 import static java.util.Collections.*;
 

@@ -5,11 +5,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.uberfire.security.annotations.AllRoles;
-import org.uberfire.security.annotations.AnyRole;
+import org.uberfire.security.annotations.All;
+import org.uberfire.security.annotations.Roles;
 
 @WorkbenchEditor(identifier = "test3", fileTypes = "test3")
-@AnyRole({"ADMIN", "SUDO"})
+@All @Roles({"ADMIN", "SUDO"})
 public class WorkbenchEditorTest3 {
 
     @WorkbenchPartView

@@ -18,8 +18,6 @@ package org.uberfire.security;
 
 import java.util.Collection;
 
-import org.uberfire.security.authz.Role;
-
 public interface Principal {
 
     String getName();

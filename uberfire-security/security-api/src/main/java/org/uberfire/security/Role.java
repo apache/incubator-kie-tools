@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.uberfire.security.authz;
+package org.uberfire.security;
 
-public interface SimpleRestrictedAccess extends StringBasedRestrictedAccess {
+public interface Role {
 
-    String[] getTraitTypes();
+    String getName();
+
 }

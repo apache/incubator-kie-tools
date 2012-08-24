@@ -93,7 +93,7 @@ public class ActivityManagerImpl
 
         for (final IOCBeanDef<T> activityBean : activityBeans) {
             final T instance = activityBean.getInstance();
-            if (accessDecisionManager.grantAccess(instance)) {
+            if (accessDecisionManager.accessGranted(instance)) {
                 activities.add(instance);
             }
         }
@@ -107,7 +107,7 @@ public class ActivityManagerImpl
         }
         final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
         final Activity instance = activityBean.getInstance();
-        if (accessDecisionManager.denyAccess(instance)) {
+        if (accessDecisionManager.accessDenied(instance)) {
             return null;
         }
         return instance;

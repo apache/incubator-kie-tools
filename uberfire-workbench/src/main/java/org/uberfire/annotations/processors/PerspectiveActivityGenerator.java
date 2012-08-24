@@ -57,13 +57,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         final Perspective perspective = element.getAnnotation( Perspective.class );
         final String identifier = perspective.identifier();
         final boolean isDefault = perspective.isDefault();
-        final Annotation getRestrictedType = GeneratorUtils.getRestrictedType( element,
-                                                                               processingEnvironment );
-        final String rolesList = GeneratorUtils.getRolesList( element,
-                                                              processingEnvironment,
-                                                              getRestrictedType );
-
-        final String getRestrictedTypeName = getRestrictedType == null ? null : getRestrictedType.annotationType().getName();
+        final String securityTraitList = GeneratorUtils.getSecurityTraitList( element );
+        final String rolesList = GeneratorUtils.getRoleList( element );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -71,7 +66,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Identifier: " + identifier );
         logger.debug( "isDefault: " + isDefault );
         logger.debug( "methodName: " + methodName );
-        logger.debug( "getRestrictedTypeName: " + getRestrictedTypeName );
+        logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
         //Setup data for template sub-system
@@ -88,8 +83,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   isDefault );
         root.put( "methodName",
                   methodName );
-        root.put( "getRestrictedTypeName",
-                  getRestrictedTypeName );
+        root.put( "securityTraitList",
+                  securityTraitList );
         root.put( "rolesList",
                   rolesList );
 

@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package org.uberfire.security.authz;
+package org.uberfire.security.annotations;
 
-public interface SimpleRestrictedAccess extends StringBasedRestrictedAccess {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    String[] getTraitTypes();
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
+@Retention(RUNTIME)
+@Target({ANNOTATION_TYPE})
+public @interface RolesType {
+
 }

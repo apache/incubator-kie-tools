@@ -19,12 +19,10 @@ package org.uberfire.security.impl;
 import javax.inject.Inject;
 
 import org.uberfire.security.Principal;
-import org.uberfire.security.annotations.AllRoles;
-import org.uberfire.security.annotations.AnyRole;
+import org.uberfire.security.Role;
+import org.uberfire.security.annotations.All;
 import org.uberfire.security.authz.AccessDecisionManager;
-import org.uberfire.security.authz.BasicRestrictedAccess;
 import org.uberfire.security.authz.RestrictedAccess;
-import org.uberfire.security.authz.Role;
 import org.uberfire.security.authz.SimpleRestrictedAccess;
 
 public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
@@ -37,50 +35,41 @@ public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
     }
 
     @Override
-    public boolean grantAccess(final RestrictedAccess object) {
+    public boolean accessGranted(final RestrictedAccess object) {
         if (object instanceof SimpleRestrictedAccess) {
             return grantAccess((SimpleRestrictedAccess) object);
-        } else if (object instanceof BasicRestrictedAccess) {
-            return grantAccess((BasicRestrictedAccess) object);
         } else {
             throw new IllegalArgumentException("RestrictedAccess type not supported.");
         }
     }
 
-//    @Override
-//    public boolean grantAccess(final RestrictedAccess type) {
-////        if (principal == null) {
-////            return true;
-////        }
-////        if (roles == null || roles.length == 0) {
-////            return true;
-////        }
-////        boolean hasRole = false;
-////        roles:
-////        for (final Role mandatoryRole : roles) {
-////            for (final Role role : principal.getRoles()) {
-////                if (role.equals(mandatoryRole)) {
-////                    hasRole = true;
-////                    break roles;
-////                }
-////            }
-////        }
-////        return hasRole;
-//    }
-
     @Override
-    public boolean denyAccess(final RestrictedAccess object) {
-        return !grantAccess(object);
+    public boolean accessDenied(final RestrictedAccess object) {
+        return !accessGranted(object);
     }
 
     private boolean grantAccess(final SimpleRestrictedAccess object) {
-        if (principal == null || object == null || object.getRestrictedType() == null ||
+        if (principal == null || object == null ||
                 object.getRoles() == null || object.getRoles().length == 0) {
             return true;
         }
 
+        boolean mustHaveAllRoles = containsAllTrait(object.getTraitTypes());
+
         boolean grant = false;
-        if (AnyRole.class.getName().equals(object.getRestrictedType())) {
+        if (mustHaveAllRoles) {
+            for (final String mandatoryRole : object.getRoles()) {
+                for (final Role role : principal.getRoles()) {
+                    if (role.getName().equals(mandatoryRole)) {
+                        grant = true;
+                        break;
+                    }
+                }
+                if (!grant) {
+                    break;
+                }
+            }
+        } else {
             any_role:
             for (final String mandatoryRole : object.getRoles()) {
                 for (final Role role : principal.getRoles()) {
@@ -90,25 +79,21 @@ public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
                     }
                 }
             }
-        } else if (AllRoles.class.getName().equals(object.getRestrictedType())) {
-            for (final String mandatoryRole : object.getRoles()) {
-                for (final Role role : principal.getRoles()) {
-                    if (role.getName().equals(mandatoryRole)) {
-                        grant = true;
-                        break;
-                    }
-                }
-                if (!grant){
-                    break;
-                }
-            }
         }
 
         return grant;
     }
 
-    private boolean grantAccess(final BasicRestrictedAccess object) {
+    private boolean containsAllTrait(final String[] traitTypes) {
+        if (traitTypes == null) {
+            return false;
+        }
+
+        for (final String traitType : traitTypes) {
+            if (All.class.getName().equals(traitType)) {
+                return true;
+            }
+        }
         return false;
     }
-
 }

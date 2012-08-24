@@ -18,7 +18,7 @@ package org.uberfire.security.authz;
 
 public interface AccessDecisionManager {
 
-    boolean grantAccess(final RestrictedAccess object);
+    boolean accessGranted(final RestrictedAccess object);
 
-    boolean denyAccess(final RestrictedAccess object);
+    boolean accessDenied(final RestrictedAccess object);
 }

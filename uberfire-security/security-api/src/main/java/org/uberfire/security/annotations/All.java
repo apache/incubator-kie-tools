@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package org.uberfire.security.authz;
+package org.uberfire.security.annotations;
 
-public interface Role {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    String getName();
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
+@SecurityTrait
+@Retention(RUNTIME)
+@Target({TYPE, METHOD})
+public @interface All {
 
 }

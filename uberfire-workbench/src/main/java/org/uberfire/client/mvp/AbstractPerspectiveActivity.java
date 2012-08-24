@@ -35,7 +35,7 @@ public abstract class AbstractPerspectiveActivity
     }
 
     @Override
-    public String getRestrictedType() {
+    public String[] getTraitTypes() {
         return null;
     }
 

@@ -102,7 +102,7 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public String getRestrictedType() {
+    public String[] getTraitTypes() {
         return null;
     }
 

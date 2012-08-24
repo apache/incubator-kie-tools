@@ -49,9 +49,4 @@ public class PerspectiveTest4Activity_getPerspective extends AbstractPerspective
     public String[] getRoles() {
         return new String[]{"ADMIN", "SUDO"};
     }
-
-    @Override
-    public String getRestrictedType() {
-        return "org.uberfire.security.annotations.AnyRole";
-    }
 }

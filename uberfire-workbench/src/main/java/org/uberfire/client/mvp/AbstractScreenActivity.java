@@ -76,7 +76,7 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public String getRestrictedType() {
+    public String[] getTraitTypes() {
         return null;
     }
 

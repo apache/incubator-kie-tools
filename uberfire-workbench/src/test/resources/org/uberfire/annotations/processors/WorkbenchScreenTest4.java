@@ -2,10 +2,10 @@ package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.security.annotations.AnyRole;
+import org.uberfire.security.annotations.Roles;
 
 @WorkbenchScreen(identifier = "test4")
-@AnyRole({"ADMIN", "SUDO"})
+@Roles({"ADMIN", "SUDO"})
 public class WorkbenchScreenTest4 {
 
     @WorkbenchPartTitle

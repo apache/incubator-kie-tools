@@ -50,4 +50,12 @@ public class WorkbenchEditorTest6Activity extends AbstractEditorActivity {
         return realPresenter;
     }
     
+    @Override
+    public String[] getRoles() {
+        return new String[]{"ADMIN", "SUDO"};
+    }
+    @Override
+    public String[] getTraitTypes() {
+        return new String[]{"org.uberfire.security.annotations.All"};
+    }
 }

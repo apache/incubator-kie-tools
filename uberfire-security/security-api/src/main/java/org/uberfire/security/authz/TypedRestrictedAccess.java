@@ -16,7 +16,10 @@
 
 package org.uberfire.security.authz;
 
-public interface SimpleRestrictedAccess extends StringBasedRestrictedAccess {
+import org.uberfire.security.Role;
 
-    String[] getTraitTypes();
+public interface TypedRestrictedAccess extends RestrictedAccess {
+
+    Role[] getRoles();
+
 }

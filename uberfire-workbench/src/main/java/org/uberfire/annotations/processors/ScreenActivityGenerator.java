@@ -77,13 +77,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                              processingEnvironment );
         final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
                                                                                  processingEnvironment );
-        final Annotation getRestrictedType = GeneratorUtils.getRestrictedType( classElement,
-                                                                               processingEnvironment );
-        final String rolesList = GeneratorUtils.getRolesList( classElement,
-                                                              processingEnvironment,
-                                                              getRestrictedType );
-
-        final String getRestrictedTypeName = getRestrictedType == null ? null : getRestrictedType.annotationType().getName();
+        final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
+        final String rolesList = GeneratorUtils.getRoleList( classElement );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
@@ -99,7 +94,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
         logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
-        logger.debug( "getRestrictedTypeName: " + getRestrictedTypeName );
+        logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
         //Validate getWidgetMethodName and isWidget
@@ -150,8 +145,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   isWidget );
         root.put( "getMenuBarMethodName",
                   getMenuBarMethodName );
-        root.put( "getRestrictedTypeName",
-                  getRestrictedTypeName );
+        root.put( "securityTraitList",
+                  securityTraitList );
         root.put( "rolesList",
                   rolesList );
 

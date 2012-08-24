@@ -24,11 +24,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.security.annotations.AnyRole;
+import org.uberfire.security.annotations.Roles;
 
 @Dependent
 @WorkbenchScreen(identifier = "Monitoring")
-@AnyRole({"ADMIN"})
+@Roles({"ADMIN"})
 public class MonitoringPerspectivePresenter {
 
     public interface MyView

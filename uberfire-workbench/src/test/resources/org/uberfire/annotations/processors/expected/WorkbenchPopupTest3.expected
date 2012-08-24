@@ -45,9 +45,4 @@ public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
     public String[] getRoles() {
         return new String[]{"ADMIN", "SUDO"};
     }
-
-    @Override
-    public String getRestrictedType() {
-        return "org.uberfire.security.annotations.AnyRole";
-    }
 }

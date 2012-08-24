@@ -16,11 +16,7 @@
 
 package org.uberfire.security.authz;
 
-import java.lang.annotation.Annotation;
+public interface BasicRestrictedAccess extends TypedRestrictedAccess {
 
-public interface BasicRestrictedAccess extends RestrictedAccess {
-
-    Role[] getRoles();
-
-    Class<Annotation> getRestrictedType();
+    Class<?>[] getTraits();
 }

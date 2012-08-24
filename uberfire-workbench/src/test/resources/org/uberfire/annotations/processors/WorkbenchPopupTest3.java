@@ -4,10 +4,10 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 
 import com.google.gwt.user.client.ui.PopupPanel;
-import org.uberfire.security.annotations.AnyRole;
+import org.uberfire.security.annotations.Roles;
 
 @WorkbenchPopup(identifier = "test3")
-@AnyRole({"ADMIN", "SUDO"})
+@Roles({"ADMIN", "SUDO"})
 public class WorkbenchPopupTest3 {
 
     @WorkbenchPartView

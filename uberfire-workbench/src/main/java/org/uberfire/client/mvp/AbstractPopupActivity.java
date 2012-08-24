@@ -43,7 +43,7 @@ public abstract class AbstractPopupActivity
     }
 
     @Override
-    public String getRestrictedType() {
+    public String[] getTraitTypes() {
         return null;
     }
 

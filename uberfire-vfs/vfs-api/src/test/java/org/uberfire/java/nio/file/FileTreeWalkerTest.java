@@ -188,7 +188,7 @@ public class FileTreeWalkerTest extends AbstractBaseTest {
 
         assertThat(preDir.get()).isEqualTo(2);
         assertThat(postDir.get()).isEqualTo(0);
-        assertThat(fileC.get()).isEqualTo(2);
+        assertThat(fileC.get()).isEqualTo(2); //FAILS @ mike
         assertThat(failFile.get()).isEqualTo(0);
     }
 
@@ -241,7 +241,7 @@ public class FileTreeWalkerTest extends AbstractBaseTest {
 
         assertThat(preDir.get()).isEqualTo(2);
         assertThat(postDir.get()).isEqualTo(1);
-        assertThat(fileC.get()).isEqualTo(2);
+        assertThat(fileC.get()).isEqualTo(2); //FAILS
         assertThat(failFile.get()).isEqualTo(0);
     }
 
@@ -297,7 +297,7 @@ public class FileTreeWalkerTest extends AbstractBaseTest {
 
         assertThat(preDir.get()).isEqualTo(2);
         assertThat(postDir.get()).isEqualTo(1);
-        assertThat(fileC.get()).isEqualTo(2);
+        assertThat(fileC.get()).isEqualTo(2);       //FAILS
         assertThat(failFile.get()).isEqualTo(0);
     }
 
@@ -353,7 +353,7 @@ public class FileTreeWalkerTest extends AbstractBaseTest {
 
         assertThat(preDir.get()).isEqualTo(2);
         assertThat(postDir.get()).isEqualTo(0);
-        assertThat(fileC.get()).isEqualTo(2);
+        assertThat(fileC.get()).isEqualTo(2); //FAILS
         assertThat(failFile.get()).isEqualTo(0);
     }
 

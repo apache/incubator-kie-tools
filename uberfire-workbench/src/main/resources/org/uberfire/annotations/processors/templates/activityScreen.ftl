@@ -118,15 +118,16 @@ public class ${className} extends AbstractScreenActivity {
     }
     
     </#if>
-    <#if getRestrictedTypeName??>
+    <#if rolesList??>
     @Override
     public String[] getRoles() {
         return new String[]{${rolesList}};
     }
-
+    </#if>
+    <#if securityTraitList??>
     @Override
-    public String getRestrictedType() {
-        return "${getRestrictedTypeName}";
+    public String[] getTraitTypes() {
+        return new String[]{${securityTraitList}};
     }
     </#if>
 }

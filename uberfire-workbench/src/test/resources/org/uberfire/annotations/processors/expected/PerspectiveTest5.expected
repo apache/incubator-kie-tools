@@ -48,4 +48,12 @@ public class PerspectiveTest5Activity_getPerspective extends AbstractPerspective
         return realClass.getPerspective(); 
     }
     
+    @Override
+    public String[] getRoles() {
+        return new String[]{"ADMIN", "SUDO"};
+    }
+    @Override
+    public String[] getTraitTypes() {
+        return new String[]{"org.uberfire.security.annotations.All"};
+    }
 }
