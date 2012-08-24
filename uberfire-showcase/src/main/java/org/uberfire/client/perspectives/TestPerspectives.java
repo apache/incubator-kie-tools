@@ -23,6 +23,10 @@ import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
 import org.uberfire.security.annotations.Roles;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.security.AppRoles;
+import org.uberfire.shared.security.ShowcaseRoles;
+
+import static org.uberfire.shared.security.AppRoles.DIRECTOR;
 
 /**
  * Test Perspectives. Multiple Perspectives can be defined in one class
@@ -58,6 +62,7 @@ public class TestPerspectives {
     }
 
     @Perspective(identifier = "TestPerspective4")
+    @ShowcaseRoles({DIRECTOR})
     public PerspectiveDefinition getPerspective4() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-4" );
