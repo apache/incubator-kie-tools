@@ -17,7 +17,6 @@ package org.uberfire.annotations.processors;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,9 +36,6 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import com.sun.tools.javac.code.Attribute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -57,8 +53,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
-
-import static java.util.Collections.emptyList;
 
 /**
  * Utilities for code generation
@@ -764,7 +758,7 @@ public class GeneratorUtils {
             }
         }
 
-        if (traits.isEmpty()){
+        if (traits.isEmpty()) {
             return null;
         }
 
@@ -784,7 +778,7 @@ public class GeneratorUtils {
             }
         }
 
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
             return null;
         }
 
@@ -792,15 +786,15 @@ public class GeneratorUtils {
     }
 
     private static <T extends AnnotationValue> Collection<String> extractValue(final T value) {
-        if (value instanceof Attribute.Array) {
-            final Attribute.Array varray = (Attribute.Array) value;
-            final ArrayList<String> result = new ArrayList<String>(varray.getValue().size());
-            for (final AnnotationValue active : ((Attribute.Array) value).getValue()) {
-                result.addAll(extractValue(active));
+        if (value.getValue() instanceof Collection) {
+            final Collection varray = (List) value.getValue();
+            final ArrayList<String> result = new ArrayList<String>(varray.size());
+            for (final Object active : varray) {
+                result.addAll(extractValue((AnnotationValue) active));
             }
             return result;
         }
-        return new ArrayList<String>(1){{
+        return new ArrayList<String>(1) {{
             add(value.getValue().toString());
         }};
     }
