@@ -61,14 +61,14 @@ public class WorkbenchDragAndDropManager {
     public void unregisterDropController(final SimplePanel owner) {
         final DropController dropController = dropControllerMap.remove( owner );
         dragController.unregisterDropController( dropController );
-        factory.release( dropController );
+        factory.destroy( dropController );
     }
 
     public void unregisterDropControllers() {
         for ( Map.Entry<SimplePanel, DropController> e : this.dropControllerMap.entrySet() ) {
             final DropController dropController = dropControllerMap.get( e.getKey() );
             dragController.unregisterDropController( dropController );
-            factory.release( dropController );
+            factory.destroy( dropController );
         }
         this.dropControllerMap.clear();
     }

@@ -15,6 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -24,10 +30,22 @@ public abstract class AbstractPopupActivity
     implements
     PopupActivity {
 
+    @Inject
+    private IOCBeanManager iocManager;
+
     @Override
     public void onRevealPlace() {
         onReveal();
         final PopupPanel popup = getPopupPanel();
+        //When pop-up is closed destroy bean to avoid memory leak
+        popup.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+            @Override
+            public void onClose(CloseEvent<PopupPanel> event) {
+                iocManager.destroyBean( AbstractPopupActivity.this );
+            }
+
+        } );
         popup.show();
         popup.center();
     }

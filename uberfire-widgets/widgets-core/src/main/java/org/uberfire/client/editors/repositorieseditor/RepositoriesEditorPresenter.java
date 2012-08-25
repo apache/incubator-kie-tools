@@ -18,14 +18,11 @@ package org.uberfire.client.editors.repositorieseditor;
 
 import java.util.Collection;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -36,6 +33,14 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
@@ -77,26 +82,36 @@ public class RepositoriesEditorPresenter {
 
         view.clear();
 
-        rootService.call(new RemoteCallback<Collection<Root>>() {
-            @Override public void callback(Collection<Root> response) {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
+            @Override
+            public void callback(Collection<Root> response) {
                 for ( final Root root : response ) {
-                    vfsService.call(new RemoteCallback<Map>() {
+                    vfsService.call( new RemoteCallback<Map>() {
                         @Override
                         public void callback(Map response) {
                             view.addRepository( root.getPath().getFileName(),
-                                    (String) response.get("giturl"),
-                                    (String) response.get("description"),
-                                    root.getPath().toURI() );
+                                                (String) response.get( "giturl" ),
+                                                (String) response.get( "description" ),
+                                                root.getPath().toURI() );
                         }
-                    }).readAttributes(root.getPath());
+                    } ).readAttributes( root.getPath() );
                 }
             }
-        }).listRoots();
+        } ).listRoots();
 
         view.getCreateRepoButton().addClickHandler( new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                final NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                //When pop-up is closed destroy bean to avoid memory leak
+                newRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+                    @Override
+                    public void onClose(CloseEvent<PopupPanel> event) {
+                        iocManager.destroyBean( newRepositoryWizard );
+                    }
+
+                } );
                 newRepositoryWizard.show();
             }
         } );
@@ -104,7 +119,16 @@ public class RepositoriesEditorPresenter {
         view.getCloneRepoButton().addClickHandler( new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                final CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                //When pop-up is closed destroy bean to avoid memory leak
+                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+                    @Override
+                    public void onClose(CloseEvent<PopupPanel> event) {
+                        iocManager.destroyBean( cloneRepositoryWizard );
+                    }
+
+                } );
                 cloneRepositoryWizard.show();
             }
         } );
@@ -121,14 +145,14 @@ public class RepositoriesEditorPresenter {
     }
 
     public void newRootDirectory(@Observes final Root root) {
-        vfsService.call(new RemoteCallback<Map>() {
+        vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback(Map response) {
                 view.addRepository( root.getPath().getFileName(),
-                        (String) response.get("giturl"),
-                        (String) response.get("description"),
-                        root.getPath().toURI() );
+                                    (String) response.get( "giturl" ),
+                                    (String) response.get( "description" ),
+                                    root.getPath().toURI() );
             }
-        }).readAttributes(root.getPath());
+        } ).readAttributes( root.getPath() );
     }
 }

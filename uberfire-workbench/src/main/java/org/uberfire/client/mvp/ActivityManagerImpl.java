@@ -39,46 +39,49 @@ public class ActivityManagerImpl
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
-    private IdentifierUtils idUtils;
+    private IdentifierUtils                   idUtils;
 
     @Inject
-    private PlaceManager placeManager;
+    private PlaceManager                      placeManager;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private IOCBeanManager                    iocManager;
 
     @Inject
-    private AccessDecisionManager accessDecisionManager;
+    private AccessDecisionManager             accessDecisionManager;
 
     public Activity getActivity(final PlaceRequest placeRequest) {
         //Check and return any existing Activity for the PlaceRequest
-        if (activeActivities.containsKey(placeRequest)) {
-            return activeActivities.get(placeRequest);
+        if ( activeActivities.containsKey( placeRequest ) ) {
+            return activeActivities.get( placeRequest );
         }
 
         //Lookup an Activity for the PlaceRequest
         Activity instance = null;
         final String identifier = placeRequest.getIdentifier();
-        Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities(identifier);
-        switch (activityBeans.size()) {
-            case 0:
+        Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( identifier );
+        switch ( activityBeans.size() ) {
+            case 0 :
                 //No activities found. Show an error to the user.
-                final PlaceRequest notFoundPopup = new PlaceRequest("workbench.activity.notfound");
-                notFoundPopup.addParameter("requestedPlaceIdentifier", identifier);
-                placeManager.goTo(notFoundPopup);
+                final PlaceRequest notFoundPopup = new PlaceRequest( "workbench.activity.notfound" );
+                notFoundPopup.addParameter( "requestedPlaceIdentifier",
+                                            identifier );
+                placeManager.goTo( notFoundPopup );
                 break;
-            case 1:
-                instance = getFirstActivity(activityBeans);
-                if (instance == null){
-                    placeManager.goTo(NOWHERE);
+            case 1 :
+                instance = getFirstActivity( activityBeans );
+                if ( instance == null ) {
+                    placeManager.goTo( NOWHERE );
                 }
-                activeActivities.put(placeRequest, instance);
+                activeActivities.put( placeRequest,
+                                      instance );
                 return instance;
-            default:
+            default :
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
-                final PlaceRequest multiplePopup = new PlaceRequest("workbench.activities.multiple");
-                multiplePopup.addParameter("requestedPlaceIdentifier", identifier);
-                placeManager.goTo(multiplePopup);
+                final PlaceRequest multiplePopup = new PlaceRequest( "workbench.activities.multiple" );
+                multiplePopup.addParameter( "requestedPlaceIdentifier",
+                                            identifier );
+                placeManager.goTo( multiplePopup );
         }
 
         return null;
@@ -87,14 +90,17 @@ public class ActivityManagerImpl
     @Override
     public <T extends Activity> Set<T> getActivities(Class<T> clazz) {
 
-        final Collection<IOCBeanDef<T>> activityBeans = iocManager.lookupBeans(clazz);
+        final Collection<IOCBeanDef<T>> activityBeans = iocManager.lookupBeans( clazz );
 
-        final Set<T> activities = new HashSet<T>(activityBeans.size());
+        final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
-        for (final IOCBeanDef<T> activityBean : activityBeans) {
+        for ( final IOCBeanDef<T> activityBean : activityBeans ) {
             final T instance = activityBean.getInstance();
-            if (accessDecisionManager.accessGranted(instance)) {
-                activities.add(instance);
+            if ( accessDecisionManager.accessGranted( instance ) ) {
+                activities.add( instance );
+            } else {
+                //If user does not have permission destroy bean to avoid memory leak
+                iocManager.destroyBean( instance );
             }
         }
 
@@ -102,20 +108,22 @@ public class ActivityManagerImpl
     }
 
     private Activity getFirstActivity(final Set<IOCBeanDef<Activity>> activityBeans) {
-        if (activityBeans == null || activityBeans.size() == 0) {
+        if ( activityBeans == null || activityBeans.size() == 0 ) {
             return null;
         }
         final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
         final Activity instance = activityBean.getInstance();
-        if (accessDecisionManager.accessDenied(instance)) {
+        if ( accessDecisionManager.accessDenied( instance ) ) {
+            //If user does not have permission destroy bean to avoid memory leak
+            iocManager.destroyBean( instance );
             return null;
         }
         return instance;
     }
 
     public void removeActivity(final PlaceRequest placeRequest) {
-        final Activity activity = activeActivities.remove(placeRequest);
-        if (activity instanceof WorkbenchEditorActivity) {
+        final Activity activity = activeActivities.remove( placeRequest );
+        if ( activity instanceof WorkbenchEditorActivity ) {
             final WorkbenchEditorActivity wbActivity = (WorkbenchEditorActivity) activity;
             wbActivity.onStop();
         }

@@ -69,7 +69,7 @@ public class BeanFactory {
         return dropController;
     }
 
-    public void release(final Object o) {
+    public void destroy(final Object o) {
         iocManager.destroyBean( o );
     }
 
