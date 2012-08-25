@@ -41,9 +41,16 @@ public class MyAdminAreaView extends Composite
     @UiField
     public HTMLPanel                 panel;
 
+    private MyAdminAreaPresenter     presenter;
+
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void init(final MyAdminAreaPresenter presenter) {
+        this.presenter = presenter;
     }
 
     public void setName(final String name) {
@@ -57,5 +64,4 @@ public class MyAdminAreaView extends Composite
         panel.setPixelSize( width,
                             height );
     }
-
 }

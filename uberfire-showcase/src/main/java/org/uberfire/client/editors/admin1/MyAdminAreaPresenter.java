@@ -25,6 +25,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.UberView;
 
 @Dependent
 @WorkbenchScreen(identifier = "MyAdminArea")
@@ -32,7 +33,7 @@ public class MyAdminAreaPresenter {
 
     public interface View
         extends
-        IsWidget {
+        UberView<MyAdminAreaPresenter> {
 
         void setName(String name);
     }

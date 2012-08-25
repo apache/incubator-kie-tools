@@ -7,13 +7,14 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.mvp.UberView;
 
 @WorkbenchEditor(identifier = "test10", fileTypes = "test10")
 public class WorkbenchEditorTest10 {
 
     @WorkbenchPartView
-    public IsWidget getView() {
-        return new SimplePanel();
+    public UberView<WorkbenchEditorTest10> getView() {
+        return null;
     }
 
     @WorkbenchPartTitle

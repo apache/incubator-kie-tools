@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
@@ -72,8 +73,14 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                                                  processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
-        final String getWidgetMethodName = GeneratorUtils.getWidgetMethodName( classElement,
-                                                                               processingEnvironment );
+        final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName( classElement,
+                                                                                      processingEnvironment );
+        final boolean hasUberView = GeneratorUtils.hasUberViewReference( classElement,
+                                                                         processingEnvironment,
+                                                                         getWidgetMethod );
+
+        final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
+
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
         final String isDirtyMethodName = GeneratorUtils.getIsDirtyMethodName( classElement,
@@ -99,6 +106,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "getTitleMethodName: " + getTitleMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
+        logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
         logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
         logger.debug( "onSaveMethodName: " + onSaveMethodName );
         logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
@@ -153,6 +161,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   getWidgetMethodName );
         root.put( "isWidget",
                   isWidget );
+        root.put( "hasUberView",
+                  hasUberView );
         root.put( "isDirtyMethodName",
                   isDirtyMethodName );
         root.put( "onSaveMethodName",

@@ -209,7 +209,7 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getWidgetMethodName(final TypeElement classElement,
+    public static ExecutableElement getWidgetMethodName(final TypeElement classElement,
             final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getWidgetMethodName(classElement,
                 processingEnvironment,
@@ -229,6 +229,19 @@ public class GeneratorUtils {
         final TypeMirror requiredReturnType = elementUtils.getTypeElement("com.google.gwt.user.client.ui.IsWidget").asType();
         return typeUtils.isAssignable(classElement.asType(),
                 requiredReturnType);
+    }
+
+    public static boolean hasUberViewReference(final TypeElement classElement,
+                                               final ProcessingEnvironment processingEnvironment,
+                                               final ExecutableElement getWidgetMethod) {
+        if ( getWidgetMethod == null ){
+            return false;
+        }
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.mvp.UberView").asType();
+
+        return typeUtils.isAssignable(typeUtils.erasure(getWidgetMethod.getReturnType()), requiredReturnType);
     }
 
     /**
@@ -536,7 +549,7 @@ public class GeneratorUtils {
     // public, non-static, have a return-type of IsWidget and take zero
     // parameters.
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static String getWidgetMethodName(final TypeElement classElement,
+    private static ExecutableElement getWidgetMethodName(final TypeElement classElement,
             final ProcessingEnvironment processingEnvironment,
             final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
@@ -553,8 +566,7 @@ public class GeneratorUtils {
             if (e.getAnnotation(annotation) == null) {
                 continue;
             }
-            if (!typeUtils.isAssignable(actualReturnType,
-                    requiredReturnType)) {
+            if (!typeUtils.isAssignable(actualReturnType, requiredReturnType)) {
                 continue;
             }
             if (e.getParameters().size() != 0) {
@@ -574,7 +586,7 @@ public class GeneratorUtils {
         if (match == null) {
             return null;
         }
-        return match.getSimpleName().toString();
+        return match;
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -815,5 +827,4 @@ public class GeneratorUtils {
 
         return sb.toString();
     }
-
 }

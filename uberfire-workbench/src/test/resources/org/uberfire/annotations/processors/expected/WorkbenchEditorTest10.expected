@@ -19,6 +19,8 @@ package org.uberfire.annotations.processors;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.annotation.PostConstruct;
+import org.uberfire.client.mvp.UberView;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.annotations.ResourceType;
@@ -39,6 +41,11 @@ public class WorkbenchEditorTest10Activity extends AbstractEditorActivity {
 
     @Inject
     private WorkbenchEditorTest10 realPresenter;
+
+    @PostConstruct
+    public void init() {
+        ((UberView) realPresenter.getView()).init( realPresenter );
+    }
 
     @Override
     public String getTitle() {

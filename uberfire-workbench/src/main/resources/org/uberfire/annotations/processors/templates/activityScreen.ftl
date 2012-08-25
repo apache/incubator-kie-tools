@@ -19,6 +19,10 @@ package ${packageName};
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+<#if hasUberView>
+import javax.annotation.PostConstruct;
+import org.uberfire.client.mvp.UberView;
+</#if>
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
@@ -42,6 +46,13 @@ public class ${className} extends AbstractScreenActivity {
     @Inject
     private ${realClassName} realPresenter;
 
+    <#if hasUberView>
+    @PostConstruct
+    public void init() {
+        ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+    }
+
+    </#if>
     <#if onStartMethodName??>
     @Override
     public void onStart() {
