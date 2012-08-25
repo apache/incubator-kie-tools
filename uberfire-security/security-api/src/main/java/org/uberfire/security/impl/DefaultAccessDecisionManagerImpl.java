@@ -37,7 +37,7 @@ public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
     @Override
     public boolean accessGranted(final RestrictedAccess object) {
         if (object instanceof SimpleRestrictedAccess) {
-            return grantAccess((SimpleRestrictedAccess) object);
+            return accessGranted((SimpleRestrictedAccess) object);
         } else {
             throw new IllegalArgumentException("RestrictedAccess type not supported.");
         }
@@ -48,7 +48,7 @@ public class DefaultAccessDecisionManagerImpl implements AccessDecisionManager {
         return !accessGranted(object);
     }
 
-    private boolean grantAccess(final SimpleRestrictedAccess object) {
+    private boolean accessGranted(final SimpleRestrictedAccess object) {
         if (principal == null || object == null ||
                 object.getRoles() == null || object.getRoles().length == 0) {
             return true;
