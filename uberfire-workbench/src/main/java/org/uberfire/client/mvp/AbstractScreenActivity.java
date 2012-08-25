@@ -53,7 +53,7 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public void onRevealPlace(AcceptItem acceptPanel) {
+    public void launch(AcceptItem acceptPanel) {
         onStart();
         acceptPanel.add( getTitle(),
                          getWidget() );

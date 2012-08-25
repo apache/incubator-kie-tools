@@ -34,7 +34,7 @@ public abstract class AbstractPopupActivity
     private IOCBeanManager iocManager;
 
     @Override
-    public void onRevealPlace() {
+    public void launch() {
         onReveal();
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak

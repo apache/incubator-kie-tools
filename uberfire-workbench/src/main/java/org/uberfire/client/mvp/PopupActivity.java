@@ -22,6 +22,6 @@ public interface PopupActivity
     extends
     Activity {
     
-    public void onRevealPlace();
+    public void launch();
 
 }

@@ -15,11 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -30,8 +31,6 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
-import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -44,8 +43,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
-import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
-
 @ApplicationScoped
 public class PlaceManagerImpl
         implements
@@ -54,7 +51,7 @@ public class PlaceManagerImpl
     private final Map<PlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<PlaceRequest, WorkbenchActivity>();
     private final Map<PlaceRequest, WorkbenchPart>     existingWorkbenchParts      = new HashMap<PlaceRequest, WorkbenchPart>();
 
-    private final ActivityManager activityManager;
+    private final ActivityManager                      activityManager;
 
     private EventBus                                   tempBus                     = null;
 
@@ -99,14 +96,14 @@ public class PlaceManagerImpl
 
         if ( activity instanceof WorkbenchActivity ) {
             final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             workbenchActivity,
                             workbenchActivity.getDefaultPosition() );
         } else if ( activity instanceof PopupActivity ) {
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             (PopupActivity) activity );
         } else if ( activity instanceof PerspectiveActivity ) {
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             (PerspectiveActivity) activity );
         }
     }
@@ -124,14 +121,14 @@ public class PlaceManagerImpl
 
         if ( activity instanceof WorkbenchActivity ) {
             final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             workbenchActivity,
                             targetPanel );
         } else if ( activity instanceof PopupActivity ) {
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             (PopupActivity) activity );
         } else if ( activity instanceof PerspectiveActivity ) {
-            revealActivity( placeRequest,
+            launchActivity( placeRequest,
                             (PerspectiveActivity) activity );
         }
     }
@@ -154,7 +151,7 @@ public class PlaceManagerImpl
         }
     }
 
-    private void revealActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity,
                                 final Position position) {
         //If we're already showing this place exit.
@@ -170,7 +167,7 @@ public class PlaceManagerImpl
                                          activity );
 
         //Reveal activity with call-back to attach to Workbench
-        activity.onRevealPlace(
+        activity.launch(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
@@ -186,7 +183,7 @@ public class PlaceManagerImpl
         updateHistory( newPlace );
     }
 
-    private void revealActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity,
                                 final WorkbenchPanel targetPanel) {
         //If we're already showing this place exit.
@@ -202,7 +199,7 @@ public class PlaceManagerImpl
                                          activity );
 
         //Reveal activity with call-back to attach to Workbench
-        activity.onRevealPlace(
+        activity.launch(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
@@ -219,39 +216,17 @@ public class PlaceManagerImpl
         updateHistory( newPlace );
     }
 
-    private void revealActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest newPlace,
                                 final PopupActivity activity) {
-        activity.onRevealPlace();
+        activity.launch();
     }
 
-    private void revealActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest newPlace,
                                 final PerspectiveActivity activity) {
         closeAllPlaces();
         final WorkbenchPanel root = panelManager.getRoot();
-        final PerspectiveDefinition perspective = activity.getPerspective();
-        revealPerspective( root,
-                           perspective.getParts() );
+        activity.launch( root );
         activity.onReveal();
-    }
-
-    private void revealPerspective(final WorkbenchPanel target,
-                                   final Set<PerspectivePartDefinition> parts) {
-        for ( PerspectivePartDefinition part : parts ) {
-            final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( target,
-                                                                               part.getPosition() );
-            goTo( part.getPlace(),
-                  targetPanel );
-            switch ( part.getPosition() ) {
-                case NORTH :
-                case SOUTH :
-                case EAST :
-                case WEST :
-                    revealPerspective( targetPanel,
-                                       part.getParts() );
-                    break;
-            }
-
-        }
     }
 
     public void updateHistory(PlaceRequest request) {
@@ -288,6 +263,7 @@ public class PlaceManagerImpl
             activity.onClose();
             existingWorkbenchActivities.remove( place );
             existingWorkbenchParts.remove( place );
+            activityManager.removeActivity( place );
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
         }
     }

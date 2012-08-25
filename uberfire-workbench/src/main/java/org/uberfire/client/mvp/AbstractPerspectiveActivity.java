@@ -15,7 +15,14 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
+import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
+import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
  * Base class for Perspective Activities
@@ -23,6 +30,39 @@ import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 public abstract class AbstractPerspectiveActivity
     implements
     PerspectiveActivity {
+
+    @Inject
+    private PanelManager panelManager;
+
+    @Inject
+    PlaceManager         placeManager;
+
+    @Override
+    public void launch(WorkbenchPanel rootPanel) {
+        final PerspectiveDefinition perspective = getPerspective();
+        buildPerspective( rootPanel,
+                          perspective.getParts() );
+    }
+
+    private void buildPerspective(final WorkbenchPanel target,
+                                  final Set<PerspectivePartDefinition> parts) {
+        for ( PerspectivePartDefinition part : parts ) {
+            final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( target,
+                                                                               part.getPosition() );
+            placeManager.goTo( part.getPlace(),
+                               targetPanel );
+            switch ( part.getPosition() ) {
+                case NORTH :
+                case SOUTH :
+                case EAST :
+                case WEST :
+                    buildPerspective( targetPanel,
+                                      part.getParts() );
+                    break;
+            }
+
+        }
+    }
 
     @Override
     public void onReveal() {
@@ -42,5 +82,5 @@ public abstract class AbstractPerspectiveActivity
     public abstract PerspectiveDefinition getPerspective();
 
     public abstract String getIdentifier();
-    
+
 }

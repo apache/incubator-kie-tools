@@ -25,7 +25,7 @@ public interface WorkbenchActivity
     extends
     Activity {
 
-    public void onRevealPlace(final AcceptItem acceptItem);
+    public void launch(final AcceptItem acceptItem);
 
     public boolean onMayClose();
 

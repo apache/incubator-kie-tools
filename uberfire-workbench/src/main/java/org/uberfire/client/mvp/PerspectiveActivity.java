@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 
 /**
@@ -24,6 +25,8 @@ public interface PerspectiveActivity
     extends
     Activity {
 
+    void launch(final WorkbenchPanel rootPanel);
+    
     PerspectiveDefinition getPerspective();
 
 }

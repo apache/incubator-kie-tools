@@ -61,7 +61,7 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public void onRevealPlace(AcceptItem acceptPanel) {
+    public void launch(AcceptItem acceptPanel) {
         PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
         String simplePath = placeRequest.getParameter( "path",
                                                        null );

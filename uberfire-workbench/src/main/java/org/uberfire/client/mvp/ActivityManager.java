@@ -25,4 +25,6 @@ public interface ActivityManager {
 
     <T extends Activity> Set<T> getActivities(Class<T> abstractScreenActivityClass);
 
+    void removeActivity(final PlaceRequest placeRequest);
+
 }

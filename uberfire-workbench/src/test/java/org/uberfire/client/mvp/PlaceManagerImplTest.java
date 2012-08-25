@@ -40,7 +40,7 @@ public class PlaceManagerImplTest {
         PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
         placeManager.goTo(somewhere);
 
-        verify(activity).onRevealPlace(any(AcceptItem.class));
+        verify(activity).launch(any(AcceptItem.class));
 
     }
 
@@ -70,11 +70,11 @@ public class PlaceManagerImplTest {
 
         PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event);
         placeManager.goTo(somewhere);
-        verify(activity, times(1)).onRevealPlace(any(AcceptItem.class));
+        verify(activity, times(1)).launch(any(AcceptItem.class));
 
         PlaceRequest somewhereSecondCall = new PlaceRequest("Somewhere");
         placeManager.goTo(somewhereSecondCall);
-        verify(activity, times(1)).onRevealPlace(any(AcceptItem.class));
+        verify(activity, times(1)).launch(any(AcceptItem.class));
         verify(event).fire(any(SelectWorkbenchPartEvent.class));
     }
 

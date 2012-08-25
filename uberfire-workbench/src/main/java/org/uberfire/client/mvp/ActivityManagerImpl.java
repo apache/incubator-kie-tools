@@ -73,8 +73,11 @@ public class ActivityManagerImpl
                 if ( instance == null ) {
                     placeManager.goTo( NOWHERE );
                 }
-                activeActivities.put( placeRequest,
-                                      instance );
+                //Only WorkbenchActivities can be re-visited
+                if ( instance instanceof WorkbenchActivity ) {
+                    activeActivities.put( placeRequest,
+                                          instance );
+                }
                 return instance;
             default :
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
@@ -100,7 +103,9 @@ public class ActivityManagerImpl
                 activities.add( instance );
             } else {
                 //If user does not have permission destroy bean to avoid memory leak
-                iocManager.destroyBean( instance );
+                if ( activityBean.getScope().equals( Dependent.class ) ) {
+                    iocManager.destroyBean( instance );
+                }
             }
         }
 
@@ -115,12 +120,15 @@ public class ActivityManagerImpl
         final Activity instance = activityBean.getInstance();
         if ( accessDecisionManager.accessDenied( instance ) ) {
             //If user does not have permission destroy bean to avoid memory leak
-            iocManager.destroyBean( instance );
+            if ( activityBean.getScope().equals( Dependent.class ) ) {
+                iocManager.destroyBean( instance );
+            }
             return null;
         }
         return instance;
     }
 
+    @Override
     public void removeActivity(final PlaceRequest placeRequest) {
         final Activity activity = activeActivities.remove( placeRequest );
         if ( activity instanceof WorkbenchEditorActivity ) {
