@@ -19,17 +19,14 @@ package org.uberfire.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -41,41 +38,22 @@ public class WorkbenchEntryPoint {
 
     @PostConstruct
     public void init() {
-        if (!Window.Location.getPath().contains("Standalone.html")) {
-            appWidget.add(workbench);
+        if ( !Window.Location.getPath().contains( "Standalone.html" ) ) {
+            appWidget.add( workbench );
         }
     }
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
-        hideLoadingPopup();
-        if (!Window.Location.getPath().contains("Standalone.html")) {
-            RootLayoutPanel.get().add(appWidget);
+        if ( !Window.Location.getPath().contains( "Standalone.html" ) ) {
+            RootLayoutPanel.get().add( appWidget );
         }
     }
 
     private void loadStyles() {
         //Ensure CSS has been loaded
         WorkbenchResources.INSTANCE.CSS().ensureInjected();
-    }
-
-    //Fade out the "Loading application" pop-up
-    private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
-
-        new Animation() {
-
-            @Override
-            protected void onUpdate(double progress) {
-                e.getStyle().setOpacity( 1.0 - progress );
-            }
-
-            @Override
-            protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
-            }
-        }.run( 500 );
     }
 
 }
