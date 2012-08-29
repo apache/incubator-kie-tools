@@ -84,70 +84,16 @@ public class PanelManager {
         return this.rootPanel;
     }
 
-    public WorkbenchPanel addWorkbenchPanel(final WorkbenchPart part,
-                                            final Position position) {
-        assertFocusPanel();
-        return addWorkbenchPanel( part,
-                                  rootPanel,
-                                  position );
+    public WorkbenchPanel addWorkbenchPart(final WorkbenchPart part,
+                                           final WorkbenchPanel targetPanel) {
+        targetPanel.addTab( part );
+        setFocus( targetPanel );
+        return targetPanel;
     }
 
     public WorkbenchPanel addWorkbenchPanel(final Position position) {
         return addWorkbenchPanel( rootPanel,
                                   position );
-    }
-
-    public WorkbenchPanel addWorkbenchPanel(final WorkbenchPart part,
-                                            final WorkbenchPanel targetPanel,
-                                            final Position position) {
-
-        WorkbenchPanel newPanel;
-
-        switch ( position ) {
-            case SELF :
-                newPanel = targetPanel;
-                newPanel.addTab( part );
-                break;
-
-            case ROOT :
-                newPanel = rootPanel;
-                newPanel.addTab( part );
-                break;
-
-            case NORTH :
-                newPanel = factory.newWorkbenchPanel( part );
-                workbenchPanels.add( newPanel );
-                helperNorth.add( newPanel,
-                                 targetPanel );
-                break;
-
-            case SOUTH :
-                newPanel = factory.newWorkbenchPanel( part );
-                workbenchPanels.add( newPanel );
-                helperSouth.add( newPanel,
-                                 targetPanel );
-                break;
-
-            case EAST :
-                newPanel = factory.newWorkbenchPanel( part );
-                workbenchPanels.add( newPanel );
-                helperEast.add( newPanel,
-                                targetPanel );
-                break;
-
-            case WEST :
-                newPanel = factory.newWorkbenchPanel( part );
-                workbenchPanels.add( newPanel );
-                helperWest.add( newPanel,
-                                targetPanel );
-                break;
-
-            default :
-                throw new IllegalArgumentException( "Unhandled Position. Expect susbsequent errors." );
-        }
-
-        setFocus( newPanel );
-        return newPanel;
     }
 
     public WorkbenchPanel addWorkbenchPanel(final WorkbenchPanel targetPanel,
@@ -193,7 +139,7 @@ public class PanelManager {
                 break;
 
             default :
-                throw new IllegalArgumentException( "Unhandled Position. Expect susbsequent errors." );
+                throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
         setFocus( newPanel );

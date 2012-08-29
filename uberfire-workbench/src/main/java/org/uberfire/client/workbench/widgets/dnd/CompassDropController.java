@@ -102,9 +102,10 @@ public class CompassDropController
         }
 
         workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
-        panelManager.addWorkbenchPanel( part,
-                                        dropTarget,
-                                        p );
+        final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( dropTarget,
+                                                                           p );
+        panelManager.addWorkbenchPart( part,
+                                        targetPanel );
     }
 
     @Override

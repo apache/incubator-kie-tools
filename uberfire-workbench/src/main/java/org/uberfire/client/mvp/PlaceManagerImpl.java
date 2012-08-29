@@ -124,12 +124,8 @@ public class PlaceManagerImpl
             launchActivity( placeRequest,
                             workbenchActivity,
                             targetPanel );
-        } else if ( activity instanceof PopupActivity ) {
-            launchActivity( placeRequest,
-                            (PopupActivity) activity );
-        } else if ( activity instanceof PerspectiveActivity ) {
-            launchActivity( placeRequest,
-                            (PerspectiveActivity) activity );
+        } else {
+            throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
         }
     }
 
@@ -154,33 +150,10 @@ public class PlaceManagerImpl
     private void launchActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity,
                                 final Position position) {
-        //If we're already showing this place exit.
-        if ( existingWorkbenchActivities.containsKey( newPlace ) ) {
-            final WorkbenchPart part = existingWorkbenchParts.get( newPlace );
-            selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
-            return;
-        }
-
-        //Record new activity
-        currentPlaceRequest = newPlace;
-        existingWorkbenchActivities.put( newPlace,
-                                         activity );
-
-        //Reveal activity with call-back to attach to Workbench
-        activity.launch(
-                new AcceptItem() {
-                    public void add(String tabTitle,
-                                    IsWidget widget) {
-                        final WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
-                                                                      tabTitle );
-                        existingWorkbenchParts.put( newPlace,
-                                                    part );
-                        panelManager.addWorkbenchPanel( part,
-                                                        position );
-                    }
-                } );
-
-        updateHistory( newPlace );
+        final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( position );
+        launchActivity( newPlace,
+                        activity,
+                        targetPanel );
     }
 
     private void launchActivity(final PlaceRequest newPlace,
@@ -205,11 +178,10 @@ public class PlaceManagerImpl
                                     IsWidget widget) {
                         final WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
                                                                       tabTitle );
+                        panelManager.addWorkbenchPart( part,
+                                                       targetPanel );
                         existingWorkbenchParts.put( newPlace,
                                                     part );
-                        panelManager.addWorkbenchPanel( part,
-                                                        targetPanel,
-                                                        Position.SELF );
                     }
                 } );
 

@@ -109,9 +109,10 @@ public class BoundaryDropController
         }
 
         workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
-        panelManager.addWorkbenchPanel( part,
-                                        panel,
-                                        dropTargetHighlightPosition );
+        final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( dropTarget,
+                                                                           dropTargetHighlightPosition );
+        panelManager.addWorkbenchPart( part,
+                                        targetPanel );
     }
 
     @Override
