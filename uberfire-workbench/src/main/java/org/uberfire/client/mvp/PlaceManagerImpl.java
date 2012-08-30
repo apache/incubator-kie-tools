@@ -55,8 +55,7 @@ public class PlaceManagerImpl
 
     private EventBus                                   tempBus                     = null;
 
-    @Inject
-    private PanelManager                               panelManager;
+    private final PanelManager                         panelManager;
 
     @Inject
     private Event<WorkbenchPartCloseEvent>             workbenchPartCloseEvent;
@@ -70,10 +69,12 @@ public class PlaceManagerImpl
     @Inject
     public PlaceManagerImpl(ActivityManager activityManager,
                             PlaceHistoryHandler placeHistoryHandler,
-                            Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
+                            Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent,
+                            PanelManager panelManager) {
         this.activityManager = activityManager;
         this.placeHistoryHandler = placeHistoryHandler;
         this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
+        this.panelManager = panelManager;
 
         initPlaceHistoryHandler();
     }
