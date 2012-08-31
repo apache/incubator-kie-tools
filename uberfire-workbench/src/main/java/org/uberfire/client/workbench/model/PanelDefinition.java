@@ -32,6 +32,17 @@ public class PanelDefinition {
     private List<PartDefinition>                 parts    = new ArrayList<PartDefinition>();
     private Map<Position, List<PanelDefinition>> children = new HashMap<Position, List<PanelDefinition>>();
 
+    public PanelDefinition() {
+        children.put( Position.NORTH,
+                      new ArrayList<PanelDefinition>() );
+        children.put( Position.SOUTH,
+                      new ArrayList<PanelDefinition>() );
+        children.put( Position.EAST,
+                      new ArrayList<PanelDefinition>() );
+        children.put( Position.WEST,
+                      new ArrayList<PanelDefinition>() );
+    }
+
     public void addPart(final PartDefinition part) {
         this.parts.add( part );
     }

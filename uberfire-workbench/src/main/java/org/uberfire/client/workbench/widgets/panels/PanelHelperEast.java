@@ -46,8 +46,8 @@ public class PanelHelperEast
     @Inject
     private BeanFactory                 factory;
 
-    public void add(final WorkbenchPanel newPanel,
-                    final WorkbenchPanel targetPanel) {
+    public void add(final WorkbenchPanel.View newPanel,
+                    final WorkbenchPanel.View targetPanel) {
 
         //TODO {manstis}
         //final Widget parent = targetPanel.getParent();
@@ -73,7 +73,7 @@ public class PanelHelperEast
     }
 
     @Override
-    public void remove(WorkbenchPanel panel) {
+    public void remove(WorkbenchPanel.View panel) {
         //TODO {manstis}
         //final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.getParent().getParent().getParent();
         //final Widget parent = vsp.getParent();

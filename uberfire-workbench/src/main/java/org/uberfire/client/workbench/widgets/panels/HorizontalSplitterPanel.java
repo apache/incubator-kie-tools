@@ -49,8 +49,8 @@ public class HorizontalSplitterPanel extends ResizeComposite
         initWidget( slp );
     }
 
-    public void setup(final WorkbenchPanel eastWidget,
-                      final WorkbenchPanel westWidget,
+    public void setup(final WorkbenchPanel.View eastWidget,
+                      final WorkbenchPanel.View westWidget,
                       final Position position) {
         switch ( position ) {
             case EAST :
@@ -72,14 +72,14 @@ public class HorizontalSplitterPanel extends ResizeComposite
                               MIN_SIZE );
 
         //TODO {manstis}
-        //westWidgetContainer.setWidget( westWidget );
-        //eastWidgetContainer.setWidget( eastWidget );
+        westWidgetContainer.setWidget( westWidget );
+        eastWidgetContainer.setWidget( eastWidget );
 
         //Wire-up DnD controllers
-        dndManager.registerDropController( eastWidgetContainer,
-                                           factory.newDropController( eastWidget ) );
-        dndManager.registerDropController( westWidgetContainer,
-                                           factory.newDropController( westWidget ) );
+        //dndManager.registerDropController( eastWidgetContainer,
+        //                                   factory.newDropController( eastWidget ) );
+        //dndManager.registerDropController( westWidgetContainer,
+        //                                   factory.newDropController( westWidget ) );
     }
 
     @Override

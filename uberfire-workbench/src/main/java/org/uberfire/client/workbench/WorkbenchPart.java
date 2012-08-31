@@ -23,6 +23,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.model.PartDefinition;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
  * A Workbench panel part.
@@ -32,7 +33,8 @@ public class WorkbenchPart {
 
     public interface View
         extends
-        UberView<WorkbenchPart> {
+        UberView<WorkbenchPart>,
+        RequiresResize {
 
         void setPartTitle(String title);
 

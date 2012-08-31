@@ -48,8 +48,8 @@ public class BeanFactory {
         return panel;
     }
 
-    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanel eastPanel,
-                                                              final WorkbenchPanel westPanel,
+    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanel.View eastPanel,
+                                                              final WorkbenchPanel.View westPanel,
                                                               final Position position) {
         final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
         hsp.setup( eastPanel,
@@ -58,8 +58,8 @@ public class BeanFactory {
         return hsp;
     }
 
-    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanel northPanel,
-                                                          final WorkbenchPanel southPanel,
+    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanel.View northPanel,
+                                                          final WorkbenchPanel.View southPanel,
                                                           final Position position) {
         final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
         vsp.setup( northPanel,

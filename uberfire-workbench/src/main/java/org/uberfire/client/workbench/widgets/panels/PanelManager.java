@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -28,6 +29,7 @@ import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
@@ -76,8 +78,7 @@ public class PanelManager {
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
         workbenchPanels.add( panel );
-        //TODO {manstis}
-        //scheduleResize( panel );
+        scheduleResize( panel.getPanelView() );
         setFocus( panel );
     }
 
@@ -86,7 +87,7 @@ public class PanelManager {
     }
 
     public WorkbenchPanel addWorkbenchPart(final WorkbenchPart part,
-                                                    final WorkbenchPanel targetPanel) {
+                                           final WorkbenchPanel targetPanel) {
         targetPanel.addPart( part );
         setFocus( targetPanel );
         return targetPanel;
@@ -101,6 +102,7 @@ public class PanelManager {
                                             final Position position) {
 
         WorkbenchPanel newPanel;
+        final List<PanelDefinition> panels = targetPanel.getDefinition().getChildren( position );
 
         switch ( position ) {
             case SELF :
@@ -113,30 +115,34 @@ public class PanelManager {
 
             case NORTH :
                 newPanel = factory.newWorkbenchPanel();
+                panels.add( newPanel.getDefinition() );
                 workbenchPanels.add( newPanel );
-                helperNorth.add( newPanel,
-                                 targetPanel );
+                helperNorth.add( newPanel.getPanelView(),
+                                 targetPanel.getPanelView() );
                 break;
 
             case SOUTH :
                 newPanel = factory.newWorkbenchPanel();
+                panels.add( newPanel.getDefinition() );
                 workbenchPanels.add( newPanel );
-                helperSouth.add( newPanel,
-                                 targetPanel );
+                helperSouth.add( newPanel.getPanelView(),
+                                 targetPanel.getPanelView() );
                 break;
 
             case EAST :
                 newPanel = factory.newWorkbenchPanel();
+                panels.add( newPanel.getDefinition() );
                 workbenchPanels.add( newPanel );
-                helperEast.add( newPanel,
-                                targetPanel );
+                helperEast.add( newPanel.getPanelView(),
+                                targetPanel.getPanelView() );
                 break;
 
             case WEST :
                 newPanel = factory.newWorkbenchPanel();
+                panels.add( newPanel.getDefinition() );
                 workbenchPanels.add( newPanel );
-                helperWest.add( newPanel,
-                                targetPanel );
+                helperWest.add( newPanel.getPanelView(),
+                                targetPanel.getPanelView() );
                 break;
 
             default :
@@ -174,31 +180,31 @@ public class PanelManager {
         //    }
         //}
 
-        switch ( position ) {
-            case NORTH :
-                helperNorth.remove( panel );
-                workbenchPanels.remove( panel );
-                factory.destroy( panel );
-                break;
-
-            case SOUTH :
-                helperSouth.remove( panel );
-                workbenchPanels.remove( panel );
-                factory.destroy( panel );
-                break;
-
-            case EAST :
-                helperEast.remove( panel );
-                workbenchPanels.remove( panel );
-                factory.destroy( panel );
-                break;
-
-            case WEST :
-                helperWest.remove( panel );
-                workbenchPanels.remove( panel );
-                factory.destroy( panel );
-                break;
-        }
+        //        switch ( position ) {
+        //            case NORTH :
+        //                helperNorth.remove( panel );
+        //                workbenchPanels.remove( panel );
+        //                factory.destroy( panel );
+        //                break;
+        //
+        //            case SOUTH :
+        //                helperSouth.remove( panel );
+        //                workbenchPanels.remove( panel );
+        //                factory.destroy( panel );
+        //                break;
+        //
+        //            case EAST :
+        //                helperEast.remove( panel );
+        //                workbenchPanels.remove( panel );
+        //                factory.destroy( panel );
+        //                break;
+        //
+        //            case WEST :
+        //                helperWest.remove( panel );
+        //                workbenchPanels.remove( panel );
+        //                factory.destroy( panel );
+        //                break;
+        //        }
 
         if ( this.focusPanel == panel ) {
             this.focusPanel = null;

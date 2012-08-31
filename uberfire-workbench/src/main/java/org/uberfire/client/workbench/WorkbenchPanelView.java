@@ -57,7 +57,7 @@ public class WorkbenchPanelView extends ResizeComposite
 
     private final WorkbenchTabLayoutPanel tabPanel;
 
-    private WorkbenchPanel       presenter;
+    private WorkbenchPanel                presenter;
 
     public WorkbenchPanelView() {
         this.tabPanel = makeTabPanel();

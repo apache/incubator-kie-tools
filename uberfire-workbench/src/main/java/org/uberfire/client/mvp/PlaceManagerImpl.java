@@ -181,14 +181,14 @@ public class PlaceManagerImpl
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
-                        final WorkbenchPart presenter = factory.newWorkbenchPart();
-                        presenter.getDefinition().setTitle( tabTitle );
-                        presenter.getDefinition().setPlace( newPlace );
-                        presenter.setPartWidget( widget );
-                        panelManager.addWorkbenchPart( presenter,
+                        final WorkbenchPart part = factory.newWorkbenchPart();
+                        part.getDefinition().setTitle( tabTitle );
+                        part.getDefinition().setPlace( newPlace );
+                        part.setPartWidget( widget );
+                        panelManager.addWorkbenchPart( part,
                                                        targetPanel );
                         existingWorkbenchParts.put( newPlace,
-                                                    presenter );
+                                                    part );
                     }
                 } );
 

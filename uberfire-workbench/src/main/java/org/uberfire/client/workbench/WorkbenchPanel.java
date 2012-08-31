@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +35,8 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
+import com.google.gwt.user.client.ui.RequiresResize;
+
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
@@ -42,7 +45,8 @@ public class WorkbenchPanel {
 
     public interface View
         extends
-        UberView<WorkbenchPanel> {
+        UberView<WorkbenchPanel>,
+        RequiresResize {
 
         void clear();
 
@@ -82,6 +86,10 @@ public class WorkbenchPanel {
     @PostConstruct
     private void init() {
         view.init( this );
+    }
+
+    public PanelDefinition getDefinition() {
+        return definition;
     }
 
     public void addPart(final WorkbenchPart part) {

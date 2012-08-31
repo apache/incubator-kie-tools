@@ -22,9 +22,9 @@ import org.uberfire.client.workbench.WorkbenchPanel;
  */
 public interface PanelHelper {
 
-    public void add(final WorkbenchPanel newPanel,
-                    final WorkbenchPanel targetPanel);
+    public void add(final WorkbenchPanel.View newPanel,
+                    final WorkbenchPanel.View targetPanel);
 
-    public void remove(final WorkbenchPanel panel);
+    public void remove(final WorkbenchPanel.View panel);
 
 }

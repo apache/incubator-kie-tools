@@ -49,8 +49,8 @@ public class VerticalSplitterPanel extends ResizeComposite
         initWidget( slp );
     }
 
-    public void setup(final WorkbenchPanel northWidget,
-                      final WorkbenchPanel southWidget,
+    public void setup(final WorkbenchPanel.View northWidget,
+                      final WorkbenchPanel.View southWidget,
                       final Position position) {
         switch ( position ) {
             case NORTH :
@@ -76,10 +76,10 @@ public class VerticalSplitterPanel extends ResizeComposite
         //southWidgetContainer.setWidget( southWidget );
 
         //Wire-up DnD controllers
-        dndManager.registerDropController( northWidgetContainer,
-                                           factory.newDropController( northWidget ) );
-        dndManager.registerDropController( southWidgetContainer,
-                                           factory.newDropController( southWidget ) );
+        //dndManager.registerDropController( northWidgetContainer,
+        //                                   factory.newDropController( northWidget ) );
+        //dndManager.registerDropController( southWidgetContainer,
+        //                                   factory.newDropController( southWidget ) );
     }
 
     @Override
