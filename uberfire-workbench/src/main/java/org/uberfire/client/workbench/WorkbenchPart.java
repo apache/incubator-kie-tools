@@ -15,36 +15,55 @@
  */
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.model.PartDefinition;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A Workbench panel part.
  */
-public class WorkbenchPart extends SimpleLayoutPanel {
+@Dependent
+public class WorkbenchPart {
 
-    private String      title;
-    private ScrollPanel sp = new ScrollPanel();
+    public interface View
+        extends
+        UberView<WorkbenchPart> {
 
-    public WorkbenchPart(final Widget w,
-                         final String title) {
-        this.title = title;
-        setWidget( sp );
-        sp.setWidget( w );
+        void setPartTitle(String title);
+
+        void setPartWidget(IsWidget widget);
     }
 
-    public String getPartTitle() {
-        return title;
+    @Inject
+    private View           view;
+
+    private PartDefinition definition = new PartDefinition();
+
+    @SuppressWarnings("unused")
+    @PostConstruct
+    private void init() {
+        view.init( this );
     }
 
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            sp.setPixelSize( parent.getOffsetWidth(),
-                             parent.getOffsetHeight() );
-        }
-        super.onResize();
+    public PartDefinition getDefinition() {
+        return definition;
     }
+
+    public View getPartView() {
+        return view;
+    }
+
+    public void setDefinition(final PartDefinition definition) {
+        this.definition = definition;
+    }
+
+    public void setPartWidget(IsWidget widget) {
+        this.view.setPartWidget( widget );
+    }
+
 }

@@ -76,7 +76,8 @@ public class PanelManager {
     public void setRoot(final WorkbenchPanel panel) {
         this.rootPanel = panel;
         workbenchPanels.add( panel );
-        scheduleResize( panel );
+        //TODO {manstis}
+        //scheduleResize( panel );
         setFocus( panel );
     }
 
@@ -85,8 +86,8 @@ public class PanelManager {
     }
 
     public WorkbenchPanel addWorkbenchPart(final WorkbenchPart part,
-                                           final WorkbenchPanel targetPanel) {
-        targetPanel.addTab( part );
+                                                    final WorkbenchPanel targetPanel) {
+        targetPanel.addPart( part );
         setFocus( targetPanel );
         return targetPanel;
     }
@@ -155,22 +156,23 @@ public class PanelManager {
 
         //Find the position that needs to be deleted
         Position position = Position.NONE;
-        final Widget parent = panel.getParent().getParent().getParent();
-        if ( parent instanceof HorizontalSplitterPanel ) {
-            final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-            if ( panel.equals( hsp.getWidget( Position.EAST ) ) ) {
-                position = Position.EAST;
-            } else if ( panel.equals( hsp.getWidget( Position.WEST ) ) ) {
-                position = Position.WEST;
-            }
-        } else if ( parent instanceof VerticalSplitterPanel ) {
-            final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-            if ( panel.equals( vsp.getWidget( Position.NORTH ) ) ) {
-                position = Position.NORTH;
-            } else if ( panel.equals( vsp.getWidget( Position.SOUTH ) ) ) {
-                position = Position.SOUTH;
-            }
-        }
+        //TODO {manstis}
+        //final Widget parent = panel.getParent().getParent().getParent();
+        //if ( parent instanceof HorizontalSplitterPanel ) {
+        //    final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
+        //    if ( panel.equals( hsp.getWidget( Position.EAST ) ) ) {
+        //        position = Position.EAST;
+        //    } else if ( panel.equals( hsp.getWidget( Position.WEST ) ) ) {
+        //        position = Position.WEST;
+        //    }
+        //} else if ( parent instanceof VerticalSplitterPanel ) {
+        //    final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
+        //    if ( panel.equals( vsp.getWidget( Position.NORTH ) ) ) {
+        //        position = Position.NORTH;
+        //    } else if ( panel.equals( vsp.getWidget( Position.SOUTH ) ) ) {
+        //        position = Position.SOUTH;
+        //    }
+        //}
 
         switch ( position ) {
             case NORTH :

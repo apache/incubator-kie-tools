@@ -125,7 +125,7 @@ public class Workbench extends Composite {
 
         //Add default workbench widget
         final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel();
-        workbench.setWidget( workbenchRootPanel );
+        workbench.setWidget( workbenchRootPanel.getPanelView() );
         panelManager.setRoot( workbenchRootPanel );
 
         //Wire-up DnD controller
@@ -138,8 +138,7 @@ public class Workbench extends Composite {
 
         Collection<IOCBeanDef<AbstractPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
         Iterator<IOCBeanDef<AbstractPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        outer_loop:
-        while ( perspectivesIterator.hasNext() ) {
+        outer_loop : while ( perspectivesIterator.hasNext() ) {
             IOCBeanDef<AbstractPerspectiveActivity> perspective = perspectivesIterator.next();
             Set<Annotation> annotations = perspective.getQualifiers();
             for ( Annotation a : annotations ) {

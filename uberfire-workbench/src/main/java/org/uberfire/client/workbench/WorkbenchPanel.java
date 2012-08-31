@@ -15,53 +15,49 @@
  */
 package org.uberfire.client.workbench;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-public class WorkbenchPanel extends ResizeComposite {
+public class WorkbenchPanel {
 
-    public static final int                      TAB_BAR_HEIGHT   = 32;
+    public interface View
+        extends
+        UberView<WorkbenchPanel> {
 
-    private static final int                     FOCUS_BAR_HEIGHT = 3;
+        void clear();
+
+        void addPart(WorkbenchPart part);
+
+        void selectPart(int index);
+
+        void removePart(int index);
+
+        void setFocus(boolean hasFocus);
+
+    }
 
     @Inject
-    private PanelManager                         panelManager;
-
-    @Inject
-    private WorkbenchDragAndDropManager          dndManager;
+    private View                                 view;
 
     @Inject
     private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
@@ -75,151 +71,82 @@ public class WorkbenchPanel extends ResizeComposite {
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    private final WorkbenchTabLayoutPanel        tabPanel;
+    @Inject
+    private PanelManager                         panelManager;
 
-    public WorkbenchPanel() {
-        this.tabPanel = makeTabPanel();
-        initWidget( this.tabPanel );
+    private PanelDefinition                      definition               = new PanelDefinition();
+
+    private Map<PartDefinition, WorkbenchPart>   mapDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPart>();
+
+    @SuppressWarnings("unused")
+    @PostConstruct
+    private void init() {
+        view.init( this );
     }
 
-    public void addTab(final WorkbenchPart part) {
-        tabPanel.add( part,
-                      makeTabWidget( part ) );
-        tabPanel.selectTab( part );
+    public void addPart(final WorkbenchPart part) {
+        definition.addPart( part.getDefinition() );
+        mapDefinitionToPresenter.put( part.getDefinition(),
+                                      part );
+        view.addPart( part );
     }
 
     public void clear() {
-        tabPanel.clear();
-    }
-
-    private WorkbenchTabLayoutPanel makeTabPanel() {
-        final WorkbenchTabLayoutPanel tabPanel = new WorkbenchTabLayoutPanel( TAB_BAR_HEIGHT,
-                                                                              FOCUS_BAR_HEIGHT,
-                                                                              Unit.PX );
-
-        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
-
-            @Override
-            public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-                int previousTabIndex = tabPanel.getSelectedIndex();
-                if ( previousTabIndex < 0 ) {
-                    return;
-                }
-                final Widget w = tabPanel.getWidget( previousTabIndex );
-                if ( w instanceof WorkbenchPart ) {
-                    workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( (WorkbenchPart) w ) );
-                }
-            }
-        } );
-
-        //When a tab is selected ensure content is resized and set focus
-        tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
-
-            @Override
-            public void onSelection(SelectionEvent<Integer> event) {
-                final Widget w = tabPanel.getWidget( event.getSelectedItem() );
-                if ( w instanceof RequiresResize ) {
-                    scheduleResize( (RequiresResize) w );
-                }
-                if ( w instanceof WorkbenchPart ) {
-                    workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( (WorkbenchPart) w ) );
-                }
-            }
-
-        } );
-        return tabPanel;
-    }
-
-    private Widget makeTabWidget(final WorkbenchPart part) {
-        final FlowPanel fp = new FlowPanel();
-        final InlineLabel tabLabel = new InlineLabel( part.getPartTitle() );
-        fp.add( tabLabel );
-
-        //Clicking on the Tab takes focus
-        fp.addDomHandler( new ClickHandler() {
-
-                              @Override
-                              public void onClick(ClickEvent event) {
-                                  workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
-                              }
-
-                          },
-                          ClickEvent.getType() );
-
-        dndManager.makeDraggable( part,
-                                  tabLabel );
-
-        final FocusPanel image = new FocusPanel();
-        image.getElement().getStyle().setFloat( Style.Float.RIGHT );
-
-        image.setStyleName( WorkbenchResources.INSTANCE.CSS().closeTabImage() );
-        image.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
-            }
-
-        } );
-        fp.add( image );
-        return fp;
-    }
-
-    private void scheduleResize(final RequiresResize widget) {
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                widget.onResize();
-            }
-
-        } );
+        view.clear();
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
         final WorkbenchPanel panel = event.getWorkbenchPanel();
-        this.tabPanel.setFocus( panel == this );
+        this.view.setFocus( panel == this );
     }
 
     @SuppressWarnings("unused")
     private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         if ( contains( part ) ) {
-            tabPanel.selectTab( part );
+            view.selectPart( definition.getParts().indexOf( part ) );
             workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
         }
     }
 
-    public boolean contains(WorkbenchPart workbenchPart) {
-        return tabPanel.getWidgetIndex( workbenchPart ) >= 0;
+    public boolean contains(WorkbenchPart part) {
+        return definition.getParts().contains( part );
     }
 
-    public boolean remove(WorkbenchPart part) {
-        final int indexOfTabToRemove = tabPanel.getWidgetIndex( part );
-        final int indexOfSelectedTab = tabPanel.getSelectedIndex();
-        final boolean removed = tabPanel.remove( part );
+    public void remove(WorkbenchPart part) {
+        final int indexOfPartToRemove = definition.getParts().indexOf( part );
 
-        if ( removed ) {
+        mapDefinitionToPresenter.remove( definition.getParts().get( indexOfPartToRemove ) );
+        definition.getParts().remove( indexOfPartToRemove );
+        view.removePart( indexOfPartToRemove );
 
-            if ( tabPanel.getWidgetCount() == 0 ) {
-                panelManager.removeWorkbenchPanel( this );
-            } else {
-                if ( indexOfSelectedTab == indexOfTabToRemove ) {
-                    tabPanel.selectTab( indexOfTabToRemove > 0 ? indexOfTabToRemove - 1 : 0 );
-                }
-            }
+        if ( definition.getParts().size() == 0 ) {
+            panelManager.removeWorkbenchPanel( this );
         }
-        return removed;
     }
 
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        setPixelSize( parent.getOffsetWidth(),
-                      parent.getOffsetHeight() );
-        super.onResize();
+    public void onPartFocus(final int index) {
+        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
+        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
+    }
+
+    public void onPartLostFocus(final int index) {
+        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
+        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( part ) );
+    }
+
+    public void onPanelFocus() {
+        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
+    }
+
+    public void onBeforePartClose(final int index) {
+        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
+        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
+    }
+
+    public View getPanelView() {
+        return view;
     }
 
 }

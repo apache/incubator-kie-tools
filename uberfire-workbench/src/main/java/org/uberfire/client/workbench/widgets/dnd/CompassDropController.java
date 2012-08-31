@@ -85,32 +85,35 @@ public class CompassDropController
 
         compass.onDrop( context );
 
-        final WorkbenchPart part = (WorkbenchPart) context.draggable;
-        final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
-        final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
+        //TODO {manstis}
+        //final WorkbenchPart part = (WorkbenchPart) context.draggable;
+        //final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
+        //final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
         //net effect. If we're trying to drop as a new tab there is no net effect.
-        if ( wtp.getParent() == dropTarget ) {
-            if ( wtp.getWidgetCount() == 1 ) {
-                return;
-            }
-            if ( p == Position.SELF ) {
-                return;
-            }
-        }
+        //if ( wtp.getParent() == dropTarget ) {
+        //    if ( wtp.getWidgetCount() == 1 ) {
+        //        return;
+        //    }
+        //    if ( p == Position.SELF ) {
+        //        return;
+        //    }
+        //}
 
-        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
-        final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( dropTarget,
-                                                                           p );
-        panelManager.addWorkbenchPart( part,
-                                        targetPanel );
+        //workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
+        //final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( dropTarget,
+        //                                                                   p );
+        //panelManager.addWorkbenchPart( part,
+        //                                targetPanel );
     }
 
     @Override
     public Widget getDropTarget() {
-        return this.dropTarget;
+        //TODO {manstis}
+        //return this.dropTarget;
+        return null;
     }
 
     @Override

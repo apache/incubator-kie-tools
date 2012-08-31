@@ -28,6 +28,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
@@ -56,6 +57,9 @@ public class PlaceManagerImpl
     private EventBus                                   tempBus                     = null;
 
     private final PanelManager                         panelManager;
+
+    @Inject
+    private BeanFactory                                factory;
 
     @Inject
     private Event<WorkbenchPartCloseEvent>             workbenchPartCloseEvent;
@@ -177,12 +181,14 @@ public class PlaceManagerImpl
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
-                        final WorkbenchPart part = new WorkbenchPart( widget.asWidget(),
-                                                                      tabTitle );
-                        panelManager.addWorkbenchPart( part,
+                        final WorkbenchPart presenter = factory.newWorkbenchPart();
+                        presenter.getDefinition().setTitle( tabTitle );
+                        presenter.getDefinition().setPlace( newPlace );
+                        presenter.setPartWidget( widget );
+                        panelManager.addWorkbenchPart( presenter,
                                                        targetPanel );
                         existingWorkbenchParts.put( newPlace,
-                                                    part );
+                                                    presenter );
                     }
                 } );
 

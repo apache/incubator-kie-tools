@@ -50,19 +50,19 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
     @Override
     public void dragStart() {
-        final WorkbenchPart part = (WorkbenchPart) super.context.selectedWidgets.get( 0 );
-        final WorkbenchTabLayoutPanel wtp = (WorkbenchTabLayoutPanel) part.getParent().getParent().getParent();
-        final WorkbenchDragContext context = new WorkbenchDragContext( part,
-                                                                       wtp );
-        dndManager.setWorkbenchContext( context );
-        super.dragStart();
-        final Widget movablePanel = getMoveablePanel();
-        if ( movablePanel != null ) {
-            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
-                                            super.context.mouseX,
-                                            super.context.mouseY );
-        }
-
+        //TODO {manstis}
+        //final WorkbenchPart part = (WorkbenchPart) super.context.selectedWidgets.get( 0 );
+        //final WorkbenchTabLayoutPanel wtp = (WorkbenchTabLayoutPanel) part.getParent().getParent().getParent();
+        //final WorkbenchDragContext context = new WorkbenchDragContext( part,
+        //                                                               wtp );
+        //dndManager.setWorkbenchContext( context );
+        //super.dragStart();
+        //final Widget movablePanel = getMoveablePanel();
+        //if ( movablePanel != null ) {
+        //    DOMUtil.fastSetElementPosition( movablePanel.getElement(),
+        //                                    super.context.mouseX,
+        //                                    super.context.mouseY );
+        //}
     }
 
     @Override

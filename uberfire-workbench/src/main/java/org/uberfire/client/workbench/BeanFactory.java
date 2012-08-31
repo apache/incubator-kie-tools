@@ -32,14 +32,19 @@ public class BeanFactory {
     @Inject
     private IOCBeanManager iocManager;
 
+    public WorkbenchPart newWorkbenchPart() {
+        final WorkbenchPart part = iocManager.lookupBean( WorkbenchPart.class ).getInstance();
+        return part;
+    }
+
     public WorkbenchPanel newWorkbenchPanel() {
-        final WorkbenchPanel panel = (WorkbenchPanel) iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
+        final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
         return panel;
     }
 
     public WorkbenchPanel newWorkbenchPanel(final WorkbenchPart part) {
-        final WorkbenchPanel panel = (WorkbenchPanel) iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
-        panel.addTab( part );
+        final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
+        panel.addPart( part );
         return panel;
     }
 

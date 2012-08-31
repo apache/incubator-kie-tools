@@ -49,53 +49,55 @@ public class PanelHelperEast
     public void add(final WorkbenchPanel newPanel,
                     final WorkbenchPanel targetPanel) {
 
-        final Widget parent = targetPanel.getParent();
+        //TODO {manstis}
+        //final Widget parent = targetPanel.getParent();
 
-        if ( parent instanceof SimplePanel ) {
+        //if ( parent instanceof SimplePanel ) {
 
-            final SimplePanel sp = (SimplePanel) parent;
-            dndManager.unregisterDropController( sp );
+        //    final SimplePanel sp = (SimplePanel) parent;
+        //    dndManager.unregisterDropController( sp );
 
-            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
-                                                                                    newPanel,
-                                                                                    Position.EAST );
+        //    final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
+        //                                                                            newPanel,
+        //                                                                            Position.EAST );
 
-            sp.clear();
-            sp.setWidget( hsp );
+        //    sp.clear();
+        //    sp.setWidget( hsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
             //so ensure we set the sizes of the new Panel and it's children after the 
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
-            scheduleResize( hsp );
-        }
+        //    scheduleResize( hsp );
+        //}
     }
 
     @Override
     public void remove(WorkbenchPanel panel) {
-        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.getParent().getParent().getParent();
-        final Widget parent = vsp.getParent();
-        final Widget eastWidget = vsp.getWidget( Position.EAST );
-        final Widget westWidget = vsp.getWidget( Position.WEST );
+        //TODO {manstis}
+        //final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.getParent().getParent().getParent();
+        //final Widget parent = vsp.getParent();
+        //final Widget eastWidget = vsp.getWidget( Position.EAST );
+        //final Widget westWidget = vsp.getWidget( Position.WEST );
 
-        vsp.clear();
+        //vsp.clear();
 
-        dndManager.unregisterDropController( (SimplePanel) eastWidget.getParent() );
-        dndManager.unregisterDropController( (SimplePanel) westWidget.getParent() );
+        //dndManager.unregisterDropController( (SimplePanel) eastWidget.getParent() );
+        //dndManager.unregisterDropController( (SimplePanel) westWidget.getParent() );
 
         //Set parent's content to the WEST widget
-        if ( parent instanceof SimplePanel ) {
-            ((SimplePanel) parent).setWidget( westWidget );
-            if ( westWidget instanceof WorkbenchPanel ) {
-                final WorkbenchPanel wbp = (WorkbenchPanel) westWidget;
-                dndManager.registerDropController( (SimplePanel) parent,
-                                                   factory.newDropController( wbp ) );
-            }
-        }
+        //if ( parent instanceof SimplePanel ) {
+        //    ((SimplePanel) parent).setWidget( westWidget );
+        //    if ( westWidget instanceof WorkbenchPanel ) {
+        //        final WorkbenchPanel wbp = (WorkbenchPanel) westWidget;
+        //        dndManager.registerDropController( (SimplePanel) parent,
+        //                                           factory.newDropController( wbp ) );
+        //    }
+        //}
 
-        if ( westWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) westWidget );
-        }
+        //if ( westWidget instanceof RequiresResize ) {
+        //    scheduleResize( (RequiresResize) westWidget );
+        //}
     }
 
     private void scheduleResize(final RequiresResize widget) {

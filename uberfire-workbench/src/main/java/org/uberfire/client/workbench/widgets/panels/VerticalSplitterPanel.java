@@ -71,8 +71,9 @@ public class VerticalSplitterPanel extends ResizeComposite
         slp.setWidgetMinSize( southWidgetContainer,
                               MIN_SIZE );
 
-        northWidgetContainer.setWidget( northWidget );
-        southWidgetContainer.setWidget( southWidget );
+        //TODO {manstis}
+        //northWidgetContainer.setWidget( northWidget );
+        //southWidgetContainer.setWidget( southWidget );
 
         //Wire-up DnD controllers
         dndManager.registerDropController( northWidgetContainer,
