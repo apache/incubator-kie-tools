@@ -16,7 +16,6 @@
 package org.uberfire.client.workbench;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -113,17 +112,17 @@ public class WorkbenchPanel {
     private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
         final WorkbenchPart part = event.getWorkbenchPart();
         if ( contains( part ) ) {
-            view.selectPart( definition.getParts().indexOf( part ) );
+            view.selectPart( definition.getParts().indexOf( part.getDefinition() ) );
             workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
         }
     }
 
     public boolean contains(WorkbenchPart part) {
-        return definition.getParts().contains( part );
+        return definition.getParts().contains( part.getDefinition() );
     }
 
     public void remove(WorkbenchPart part) {
-        final int indexOfPartToRemove = definition.getParts().indexOf( part );
+        final int indexOfPartToRemove = definition.getParts().indexOf( part.getDefinition() );
 
         mapDefinitionToPresenter.remove( definition.getParts().get( indexOfPartToRemove ) );
         definition.getParts().remove( indexOfPartToRemove );

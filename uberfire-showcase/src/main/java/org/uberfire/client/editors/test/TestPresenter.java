@@ -18,6 +18,8 @@ package org.uberfire.client.editors.test;
 
 import javax.inject.Inject;
 
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -60,6 +62,11 @@ public class TestPresenter {
     @WorkbenchPartView
     public IsWidget getView() {
         return view;
+    }
+
+    @OnMayClose
+    public boolean onMayClose() {
+        return Window.confirm( "Close me?" );
     }
 
     @WorkbenchMenu

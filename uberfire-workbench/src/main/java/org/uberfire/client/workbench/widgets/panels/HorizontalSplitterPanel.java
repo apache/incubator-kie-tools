@@ -71,10 +71,10 @@ public class HorizontalSplitterPanel extends ResizeComposite
         slp.setWidgetMinSize( westWidgetContainer,
                               MIN_SIZE );
 
-        //TODO {manstis}
         westWidgetContainer.setWidget( westWidget );
         eastWidgetContainer.setWidget( eastWidget );
 
+        //TODO {manstis}
         //Wire-up DnD controllers
         //dndManager.registerDropController( eastWidgetContainer,
         //                                   factory.newDropController( eastWidget ) );

@@ -162,49 +162,49 @@ public class PanelManager {
 
         //Find the position that needs to be deleted
         Position position = Position.NONE;
-        //TODO {manstis}
-        //final Widget parent = panel.getParent().getParent().getParent();
-        //if ( parent instanceof HorizontalSplitterPanel ) {
-        //    final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-        //    if ( panel.equals( hsp.getWidget( Position.EAST ) ) ) {
-        //        position = Position.EAST;
-        //    } else if ( panel.equals( hsp.getWidget( Position.WEST ) ) ) {
-        //        position = Position.WEST;
-        //    }
-        //} else if ( parent instanceof VerticalSplitterPanel ) {
-        //    final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-        //    if ( panel.equals( vsp.getWidget( Position.NORTH ) ) ) {
-        //        position = Position.NORTH;
-        //    } else if ( panel.equals( vsp.getWidget( Position.SOUTH ) ) ) {
-        //        position = Position.SOUTH;
-        //    }
-        //}
+        final WorkbenchPanel.View view = panel.getPanelView();
+        final Widget parent = view.asWidget().getParent().getParent().getParent();
+        if ( parent instanceof HorizontalSplitterPanel ) {
+            final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
+            if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
+                position = Position.EAST;
+            } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
+                position = Position.WEST;
+            }
+        } else if ( parent instanceof VerticalSplitterPanel ) {
+            final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
+            if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
+                position = Position.NORTH;
+            } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
+                position = Position.SOUTH;
+            }
+        }
 
-        //        switch ( position ) {
-        //            case NORTH :
-        //                helperNorth.remove( panel );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case SOUTH :
-        //                helperSouth.remove( panel );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case EAST :
-        //                helperEast.remove( panel );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case WEST :
-        //                helperWest.remove( panel );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //        }
+        switch ( position ) {
+            case NORTH :
+                helperNorth.remove( view );
+                workbenchPanels.remove( panel );
+                factory.destroy( panel );
+                break;
+
+            case SOUTH :
+                helperSouth.remove( view );
+                workbenchPanels.remove( panel );
+                factory.destroy( panel );
+                break;
+
+            case EAST :
+                helperEast.remove( view );
+                workbenchPanels.remove( panel );
+                factory.destroy( panel );
+                break;
+
+            case WEST :
+                helperWest.remove( view );
+                workbenchPanels.remove( panel );
+                factory.destroy( panel );
+                break;
+        }
 
         if ( this.focusPanel == panel ) {
             this.focusPanel = null;

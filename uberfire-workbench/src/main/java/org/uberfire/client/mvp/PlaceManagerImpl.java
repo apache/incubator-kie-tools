@@ -185,10 +185,10 @@ public class PlaceManagerImpl
                         part.getDefinition().setTitle( tabTitle );
                         part.getDefinition().setPlace( newPlace );
                         part.setPartWidget( widget );
-                        panelManager.addWorkbenchPart( part,
-                                                       targetPanel );
                         existingWorkbenchParts.put( newPlace,
                                                     part );
+                        panelManager.addWorkbenchPart( part,
+                                                       targetPanel );
                     }
                 } );
 

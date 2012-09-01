@@ -166,7 +166,7 @@ public class WorkbenchPanelView extends ResizeComposite
 
             @Override
             public void onClick(ClickEvent event) {
-                final int index = tabPanel.getSelectedIndex();
+                final int index = tabPanel.getWidgetIndex( part.getPartView() );
                 presenter.onBeforePartClose( index );
             }
 
