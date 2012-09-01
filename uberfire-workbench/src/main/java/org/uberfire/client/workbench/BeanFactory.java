@@ -38,7 +38,12 @@ public class BeanFactory {
     }
 
     public WorkbenchPanel newWorkbenchPanel() {
+        return newWorkbenchPanel( false );
+    }
+
+    public WorkbenchPanel newWorkbenchPanel(final boolean isRoot) {
         final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
+        panel.setRoot( isRoot );
         return panel;
     }
 

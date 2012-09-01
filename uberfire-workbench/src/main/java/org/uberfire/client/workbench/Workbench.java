@@ -124,7 +124,7 @@ public class Workbench extends Composite {
                                 HEIGHT - menuBarHeight );
 
         //Add default workbench widget
-        final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel();
+        final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel( true );
         workbench.setWidget( workbenchRootPanel.getPanelView() );
         panelManager.setRoot( workbenchRootPanel );
 

@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -30,9 +31,10 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.user.client.ui.RequiresResize;
 
@@ -50,6 +52,9 @@ public class WorkbenchPanel {
         void clear();
 
         void addPart(WorkbenchPart part);
+
+        void addPanel(WorkbenchPanel part,
+                      Position position);
 
         void selectPart(int index);
 
@@ -74,8 +79,7 @@ public class WorkbenchPanel {
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    @Inject
-    private PanelManager                         panelManager;
+    private boolean                              isRoot                   = false;
 
     private PanelDefinition                      definition               = new PanelDefinition();
 
@@ -87,6 +91,14 @@ public class WorkbenchPanel {
         view.init( this );
     }
 
+    public boolean isRoot() {
+        return this.isRoot;
+    }
+
+    public void setRoot(final boolean isRoot) {
+        this.isRoot = isRoot;
+    }
+
     public PanelDefinition getDefinition() {
         return definition;
     }
@@ -96,6 +108,17 @@ public class WorkbenchPanel {
         mapDefinitionToPresenter.put( part.getDefinition(),
                                       part );
         view.addPart( part );
+    }
+
+    public void addPanel(final WorkbenchPanel panel,
+                         final Position position) {
+        final List<PanelDefinition> panels = definition.getChildren( position );
+        if ( panels == null ) {
+            throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+        }
+        panels.add( panel.getDefinition() );
+        view.addPanel( panel,
+                       position );
     }
 
     public void clear() {
@@ -117,20 +140,30 @@ public class WorkbenchPanel {
         }
     }
 
-    public boolean contains(WorkbenchPart part) {
-        return definition.getParts().contains( part.getDefinition() );
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        remove( part );
     }
 
-    public void remove(WorkbenchPart part) {
-        final int indexOfPartToRemove = definition.getParts().indexOf( part.getDefinition() );
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
+        final WorkbenchPart part = event.getWorkbenchPart();
+        remove( part );
+    }
 
+    private void remove(final WorkbenchPart part) {
+        if ( !contains( part ) ) {
+            return;
+        }
+        final int indexOfPartToRemove = definition.getParts().indexOf( part.getDefinition() );
         mapDefinitionToPresenter.remove( definition.getParts().get( indexOfPartToRemove ) );
         definition.getParts().remove( indexOfPartToRemove );
         view.removePart( indexOfPartToRemove );
+    }
 
-        if ( definition.getParts().size() == 0 ) {
-            panelManager.removeWorkbenchPanel( this );
-        }
+    private boolean contains(WorkbenchPart part) {
+        return definition.getParts().contains( part.getDefinition() );
     }
 
     public void onPartFocus(final int index) {

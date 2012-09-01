@@ -19,7 +19,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.widgets.panels.PanelHelper;
+import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.google.gwt.core.client.Scheduler;
@@ -53,6 +57,22 @@ public class WorkbenchPanelView extends ResizeComposite
     private static final int              FOCUS_BAR_HEIGHT = 3;
 
     @Inject
+    @WorkbenchPosition(position = Position.NORTH)
+    private PanelHelper                   helperNorth;
+
+    @Inject
+    @WorkbenchPosition(position = Position.SOUTH)
+    private PanelHelper                   helperSouth;
+
+    @Inject
+    @WorkbenchPosition(position = Position.EAST)
+    private PanelHelper                   helperEast;
+
+    @Inject
+    @WorkbenchPosition(position = Position.WEST)
+    private PanelHelper                   helperWest;
+
+    @Inject
     private WorkbenchDragAndDropManager   dndManager;
 
     private final WorkbenchTabLayoutPanel tabPanel;
@@ -83,20 +103,90 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
+    public void addPanel(WorkbenchPanel panel,
+                         Position position) {
+
+        switch ( position ) {
+            case NORTH :
+                helperNorth.add( panel.getPanelView(),
+                                 this );
+                break;
+
+            case SOUTH :
+                helperSouth.add( panel.getPanelView(),
+                                 this );
+                break;
+
+            case EAST :
+                helperEast.add( panel.getPanelView(),
+                                this );
+                break;
+
+            case WEST :
+                helperWest.add( panel.getPanelView(),
+                                this );
+                break;
+
+            default :
+                throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+        }
+
+    }
+
+    @Override
     public void selectPart(int index) {
         tabPanel.selectTab( index );
     }
 
     @Override
     public void removePart(int indexOfPartToRemove) {
-
         final int indexOfSelectedPart = tabPanel.getSelectedIndex();
-
         tabPanel.remove( indexOfPartToRemove );
         if ( tabPanel.getWidgetCount() > 0 ) {
             if ( indexOfSelectedPart == indexOfPartToRemove ) {
                 tabPanel.selectTab( indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0 );
             }
+
+        } else if ( !presenter.isRoot() ) {
+
+            //Find the position that needs to be deleted
+            Position position = Position.NONE;
+            final WorkbenchPanel.View view = this;
+            final Widget parent = view.asWidget().getParent().getParent().getParent();
+            if ( parent instanceof HorizontalSplitterPanel ) {
+                final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
+                if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
+                    position = Position.EAST;
+                } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
+                    position = Position.WEST;
+                }
+            } else if ( parent instanceof VerticalSplitterPanel ) {
+                final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
+                if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
+                    position = Position.NORTH;
+                } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
+                    position = Position.SOUTH;
+                }
+            }
+
+            switch ( position ) {
+                case NORTH :
+                    helperNorth.remove( view );
+                    break;
+
+                case SOUTH :
+                    helperSouth.remove( view );
+                    break;
+
+                case EAST :
+                    helperEast.remove( view );
+                    break;
+
+                case WEST :
+                    helperWest.remove( view );
+                    break;
+            }
+
         }
     }
 
