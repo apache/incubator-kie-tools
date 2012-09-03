@@ -22,7 +22,6 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -41,10 +40,7 @@ public class PanelHelperNorth
     PanelHelper {
 
     @Inject
-    private WorkbenchDragAndDropManager dndManager;
-
-    @Inject
-    private BeanFactory                 factory;
+    private BeanFactory factory;
 
     public void add(final WorkbenchPanel.View newPanel,
                     final WorkbenchPanel.View targetPanel) {
@@ -54,8 +50,6 @@ public class PanelHelperNorth
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            dndManager.unregisterDropController( sp );
-
             final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( newPanel,
                                                                                 targetPanel,
                                                                                 Position.NORTH );
@@ -75,22 +69,13 @@ public class PanelHelperNorth
     public void remove(WorkbenchPanel.View panel) {
         final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget northWidget = vsp.getWidget( Position.NORTH );
         final Widget southWidget = vsp.getWidget( Position.SOUTH );
 
         vsp.clear();
 
-        dndManager.unregisterDropController( (SimplePanel) northWidget.getParent() );
-        dndManager.unregisterDropController( (SimplePanel) southWidget.getParent() );
-
         //Set parent's content to the SOUTH widget
         if ( parent instanceof SimplePanel ) {
             ((SimplePanel) parent).setWidget( southWidget );
-            if ( southWidget instanceof WorkbenchPanel.View ) {
-                final WorkbenchPanel.View wbp = (WorkbenchPanel.View) southWidget;
-                //dndManager.registerDropController( (SimplePanel) parent,
-                //                                   factory.newDropController( wbp ) );
-            }
         }
 
         if ( southWidget instanceof RequiresResize ) {

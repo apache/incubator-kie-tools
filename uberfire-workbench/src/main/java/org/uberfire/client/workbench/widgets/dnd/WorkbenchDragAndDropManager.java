@@ -22,9 +22,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.WorkbenchPanel;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -34,16 +34,16 @@ import com.google.gwt.user.client.ui.Widget;
 public class WorkbenchDragAndDropManager {
 
     //A registry of SimplePanels and their respective DropController
-    private Map<SimplePanel, DropController> dropControllerMap = new HashMap<SimplePanel, DropController>();
+    private Map<WorkbenchPanel.View, DropController> dropControllerMap = new HashMap<WorkbenchPanel.View, DropController>();
 
     //The context of the drag operation
-    private WorkbenchDragContext             workbenchContext  = null;
+    private WorkbenchDragContext                     workbenchContext  = null;
 
     @Inject
-    private WorkbenchPickupDragController    dragController;
+    private WorkbenchPickupDragController            dragController;
 
     @Inject
-    private BeanFactory                      factory;
+    private BeanFactory                              factory;
 
     public void makeDraggable(Widget draggable,
                               Widget dragHandle) {
@@ -51,21 +51,21 @@ public class WorkbenchDragAndDropManager {
                                            dragHandle );
     }
 
-    public void registerDropController(final SimplePanel owner,
+    public void registerDropController(final WorkbenchPanel.View owner,
                                        final DropController dropController) {
         dropControllerMap.put( owner,
                                dropController );
         dragController.registerDropController( dropController );
     }
 
-    public void unregisterDropController(final SimplePanel owner) {
-        final DropController dropController = dropControllerMap.remove( owner );
+    public void unregisterDropController(final WorkbenchPanel.View view) {
+        final DropController dropController = dropControllerMap.remove( view );
         dragController.unregisterDropController( dropController );
         factory.destroy( dropController );
     }
 
     public void unregisterDropControllers() {
-        for ( Map.Entry<SimplePanel, DropController> e : this.dropControllerMap.entrySet() ) {
+        for ( Map.Entry<WorkbenchPanel.View, DropController> e : this.dropControllerMap.entrySet() ) {
             final DropController dropController = dropControllerMap.get( e.getKey() );
             dragController.unregisterDropController( dropController );
             factory.destroy( dropController );

@@ -27,10 +27,6 @@ public class WorkbenchPartView extends SimpleLayoutPanel
     implements
     WorkbenchPart.View {
 
-    @SuppressWarnings("unused")
-    private String            title;
-
-    @SuppressWarnings("unused")
     private WorkbenchPart     presenter;
 
     private final ScrollPanel sp = new ScrollPanel();
@@ -41,13 +37,18 @@ public class WorkbenchPartView extends SimpleLayoutPanel
     }
 
     @Override
-    public void setPartTitle(String title) {
-        this.title = title;
+    public WorkbenchPart getPresenter() {
+        return this.presenter;
     }
 
     @Override
-    public void setPartWidget(IsWidget widget) {
+    public void setWrappedWidget(IsWidget widget) {
         sp.setWidget( widget );
+    }
+
+    @Override
+    public IsWidget getWrappedWidget() {
+        return sp.getWidget();
     }
 
     public WorkbenchPartView() {

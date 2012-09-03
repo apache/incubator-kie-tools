@@ -43,6 +43,8 @@ public class WorkbenchPanel {
         UberView<WorkbenchPanel>,
         RequiresResize {
 
+        WorkbenchPanel getPresenter();
+
         void clear();
 
         void addPart(PartDefinition part,

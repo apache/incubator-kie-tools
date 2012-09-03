@@ -71,7 +71,7 @@ public class PanelManager {
         WorkbenchPart partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
             partPresenter = factory.newWorkbenchPart( part );
-            partPresenter.setPartWidget( partWidget );
+            partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part,
                                               partPresenter );
         }

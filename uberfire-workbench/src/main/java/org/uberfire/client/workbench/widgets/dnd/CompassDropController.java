@@ -22,9 +22,10 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
@@ -42,7 +43,7 @@ public class CompassDropController
 
     private final CompassWidget              compass = CompassWidget.getInstance();
 
-    private WorkbenchPanel                   dropTarget;
+    private WorkbenchPanel.View              dropTarget;
 
     @Inject
     private PanelManager                     panelManager;
@@ -53,8 +54,8 @@ public class CompassDropController
     @Inject
     private Event<WorkbenchPartDroppedEvent> workbenchPartDroppedEvent;
 
-    public void setup(final WorkbenchPanel wbp) {
-        dropTarget = wbp;;
+    public void setup(final WorkbenchPanel.View view) {
+        dropTarget = view;
     }
 
     @Override
@@ -85,35 +86,36 @@ public class CompassDropController
 
         compass.onDrop( context );
 
-        //TODO {manstis}
-        //final WorkbenchPart part = (WorkbenchPart) context.draggable;
-        //final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
-        //final WorkbenchTabLayoutPanel wtp = workbenchContext.getOrigin();
+        //Move Part from source to target 
+        final WorkbenchPart.View view = (WorkbenchPart.View) context.draggable;
+        final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
+        final PartDefinition sourcePart = workbenchContext.getSourcePart();
+        final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
+        final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
         //Source's tab within itself. If the Source Panel has only one Tab there is no 
         //net effect. If we're trying to drop as a new tab there is no net effect.
-        //if ( wtp.getParent() == dropTarget ) {
-        //    if ( wtp.getWidgetCount() == 1 ) {
-        //        return;
-        //    }
-        //    if ( p == Position.SELF ) {
-        //        return;
-        //    }
-        //}
+        if ( sourcePanel.equals( dropPanel ) ) {
+            if ( sourcePanel.getParts().size() == 1 ) {
+                return;
+            }
+            if ( p == Position.SELF ) {
+                return;
+            }
+        }
 
-        //workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( part ) );
-        //final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( dropTarget,
-        //                                                                   p );
-        //panelManager.addWorkbenchPart( part,
-        //                                targetPanel );
+        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( sourcePart ) );
+        final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
+                                                                            p );
+        panelManager.addWorkbenchPart( sourcePart,
+                                       targetPanel,
+                                       view.getWrappedWidget() );
     }
 
     @Override
     public Widget getDropTarget() {
-        //TODO {manstis}
-        //return this.dropTarget;
-        return null;
+        return this.dropTarget.asWidget();
     }
 
     @Override

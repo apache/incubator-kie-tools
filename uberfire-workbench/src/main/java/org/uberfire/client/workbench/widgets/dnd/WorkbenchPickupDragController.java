@@ -20,7 +20,8 @@ import javax.inject.Inject;
 
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.WorkbenchPart;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -31,7 +32,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A Drag Controller for the Workbench. 
+ * A Drag Controller for the Workbench.
  */
 @ApplicationScoped
 public class WorkbenchPickupDragController extends PickupDragController {
@@ -51,18 +52,19 @@ public class WorkbenchPickupDragController extends PickupDragController {
     @Override
     public void dragStart() {
         //TODO {manstis}
-        //final WorkbenchPart part = (WorkbenchPart) super.context.selectedWidgets.get( 0 );
-        //final WorkbenchTabLayoutPanel wtp = (WorkbenchTabLayoutPanel) part.getParent().getParent().getParent();
-        //final WorkbenchDragContext context = new WorkbenchDragContext( part,
-        //                                                               wtp );
-        //dndManager.setWorkbenchContext( context );
-        //super.dragStart();
-        //final Widget movablePanel = getMoveablePanel();
-        //if ( movablePanel != null ) {
-        //    DOMUtil.fastSetElementPosition( movablePanel.getElement(),
-        //                                    super.context.mouseX,
-        //                                    super.context.mouseY );
-        //}
+        final WorkbenchPart.View sourceView = (WorkbenchPart.View) super.context.selectedWidgets.get( 0 );
+        final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
+        final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
+        final WorkbenchDragContext context = new WorkbenchDragContext( sourcePart,
+                                                                       sourcePanel );
+        dndManager.setWorkbenchContext( context );
+        super.dragStart();
+        final Widget movablePanel = getMoveablePanel();
+        if ( movablePanel != null ) {
+            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
+                                            super.context.mouseX,
+                                            super.context.mouseY );
+        }
     }
 
     @Override

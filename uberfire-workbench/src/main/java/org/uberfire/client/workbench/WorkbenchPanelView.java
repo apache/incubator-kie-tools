@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -76,6 +77,9 @@ public class WorkbenchPanelView extends ResizeComposite
     @Inject
     private WorkbenchDragAndDropManager   dndManager;
 
+    @Inject
+    private BeanFactory                   factory;
+
     private final WorkbenchTabLayoutPanel tabPanel;
 
     private WorkbenchPanel                presenter;
@@ -85,9 +89,21 @@ public class WorkbenchPanelView extends ResizeComposite
         initWidget( this.tabPanel );
     }
 
+    @SuppressWarnings("unused")
+    @PostConstruct
+    private void setupDragAndDrop() {
+        dndManager.registerDropController( this,
+                                           factory.newDropController( this ) );
+    }
+
     @Override
     public void init(final WorkbenchPanel presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public WorkbenchPanel getPresenter() {
+        return this.presenter;
     }
 
     @Override
@@ -192,6 +208,9 @@ public class WorkbenchPanelView extends ResizeComposite
                 helperWest.remove( view );
                 break;
         }
+
+        //Release DnD DropController
+        dndManager.unregisterDropController( this );
     }
 
     @Override

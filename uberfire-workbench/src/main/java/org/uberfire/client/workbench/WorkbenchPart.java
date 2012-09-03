@@ -36,9 +36,11 @@ public class WorkbenchPart {
         UberView<WorkbenchPart>,
         RequiresResize {
 
-        void setPartTitle(String title);
+        WorkbenchPart getPresenter();
 
-        void setPartWidget(IsWidget widget);
+        void setWrappedWidget(IsWidget widget);
+
+        IsWidget getWrappedWidget();
     }
 
     @Inject
@@ -64,8 +66,8 @@ public class WorkbenchPart {
         return view;
     }
 
-    public void setPartWidget(IsWidget widget) {
-        this.view.setPartWidget( widget );
+    public void setWrappedWidget(IsWidget widget) {
+        this.view.setWrappedWidget( widget );
     }
 
 }

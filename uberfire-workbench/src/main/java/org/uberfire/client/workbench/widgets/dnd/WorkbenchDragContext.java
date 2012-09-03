@@ -15,30 +15,35 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
-import org.uberfire.client.workbench.WorkbenchPart;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchTabLayoutPanel;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * The context of a drag and drop operation within the Workbench.
  */
 public class WorkbenchDragContext {
 
-    private final WorkbenchPart part;
+    private final PartDefinition  sourcePart;
+    private final PanelDefinition sourcePanel;
 
-    private final WorkbenchTabLayoutPanel origin;
-
-    public WorkbenchDragContext(final WorkbenchPart part,
-                                final WorkbenchTabLayoutPanel origin) {
-        this.part = part;
-        this.origin = origin;
+    public WorkbenchDragContext(final PartDefinition sourcePart,
+                                final PanelDefinition sourcePanel) {
+        this.sourcePart = sourcePart;
+        this.sourcePanel = sourcePanel;
     }
 
-    public WorkbenchPart getWorkbenchPart() {
-        return this.part;
+    /**
+     * @return the sourcePart
+     */
+    public PartDefinition getSourcePart() {
+        return sourcePart;
     }
 
-    public WorkbenchTabLayoutPanel getOrigin() {
-        return this.origin;
+    /**
+     * @return the sourcePanel
+     */
+    public PanelDefinition getSourcePanel() {
+        return sourcePanel;
     }
-
+    
 }

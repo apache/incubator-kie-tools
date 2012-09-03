@@ -73,9 +73,9 @@ public class BeanFactory {
         return vsp;
     }
 
-    public CompassDropController newDropController(final WorkbenchPanel panel) {
+    public CompassDropController newDropController(final WorkbenchPanel.View view) {
         final CompassDropController dropController = iocManager.lookupBean( CompassDropController.class ).getInstance();
-        dropController.setup( panel );
+        dropController.setup( view );
         return dropController;
     }
 

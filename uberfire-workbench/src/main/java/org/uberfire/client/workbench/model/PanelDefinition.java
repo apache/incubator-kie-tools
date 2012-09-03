@@ -50,6 +50,7 @@ public class PanelDefinition {
     }
 
     public void addPart(final PartDefinition part) {
+        part.setParentPanel( this );
         this.parts.add( part );
     }
 

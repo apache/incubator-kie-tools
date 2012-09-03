@@ -24,9 +24,11 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @Portable
 public class PartDefinition {
 
-    private String       title;
+    private String          title;
 
-    private PlaceRequest place;
+    private PlaceRequest    place;
+
+    private PanelDefinition parentPanel;
 
     /**
      * @return the title
@@ -39,7 +41,7 @@ public class PartDefinition {
      * @param title
      *            the title to set
      */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -54,8 +56,23 @@ public class PartDefinition {
      * @param place
      *            the place to set
      */
-    public void setPlace(PlaceRequest place) {
+    public void setPlace(final PlaceRequest place) {
         this.place = place;
+    }
+
+    /**
+     * @return the parentPanel
+     */
+    public PanelDefinition getParentPanel() {
+        return parentPanel;
+    }
+
+    /**
+     * @param parentPanel
+     *            the parentPanel to set
+     */
+    public void setParentPanel(final PanelDefinition parentPanel) {
+        this.parentPanel = parentPanel;
     }
 
 }

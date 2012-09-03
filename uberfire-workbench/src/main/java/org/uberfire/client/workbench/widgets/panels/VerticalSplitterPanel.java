@@ -16,12 +16,9 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
-import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -34,12 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class VerticalSplitterPanel extends ResizeComposite
     implements
     SplitPanel {
-
-    @Inject
-    private WorkbenchDragAndDropManager     dndManager;
-
-    @Inject
-    private BeanFactory                     factory;
 
     private final WorkbenchSplitLayoutPanel slp                  = new WorkbenchSplitLayoutPanel();
     private final SimpleLayoutPanel         northWidgetContainer = new SimpleLayoutPanel();
@@ -73,13 +64,6 @@ public class VerticalSplitterPanel extends ResizeComposite
 
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );
-
-        //TODO {manstis}
-        //Wire-up DnD controllers
-        //dndManager.registerDropController( northWidgetContainer,
-        //                                   factory.newDropController( northWidget ) );
-        //dndManager.registerDropController( southWidgetContainer,
-        //                                   factory.newDropController( southWidget ) );
     }
 
     @Override
