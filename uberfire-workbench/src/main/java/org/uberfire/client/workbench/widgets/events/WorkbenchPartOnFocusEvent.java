@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * An event when a WorkbenchPart gains focus
  */
 public class WorkbenchPartOnFocusEvent {
 
-    private final WorkbenchPart part;
+    private final PartDefinition part;
 
-    public WorkbenchPartOnFocusEvent(final WorkbenchPart part) {
+    public WorkbenchPartOnFocusEvent(final PartDefinition part) {
         this.part = part;
     }
 
-    public WorkbenchPart getWorkbenchPart() {
+    public PartDefinition getPart() {
         return part;
     }
 

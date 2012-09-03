@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * An event to programmatically select a WorkbenchPart
  */
 public class SelectWorkbenchPartEvent {
 
-    private final WorkbenchPart part;
+    private final PartDefinition part;
 
-    public SelectWorkbenchPartEvent(final WorkbenchPart part) {
+    public SelectWorkbenchPartEvent(final PartDefinition part) {
         this.part = part;
     }
 
-    public WorkbenchPart getWorkbenchPart() {
+    public PartDefinition getPart() {
         return part;
     }
 

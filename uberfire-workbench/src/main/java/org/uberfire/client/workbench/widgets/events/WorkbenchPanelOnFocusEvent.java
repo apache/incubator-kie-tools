@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.WorkbenchPanel;
+import org.uberfire.client.workbench.model.PanelDefinition;
 
 /**
  * An event for when a WorkbenchPanel receives the Focus
  */
 public class WorkbenchPanelOnFocusEvent {
 
-    private final WorkbenchPanel panel;
+    private final PanelDefinition panel;
 
-    public WorkbenchPanelOnFocusEvent(final WorkbenchPanel panel) {
+    public WorkbenchPanelOnFocusEvent(final PanelDefinition panel) {
         this.panel = panel;
     }
 
-    public WorkbenchPanel getWorkbenchPanel() {
+    public PanelDefinition getPanel() {
         return panel;
     }
 

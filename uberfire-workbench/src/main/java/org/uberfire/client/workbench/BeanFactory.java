@@ -19,6 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
@@ -32,24 +34,22 @@ public class BeanFactory {
     @Inject
     private IOCBeanManager iocManager;
 
-    public WorkbenchPart newWorkbenchPart() {
+    public WorkbenchPart newWorkbenchPart(final PartDefinition definition) {
         final WorkbenchPart part = iocManager.lookupBean( WorkbenchPart.class ).getInstance();
+        part.setDefinition( definition );
         return part;
     }
 
-    public WorkbenchPanel newWorkbenchPanel() {
-        return newWorkbenchPanel( false );
-    }
-
-    public WorkbenchPanel newWorkbenchPanel(final boolean isRoot) {
+    public WorkbenchPanel newWorkbenchPanel(final PanelDefinition definition) {
         final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
-        panel.setRoot( isRoot );
+        panel.setDefinition( definition );
         return panel;
     }
 
     public WorkbenchPanel newWorkbenchPanel(final WorkbenchPart part) {
         final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
-        panel.addPart( part );
+        panel.addPart( part.getDefinition(),
+                       part.getPartView() );
         return panel;
     }
 

@@ -15,24 +15,18 @@
  */
 package org.uberfire.client.workbench;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 
@@ -51,14 +45,18 @@ public class WorkbenchPanel {
 
         void clear();
 
-        void addPart(WorkbenchPart part);
+        void addPart(PartDefinition part,
+                     WorkbenchPart.View view);
 
-        void addPanel(WorkbenchPanel part,
+        void addPanel(PanelDefinition panel,
+                      WorkbenchPanel.View view,
                       Position position);
 
         void selectPart(int index);
 
         void removePart(int index);
+
+        void removePanel();
 
         void setFocus(boolean hasFocus);
 
@@ -79,11 +77,7 @@ public class WorkbenchPanel {
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    private boolean                              isRoot                   = false;
-
-    private PanelDefinition                      definition               = new PanelDefinition();
-
-    private Map<PartDefinition, WorkbenchPart>   mapDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPart>();
+    private PanelDefinition                      definition = new PanelDefinition();
 
     @SuppressWarnings("unused")
     @PostConstruct
@@ -91,98 +85,84 @@ public class WorkbenchPanel {
         view.init( this );
     }
 
-    public boolean isRoot() {
-        return this.isRoot;
-    }
-
-    public void setRoot(final boolean isRoot) {
-        this.isRoot = isRoot;
-    }
-
     public PanelDefinition getDefinition() {
         return definition;
     }
 
-    public void addPart(final WorkbenchPart part) {
-        definition.addPart( part.getDefinition() );
-        mapDefinitionToPresenter.put( part.getDefinition(),
-                                      part );
-        view.addPart( part );
+    public void setDefinition(final PanelDefinition definition) {
+        this.definition = definition;
     }
 
-    public void addPanel(final WorkbenchPanel panel,
+    public void addPart(final PartDefinition part,
+                        final WorkbenchPart.View view) {
+        definition.addPart( part );
+        getPanelView().addPart( part,
+                                view );
+    }
+
+    public void addPanel(final PanelDefinition panel,
+                         final WorkbenchPanel.View view,
                          final Position position) {
         final List<PanelDefinition> panels = definition.getChildren( position );
         if ( panels == null ) {
             throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
-        panels.add( panel.getDefinition() );
-        view.addPanel( panel,
-                       position );
+        panels.add( panel );
+        getPanelView().addPanel( panel,
+                                 view,
+                                 position );
     }
 
     public void clear() {
         view.clear();
     }
 
-    @SuppressWarnings("unused")
-    private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
-        final WorkbenchPanel panel = event.getWorkbenchPanel();
-        this.view.setFocus( panel == this );
-    }
-
-    @SuppressWarnings("unused")
-    private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        if ( contains( part ) ) {
-            view.selectPart( definition.getParts().indexOf( part.getDefinition() ) );
-            workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        remove( part );
-    }
-
-    @SuppressWarnings("unused")
-    private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
-        final WorkbenchPart part = event.getWorkbenchPart();
-        remove( part );
-    }
-
-    private void remove(final WorkbenchPart part) {
+    public void removePart(final PartDefinition part) {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToRemove = definition.getParts().indexOf( part.getDefinition() );
-        mapDefinitionToPresenter.remove( definition.getParts().get( indexOfPartToRemove ) );
+        final int indexOfPartToRemove = definition.getParts().indexOf( part );
         definition.getParts().remove( indexOfPartToRemove );
         view.removePart( indexOfPartToRemove );
     }
 
-    private boolean contains(WorkbenchPart part) {
-        return definition.getParts().contains( part.getDefinition() );
+    public void removePanel() {
+        view.removePanel();
+    }
+
+    public void setFocus(final boolean hasFocus) {
+        view.setFocus( hasFocus );
+    }
+
+    public void selectPart(final PartDefinition part) {
+        if ( !contains( part ) ) {
+            return;
+        }
+        final int indexOfPartToSelect = definition.getParts().indexOf( part );
+        view.selectPart( indexOfPartToSelect );
+    }
+
+    private boolean contains(final PartDefinition part) {
+        return definition.getParts().contains( part );
     }
 
     public void onPartFocus(final int index) {
-        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
-        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
+        final PartDefinition definition = getDefinition().getParts().get( index );
+        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( definition ) );
     }
 
     public void onPartLostFocus(final int index) {
-        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
-        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( part ) );
+        final PartDefinition definition = getDefinition().getParts().get( index );
+        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( definition ) );
     }
 
     public void onPanelFocus() {
-        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( WorkbenchPanel.this ) );
+        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( getDefinition() ) );
     }
 
     public void onBeforePartClose(final int index) {
-        final WorkbenchPart part = mapDefinitionToPresenter.get( definition.getParts().get( index ) );
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
+        final PartDefinition definition = getDefinition().getParts().get( index );
+        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( definition ) );
     }
 
     public View getPanelView() {

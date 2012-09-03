@@ -20,6 +20,8 @@ import javax.inject.Inject;
 
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.PanelHelper;
@@ -39,7 +41,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
@@ -95,35 +96,37 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart(WorkbenchPart part) {
-        final IsWidget view = part.getPartView();
+    public void addPart(final PartDefinition part,
+                        final WorkbenchPart.View view) {
         tabPanel.add( view,
-                      makeTabWidget( part ) );
+                      makeTabWidget( part,
+                                     view ) );
         tabPanel.selectTab( view );
     }
 
     @Override
-    public void addPanel(WorkbenchPanel panel,
-                         Position position) {
+    public void addPanel(final PanelDefinition panel,
+                         final WorkbenchPanel.View view,
+                         final Position position) {
 
         switch ( position ) {
             case NORTH :
-                helperNorth.add( panel.getPanelView(),
+                helperNorth.add( view,
                                  this );
                 break;
 
             case SOUTH :
-                helperSouth.add( panel.getPanelView(),
+                helperSouth.add( view,
                                  this );
                 break;
 
             case EAST :
-                helperEast.add( panel.getPanelView(),
+                helperEast.add( view,
                                 this );
                 break;
 
             case WEST :
-                helperWest.add( panel.getPanelView(),
+                helperWest.add( view,
                                 this );
                 break;
 
@@ -136,6 +139,7 @@ public class WorkbenchPanelView extends ResizeComposite
     @Override
     public void selectPart(int index) {
         tabPanel.selectTab( index );
+        scheduleResize( tabPanel.getWidget( index ) );
     }
 
     @Override
@@ -146,47 +150,47 @@ public class WorkbenchPanelView extends ResizeComposite
             if ( indexOfSelectedPart == indexOfPartToRemove ) {
                 tabPanel.selectTab( indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0 );
             }
+        }
+    }
 
-        } else if ( !presenter.isRoot() ) {
+    public void removePanel() {
 
-            //Find the position that needs to be deleted
-            Position position = Position.NONE;
-            final WorkbenchPanel.View view = this;
-            final Widget parent = view.asWidget().getParent().getParent().getParent();
-            if ( parent instanceof HorizontalSplitterPanel ) {
-                final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-                if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
-                    position = Position.EAST;
-                } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
-                    position = Position.WEST;
-                }
-            } else if ( parent instanceof VerticalSplitterPanel ) {
-                final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-                if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
-                    position = Position.NORTH;
-                } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
-                    position = Position.SOUTH;
-                }
+        //Find the position that needs to be deleted
+        Position position = Position.NONE;
+        final WorkbenchPanel.View view = this;
+        final Widget parent = view.asWidget().getParent().getParent().getParent();
+        if ( parent instanceof HorizontalSplitterPanel ) {
+            final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
+            if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
+                position = Position.EAST;
+            } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
+                position = Position.WEST;
             }
-
-            switch ( position ) {
-                case NORTH :
-                    helperNorth.remove( view );
-                    break;
-
-                case SOUTH :
-                    helperSouth.remove( view );
-                    break;
-
-                case EAST :
-                    helperEast.remove( view );
-                    break;
-
-                case WEST :
-                    helperWest.remove( view );
-                    break;
+        } else if ( parent instanceof VerticalSplitterPanel ) {
+            final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
+            if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
+                position = Position.NORTH;
+            } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
+                position = Position.SOUTH;
             }
+        }
 
+        switch ( position ) {
+            case NORTH :
+                helperNorth.remove( view );
+                break;
+
+            case SOUTH :
+                helperSouth.remove( view );
+                break;
+
+            case EAST :
+                helperEast.remove( view );
+                break;
+
+            case WEST :
+                helperWest.remove( view );
+                break;
         }
     }
 
@@ -218,11 +222,9 @@ public class WorkbenchPanelView extends ResizeComposite
 
             @Override
             public void onSelection(SelectionEvent<Integer> event) {
+                final Widget widget = tabPanel.getWidget( event.getSelectedItem() );
+                scheduleResize( widget );
                 final int index = tabPanel.getSelectedIndex();
-                final IsWidget w = tabPanel.getWidget( event.getSelectedItem() );
-                if ( w instanceof RequiresResize ) {
-                    scheduleResize( (RequiresResize) w );
-                }
                 presenter.onPartFocus( index );
             }
 
@@ -230,9 +232,10 @@ public class WorkbenchPanelView extends ResizeComposite
         return tabPanel;
     }
 
-    private Widget makeTabWidget(final WorkbenchPart part) {
+    private Widget makeTabWidget(final PartDefinition part,
+                                 final WorkbenchPart.View view) {
         final FlowPanel fp = new FlowPanel();
-        final InlineLabel tabLabel = new InlineLabel( part.getDefinition().getTitle() );
+        final InlineLabel tabLabel = new InlineLabel( part.getTitle() );
         fp.add( tabLabel );
 
         //Clicking on the Tab takes focus
@@ -246,7 +249,7 @@ public class WorkbenchPanelView extends ResizeComposite
                           },
                           ClickEvent.getType() );
 
-        dndManager.makeDraggable( part.getPartView().asWidget(),
+        dndManager.makeDraggable( view.asWidget(),
                                   tabLabel );
 
         final FocusPanel image = new FocusPanel();
@@ -256,7 +259,7 @@ public class WorkbenchPanelView extends ResizeComposite
 
             @Override
             public void onClick(ClickEvent event) {
-                final int index = tabPanel.getWidgetIndex( part.getPartView() );
+                final int index = tabPanel.getWidgetIndex( view );
                 presenter.onBeforePartClose( index );
             }
 
@@ -265,15 +268,18 @@ public class WorkbenchPanelView extends ResizeComposite
         return fp;
     }
 
-    private void scheduleResize(final RequiresResize widget) {
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+    private void scheduleResize(final Widget widget) {
+        if ( widget instanceof RequiresResize ) {
+            final RequiresResize requiresResize = (RequiresResize) widget;
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
-            @Override
-            public void execute() {
-                widget.onResize();
-            }
+                @Override
+                public void execute() {
+                    requiresResize.onResize();
+                }
 
-        } );
+            } );
+        }
     }
 
     @Override

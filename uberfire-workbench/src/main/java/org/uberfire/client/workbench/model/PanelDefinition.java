@@ -29,10 +29,15 @@ import org.uberfire.client.workbench.Position;
 @Portable
 public class PanelDefinition {
 
+    private boolean                              isRoot   = false;
     private List<PartDefinition>                 parts    = new ArrayList<PartDefinition>();
     private Map<Position, List<PanelDefinition>> children = new HashMap<Position, List<PanelDefinition>>();
 
     public PanelDefinition() {
+        this( false );
+    }
+
+    public PanelDefinition(final boolean isRoot) {
         children.put( Position.NORTH,
                       new ArrayList<PanelDefinition>() );
         children.put( Position.SOUTH,
@@ -41,6 +46,7 @@ public class PanelDefinition {
                       new ArrayList<PanelDefinition>() );
         children.put( Position.WEST,
                       new ArrayList<PanelDefinition>() );
+        this.isRoot = isRoot;
     }
 
     public void addPart(final PartDefinition part) {
@@ -57,6 +63,10 @@ public class PanelDefinition {
 
     public List<PanelDefinition> getChildren(final Position position) {
         return children.get( position );
+    }
+
+    public boolean isRoot() {
+        return this.isRoot;
     }
 
 }

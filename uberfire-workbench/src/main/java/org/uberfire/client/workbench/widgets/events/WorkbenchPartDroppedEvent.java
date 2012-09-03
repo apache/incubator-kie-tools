@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * An event when a WorkbenchPart is dropped as part of a DnD operation
  */
 public class WorkbenchPartDroppedEvent {
 
-    private final WorkbenchPart part;
+    private final PartDefinition part;
 
-    public WorkbenchPartDroppedEvent(final WorkbenchPart part) {
+    public WorkbenchPartDroppedEvent(final PartDefinition part) {
         this.part = part;
     }
 
-    public WorkbenchPart getWorkbenchPart() {
+    public PartDefinition getPart() {
         return part;
     }
 

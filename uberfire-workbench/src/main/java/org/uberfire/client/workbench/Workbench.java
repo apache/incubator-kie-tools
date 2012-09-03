@@ -29,7 +29,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.DefaultPerspective;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
+import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
@@ -73,8 +73,8 @@ public class Workbench extends Composite {
     @Inject
     private WorkbenchPickupDragController dragController;
 
-    @Inject
-    private BeanFactory                   factory;
+    //@Inject
+    //private BeanFactory                   factory;
 
     @Inject
     private WorkbenchMenuBarPresenter     menuBarPresenter;
@@ -124,14 +124,14 @@ public class Workbench extends Composite {
                                 HEIGHT - menuBarHeight );
 
         //Add default workbench widget
-        final WorkbenchPanel workbenchRootPanel = factory.newWorkbenchPanel( true );
-        workbench.setWidget( workbenchRootPanel.getPanelView() );
-        panelManager.setRoot( workbenchRootPanel );
+        final PanelDefinition panel = panelManager.addWorkbenchPanel( new PanelDefinition( true ),
+                                                                      Position.ROOT );
+        workbench.setWidget( panelManager.getPanelView( panel ) );
 
         //Wire-up DnD controller
-        final CompassDropController workbenchDropController = factory.newDropController( workbenchRootPanel );
-        dndManager.registerDropController( workbench,
-                                           workbenchDropController );
+        //final CompassDropController workbenchDropController = factory.newDropController( workbenchRootPanel );
+        //dndManager.registerDropController( workbench,
+        //                                   workbenchDropController );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         AbstractPerspectiveActivity defaultPerspective = null;

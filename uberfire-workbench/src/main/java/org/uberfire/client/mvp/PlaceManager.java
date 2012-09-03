@@ -16,8 +16,8 @@
 
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.WorkbenchPanel;
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface PlaceManager {
@@ -25,11 +25,11 @@ public interface PlaceManager {
     void goTo(PlaceRequest request);
 
     void goTo(final PlaceRequest placeRequest,
-              final WorkbenchPanel targetPanel);
+              final PanelDefinition panel);
 
     public PlaceRequest getCurrentPlaceRequest();
 
-    public WorkbenchActivity getActivity(final WorkbenchPart part);
+    public WorkbenchActivity getActivity(final PartDefinition part);
 
     public void closeAllPlaces();
 

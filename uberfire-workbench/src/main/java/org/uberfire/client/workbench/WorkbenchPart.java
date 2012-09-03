@@ -56,12 +56,12 @@ public class WorkbenchPart {
         return definition;
     }
 
-    public View getPartView() {
-        return view;
-    }
-
     public void setDefinition(final PartDefinition definition) {
         this.definition = definition;
+    }
+
+    public View getPartView() {
+        return view;
     }
 
     public void setPartWidget(IsWidget widget) {

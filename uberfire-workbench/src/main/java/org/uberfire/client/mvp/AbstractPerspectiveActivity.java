@@ -19,7 +19,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.WorkbenchPanel;
+import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
 import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
@@ -38,25 +38,25 @@ public abstract class AbstractPerspectiveActivity
     PlaceManager         placeManager;
 
     @Override
-    public void launch(WorkbenchPanel rootPanel) {
+    public void launch() {
         final PerspectiveDefinition perspective = getPerspective();
-        buildPerspective( rootPanel,
+        buildPerspective( panelManager.getRoot(),
                           perspective.getParts() );
     }
 
-    private void buildPerspective(final WorkbenchPanel target,
+    private void buildPerspective(final PanelDefinition panel,
                                   final Set<PerspectivePartDefinition> parts) {
         for ( PerspectivePartDefinition part : parts ) {
-            final WorkbenchPanel targetPanel = panelManager.addWorkbenchPanel( target,
-                                                                               part.getPosition() );
+            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                           part.getPosition() );
             placeManager.goTo( part.getPlace(),
-                               targetPanel );
+                               target );
             switch ( part.getPosition() ) {
                 case NORTH :
                 case SOUTH :
                 case EAST :
                 case WEST :
-                    buildPerspective( targetPanel,
+                    buildPerspective( target,
                                       part.getParts() );
                     break;
             }

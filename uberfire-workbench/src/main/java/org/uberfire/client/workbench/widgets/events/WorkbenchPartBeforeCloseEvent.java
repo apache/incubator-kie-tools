@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * An event when a WorkbenchPart is closed
  */
 public class WorkbenchPartBeforeCloseEvent {
 
-    private final WorkbenchPart part;
+    private final PartDefinition part;
 
-    public WorkbenchPartBeforeCloseEvent(final WorkbenchPart part) {
+    public WorkbenchPartBeforeCloseEvent(final PartDefinition part) {
         this.part = part;
     }
 
-    public WorkbenchPart getWorkbenchPart() {
+    public PartDefinition getPart() {
         return part;
     }
 

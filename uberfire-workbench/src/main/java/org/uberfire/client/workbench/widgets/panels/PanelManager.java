@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.workbench.widgets.panels;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -24,11 +27,14 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanel;
 import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Manager responsible for adding or removing WorkbenchParts to WorkbenchPanels;
@@ -39,153 +45,154 @@ import com.google.gwt.user.client.ui.RequiresResize;
 public class PanelManager {
 
     @Inject
-    private BeanFactory                       factory;
+    private BeanFactory                          factory;
 
     @Inject
-    private Event<WorkbenchPanelOnFocusEvent> workbenchPanelOnFocusEvent;
+    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    private WorkbenchPanel                    focusPanel = null;
+    private PanelDefinition                      root                          = null;
 
-    private WorkbenchPanel                    rootPanel  = null;
+    private Map<PartDefinition, WorkbenchPart>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPart>();
 
-    public void setRoot(final WorkbenchPanel panel) {
-        this.rootPanel = panel;
-        scheduleResize( panel.getPanelView() );
+    private Map<PanelDefinition, WorkbenchPanel> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanel>();
+
+    public PanelDefinition getRoot() {
+        return this.root;
+    }
+
+    public PanelDefinition addWorkbenchPart(final PartDefinition part,
+                                            final PanelDefinition panel,
+                                            final IsWidget partWidget) {
+        final WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        if ( panelPresenter == null ) {
+            throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
+        }
+
+        WorkbenchPart partPresenter = mapPartDefinitionToPresenter.get( part );
+        if ( partPresenter == null ) {
+            partPresenter = factory.newWorkbenchPart( part );
+            partPresenter.setPartWidget( partWidget );
+            mapPartDefinitionToPresenter.put( part,
+                                              partPresenter );
+        }
+
+        panelPresenter.addPart( part,
+                                partPresenter.getPartView() );
         setFocus( panel );
+        return panelPresenter.getDefinition();
     }
 
-    public WorkbenchPanel getRoot() {
-        return this.rootPanel;
-    }
+    public PanelDefinition addWorkbenchPanel(final PanelDefinition panel,
+                                             final Position position) {
 
-    public WorkbenchPanel addWorkbenchPart(final WorkbenchPart part,
-                                           final WorkbenchPanel targetPanel) {
-        targetPanel.addPart( part );
-        setFocus( targetPanel );
-        return targetPanel;
-    }
+        PanelDefinition newPanel = null;
 
-    public WorkbenchPanel addWorkbenchPanel(final Position position) {
-        return addWorkbenchPanel( rootPanel,
-                                  position );
-    }
-
-    public WorkbenchPanel addWorkbenchPanel(final WorkbenchPanel targetPanel,
-                                            final Position position) {
-
-        WorkbenchPanel newPanel;
+        WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        if ( panelPresenter == null ) {
+            panelPresenter = factory.newWorkbenchPanel( panel );
+            mapPanelDefinitionToPresenter.put( panel,
+                                               panelPresenter );
+        }
+        if ( !panel.equals( root ) ) {
+            if ( this.root != null && panel.isRoot() ) {
+                throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
+            }
+            this.root = panel;
+        }
 
         switch ( position ) {
             case SELF :
-                newPanel = targetPanel;
+                newPanel = panelPresenter.getDefinition();
                 break;
 
             case ROOT :
-                newPanel = rootPanel;
+                for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+                    if ( e.getKey().isRoot() ) {
+                        newPanel = e.getValue().getDefinition();
+                        break;
+                    }
+                }
                 break;
 
             case NORTH :
             case SOUTH :
             case EAST :
             case WEST :
-                newPanel = factory.newWorkbenchPanel();
-                targetPanel.addPanel( newPanel,
-                                      position );
+
+                final PanelDefinition childPanelDefinition = new PanelDefinition();
+                final WorkbenchPanel childPanelPresenter = factory.newWorkbenchPanel( childPanelDefinition );
+                mapPanelDefinitionToPresenter.put( childPanelDefinition,
+                                                   childPanelPresenter );
+                panelPresenter.addPanel( panel,
+                                         childPanelPresenter.getPanelView(),
+                                         position );
+                newPanel = childPanelPresenter.getDefinition();
                 break;
 
             default :
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
-        setFocus( newPanel );
+        setFocus( panel );
         return newPanel;
     }
 
-    public void removeWorkbenchPanel(final WorkbenchPanel panel) {
-
-        //The root WorkbenchPanel cannot be removed
-        if ( panel == rootPanel ) {
-            return;
-        }
-
-        //        //Find the position that needs to be deleted
-        //        Position position = Position.NONE;
-        //        final WorkbenchPanel.View view = panel.getPanelView();
-        //        final Widget parent = view.asWidget().getParent().getParent().getParent();
-        //        if ( parent instanceof HorizontalSplitterPanel ) {
-        //            final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-        //            if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
-        //                position = Position.EAST;
-        //            } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
-        //                position = Position.WEST;
-        //            }
-        //        } else if ( parent instanceof VerticalSplitterPanel ) {
-        //            final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-        //            if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
-        //                position = Position.NORTH;
-        //            } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
-        //                position = Position.SOUTH;
-        //            }
-        //        }
-        //
-        //        switch ( position ) {
-        //            case NORTH :
-        //                helperNorth.remove( view );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case SOUTH :
-        //                helperSouth.remove( view );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case EAST :
-        //                helperEast.remove( view );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //
-        //            case WEST :
-        //                helperWest.remove( view );
-        //                workbenchPanels.remove( panel );
-        //                factory.destroy( panel );
-        //                break;
-        //        }
-
-        if ( this.focusPanel == panel ) {
-            this.focusPanel = null;
-            assertFocusPanel();
-            setFocus( this.focusPanel );
-        }
-    }
-
-    private void setFocus(final WorkbenchPanel panel) {
+    private void setFocus(final PanelDefinition panel) {
         workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( panel ) );
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
-        final WorkbenchPanel panel = event.getWorkbenchPanel();
-        this.focusPanel = panel;
-    }
-
-    private void assertFocusPanel() {
-        if ( this.focusPanel == null ) {
-            this.focusPanel = rootPanel;
+        final PanelDefinition panel = event.getPanel();
+        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+            e.getValue().setFocus( e.getKey().equals( panel ) );
         }
     }
 
-    private void scheduleResize(final RequiresResize widget) {
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                widget.onResize();
+    @SuppressWarnings("unused")
+    private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
+        final PartDefinition part = event.getPart();
+        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+            if ( e.getValue().getDefinition().getParts().contains( part ) ) {
+                e.getValue().selectPart( part );
             }
+        }
+    }
 
-        } );
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
+        final PartDefinition part = event.getPart();
+        removePart( part );
+    }
+
+    @SuppressWarnings("unused")
+    private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
+        final PartDefinition part = event.getPart();
+        removePart( part );
+    }
+
+    private void removePart(final PartDefinition part) {
+        factory.destroy( mapPartDefinitionToPresenter.get( part ) );
+        mapPartDefinitionToPresenter.remove( part );
+
+        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+            if ( e.getValue().getDefinition().getParts().contains( part ) ) {
+                e.getValue().removePart( part );
+                if ( !e.getKey().isRoot() && e.getKey().getParts().size() == 0 ) {
+                    e.getValue().removePanel();
+                    factory.destroy( e.getValue() );
+                    mapPanelDefinitionToPresenter.remove( e.getValue() );
+                }
+            }
+        }
+    }
+
+    public WorkbenchPanel.View getPanelView(final PanelDefinition panel) {
+        return mapPanelDefinitionToPresenter.get( panel ).getPanelView();
+    }
+
+    public WorkbenchPart.View getPartView(final PartDefinition part) {
+        return mapPartDefinitionToPresenter.get( part ).getPartView();
     }
 
 }

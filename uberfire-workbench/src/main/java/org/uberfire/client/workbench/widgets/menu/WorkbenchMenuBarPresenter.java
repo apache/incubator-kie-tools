@@ -139,7 +139,7 @@ public class WorkbenchMenuBarPresenter {
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
     void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
-        final WorkbenchActivity activity = placeManager.getActivity( event.getWorkbenchPart() );
+        final WorkbenchActivity activity = placeManager.getActivity( event.getPart() );
         if ( activity == null ) {
             return;
         }
