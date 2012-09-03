@@ -169,6 +169,7 @@ public class WorkbenchPanelView extends ResizeComposite
         }
     }
 
+    @Override
     public void removePanel() {
 
         //Find the position that needs to be deleted

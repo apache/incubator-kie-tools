@@ -94,10 +94,13 @@ public class PanelManager {
                                                panelPresenter );
         }
         if ( !panel.equals( root ) ) {
-            if ( this.root != null && panel.isRoot() ) {
-                throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
+            if ( panel.isRoot() ) {
+                if ( root == null ) {
+                    this.root = panel;
+                } else {
+                    throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
+                }
             }
-            this.root = panel;
         }
 
         switch ( position ) {
@@ -175,15 +178,23 @@ public class PanelManager {
         factory.destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
+        WorkbenchPanel panelToDelete = null;
+
         for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
-            if ( e.getValue().getDefinition().getParts().contains( part ) ) {
-                e.getValue().removePart( part );
-                if ( !e.getKey().isRoot() && e.getKey().getParts().size() == 0 ) {
-                    e.getValue().removePanel();
-                    factory.destroy( e.getValue() );
-                    mapPanelDefinitionToPresenter.remove( e.getValue() );
+            final PanelDefinition definition = e.getKey();
+            final WorkbenchPanel presenter = e.getValue();
+            if ( presenter.getDefinition().getParts().contains( part ) ) {
+                presenter.removePart( part );
+                if ( !definition.isRoot() && definition.getParts().size() == 0 ) {
+                    panelToDelete = presenter;
                 }
+                break;
             }
+        }
+        if ( panelToDelete != null ) {
+            panelToDelete.removePanel();
+            factory.destroy( panelToDelete );
+            mapPanelDefinitionToPresenter.remove( panelToDelete.getDefinition() );
         }
     }
 

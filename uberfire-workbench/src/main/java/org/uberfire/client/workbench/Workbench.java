@@ -128,11 +128,6 @@ public class Workbench extends Composite {
                                                                       Position.ROOT );
         workbench.setWidget( panelManager.getPanelView( panel ) );
 
-        //Wire-up DnD controller
-        //final CompassDropController workbenchDropController = factory.newDropController( workbenchRootPanel );
-        //dndManager.registerDropController( workbench,
-        //                                   workbenchDropController );
-
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         AbstractPerspectiveActivity defaultPerspective = null;
 

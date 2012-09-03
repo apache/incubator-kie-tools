@@ -30,6 +30,9 @@ import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -56,6 +59,8 @@ public class WorkbenchMenuBarPresenter {
     }
 
     private final View                     view;
+
+    private PartDefinition                 activePart;
 
     @Inject
     private PlaceManager                   placeManager;
@@ -137,6 +142,26 @@ public class WorkbenchMenuBarPresenter {
         return sortedActivities;
     }
 
+    //Handle removing the WorkbenchPart menu items
+    void onWorkbenchPartClose(@Observes WorkbenchPartCloseEvent event) {
+        if ( event.getPart().equals( activePart ) ) {
+            for ( AbstractMenuItem item : items ) {
+                view.removeMenuItem( item );
+            }
+            activePart = null;
+        }
+    }
+
+    //Handle removing the WorkbenchPart menu items
+    void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
+        if ( event.getDeselectedPart().equals( activePart ) ) {
+            for ( AbstractMenuItem item : items ) {
+                view.removeMenuItem( item );
+            }
+            activePart = null;
+        }
+    }
+
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
     void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
         final WorkbenchActivity activity = placeManager.getActivity( event.getPart() );
@@ -144,12 +169,8 @@ public class WorkbenchMenuBarPresenter {
             return;
         }
 
-        //Remove items from previous WorkbenchPart
-        for ( AbstractMenuItem item : items ) {
-            view.removeMenuItem( item );
-        }
-
         //Add items for current WorkbenchPart
+        activePart = event.getPart();
         items = new ArrayList<AbstractMenuItem>();
         for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
             view.addMenuItem( item );
