@@ -145,20 +145,14 @@ public class WorkbenchMenuBarPresenter {
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartClose(@Observes WorkbenchPartCloseEvent event) {
         if ( event.getPart().equals( activePart ) ) {
-            for ( AbstractMenuItem item : items ) {
-                view.removeMenuItem( item );
-            }
-            activePart = null;
+            removeMenuItems();
         }
     }
 
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
         if ( event.getDeselectedPart().equals( activePart ) ) {
-            for ( AbstractMenuItem item : items ) {
-                view.removeMenuItem( item );
-            }
-            activePart = null;
+            removeMenuItems();
         }
     }
 
@@ -169,12 +163,24 @@ public class WorkbenchMenuBarPresenter {
             return;
         }
 
-        //Add items for current WorkbenchPart
-        activePart = event.getPart();
-        items = new ArrayList<AbstractMenuItem>();
-        for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
-            view.addMenuItem( item );
-            items.add( item );
+        if ( !event.getPart().equals( activePart ) ) {
+            
+            removeMenuItems();
+
+            //Add items for current WorkbenchPart
+            activePart = event.getPart();
+            items = new ArrayList<AbstractMenuItem>();
+            for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
+                view.addMenuItem( item );
+                items.add( item );
+            }
+        }
+    }
+
+    private void removeMenuItems() {
+        activePart = null;
+        for ( AbstractMenuItem item : items ) {
+            view.removeMenuItem( item );
         }
     }
 
