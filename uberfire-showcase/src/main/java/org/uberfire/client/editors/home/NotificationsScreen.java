@@ -29,8 +29,6 @@ public class NotificationsScreen {
 
     @WorkbenchPartView
     public IsWidget getView() {
-
-
         return widgets;
     }
 

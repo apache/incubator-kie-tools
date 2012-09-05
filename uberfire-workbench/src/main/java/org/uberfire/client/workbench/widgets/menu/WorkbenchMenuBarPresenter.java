@@ -84,26 +84,12 @@ public class WorkbenchMenuBarPresenter {
     //Configure the default menu items
     private void setupCoreItems() {
 
-        //Perspectives
-        final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
-        final SubMenuItem perspectivesMenu = new SubMenuItem( "Perspectives",
-                                                              perspectivesMenuBar );
-        final List<AbstractPerspectiveActivity> perspectives = getPerspectiveActivities();
-        for ( final AbstractPerspectiveActivity perspective : perspectives ) {
-            final String name = perspective.getPerspective().getName();
-            final Command cmd = new Command() {
-
-                @Override
-                public void execute() {
-                    placeManager.goTo( new PlaceRequest( perspective.getIdentifier() ) );
-                }
-
-            };
-            final CommandMenuItem item = new CommandMenuItem( name,
-                                                              cmd );
-            perspectivesMenuBar.addItem( item );
-        }
-        view.addMenuItem( perspectivesMenu );
+        view.addMenuItem(new CommandMenuItem("Home", new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo(new PlaceRequest("homePerspective"));
+            }
+        }));
 
         //Simple "About" dialog
         view.addMenuItem( new CommandMenuItem( "About",
@@ -164,7 +150,7 @@ public class WorkbenchMenuBarPresenter {
         }
 
         if ( !event.getPart().equals( activePart ) ) {
-            
+
             removeMenuItems();
 
             //Add items for current WorkbenchPart
