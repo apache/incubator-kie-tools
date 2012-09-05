@@ -15,12 +15,6 @@ public class NotificationsScreen {
 
     private final VerticalPanel widgets = new VerticalPanel();
 
-
-
-
-    5:40
-
-
     public NotificationsScreen() {
         addMessage("Toni finished the Welcome Screen", "Didn't take him that long.");
         addMessage("Michael is on PTO September 4th", "");
