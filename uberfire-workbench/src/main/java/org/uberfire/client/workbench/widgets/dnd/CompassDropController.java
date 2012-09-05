@@ -20,8 +20,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanel;
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
@@ -43,7 +43,7 @@ public class CompassDropController
 
     private final CompassWidget              compass = CompassWidget.getInstance();
 
-    private WorkbenchPanel.View              dropTarget;
+    private WorkbenchPanelPresenter.View              dropTarget;
 
     @Inject
     private PanelManager                     panelManager;
@@ -54,7 +54,7 @@ public class CompassDropController
     @Inject
     private Event<WorkbenchPartDroppedEvent> workbenchPartDroppedEvent;
 
-    public void setup(final WorkbenchPanel.View view) {
+    public void setup(final WorkbenchPanelPresenter.View view) {
         dropTarget = view;
     }
 
@@ -87,7 +87,7 @@ public class CompassDropController
         compass.onDrop( context );
 
         //Move Part from source to target 
-        final WorkbenchPart.View view = (WorkbenchPart.View) context.draggable;
+        final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) context.draggable;
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();

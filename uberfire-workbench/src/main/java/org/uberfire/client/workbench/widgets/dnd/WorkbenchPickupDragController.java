@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 
@@ -51,7 +51,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
     @Override
     public void dragStart() {
-        final WorkbenchPart.View sourceView = (WorkbenchPart.View) super.context.selectedWidgets.get( 0 );
+        final WorkbenchPartPresenter.View sourceView = (WorkbenchPartPresenter.View) super.context.selectedWidgets.get( 0 );
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
         final String title = sourceView.getPresenter().getTitle();

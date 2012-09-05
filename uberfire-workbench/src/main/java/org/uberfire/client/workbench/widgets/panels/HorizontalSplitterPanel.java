@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.widgets.panels;
 import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanel;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -40,8 +40,8 @@ public class HorizontalSplitterPanel extends ResizeComposite
         initWidget( slp );
     }
 
-    public void setup(final WorkbenchPanel.View eastWidget,
-                      final WorkbenchPanel.View westWidget,
+    public void setup(final WorkbenchPanelPresenter.View eastWidget,
+                      final WorkbenchPanelPresenter.View westWidget,
                       final Position position) {
         switch ( position ) {
             case EAST :

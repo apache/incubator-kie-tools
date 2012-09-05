@@ -34,22 +34,22 @@ public class BeanFactory {
     @Inject
     private IOCBeanManager iocManager;
 
-    public WorkbenchPart newWorkbenchPart(final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final String title,
                                           final PartDefinition definition) {
-        final WorkbenchPart part = iocManager.lookupBean( WorkbenchPart.class ).getInstance();
+        final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
         part.setTitle( title );
         part.setDefinition( definition );
         return part;
     }
 
-    public WorkbenchPanel newWorkbenchPanel(final PanelDefinition definition) {
-        final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
+    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition) {
+        final WorkbenchPanelPresenter panel = iocManager.lookupBean( WorkbenchPanelPresenter.class ).getInstance();
         panel.setDefinition( definition );
         return panel;
     }
 
-    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanel.View eastPanel,
-                                                              final WorkbenchPanel.View westPanel,
+    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
+                                                              final WorkbenchPanelPresenter.View westPanel,
                                                               final Position position) {
         final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
         hsp.setup( eastPanel,
@@ -58,8 +58,8 @@ public class BeanFactory {
         return hsp;
     }
 
-    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanel.View northPanel,
-                                                          final WorkbenchPanel.View southPanel,
+    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
+                                                          final WorkbenchPanelPresenter.View southPanel,
                                                           final Position position) {
         final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
         vsp.setup( northPanel,
@@ -68,7 +68,7 @@ public class BeanFactory {
         return vsp;
     }
 
-    public CompassDropController newDropController(final WorkbenchPanel.View view) {
+    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view) {
         final CompassDropController dropController = iocManager.lookupBean( CompassDropController.class ).getInstance();
         dropController.setup( view );
         return dropController;

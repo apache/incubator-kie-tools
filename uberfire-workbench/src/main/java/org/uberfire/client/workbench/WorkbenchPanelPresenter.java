@@ -36,22 +36,22 @@ import com.google.gwt.user.client.ui.RequiresResize;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-public class WorkbenchPanel {
+public class WorkbenchPanelPresenter {
 
     public interface View
         extends
-        UberView<WorkbenchPanel>,
+        UberView<WorkbenchPanelPresenter>,
         RequiresResize {
 
-        WorkbenchPanel getPresenter();
+        WorkbenchPanelPresenter getPresenter();
 
         void clear();
 
         void addPart(String title,
-                     WorkbenchPart.View view);
+                     WorkbenchPartPresenter.View view);
 
         void addPanel(PanelDefinition panel,
-                      WorkbenchPanel.View view,
+                      WorkbenchPanelPresenter.View view,
                       Position position);
 
         void selectPart(int index);
@@ -97,7 +97,7 @@ public class WorkbenchPanel {
 
     public void addPart(final String title,
                         final PartDefinition part,
-                        final WorkbenchPart.View view) {
+                        final WorkbenchPartPresenter.View view) {
         if ( !definition.getParts().contains( part ) ) {
             definition.addPart( part );
         }
@@ -106,7 +106,7 @@ public class WorkbenchPanel {
     }
 
     public void addPanel(final PanelDefinition panel,
-                         final WorkbenchPanel.View view,
+                         final WorkbenchPanelPresenter.View view,
                          final Position position) {
         final List<PanelDefinition> panels = definition.getChildren( position );
         if ( panels == null ) {

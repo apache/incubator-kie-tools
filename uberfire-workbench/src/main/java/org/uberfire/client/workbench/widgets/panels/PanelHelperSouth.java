@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanel;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -42,8 +42,8 @@ public class PanelHelperSouth
     @Inject
     private BeanFactory factory;
 
-    public void add(final WorkbenchPanel.View newPanel,
-                    final WorkbenchPanel.View targetPanel) {
+    public void add(final WorkbenchPanelPresenter.View newPanel,
+                    final WorkbenchPanelPresenter.View targetPanel) {
 
         final Widget parent = targetPanel.asWidget().getParent();
 
@@ -66,7 +66,7 @@ public class PanelHelperSouth
     }
 
     @Override
-    public void remove(WorkbenchPanel.View panel) {
+    public void remove(WorkbenchPanelPresenter.View panel) {
         final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
         final Widget northWidget = vsp.getWidget( Position.NORTH );

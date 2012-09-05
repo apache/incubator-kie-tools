@@ -29,14 +29,14 @@ import com.google.gwt.user.client.ui.RequiresResize;
  * A Workbench panel part.
  */
 @Dependent
-public class WorkbenchPart {
+public class WorkbenchPartPresenter {
 
     public interface View
         extends
-        UberView<WorkbenchPart>,
+        UberView<WorkbenchPartPresenter>,
         RequiresResize {
 
-        WorkbenchPart getPresenter();
+        WorkbenchPartPresenter getPresenter();
 
         void setWrappedWidget(IsWidget widget);
 

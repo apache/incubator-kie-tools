@@ -25,8 +25,8 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanel;
-import org.uberfire.client.workbench.WorkbenchPart;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
@@ -52,9 +52,9 @@ public class PanelManager {
 
     private PanelDefinition                      root                          = null;
 
-    private Map<PartDefinition, WorkbenchPart>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPart>();
+    private Map<PartDefinition, WorkbenchPartPresenter>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
-    private Map<PanelDefinition, WorkbenchPanel> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanel>();
+    private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
     public PanelDefinition getRoot() {
         return this.root;
@@ -73,7 +73,7 @@ public class PanelManager {
             }
         }
 
-        WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
         if ( panelPresenter == null ) {
             panelPresenter = factory.newWorkbenchPanel( panel );
             mapPanelDefinitionToPresenter.put( panel,
@@ -87,12 +87,12 @@ public class PanelManager {
                                             final PartDefinition part,
                                             final PanelDefinition panel,
                                             final IsWidget partWidget) {
-        final WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
         if ( panelPresenter == null ) {
             throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
         }
 
-        WorkbenchPart partPresenter = mapPartDefinitionToPresenter.get( part );
+        WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
             partPresenter = factory.newWorkbenchPart( title,
                                                       part );
@@ -122,7 +122,7 @@ public class PanelManager {
 
         PanelDefinition newPanel = null;
 
-        WorkbenchPanel targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
+        WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
             mapPanelDefinitionToPresenter.put( targetPanel,
@@ -143,7 +143,7 @@ public class PanelManager {
             case EAST :
             case WEST :
 
-                final WorkbenchPanel childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+                final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
                 mapPanelDefinitionToPresenter.put( childPanel,
                                                    childPanelPresenter );
 
@@ -168,7 +168,7 @@ public class PanelManager {
     @SuppressWarnings("unused")
     private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
         final PanelDefinition panel = event.getPanel();
-        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             e.getValue().setFocus( e.getKey().equals( panel ) );
         }
     }
@@ -176,7 +176,7 @@ public class PanelManager {
     @SuppressWarnings("unused")
     private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
         final PartDefinition part = event.getPart();
-        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             if ( e.getValue().getDefinition().getParts().contains( part ) ) {
                 e.getValue().selectPart( part );
             }
@@ -199,11 +199,11 @@ public class PanelManager {
         factory.destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
-        WorkbenchPanel panelToRemove = null;
+        WorkbenchPanelPresenter panelToRemove = null;
 
-        for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
+        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition definition = e.getKey();
-            final WorkbenchPanel presenter = e.getValue();
+            final WorkbenchPanelPresenter presenter = e.getValue();
             if ( presenter.getDefinition().getParts().contains( part ) ) {
                 presenter.removePart( part );
                 if ( !definition.isRoot() && definition.getParts().size() == 0 ) {
@@ -220,11 +220,11 @@ public class PanelManager {
         }
     }
 
-    public WorkbenchPanel.View getPanelView(final PanelDefinition panel) {
+    public WorkbenchPanelPresenter.View getPanelView(final PanelDefinition panel) {
         return mapPanelDefinitionToPresenter.get( panel ).getPanelView();
     }
 
-    public WorkbenchPart.View getPartView(final PartDefinition part) {
+    public WorkbenchPartPresenter.View getPartView(final PartDefinition part) {
         return mapPartDefinitionToPresenter.get( part ).getPartView();
     }
 
