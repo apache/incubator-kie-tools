@@ -65,4 +65,20 @@ public class PartDefinition {
         this.parentPanel = parentPanel;
     }
 
+    @Override
+    public int hashCode() {
+        return this.place.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null ) return false;
+        if ( !(o instanceof PartDefinition) ) return false;
+
+        PartDefinition that = (PartDefinition) o;
+
+        return place.equals( that.place );
+    }
+
 }

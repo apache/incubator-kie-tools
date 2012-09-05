@@ -163,7 +163,7 @@ public class PlaceManagerImpl
                                 final PartDefinition part,
                                 final PanelDefinition panel) {
         //If we're already showing this place exit.
-        if ( existingWorkbenchParts.containsKey( part ) ) {
+        if ( existingWorkbenchParts.containsValue( part ) ) {
             selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
             return;
         }
