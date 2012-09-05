@@ -1,19 +1,31 @@
 package org.uberfire.client.editors.charts;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.googlecode.gchart.client.GChart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.shared.charts.ChartPopulateEvent;
+import org.uberfire.shared.charts.ChartRefreshEvent;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 @Dependent
 @WorkbenchScreen(identifier = "chart0")
 public class FinishedTasksPerUserChartScreen extends GChart {
+
+
+    @Inject
+    private Event<ChartRefreshEvent> chartRefreshEvent;
 
     private int position = 1;
 
@@ -32,13 +44,6 @@ public class FinishedTasksPerUserChartScreen extends GChart {
         getCurve().getSymbol().setBorderColor("red");
         getCurve().getSymbol().setBorderWidth(1);
 
-//        addColumn("Toni");
-//        addColumn("Salaboy");
-//        addColumn("Mark");
-//        addColumn("Michael");
-//        addColumn("Jervis");
-//        addColumn("Geoffrey");
-
         getXAxis().setTickThickness(0);
         getXAxis().setAxisMin(0);
 
@@ -46,6 +51,16 @@ public class FinishedTasksPerUserChartScreen extends GChart {
         getYAxis().setAxisMax(100);
         getYAxis().setTickCount(11);
         getYAxis().setHasGridlines(true);
+        getXAxis().addTick(0, "");
+
+        Button updateButton = new Button("Refresh");
+        updateButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                chartRefreshEvent.fire(new ChartRefreshEvent());
+            }
+        });
+        setChartFootnotes(updateButton);
     }
 
     private void addColumn(String name, double value) {

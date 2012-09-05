@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.*;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.shared.charts.ChartPopulateEvent;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
