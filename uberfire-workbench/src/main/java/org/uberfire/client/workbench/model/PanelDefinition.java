@@ -70,4 +70,23 @@ public class PanelDefinition {
         return this.isRoot;
     }
 
+    public void removePanel(final PanelDefinition panel) {
+        for ( PanelDefinition child : children.get( Position.NORTH ) ) {
+            child.removePanel( panel );
+        }
+        for ( PanelDefinition child : children.get( Position.SOUTH ) ) {
+            child.removePanel( panel );
+        }
+        for ( PanelDefinition child : children.get( Position.EAST ) ) {
+            child.removePanel( panel );
+        }
+        for ( PanelDefinition child : children.get( Position.WEST ) ) {
+            child.removePanel( panel );
+        }
+        children.get( Position.NORTH ).remove( panel );
+        children.get( Position.SOUTH ).remove( panel );
+        children.get( Position.EAST ).remove( panel );
+        children.get( Position.WEST ).remove( panel );
+    }
+
 }

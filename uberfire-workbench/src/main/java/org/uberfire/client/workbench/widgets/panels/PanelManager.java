@@ -94,7 +94,8 @@ public class PanelManager {
 
         WorkbenchPart partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( title, part );
+            partPresenter = factory.newWorkbenchPart( title,
+                                                      part );
             partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part,
                                               partPresenter );
@@ -198,7 +199,7 @@ public class PanelManager {
         factory.destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
-        WorkbenchPanel panelToDelete = null;
+        WorkbenchPanel panelToRemove = null;
 
         for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition definition = e.getKey();
@@ -206,16 +207,16 @@ public class PanelManager {
             if ( presenter.getDefinition().getParts().contains( part ) ) {
                 presenter.removePart( part );
                 if ( !definition.isRoot() && definition.getParts().size() == 0 ) {
-                    panelToDelete = presenter;
+                    panelToRemove = presenter;
                 }
                 break;
             }
         }
-        if ( panelToDelete != null ) {
-            //TODO {manstis} Remove PanelDefinition from somewhere!
-            panelToDelete.removePanel();
-            factory.destroy( panelToDelete );
-            mapPanelDefinitionToPresenter.remove( panelToDelete.getDefinition() );
+        if ( panelToRemove != null ) {
+            panelToRemove.removePanel();
+            factory.destroy( panelToRemove );
+            mapPanelDefinitionToPresenter.remove( panelToRemove.getDefinition() );
+            root.removePanel( panelToRemove.getDefinition() );
         }
     }
 

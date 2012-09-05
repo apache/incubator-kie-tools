@@ -85,10 +85,13 @@ public class HorizontalSplitterPanel extends ResizeComposite
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        setPixelSize( parent.getOffsetWidth(),
-                      parent.getOffsetHeight() );
-        super.onResize();
+        //It is possible that the SplitterPanel is removed from the DOM before the resize is called
+        if ( isAttached() ) {
+            final Widget parent = getParent();
+            setPixelSize( parent.getOffsetWidth(),
+                          parent.getOffsetHeight() );
+            super.onResize();
+        }
     }
 
 }
