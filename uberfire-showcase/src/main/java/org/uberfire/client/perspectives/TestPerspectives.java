@@ -67,7 +67,6 @@ public class TestPerspectives {
     }
 
     @Perspective(identifier = "TestPerspective4")
-    //    @ShowcaseRoles({DIRECTOR})
     public PerspectiveDefinition getPerspective4() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-4" );
@@ -84,7 +83,6 @@ public class TestPerspectives {
     }
 
     @Perspective(identifier = "TestPerspective5")
-    //    @Roles({"ADMIN"})
     public PerspectiveDefinition getPerspective5() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-5" );
@@ -104,8 +102,8 @@ public class TestPerspectives {
 
     @Perspective(identifier = "TestPerspective6")
     @ShowcaseRoles({DIRECTOR})
+    //This Perspective should not be shown as the default user does not poses this role
     public PerspectiveDefinition getPerspective6() {
-        //This Perspective should not be shown as the default user does not poses this role
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-6" );
 
@@ -116,8 +114,8 @@ public class TestPerspectives {
 
     @Perspective(identifier = "TestPerspective7")
     @Roles({"ADMIN"})
+    //This Perspective should not be shown as the default user does not poses this role
     public PerspectiveDefinition getPerspective7() {
-        //This Perspective should not be shown as the default user does not poses this role
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-7" );
 

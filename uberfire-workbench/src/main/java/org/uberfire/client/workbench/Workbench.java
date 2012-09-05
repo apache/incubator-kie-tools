@@ -26,9 +26,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.annotations.DefaultPerspective;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.annotations.DefaultPerspective;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
@@ -129,8 +129,14 @@ public class Workbench extends Composite {
         workbench.setWidget( panelManager.getPanelView( root ) );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
-        AbstractPerspectiveActivity defaultPerspective = null;
+        AbstractPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
+        if ( defaultPerspective != null ) {
+            placeManager.goTo( new PlaceRequest( defaultPerspective.getIdentifier() ) );
+        }
+    }
 
+    private AbstractPerspectiveActivity getDefaultPerspectiveActivity() {
+        AbstractPerspectiveActivity defaultPerspective = null;
         Collection<IOCBeanDef<AbstractPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
         Iterator<IOCBeanDef<AbstractPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
         outer_loop : while ( perspectivesIterator.hasNext() ) {
@@ -143,11 +149,7 @@ public class Workbench extends Composite {
                 }
             }
         }
-
-        //If a default perspective was found load it up!
-        if ( defaultPerspective != null ) {
-            placeManager.goTo( new PlaceRequest( defaultPerspective.getIdentifier() ) );
-        }
+        return defaultPerspective;
     }
 
 }

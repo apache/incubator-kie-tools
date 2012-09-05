@@ -9,7 +9,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 
 public class HomePerspective {
 
-    @Perspective(identifier = "homePerspective")
+    @Perspective(identifier = "homePerspective", isDefault = true)
     public PerspectiveDefinition getPerspective() {
         final PerspectiveDefinition definition = new PerspectiveDefinition();
         definition.setName( "home" );

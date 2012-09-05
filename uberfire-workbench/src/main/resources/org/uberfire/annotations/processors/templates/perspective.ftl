@@ -25,7 +25,7 @@ import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
 <#if isDefault>
-import org.uberfire.client.annotations.DefaultPerspective;
+import org.uberfire.client.workbench.annotations.DefaultPerspective;
 
 </#if>
 @ApplicationScoped

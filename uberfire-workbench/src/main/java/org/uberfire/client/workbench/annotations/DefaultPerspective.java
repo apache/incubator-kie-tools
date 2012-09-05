@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.client.workbench.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
