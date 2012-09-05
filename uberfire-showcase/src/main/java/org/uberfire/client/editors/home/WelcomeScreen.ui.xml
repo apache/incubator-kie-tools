@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style>
+    .background {
+      background-color: #90ee90;
+      height: 100%;
+    }
+
+    .title {
+      padding: 50px 0px 10px 0px;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .explanation {
+      padding: 0px 30px 0px 30px;
+      /*color: #f5f5f5;*/
+    }
+  </ui:style>
+
+  <gwt:HTMLPanel height="100%">
+    <div class='{style.background}'>
+      <div class='{style.title}'>
+        Welcome to ÜberFire
+      </div>
+      <div class='{style.explanation}'>Feel free to customize this perspective or pick one from the left.
+      </div>
+    </div>
+  </gwt:HTMLPanel>
+</ui:UiBinder> 

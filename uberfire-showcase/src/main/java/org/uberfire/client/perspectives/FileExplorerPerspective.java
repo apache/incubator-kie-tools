@@ -29,7 +29,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @ApplicationScoped
 public class FileExplorerPerspective {
 
-    @Perspective(identifier = "FileExplorerPerspective", isDefault = true)
+    @Perspective(identifier = "FileExplorerPerspective")
     public PerspectiveDefinition getPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "File Explorer" );

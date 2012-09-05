@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style>
+    .roundPanel {
+      -moz-border-radius: 15px;
+      border-radius: 15px;
+      background-color: #d3d3d3;
+      padding: 10px 10px 10px 10px;
+      margin: 1px 1px 1px 1px;
+    }
+
+    .title {
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .explanation {
+      color: #f5f5f5;
+      font-size: 10px;
+    }
+
+    .arrow {
+      width: 100%;
+      text-align: right;
+      color: #f5f5f5;
+    }
+
+
+  </ui:style>
+
+  <gwt:HTMLPanel ui:field="panel">
+    <div class='{style.roundPanel}'>
+      <div class='{style.title}'>
+        <gwt:Label ui:field="title"/>
+      </div>
+      <div class='{style.explanation}'>
+        <gwt:Label ui:field="content"/>
+      </div>
+      <div class='{style.arrow}'>-&gt;</div>
+    </div>
+  </gwt:HTMLPanel>
+</ui:UiBinder> 
