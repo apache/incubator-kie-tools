@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
 import org.uberfire.client.annotations.DefaultPerspective;
 

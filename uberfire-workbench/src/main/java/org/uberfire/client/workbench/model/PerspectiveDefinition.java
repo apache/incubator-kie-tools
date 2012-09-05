@@ -13,10 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.perspectives;
-
-import java.util.HashSet;
-import java.util.Set;
+package org.uberfire.client.workbench.model;
 
 /**
  * Meta-data defining a Perspective. A Perspective is a set of WorkbenchPanels
@@ -25,9 +22,9 @@ import java.util.Set;
  */
 public class PerspectiveDefinition {
 
-    private String name;
+    private String          name;
 
-    private Set<PerspectivePartDefinition> parts = new HashSet<PerspectivePartDefinition>();
+    private PanelDefinition root = new PanelDefinition( true );
 
     public String getName() {
         return name;
@@ -37,12 +34,8 @@ public class PerspectiveDefinition {
         this.name = name;
     }
 
-    public void addPart(final PerspectivePartDefinition part) {
-        parts.add( part );
-    }
-
-    public Set<PerspectivePartDefinition> getParts() {
-        return this.parts;
+    public PanelDefinition getRoot() {
+        return root;
     }
 
 }

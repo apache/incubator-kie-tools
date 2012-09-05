@@ -15,18 +15,18 @@
  */
 package org.uberfire.client.perspectives;
 
+import static org.uberfire.shared.security.AppRoles.DIRECTOR;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
-import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.security.annotations.Roles;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.security.AppRoles;
 import org.uberfire.shared.security.ShowcaseRoles;
-
-import static org.uberfire.shared.security.AppRoles.DIRECTOR;
 
 /**
  * Test Perspectives. Multiple Perspectives can be defined in one class
@@ -38,8 +38,9 @@ public class TestPerspectives {
     public PerspectiveDefinition getPerspective1() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-1" );
-        p.addPart( new PerspectivePartDefinition( Position.ROOT,
-                                                  new PlaceRequest( "Test" ) ) );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
+
         return p;
     }
 
@@ -47,8 +48,9 @@ public class TestPerspectives {
     public PerspectiveDefinition getPerspective2() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-2" );
-        p.addPart( new PerspectivePartDefinition( Position.ROOT,
-                                                  new PlaceRequest( "Test2" ) ) );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
+
         return p;
     }
 
@@ -56,38 +58,71 @@ public class TestPerspectives {
     public PerspectiveDefinition getPerspective3() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-3" );
-        p.addPart( new PerspectivePartDefinition( Position.SOUTH,
-                                                  new PlaceRequest( "Test" ) ) );
+
+        final PanelDefinition south = new PanelDefinition();
+        south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
+        p.getRoot().getChildren( Position.SOUTH ).add( south );
+
         return p;
     }
 
     @Perspective(identifier = "TestPerspective4")
-    @ShowcaseRoles({DIRECTOR})
+    //    @ShowcaseRoles({DIRECTOR})
     public PerspectiveDefinition getPerspective4() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-4" );
-        final PerspectivePartDefinition south = new PerspectivePartDefinition( Position.SOUTH,
-                                                                               new PlaceRequest( "Test" ) );
-        south.addPart( new PerspectivePartDefinition( Position.EAST,
-                                                      new PlaceRequest( "Test2" ) ) );
-        p.addPart( south );
+
+        final PanelDefinition south = new PanelDefinition();
+        south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
+        p.getRoot().getChildren( Position.SOUTH ).add( south );
+
+        final PanelDefinition east = new PanelDefinition();
+        east.addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
+        south.getChildren( Position.EAST ).add( east );
+
         return p;
     }
 
     @Perspective(identifier = "TestPerspective5")
-    @Roles({"ADMIN"})
+    //    @Roles({"ADMIN"})
     public PerspectiveDefinition getPerspective5() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "Show TestWidgets-5" );
-        p.addPart( new PerspectivePartDefinition( Position.SOUTH,
-                                                  new PlaceRequest( "Monitoring" ) ) );
-        p.addPart( new PerspectivePartDefinition( Position.SELF,
-                                                  new PlaceRequest( "MyAdminArea" ) ) );
-        final PerspectivePartDefinition west = new PerspectivePartDefinition( Position.WEST,
-                                                                              new PlaceRequest( "Test" ) );
-        west.addPart( new PerspectivePartDefinition( Position.SOUTH,
-                                                     new PlaceRequest( "Test2" ) ) );
-        p.addPart( west );
+
+        final PanelDefinition south = new PanelDefinition();
+        south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
+        p.getRoot().getChildren( Position.SOUTH ).add( south );
+
+        final PanelDefinition west = new PanelDefinition();
+        west.addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
+        p.getRoot().getChildren( Position.WEST ).add( west );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "MyAdminArea" ) ) );
+
+        return p;
+    }
+
+    @Perspective(identifier = "TestPerspective6")
+    @ShowcaseRoles({DIRECTOR})
+    public PerspectiveDefinition getPerspective6() {
+        //This Perspective should not be shown as the default user does not poses this role
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-6" );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "MyAdminArea" ) ) );
+
+        return p;
+    }
+
+    @Perspective(identifier = "TestPerspective7")
+    @Roles({"ADMIN"})
+    public PerspectiveDefinition getPerspective7() {
+        //This Perspective should not be shown as the default user does not poses this role
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestWidgets-7" );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "MyAdminArea" ) ) );
+
         return p;
     }
 

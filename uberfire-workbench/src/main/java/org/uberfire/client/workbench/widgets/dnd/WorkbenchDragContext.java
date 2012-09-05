@@ -25,11 +25,14 @@ public class WorkbenchDragContext {
 
     private final PartDefinition  sourcePart;
     private final PanelDefinition sourcePanel;
+    private final String          title;
 
     public WorkbenchDragContext(final PartDefinition sourcePart,
-                                final PanelDefinition sourcePanel) {
+                                final PanelDefinition sourcePanel,
+                                final String title) {
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
+        this.title = title;
     }
 
     /**
@@ -45,5 +48,12 @@ public class WorkbenchDragContext {
     public PanelDefinition getSourcePanel() {
         return sourcePanel;
     }
-    
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
 }

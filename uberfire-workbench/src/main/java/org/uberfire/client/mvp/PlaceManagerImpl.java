@@ -110,20 +110,20 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo(final PlaceRequest placeRequest,
+    public void goTo(final PartDefinition part,
                      final PanelDefinition panel) {
-        if ( placeRequest == null ) {
+        if ( part.getPlace() == null ) {
             return;
         }
-        final Activity activity = activityManager.getActivity( placeRequest );
+        final Activity activity = activityManager.getActivity( part.getPlace() );
         if ( activity == null ) {
             return;
         }
 
         if ( activity instanceof WorkbenchActivity ) {
             final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-            launchActivity( placeRequest,
-                            workbenchActivity,
+            launchActivity( workbenchActivity,
+                            part,
                             panel );
         } else {
             throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
@@ -151,45 +151,43 @@ public class PlaceManagerImpl
     private void launchActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity,
                                 final Position position) {
+        final PartDefinition part = new PartDefinition( newPlace );
         final PanelDefinition panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
                                                                       position );
-        launchActivity( newPlace,
-                        activity,
+        launchActivity( activity,
+                        part,
                         panel );
     }
 
-    private void launchActivity(final PlaceRequest newPlace,
-                                final WorkbenchActivity activity,
+    private void launchActivity(final WorkbenchActivity activity,
+                                final PartDefinition part,
                                 final PanelDefinition panel) {
         //If we're already showing this place exit.
-        if ( existingWorkbenchActivities.containsKey( newPlace ) ) {
-            final PartDefinition part = existingWorkbenchParts.get( newPlace );
+        if ( existingWorkbenchParts.containsKey( part ) ) {
             selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
             return;
         }
 
         //Record new activity
-        currentPlaceRequest = newPlace;
-        existingWorkbenchActivities.put( newPlace,
+        currentPlaceRequest = part.getPlace();
+        existingWorkbenchActivities.put( part.getPlace(),
                                          activity );
+        existingWorkbenchParts.put( part.getPlace(),
+                                    part );
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch(
                 new AcceptItem() {
                     public void add(String tabTitle,
                                     IsWidget widget) {
-                        final PartDefinition part = new PartDefinition();
-                        part.setTitle( tabTitle );
-                        part.setPlace( newPlace );
-                        existingWorkbenchParts.put( newPlace,
-                                                    part );
-                        panelManager.addWorkbenchPart( part,
+                        panelManager.addWorkbenchPart( tabTitle,
+                                                       part,
                                                        panel,
                                                        widget );
                     }
                 } );
 
-        updateHistory( newPlace );
+        updateHistory( part.getPlace() );
     }
 
     private void launchActivity(final PlaceRequest newPlace,

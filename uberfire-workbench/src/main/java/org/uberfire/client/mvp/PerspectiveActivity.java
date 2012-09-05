@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
 /**
  * Perspective Activity life-cycles

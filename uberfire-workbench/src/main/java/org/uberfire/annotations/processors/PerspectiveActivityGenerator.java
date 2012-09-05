@@ -18,7 +18,6 @@ package org.uberfire.annotations.processors;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 

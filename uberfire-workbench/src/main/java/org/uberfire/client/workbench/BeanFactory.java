@@ -34,8 +34,10 @@ public class BeanFactory {
     @Inject
     private IOCBeanManager iocManager;
 
-    public WorkbenchPart newWorkbenchPart(final PartDefinition definition) {
+    public WorkbenchPart newWorkbenchPart(final String title,
+                                          final PartDefinition definition) {
         final WorkbenchPart part = iocManager.lookupBean( WorkbenchPart.class ).getInstance();
+        part.setTitle( title );
         part.setDefinition( definition );
         return part;
     }
@@ -43,13 +45,6 @@ public class BeanFactory {
     public WorkbenchPanel newWorkbenchPanel(final PanelDefinition definition) {
         final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
         panel.setDefinition( definition );
-        return panel;
-    }
-
-    public WorkbenchPanel newWorkbenchPanel(final WorkbenchPart part) {
-        final WorkbenchPanel panel = iocManager.lookupBean( WorkbenchPanel.class ).getInstance();
-        panel.addPart( part.getDefinition(),
-                       part.getPartView() );
         return panel;
     }
 

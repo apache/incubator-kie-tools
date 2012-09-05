@@ -22,9 +22,9 @@ import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface PlaceManager {
 
-    void goTo(PlaceRequest request);
+    void goTo(final PlaceRequest request);
 
-    void goTo(final PlaceRequest placeRequest,
+    void goTo(final PartDefinition part,
               final PanelDefinition panel);
 
     public PlaceRequest getCurrentPlaceRequest();

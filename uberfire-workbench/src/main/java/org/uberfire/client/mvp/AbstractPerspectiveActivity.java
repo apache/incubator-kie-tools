@@ -15,13 +15,14 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.perspectives.PerspectiveDefinition;
-import org.uberfire.client.workbench.perspectives.PerspectivePartDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
@@ -40,28 +41,59 @@ public abstract class AbstractPerspectiveActivity
     @Override
     public void launch() {
         final PerspectiveDefinition perspective = getPerspective();
+        final PanelDefinition root = perspective.getRoot();
+
+        panelManager.getRoot().getParts().clear();
+        panelManager.getRoot().getParts().addAll( root.getParts() );
+        panelManager.getRoot().getChildren( Position.NORTH ).clear();
+        panelManager.getRoot().getChildren( Position.SOUTH ).clear();
+        panelManager.getRoot().getChildren( Position.EAST ).clear();
+        panelManager.getRoot().getChildren( Position.WEST ).clear();
+        panelManager.getRoot().getChildren( Position.NORTH ).addAll( root.getChildren( Position.NORTH ) );
+        panelManager.getRoot().getChildren( Position.SOUTH ).addAll( root.getChildren( Position.SOUTH ) );
+        panelManager.getRoot().getChildren( Position.EAST ).addAll( root.getChildren( Position.EAST ) );
+        panelManager.getRoot().getChildren( Position.WEST ).addAll( root.getChildren( Position.WEST ) );
+
+        for ( PartDefinition part : panelManager.getRoot().getParts() ) {
+            placeManager.goTo( part,
+                               panelManager.getRoot() );
+        }
         buildPerspective( panelManager.getRoot(),
-                          perspective.getParts() );
+                          Position.NORTH );
+        buildPerspective( panelManager.getRoot(),
+                          Position.SOUTH );
+        buildPerspective( panelManager.getRoot(),
+                          Position.EAST );
+        buildPerspective( panelManager.getRoot(),
+                          Position.WEST );
     }
 
     private void buildPerspective(final PanelDefinition panel,
-                                  final Set<PerspectivePartDefinition> parts) {
-        for ( PerspectivePartDefinition part : parts ) {
-            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                           part.getPosition() );
-            placeManager.goTo( part.getPlace(),
-                               target );
-            switch ( part.getPosition() ) {
-                case NORTH :
-                case SOUTH :
-                case EAST :
-                case WEST :
-                    buildPerspective( target,
-                                      part.getParts() );
-                    break;
+                                  final Position position) {
+        final List<PanelDefinition> children = panel.getChildren( position );
+        if ( children.size() > 0 ) {
+            for ( PanelDefinition child : children ) {
+                final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                               child,
+                                                                               position );
+                addChildren( target );
             }
-
         }
+    }
+
+    private void addChildren(final PanelDefinition panel) {
+        for ( PartDefinition part : panel.getParts() ) {
+            placeManager.goTo( part,
+                               panel );
+        }
+        buildPerspective( panel,
+                          Position.NORTH );
+        buildPerspective( panel,
+                          Position.SOUTH );
+        buildPerspective( panel,
+                          Position.EAST );
+        buildPerspective( panel,
+                          Position.WEST );
     }
 
     @Override

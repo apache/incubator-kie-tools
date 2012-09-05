@@ -47,7 +47,7 @@ public class WorkbenchPanel {
 
         void clear();
 
-        void addPart(PartDefinition part,
+        void addPart(String title,
                      WorkbenchPart.View view);
 
         void addPanel(PanelDefinition panel,
@@ -95,10 +95,13 @@ public class WorkbenchPanel {
         this.definition = definition;
     }
 
-    public void addPart(final PartDefinition part,
+    public void addPart(final String title,
+                        final PartDefinition part,
                         final WorkbenchPart.View view) {
-        definition.addPart( part );
-        getPanelView().addPart( part,
+        if ( !definition.getParts().contains( part ) ) {
+            definition.addPart( part );
+        }
+        getPanelView().addPart( title,
                                 view );
     }
 
@@ -109,7 +112,9 @@ public class WorkbenchPanel {
         if ( panels == null ) {
             throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
-        panels.add( panel );
+        if ( !panels.contains( panel ) ) {
+            panels.add( panel );
+        }
         getPanelView().addPanel( panel,
                                  view,
                                  position );

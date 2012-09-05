@@ -91,6 +91,7 @@ public class CompassDropController
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
+        final String title = workbenchContext.getTitle();
         final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
@@ -108,7 +109,8 @@ public class CompassDropController
         workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( sourcePart ) );
         final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
                                                                             p );
-        panelManager.addWorkbenchPart( sourcePart,
+        panelManager.addWorkbenchPart( title,
+                                       sourcePart,
                                        targetPanel,
                                        view.getWrappedWidget() );
     }

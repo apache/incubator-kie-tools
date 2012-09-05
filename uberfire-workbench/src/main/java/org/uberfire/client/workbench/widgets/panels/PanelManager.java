@@ -60,7 +60,31 @@ public class PanelManager {
         return this.root;
     }
 
-    public PanelDefinition addWorkbenchPart(final PartDefinition part,
+    public void setRoot(final PanelDefinition panel) {
+        if ( !panel.isRoot() ) {
+            throw new IllegalArgumentException( "Panel is not a root panel." );
+        }
+
+        if ( panel.isRoot() ) {
+            if ( root == null ) {
+                this.root = panel;
+            } else {
+                throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
+            }
+        }
+
+        WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        if ( panelPresenter == null ) {
+            panelPresenter = factory.newWorkbenchPanel( panel );
+            mapPanelDefinitionToPresenter.put( panel,
+                                               panelPresenter );
+        }
+
+        setFocus( panel );
+    }
+
+    public PanelDefinition addWorkbenchPart(final String title,
+                                            final PartDefinition part,
                                             final PanelDefinition panel,
                                             final IsWidget partWidget) {
         final WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
@@ -70,51 +94,47 @@ public class PanelManager {
 
         WorkbenchPart partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( part );
+            partPresenter = factory.newWorkbenchPart( title, part );
             partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part,
                                               partPresenter );
         }
 
-        panelPresenter.addPart( part,
+        panelPresenter.addPart( title,
+                                part,
                                 partPresenter.getPartView() );
         setFocus( panel );
         return panelPresenter.getDefinition();
     }
 
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition panel,
+    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
+                                             final Position position) {
+        final PanelDefinition childPanel = new PanelDefinition();
+        return addWorkbenchPanel( targetPanel,
+                                  childPanel,
+                                  position );
+    }
+
+    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
+                                             final PanelDefinition childPanel,
                                              final Position position) {
 
         PanelDefinition newPanel = null;
 
-        WorkbenchPanel panelPresenter = mapPanelDefinitionToPresenter.get( panel );
-        if ( panelPresenter == null ) {
-            panelPresenter = factory.newWorkbenchPanel( panel );
-            mapPanelDefinitionToPresenter.put( panel,
-                                               panelPresenter );
-        }
-        if ( !panel.equals( root ) ) {
-            if ( panel.isRoot() ) {
-                if ( root == null ) {
-                    this.root = panel;
-                } else {
-                    throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
-                }
-            }
+        WorkbenchPanel targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
+        if ( targetPanelPresenter == null ) {
+            targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
+            mapPanelDefinitionToPresenter.put( targetPanel,
+                                               targetPanelPresenter );
         }
 
         switch ( position ) {
-            case SELF :
-                newPanel = panelPresenter.getDefinition();
+            case ROOT :
+                newPanel = root;
                 break;
 
-            case ROOT :
-                for ( Map.Entry<PanelDefinition, WorkbenchPanel> e : mapPanelDefinitionToPresenter.entrySet() ) {
-                    if ( e.getKey().isRoot() ) {
-                        newPanel = e.getValue().getDefinition();
-                        break;
-                    }
-                }
+            case SELF :
+                newPanel = targetPanelPresenter.getDefinition();
                 break;
 
             case NORTH :
@@ -122,13 +142,13 @@ public class PanelManager {
             case EAST :
             case WEST :
 
-                final PanelDefinition childPanelDefinition = new PanelDefinition();
-                final WorkbenchPanel childPanelPresenter = factory.newWorkbenchPanel( childPanelDefinition );
-                mapPanelDefinitionToPresenter.put( childPanelDefinition,
+                final WorkbenchPanel childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+                mapPanelDefinitionToPresenter.put( childPanel,
                                                    childPanelPresenter );
-                panelPresenter.addPanel( panel,
-                                         childPanelPresenter.getPanelView(),
-                                         position );
+
+                targetPanelPresenter.addPanel( childPanel,
+                                               childPanelPresenter.getPanelView(),
+                                               position );
                 newPanel = childPanelPresenter.getDefinition();
                 break;
 
@@ -136,7 +156,7 @@ public class PanelManager {
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
-        setFocus( panel );
+        setFocus( childPanel );
         return newPanel;
     }
 
@@ -192,6 +212,7 @@ public class PanelManager {
             }
         }
         if ( panelToDelete != null ) {
+            //TODO {manstis} Remove PanelDefinition from somewhere!
             panelToDelete.removePanel();
             factory.destroy( panelToDelete );
             mapPanelDefinitionToPresenter.remove( panelToDelete.getDefinition() );

@@ -124,9 +124,9 @@ public class Workbench extends Composite {
                                 HEIGHT - menuBarHeight );
 
         //Add default workbench widget
-        final PanelDefinition panel = panelManager.addWorkbenchPanel( new PanelDefinition( true ),
-                                                                      Position.ROOT );
-        workbench.setWidget( panelManager.getPanelView( panel ) );
+        final PanelDefinition root = new PanelDefinition( true );
+        panelManager.setRoot( root );
+        workbench.setWidget( panelManager.getPanelView( root ) );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         AbstractPerspectiveActivity defaultPerspective = null;

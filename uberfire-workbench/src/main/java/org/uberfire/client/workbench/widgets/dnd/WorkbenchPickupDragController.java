@@ -51,12 +51,13 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
     @Override
     public void dragStart() {
-        //TODO {manstis}
         final WorkbenchPart.View sourceView = (WorkbenchPart.View) super.context.selectedWidgets.get( 0 );
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
+        final String title = sourceView.getPresenter().getTitle();
         final WorkbenchDragContext context = new WorkbenchDragContext( sourcePart,
-                                                                       sourcePanel );
+                                                                       sourcePanel,
+                                                                       title );
         dndManager.setWorkbenchContext( context );
         super.dragStart();
         final Widget movablePanel = getMoveablePanel();

@@ -46,7 +46,9 @@ public class WorkbenchPart {
     @Inject
     private View           view;
 
-    private PartDefinition definition = new PartDefinition();
+    private String         title;
+
+    private PartDefinition definition;
 
     @SuppressWarnings("unused")
     @PostConstruct
@@ -60,6 +62,14 @@ public class WorkbenchPart {
 
     public void setDefinition(final PartDefinition definition) {
         this.definition = definition;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public View getPartView() {

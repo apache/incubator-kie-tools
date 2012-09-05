@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -735,7 +736,7 @@ public class GeneratorUtils {
 
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.workbench.perspectives.PerspectiveDefinition").asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.workbench.model.PerspectiveDefinition").asType();
 
         final ExecutableElement e = (ExecutableElement) element;
         final TypeMirror actualReturnType = e.getReturnType();

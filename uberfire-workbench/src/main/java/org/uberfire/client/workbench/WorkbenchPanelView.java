@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.PanelHelper;
@@ -112,10 +111,10 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart(final PartDefinition part,
+    public void addPart(final String title,
                         final WorkbenchPart.View view) {
         tabPanel.add( view,
-                      makeTabWidget( part,
+                      makeTabWidget( title,
                                      view ) );
         tabPanel.selectTab( view );
     }
@@ -252,10 +251,10 @@ public class WorkbenchPanelView extends ResizeComposite
         return tabPanel;
     }
 
-    private Widget makeTabWidget(final PartDefinition part,
+    private Widget makeTabWidget(final String title,
                                  final WorkbenchPart.View view) {
         final FlowPanel fp = new FlowPanel();
-        final InlineLabel tabLabel = new InlineLabel( part.getTitle() );
+        final InlineLabel tabLabel = new InlineLabel( title );
         fp.add( tabLabel );
 
         //Clicking on the Tab takes focus
