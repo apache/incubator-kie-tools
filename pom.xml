@@ -219,6 +219,7 @@
   <modules>
     <module>uberfire-vfs</module>
     <module>uberfire-security</module>
+    <module>uberfire-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
@@ -295,6 +296,12 @@
       </dependency>
 
       <!-- Workbench -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workbench</artifactId>

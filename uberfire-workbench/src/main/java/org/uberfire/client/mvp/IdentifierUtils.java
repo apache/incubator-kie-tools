@@ -28,8 +28,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.annotations.Identifier;
-import org.uberfire.client.annotations.ResourceType;
+import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.client.workbench.annotations.ResourceType;
 
 /**
  * Utilities for Identifiers

@@ -44,7 +44,17 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>widgets-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-commons</artifactId>
     </dependency>
 
     <dependency>
@@ -145,6 +155,7 @@
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>

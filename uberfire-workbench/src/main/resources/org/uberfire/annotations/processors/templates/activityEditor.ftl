@@ -24,8 +24,8 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 </#if>
 
-import org.uberfire.client.annotations.Identifier;
-import org.uberfire.client.annotations.ResourceType;
+import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
