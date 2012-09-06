@@ -29,9 +29,15 @@ import org.uberfire.client.workbench.Position;
 @Portable
 public class PanelDefinition {
 
-    private boolean                        isRoot   = false;
-    private Set<PartDefinition>            parts    = new HashSet<PartDefinition>();
-    private Map<Position, PanelDefinition> children = new HashMap<Position, PanelDefinition>();
+    private Integer                        height    = null;
+    private Integer                        width     = null;
+
+    private Integer                        minHeight = null;
+    private Integer                        minWidth  = null;
+
+    private boolean                        isRoot    = false;
+    private Set<PartDefinition>            parts     = new HashSet<PartDefinition>();
+    private Map<Position, PanelDefinition> children  = new HashMap<Position, PanelDefinition>();
 
     public PanelDefinition() {
         this( false );
@@ -68,6 +74,38 @@ public class PanelDefinition {
 
     public boolean isRoot() {
         return this.isRoot;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public final Integer getMinHeight() {
+        return minHeight;
+    }
+
+    public final void setMinHeight(Integer minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    public final Integer getMinWidth() {
+        return minWidth;
+    }
+
+    public final void setMinWidth(Integer minWidth) {
+        this.minWidth = minWidth;
     }
 
     public void removePanel(final PanelDefinition panel) {

@@ -81,7 +81,7 @@ public class WorkbenchPanelView extends ResizeComposite
 
     private final WorkbenchTabLayoutPanel tabPanel;
 
-    private WorkbenchPanelPresenter                presenter;
+    private WorkbenchPanelPresenter       presenter;
 
     public WorkbenchPanelView() {
         this.tabPanel = makeTabPanel();
@@ -127,22 +127,30 @@ public class WorkbenchPanelView extends ResizeComposite
         switch ( position ) {
             case NORTH :
                 helperNorth.add( view,
-                                 this );
+                                 this,
+                                 panel.getHeight(),
+                                 panel.getMinHeight() );
                 break;
 
             case SOUTH :
                 helperSouth.add( view,
-                                 this );
+                                 this,
+                                 panel.getHeight(),
+                                 panel.getMinHeight() );
                 break;
 
             case EAST :
                 helperEast.add( view,
-                                this );
+                                this,
+                                panel.getWidth(),
+                                panel.getMinWidth() );
                 break;
 
             case WEST :
                 helperWest.add( view,
-                                this );
+                                this,
+                                panel.getWidth(),
+                                panel.getMinWidth() );
                 break;
 
             default :

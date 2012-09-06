@@ -129,4 +129,23 @@ public class TestPerspectives {
         return p;
     }
 
+    @Perspective(identifier = "TestSizedPerspective1")
+    public PerspectiveDefinition getSizedPerspective1() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show TestSized-1" );
+
+        final PanelDefinition west = new PanelDefinition();
+        west.setHeight( 200 );
+        west.setWidth( 200 );
+        west.setMinHeight( 100 );
+        west.setMinWidth( 100 );
+        west.addPart( new PartDefinition( new PlaceRequest( "MyAdminArea" ) ) );
+        p.getRoot().setChild( Position.WEST,
+                              west );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
+
+        return p;
+    }
+
 }

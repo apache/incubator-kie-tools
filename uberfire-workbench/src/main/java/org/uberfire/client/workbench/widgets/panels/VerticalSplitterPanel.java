@@ -40,27 +40,34 @@ public class VerticalSplitterPanel extends ResizeComposite
         initWidget( slp );
     }
 
+    @Override
     public void setup(final WorkbenchPanelPresenter.View northWidget,
                       final WorkbenchPanelPresenter.View southWidget,
-                      final Position position) {
+                      final Position position,
+                      final Integer preferredSize,
+                      final Integer preferredMinSize) {
+
+        final int size = (preferredSize == null ? DEFAULT_SIZE : preferredSize);
+        final int minSize = (preferredMinSize == null ? DEFAULT_MIN_SIZE : preferredMinSize);
+
         switch ( position ) {
             case NORTH :
                 slp.addNorth( northWidgetContainer,
-                              INITIAL_SIZE );
+                              size );
                 slp.add( southWidgetContainer );
                 break;
             case SOUTH :
                 slp.addSouth( southWidgetContainer,
-                              INITIAL_SIZE );
+                              size );
                 slp.add( northWidgetContainer );
                 break;
             default :
                 throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
         }
         slp.setWidgetMinSize( northWidgetContainer,
-                              MIN_SIZE );
+                              minSize );
         slp.setWidgetMinSize( southWidgetContainer,
-                              MIN_SIZE );
+                              minSize );
 
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );

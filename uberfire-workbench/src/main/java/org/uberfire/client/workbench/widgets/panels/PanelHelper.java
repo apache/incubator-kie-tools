@@ -23,7 +23,9 @@ import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 public interface PanelHelper {
 
     public void add(final WorkbenchPanelPresenter.View newPanel,
-                    final WorkbenchPanelPresenter.View targetPanel);
+                    final WorkbenchPanelPresenter.View targetPanel,
+                    final Integer preferredSize,
+                    final Integer preferredMinSize);
 
     public void remove(final WorkbenchPanelPresenter.View panel);
 

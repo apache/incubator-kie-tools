@@ -40,27 +40,34 @@ public class HorizontalSplitterPanel extends ResizeComposite
         initWidget( slp );
     }
 
+    @Override
     public void setup(final WorkbenchPanelPresenter.View eastWidget,
                       final WorkbenchPanelPresenter.View westWidget,
-                      final Position position) {
+                      final Position position,
+                      final Integer preferredSize,
+                      final Integer preferredMinSize) {
+
+        final int size = (preferredSize == null ? DEFAULT_SIZE : preferredSize);
+        final int minSize = (preferredMinSize == null ? DEFAULT_MIN_SIZE : preferredMinSize);
+
         switch ( position ) {
             case EAST :
                 slp.addEast( westWidgetContainer,
-                             INITIAL_SIZE );
+                             size );
                 slp.add( eastWidgetContainer );
                 break;
             case WEST :
                 slp.addWest( eastWidgetContainer,
-                             INITIAL_SIZE );
+                             size );
                 slp.add( westWidgetContainer );
                 break;
             default :
                 throw new IllegalArgumentException( "position must be either EAST or WEST" );
         }
         slp.setWidgetMinSize( eastWidgetContainer,
-                              MIN_SIZE );
+                              minSize );
         slp.setWidgetMinSize( westWidgetContainer,
-                              MIN_SIZE );
+                              minSize );
 
         westWidgetContainer.setWidget( westWidget );
         eastWidgetContainer.setWidget( eastWidget );

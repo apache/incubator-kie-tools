@@ -27,12 +27,25 @@ public class WorkbenchDragContext {
     private final PanelDefinition sourcePanel;
     private final String          title;
 
+    private Integer               height;
+    private Integer               width;
+    private Integer               minHeight;
+    private Integer               minWidth;
+
     public WorkbenchDragContext(final PartDefinition sourcePart,
                                 final PanelDefinition sourcePanel,
-                                final String title) {
+                                final String title,
+                                final Integer height,
+                                final Integer width,
+                                final Integer minHeight,
+                                final Integer minWidth) {
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
         this.title = title;
+        this.height = height;
+        this.width = width;
+        this.minHeight = minHeight;
+        this.minWidth = minWidth;
     }
 
     /**
@@ -54,6 +67,22 @@ public class WorkbenchDragContext {
      */
     public String getTitle() {
         return title;
+    }
+
+    public final Integer getHeight() {
+        return height;
+    }
+
+    public final Integer getWidth() {
+        return width;
+    }
+
+    public final Integer getMinHeight() {
+        return minHeight;
+    }
+
+    public final Integer getMinWidth() {
+        return minWidth;
     }
 
 }

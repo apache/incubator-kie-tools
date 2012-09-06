@@ -42,8 +42,11 @@ public class PanelHelperWest
     @Inject
     private BeanFactory factory;
 
+    @Override
     public void add(final WorkbenchPanelPresenter.View newPanel,
-                    final WorkbenchPanelPresenter.View targetPanel) {
+                    final WorkbenchPanelPresenter.View targetPanel,
+                    final Integer preferredSize,
+                    final Integer preferredMinSize) {
 
         final Widget parent = targetPanel.asWidget().getParent();
 
@@ -52,7 +55,9 @@ public class PanelHelperWest
             final SimplePanel sp = (SimplePanel) parent;
             final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( newPanel,
                                                                                     targetPanel,
-                                                                                    Position.WEST );
+                                                                                    Position.WEST,
+                                                                                    preferredSize,
+                                                                                    preferredMinSize );
 
             sp.clear();
             sp.setWidget( hsp );

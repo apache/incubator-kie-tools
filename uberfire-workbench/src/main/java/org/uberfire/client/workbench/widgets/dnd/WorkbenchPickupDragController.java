@@ -55,9 +55,17 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
         final String title = sourceView.getPresenter().getTitle();
+        final Integer height = sourcePanel.getHeight();
+        final Integer width = sourcePanel.getWidth();
+        final Integer minHeight = sourcePanel.getMinHeight();
+        final Integer minWidth = sourcePanel.getMinWidth();
         final WorkbenchDragContext context = new WorkbenchDragContext( sourcePart,
                                                                        sourcePanel,
-                                                                       title );
+                                                                       title,
+                                                                       height,
+                                                                       width,
+                                                                       minHeight,
+                                                                       minWidth );
         dndManager.setWorkbenchContext( context );
         super.dragStart();
         final Widget movablePanel = getMoveablePanel();

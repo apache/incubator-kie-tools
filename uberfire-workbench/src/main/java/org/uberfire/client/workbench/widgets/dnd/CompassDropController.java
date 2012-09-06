@@ -43,7 +43,7 @@ public class CompassDropController
 
     private final CompassWidget              compass = CompassWidget.getInstance();
 
-    private WorkbenchPanelPresenter.View              dropTarget;
+    private WorkbenchPanelPresenter.View     dropTarget;
 
     @Inject
     private PanelManager                     panelManager;
@@ -92,6 +92,11 @@ public class CompassDropController
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final String title = workbenchContext.getTitle();
+        final Integer height = workbenchContext.getHeight();
+        final Integer width = workbenchContext.getWidth();
+        final Integer minHeight = workbenchContext.getMinHeight();
+        final Integer minWidth = workbenchContext.getMinWidth();
+
         final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
 
         //If the Target Panel is the same as the Source we're trying to reposition the 
@@ -108,7 +113,11 @@ public class CompassDropController
 
         workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( sourcePart ) );
         final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
-                                                                            p );
+                                                                            p,
+                                                                            height,
+                                                                            width,
+                                                                            minHeight,
+                                                                            minWidth );
         panelManager.addWorkbenchPart( title,
                                        sourcePart,
                                        targetPanel,

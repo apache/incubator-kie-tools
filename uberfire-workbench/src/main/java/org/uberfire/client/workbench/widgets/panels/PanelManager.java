@@ -45,12 +45,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class PanelManager {
 
     @Inject
-    private BeanFactory                          factory;
+    private BeanFactory                                   factory;
 
     @Inject
-    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
+    private Event<WorkbenchPanelOnFocusEvent>             workbenchPanelOnFocusEvent;
 
-    private PanelDefinition                      root                          = null;
+    private PanelDefinition                               root                          = null;
 
     private Map<PartDefinition, WorkbenchPartPresenter>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
@@ -111,6 +111,22 @@ public class PanelManager {
     public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
                                              final Position position) {
         final PanelDefinition childPanel = new PanelDefinition();
+        return addWorkbenchPanel( targetPanel,
+                                  childPanel,
+                                  position );
+    }
+
+    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
+                                             final Position position,
+                                             final Integer height,
+                                             final Integer width,
+                                             final Integer minHeight,
+                                             final Integer minWidth) {
+        final PanelDefinition childPanel = new PanelDefinition();
+        childPanel.setHeight( height );
+        childPanel.setWidth( width );
+        childPanel.setMinHeight( minHeight );
+        childPanel.setMinWidth( minWidth );
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
                                   position );

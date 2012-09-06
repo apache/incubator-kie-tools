@@ -35,7 +35,7 @@ public class BeanFactory {
     private IOCBeanManager iocManager;
 
     public WorkbenchPartPresenter newWorkbenchPart(final String title,
-                                          final PartDefinition definition) {
+                                                   final PartDefinition definition) {
         final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
         part.setTitle( title );
         part.setDefinition( definition );
@@ -50,21 +50,29 @@ public class BeanFactory {
 
     public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
                                                               final WorkbenchPanelPresenter.View westPanel,
-                                                              final Position position) {
+                                                              final Position position,
+                                                              final Integer preferredSize,
+                                                              final Integer preferredMinSize) {
         final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
         hsp.setup( eastPanel,
                    westPanel,
-                   position );
+                   position,
+                   preferredSize,
+                   preferredMinSize );
         return hsp;
     }
 
     public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
                                                           final WorkbenchPanelPresenter.View southPanel,
-                                                          final Position position) {
+                                                          final Position position,
+                                                          final Integer preferredSize,
+                                                          final Integer preferredMinSize) {
         final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
         vsp.setup( northPanel,
                    southPanel,
-                   position );
+                   position,
+                   preferredSize,
+                   preferredMinSize );
         return vsp;
     }
 
