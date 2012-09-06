@@ -2,6 +2,7 @@ package org.uberfire.client.editors.charts;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.googlecode.gchart.client.GChart;
@@ -61,6 +62,18 @@ public class FinishedTasksPerUserChartScreen extends GChart {
             }
         });
         setChartFootnotes(updateButton);
+
+        init();
+    }
+
+    public void init() {
+        Timer timer = new Timer() {
+            public void run() {
+                chartRefreshEvent.fire(new ChartRefreshEvent());
+            }
+        };
+
+        timer.scheduleRepeating(5000);
     }
 
     private void addColumn(String name, double value) {
