@@ -41,8 +41,11 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.LayoutDataUtils;
+import com.google.gwt.user.client.ui.LayoutDataUtils.LayoutData;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -314,6 +317,9 @@ public class WorkbenchPanelView extends ResizeComposite
         final Widget parent = getParent();
         setPixelSize( parent.getOffsetWidth(),
                       parent.getOffsetHeight() );
+        final SimpleLayoutPanel slp = (SimpleLayoutPanel) parent;
+        final LayoutData ld = LayoutDataUtils.getLayoutData( slp );
+        presenter.onResize( ld );
         super.onResize();
     }
 

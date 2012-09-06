@@ -31,6 +31,7 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEven
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 
+import com.google.gwt.user.client.ui.LayoutDataUtils.LayoutData;
 import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
@@ -177,6 +178,19 @@ public class WorkbenchPanelPresenter {
 
     public View getPanelView() {
         return view;
+    }
+
+    public void onResize(final LayoutData ld) {
+        switch ( ld.direction ) {
+            case NORTH :
+            case SOUTH :
+                definition.setHeight( ld.size );
+                break;
+            case EAST :
+            case WEST :
+                definition.setWidth( ld.size );
+                break;
+        }
     }
 
 }
