@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.Position;
@@ -45,14 +43,14 @@ public abstract class AbstractPerspectiveActivity
 
         panelManager.getRoot().getParts().clear();
         panelManager.getRoot().getParts().addAll( root.getParts() );
-        panelManager.getRoot().getChildren( Position.NORTH ).clear();
-        panelManager.getRoot().getChildren( Position.SOUTH ).clear();
-        panelManager.getRoot().getChildren( Position.EAST ).clear();
-        panelManager.getRoot().getChildren( Position.WEST ).clear();
-        panelManager.getRoot().getChildren( Position.NORTH ).addAll( root.getChildren( Position.NORTH ) );
-        panelManager.getRoot().getChildren( Position.SOUTH ).addAll( root.getChildren( Position.SOUTH ) );
-        panelManager.getRoot().getChildren( Position.EAST ).addAll( root.getChildren( Position.EAST ) );
-        panelManager.getRoot().getChildren( Position.WEST ).addAll( root.getChildren( Position.WEST ) );
+        panelManager.getRoot().setChild( Position.NORTH,
+                                         root.getChild( Position.NORTH ) );
+        panelManager.getRoot().setChild( Position.SOUTH,
+                                         root.getChild( Position.SOUTH ) );
+        panelManager.getRoot().setChild( Position.EAST,
+                                         root.getChild( Position.EAST ) );
+        panelManager.getRoot().setChild( Position.WEST,
+                                         root.getChild( Position.WEST ) );
 
         for ( PartDefinition part : panelManager.getRoot().getParts() ) {
             placeManager.goTo( part,
@@ -70,14 +68,12 @@ public abstract class AbstractPerspectiveActivity
 
     private void buildPerspective(final PanelDefinition panel,
                                   final Position position) {
-        final List<PanelDefinition> children = panel.getChildren( position );
-        if ( children.size() > 0 ) {
-            for ( PanelDefinition child : children ) {
-                final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                               child,
-                                                                               position );
-                addChildren( target );
-            }
+        final PanelDefinition child = panel.getChild( position );
+        if ( child != null ) {
+            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                           child,
+                                                                           position );
+            addChildren( target );
         }
     }
 

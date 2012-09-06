@@ -37,7 +37,8 @@ public class FileExplorerPerspective {
 
         final PanelDefinition west = new PanelDefinition();
         west.addPart( new PartDefinition( new PlaceRequest( "FileExplorer" ) ) );
-        p.getRoot().getChildren( Position.WEST ).add( west );
+        p.getRoot().setChild( Position.WEST,
+                              west );
 
         return p;
     }

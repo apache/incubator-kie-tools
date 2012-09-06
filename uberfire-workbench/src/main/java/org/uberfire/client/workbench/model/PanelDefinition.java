@@ -15,10 +15,10 @@
  */
 package org.uberfire.client.workbench.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.client.workbench.Position;
@@ -29,23 +29,15 @@ import org.uberfire.client.workbench.Position;
 @Portable
 public class PanelDefinition {
 
-    private boolean                              isRoot   = false;
-    private List<PartDefinition>                 parts    = new ArrayList<PartDefinition>();
-    private Map<Position, List<PanelDefinition>> children = new HashMap<Position, List<PanelDefinition>>();
+    private boolean                        isRoot   = false;
+    private Set<PartDefinition>            parts    = new HashSet<PartDefinition>();
+    private Map<Position, PanelDefinition> children = new HashMap<Position, PanelDefinition>();
 
     public PanelDefinition() {
         this( false );
     }
 
     public PanelDefinition(final boolean isRoot) {
-        children.put( Position.NORTH,
-                      new ArrayList<PanelDefinition>() );
-        children.put( Position.SOUTH,
-                      new ArrayList<PanelDefinition>() );
-        children.put( Position.EAST,
-                      new ArrayList<PanelDefinition>() );
-        children.put( Position.WEST,
-                      new ArrayList<PanelDefinition>() );
         this.isRoot = isRoot;
     }
 
@@ -54,16 +46,24 @@ public class PanelDefinition {
         this.parts.add( part );
     }
 
-    public List<PartDefinition> getParts() {
+    public Set<PartDefinition> getParts() {
         return parts;
     }
 
-    public Map<Position, List<PanelDefinition>> getChildren() {
+    public Map<Position, PanelDefinition> getChildren() {
         return children;
     }
 
-    public List<PanelDefinition> getChildren(final Position position) {
+    public PanelDefinition getChild(final Position position) {
+        checkPosition( position );
         return children.get( position );
+    }
+
+    public void setChild(final Position position,
+                         final PanelDefinition panel) {
+        checkPosition( position );
+        children.put( position,
+                      panel );
     }
 
     public boolean isRoot() {
@@ -71,22 +71,25 @@ public class PanelDefinition {
     }
 
     public void removePanel(final PanelDefinition panel) {
-        for ( PanelDefinition child : children.get( Position.NORTH ) ) {
-            child.removePanel( panel );
+        if ( children.get( Position.NORTH ) != null ) {
+            children.get( Position.NORTH ).removePanel( panel );
         }
-        for ( PanelDefinition child : children.get( Position.SOUTH ) ) {
-            child.removePanel( panel );
+        if ( children.get( Position.SOUTH ) != null ) {
+            children.get( Position.SOUTH ).removePanel( panel );
         }
-        for ( PanelDefinition child : children.get( Position.EAST ) ) {
-            child.removePanel( panel );
+        if ( children.get( Position.EAST ) != null ) {
+            children.get( Position.EAST ).removePanel( panel );
         }
-        for ( PanelDefinition child : children.get( Position.WEST ) ) {
-            child.removePanel( panel );
+        if ( children.get( Position.WEST ) != null ) {
+            children.get( Position.WEST ).removePanel( panel );
         }
-        children.get( Position.NORTH ).remove( panel );
-        children.get( Position.SOUTH ).remove( panel );
-        children.get( Position.EAST ).remove( panel );
-        children.get( Position.WEST ).remove( panel );
+        children.remove( panel );
+    }
+
+    private void checkPosition(final Position position) {
+        if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
+            throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
+        }
     }
 
 }

@@ -61,7 +61,8 @@ public class TestPerspectives {
 
         final PanelDefinition south = new PanelDefinition();
         south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
-        p.getRoot().getChildren( Position.SOUTH ).add( south );
+        p.getRoot().setChild( Position.SOUTH,
+                              south );
 
         return p;
     }
@@ -73,11 +74,13 @@ public class TestPerspectives {
 
         final PanelDefinition south = new PanelDefinition();
         south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
-        p.getRoot().getChildren( Position.SOUTH ).add( south );
+        p.getRoot().setChild( Position.SOUTH,
+                              south );
 
         final PanelDefinition east = new PanelDefinition();
         east.addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
-        south.getChildren( Position.EAST ).add( east );
+        south.setChild( Position.EAST,
+                        east );
 
         return p;
     }
@@ -89,11 +92,13 @@ public class TestPerspectives {
 
         final PanelDefinition south = new PanelDefinition();
         south.addPart( new PartDefinition( new PlaceRequest( "Test" ) ) );
-        p.getRoot().getChildren( Position.SOUTH ).add( south );
+        p.getRoot().setChild( Position.SOUTH,
+                              south );
 
         final PanelDefinition west = new PanelDefinition();
         west.addPart( new PartDefinition( new PlaceRequest( "Test2" ) ) );
-        p.getRoot().getChildren( Position.WEST ).add( west );
+        p.getRoot().setChild( Position.WEST,
+                              west );
 
         p.getRoot().addPart( new PartDefinition( new PlaceRequest( "MyAdminArea" ) ) );
 

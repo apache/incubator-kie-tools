@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -79,7 +80,9 @@ public class WorkbenchPanelPresenter {
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    private PanelDefinition                      definition = new PanelDefinition();
+    private PanelDefinition                      definition   = new PanelDefinition();
+
+    private List<PartDefinition>                 orderedParts = new ArrayList<PartDefinition>();
 
     @SuppressWarnings("unused")
     @PostConstruct
@@ -98,8 +101,12 @@ public class WorkbenchPanelPresenter {
     public void addPart(final String title,
                         final PartDefinition part,
                         final WorkbenchPartPresenter.View view) {
+        //The model for a Perspective is already fully populated. Don't go adding duplicates.
         if ( !definition.getParts().contains( part ) ) {
             definition.addPart( part );
+        }
+        if ( !orderedParts.contains( part ) ) {
+            orderedParts.add( part );
         }
         getPanelView().addPart( title,
                                 view );
@@ -108,13 +115,8 @@ public class WorkbenchPanelPresenter {
     public void addPanel(final PanelDefinition panel,
                          final WorkbenchPanelPresenter.View view,
                          final Position position) {
-        final List<PanelDefinition> panels = definition.getChildren( position );
-        if ( panels == null ) {
-            throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
-        }
-        if ( !panels.contains( panel ) ) {
-            panels.add( panel );
-        }
+        definition.setChild( position,
+                             panel );
         getPanelView().addPanel( panel,
                                  view,
                                  position );
@@ -128,8 +130,9 @@ public class WorkbenchPanelPresenter {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToRemove = definition.getParts().indexOf( part );
-        definition.getParts().remove( indexOfPartToRemove );
+        final int indexOfPartToRemove = orderedParts.indexOf( part );
+        definition.getParts().remove( part );
+        orderedParts.remove( part );
         view.removePart( indexOfPartToRemove );
     }
 
@@ -145,7 +148,7 @@ public class WorkbenchPanelPresenter {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToSelect = definition.getParts().indexOf( part );
+        final int indexOfPartToSelect = orderedParts.indexOf( part );
         view.selectPart( indexOfPartToSelect );
     }
 
@@ -154,12 +157,12 @@ public class WorkbenchPanelPresenter {
     }
 
     public void onPartFocus(final int index) {
-        final PartDefinition definition = getDefinition().getParts().get( index );
+        final PartDefinition definition = orderedParts.get( index );
         workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( definition ) );
     }
 
     public void onPartLostFocus(final int index) {
-        final PartDefinition definition = getDefinition().getParts().get( index );
+        final PartDefinition definition = orderedParts.get( index );
         workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( definition ) );
     }
 
@@ -168,7 +171,7 @@ public class WorkbenchPanelPresenter {
     }
 
     public void onBeforePartClose(final int index) {
-        final PartDefinition definition = getDefinition().getParts().get( index );
+        final PartDefinition definition = orderedParts.get( index );
         workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( definition ) );
     }
 
