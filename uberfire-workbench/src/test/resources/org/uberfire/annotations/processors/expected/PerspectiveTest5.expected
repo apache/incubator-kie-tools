@@ -20,9 +20,9 @@ import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.workbench.annotations.Identifier;
 
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
 

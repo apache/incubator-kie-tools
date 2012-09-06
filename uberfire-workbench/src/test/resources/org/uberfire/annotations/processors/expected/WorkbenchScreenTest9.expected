@@ -20,7 +20,7 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.Identifier;
+import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 

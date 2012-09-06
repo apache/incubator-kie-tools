@@ -20,8 +20,8 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractPopupActivity;
+import org.uberfire.client.workbench.annotations.Identifier;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
