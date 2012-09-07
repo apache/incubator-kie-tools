@@ -15,11 +15,14 @@
  */
 package org.uberfire.client.workbench.model;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * Meta-data defining a Perspective. A Perspective is a set of WorkbenchPanels
  * and WorkbenchParts arranged within the Workbench. Each WorkbenchPart
  * containing a PlaceRequest. Perspectives can be persisted.
  */
+@Portable
 public class PerspectiveDefinition {
 
     private String          name;

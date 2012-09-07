@@ -16,33 +16,38 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-backend</artifactId>
-    <version>0.1-SNAPSHOT</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.uberfire</groupId>
+		<artifactId>uberfire-backend</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>backend-api</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>backend-api</artifactId>
+	<packaging>jar</packaging>
 
-  <name>ÜberFire Backend API</name>
-  <description>ÜberFire Backend API</description>
+	<name>ÜberFire Backend API</name>
+	<description>ÜberFire Backend API</description>
 
-  <dependencies>
+	<dependencies>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-model</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>uberfire-api</artifactId>
+		</dependency>
 
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>vfs-model</artifactId>
+		</dependency>
+
+		<!-- Errai Core -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-bus</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

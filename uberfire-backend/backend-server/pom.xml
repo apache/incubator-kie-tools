@@ -16,101 +16,106 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-backend</artifactId>
-    <version>0.1-SNAPSHOT</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.uberfire</groupId>
+		<artifactId>uberfire-backend</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>backend-server</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>backend-server</artifactId>
+	<packaging>jar</packaging>
 
-  <name>ÜberFire Backend Server</name>
-  <description>ÜberFire Backend Server</description>
+	<name>ÜberFire Backend Server</name>
+	<description>ÜberFire Backend Server</description>
 
-  <dependencies>
+	<dependencies>
 
-    <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-api</artifactId>
-    </dependency>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>vfs-api</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>backend-api</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>uberfire-api</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>backend-commons</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>backend-api</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>backend-commons</artifactId>
+		</dependency>
 
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <!-- Errai JAX-RS API -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
-    </dependency>
+		<!-- Errai Core -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-bus</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-provider</artifactId>
-    </dependency>
+		<!-- Errai JAX-RS API -->
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-jaxrs-client</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-jaxrs-provider</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-cdi</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+		</dependency>
 
-  </dependencies>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-cdi</artifactId>
+		</dependency>
 
-  <build>
-    <!-- ****************************** NOTE ******************************************* -->
-    <!-- We have to build a PROJECT.jar containing all source files for child -->
-    <!-- GWT modules to later compile. gwt-maven-plugin switch "compileSourcesArtifacts" -->
-    <!-- in the child GWT module should pull -sources.jars into the build. -->
-    <!-- However there are reports this does not currently work (IDK, I've -->
-    <!-- not tried!) in other Guvnor poms. -->
-    <!-- See http://mojo.codehaus.org/gwt-maven-plugin/user-guide/library.html -->
-    <!-- ******************************************************************************* -->
+	</dependencies>
 
-    <!-- Include all of the various types GWT considers "source" so "child" -->
-    <!-- GWT modules can successfully be (GWT) compiled. Failure to included -->
-    <!-- these in the resulting JAR causes GWT compilation errors -->
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.java</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+	<build>
+		<!-- ****************************** NOTE ******************************************* -->
+		<!-- We have to build a PROJECT.jar containing all source files for child -->
+		<!-- GWT modules to later compile. gwt-maven-plugin switch "compileSourcesArtifacts" -->
+		<!-- in the child GWT module should pull -sources.jars into the build. -->
+		<!-- However there are reports this does not currently work (IDK, I've -->
+		<!-- not tried!) in other Guvnor poms. -->
+		<!-- See http://mojo.codehaus.org/gwt-maven-plugin/user-guide/library.html -->
+		<!-- ******************************************************************************* -->
+
+		<!-- Include all of the various types GWT considers "source" so "child" -->
+		<!-- GWT modules can successfully be (GWT) compiled. Failure to included -->
+		<!-- these in the resulting JAR causes GWT compilation errors -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 
 </project>

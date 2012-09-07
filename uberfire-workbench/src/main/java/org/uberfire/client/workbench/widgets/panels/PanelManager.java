@@ -29,6 +29,7 @@ import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -52,9 +53,29 @@ public class PanelManager {
 
     private PanelDefinition                               root                          = null;
 
+    private PerspectiveDefinition                         perspective;
+
     private Map<PartDefinition, WorkbenchPartPresenter>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+
+    public PerspectiveDefinition getPerspective() {
+        return this.perspective;
+    }
+
+    public void setPerspective(final PerspectiveDefinition perspective) {
+        this.perspective = perspective;
+        root.getParts().clear();
+        root.getParts().addAll( perspective.getRoot().getParts() );
+        root.setChild( Position.NORTH,
+                       perspective.getRoot().getChild( Position.NORTH ) );
+        root.setChild( Position.SOUTH,
+                       perspective.getRoot().getChild( Position.SOUTH ) );
+        root.setChild( Position.EAST,
+                       perspective.getRoot().getChild( Position.EAST ) );
+        root.setChild( Position.WEST,
+                       perspective.getRoot().getChild( Position.WEST ) );
+    }
 
     public PanelDefinition getRoot() {
         return this.root;

@@ -39,18 +39,7 @@ public abstract class AbstractPerspectiveActivity
     @Override
     public void launch() {
         final PerspectiveDefinition perspective = getPerspective();
-        final PanelDefinition root = perspective.getRoot();
-
-        panelManager.getRoot().getParts().clear();
-        panelManager.getRoot().getParts().addAll( root.getParts() );
-        panelManager.getRoot().setChild( Position.NORTH,
-                                         root.getChild( Position.NORTH ) );
-        panelManager.getRoot().setChild( Position.SOUTH,
-                                         root.getChild( Position.SOUTH ) );
-        panelManager.getRoot().setChild( Position.EAST,
-                                         root.getChild( Position.EAST ) );
-        panelManager.getRoot().setChild( Position.WEST,
-                                         root.getChild( Position.WEST ) );
+        panelManager.setPerspective( perspective );
 
         for ( PartDefinition part : panelManager.getRoot().getParts() ) {
             placeManager.goTo( part,

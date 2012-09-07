@@ -15,9 +15,12 @@
  */
 package org.uberfire.client.workbench;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * Positions to which a WorkbenchPanel can be added to the Workbench
  */
+@Portable
 public enum Position {
 
     NONE(
