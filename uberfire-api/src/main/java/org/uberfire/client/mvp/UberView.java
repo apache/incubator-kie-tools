@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+
 public interface UberView<T> extends IsWidget {
 
     void init(T presenter);
