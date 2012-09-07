@@ -2,8 +2,9 @@ package org.uberfire.backend.server.impl.charts;
 
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.shared.charts.ChartPopulateEvent;
 import org.uberfire.shared.charts.ChartRefreshEvent;
+import org.uberfire.shared.charts.Column;
+import org.uberfire.shared.charts.DataSet;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -15,15 +16,24 @@ import javax.inject.Inject;
 public class ChartContentProducer {
 
     @Inject
-    private Event<ChartPopulateEvent> chartPopulateEvents;
+    private Event<DataSet> dataSetEvent;
 
     public void addNotification(@Observes ChartRefreshEvent event) {
+        DataSet columns = new DataSet();
 
-        chartPopulateEvents.fire(new ChartPopulateEvent("Toni", Math.random() * 100));
-        chartPopulateEvents.fire(new ChartPopulateEvent("Mark", Math.random() * 100));
-        chartPopulateEvents.fire(new ChartPopulateEvent("Salaboy", Math.random() * 100));
-        chartPopulateEvents.fire(new ChartPopulateEvent("Michael", Math.random() * 100));
+        columns.addColumn(createColumn("Toni", Math.random() * 100));
+        columns.addColumn(createColumn("Mark", Math.random() * 100));
+        columns.addColumn(createColumn("Salaboy", Math.random() * 100));
+        columns.addColumn(createColumn("Michael", Math.random() * 100));
 
+//        dataSetEvent.fire(columns);
+    }
+
+    private Column createColumn(String columnName, double value) {
+        Column column = new Column();
+        column.setColumnName(columnName);
+        column.setValue(value);
+        return column;
     }
 
 }

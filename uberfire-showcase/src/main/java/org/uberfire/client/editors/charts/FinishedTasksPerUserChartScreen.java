@@ -11,8 +11,9 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.shared.charts.ChartPopulateEvent;
 import org.uberfire.shared.charts.ChartRefreshEvent;
+import org.uberfire.shared.charts.Column;
+import org.uberfire.shared.charts.DataSet;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -24,13 +25,12 @@ import java.util.Map;
 @WorkbenchScreen(identifier = "chart0")
 public class FinishedTasksPerUserChartScreen extends GChart {
 
-
     @Inject
     private Event<ChartRefreshEvent> chartRefreshEvent;
 
     private int position = 1;
 
-    private Map<String, Column> columns = new HashMap<String, Column>();
+    private Map<String, InternalColumn> columns = new HashMap<String, InternalColumn>();
 
     public FinishedTasksPerUserChartScreen() {
         setChartSize(300, 200);
@@ -58,7 +58,7 @@ public class FinishedTasksPerUserChartScreen extends GChart {
         updateButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                chartRefreshEvent.fire(new ChartRefreshEvent());
+//                chartRefreshEvent.fire(new ChartRefreshEvent());
             }
         });
         setChartFootnotes(updateButton);
@@ -77,7 +77,7 @@ public class FinishedTasksPerUserChartScreen extends GChart {
     }
 
     private void addColumn(String name, double value) {
-        columns.put(name, new Column(name, value));
+        columns.put(name, new InternalColumn(name, value));
     }
 
     @WorkbenchPartTitle
@@ -101,11 +101,23 @@ public class FinishedTasksPerUserChartScreen extends GChart {
         update();
     }
 
-    class Column {
+    public void addDataSet(@Observes DataSet dataSet) {
+        for (Column column : dataSet) {
+            if (columns.containsKey(column.getColumnName())) {
+                columns.get(column.getColumnName()).setValue(column.getValue());
+            } else {
+                addColumn(column.getColumnName(), column.getValue());
+            }
+        }
+
+        update();
+    }
+
+    class InternalColumn {
 
         private final int myPosition;
 
-        Column(String name, double value) {
+        InternalColumn(String name, double value) {
             myPosition = position++;
             getCurve().addPoint(myPosition, value);
             getCurve().getPoint().setAnnotationText(name);
