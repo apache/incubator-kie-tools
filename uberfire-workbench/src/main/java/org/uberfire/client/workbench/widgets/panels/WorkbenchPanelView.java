@@ -317,9 +317,10 @@ public class WorkbenchPanelView extends ResizeComposite
         final Widget parent = getParent();
         setPixelSize( parent.getOffsetWidth(),
                       parent.getOffsetHeight() );
-        final SimpleLayoutPanel slp = (SimpleLayoutPanel) parent;
-        final LayoutData ld = LayoutDataUtils.getLayoutData( slp );
-        presenter.onResize( ld );
+        final LayoutData ld = LayoutDataUtils.getLayoutData( parent );
+        if ( ld != null ) {
+            presenter.onResize( ld );
+        }
         super.onResize();
     }
 

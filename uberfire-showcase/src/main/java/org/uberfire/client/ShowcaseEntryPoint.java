@@ -16,12 +16,17 @@
 package org.uberfire.client;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.Paths;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
@@ -52,6 +57,9 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private WorkbenchMenuBarPresenter menubar;
+    
+    @Inject
+    private Caller<FileExplorerRootService> rootService;
 
     @Inject
     private PlaceManager              placeManager;
@@ -62,6 +70,7 @@ public class ShowcaseEntryPoint {
     public void startApp() {
         loadStyles();
         setupMenu();
+        setupFileSystems();
         hideLoadingPopup();
 
         if ( Window.Location.getPath().contains( "Standalone.html" ) ) {
@@ -106,6 +115,16 @@ public class ShowcaseEntryPoint {
             placesMenuBar.addItem( item );
         }
         menubar.addMenuItem( placesMenu );
+    }
+    
+    //TODO {manstis} Speak to porcelli about bootstrapping FileSystems
+    private void setupFileSystems() {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
+            @Override
+            public void callback(Collection<Root> response) {
+                //Do nothing. FileSystems have been initialised.
+            }
+        } ).listRoots();
     }
 
     //Fade out the "Loading application" pop-up

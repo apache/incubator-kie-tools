@@ -26,9 +26,6 @@ public class LayoutDataUtils {
         public Direction direction;
         public Integer   size;
 
-        LayoutData() {
-        }
-
         LayoutData(final Direction direction,
                    final int size) {
             this.direction = direction;
@@ -36,10 +33,14 @@ public class LayoutDataUtils {
         }
     }
 
-    public static LayoutData getLayoutData(SimpleLayoutPanel slp) {
+    public static LayoutData getLayoutData(final Widget w) {
+        if ( !(w instanceof SimpleLayoutPanel) ) {
+            return null;
+        }
+        final SimpleLayoutPanel slp = (SimpleLayoutPanel) w;
         final Object o = slp.getLayoutData();
         if ( !(o instanceof DockLayoutPanel.LayoutData) ) {
-            return new LayoutData();
+            return null;
         }
         final DockLayoutPanel.LayoutData layoutData = (DockLayoutPanel.LayoutData) o;
         return new LayoutData( layoutData.direction,

@@ -15,9 +15,16 @@
  */
 package org.uberfire.backend.server.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
@@ -30,8 +37,17 @@ public class WorkbenchServicesImpl
     implements
     WorkbenchServices {
 
+    @Inject
+    private VFSService vfsService;
+
+    private DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
+
     public void save(final PerspectiveDefinition perspective) {
-        System.out.println( "---> Saving perspective" );
+        //This only works if you have been to the File Explorer first. See ShowcaseEntryPoint for an example.
+        //TODO {manstis} Need to convert PerspectiveDefinition into a String
+        vfsService.write( new PathImpl( "jgit:///guvnorng-playground/.metadata/.perspectives/test" ),
+                          "Saved [" + perspective.getName() + "] on " + sdf.format( Calendar.getInstance().getTime() ) );
+        System.out.println( "---> Saving perspective (with VFS)" );
     };
 
 }
