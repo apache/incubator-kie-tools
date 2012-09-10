@@ -53,18 +53,18 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ShowcaseEntryPoint {
 
     @Inject
-    private IOCBeanManager            manager;
+    private IOCBeanManager                  manager;
 
     @Inject
-    private WorkbenchMenuBarPresenter menubar;
-    
+    private WorkbenchMenuBarPresenter       menubar;
+
     @Inject
     private Caller<FileExplorerRootService> rootService;
 
     @Inject
-    private PlaceManager              placeManager;
+    private PlaceManager                    placeManager;
 
-    private String[]                  menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "FileExplorer", "RepositoriesEditor", "chart0", "chartPopulator"};
+    private String[]                        menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "FileExplorer", "RepositoriesEditor", "chart0", "chartPopulator"};
 
     @AfterInitialization
     public void startApp() {
@@ -116,7 +116,7 @@ public class ShowcaseEntryPoint {
         }
         menubar.addMenuItem( placesMenu );
     }
-    
+
     //TODO {manstis} Speak to porcelli about bootstrapping FileSystems
     private void setupFileSystems() {
         rootService.call( new RemoteCallback<Collection<Root>>() {

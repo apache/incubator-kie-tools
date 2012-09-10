@@ -17,6 +17,9 @@ package org.uberfire.client.mvp;
 
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
@@ -31,14 +34,34 @@ public abstract class AbstractPerspectiveActivity
     PerspectiveActivity {
 
     @Inject
-    private PanelManager panelManager;
+    private PanelManager              panelManager;
 
     @Inject
-    PlaceManager         placeManager;
+    PlaceManager                      placeManager;
+
+    @Inject
+    private Caller<WorkbenchServices> wbServices;
 
     @Override
     public void launch() {
+
         final PerspectiveDefinition perspective = getPerspective();
+
+        wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
+            @Override
+            public void callback(PerspectiveDefinition response) {
+                if ( response == null ) {
+                    initialisePerspective( perspective );
+                } else {
+                    initialisePerspective( response );
+                }
+            }
+        } ).load( perspective.getName() );
+
+    }
+
+    private void initialisePerspective(final PerspectiveDefinition perspective) {
+
         panelManager.setPerspective( perspective );
 
         for ( PartDefinition part : panelManager.getRoot().getParts() ) {

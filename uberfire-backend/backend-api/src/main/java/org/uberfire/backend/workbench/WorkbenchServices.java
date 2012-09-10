@@ -26,4 +26,5 @@ public interface WorkbenchServices {
 
     public void save(final PerspectiveDefinition perspective);
 
+    public PerspectiveDefinition load(final String perspectiveName);
 }

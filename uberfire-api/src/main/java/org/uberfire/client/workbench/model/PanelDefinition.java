@@ -110,18 +110,33 @@ public class PanelDefinition {
 
     public void removePanel(final PanelDefinition panel) {
         if ( children.get( Position.NORTH ) != null ) {
-            children.get( Position.NORTH ).removePanel( panel );
+            if ( children.get( Position.NORTH ).equals( panel ) ) {
+                children.remove( Position.NORTH );
+            } else {
+                children.get( Position.NORTH ).removePanel( panel );
+            }
         }
         if ( children.get( Position.SOUTH ) != null ) {
-            children.get( Position.SOUTH ).removePanel( panel );
+            if ( children.get( Position.SOUTH ).equals( panel ) ) {
+                children.remove( Position.SOUTH );
+            } else {
+                children.get( Position.SOUTH ).removePanel( panel );
+            }
         }
         if ( children.get( Position.EAST ) != null ) {
-            children.get( Position.EAST ).removePanel( panel );
+            if ( children.get( Position.EAST ).equals( panel ) ) {
+                children.remove( Position.EAST );
+            } else {
+                children.get( Position.EAST ).removePanel( panel );
+            }
         }
         if ( children.get( Position.WEST ) != null ) {
-            children.get( Position.WEST ).removePanel( panel );
+            if ( children.get( Position.WEST ).equals( panel ) ) {
+                children.remove( Position.WEST );
+            } else {
+                children.get( Position.WEST ).removePanel( panel );
+            }
         }
-        children.remove( panel );
     }
 
     private void checkPosition(final Position position) {

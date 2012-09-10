@@ -87,6 +87,11 @@
 			<artifactId>resteasy-cdi</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

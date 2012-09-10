@@ -64,17 +64,13 @@ public class PanelManager {
     }
 
     public void setPerspective(final PerspectiveDefinition perspective) {
+        final PanelDefinition perspectiveRootPanel = perspective.getRoot();
+        final WorkbenchPanelPresenter rootPresenter = mapPanelDefinitionToPresenter.remove( root );
+        mapPanelDefinitionToPresenter.put( perspectiveRootPanel,
+                                           rootPresenter );
+        rootPresenter.setDefinition( perspectiveRootPanel );
+        this.root = perspectiveRootPanel;
         this.perspective = perspective;
-        root.getParts().clear();
-        root.getParts().addAll( perspective.getRoot().getParts() );
-        root.setChild( Position.NORTH,
-                       perspective.getRoot().getChild( Position.NORTH ) );
-        root.setChild( Position.SOUTH,
-                       perspective.getRoot().getChild( Position.SOUTH ) );
-        root.setChild( Position.EAST,
-                       perspective.getRoot().getChild( Position.EAST ) );
-        root.setChild( Position.WEST,
-                       perspective.getRoot().getChild( Position.WEST ) );
     }
 
     public PanelDefinition getRoot() {
