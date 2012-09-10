@@ -54,6 +54,17 @@ public class TestPerspectives {
         return p;
     }
 
+
+    @Perspective(identifier = "GadgetPerspective")
+    public PerspectiveDefinition getGadgetPerspective() {
+        final PerspectiveDefinition p = new PerspectiveDefinition();
+        p.setName( "Show Gadget" );
+
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "Gadget" ) ) );
+
+        return p;
+    }
+    
     @Perspective(identifier = "TestPerspective3")
     public PerspectiveDefinition getPerspective3() {
         final PerspectiveDefinition p = new PerspectiveDefinition();
@@ -147,5 +158,4 @@ public class TestPerspectives {
 
         return p;
     }
-
 }
