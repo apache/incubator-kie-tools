@@ -172,34 +172,32 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     //Fetch an existing git repository. 
     @Override
     public FileSystem getFileSystem(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        //validateURI(uri);        
-        String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
 
         if (!repositoryConfigurations.containsKey(rootJGitRepositoryName)) {
             throw new FileSystemNotFoundException("FileSystem identifed by URI: " + uri + " does not exist");
         }
-
-        JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
-        String userName = jGitRepositoryConfiguration.getUserName();
-        String password = jGitRepositoryConfiguration.getPassword();
-        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
-        try {
-            if (jGitRepositoryConfiguration.getGitURL() != null) {
-                System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
-                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, jGitRepositoryConfiguration.getGitURL(), true, credential);
-                System.out.println("Fetching done.");
-            }
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
-
-        //TODO: Set up FileSystem more properly to represent the status of git repository
-        FileSystem jGitFileSystem = new JGitFileSystem(this);
-        return jGitFileSystem;
+//        JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
+//        String userName = jGitRepositoryConfiguration.getUserName();
+//        String password = jGitRepositoryConfiguration.getPassword();
+//        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
+//        try {
+//            if (jGitRepositoryConfiguration.getGitURL() != null) {
+//                System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
+//                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, jGitRepositoryConfiguration.getGitURL(), true, credential);
+//                System.out.println("Fetching done.");
+//            }
+//        } catch (Exception e) {
+//            throw new IOException(e);
+//        }
+//
+//        //TODO: Set up FileSystem more properly to represent the status of git repository
+        return new JGitFileSystem(this);
     }
 
     private static String getRootJGitRepositoryName(final String path) {
         String rootJGitRepositoryName = path;
+
         if (rootJGitRepositoryName.startsWith("/")) {
             rootJGitRepositoryName = rootJGitRepositoryName.substring(1);
         }
@@ -466,11 +464,19 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         checkNotNull("path", path);
         checkNotNull("type", type);
 
-        //TODO: Check if the path exists in git repo
-/*        final GeneralPathImpl pathImpl = toGeneralPathImpl(path);
-        if (!pathImpl.getAttrs().exists()) {
-            throw new NoSuchFileException("");
-        }*/
+        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
+        Repository repo;
+        try {
+            repo = getRepository(rootJGitRepositoryName);
+        } catch (java.io.IOException e) {
+            throw new IOException();
+        }
+
+        final PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
+        if (pathModel == null ) {
+            throw new NoSuchFileException(path.toString());
+        }
 
         if (type == BasicFileAttributes.class) {
             BasicFileAttributeView view = getFileAttributeView(path, BasicFileAttributeView.class, options);
@@ -529,21 +535,21 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return fileSystem;
     }
 
-    public void commitAndPush(String commitMessage) {
+    public void commit(String commitMessage) {
         try {
             for (Path path : inmemoryCommitCache.keySet()) {
-                File tempFile = inmemoryCommitCache.get(path);
-                String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-                JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
-                String userName = (String) jGitRepositoryConfiguration.getUserName();
-                String password = (String) jGitRepositoryConfiguration.getPassword();
-                UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
+                final File tempFile = inmemoryCommitCache.get(path);
+                final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
+                final JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
+                final String userName = jGitRepositoryConfiguration.getUserName();
+                final String password = jGitRepositoryConfiguration.getPassword();
+                final UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
 
-                String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-                Repository repository = getRepository(rootJGitRepositoryName);
+                final String relativePath = getPathRelativeToRootJGitRepository(path.toString());
+                final Repository repository = getRepository(rootJGitRepositoryName);
 
-                PathModel pathModel = new PathModel(path.getFileName().toString(), relativePath, 0, 0, "");
-                JGitUtils.commitAndPush(repository, pathModel,
+                final PathModel pathModel = new PathModel(path.getFileName().toString(), relativePath, 0, 0, "");
+                JGitUtils.commit(repository, pathModel,
                         new FileInputStream(tempFile), commitMessage,
                         credential);
 

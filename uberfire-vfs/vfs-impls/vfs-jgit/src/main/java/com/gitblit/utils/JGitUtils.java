@@ -1771,7 +1771,70 @@ public class JGitUtils {
         } catch (Throwable t) {
             t.printStackTrace();
         }       
-    }    	   
+    }
+
+    public static void commit(Repository repository, PathModel pathModel, InputStream inputStream, String commitMessage, CredentialsProvider credentialsProvider) {
+        try {
+
+            ObjectInserter odi = repository.newObjectInserter();
+            try {
+                // Create the in-memory index of the new/updated issue.
+                ObjectId headId = repository.resolve(Constants.HEAD);
+                DirCache index = createIndex(repository, headId, pathModel, inputStream, false);
+                ObjectId indexTreeId = index.writeTree(odi);
+
+                // Create a commit object
+                PersonIdent author = new PersonIdent("guvnorngtestuser1", "guvnorngtestuser1@gmail.com");
+                CommitBuilder commit = new CommitBuilder();
+                commit.setAuthor(author);
+                commit.setCommitter(author);
+                commit.setEncoding(Constants.CHARACTER_ENCODING);
+                commit.setMessage(commitMessage);
+                //headId can be null if the repository has no commit yet
+                if(headId != null) {
+                    commit.setParentId(headId);
+                }
+                commit.setTreeId(indexTreeId);
+
+                // Insert the commit into the repository
+                ObjectId commitId = odi.insert(commit);
+                odi.flush();
+
+                RevWalk revWalk = new RevWalk(repository);
+                try {
+                    RevCommit revCommit = revWalk.parseCommit(commitId);
+                    RefUpdate ru = repository.updateRef(Constants.HEAD);
+                    ru.setNewObjectId(commitId);
+                    ru.setExpectedOldObjectId(headId);
+                    ru.setRefLogMessage("commit: " + revCommit.getShortMessage(), false);
+                    Result rc = ru.forceUpdate();
+                    switch (rc) {
+                        case NEW:
+                        case FORCED:
+                        case FAST_FORWARD:
+                            break;
+                        case REJECTED:
+                        case LOCK_FAILURE:
+                            throw new ConcurrentRefUpdateException(JGitText.get().couldNotLockHEAD,
+                                    ru.getRef(), rc);
+                        default:
+                            throw new JGitInternalException(MessageFormat.format(
+                                    JGitText.get().updatingRefFailed, Constants.HEAD, commitId.toString(), rc));
+                    }
+                } finally {
+                    revWalk.release();
+                }
+
+                Git git = Git.wrap(repository);
+                List<RefSpec> specs = new ArrayList<RefSpec>();
+                specs.add(new RefSpec("refs/heads/master"));
+            } finally {
+                odi.release();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
 
     /**
      * Creates an in-memory index of the issue change.

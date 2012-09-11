@@ -16,37 +16,40 @@
 
 package org.uberfire.backend.vfs.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.FileSystem;
-import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class FileSystemImpl implements FileSystem {
+public class ActiveFileSystemsImpl implements ActiveFileSystems {
 
-    private List<Path> rootDirectories = null;
+    private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
 
-    public FileSystemImpl() {
-    }
-
-    public FileSystemImpl(final List<Path> rootDirectories) {
-        this.rootDirectories = rootDirectories;
+    public ActiveFileSystemsImpl() {
     }
 
     @Override
-    public List<Path> getRootDirectories() {
-        return rootDirectories;
+    public void addBootstrapFileSystem(final FileSystem fs) {
+        fileSystems.add(0, fs);
     }
 
     @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        if (rootDirectories != null) {
-            for (final Path rootDirectory : rootDirectories) {
-                sb.append(rootDirectory.toString());
-            }
-        }
-        return sb.toString();
+    public void addFileSystem(final FileSystem fs) {
+        fileSystems.add(fs);
     }
+
+    @Override
+    public Collection<FileSystem> fileSystems() {
+        return fileSystems;
+    }
+
+    @Override
+    public FileSystem getBootstrapFileSystem() {
+        return fileSystems.get(0);
+    }
+
 }

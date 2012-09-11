@@ -15,7 +15,7 @@ public class JGitOutputStream extends FilterOutputStream {
     
     public void flush() throws IOException {
         super.flush();
-        jGitFileSystemProvider.commitAndPush("from jgit");
+        jGitFileSystemProvider.commit("from jgit");
     }
 }
 

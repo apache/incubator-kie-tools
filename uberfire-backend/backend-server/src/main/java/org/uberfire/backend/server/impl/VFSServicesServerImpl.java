@@ -213,8 +213,13 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
+    public boolean exists(Path path, LinkOption... options) throws IllegalArgumentException {
+        return Files.exists(fromPath(path), options);
+    }
+
+    @Override
     public boolean notExists(Path path, LinkOption... options) throws IllegalArgumentException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return Files.notExists(fromPath(path), options);
     }
 
     @Override

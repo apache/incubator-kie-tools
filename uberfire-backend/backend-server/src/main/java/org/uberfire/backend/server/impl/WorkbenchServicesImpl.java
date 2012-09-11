@@ -15,10 +15,13 @@
  */
 package org.uberfire.backend.server.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.sun.tools.hat.internal.model.Root;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.PathImpl;
@@ -39,25 +42,35 @@ public class WorkbenchServicesImpl
     @Inject
     private VFSService vfsService;
 
+    @Inject
+    private ActiveFileSystems fileSystems;
+
     private XStream    xs = new XStream();
 
+    private Path bootstrapRoot = null;
+
+    @PostConstruct
+    public void init(){
+        this.bootstrapRoot = fileSystems.getBootstrapFileSystem().getRootDirectories().get(0);
+    }
+
     public void save(final PerspectiveDefinition perspective) {
-        //This only works if you have been to the File Explorer first. See ShowcaseEntryPoint for an example.
         final String xml = xs.toXML( perspective );
-        vfsService.write( new PathImpl( "jgit:///guvnorng-playground/.metadata/.perspectives/" + perspective.getName() ),
-                          xml );
-    };
+
+        final String rootURI = bootstrapRoot.toURI();
+
+        vfsService.write( new PathImpl( rootURI + "/.metadata/.perspectives/" + perspective.getName() ), xml );
+    }
 
     public PerspectiveDefinition load(final String perspectiveName) {
-        //This only works if you have been to the File Explorer first. See ShowcaseEntryPoint for an example.
-        final Path path = new PathImpl( "jgit:///guvnorng-playground/.metadata/.perspectives/" + perspectiveName );
-        try {
+        final String rootURI = bootstrapRoot.toURI();
+        final Path path = new PathImpl( rootURI + "/.metadata/.perspectives/" + perspectiveName );
+
+        if ( vfsService.exists( path ) ){
             final String xml = vfsService.readAllString( path );
-            final PerspectiveDefinition perspective = (PerspectiveDefinition) xs.fromXML( xml );
-            return perspective;
-        } catch ( NullPointerException npe ) {
-            //TODO {manstis} There is no way to detect if the file exists, and if you try to read a non-existent file you get a NPE
+            return  (PerspectiveDefinition) xs.fromXML( xml );
         }
+
         return null;
     };
 

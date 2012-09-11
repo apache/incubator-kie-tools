@@ -141,6 +141,9 @@ public interface VFSService {
     long size(Path path)
             throws IllegalArgumentException, IOException;
 
+    boolean exists(Path path, LinkOption... options)
+            throws IllegalArgumentException;
+
     boolean notExists(Path path, LinkOption... options)
             throws IllegalArgumentException;
 
