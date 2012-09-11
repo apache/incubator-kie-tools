@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.sun.tools.hat.internal.model.Root;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
