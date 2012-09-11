@@ -64,7 +64,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private PlaceManager                    placeManager;
 
-    private String[]                        menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "FileExplorer", "RepositoriesEditor", "chart0", "chartPopulator"};
+    private String[]                        menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "FileExplorer", "RepositoriesEditor", "Chart", "chartPopulator"};
 
     @AfterInitialization
     public void startApp() {
