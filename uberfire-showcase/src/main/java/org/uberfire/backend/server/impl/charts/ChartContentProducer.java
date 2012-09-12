@@ -26,7 +26,7 @@ public class ChartContentProducer {
         columns.addColumn(createColumn("Salaboy", Math.random() * 100));
         columns.addColumn(createColumn("Michael", Math.random() * 100));
 
-//        dataSetEvent.fire(columns);
+        dataSetEvent.fire(columns);
     }
 
     private Column createColumn(String columnName, double value) {

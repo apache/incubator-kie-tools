@@ -36,6 +36,8 @@ public class GenericChart implements IsWidget {
         chart.getYAxis().setTickCount(11);
         chart.getYAxis().setHasGridlines(true);
         chart.getXAxis().addTick(0, "");
+
+        chart.update();
     }
 
     public void setColumnData(String columnName, double value) {
@@ -44,6 +46,8 @@ public class GenericChart implements IsWidget {
         } else {
             addColumn(columnName, value);
         }
+
+        chart.update();
     }
 
     private void addColumn(String name, double value) {

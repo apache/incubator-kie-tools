@@ -1,6 +1,7 @@
 package org.uberfire.client.editors.charts;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -16,7 +17,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @Dependent
-@WorkbenchEditor(identifier = "Chart")
+@WorkbenchScreen(identifier = "Chart")
 public class ChartScreen {
 
     @Inject
