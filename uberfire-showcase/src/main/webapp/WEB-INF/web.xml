@@ -54,6 +54,19 @@ profile in pom.xml to use that. -->
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+    <servlet-name>GoogleGadget</servlet-name>
+    <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GoogleGadget</servlet-name>
+    <url-pattern>google.gadget</url-pattern>
+  </servlet-mapping>
+
+
   <listener>
     <!--
 
