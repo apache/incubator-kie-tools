@@ -46,18 +46,18 @@ public abstract class AbstractPerspectiveActivity
     public void launch() {
 
         final PerspectiveDefinition perspective = getPerspective();
-        initialisePerspective( perspective );
+//        initialisePerspective( perspective );
 
-//        wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
-//            @Override
-//            public void callback(PerspectiveDefinition response) {
-//                if ( response == null ) {
-//                    initialisePerspective( perspective );
-//                } else {
-//                    initialisePerspective( response );
-//                }
-//            }
-//        } ).load( perspective.getName() );
+        wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
+            @Override
+            public void callback(PerspectiveDefinition response) {
+                if ( response == null ) {
+                    initialisePerspective( perspective );
+                } else {
+                    initialisePerspective( response );
+                }
+            }
+        } ).load( perspective.getName() );
 
     }
 
