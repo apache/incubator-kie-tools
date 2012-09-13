@@ -31,7 +31,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "GoogleGadgetScreen")
 public class GoogleGadgetScreen {
 
-    private static final String URL = "http://www.gmodules.com/ig/ifr?url=http://www.labpixies.com/campaigns/calories/calories.xml&amp;up_k1=&amp;up_k2=&amp;up_k3=&amp;up_breakfast=&amp;up_lunch=&amp;up_dinner=&amp;up_misc=&amp;up_calories_quota=&amp;up_calorie_settings=&amp;up_calorie_gadget_settings=&amp;up_first_load=1&amp;up_curr_tab=s&amp;up_last_search=bread&amp;up_c1=&amp;up_c2=&amp;up_my_items_count=0&amp;synd=open&amp;w=320&amp;h=220&amp;title=__MSG_title__&amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;output=js";
+    private static final String URL = "http://www.gmodules.com/ig/ifr?url=http://www.labpixies.com/campaigns/calories/calories.xml&amp;up_k1=&amp;up_k2=&amp;up_k3=&amp;up_breakfast=&amp;up_lunch=&amp;up_dinner=&amp;up_misc=&amp;up_calories_quota=&amp;up_calorie_settings=&amp;up_calorie_gadget_settings=&amp;up_first_load=1&amp;up_curr_tab=s&amp;up_last_search=bread&amp;up_c1=&amp;up_c2=&amp;up_my_items_count=0&amp;synd=open&amp;w=320&amp;h=300&amp;title=__MSG_title__&amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;output=js";
 
     private Frame frame;
 
@@ -39,7 +39,7 @@ public class GoogleGadgetScreen {
     public void init() {
         frame = new Frame();
         frame.setWidth("100%");
-        frame.setHeight("100%");
+        frame.setHeight("300px"); //TODO {manstis} Hack so gadget is not truncated
         frame.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
         frame.setUrl(UriUtils.fromString("/google.gadget?src=" + URL).asString());
     }
