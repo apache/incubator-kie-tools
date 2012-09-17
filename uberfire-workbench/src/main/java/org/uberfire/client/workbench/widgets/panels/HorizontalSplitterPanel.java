@@ -19,7 +19,11 @@ import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.model.PanelDefinition;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,19 +51,21 @@ public class HorizontalSplitterPanel extends ResizeComposite
                       final Integer preferredSize,
                       final Integer preferredMinSize) {
 
-        final int size = (preferredSize == null ? DEFAULT_SIZE : preferredSize);
-        final int minSize = (preferredMinSize == null ? DEFAULT_MIN_SIZE : preferredMinSize);
+        final int size = assertSize( preferredSize );
+        final int minSize = assertMinimumSize( preferredMinSize );
 
         switch ( position ) {
             case EAST :
-                slp.addEast( westWidgetContainer,
-                             size );
-                slp.add( eastWidgetContainer );
+                int eastChildSize = getChildSize( eastWidget.getPresenter().getDefinition() );
+                slp.addEast( eastWidgetContainer,
+                             size + eastChildSize );
+                slp.add( westWidgetContainer );
                 break;
             case WEST :
-                slp.addWest( eastWidgetContainer,
-                             size );
-                slp.add( westWidgetContainer );
+                int westChildSize = getChildSize( westWidget.getPresenter().getDefinition() );
+                slp.addWest( westWidgetContainer,
+                             size + westChildSize );
+                slp.add( eastWidgetContainer );
                 break;
             default :
                 throw new IllegalArgumentException( "position must be either EAST or WEST" );
@@ -71,6 +77,7 @@ public class HorizontalSplitterPanel extends ResizeComposite
 
         westWidgetContainer.setWidget( westWidget );
         eastWidgetContainer.setWidget( eastWidget );
+        scheduleResize( slp );
     }
 
     @Override
@@ -98,6 +105,41 @@ public class HorizontalSplitterPanel extends ResizeComposite
             setPixelSize( parent.getOffsetWidth(),
                           parent.getOffsetHeight() );
             super.onResize();
+        }
+    }
+
+    private int assertSize(final Integer size) {
+        return (size == null ? DEFAULT_SIZE : size);
+    }
+
+    private int assertMinimumSize(final Integer minSize) {
+        return (minSize == null ? DEFAULT_MIN_SIZE : minSize);
+    }
+
+    private int getChildSize(final PanelDefinition panel) {
+        int childSize = 0;
+        final PanelDefinition eastPanel = panel.getChild( Position.EAST );
+        final PanelDefinition westPanel = panel.getChild( Position.WEST );
+        if ( eastPanel != null ) {
+            childSize = childSize + assertSize( eastPanel.getWidth() ) + getChildSize( eastPanel );
+        }
+        if ( westPanel != null ) {
+            childSize = childSize + assertSize( westPanel.getWidth() ) + getChildSize( westPanel );
+        }
+        return childSize;
+    }
+
+    private void scheduleResize(final Widget widget) {
+        if ( widget instanceof RequiresResize ) {
+            final RequiresResize requiresResize = (RequiresResize) widget;
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+                @Override
+                public void execute() {
+                    requiresResize.onResize();
+                }
+
+            } );
         }
     }
 

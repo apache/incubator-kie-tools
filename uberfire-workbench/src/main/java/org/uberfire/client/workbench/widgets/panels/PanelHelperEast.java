@@ -53,8 +53,8 @@ public class PanelHelperEast
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
-                                                                                    newPanel,
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( newPanel,
+                                                                                    targetPanel,
                                                                                     Position.EAST,
                                                                                     preferredSize,
                                                                                     preferredMinSize );

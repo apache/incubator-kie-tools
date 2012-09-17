@@ -35,6 +35,8 @@ public class FileExplorerPerspective {
         final PerspectiveDefinition p = new PerspectiveDefinition();
         p.setName( "File Explorer" );
 
+        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "RepositoriesEditor" ) ) );
+
         final PanelDefinition west = new PanelDefinition();
         west.addPart( new PartDefinition( new PlaceRequest( "FileExplorer" ) ) );
         p.getRoot().setChild( Position.WEST,

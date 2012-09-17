@@ -19,7 +19,11 @@ import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.model.PanelDefinition;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,18 +51,20 @@ public class VerticalSplitterPanel extends ResizeComposite
                       final Integer preferredSize,
                       final Integer preferredMinSize) {
 
-        final int size = (preferredSize == null ? DEFAULT_SIZE : preferredSize);
-        final int minSize = (preferredMinSize == null ? DEFAULT_MIN_SIZE : preferredMinSize);
+        final int size = assertSize( preferredSize );
+        final int minSize = assertMinimumSize( preferredMinSize );
 
         switch ( position ) {
             case NORTH :
+                int northChildSize = getChildSize( northWidget.getPresenter().getDefinition() );
                 slp.addNorth( northWidgetContainer,
-                              size );
+                              size + northChildSize );
                 slp.add( southWidgetContainer );
                 break;
             case SOUTH :
+                int southChildSize = getChildSize( southWidget.getPresenter().getDefinition() );
                 slp.addSouth( southWidgetContainer,
-                              size );
+                              size + southChildSize );
                 slp.add( northWidgetContainer );
                 break;
             default :
@@ -71,6 +77,7 @@ public class VerticalSplitterPanel extends ResizeComposite
 
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );
+        scheduleResize( slp );
     }
 
     @Override
@@ -98,6 +105,41 @@ public class VerticalSplitterPanel extends ResizeComposite
             setPixelSize( parent.getOffsetWidth(),
                           parent.getOffsetHeight() );
             super.onResize();
+        }
+    }
+
+    private int assertSize(final Integer size) {
+        return (size == null ? DEFAULT_SIZE : size);
+    }
+
+    private int assertMinimumSize(final Integer minSize) {
+        return (minSize == null ? DEFAULT_MIN_SIZE : minSize);
+    }
+
+    private int getChildSize(final PanelDefinition panel) {
+        int childSize = 0;
+        final PanelDefinition northPanel = panel.getChild( Position.NORTH );
+        final PanelDefinition southPanel = panel.getChild( Position.SOUTH );
+        if ( northPanel != null ) {
+            childSize = childSize + assertSize( northPanel.getHeight() ) + getChildSize( northPanel );
+        }
+        if ( southPanel != null ) {
+            childSize = childSize + assertSize( southPanel.getHeight() ) + getChildSize( southPanel );
+        }
+        return childSize;
+    }
+
+    private void scheduleResize(final Widget widget) {
+        if ( widget instanceof RequiresResize ) {
+            final RequiresResize requiresResize = (RequiresResize) widget;
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+                @Override
+                public void execute() {
+                    requiresResize.onResize();
+                }
+
+            } );
         }
     }
 

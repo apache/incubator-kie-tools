@@ -46,7 +46,6 @@ public abstract class AbstractPerspectiveActivity
     public void launch() {
 
         final PerspectiveDefinition perspective = getPerspective();
-//        initialisePerspective( perspective );
 
         wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
             @Override

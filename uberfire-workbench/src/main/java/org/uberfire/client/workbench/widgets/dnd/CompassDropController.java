@@ -92,8 +92,8 @@ public class CompassDropController
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final String title = workbenchContext.getTitle();
-        final Integer height = workbenchContext.getHeight();
-        final Integer width = workbenchContext.getWidth();
+        final Integer height = null;//workbenchContext.getHeight();
+        final Integer width = null;//workbenchContext.getWidth();
         final Integer minHeight = workbenchContext.getMinHeight();
         final Integer minWidth = workbenchContext.getMinWidth();
 

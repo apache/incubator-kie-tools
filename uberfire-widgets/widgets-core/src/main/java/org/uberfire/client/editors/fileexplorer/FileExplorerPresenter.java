@@ -100,8 +100,6 @@ public class FileExplorerPresenter {
 
         view.getRootItem().removeItems();
 
-        placeManager.goTo( new PlaceRequest( "RepositoriesEditor" ) );
-
         rootService.call( new RemoteCallback<Collection<Root>>() {
             @Override
             public void callback(Collection<Root> response) {
