@@ -39,6 +39,8 @@ public class PanelDefinition {
     private Set<PartDefinition>            parts     = new HashSet<PartDefinition>();
     private Map<Position, PanelDefinition> children  = new HashMap<Position, PanelDefinition>();
 
+    private PanelDefinition                parent;
+
     public PanelDefinition() {
         this( false );
     }
@@ -67,9 +69,21 @@ public class PanelDefinition {
 
     public void setChild(final Position position,
                          final PanelDefinition panel) {
+        if ( panel == null ) {
+            return;
+        }
         checkPosition( position );
         children.put( position,
                       panel );
+        panel.setParent( this );
+    }
+
+    public final PanelDefinition getParent() {
+        return parent;
+    }
+
+    public final void setParent(PanelDefinition parent) {
+        this.parent = parent;
     }
 
     public boolean isRoot() {
@@ -106,37 +120,6 @@ public class PanelDefinition {
 
     public final void setMinWidth(Integer minWidth) {
         this.minWidth = minWidth;
-    }
-
-    public void removePanel(final PanelDefinition panel) {
-        if ( children.get( Position.NORTH ) != null ) {
-            if ( children.get( Position.NORTH ).equals( panel ) ) {
-                children.remove( Position.NORTH );
-            } else {
-                children.get( Position.NORTH ).removePanel( panel );
-            }
-        }
-        if ( children.get( Position.SOUTH ) != null ) {
-            if ( children.get( Position.SOUTH ).equals( panel ) ) {
-                children.remove( Position.SOUTH );
-            } else {
-                children.get( Position.SOUTH ).removePanel( panel );
-            }
-        }
-        if ( children.get( Position.EAST ) != null ) {
-            if ( children.get( Position.EAST ).equals( panel ) ) {
-                children.remove( Position.EAST );
-            } else {
-                children.get( Position.EAST ).removePanel( panel );
-            }
-        }
-        if ( children.get( Position.WEST ) != null ) {
-            if ( children.get( Position.WEST ).equals( panel ) ) {
-                children.remove( Position.WEST );
-            } else {
-                children.get( Position.WEST ).removePanel( panel );
-            }
-        }
     }
 
     private void checkPosition(final Position position) {
