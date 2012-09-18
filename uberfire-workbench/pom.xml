@@ -77,12 +77,6 @@
 			<artifactId>errai-ioc</artifactId>
 		</dependency>
 
-		<!-- Errai ui binder -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-uibinder</artifactId>
-		</dependency>
-
 		<!-- GWT and GWT Extensions -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>

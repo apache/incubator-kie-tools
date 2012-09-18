@@ -103,10 +103,10 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-uibinder</artifactId>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.errai</groupId>-->
+      <!--<artifactId>errai-uibinder</artifactId>-->
+    <!--</dependency>-->
 
     <!-- CDI Development Utils -->
     <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
