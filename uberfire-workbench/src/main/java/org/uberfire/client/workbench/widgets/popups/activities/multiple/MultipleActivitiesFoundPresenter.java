@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.popups.activities.notfound;
+package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.OnReveal;
@@ -29,9 +29,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /**
  * 
  */
-@Dependent
-@WorkbenchPopup(identifier = "workbench.activity.notfound")
-public class ActivityNotFoundPresenter {
+@ApplicationScoped
+@WorkbenchPopup(identifier = "workbench.activities.multiple")
+public class MultipleActivitiesFoundPresenter {
 
     public interface View
         extends
@@ -50,9 +50,10 @@ public class ActivityNotFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        final String identifier = placeManager.getCurrentPlaceRequest().getParameter( "identifier",
-                                                                                      null );
-        view.setRequestedPlaceIdentifier( identifier );
+        final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter( "requestedPlaceIdentifier",
+                                                                                                    null );
+        view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
+        view.show();
     }
 
     @WorkbenchPartView

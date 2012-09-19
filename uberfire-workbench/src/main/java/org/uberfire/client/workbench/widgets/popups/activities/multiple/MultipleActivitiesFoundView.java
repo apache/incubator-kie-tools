@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.popups.activities.notfound;
+package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,29 +30,29 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  */
-public class ActivityNotFoundView extends PopupPanel
+public class MultipleActivitiesFoundView extends PopupPanel
     implements
-    ActivityNotFoundPresenter.View {
+    MultipleActivitiesFoundPresenter.View {
 
-
-    interface ActivityNotFoundViewBinder
+    interface MultipleActivitiesFoundViewBinder
             extends
-            UiBinder<Widget, ActivityNotFoundView> {
+            UiBinder<Widget, MultipleActivitiesFoundView> {
     }
 
-    private static ActivityNotFoundViewBinder  uiBinder = GWT.create(ActivityNotFoundViewBinder.class);
+    private static MultipleActivitiesFoundViewBinder  uiBinder = GWT.create(MultipleActivitiesFoundViewBinder.class);;
 
     @UiField
-    public Label                               requestedPlaceIdentifierLabel;
+    public Label                                      requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {
         setWidget( uiBinder.createAndBindUi( this ) );
+        setGlassEnabled( true );
     }
 
     @Override
-    public void setRequestedPlaceIdentifier(String identifier) {
-        requestedPlaceIdentifierLabel.setText( identifier );
+    public void setRequestedPlaceIdentifier(String requestedPlaceIdentifier) {
+        requestedPlaceIdentifierLabel.setText( requestedPlaceIdentifier );
     }
 
     @Override
