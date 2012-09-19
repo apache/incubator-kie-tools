@@ -43,7 +43,30 @@ public abstract class AbstractPerspectiveActivity
 
     @Override
     public void launch() {
+        saveState();
+    }
 
+    //Save the current state of the Workbench
+    private void saveState() {
+        final PerspectiveDefinition perspective = panelManager.getPerspective();
+
+        //On startup the Workbench has not been set to contain a perspective
+        if ( perspective == null ) {
+            loadState();
+
+        } else {
+            wbServices.call( new RemoteCallback<Void>() {
+                @Override
+                public void callback(Void response) {
+                    placeManager.closeAllPlaces();
+                    loadState();
+                }
+            } ).save( perspective );
+        }
+    }
+
+    //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
+    private void loadState() {
         final PerspectiveDefinition perspective = getPerspective();
 
         wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
@@ -56,9 +79,9 @@ public abstract class AbstractPerspectiveActivity
                 }
             }
         } ).load( perspective.getName() );
-
     }
 
+    //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective(final PerspectiveDefinition perspective) {
 
         panelManager.setPerspective( perspective );

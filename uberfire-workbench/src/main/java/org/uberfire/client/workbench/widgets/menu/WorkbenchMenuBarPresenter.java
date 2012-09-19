@@ -28,12 +28,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -43,7 +40,6 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.Window;
@@ -81,12 +77,6 @@ public class WorkbenchMenuBarPresenter {
 
     @Inject
     private ActivityManager                activityManager;
-
-    @Inject
-    private PanelManager                   panelManager;
-
-    @Inject
-    private Caller<WorkbenchServices>      wbServices;
 
     @Inject
     private WorkbenchMenuBarPresenterUtils menuBarUtils;
@@ -131,22 +121,6 @@ public class WorkbenchMenuBarPresenter {
             perspectivesMenuBar.addItem( item );
         }
         view.addMenuItem( perspectivesMenu );
-
-        //Simple "Save" dialog
-        view.addMenuItem( new CommandMenuItem( "Save",
-                                               new Command() {
-
-                                                   @Override
-                                                   public void execute() {
-                                                       wbServices.call( new RemoteCallback<Void>() {
-                                                           @Override
-                                                           public void callback(Void response) {
-                                                               System.out.println( "---> Saved" );
-                                                           }
-                                                       } ).save( panelManager.getPerspective() );
-                                                   }
-
-                                               } ) );
 
         //Simple "About" dialog
         view.addMenuItem( new CommandMenuItem( "About",

@@ -198,7 +198,6 @@ public class PlaceManagerImpl
 
     private void launchActivity(final PlaceRequest newPlace,
                                 final PerspectiveActivity activity) {
-        closeAllPlaces();
         activity.launch();
         activity.onReveal();
     }

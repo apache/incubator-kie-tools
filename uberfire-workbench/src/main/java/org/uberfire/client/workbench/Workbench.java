@@ -24,8 +24,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
@@ -41,6 +44,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -74,11 +79,11 @@ public class Workbench extends Composite {
     @Inject
     private WorkbenchPickupDragController dragController;
 
-    //@Inject
-    //private BeanFactory                   factory;
-
     @Inject
     private WorkbenchMenuBarPresenter     menuBarPresenter;
+
+    @Inject
+    private Caller<WorkbenchServices>     wbServices;
 
     @PostConstruct
     public void setup() {
@@ -134,6 +139,21 @@ public class Workbench extends Composite {
         if ( defaultPerspective != null ) {
             placeManager.goTo( new PlaceRequest( defaultPerspective.getIdentifier() ) );
         }
+
+        //Save Workbench state when Window is closed
+        Window.addWindowClosingHandler( new ClosingHandler() {
+
+            @Override
+            public void onWindowClosing(ClosingEvent event) {
+                wbServices.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback(Void response) {
+                        //Nothing to do. Window is closing.
+                    }
+                } ).save( panelManager.getPerspective() );
+            }
+
+        } );
     }
 
     private AbstractPerspectiveActivity getDefaultPerspectiveActivity() {
