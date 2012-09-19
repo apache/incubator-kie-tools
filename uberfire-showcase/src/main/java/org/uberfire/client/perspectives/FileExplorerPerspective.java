@@ -20,8 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -32,13 +34,13 @@ public class FileExplorerPerspective {
 
     @Perspective(identifier = "FileExplorerPerspective")
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinition();
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "File Explorer" );
 
-        p.getRoot().addPart( new PartDefinition( new PlaceRequest( "RepositoriesEditor" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequest( "RepositoriesEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinition();
-        west.addPart( new PartDefinition( new PlaceRequest( "FileExplorer" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl();
+        west.addPart( new PartDefinitionImpl( new PlaceRequest( "FileExplorer" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
 

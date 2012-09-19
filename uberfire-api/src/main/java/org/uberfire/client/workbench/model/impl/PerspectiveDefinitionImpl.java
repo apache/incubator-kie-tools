@@ -13,22 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench;
+package org.uberfire.client.workbench.model.impl;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
 /**
- * Positions to which a WorkbenchPanel can be added to the Workbench
+ * Default implementation of PerspectiveDefinition
  */
 @Portable
-public enum Position {
+public class PerspectiveDefinitionImpl
+    implements
+    PerspectiveDefinition {
 
-    NONE, //Don't add anywhere
-    NORTH, //North internal edge of a Parent panel
-    SOUTH, //South internal edge of a Parent panel
-    EAST, //East internal edge of a Parent panel
-    WEST, //West internal edge of a Parent panel
-    SELF, //Add to the Parent panel
-    ROOT; //Add to the Workbench root
+    private String          name;
+
+    private PanelDefinition root = new PanelDefinitionImpl( true );
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public PanelDefinition getRoot() {
+        return root;
+    }
 
 }

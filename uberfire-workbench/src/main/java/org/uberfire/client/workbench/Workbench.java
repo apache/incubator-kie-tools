@@ -30,6 +30,7 @@ import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
 import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
@@ -124,7 +125,7 @@ public class Workbench extends Composite {
                                 HEIGHT - menuBarHeight );
 
         //Add default workbench widget
-        final PanelDefinition root = new PanelDefinition( true );
+        final PanelDefinition root = new PanelDefinitionImpl( true );
         panelManager.setRoot( root );
         workbench.setWidget( panelManager.getPanelView( root ) );
 

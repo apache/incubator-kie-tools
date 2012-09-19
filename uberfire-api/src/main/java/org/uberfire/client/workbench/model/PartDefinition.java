@@ -15,70 +15,41 @@
  */
 package org.uberfire.client.workbench.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * 
+ * A Part in the Workbench. Parts are added to Panels.
  */
-@Portable
-public class PartDefinition {
-
-    private PlaceRequest    place;
-
-    private PanelDefinition parentPanel;
-
-    public PartDefinition() {
-    }
-
-    public PartDefinition(final PlaceRequest place) {
-        this.place = place;
-    }
+public interface PartDefinition {
 
     /**
+     * Get the PlaceRequest that this Part will contain.
+     * 
      * @return the place
      */
-    public PlaceRequest getPlace() {
-        return place;
-    }
+    public PlaceRequest getPlace();
 
     /**
+     * Set the PlaceRequest that this Part will contain.
+     * 
      * @param place
      *            the place to set
      */
-    public void setPlace(final PlaceRequest place) {
-        this.place = place;
-    }
+    public void setPlace(final PlaceRequest place);
 
     /**
+     * Get the parent Panel containing this Part.
+     * 
      * @return the parentPanel
      */
-    public PanelDefinition getParentPanel() {
-        return parentPanel;
-    }
+    public PanelDefinition getParentPanel();
 
     /**
+     * Set the parent Panel containing this Part.
+     * 
      * @param parentPanel
      *            the parentPanel to set
      */
-    public void setParentPanel(final PanelDefinition parentPanel) {
-        this.parentPanel = parentPanel;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.place.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null ) return false;
-        if ( !(o instanceof PartDefinition) ) return false;
-
-        PartDefinition that = (PartDefinition) o;
-
-        return place.equals( that.place );
-    }
+    public void setParentPanel(final PanelDefinition parentPanel);
 
 }

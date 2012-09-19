@@ -32,6 +32,7 @@ import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -129,7 +130,7 @@ public class PanelManager {
 
     public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
                                              final Position position) {
-        final PanelDefinition childPanel = new PanelDefinition();
+        final PanelDefinition childPanel = new PanelDefinitionImpl();
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
                                   position );
@@ -141,7 +142,7 @@ public class PanelManager {
                                              final Integer width,
                                              final Integer minHeight,
                                              final Integer minWidth) {
-        final PanelDefinition childPanel = new PanelDefinition();
+        final PanelDefinition childPanel = new PanelDefinitionImpl();
         childPanel.setHeight( height );
         childPanel.setWidth( width );
         childPanel.setMinHeight( minHeight );
@@ -330,7 +331,7 @@ public class PanelManager {
 
             //Add the first orphans parts to where the panel was removed
             final PanelDefinition firstOrphan = itr.next();
-            holder = new PanelDefinition();
+            holder = new PanelDefinitionImpl();
             for ( PartDefinition part : firstOrphan.getParts() ) {
                 holder.addPart( part );
             }

@@ -15,142 +15,146 @@
  */
 package org.uberfire.client.workbench.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.client.workbench.Position;
 
 /**
- * 
+ * A Panel in the Workbench.
  */
-@Portable
-public class PanelDefinition {
+public interface PanelDefinition {
 
-    private Integer               height    = null;
-    private Integer               width     = null;
+    /**
+     * Add a Part to the Panel
+     * 
+     * @param part
+     *            The Part to add
+     */
+    public void addPart(final PartDefinition part);
 
-    private Integer               minHeight = null;
-    private Integer               minWidth  = null;
+    /**
+     * Get the Parts contained in the Panel
+     * 
+     * @return The parts
+     */
+    public Set<PartDefinition> getParts();
 
-    private boolean               isRoot    = false;
-    private Set<PartDefinition>   parts     = new HashSet<PartDefinition>();
+    /**
+     * Get all of this Panel's immediate child Panels (i.e. not recursive).
+     * 
+     * @return All children
+     */
+    public List<PanelDefinition> getChildren();
 
-    //Ideally this should be a Set but the order of insertion is important
-    private List<PanelDefinition> children  = new ArrayList<PanelDefinition>();
-
-    private Position              position;
-
-    public PanelDefinition() {
-    }
-
-    public PanelDefinition(final boolean isRoot) {
-        this.isRoot = isRoot;
-        this.position = Position.ROOT;
-    }
-
-    public void addPart(final PartDefinition part) {
-        part.setParentPanel( this );
-        this.parts.add( part );
-    }
-
-    public Set<PartDefinition> getParts() {
-        return parts;
-    }
-
-    public List<PanelDefinition> getChildren() {
-        return Collections.unmodifiableList( children );
-    }
-
+    /**
+     * Set this Panel's immediate child Panel for the given Position
+     * 
+     * @param position
+     *            The Position to add the child
+     * @param panel
+     *            The child Panel
+     */
     public void setChild(final Position position,
-                         final PanelDefinition panel) {
-        if ( panel == null ) {
-            return;
-        }
-        if ( children.contains( panel ) ) {
-            return;
-        }
-        checkPosition( position );
-        checkChildDoesNotExist( position );
-        panel.position = position;
-        children.add( panel );
-    }
+                         final PanelDefinition panel);
 
-    public PanelDefinition getChild(final Position position) {
-        for ( PanelDefinition child : children ) {
-            if ( child.getPosition() == position ) {
-                return child;
-            }
-        }
-        return null;
-    }
+    /**
+     * Get the Panel's immediate child Panel at the given Position
+     * 
+     * @param position
+     *            The child Panel's Position
+     * @return The child Panel or null, if a child does not exist at the given
+     *         Position
+     */
+    public PanelDefinition getChild(final Position position);
 
-    public void removeChild(final Position position) {
-        Iterator<PanelDefinition> itr = children.iterator();
-        while ( itr.hasNext() ) {
-            final PanelDefinition child = itr.next();
-            if ( child.getPosition() == position ) {
-                itr.remove();
-            }
-        }
-    }
+    /**
+     * Remove a child from the Panel
+     * 
+     * @param position
+     */
+    public void removeChild(final Position position);
 
-    public boolean isRoot() {
-        return this.isRoot;
-    }
+    /**
+     * Is this Panel the root of the Perspective definition
+     * 
+     * @return True if the Panel is the root
+     */
+    public boolean isRoot();
 
-    public Integer getHeight() {
-        return height;
-    }
+    /**
+     * Get the height of the Panel in pixels
+     * 
+     * @return The height, or null if not set
+     */
+    public Integer getHeight();
 
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
+    /**
+     * Set the height of the Panel in pixels
+     * 
+     * @param height
+     *            The height, or null if not set
+     */
+    public void setHeight(Integer height);
 
-    public Integer getWidth() {
-        return width;
-    }
+    /**
+     * Get the width of the Panel in pixels
+     * 
+     * @return The width, or null if not set
+     */
+    public Integer getWidth();
 
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
+    /**
+     * Set the width of the Panel in pixels
+     * 
+     * @param width
+     *            The width, or null if not set
+     */
+    public void setWidth(Integer width);
 
-    public final Integer getMinHeight() {
-        return minHeight;
-    }
+    /**
+     * Get the minimum height of the Panel in pixels
+     * 
+     * @return The minimum height, or null if not set
+     */
+    public Integer getMinHeight();
 
-    public final void setMinHeight(Integer minHeight) {
-        this.minHeight = minHeight;
-    }
+    /**
+     * Set the minimum height of the Panel in pixels
+     * 
+     * @param minHeight
+     *            The minimum height, or null if not set
+     */
+    public void setMinHeight(Integer minHeight);
 
-    public final Integer getMinWidth() {
-        return minWidth;
-    }
+    /**
+     * Get the minimum width of the Panel in pixels
+     * 
+     * @return The minimum width, or null if not set
+     */
+    public Integer getMinWidth();
 
-    public final void setMinWidth(Integer minWidth) {
-        this.minWidth = minWidth;
-    }
+    /**
+     * Set the minimum width of the Panel in pixels
+     * 
+     * @param minWidth
+     *            The width, or null if not set
+     */
+    public void setMinWidth(Integer minWidth);
 
-    public final Position getPosition() {
-        return position;
-    }
+    /**
+     * Get the Position of the Panel relate to it's Parent
+     * 
+     * @return The Position of the Panel
+     */
+    public Position getPosition();
 
-    private void checkPosition(final Position position) {
-        if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
-            throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
-        }
-    }
-
-    private void checkChildDoesNotExist(final Position position) {
-        for ( PanelDefinition panel : this.children ) {
-            if ( panel.getPosition() == position ) {
-                throw new IllegalArgumentException( "Child has already been set for position " + position.name() );
-            }
-        }
-    }
+    /**
+     * Set the Position of the Panel relative to it's parent.
+     * 
+     * @param position
+     *            The Position of the Panel relative to it's parent
+     */
+    public void setPosition(Position position);
 
 }

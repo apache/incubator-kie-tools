@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -151,7 +152,7 @@ public class PlaceManagerImpl
     private void launchActivity(final PlaceRequest newPlace,
                                 final WorkbenchActivity activity,
                                 final Position position) {
-        final PartDefinition part = new PartDefinition( newPlace );
+        final PartDefinition part = new PartDefinitionImpl( newPlace );
         final PanelDefinition panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
                                                                       position );
         launchActivity( activity,

@@ -18,8 +18,23 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-
-public interface UberView<T> extends IsWidget {
+/**
+ * <p>
+ * Interface to inject a Presenter into a View for MVP-based Widget
+ * implementations. Due to limitations with CDI it is not possible to @Inject
+ * the correct instance of a Presenter into a View.
+ * </p>
+ * <p>
+ * Developers wishing to implement MVP-based Widgets are encouraged to have
+ * their View implement this interface if they require access to the appropriate
+ * Presenter.
+ * </p>
+ * 
+ * @param <T>
+ */
+public interface UberView<T>
+    extends
+    IsWidget {
 
     void init(T presenter);
 }

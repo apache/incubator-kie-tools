@@ -15,30 +15,34 @@
  */
 package org.uberfire.client.workbench.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * Meta-data defining a Perspective. A Perspective is a set of WorkbenchPanels
- * and WorkbenchParts arranged within the Workbench. Each WorkbenchPart
- * containing a PlaceRequest. Perspectives can be persisted.
+ * Meta-data defining a Perspective. A Perspective is a set of Panels and Parts
+ * arranged within the Workbench. One Workbench contains multiple Panels, each
+ * Panel contains multiple Parts. Each Part contains one PlaceRequest.
  */
-@Portable
-public class PerspectiveDefinition {
+public interface PerspectiveDefinition {
 
-    private String          name;
+    /**
+     * Get the name of the Perspective.
+     * 
+     * @return The name of the Perspective.
+     */
+    public String getName();
 
-    private PanelDefinition root = new PanelDefinition( true );
+    /**
+     * Set the name of the Perspective.
+     * 
+     * @param name
+     *            The name of the Perspective.
+     */
+    public void setName(final String name);
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public PanelDefinition getRoot() {
-        return root;
-    }
+    /**
+     * Get the root Panel for this Perspective. The root Panel contains all
+     * child Panels. A Perspective is based on a single root Panel.
+     * 
+     * @return The root Panel.
+     */
+    public PanelDefinition getRoot();
 
 }
