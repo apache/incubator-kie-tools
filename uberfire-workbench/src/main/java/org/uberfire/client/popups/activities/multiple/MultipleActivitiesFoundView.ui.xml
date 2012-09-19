@@ -19,7 +19,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
              
   <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CoreConstants" />
-  <ui:with field="images" type="org.uberfire.client.resources.CommonImages" />
+  <ui:with field="images" type="org.uberfire.client.resources.WorkbenchImages" />
                
   <g:DecoratedPopupPanel>
     <g:VerticalPanel>
