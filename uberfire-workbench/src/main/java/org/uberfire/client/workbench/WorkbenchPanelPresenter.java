@@ -80,7 +80,7 @@ public class WorkbenchPanelPresenter {
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
 
-    private PanelDefinition                      definition   = new PanelDefinition();
+    private PanelDefinition                      definition;
 
     private List<PartDefinition>                 orderedParts = new ArrayList<PartDefinition>();
 

@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.workbench.WorkbenchServices;
-import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
@@ -68,24 +67,17 @@ public abstract class AbstractPerspectiveActivity
             placeManager.goTo( part,
                                panelManager.getRoot() );
         }
-        buildPerspective( panelManager.getRoot(),
-                          Position.NORTH );
-        buildPerspective( panelManager.getRoot(),
-                          Position.SOUTH );
-        buildPerspective( panelManager.getRoot(),
-                          Position.EAST );
-        buildPerspective( panelManager.getRoot(),
-                          Position.WEST );
+        buildPerspective( panelManager.getRoot() );
     }
 
-    private void buildPerspective(final PanelDefinition panel,
-                                  final Position position) {
-        final PanelDefinition child = panel.getChild( position );
-        if ( child != null ) {
-            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                           child,
-                                                                           position );
-            addChildren( target );
+    private void buildPerspective(final PanelDefinition panel) {
+        for ( PanelDefinition child : panel.getChildren() ) {
+            if ( child != null ) {
+                final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                               child,
+                                                                               child.getPosition() );
+                addChildren( target );
+            }
         }
     }
 
@@ -94,14 +86,7 @@ public abstract class AbstractPerspectiveActivity
             placeManager.goTo( part,
                                panel );
         }
-        buildPerspective( panel,
-                          Position.NORTH );
-        buildPerspective( panel,
-                          Position.SOUTH );
-        buildPerspective( panel,
-                          Position.EAST );
-        buildPerspective( panel,
-                          Position.WEST );
+        buildPerspective( panel );
     }
 
     @Override

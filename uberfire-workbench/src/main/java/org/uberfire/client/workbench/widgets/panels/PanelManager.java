@@ -311,83 +311,6 @@ public class PanelManager {
         }
     }
 
-    private void removeEastPanel(final PanelDefinition panelToRemove,
-                                 final PanelDefinition panelToSearch) {
-        final PanelDefinition northOrphan = panelToRemove.getChild( Position.NORTH );
-        final PanelDefinition southOrphan = panelToRemove.getChild( Position.SOUTH );
-        final PanelDefinition eastOrphan = panelToRemove.getChild( Position.EAST );
-        final PanelDefinition westOrphan = panelToRemove.getChild( Position.WEST );
-        panelToSearch.getChildren().remove( Position.EAST );
-
-        PanelDefinition holder = null;
-        if ( northOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : northOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( northOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        } else if ( southOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : southOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( southOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        } else if ( eastOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : eastOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( eastOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        } else if ( westOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : westOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( westOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        }
-        if ( holder != null ) {
-            panelToSearch.setChild( Position.EAST,
-                                    holder );
-        }
-
-    }
-
     private void removePanel(final PanelDefinition panelToRemove,
                              final PanelDefinition panelToSearch,
                              final Position position) {
@@ -395,7 +318,7 @@ public class PanelManager {
         final PanelDefinition southOrphan = panelToRemove.getChild( Position.SOUTH );
         final PanelDefinition eastOrphan = panelToRemove.getChild( Position.EAST );
         final PanelDefinition westOrphan = panelToRemove.getChild( Position.WEST );
-        panelToSearch.getChildren().remove( position );
+        panelToSearch.removeChild( position );
 
         PanelDefinition holder = null;
         if ( northOrphan != null ) {

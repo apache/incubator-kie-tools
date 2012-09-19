@@ -15,9 +15,11 @@
  */
 package org.uberfire.client.workbench.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -29,24 +31,26 @@ import org.uberfire.client.workbench.Position;
 @Portable
 public class PanelDefinition {
 
-    private Integer                        height    = null;
-    private Integer                        width     = null;
+    private Integer               height    = null;
+    private Integer               width     = null;
 
-    private Integer                        minHeight = null;
-    private Integer                        minWidth  = null;
+    private Integer               minHeight = null;
+    private Integer               minWidth  = null;
 
-    private boolean                        isRoot    = false;
-    private Set<PartDefinition>            parts     = new HashSet<PartDefinition>();
-    private Map<Position, PanelDefinition> children  = new HashMap<Position, PanelDefinition>();
+    private boolean               isRoot    = false;
+    private Set<PartDefinition>   parts     = new HashSet<PartDefinition>();
 
-    private PanelDefinition                parent;
+    //Ideally this should be a Set but the order of insertion is important
+    private List<PanelDefinition> children  = new ArrayList<PanelDefinition>();
+
+    private Position              position;
 
     public PanelDefinition() {
-        this( false );
     }
 
     public PanelDefinition(final boolean isRoot) {
         this.isRoot = isRoot;
+        this.position = Position.ROOT;
     }
 
     public void addPart(final PartDefinition part) {
@@ -58,13 +62,8 @@ public class PanelDefinition {
         return parts;
     }
 
-    public Map<Position, PanelDefinition> getChildren() {
-        return children;
-    }
-
-    public PanelDefinition getChild(final Position position) {
-        checkPosition( position );
-        return children.get( position );
+    public List<PanelDefinition> getChildren() {
+        return Collections.unmodifiableList( children );
     }
 
     public void setChild(final Position position,
@@ -72,18 +71,32 @@ public class PanelDefinition {
         if ( panel == null ) {
             return;
         }
+        if ( children.contains( panel ) ) {
+            return;
+        }
         checkPosition( position );
-        children.put( position,
-                      panel );
-        panel.setParent( this );
+        checkChildDoesNotExist( position );
+        panel.position = position;
+        children.add( panel );
     }
 
-    public final PanelDefinition getParent() {
-        return parent;
+    public PanelDefinition getChild(final Position position) {
+        for ( PanelDefinition child : children ) {
+            if ( child.getPosition() == position ) {
+                return child;
+            }
+        }
+        return null;
     }
 
-    public final void setParent(PanelDefinition parent) {
-        this.parent = parent;
+    public void removeChild(final Position position) {
+        Iterator<PanelDefinition> itr = children.iterator();
+        while ( itr.hasNext() ) {
+            final PanelDefinition child = itr.next();
+            if ( child.getPosition() == position ) {
+                itr.remove();
+            }
+        }
     }
 
     public boolean isRoot() {
@@ -122,9 +135,21 @@ public class PanelDefinition {
         this.minWidth = minWidth;
     }
 
+    public final Position getPosition() {
+        return position;
+    }
+
     private void checkPosition(final Position position) {
         if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
+        }
+    }
+
+    private void checkChildDoesNotExist(final Position position) {
+        for ( PanelDefinition panel : this.children ) {
+            if ( panel.getPosition() == position ) {
+                throw new IllegalArgumentException( "Child has already been set for position " + position.name() );
+            }
         }
     }
 
