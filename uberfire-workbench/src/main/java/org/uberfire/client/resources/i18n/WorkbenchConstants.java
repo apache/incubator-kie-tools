@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * 
  */
-public interface CoreConstants
+public interface WorkbenchConstants
         extends
         Messages {
 
-    CoreConstants INSTANCE = GWT.create( CoreConstants.class );
+    WorkbenchConstants INSTANCE = GWT.create( WorkbenchConstants.class );
 
     String multipleMatchingActivitiesFound();
 

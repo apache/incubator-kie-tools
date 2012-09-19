@@ -17,10 +17,10 @@
 package org.uberfire.client.editors.texteditor;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import org.uberfire.client.common.ResizableTextArea;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -37,13 +37,17 @@ public class TextEditorView extends Composite
     RequiresResize,
     TextEditorPresenter.View {
 
-    @Inject
-    UiBinder<ResizeLayoutPanel, TextEditorView> uiBinder;
+    interface TextEditorViewBinder
+        extends
+        UiBinder<ResizeLayoutPanel, TextEditorView> {
+    }
+
+    private static TextEditorViewBinder uiBinder = GWT.create( TextEditorViewBinder.class );
 
     @UiField
-    public ResizableTextArea                    fileContent;
+    public ResizableTextArea            fileContent;
 
-    private boolean                             isDirty = false;
+    private boolean                     isDirty  = false;
 
     @PostConstruct
     public void init() {

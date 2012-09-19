@@ -17,26 +17,30 @@
 package org.uberfire.client.editors.repositoryeditor;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 public class RepositoryEditorView extends Composite
     implements
     RequiresResize,
     RepositoryEditorPresenter.View {
 
-    @Inject
-    UiBinder<Panel, RepositoryEditorView> uiBinder;
+    interface RepositoryEditorViewBinder
+        extends
+        UiBinder<Widget, RepositoryEditorView> {
+    }
+
+    private static RepositoryEditorViewBinder uiBinder = GWT.create( RepositoryEditorViewBinder.class );
 
     @UiField
-    public HTMLPanel                      panel;
+    public HTMLPanel                          panel;
 
     @PostConstruct
     public void init() {
@@ -55,13 +59,14 @@ public class RepositoryEditorView extends Composite
                                    "<p> Origin: <a href=\"" + gitURL + "\" target=\"_blank\">" + gitURL + "</a></p>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
-                "</div>" +
+                             "</div>" +
                              "</li>"
 
         ) );
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         panel.clear();
     }
 

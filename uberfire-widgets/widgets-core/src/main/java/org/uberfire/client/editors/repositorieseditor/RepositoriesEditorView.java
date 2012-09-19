@@ -17,33 +17,37 @@
 package org.uberfire.client.editors.repositorieseditor;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 public class RepositoriesEditorView extends Composite
     implements
     RequiresResize,
     RepositoriesEditorPresenter.View {
 
-    @Inject
-    UiBinder<Panel, RepositoriesEditorView> uiBinder;
+    interface RepositoriesEditorViewBinder
+        extends
+        UiBinder<Widget, RepositoriesEditorView> {
+    }
+
+    private static RepositoriesEditorViewBinder uiBinder = GWT.create( RepositoriesEditorViewBinder.class );
 
     @UiField
-    public HTMLPanel                        panel;
+    public HTMLPanel                            panel;
 
     @UiField
-    public Button                           createRepoButton;
+    public Button                               createRepoButton;
 
     @UiField
-    public Button                           cloneRepoButton;
+    public Button                               cloneRepoButton;
 
     @PostConstruct
     public void init() {
@@ -54,7 +58,7 @@ public class RepositoriesEditorView extends Composite
                               String gitURL,
                               String description,
                               String link) {
-        panel.setWidth("800px");
+        panel.setWidth( "800px" );
         panel.add( new HTML( "<li  class=guvnor-repository-li>" +
                                "<h3>" +
                                    "<a href=\"" + link + "\">" + repositoryName + "</a>" +
