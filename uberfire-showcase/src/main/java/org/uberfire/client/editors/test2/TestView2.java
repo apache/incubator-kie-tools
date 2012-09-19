@@ -19,15 +19,13 @@ package org.uberfire.client.editors.test2;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -37,8 +35,12 @@ public class TestView2 extends Composite
     implements
     RequiresResize {
 
-    @Inject
-    UiBinder<Panel, TestView2> uiBinder;
+    interface ViewBinder
+            extends
+            UiBinder<Widget, TestView2> {
+    }
+
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     public HTMLPanel           panel;

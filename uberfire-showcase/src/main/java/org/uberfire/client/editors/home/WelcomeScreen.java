@@ -1,10 +1,12 @@
 package org.uberfire.client.editors.home;
 
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -18,8 +20,13 @@ import javax.inject.Inject;
 public class WelcomeScreen
         extends Composite {
 
-    @Inject
-    UiBinder<Panel, WelcomeScreen> uiBinder;
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, WelcomeScreen> {
+    }
+
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @PostConstruct
     public void init() {

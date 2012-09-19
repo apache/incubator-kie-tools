@@ -16,6 +16,7 @@
 
 package org.uberfire.client.editors.admin2;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -28,8 +29,13 @@ public class MyAdminAreaView2 extends Composite
         RequiresResize,
         MyAdminAreaPresenter2.View {
 
-    @Inject
-    UiBinder<Panel, MyAdminAreaView2> uiBinder;
+
+    interface MyAdminAreaViewBinder
+            extends
+            UiBinder<Widget, MyAdminAreaView2> {
+    }
+
+    private static MyAdminAreaViewBinder uiBinder = GWT.create(MyAdminAreaViewBinder.class);
 
     @UiField
     public Label nameLabel;

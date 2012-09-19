@@ -20,16 +20,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -39,8 +37,13 @@ public class TestView extends Composite
     RequiresResize,
     TestPresenter.View {
 
-    @Inject
-    UiBinder<Panel, TestView>        uiBinder;
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, TestView> {
+    }
+
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     public SimplePanel               panel;

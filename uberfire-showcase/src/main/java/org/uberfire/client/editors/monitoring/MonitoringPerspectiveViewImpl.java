@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
@@ -39,7 +40,13 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 public class MonitoringPerspectiveViewImpl extends Composite implements MonitoringPerspectivePresenter.MyView {
 
-    @Inject private UiBinder<Widget, MonitoringPerspectiveViewImpl> uiBinder;
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, MonitoringPerspectiveViewImpl> {
+    }
+
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     
     @Inject
     private PlaceManager placeManager;
