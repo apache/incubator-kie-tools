@@ -16,6 +16,8 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -278,7 +280,8 @@ public class PanelManager {
                 removePanel( panelToRemove,
                              northChild );
             }
-        } else if ( southChild != null ) {
+        }
+        if ( southChild != null ) {
             if ( southChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( southChild );
                 removePanel( panelToRemove,
@@ -288,7 +291,8 @@ public class PanelManager {
                 removePanel( panelToRemove,
                              southChild );
             }
-        } else if ( eastChild != null ) {
+        }
+        if ( eastChild != null ) {
             if ( eastChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( eastChild );
                 removePanel( panelToRemove,
@@ -298,7 +302,8 @@ public class PanelManager {
                 removePanel( panelToRemove,
                              eastChild );
             }
-        } else if ( westChild != null ) {
+        }
+        if ( westChild != null ) {
             if ( westChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( westChild );
                 removePanel( panelToRemove,
@@ -314,73 +319,34 @@ public class PanelManager {
     private void removePanel(final PanelDefinition panelToRemove,
                              final PanelDefinition panelToSearch,
                              final Position position) {
-        final PanelDefinition northOrphan = panelToRemove.getChild( Position.NORTH );
-        final PanelDefinition southOrphan = panelToRemove.getChild( Position.SOUTH );
-        final PanelDefinition eastOrphan = panelToRemove.getChild( Position.EAST );
-        final PanelDefinition westOrphan = panelToRemove.getChild( Position.WEST );
+
         panelToSearch.removeChild( position );
 
         PanelDefinition holder = null;
-        if ( northOrphan != null ) {
+
+        final List<PanelDefinition> orphans = panelToRemove.getChildren();
+        Iterator<PanelDefinition> itr = orphans.iterator();
+        if ( itr.hasNext() ) {
+
+            //Add the first orphans parts to where the panel was removed
+            final PanelDefinition firstOrphan = itr.next();
             holder = new PanelDefinition();
-            for ( PartDefinition part : northOrphan.getParts() ) {
+            for ( PartDefinition part : firstOrphan.getParts() ) {
                 holder.addPart( part );
             }
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( northOrphan );
+
+            //Update presenter and map to use new holder
+            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( firstOrphan );
             mapPanelDefinitionToPresenter.put( holder,
                                                presenter );
             presenter.setDefinition( holder );
-        } else if ( southOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : southOrphan.getParts() ) {
-                holder.addPart( part );
+
+            //Add remaining orphans as children of new holder
+            while ( itr.hasNext() ) {
+                final PanelDefinition orphan = itr.next();
+                holder.setChild( orphan.getPosition(),
+                                 orphan );
             }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( southOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        } else if ( eastOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : eastOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.WEST,
-                             westOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( eastOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-        } else if ( westOrphan != null ) {
-            holder = new PanelDefinition();
-            for ( PartDefinition part : westOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-            holder.setChild( Position.NORTH,
-                             northOrphan );
-            holder.setChild( Position.SOUTH,
-                             southOrphan );
-            holder.setChild( Position.EAST,
-                             eastOrphan );
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( westOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
         }
         if ( holder != null ) {
             panelToSearch.setChild( position,
