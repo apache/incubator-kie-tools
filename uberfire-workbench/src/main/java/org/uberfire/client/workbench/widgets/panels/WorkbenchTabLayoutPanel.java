@@ -742,6 +742,26 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     }
 
     /**
+     * Programmatically activate the specified tab without selecting it.
+     * 
+     * @param index
+     *            the index of the tab to be selected
+     */
+    public void activateTab(int index) {
+        checkIndex( index );
+        if ( index == selectedIndex ) {
+            return;
+        }
+
+        // Update the tabs being selected and unselected.
+        if ( selectedIndex != -1 ) {
+            tabs.get( selectedIndex ).setSelected( false );
+        }
+
+        deckPanel.showWidget( index );
+    }
+    
+    /**
      * Programmatically selects the specified tab.
      * 
      * @param index

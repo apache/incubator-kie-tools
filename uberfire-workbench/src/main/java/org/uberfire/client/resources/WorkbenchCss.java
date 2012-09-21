@@ -25,5 +25,7 @@ public interface WorkbenchCss
         CssResource {
 
     String closeTabImage();
+    
+    String tabLayoutPanelTabsScrollButtons();
 
 }

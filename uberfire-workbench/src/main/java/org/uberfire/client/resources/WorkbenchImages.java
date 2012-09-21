@@ -55,5 +55,13 @@ public interface WorkbenchImages
     @Source("images/warning-large.png")
     ImageResource warningLarge();
 
+    //Scroll TabPanel left
+    @Source("images/tabPanelScrollLeft.png")
+    ImageResource tabPanelScrollLeft();
+
+    //Scroll TabPanel right
+    @Source("images/tabPanelScrollRight.png")
+    ImageResource tabPanelScrollRight();
+    
     CollapseExpand collapseExpand();    
 }

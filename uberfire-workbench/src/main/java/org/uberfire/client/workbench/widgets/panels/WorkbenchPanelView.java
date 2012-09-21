@@ -53,35 +53,35 @@ public class WorkbenchPanelView extends ResizeComposite
     implements
     WorkbenchPanelPresenter.View {
 
-    public static final int               TAB_BAR_HEIGHT   = 32;
+    public static final int                       TAB_BAR_HEIGHT   = 32;
 
-    private static final int              FOCUS_BAR_HEIGHT = 3;
+    private static final int                      FOCUS_BAR_HEIGHT = 3;
 
     @Inject
     @WorkbenchPosition(position = Position.NORTH)
-    private PanelHelper                   helperNorth;
+    private PanelHelper                           helperNorth;
 
     @Inject
     @WorkbenchPosition(position = Position.SOUTH)
-    private PanelHelper                   helperSouth;
+    private PanelHelper                           helperSouth;
 
     @Inject
     @WorkbenchPosition(position = Position.EAST)
-    private PanelHelper                   helperEast;
+    private PanelHelper                           helperEast;
 
     @Inject
     @WorkbenchPosition(position = Position.WEST)
-    private PanelHelper                   helperWest;
+    private PanelHelper                           helperWest;
 
     @Inject
-    private WorkbenchDragAndDropManager   dndManager;
+    private WorkbenchDragAndDropManager           dndManager;
 
     @Inject
-    private BeanFactory                   factory;
+    private BeanFactory                           factory;
 
-    private final WorkbenchTabLayoutPanel tabPanel;
+    private final WorkbenchScrolledTabLayoutPanel tabPanel;
 
-    private WorkbenchPanelPresenter       presenter;
+    private WorkbenchPanelPresenter               presenter;
 
     public WorkbenchPanelView() {
         this.tabPanel = makeTabPanel();
@@ -168,10 +168,13 @@ public class WorkbenchPanelView extends ResizeComposite
     @Override
     public void removePart(int indexOfPartToRemove) {
         final int indexOfSelectedPart = tabPanel.getSelectedIndex();
+        final int nextActiveTabIndex = indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0;
         tabPanel.remove( indexOfPartToRemove );
         if ( tabPanel.getWidgetCount() > 0 ) {
-            if ( indexOfSelectedPart == indexOfPartToRemove ) {
-                tabPanel.selectTab( indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0 );
+            if ( indexOfSelectedPart == -1 ) {
+                tabPanel.activateTab( nextActiveTabIndex );
+            } else if ( indexOfSelectedPart == indexOfPartToRemove ) {
+                tabPanel.selectTab( nextActiveTabIndex );
             }
         }
     }
@@ -226,10 +229,12 @@ public class WorkbenchPanelView extends ResizeComposite
         this.tabPanel.setFocus( hasFocus );
     }
 
-    private WorkbenchTabLayoutPanel makeTabPanel() {
-        final WorkbenchTabLayoutPanel tabPanel = new WorkbenchTabLayoutPanel( TAB_BAR_HEIGHT,
-                                                                              FOCUS_BAR_HEIGHT,
-                                                                              Unit.PX );
+    private WorkbenchScrolledTabLayoutPanel makeTabPanel() {
+        final WorkbenchScrolledTabLayoutPanel tabPanel = new WorkbenchScrolledTabLayoutPanel( TAB_BAR_HEIGHT,
+                                                                                              FOCUS_BAR_HEIGHT,
+                                                                                              Unit.PX,
+                                                                                              WorkbenchResources.INSTANCE.images().tabPanelScrollLeft(),
+                                                                                              WorkbenchResources.INSTANCE.images().tabPanelScrollRight() );
 
         //Selecting a tab causes the previously selected tab to receive a Lost Focus event
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {

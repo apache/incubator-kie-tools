@@ -26,3 +26,7 @@
 .closeTabImage:HOVER {
 	background-position: 0px 0;
 }
+
+.tabLayoutPanelTabsScrollButtons {
+    padding-top: 3px;
+}
