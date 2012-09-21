@@ -18,14 +18,12 @@ package org.uberfire.client.toolbar;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * This contains the widgets used to action a rule asset (ie checkin, change
@@ -34,8 +32,10 @@ import com.google.gwt.user.client.ui.Panel;
 public class AssetEditorActionToolbarView extends Composite
     implements
     AssetEditorActionToolbarPresenter.View {
-    @Inject
-    UiBinder<Panel, AssetEditorActionToolbarView>     uiBinder;
+
+    interface AssetEditorActionToolbarViewBinder extends UiBinder<Widget, AssetEditorActionToolbarView> {}
+
+    private static AssetEditorActionToolbarViewBinder uiBinder = GWT.create(AssetEditorActionToolbarViewBinder.class);
 
     @UiField
     public MenuItem                                   saveChanges;
