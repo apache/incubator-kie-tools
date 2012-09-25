@@ -31,6 +31,10 @@ public interface PlaceManager {
 
     public WorkbenchActivity getActivity(final PartDefinition part);
 
+    public void closeCurrentPlace();
+
+    public void closePlace(final PlaceRequest place);
+
     public void closeAllPlaces();
 
 }

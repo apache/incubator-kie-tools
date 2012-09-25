@@ -16,7 +16,6 @@
 package org.uberfire.client.workbench.widgets.popups.activities.notfound;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,16 +33,15 @@ public class ActivityNotFoundView extends PopupPanel
     implements
     ActivityNotFoundPresenter.View {
 
-
     interface ActivityNotFoundViewBinder
             extends
             UiBinder<Widget, ActivityNotFoundView> {
     }
 
-    private static ActivityNotFoundViewBinder  uiBinder = GWT.create(ActivityNotFoundViewBinder.class);
+    private static ActivityNotFoundViewBinder uiBinder = GWT.create( ActivityNotFoundViewBinder.class );
 
     @UiField
-    public Label                               requestedPlaceIdentifierLabel;
+    public Label                              requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {

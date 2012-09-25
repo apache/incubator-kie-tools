@@ -48,13 +48,20 @@ public abstract class AbstractPerspectiveActivity
 
     //Save the current state of the Workbench
     private void saveState() {
+        
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
-        //On startup the Workbench has not been set to contain a perspective
         if ( perspective == null ) {
+            //On startup the Workbench has not been set to contain a perspective
+            loadState();
+
+        } else if ( perspective.isTransient() ) {
+            //Transient Perspectives are not saved
+            placeManager.closeAllPlaces();
             loadState();
 
         } else {
+            //Save first, then close all places before loading persisted state
             wbServices.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback(Void response) {
@@ -69,16 +76,23 @@ public abstract class AbstractPerspectiveActivity
     private void loadState() {
         final PerspectiveDefinition perspective = getPerspective();
 
-        wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
-            @Override
-            public void callback(PerspectiveDefinition response) {
-                if ( response == null ) {
-                    initialisePerspective( perspective );
-                } else {
-                    initialisePerspective( response );
+        if ( perspective.isTransient() ) {
+            //Transient Perspectives are not saved and hence cannot be loaded
+            initialisePerspective( perspective );
+
+        } else {
+
+            wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
+                @Override
+                public void callback(PerspectiveDefinition response) {
+                    if ( response == null ) {
+                        initialisePerspective( perspective );
+                    } else {
+                        initialisePerspective( response );
+                    }
                 }
-            }
-        } ).load( perspective.getName() );
+            } ).load( perspective.getName() );
+        }
     }
 
     //Initialise Workbench state to that of the provided perspective

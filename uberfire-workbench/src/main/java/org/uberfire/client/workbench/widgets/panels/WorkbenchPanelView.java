@@ -26,6 +26,7 @@ import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
 import com.google.gwt.core.client.Scheduler;
@@ -34,8 +35,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -236,19 +235,6 @@ public class WorkbenchPanelView extends ResizeComposite
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollLeft(),
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollRight() );
 
-        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
-
-            @Override
-            public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-                final int index = tabPanel.getSelectedIndex();
-                if ( index < 0 ) {
-                    return;
-                }
-                presenter.onPartLostFocus( index );
-            }
-        } );
-
         //When a tab is selected ensure content is resized and set focus
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
 
@@ -257,7 +243,8 @@ public class WorkbenchPanelView extends ResizeComposite
                 final Widget widget = tabPanel.getWidget( event.getSelectedItem() );
                 scheduleResize( widget );
                 final int index = tabPanel.getSelectedIndex();
-                presenter.onPartFocus( index );
+                final PartDefinition partToSelect = ((WorkbenchPartView) tabPanel.getWidget( index )).getPresenter().getDefinition();
+                presenter.onPartFocus( partToSelect );
             }
 
         } );
@@ -291,8 +278,8 @@ public class WorkbenchPanelView extends ResizeComposite
 
             @Override
             public void onClick(ClickEvent event) {
-                final int index = tabPanel.getWidgetIndex( view );
-                presenter.onBeforePartClose( index );
+                final PartDefinition partToDeselect = view.getPresenter().getDefinition();
+                presenter.onBeforePartClose( partToDeselect );
             }
 
         } );

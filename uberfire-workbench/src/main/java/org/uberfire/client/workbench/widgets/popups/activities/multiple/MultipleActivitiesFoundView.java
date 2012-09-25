@@ -16,7 +16,6 @@
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,10 +38,10 @@ public class MultipleActivitiesFoundView extends PopupPanel
             UiBinder<Widget, MultipleActivitiesFoundView> {
     }
 
-    private static MultipleActivitiesFoundViewBinder  uiBinder = GWT.create(MultipleActivitiesFoundViewBinder.class);;
+    private static MultipleActivitiesFoundViewBinder uiBinder = GWT.create( MultipleActivitiesFoundViewBinder.class ); ;
 
     @UiField
-    public Label                                      requestedPlaceIdentifierLabel;
+    public Label                                     requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {

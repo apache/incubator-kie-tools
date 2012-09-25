@@ -760,7 +760,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
         deckPanel.showWidget( index );
     }
-    
+
     /**
      * Programmatically selects the specified tab.
      * 

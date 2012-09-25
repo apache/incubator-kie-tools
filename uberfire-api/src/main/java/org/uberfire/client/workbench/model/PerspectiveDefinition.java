@@ -23,6 +23,21 @@ package org.uberfire.client.workbench.model;
 public interface PerspectiveDefinition {
 
     /**
+     * Get whether the Perspective is transient, i.e. will not be persisted.
+     * 
+     * @return True if the Perspective is transient and is not to be persisted.
+     */
+    public boolean isTransient();
+
+    /**
+     * Set whether the Perspective is transient, i.e. will not be persisted.
+     * 
+     * @param isTransient
+     *            True if the Perspective is not to be persisted.
+     */
+    public void setTransient(final boolean isTransient);
+
+    /**
      * Get the name of the Perspective.
      * 
      * @return The name of the Perspective.

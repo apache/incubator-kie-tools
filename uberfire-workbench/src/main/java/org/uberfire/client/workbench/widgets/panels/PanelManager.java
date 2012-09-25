@@ -215,6 +215,7 @@ public class PanelManager {
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             if ( e.getValue().getDefinition().getParts().contains( part ) ) {
                 e.getValue().selectPart( part );
+                setFocus( e.getKey() );
             }
         }
     }

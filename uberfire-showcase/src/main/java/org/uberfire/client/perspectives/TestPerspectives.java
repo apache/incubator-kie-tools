@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
@@ -150,4 +149,25 @@ public class TestPerspectives {
 
         return p;
     }
+    
+    @Perspective(identifier = "TestTransientPerspective1")
+    public PerspectiveDefinition getTransientPerspective1() {
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
+        p.setName( "Show TestTransient-1" );
+        p.setTransient( true );
+
+        final PanelDefinition west = new PanelDefinitionImpl();
+        west.setHeight( 200 );
+        west.setWidth( 200 );
+        west.setMinHeight( 100 );
+        west.setMinWidth( 100 );
+        west.addPart( new PartDefinitionImpl( new PlaceRequest( "MyAdminArea" ) ) );
+        p.getRoot().setChild( Position.WEST,
+                              west );
+
+        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequest( "Test2" ) ) );
+
+        return p;
+    }
+
 }

@@ -28,7 +28,6 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -73,9 +72,6 @@ public class WorkbenchPanelPresenter {
 
     @Inject
     private Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
-
-    @Inject
-    private Event<WorkbenchPartLostFocusEvent>   workbenchPartLostFocusEvent;
 
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
@@ -156,23 +152,16 @@ public class WorkbenchPanelPresenter {
         return definition.getParts().contains( part );
     }
 
-    public void onPartFocus(final int index) {
-        final PartDefinition definition = orderedParts.get( index );
-        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( definition ) );
-    }
-
-    public void onPartLostFocus(final int index) {
-        final PartDefinition definition = orderedParts.get( index );
-        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( definition ) );
+    public void onPartFocus(final PartDefinition part) {
+        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
     }
 
     public void onPanelFocus() {
         workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( getDefinition() ) );
     }
 
-    public void onBeforePartClose(final int index) {
-        final PartDefinition definition = orderedParts.get( index );
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( definition ) );
+    public void onBeforePartClose(final PartDefinition part) {
+        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
     }
 
     public View getPanelView() {

@@ -59,7 +59,13 @@ public class PlaceManagerImpl
     private final PanelManager                         panelManager;
 
     @Inject
+    private Event<WorkbenchPartBeforeCloseEvent>       workbenchPartBeforeCloseEvent;
+
+    @Inject
     private Event<WorkbenchPartCloseEvent>             workbenchPartCloseEvent;
+
+    @Inject
+    private Event<WorkbenchPartLostFocusEvent>         workbenchPartLostFocusEvent;
 
     private final Event<SelectWorkbenchPartEvent>      selectWorkbenchPartEvent;
 
@@ -141,11 +147,32 @@ public class PlaceManagerImpl
     }
 
     @Override
+    public void closeCurrentPlace() {
+        if ( NOWHERE.equals( currentPlaceRequest ) ) {
+            return;
+        }
+        closePlace( currentPlaceRequest );
+    }
+
+    @Override
+    public void closePlace(final PlaceRequest placeToClose) {
+        if ( placeToClose == null ) {
+            return;
+        }
+        final PartDefinition partToClose = existingWorkbenchParts.get( placeToClose );
+        if ( partToClose != null ) {
+            workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( partToClose ) );
+            if ( currentPlaceRequest.equals( placeToClose ) ) {
+                currentPlaceRequest = NOWHERE;
+            }
+        }
+    }
+
+    @Override
     public void closeAllPlaces() {
-        final List<PartDefinition> partsToBeClosed = new ArrayList<PartDefinition>( existingWorkbenchParts.values() );
-        for ( PartDefinition part : partsToBeClosed ) {
-            final WorkbenchPartBeforeCloseEvent beforeCloseEvent = new WorkbenchPartBeforeCloseEvent( part );
-            onWorkbenchPartClosed( beforeCloseEvent );
+        final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>( existingWorkbenchParts.keySet() );
+        for ( PlaceRequest placeToClose : placesToClose ) {
+            closePlace( placeToClose );
         }
     }
 
@@ -169,13 +196,6 @@ public class PlaceManagerImpl
             return;
         }
 
-        //Record new activity
-        currentPlaceRequest = part.getPlace();
-        existingWorkbenchActivities.put( part.getPlace(),
-                                         activity );
-        existingWorkbenchParts.put( part.getPlace(),
-                                    part );
-
         //Reveal activity with call-back to attach to Workbench
         activity.launch(
                 new AcceptItem() {
@@ -185,6 +205,13 @@ public class PlaceManagerImpl
                                                        part,
                                                        panel,
                                                        widget );
+
+                        //Record new activity
+                        currentPlaceRequest = part.getPlace();
+                        existingWorkbenchActivities.put( part.getPlace(),
+                                                         activity );
+                        existingWorkbenchParts.put( part.getPlace(),
+                                                    part );
                     }
                 } );
 
@@ -222,6 +249,7 @@ public class PlaceManagerImpl
         return activity;
     }
 
+    @SuppressWarnings("unused")
     private void onWorkbenchPartClosed(@Observes WorkbenchPartBeforeCloseEvent event) {
         final PartDefinition part = event.getPart();
         final PlaceRequest place = getPlaceForPart( part );
@@ -237,6 +265,7 @@ public class PlaceManagerImpl
             existingWorkbenchActivities.remove( place );
             existingWorkbenchParts.remove( place );
             activityManager.removeActivity( place );
+            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( part ) );
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
         }
     }
@@ -252,11 +281,20 @@ public class PlaceManagerImpl
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
+
+        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
+        final PartDefinition partToDeselect = this.existingWorkbenchParts.get( currentPlaceRequest );
+        if ( partToDeselect != null ) {
+            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( partToDeselect ) );
+        }
+
+        //Select new part
         final PartDefinition part = event.getPart();
         final WorkbenchActivity activity = getActivity( part );
         if ( activity == null ) {
             return;
         }
+        currentPlaceRequest = this.getPlaceForPart( part );
         activity.onFocus();
     }
 
@@ -267,6 +305,7 @@ public class PlaceManagerImpl
         if ( activity == null ) {
             return;
         }
+        currentPlaceRequest = NOWHERE;
         activity.onLostFocus();
     }
 

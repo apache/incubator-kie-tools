@@ -29,7 +29,19 @@ public class PerspectiveDefinitionImpl
 
     private String          name;
 
-    private PanelDefinition root = new PanelDefinitionImpl( true );
+    private boolean         isTransient = false;
+
+    private PanelDefinition root        = new PanelDefinitionImpl( true );
+
+    @Override
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    @Override
+    public void setTransient(boolean isTransient) {
+        this.isTransient = isTransient;
+    }
 
     public String getName() {
         return name;
