@@ -205,16 +205,15 @@ public class PlaceManagerImpl
                                                        part,
                                                        panel,
                                                        widget );
-
-                        //Record new activity
-                        currentPlaceRequest = part.getPlace();
-                        existingWorkbenchActivities.put( part.getPlace(),
-                                                         activity );
-                        existingWorkbenchParts.put( part.getPlace(),
-                                                    part );
                     }
                 } );
 
+        //Record new activity
+        currentPlaceRequest = part.getPlace();
+        existingWorkbenchActivities.put( part.getPlace(),
+                                         activity );
+        existingWorkbenchParts.put( part.getPlace(),
+                                    part );
         updateHistory( part.getPlace() );
     }
 
