@@ -32,7 +32,7 @@ import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public abstract class BaseSimpleFileSystem implements FileSystem {
 

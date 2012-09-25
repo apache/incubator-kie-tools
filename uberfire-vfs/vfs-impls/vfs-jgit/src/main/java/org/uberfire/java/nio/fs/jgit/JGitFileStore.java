@@ -24,7 +24,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 
-import static org.uberfire.java.nio.util.Preconditions.checkNotNull;
+import static org.uberfire.commons.util.Preconditions.checkNotNull;
 
 public class JGitFileStore implements FileStore {
 

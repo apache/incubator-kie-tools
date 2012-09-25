@@ -19,7 +19,7 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 /**
  * Simple file tree walker that works in a similar manner to nftw(3C).

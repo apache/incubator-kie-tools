@@ -18,12 +18,14 @@ package org.uberfire.security.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import javax.interceptor.InterceptorBinding;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+@InterceptorBinding
 @Retention(RUNTIME)
-@Target({ANNOTATION_TYPE})
+@Target({TYPE, ANNOTATION_TYPE})
 public @interface SecurityTrait {
 
 }

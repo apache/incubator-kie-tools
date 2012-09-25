@@ -20,17 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.FileSystem;
 
-@Portable
 public class ActiveFileSystemsImpl implements ActiveFileSystems {
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
-
-    public ActiveFileSystemsImpl() {
-    }
 
     @Override
     public void addBootstrapFileSystem(final FileSystem fs) {

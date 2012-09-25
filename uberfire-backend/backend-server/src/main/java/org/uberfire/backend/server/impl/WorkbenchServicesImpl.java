@@ -18,6 +18,7 @@ package org.uberfire.backend.server.impl;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.ActiveFileSystems;
@@ -41,7 +42,7 @@ public class WorkbenchServicesImpl
     @Inject
     private VFSService vfsService;
 
-    @Inject
+    @Inject @Named("fs")
     private ActiveFileSystems fileSystems;
 
     private XStream    xs = new XStream();

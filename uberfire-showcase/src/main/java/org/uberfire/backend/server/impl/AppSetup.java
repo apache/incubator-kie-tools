@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.uberfire.backend.vfs.ActiveFileSystems;
@@ -57,7 +58,7 @@ public class AppSetup {
         fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }
 
-    @Produces
+    @Produces @Named("fs")
     public ActiveFileSystems fileSystems() {
         return fileSystems;
     }

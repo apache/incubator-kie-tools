@@ -18,14 +18,17 @@ package org.uberfire.security.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+@InterceptorBinding
 @RolesType
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 public @interface Roles {
 
-    String[] value();
+    @Nonbinding String[] value();
 }

@@ -47,7 +47,7 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 import static java.util.Collections.*;
 import static org.uberfire.java.nio.file.AccessMode.*;
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.

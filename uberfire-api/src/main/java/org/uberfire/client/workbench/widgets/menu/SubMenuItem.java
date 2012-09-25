@@ -38,4 +38,8 @@ public class SubMenuItem extends AbstractMenuItem {
         return subMenu;
     }
 
+    @Override
+    public String getSignatureId() {
+        return SubMenuItem.class.getName();
+    }
 }

@@ -17,11 +17,11 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.security.authz.AccessDecisionManager;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 /**
  * Utilities for WorkbenchMenuBarPresenter to filter menu items
@@ -29,20 +29,23 @@ import org.uberfire.security.authz.AccessDecisionManager;
 @ApplicationScoped
 public class WorkbenchMenuBarPresenterUtils {
 
-    private final AccessDecisionManager accessDecisionManager;
+    private final RuntimeAuthorizationManager authzManager;
+
+    private final Identity identity;
 
     @Inject
-    public WorkbenchMenuBarPresenterUtils(final AccessDecisionManager accessDecisionManager) {
-        this.accessDecisionManager = accessDecisionManager;
+    public WorkbenchMenuBarPresenterUtils(final RuntimeAuthorizationManager authzManager, final Identity identity) {
+        this.authzManager = authzManager;
+        this.identity = identity;
     }
 
     //Remove menu bar items for which there are insufficient permissions
     public List<AbstractMenuItem> filterMenuItemsByPermission(final List<AbstractMenuItem> items) {
         final List<AbstractMenuItem> itemsClone = new ArrayList<AbstractMenuItem>();
-        for ( AbstractMenuItem item : items ) {
-            final AbstractMenuItem itemClone = filterMenuItemByPermission( item );
-            if ( itemClone != null ) {
-                itemsClone.add( itemClone );
+        for (AbstractMenuItem item : items) {
+            final AbstractMenuItem itemClone = filterMenuItemByPermission(item);
+            if (itemClone != null) {
+                itemsClone.add(itemClone);
             }
         }
         return itemsClone;
@@ -50,26 +53,26 @@ public class WorkbenchMenuBarPresenterUtils {
 
     //Remove menu bar items for which there are insufficient permissions
     public AbstractMenuItem filterMenuItemByPermission(final AbstractMenuItem item) {
-        if ( accessDecisionManager.accessDenied( item ) ) {
+        if (!authzManager.authorize(item, identity)) {
             return null;
         }
-        if ( item instanceof CommandMenuItem ) {
+        if (item instanceof CommandMenuItem) {
             return item;
 
-        } else if ( item instanceof SubMenuItem ) {
+        } else if (item instanceof SubMenuItem) {
             final SubMenuItem subMenuItem = (SubMenuItem) item;
-            final WorkbenchMenuBar menuBarClone = cloneMenuBar( filterMenuItemsByPermission( subMenuItem.getSubMenu().getItems() ) );
-            final SubMenuItem itemClone = new SubMenuItem( subMenuItem.getCaption(),
-                                                           menuBarClone );
+            final WorkbenchMenuBar menuBarClone = cloneMenuBar(filterMenuItemsByPermission(subMenuItem.getSubMenu().getItems()));
+            final SubMenuItem itemClone = new SubMenuItem(subMenuItem.getCaption(),
+                    menuBarClone);
             return itemClone;
         }
-        throw new IllegalArgumentException( "item type [" + item.getClass().getName() + "] is not recognised." );
+        throw new IllegalArgumentException("item type [" + item.getClass().getName() + "] is not recognised.");
     }
 
     private static WorkbenchMenuBar cloneMenuBar(final List<AbstractMenuItem> items) {
         final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
-        for ( AbstractMenuItem item : items ) {
-            menuBar.addItem( item );
+        for (AbstractMenuItem item : items) {
+            menuBar.addItem(item);
         }
         return menuBar;
     }

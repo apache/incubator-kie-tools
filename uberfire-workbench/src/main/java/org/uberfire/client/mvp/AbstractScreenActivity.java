@@ -15,11 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Base class for Screen Activities
@@ -75,16 +74,6 @@ public abstract class AbstractScreenActivity
     @Override
     public void onReveal() {
         //Do nothing.   
-    }
-
-    @Override
-    public String[] getRoles() {
-        return null;
-    }
-
-    @Override
-    public String[] getTraitTypes() {
-        return null;
     }
 
     public abstract String getTitle();

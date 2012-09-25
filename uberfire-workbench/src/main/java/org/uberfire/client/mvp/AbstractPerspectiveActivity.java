@@ -48,7 +48,7 @@ public abstract class AbstractPerspectiveActivity
 
     //Save the current state of the Workbench
     private void saveState() {
-        
+
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
         if ( perspective == null ) {
@@ -129,16 +129,6 @@ public abstract class AbstractPerspectiveActivity
     @Override
     public void onReveal() {
         //Do nothing.   
-    }
-
-    @Override
-    public String[] getRoles() {
-        return null;
-    }
-
-    @Override
-    public String[] getTraitTypes() {
-        return null;
     }
 
     public abstract PerspectiveDefinition getPerspective();

@@ -217,8 +217,10 @@
   </build>
 
   <modules>
+    <module>uberfire-commons</module>
     <module>uberfire-vfs</module>
     <module>uberfire-security</module>
+    <module>uberfire-server</module>
     <module>uberfire-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
@@ -230,6 +232,20 @@
   <dependencyManagement>
     <dependencies>
 
+      <!-- Server -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-server</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Commons -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- Security -->
       <dependency>
         <groupId>org.uberfire</groupId>
@@ -240,6 +256,12 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>security-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>security-server</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -636,7 +658,19 @@
         <artifactId>xstream</artifactId>
         <version>1.4.3</version>
       </dependency>
-      
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.10</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

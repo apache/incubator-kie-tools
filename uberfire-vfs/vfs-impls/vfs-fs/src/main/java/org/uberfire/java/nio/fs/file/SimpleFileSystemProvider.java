@@ -63,7 +63,7 @@ import org.uberfire.java.nio.fs.base.GeneralFileAttributes;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 import org.uberfire.java.nio.fs.base.NotImplementedException;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public class SimpleFileSystemProvider implements FileSystemProvider {
 

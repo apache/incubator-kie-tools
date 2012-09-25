@@ -15,7 +15,11 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import org.uberfire.security.authz.SimpleRestrictedAccess;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.uberfire.security.authz.RuntimeResource;
 
 /**
  * Meta-data for a Workbench MenuItem including permissions. The default is that
@@ -23,13 +27,13 @@ import org.uberfire.security.authz.SimpleRestrictedAccess;
  */
 public abstract class AbstractMenuItem
     implements
-    SimpleRestrictedAccess {
+    RuntimeResource {
 
-    private boolean      enabled = true;
+    private   boolean      enabled = true;
 
-    private String[]     roles   = new String[]{};
+    private   String[]     roles   = new String[]{};
 
-    private final String caption;
+    protected final String caption;
 
     public AbstractMenuItem(final String caption) {
         if ( caption == null ) {
@@ -65,19 +69,20 @@ public abstract class AbstractMenuItem
     }
 
     @Override
-    public String[] getRoles() {
+    public Collection<String> getRoles() {
         String[] clone = new String[roles.length];
         System.arraycopy( roles,
                           0,
                           clone,
                           0,
                           roles.length );
-        return clone;
+
+        return Arrays.asList(clone);
     }
 
     @Override
-    public String[] getTraitTypes() {
-        return new String[]{};
+    public Collection<String> getTraits() {
+        return Collections.emptyList();
     }
 
 }

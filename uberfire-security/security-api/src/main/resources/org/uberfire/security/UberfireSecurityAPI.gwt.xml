@@ -19,11 +19,18 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.4.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.uberfire.commons.UberfireCommons"/>
   <inherits name="javax.enterprise.Support"/>
 
   <source path='annotations'/>
+  <source path='auth'/>
   <source path='authz'/>
+  <source path='crypt'/>
   <source path='impl'/>
   <source path=''/>
+
+  <source path="server">
+    <exclude name="impl/**" />
+  </source>
 
 </module>

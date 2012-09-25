@@ -16,6 +16,6 @@
 
 package org.uberfire.security;
 
-public interface Identity extends Principal {
+public interface Identity extends Subject {
 
 }

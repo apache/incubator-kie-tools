@@ -16,58 +16,100 @@
 
 package org.uberfire.security.client;
 
-import com.google.inject.Inject;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.MessageCallback;
+import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.security.authz.AccessDecisionManager;
 import org.uberfire.security.Identity;
-import org.uberfire.security.Principal;
-import org.uberfire.security.impl.Anonymous;
-import org.uberfire.security.impl.DefaultAccessDecisionManagerImpl;
+import org.uberfire.security.Role;
+import org.uberfire.security.authz.AuthorizationException;
+
+import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
 
 @EntryPoint
 public class SecurityEntryPoint {
 
-    @Inject
-    private IOCBeanManager iocManager;
+    private static final String ANONYMOUS = "Anonymous";
+    private Identity currentIdentity = null;
 
-    @AfterInitialization
-    public void checkSecurity() {
-        Principal principal = null;
-        try {
-            final IOCBeanDef<Principal> principalBean = iocManager.lookupBean(Principal.class);
-            if (principalBean == null) {
-                principal = registerAnonymous();
-            } else {
-                principal = principalBean.getInstance();
+    @Inject MessageBus bus;
+
+    @Produces
+    @ApplicationScoped
+    public Identity currentUser() {
+        if (currentIdentity == null) {
+            setup();
+        }
+        return currentIdentity;
+    }
+
+    public void setup() {
+        final JSONSubject clientSubject = loadCurrentSubject();
+        final String name;
+        final List<Role> roles = new ArrayList<Role>();
+
+        if (clientSubject == null) {
+            name = ANONYMOUS;
+            roles.add(new Role() {
+                @Override
+                public String getName() {
+                    return ANONYMOUS;
+                }
+            });
+
+        } else {
+            name = clientSubject.getName();
+            for (int i = 0; i < clientSubject.getRoles().length(); i++) {
+                final String roleName = clientSubject.getRoles().get(i);
+                roles.add(new Role() {
+                    @Override
+                    public String getName() {
+                        return roleName;
+                    }
+                });
             }
-        } catch (Exception ex) {
-            principal = registerAnonymous();
         }
 
-        try {
-            final IOCBeanDef<AccessDecisionManager> accessDecisionManagerBean = iocManager.lookupBean(AccessDecisionManager.class);
-            if (accessDecisionManagerBean == null) {
-                registerDefault(principal);
+        this.currentIdentity = new Identity() {
+            @Override
+            public List<Role> getRoles() {
+                return roles;
             }
-        } catch (Exception ex) {
-            registerDefault(principal);
-        }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
+
+        bus.subscribe(CLIENT_ERROR_SUBJECT, new MessageCallback() {
+            @Override
+            public void callback(Message message) {
+                try {
+                    final Throwable caught = message.get(Throwable.class, MessageParts.Throwable);
+                    throw caught;
+                } catch (AuthorizationException ex) {
+                    redirect("/login.jsp");
+                } catch (Throwable ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
-    private Principal registerAnonymous() {
-        final Anonymous anonymous = new Anonymous();
+    public static final native JSONSubject loadCurrentSubject() /*-{
+        return $wnd.current_user;
+    }-*/;
 
-        iocManager.addBean(Object.class, Principal.class, null, anonymous, null);
-        iocManager.addBean(Object.class, Identity.class, null, anonymous, null);
-
-        return anonymous;
-    }
-
-    private void registerDefault(final Principal principal) {
-        iocManager.addBean(Object.class, AccessDecisionManager.class, null, new DefaultAccessDecisionManagerImpl(principal), null);
-    }
+    public static native void redirect(final String url)/*-{
+        $wnd.location = url;
+    }-*/;
 
 }

@@ -26,10 +26,16 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.security.authz.AccessDecisionManager;
+import org.uberfire.security.Identity;
+import org.uberfire.security.authz.ResourceDecisionManager;
+import org.uberfire.security.authz.RoleDecisionManager;
+import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.impl.authz.RuntimeResourceDecisionManager;
+import org.uberfire.security.impl.authz.RuntimeResourceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
+import static org.uberfire.shared.mvp.PlaceRequest.*;
 
 @Dependent
 public class ActivityManagerImpl
@@ -47,8 +53,10 @@ public class ActivityManagerImpl
     @Inject
     private IOCBeanManager                    iocManager;
 
+    @Inject RuntimeAuthorizationManager       authzManager;
+
     @Inject
-    private AccessDecisionManager             accessDecisionManager;
+    private Identity                          identity;
 
     public Activity getActivity(final PlaceRequest placeRequest) {
         //Check and return any existing Activity for the PlaceRequest
@@ -99,7 +107,7 @@ public class ActivityManagerImpl
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {
             final T instance = activityBean.getInstance();
-            if ( accessDecisionManager.accessGranted( instance ) ) {
+            if ( authzManager.authorize(instance, identity) ) {
                 activities.add( instance );
             } else {
                 //If user does not have permission destroy bean to avoid memory leak
@@ -118,7 +126,7 @@ public class ActivityManagerImpl
         }
         final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
         final Activity instance = activityBean.getInstance();
-        if ( accessDecisionManager.accessDenied( instance ) ) {
+        if ( !authzManager.authorize(instance, identity) ) {
             //If user does not have permission destroy bean to avoid memory leak
             if ( activityBean.getScope().equals( Dependent.class ) ) {
                 iocManager.destroyBean( instance );

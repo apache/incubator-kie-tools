@@ -25,7 +25,7 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public class GeneralFileAttributeView<T extends GeneralFileAttributes>
         implements BasicFileAttributeView, FlexibleFileAttributeView {

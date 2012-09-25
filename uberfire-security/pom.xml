@@ -31,5 +31,6 @@
   <modules>
     <module>security-api</module>
     <module>security-client</module>
+    <module>security-server</module>
   </modules>
 </project>

@@ -19,14 +19,12 @@ package org.uberfire.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
-
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -38,17 +36,13 @@ public class WorkbenchEntryPoint {
 
     @PostConstruct
     public void init() {
-        if ( !Window.Location.getPath().contains( "Standalone.html" ) ) {
-            appWidget.add( workbench );
-        }
+        appWidget.add( workbench );
     }
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
-        if ( !Window.Location.getPath().contains( "Standalone.html" ) ) {
-            RootLayoutPanel.get().add( appWidget );
-        }
+        RootLayoutPanel.get().add( appWidget );
     }
 
     private void loadStyles() {

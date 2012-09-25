@@ -32,15 +32,19 @@
   <description>ÜberFire Showcase</description>
 
   <dependencies>
-      <dependency>
-          <groupId>org.json</groupId>
-          <artifactId>json</artifactId>
-          <version>20090211</version>
-      </dependency>
-      
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-server</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>security-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
     </dependency>
 
     <dependency>
@@ -165,6 +169,7 @@
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>

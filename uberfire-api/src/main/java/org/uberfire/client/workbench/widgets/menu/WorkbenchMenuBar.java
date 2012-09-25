@@ -16,16 +16,17 @@
 package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.uberfire.security.authz.RestrictedAccess;
+import org.uberfire.security.authz.RuntimeResource;
 
 /**
  * Meta-data for a Workbench MenuBar including permissions
  */
 public class WorkbenchMenuBar
     implements
-    RestrictedAccess {
+        RuntimeResource {
 
     private List<AbstractMenuItem> items = new ArrayList<AbstractMenuItem>();
 
@@ -40,4 +41,18 @@ public class WorkbenchMenuBar
         return items;
     }
 
+    @Override
+    public String getSignatureId() {
+        return WorkbenchMenuBar.class.getName();
+    }
+
+    @Override
+    public Collection<String> getRoles() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return null;
+    }
 }

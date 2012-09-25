@@ -16,6 +16,9 @@
 
 package org.uberfire.annotations.processors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,6 +35,10 @@ import org.uberfire.client.workbench.annotations.Identifier;
  */
 public class PerspectiveTest6Activity_getPerspective1 extends AbstractPerspectiveActivity {
 
+    private static final Collection<String> ROLES = Collections.emptyList();
+
+    private static final Collection<String> TRAITS = Collections.emptyList();
+
     @Inject
     private PerspectiveTest6 realClass;
 
@@ -45,4 +52,18 @@ public class PerspectiveTest6Activity_getPerspective1 extends AbstractPerspectiv
         return realClass.getPerspective1(); 
     }
     
+    @Override
+    public Collection<String> getRoles() {
+        return ROLES;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return TRAITS;
+    }
+
+    @Override
+    public String getSignatureId() {
+        return "org.uberfire.annotations.processors.PerspectiveTest6Activity_getPerspective1";
+    }
 }

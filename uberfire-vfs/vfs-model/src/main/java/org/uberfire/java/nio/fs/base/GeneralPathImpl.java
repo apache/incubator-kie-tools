@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public class GeneralPathImpl extends AbstractPath {
 

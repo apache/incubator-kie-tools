@@ -33,8 +33,30 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <servlet>
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>
+      org.uberfire.security.server.UberFireSecurityFilter
+    </filter-class>
+  </filter>
 
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/Uberfire.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
 with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
 (perhaps under src/integration-test-settings/web.xml and alter the integration-test
@@ -53,19 +75,6 @@ profile in pom.xml to use that. -->
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
-
-
-  <servlet>
-    <servlet-name>GoogleGadget</servlet-name>
-    <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>GoogleGadget</servlet-name>
-    <url-pattern>google.gadget</url-pattern>
-  </servlet-mapping>
-
 
   <listener>
     <!--
@@ -106,4 +115,7 @@ profile in pom.xml to use that. -->
     <param-value>/WEB-INF/users.properties</param-value>
   </context-param>
 
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
 </web-app>

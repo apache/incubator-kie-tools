@@ -72,7 +72,7 @@ import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public class JGitFileSystemProvider implements FileSystemProvider {
 

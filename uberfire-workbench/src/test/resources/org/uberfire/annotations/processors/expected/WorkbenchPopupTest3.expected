@@ -16,6 +16,9 @@
 
 package org.uberfire.annotations.processors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -34,6 +37,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
 
+    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
+
+    private static final Collection<String> TRAITS = Collections.emptyList();
+
     @Inject
     private WorkbenchPopupTest3 realPresenter;
 
@@ -43,8 +50,17 @@ public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
     }
     
     @Override
-    public String[] getRoles() {
-        return new String[]{"ADMIN", "SUDO"};
+    public Collection<String> getRoles() {
+        return ROLES;
     }
 
+    @Override
+    public Collection<String> getTraits() {
+        return TRAITS;
+    }
+
+    @Override
+    public String getSignatureId() {
+        return "org.uberfire.annotations.processors.WorkbenchPopupTest3Activity";
+    }
 }

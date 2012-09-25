@@ -39,4 +39,8 @@ public class CommandMenuItem extends AbstractMenuItem {
         return command;
     }
 
+    @Override
+    public String getSignatureId() {
+        return CommandMenuItem.class.getName() + "#" + caption;
+    }
 }

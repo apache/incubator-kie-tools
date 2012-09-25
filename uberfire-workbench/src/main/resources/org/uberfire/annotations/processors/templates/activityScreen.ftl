@@ -16,6 +16,9 @@
 
 package ${packageName};
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -45,6 +48,18 @@ import com.google.gwt.user.client.ui.IsWidget;
  * WARNING! This class is generated. Do not modify.
  */
 public class ${className} extends AbstractScreenActivity {
+
+    <#if rolesList??>
+    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
+    <#else>
+    private static final Collection<String> ROLES = Collections.emptyList();
+    </#if>
+
+    <#if securityTraitList??>
+    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
+    <#else>
+    private static final Collection<String> TRAITS = Collections.emptyList();
+    </#if>
 
     @Inject
     private ${realClassName} realPresenter;
@@ -138,17 +153,18 @@ public class ${className} extends AbstractScreenActivity {
     }
     
     </#if>
-    <#if rolesList??>
     @Override
-    public String[] getRoles() {
-        return new String[]{${rolesList}};
+    public Collection<String> getRoles() {
+        return ROLES;
     }
 
-    </#if>
-    <#if securityTraitList??>
     @Override
-    public String[] getTraitTypes() {
-        return new String[]{${securityTraitList}};
+    public Collection<String> getTraits() {
+        return TRAITS;
     }
-    </#if>
+
+    @Override
+    public String getSignatureId() {
+        return "${packageName}.${className}";
+    }
 }

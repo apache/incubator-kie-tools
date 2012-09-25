@@ -18,6 +18,8 @@ package org.uberfire.security;
 
 public interface Role {
 
+    public static String ROLE_REMEMBER_ME = "IS_REMEMBER_ME";
+
     String getName();
 
 }

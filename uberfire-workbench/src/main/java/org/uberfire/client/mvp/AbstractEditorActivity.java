@@ -97,16 +97,6 @@ public abstract class AbstractEditorActivity
         //Do nothing.   
     }
 
-    @Override
-    public String[] getRoles() {
-        return null;
-    }
-
-    @Override
-    public String[] getTraitTypes() {
-        return null;
-    }
-
     public abstract String getTitle();
 
     public abstract IsWidget getWidget();

@@ -38,7 +38,7 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 
 import static org.uberfire.java.nio.file.WatchEvent.*;
-import static org.uberfire.java.nio.util.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public abstract class AbstractPath implements Path, AttrHolder<GeneralFileAttributes> {
 

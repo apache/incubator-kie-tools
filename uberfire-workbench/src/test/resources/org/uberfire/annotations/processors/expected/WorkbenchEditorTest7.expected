@@ -16,6 +16,9 @@
 
 package org.uberfire.annotations.processors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -38,6 +41,10 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchEditorTest7Activity extends AbstractEditorActivity {
 
+    private static final Collection<String> ROLES = Collections.emptyList();
+
+    private static final Collection<String> TRAITS = Collections.emptyList();
+
     @Inject
     private WorkbenchEditorTest7 realPresenter;
 
@@ -51,4 +58,18 @@ public class WorkbenchEditorTest7Activity extends AbstractEditorActivity {
         return realPresenter.getView();
     }
     
+    @Override
+    public Collection<String> getRoles() {
+        return ROLES;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return TRAITS;
+    }
+
+    @Override
+    public String getSignatureId() {
+        return "org.uberfire.annotations.processors.WorkbenchEditorTest7Activity";
+    }
 }

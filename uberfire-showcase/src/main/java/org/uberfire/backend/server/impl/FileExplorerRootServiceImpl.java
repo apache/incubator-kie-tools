@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.FileExplorerRootService;
@@ -38,7 +39,7 @@ public class FileExplorerRootServiceImpl implements FileExplorerRootService {
 
     protected final Set<Root> roots = new HashSet<Root>();
 
-    @Inject
+    @Inject @Named("fs")
     private ActiveFileSystems fileSystems;
 
     @PostConstruct

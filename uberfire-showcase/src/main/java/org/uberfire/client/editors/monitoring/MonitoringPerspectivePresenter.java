@@ -28,7 +28,7 @@ import org.uberfire.security.annotations.Roles;
 
 @Dependent
 @WorkbenchScreen(identifier = "Monitoring")
-@Roles({"ADMIN"})
+@Roles({"ADMIN", "NON_EXISTENT"})
 public class MonitoringPerspectivePresenter {
 
     public interface MyView

@@ -15,12 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.security.authz.SimpleRestrictedAccess;
+import org.uberfire.security.authz.RuntimeResource;
 
 /**
  * Base Activity life-cycles
  */
-public interface Activity extends SimpleRestrictedAccess {
+public interface Activity extends RuntimeResource {
 
     void onReveal();
 }

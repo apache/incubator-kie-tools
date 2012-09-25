@@ -16,6 +16,9 @@
 
 package ${packageName};
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,6 +42,18 @@ import org.uberfire.client.workbench.annotations.DefaultPerspective;
  */
 public class ${className} extends AbstractPerspectiveActivity {
 
+    <#if rolesList??>
+    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
+    <#else>
+    private static final Collection<String> ROLES = Collections.emptyList();
+    </#if>
+
+    <#if securityTraitList??>
+    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
+    <#else>
+    private static final Collection<String> TRAITS = Collections.emptyList();
+    </#if>
+
     @Inject
     private ${realClassName} realClass;
 
@@ -52,16 +67,18 @@ public class ${className} extends AbstractPerspectiveActivity {
         return realClass.${methodName}(); 
     }
     
-    <#if rolesList??>
     @Override
-    public String[] getRoles() {
-        return new String[]{${rolesList}};
+    public Collection<String> getRoles() {
+        return ROLES;
     }
-    </#if>
-    <#if securityTraitList??>
+
     @Override
-    public String[] getTraitTypes() {
-        return new String[]{${securityTraitList}};
+    public Collection<String> getTraits() {
+        return TRAITS;
     }
-    </#if>
+
+    @Override
+    public String getSignatureId() {
+        return "${packageName}.${className}";
+    }
 }
