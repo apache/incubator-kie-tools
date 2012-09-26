@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -34,7 +35,8 @@ public abstract class AbstractPopupActivity
     private IOCBeanManager iocManager;
 
     @Override
-    public void launch() {
+    public void launch(final PlaceRequest place) {
+        onStart( place );
         onReveal();
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak
@@ -48,6 +50,16 @@ public abstract class AbstractPopupActivity
         } );
         popup.show();
         popup.center();
+    }
+
+    @Override
+    public void onStart() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onStart(final PlaceRequest place) {
+        //Do nothing.  
     }
 
     @Override

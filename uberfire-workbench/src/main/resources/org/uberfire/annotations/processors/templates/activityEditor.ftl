@@ -30,6 +30,9 @@ import org.uberfire.client.mvp.AbstractEditorActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
+<#if onStart2ParametersMethodName??>
+import org.uberfire.shared.mvp.PlaceRequest;
+</#if>
 <#if getMenuBarMethodName??>
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 </#if>
@@ -57,10 +60,17 @@ public class ${className} extends AbstractEditorActivity {
     }
 
     </#if>
-    <#if onStartMethodName??>
+    <#if onStart2ParametersMethodName??>
+    @Override
+    public void onStart(final Path path, 
+                        final PlaceRequest place) {
+        realPresenter.${onStart2ParametersMethodName}( path, place );
+    }
+
+    <#elseif onStart1ParameterMethodName??>
     @Override
     public void onStart(final Path path) {
-        realPresenter.${onStartMethodName}( path );
+        realPresenter.${onStart1ParameterMethodName}( path );
     }
 
     </#if>
@@ -152,6 +162,7 @@ public class ${className} extends AbstractEditorActivity {
     public String[] getRoles() {
         return new String[]{${rolesList}};
     }
+
     </#if>
     <#if securityTraitList??>
     @Override

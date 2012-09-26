@@ -54,6 +54,10 @@ public class PopupActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         final WorkbenchPopup wbp = classElement.getAnnotation( WorkbenchPopup.class );
         final String identifier = wbp.identifier();
+        final String onStart0ParameterMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
+                                                                                                     processingEnvironment );
+        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
+                                                                                                             processingEnvironment );
         final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
                                                                                 processingEnvironment );
         final String getPopupMethodName = GeneratorUtils.getPopupMethodName( classElement,
@@ -66,6 +70,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
+        logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
+        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
         logger.debug( "getPopupMethodName: " + getPopupMethodName );
         logger.debug( "isPopup: " + Boolean.toString( isPopup ) );
@@ -74,10 +80,18 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         //Validate getPopupMethodName and isPopup
         if ( !isPopup && getPopupMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
+            throw new GenerationException( "The WorkbenchPopup must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
         }
         if ( isPopup && getPopupMethodName != null ) {
-            final String msg = "The WorkbenchPart both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            final String msg = "The WorkbenchPopup both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
+        }
+
+        //Validate onStart0ParameterMethodName and onStart1ParameterMethodName
+        if ( onStart0ParameterMethodName != null && onStart1ParameterMethodName != null ) {
+            final String msg = "The WorkbenchPopup has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );
@@ -93,6 +107,10 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
+        root.put( "onStart0ParameterMethodName",
+                  onStart0ParameterMethodName );
+        root.put( "onStart1ParameterMethodName",
+                  onStart1ParameterMethodName );
         root.put( "onRevealMethodName",
                   onRevealMethodName );
         root.put( "getPopupMethodName",

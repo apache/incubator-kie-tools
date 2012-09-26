@@ -29,6 +29,9 @@ import org.uberfire.client.mvp.AbstractScreenActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
+<#if onStart1ParameterMethodName??>
+import org.uberfire.shared.mvp.PlaceRequest;
+</#if>
 <#if getMenuBarMethodName??>
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 </#if>
@@ -53,10 +56,16 @@ public class ${className} extends AbstractScreenActivity {
     }
 
     </#if>
-    <#if onStartMethodName??>
+    <#if onStart1ParametersMethodName??>
+    @Override
+    public void onStart(final PlaceRequest place) {
+        realPresenter.${onStart1ParameterMethodName}( place );
+    }
+
+    <#elseif onStart0ParameterMethodName??>
     @Override
     public void onStart() {
-        realPresenter.${onStartMethodName}();
+        realPresenter.${onStart0ParameterMethodName}();
     }
 
     </#if>
@@ -134,6 +143,7 @@ public class ${className} extends AbstractScreenActivity {
     public String[] getRoles() {
         return new String[]{${rolesList}};
     }
+
     </#if>
     <#if securityTraitList??>
     @Override

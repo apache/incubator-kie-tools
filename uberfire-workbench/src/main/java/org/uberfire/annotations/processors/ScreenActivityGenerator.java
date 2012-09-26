@@ -55,8 +55,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         final WorkbenchScreen wbw = classElement.getAnnotation( WorkbenchScreen.class );
         final String identifier = wbw.identifier();
-        final String onStartMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
-                                                                                           processingEnvironment );
+        final String onStart0ParameterMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
+                                                                                                     processingEnvironment );
+        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
+                                                                                                             processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -89,7 +91,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
-        logger.debug( "onStartMethodName: " + onStartMethodName );
+        logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
+        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
@@ -106,10 +109,18 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
-            final String msg = "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            final String msg = "The WorkbenchScreen both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
+        }
+
+        //Validate onStart0ParameterMethodName and onStart1ParameterMethodName
+        if ( onStart0ParameterMethodName != null && onStart1ParameterMethodName != null ) {
+            final String msg = "The WorkbenchScreen has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );
@@ -117,7 +128,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Validate getTitleMethodName
         if ( getTitleMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+            throw new GenerationException( "The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         }
 
         //Setup data for template sub-system
@@ -130,8 +141,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onStartMethodName",
-                  onStartMethodName );
+        root.put( "onStart0ParameterMethodName",
+                  onStart0ParameterMethodName );
+        root.put( "onStart1ParameterMethodName",
+                  onStart1ParameterMethodName );
         root.put( "onMayCloseMethodName",
                   onMayCloseMethodName );
         root.put( "onCloseMethodName",

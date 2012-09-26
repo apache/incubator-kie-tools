@@ -17,6 +17,7 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Base Workbench Part Activity life-cycles
@@ -25,7 +26,8 @@ public interface WorkbenchActivity
     extends
     Activity {
 
-    public void launch(final AcceptItem acceptItem);
+    public void launch(final AcceptItem acceptItem,
+                       final PlaceRequest place);
 
     public boolean onMayClose();
 

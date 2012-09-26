@@ -707,15 +707,10 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         tab.getWidget().removeFromParent();
 
         if ( index == selectedIndex ) {
-            // If the selected tab is being removed, select the first tab (if there
-            // is one).
+            // If the selected tab is being removed, record that no tab is selected
             selectedIndex = -1;
-            if ( getWidgetCount() > 0 ) {
-                selectTab( 0 );
-            }
         } else if ( index < selectedIndex ) {
-            // If the selectedIndex is greater than the one being removed, it needs
-            // to be adjusted.
+            // If the selectedIndex is greater than the one being removed, it needs to be adjusted.
             --selectedIndex;
         }
         return true;
@@ -752,12 +747,6 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         if ( index == selectedIndex ) {
             return;
         }
-
-        // Update the tabs being selected and unselected.
-        if ( selectedIndex != -1 ) {
-            tabs.get( selectedIndex ).setSelected( false );
-        }
-
         deckPanel.showWidget( index );
     }
 
@@ -945,11 +934,8 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
         child.addStyleName( CONTENT_STYLE );
 
-        if ( selectedIndex == -1 ) {
-            selectTab( 0 );
-        } else if ( selectedIndex >= beforeIndex ) {
-            // If we inserted before the currently selected tab, its index has just
-            // increased.
+        if ( selectedIndex >= beforeIndex ) {
+            // If we inserted before the currently selected tab, its index has just increased.
             selectedIndex++;
         }
     }

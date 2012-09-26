@@ -196,30 +196,34 @@ public class PlaceManagerImpl
             return;
         }
 
-        //Reveal activity with call-back to attach to Workbench
-        activity.launch(
-                new AcceptItem() {
-                    public void add(String tabTitle,
-                                    IsWidget widget) {
-                        panelManager.addWorkbenchPart( tabTitle,
-                                                       part,
-                                                       panel,
-                                                       widget );
-                    }
-                } );
-
-        //Record new activity
-        currentPlaceRequest = part.getPlace();
-        existingWorkbenchActivities.put( part.getPlace(),
+        //Record new place\part\activity
+        final PlaceRequest place = part.getPlace();
+        existingWorkbenchActivities.put( place,
                                          activity );
-        existingWorkbenchParts.put( part.getPlace(),
+        existingWorkbenchParts.put( place,
                                     part );
-        updateHistory( part.getPlace() );
+        updateHistory( place );
+
+        //Reveal activity with call-back to attach to Workbench
+        activity.launch( new AcceptItem() {
+                             public void add(String tabTitle,
+                                             IsWidget widget) {
+                                 panelManager.addWorkbenchPart( tabTitle,
+                                                                part,
+                                                                panel,
+                                                                widget );
+                             }
+                         },
+                         place );
+
+        //Select newly inserted part
+        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
+
     }
 
-    private void launchActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest place,
                                 final PopupActivity activity) {
-        activity.launch();
+        activity.launch( place );
     }
 
     private void launchActivity(final PlaceRequest newPlace,
@@ -264,7 +268,9 @@ public class PlaceManagerImpl
             existingWorkbenchActivities.remove( place );
             existingWorkbenchParts.remove( place );
             activityManager.removeActivity( place );
-            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( part ) );
+            if ( part.equals( currentPlaceRequest ) ) {
+                workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( part ) );
+            }
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( part ) );
         }
     }

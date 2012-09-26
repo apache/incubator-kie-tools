@@ -22,6 +22,9 @@ import javax.inject.Inject;
 
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
+<#if onStart1ParameterMethodName??>
+import org.uberfire.shared.mvp.PlaceRequest;
+</#if>
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -36,6 +39,19 @@ public class ${className} extends AbstractPopupActivity {
     @Inject
     private ${realClassName} realPresenter;
 
+    <#if onStart1ParametersMethodName??>
+    @Override
+    public void onStart(final PlaceRequest place) {
+        realPresenter.${onStart1ParameterMethodName}( place );
+    }
+
+    <#elseif onStart0ParameterMethodName??>
+    @Override
+    public void onStart() {
+        realPresenter.${onStart0ParameterMethodName}();
+    }
+
+    </#if>
     <#if onRevealMethodName??>
     @Override
     public void onReveal() {
@@ -59,6 +75,7 @@ public class ${className} extends AbstractPopupActivity {
     public String[] getRoles() {
         return new String[]{${rolesList}};
     }
+
     </#if>
     <#if securityTraitList??>
     @Override

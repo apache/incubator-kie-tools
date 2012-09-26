@@ -54,6 +54,7 @@ import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.annotations.DefaultPosition;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Utilities for code generation
@@ -91,6 +92,43 @@ public class GeneratorUtils {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{Path.class.getName()},
+                                  OnStart.class );
+    }
+
+    /**
+     * Get the method name annotated with {@code @OnStart}. The method must be
+     * public, non-static, have a return-type of void and take two parameters;
+     * the first of type {@code org.drools.guvnor.vfs.Path} and the second of
+     * type {@code org.uberfire.shared.mvp.PlaceRequest}.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static String getOnStartPathPlaceRequestParametersMethodName(final TypeElement classElement,
+                                                                        final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getVoidMethodName( classElement,
+                                  processingEnvironment,
+                                  new String[]{Path.class.getName(), PlaceRequest.class.getName()},
+                                  OnStart.class );
+    }
+
+    /**
+     * Get the method name annotated with {@code @OnStart}. The method must be
+     * public, non-static, have a return-type of void and take one parameter of
+     * type {@code org.uberfire.shared.mvp.PlaceRequest}.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static String getOnStartPlaceRequestParameterMethodName(final TypeElement classElement,
+                                                                   final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getVoidMethodName( classElement,
+                                  processingEnvironment,
+                                  new String[]{PlaceRequest.class.getName()},
                                   OnStart.class );
     }
 

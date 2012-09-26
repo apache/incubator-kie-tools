@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.inject.Inject;
-
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.workbench.Position;
@@ -31,9 +29,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 public abstract class AbstractEditorActivity
         implements
         WorkbenchEditorActivity {
-
-    @Inject
-    private PlaceManager placeManager;
 
     @Override
     public Position getDefaultPosition() {
@@ -61,15 +56,14 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public void launch(AcceptItem acceptPanel) {
-        PlaceRequest placeRequest = placeManager.getCurrentPlaceRequest();
-        String simplePath = placeRequest.getParameter( "path",
-                                                       null );
-
-        String uri = placeRequest.getParameter( "path:uri",
+    public void launch(final AcceptItem acceptPanel,
+                       final PlaceRequest place) {
+        String simplePath = place.getParameter( "path",
                                                 null );
-        String name = placeRequest.getParameter( "path:name",
-                                                 null );
+        String uri = place.getParameter( "path:uri",
+                                         null );
+        String name = place.getParameter( "path:name",
+                                          null );
 
         final Path path;
         if ( simplePath != null && (uri == null || name == null) ) {
@@ -79,7 +73,8 @@ public abstract class AbstractEditorActivity
                                  uri );
         }
 
-        onStart( path );
+        onStart( path,
+                 place );
 
         acceptPanel.add( getTitle(),
                          getWidget() );
@@ -88,6 +83,12 @@ public abstract class AbstractEditorActivity
 
     @Override
     public void onStart(final Path path) {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onStart(final Path path,
+                        final PlaceRequest place) {
         //Do nothing.  
     }
 

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.backend.vfs.Path;
 
@@ -30,15 +31,21 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@ResourceType("test6")
-@Identifier("test6")
+@ResourceType("test12")
+@Identifier("test12")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest6Activity extends AbstractEditorActivity {
+public class WorkbenchEditorTest12Activity extends AbstractEditorActivity {
 
     @Inject
-    private WorkbenchEditorTest6 realPresenter;
+    private WorkbenchEditorTest12 realPresenter;
+
+    @Override
+    public void onStart(final Path path, 
+                        final PlaceRequest place) {
+        realPresenter.onStart( path, place );
+    }
 
     @Override
     public String getTitle() {
@@ -47,16 +54,7 @@ public class WorkbenchEditorTest6Activity extends AbstractEditorActivity {
 
     @Override
     public IsWidget getWidget() {
-        return realPresenter;
+        return realPresenter.getView();
     }
     
-    @Override
-    public String[] getRoles() {
-        return new String[]{"ADMIN", "SUDO"};
-    }
-
-    @Override
-    public String[] getTraitTypes() {
-        return new String[]{"org.uberfire.security.annotations.All"};
-    }
 }

@@ -115,7 +115,6 @@ public class WorkbenchPanelView extends ResizeComposite
         tabPanel.add( view,
                       makeTabWidget( title,
                                      view ) );
-        tabPanel.selectTab( view );
     }
 
     @Override

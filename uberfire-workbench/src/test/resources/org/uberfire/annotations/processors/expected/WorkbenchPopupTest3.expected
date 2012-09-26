@@ -45,4 +45,5 @@ public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
     public String[] getRoles() {
         return new String[]{"ADMIN", "SUDO"};
     }
+
 }

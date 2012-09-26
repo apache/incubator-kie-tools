@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.shared.mvp.PlaceRequest;
+
 /**
  * Workbench Screen Activity life-cycles
  */
@@ -23,5 +25,7 @@ public interface WorkbenchScreenActivity
     WorkbenchActivity {
 
     public void onStart();
+
+    public void onStart(final PlaceRequest place);
 
 }

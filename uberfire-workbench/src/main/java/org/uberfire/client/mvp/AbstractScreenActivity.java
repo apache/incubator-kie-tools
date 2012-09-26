@@ -17,6 +17,7 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -53,8 +54,9 @@ public abstract class AbstractScreenActivity
     }
 
     @Override
-    public void launch(AcceptItem acceptPanel) {
-        onStart();
+    public void launch(final AcceptItem acceptPanel,
+                       final PlaceRequest place) {
+        onStart( place );
         acceptPanel.add( getTitle(),
                          getWidget() );
         onReveal();
@@ -62,6 +64,11 @@ public abstract class AbstractScreenActivity
 
     @Override
     public void onStart() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onStart(final PlaceRequest place) {
         //Do nothing.  
     }
 

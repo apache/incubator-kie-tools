@@ -50,4 +50,5 @@ public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
     public String[] getRoles() {
         return new String[]{"ADMIN", "SUDO"};
     }
+
 }

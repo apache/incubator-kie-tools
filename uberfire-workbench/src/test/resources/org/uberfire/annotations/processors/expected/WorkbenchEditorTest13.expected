@@ -30,15 +30,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@ResourceType("test6")
-@Identifier("test6")
+@ResourceType("test13")
+@Identifier("test13")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest6Activity extends AbstractEditorActivity {
+public class WorkbenchEditorTest13Activity extends AbstractEditorActivity {
 
     @Inject
-    private WorkbenchEditorTest6 realPresenter;
+    private WorkbenchEditorTest13 realPresenter;
 
     @Override
     public String getTitle() {
@@ -47,16 +47,7 @@ public class WorkbenchEditorTest6Activity extends AbstractEditorActivity {
 
     @Override
     public IsWidget getWidget() {
-        return realPresenter;
+        return realPresenter.getView();
     }
     
-    @Override
-    public String[] getRoles() {
-        return new String[]{"ADMIN", "SUDO"};
-    }
-
-    @Override
-    public String[] getTraitTypes() {
-        return new String[]{"org.uberfire.security.annotations.All"};
-    }
 }

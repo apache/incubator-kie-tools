@@ -48,7 +48,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                  final String className,
                                  final Element element,
                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
-        
+
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
@@ -56,8 +56,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
         final WorkbenchEditor wbw = classElement.getAnnotation( WorkbenchEditor.class );
         final String identifier = wbw.identifier();
         final String[] fileTypes = wbw.fileTypes();
-        final String onStartMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
-                                                                                           processingEnvironment );
+        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
+                                                                                                     processingEnvironment );
+        final String onStart2ParametersMethodName = GeneratorUtils.getOnStartPathPlaceRequestParametersMethodName( classElement,
+                                                                                                                   processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -95,7 +97,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
         logger.debug( "File types: " + fileTypes );
-        logger.debug( "onStartMethodName: " + onStartMethodName );
+        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
+        logger.debug( "onStart2ParametersMethodName: " + onStart2ParametersMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
@@ -114,10 +117,18 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchEditor must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
-            final String msg = "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            final String msg = "The WorkbenchEditor both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
+        }
+
+        //Validate onStart1ParameterMethodName and onStart2ParametersMethodName
+        if ( onStart1ParameterMethodName != null && onStart2ParametersMethodName != null ) {
+            final String msg = "The WorkbenchEditor has methods for both @OnStart(Path) and @OnStart(Path, Place). Method @OnStart(Path, Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );
@@ -125,7 +136,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Validate getTitleMethodName
         if ( getTitleMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPart must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         }
 
         //Setup data for template sub-system
@@ -140,8 +151,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   format( fileTypes ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onStartMethodName",
-                  onStartMethodName );
+        root.put( "onStart1ParameterMethodName",
+                  onStart1ParameterMethodName );
+        root.put( "onStart2ParametersMethodName",
+                  onStart2ParametersMethodName );
         root.put( "onMayCloseMethodName",
                   onMayCloseMethodName );
         root.put( "onCloseMethodName",

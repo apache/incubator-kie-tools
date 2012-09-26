@@ -4,9 +4,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.mvp.UberView;
 
 @WorkbenchEditor(identifier = "test10", fileTypes = "test10")

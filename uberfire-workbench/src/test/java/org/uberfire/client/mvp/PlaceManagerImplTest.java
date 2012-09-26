@@ -17,75 +17,94 @@ import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
 
 public class PlaceManagerImplTest {
 
-
     private PlaceHistoryHandler placeHistoryHandler;
-    private ActivityManager activityManager;
-    private Event event;
-    private PanelManager panelManager;
+    private ActivityManager     activityManager;
+    private Event               event;
+    private PanelManager        panelManager;
 
     @Before
     public void setUp() throws Exception {
-        placeHistoryHandler = mock(PlaceHistoryHandler.class);
-        activityManager = mock(ActivityManager.class);
-        event = mock(Event.class);
-        panelManager = mock(PanelManager.class);
+        placeHistoryHandler = mock( PlaceHistoryHandler.class );
+        activityManager = mock( ActivityManager.class );
+        event = mock( Event.class );
+        panelManager = mock( PanelManager.class );
     }
 
     @Test
     public void testGoToSomeWhere() throws Exception {
-        final PlaceRequest somewhere = new PlaceRequest("Somewhere");
-        final WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
+        final PlaceRequest somewhere = new PlaceRequest( "Somewhere" );
+        final WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
         when(
-                activity.getDefaultPosition()
-        ).thenReturn(
-                Position.NONE
-        );
+                activity.getDefaultPosition() ).thenReturn(
+                                                            Position.NONE
+                );
 
         when(
-                activityManager.getActivity(somewhere)
-        ).thenReturn(
-                activity
-        );
+                activityManager.getActivity( somewhere ) ).thenReturn(
+                                                                       activity
+                );
 
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event, panelManager);
-        placeManager.goTo(somewhere);
+        PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
+                                                              placeHistoryHandler,
+                                                              event,
+                                                              panelManager );
+        placeManager.goTo( somewhere );
 
-        verify(activity).launch(any(AcceptItem.class));
+        verify( activity ).launch( any( AcceptItem.class ),
+                                   eq( somewhere ) );
 
     }
 
     @Test
     public void testGoToNoWhere() throws Exception {
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event, panelManager);
-        placeManager.goTo(NOWHERE);
+        PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
+                                                              placeHistoryHandler,
+                                                              event,
+                                                              panelManager );
+        placeManager.goTo( NOWHERE );
 
-        assertTrue("Just checking we get no NPEs", true);
+        assertTrue( "Just checking we get no NPEs",
+                    true );
     }
 
     @Test
     public void testPlaceManagerGetInitializedToADefaultPlace() throws Exception {
-        new PlaceManagerImpl(activityManager, placeHistoryHandler, event, panelManager);
-        verify(placeHistoryHandler).register(any(PlaceManager.class), any(EventBus.class), any(PlaceRequest.class));
+        new PlaceManagerImpl( activityManager,
+                              placeHistoryHandler,
+                              event,
+                              panelManager );
+        verify( placeHistoryHandler ).register( any( PlaceManager.class ),
+                                                any( EventBus.class ),
+                                                any( PlaceRequest.class ) );
     }
 
     @Test
     public void testGoToPreviouslyOpenedPlace() throws Exception {
-        PlaceRequest somewhere = new PlaceRequest("Somewhere");
-        WorkbenchEditorActivity activity = mock(WorkbenchEditorActivity.class);
+        PlaceRequest somewhere = new PlaceRequest( "Somewhere" );
+        WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
         when(
-                activityManager.getActivity(somewhere)
-        ).thenReturn(
-                activity
-        );
+                activityManager.getActivity( somewhere ) ).thenReturn(
+                                                                       activity
+                );
 
-        PlaceManagerImpl placeManager = new PlaceManagerImpl(activityManager, placeHistoryHandler, event, panelManager);
-        placeManager.goTo(somewhere);
-        verify(activity, times(1)).launch(any(AcceptItem.class));
+        PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
+                                                              placeHistoryHandler,
+                                                              event,
+                                                              panelManager );
+        placeManager.goTo( somewhere );
+        verify( activity,
+                times( 1 ) ).launch( any( AcceptItem.class ),
+                                     eq( somewhere ) );
+        verify( event,
+                times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
 
-        PlaceRequest somewhereSecondCall = new PlaceRequest("Somewhere");
-        placeManager.goTo(somewhereSecondCall);
-        verify(activity, times(1)).launch(any(AcceptItem.class));
-        verify(event).fire(any(SelectWorkbenchPartEvent.class));
+        PlaceRequest somewhereSecondCall = new PlaceRequest( "Somewhere" );
+        placeManager.goTo( somewhereSecondCall );
+        verify( activity,
+                times( 1 ) ).launch( any( AcceptItem.class ),
+                                     eq( somewhere ) );
+        verify( event,
+                times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
     }
 
     // TODO: Close

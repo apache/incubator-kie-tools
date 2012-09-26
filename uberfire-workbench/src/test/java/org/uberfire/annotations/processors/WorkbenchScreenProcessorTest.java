@@ -60,7 +60,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+                                "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -77,7 +77,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest3" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPart must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+                                "The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 
@@ -94,7 +94,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest4" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPart must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+                                "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -162,7 +162,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchPart both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+                                  "The WorkbenchScreen both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
