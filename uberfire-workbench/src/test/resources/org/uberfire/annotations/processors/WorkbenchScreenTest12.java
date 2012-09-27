@@ -1,16 +1,17 @@
 package org.uberfire.annotations.processors;
 
-import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.shared.mvp.PlaceRequest;
 
-@WorkbenchScreen(identifier = "test10")
-public class WorkbenchScreenTest10 {
+@WorkbenchScreen(identifier = "test12")
+public class WorkbenchScreenTest12 {
 
     @WorkbenchPartView
-    public UberView<WorkbenchScreenTest10> getView() {
+    public UberView<WorkbenchScreenTest12> getView() {
         return null;
     }
 
@@ -19,9 +20,8 @@ public class WorkbenchScreenTest10 {
         return "title";
     }
 
-    @WorkbenchMenu
-    public String getMenuBar() {
-        return "";
+    @OnStart
+    public void onStart(final PlaceRequest place) {
     }
 
 }

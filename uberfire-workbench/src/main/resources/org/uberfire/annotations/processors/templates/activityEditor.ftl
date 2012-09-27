@@ -19,24 +19,24 @@ package ${packageName};
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 <#if hasUberView>
 import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
-</#if>
 
+</#if>
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
-<#if onStart2ParametersMethodName??>
 import org.uberfire.shared.mvp.PlaceRequest;
-</#if>
+
 <#if getMenuBarMethodName??>
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-</#if>
 
+</#if>
 import org.uberfire.backend.vfs.Path;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -69,7 +69,8 @@ public class ${className} extends AbstractEditorActivity {
 
     <#elseif onStart1ParameterMethodName??>
     @Override
-    public void onStart(final Path path) {
+    public void onStart(final Path path,
+                        final PlaceRequest place) {
         realPresenter.${onStart1ParameterMethodName}( path );
     }
 

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -37,7 +38,7 @@ public class WorkbenchScreenTest8Activity extends AbstractScreenActivity {
     private WorkbenchScreenTest8 realPresenter;
 
     @Override
-    public void onStart() {
+    public void onStart(final PlaceRequest place) {
         realPresenter.onStart();
     }
 

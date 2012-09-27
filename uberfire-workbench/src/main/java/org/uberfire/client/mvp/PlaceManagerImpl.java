@@ -198,6 +198,7 @@ public class PlaceManagerImpl
 
         //Record new place\part\activity
         final PlaceRequest place = part.getPlace();
+        currentPlaceRequest = place;
         existingWorkbenchActivities.put( place,
                                          activity );
         existingWorkbenchParts.put( place,
@@ -286,14 +287,6 @@ public class PlaceManagerImpl
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
-
-        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-        final PartDefinition partToDeselect = this.existingWorkbenchParts.get( currentPlaceRequest );
-        if ( partToDeselect != null ) {
-            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( partToDeselect ) );
-        }
-
-        //Select new part
         final PartDefinition part = event.getPart();
         final WorkbenchActivity activity = getActivity( part );
         if ( activity == null ) {

@@ -35,6 +35,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -233,6 +235,15 @@ public class WorkbenchPanelView extends ResizeComposite
                                                                                               Unit.PX,
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollLeft(),
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollRight() );
+
+        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
+        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
+
+            @Override
+            public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+                presenter.onPartLostFocus();
+            }
+        } );
 
         //When a tab is selected ensure content is resized and set focus
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {

@@ -19,23 +19,23 @@ package ${packageName};
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 <#if hasUberView>
 import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
-</#if>
 
+</#if>
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
-<#if onStart1ParameterMethodName??>
 import org.uberfire.shared.mvp.PlaceRequest;
-</#if>
+
 <#if getMenuBarMethodName??>
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-</#if>
 
+</#if>
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
@@ -56,7 +56,7 @@ public class ${className} extends AbstractScreenActivity {
     }
 
     </#if>
-    <#if onStart1ParametersMethodName??>
+    <#if onStart1ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
         realPresenter.${onStart1ParameterMethodName}( place );
@@ -64,7 +64,7 @@ public class ${className} extends AbstractScreenActivity {
 
     <#elseif onStart0ParameterMethodName??>
     @Override
-    public void onStart() {
+    public void onStart(final PlaceRequest place) {
         realPresenter.${onStart0ParameterMethodName}();
     }
 

@@ -20,6 +20,9 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import javax.annotation.PostConstruct;
+import org.uberfire.client.mvp.UberView;
+
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -28,14 +31,24 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("test5")
+@Identifier("test12")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
+public class WorkbenchScreenTest12Activity extends AbstractScreenActivity {
 
     @Inject
-    private WorkbenchScreenTest5 realPresenter;
+    private WorkbenchScreenTest12 realPresenter;
+
+    @PostConstruct
+    public void init() {
+        ((UberView) realPresenter.getView()).init( realPresenter );
+    }
+
+    @Override
+    public void onStart(final PlaceRequest place) {
+        realPresenter.onStart( place );
+    }
 
     @Override
     public String getTitle() {
@@ -47,9 +60,4 @@ public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
         return realPresenter.getView();
     }
     
-    @Override
-    public String[] getRoles() {
-        return new String[]{"ADMIN", "SUDO"};
-    }
-
 }

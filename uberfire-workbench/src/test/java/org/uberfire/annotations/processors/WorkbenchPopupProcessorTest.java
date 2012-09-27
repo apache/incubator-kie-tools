@@ -26,8 +26,6 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
-import org.uberfire.annotations.processors.GenerationCompleteCallback;
-import org.uberfire.annotations.processors.WorkbenchPopupProcessor;
 
 /**
  * Tests for Pop-up related class generation
@@ -154,6 +152,77 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
                                                                                  } ),
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchPopupOnStart0Parameter() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest7";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest7.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchPopupOnStart1Parameter() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest8";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest8.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchPopupOnStartMultipleMethods() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest9";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest9.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertCompilationWarning( diagnostics,
+                                  "The WorkbenchPopup has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

@@ -20,36 +20,31 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.mvp.AbstractScreenActivity;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 @Dependent
-@Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("test5")
+@Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
+@Identifier("test8")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest5Activity extends AbstractScreenActivity {
+public class WorkbenchPopupTest8Activity extends AbstractPopupActivity {
 
     @Inject
-    private WorkbenchScreenTest5 realPresenter;
+    private WorkbenchPopupTest8 realPresenter;
 
     @Override
-    public String getTitle() {
-        return realPresenter.getTitle();
+    public void onStart(final PlaceRequest place) {
+        realPresenter.onStart( place );
     }
 
     @Override
-    public IsWidget getWidget() {
+    public PopupPanel getPopupPanel() {
         return realPresenter.getView();
     }
     
-    @Override
-    public String[] getRoles() {
-        return new String[]{"ADMIN", "SUDO"};
-    }
-
 }

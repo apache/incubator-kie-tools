@@ -19,12 +19,14 @@ package org.uberfire.annotations.processors;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.backend.vfs.Path;
 

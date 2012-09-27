@@ -22,6 +22,8 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractScreenActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
+
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 import com.google.gwt.user.client.ui.IsWidget;

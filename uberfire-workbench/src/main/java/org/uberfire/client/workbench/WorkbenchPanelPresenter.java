@@ -20,15 +20,12 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.user.client.ui.RequiresResize;
 
@@ -65,20 +62,14 @@ public class WorkbenchPanelPresenter {
     }
 
     @Inject
-    private View                                 view;
+    private View                 view;
 
     @Inject
-    private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
+    private PanelManager         panelManager;
 
-    @Inject
-    private Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
+    private PanelDefinition      definition;
 
-    @Inject
-    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
-
-    private PanelDefinition                      definition;
-
-    private List<PartDefinition>                 orderedParts = new ArrayList<PartDefinition>();
+    private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
 
     @SuppressWarnings("unused")
     @PostConstruct
@@ -153,15 +144,19 @@ public class WorkbenchPanelPresenter {
     }
 
     public void onPartFocus(final PartDefinition part) {
-        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
+        panelManager.onPartFocus( part );
+    }
+
+    public void onPartLostFocus() {
+        panelManager.onPartLostFocus();
     }
 
     public void onPanelFocus() {
-        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( getDefinition() ) );
+        panelManager.onPanelFocus( definition );
     }
 
     public void onBeforePartClose(final PartDefinition part) {
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
+        panelManager.onBeforePartClose( part );
     }
 
     public View getPanelView() {

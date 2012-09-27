@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.backend.vfs.Path;
 
@@ -41,7 +42,8 @@ public class WorkbenchEditorTest11Activity extends AbstractEditorActivity {
     private WorkbenchEditorTest11 realPresenter;
 
     @Override
-    public void onStart(final Path path) {
+    public void onStart(final Path path,
+                        final PlaceRequest place) {
         realPresenter.onStart( path );
     }
 

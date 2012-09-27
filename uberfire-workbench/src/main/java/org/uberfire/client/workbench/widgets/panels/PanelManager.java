@@ -35,8 +35,11 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -53,6 +56,17 @@ public class PanelManager {
 
     @Inject
     private Event<WorkbenchPanelOnFocusEvent>             workbenchPanelOnFocusEvent;
+
+    @Inject
+    private Event<WorkbenchPartBeforeCloseEvent>          workbenchPartBeforeCloseEvent;
+
+    @Inject
+    private Event<WorkbenchPartOnFocusEvent>              workbenchPartOnFocusEvent;
+
+    @Inject
+    private Event<WorkbenchPartLostFocusEvent>            workbenchPartLostFocusEvent;
+
+    private PartDefinition                                activePart                    = null;
 
     private PanelDefinition                               root                          = null;
 
@@ -100,7 +114,7 @@ public class PanelManager {
                                                panelPresenter );
         }
 
-        setFocus( panel );
+        onPanelFocus( panel );
     }
 
     public PanelDefinition addWorkbenchPart(final String title,
@@ -124,7 +138,7 @@ public class PanelManager {
         panelPresenter.addPart( title,
                                 part,
                                 partPresenter.getPartView() );
-        setFocus( panel );
+        onPanelFocus( panel );
         return panelPresenter.getDefinition();
     }
 
@@ -193,12 +207,29 @@ public class PanelManager {
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
-        setFocus( childPanel );
+        onPanelFocus( childPanel );
         return newPanel;
     }
 
-    private void setFocus(final PanelDefinition panel) {
+    public void onPartFocus(final PartDefinition part) {
+        activePart = part;
+        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
+    }
+
+    public void onPartLostFocus() {
+        if ( activePart == null ) {
+            return;
+        }
+        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( activePart ) );
+        this.activePart = null;
+    }
+
+    public void onPanelFocus(final PanelDefinition panel) {
         workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( panel ) );
+    }
+
+    public void onBeforePartClose(final PartDefinition part) {
+        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
     }
 
     @SuppressWarnings("unused")
@@ -215,7 +246,7 @@ public class PanelManager {
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             if ( e.getValue().getDefinition().getParts().contains( part ) ) {
                 e.getValue().selectPart( part );
-                setFocus( e.getKey() );
+                onPanelFocus( e.getKey() );
             }
         }
     }

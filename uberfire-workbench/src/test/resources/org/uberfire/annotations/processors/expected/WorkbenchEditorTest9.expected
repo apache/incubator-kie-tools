@@ -23,6 +23,8 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.shared.mvp.PlaceRequest;
+
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 import org.uberfire.backend.vfs.Path;
