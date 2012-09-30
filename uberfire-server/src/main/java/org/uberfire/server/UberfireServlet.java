@@ -43,26 +43,36 @@ import static org.mvel2.templates.TemplateCompiler.*;
 
 public class UberfireServlet extends HttpServlet {
 
+    CompiledTemplate appTemplate = null;
     CompiledTemplate headerTemplate = null;
     CompiledTemplate footerTemplate = null;
     CompiledTemplate userDataTemplate = null;
 
     @Override
     public void init(final ServletConfig config) throws ServletException {
-        final String headerRef = getConfig(config, "org.uberfire.template.header");
-        if (headerRef != null) {
-            headerTemplate = compileTemplate(getFileContent(headerRef));
-        } else {
-            headerTemplate = compileTemplate(getResourceContent("header.html.template"));
-        }
+        try {
+            final String appTemplateRef = getConfig(config, "org.uberfire.template.app");
+            if (appTemplateRef != null) {
+                appTemplate = compileTemplate(getFileContent(appTemplateRef));
+            } else {
+                appTemplate = compileTemplate(getResourceContent("app.html.template"));
+            }
+        } catch (Exception ex) {
+            final String headerRef = getConfig(config, "org.uberfire.template.header");
+            if (headerRef != null) {
+                headerTemplate = compileTemplate(getFileContent(headerRef));
+            } else {
+                headerTemplate = compileTemplate(getResourceContent("header.html.template"));
+            }
 
-        final String footerRef = getConfig(config, "org.uberfire.template.footer");
-        if (footerRef != null) {
-            footerTemplate = compileTemplate(getFileContent(footerRef));
-        } else {
-            footerTemplate = compileTemplate(getResourceContent("footer.html.template"));
+            final String footerRef = getConfig(config, "org.uberfire.template.footer");
+            if (footerRef != null) {
+                footerTemplate = compileTemplate(getFileContent(footerRef));
+            } else {
+                footerTemplate = compileTemplate(getResourceContent("footer.html.template"));
+            }
+            userDataTemplate = compileTemplate(getResourceContent("user_data_on_html.template"));
         }
-        userDataTemplate = compileTemplate(getResourceContent("user_data_on_html.template"));
     }
 
     private String getFileContent(final String fileName) {
@@ -109,11 +119,27 @@ public class UberfireServlet extends HttpServlet {
 
         final PrintWriter writer = response.getWriter();
 
-        loadHeader(writer);
+        if (appTemplate != null) {
+            loadApp(writer);
+        } else {
+            loadHeader(writer);
+            loadUserInfo(writer);
+            loadFooter(writer);
+        }
 
-        loadUserInfo(writer);
+    }
 
-        loadFooter(writer);
+    private void loadApp(PrintWriter writer) {
+        final Subject subject = SecurityFactory.getSubject();
+
+        final Map<String, String> map = new HashMap<String, String>() {{
+            put("name", subject.getName());
+            put("roles", collectionAsString(subject.getRoles()));
+        }};
+
+        final String content = TemplateRuntime.execute(appTemplate, map).toString();
+
+        writer.append(content);
     }
 
     private void loadHeader(PrintWriter writer) {
