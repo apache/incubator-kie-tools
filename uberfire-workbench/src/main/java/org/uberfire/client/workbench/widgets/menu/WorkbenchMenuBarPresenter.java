@@ -33,6 +33,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
@@ -40,7 +41,7 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -96,7 +97,7 @@ public class WorkbenchMenuBarPresenter {
                                                    new Command() {
                                                        @Override
                                                        public void execute() {
-                                                           placeManager.goTo( new PlaceRequest( defaultPerspective.getIdentifier() ) );
+                                                           placeManager.goTo( new PlaceRequestImpl( defaultPerspective.getIdentifier() ) );
                                                        }
                                                    } ) );
         }
@@ -112,7 +113,7 @@ public class WorkbenchMenuBarPresenter {
 
                 @Override
                 public void execute() {
-                    placeManager.goTo( new PlaceRequest( perspective.getIdentifier() ) );
+                    placeManager.goTo( new PlaceRequestImpl( perspective.getIdentifier() ) );
                 }
 
             };

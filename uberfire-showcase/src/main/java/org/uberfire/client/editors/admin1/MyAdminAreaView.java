@@ -17,12 +17,15 @@
 package org.uberfire.client.editors.admin1;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MyAdminAreaView extends Composite
     implements
@@ -34,15 +37,16 @@ public class MyAdminAreaView extends Composite
             UiBinder<Widget, MyAdminAreaView> {
     }
 
-    private static MyAdminAreaViewBinder uiBinder = GWT.create(MyAdminAreaViewBinder.class);
+    private static MyAdminAreaViewBinder uiBinder = GWT.create( MyAdminAreaViewBinder.class );
 
     @UiField
-    public Label                     nameLabel;
+    public Label                         nameLabel;
 
     @UiField
-    public HTMLPanel                 panel;
+    public HTMLPanel                     panel;
 
-    private MyAdminAreaPresenter     presenter;
+    @SuppressWarnings("unused")
+    private MyAdminAreaPresenter         presenter;
 
     @PostConstruct
     public void init() {

@@ -18,14 +18,13 @@ package org.uberfire.client.editors.test;
 
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
-import org.uberfire.client.workbench.widgets.menu.Command;
 import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
 import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.menu;
+package org.uberfire.client.mvp;
 
 /**
  * A command representing a future activity. This was deliberately created in

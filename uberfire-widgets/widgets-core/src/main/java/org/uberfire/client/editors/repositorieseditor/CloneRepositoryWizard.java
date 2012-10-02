@@ -18,18 +18,11 @@ package org.uberfire.client.editors.repositorieseditor;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
@@ -39,6 +32,16 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 @Dependent
 public class CloneRepositoryWizard extends FormStylePopup {
@@ -94,7 +97,7 @@ public class CloneRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem fileSystem) {
                         Window.alert("The repository is cloned successfully");
                         hide();
-                        final PlaceRequest repositoryEditor = new PlaceRequest("RepositoryEditor")
+                        final PlaceRequest repositoryEditor = new PlaceRequestImpl("RepositoryEditor")
                                 .addParameter("path:uri", uri)
                                 .addParameter("path:name", nameTextBox.getText());
                         final Root newRoot = new Root(fileSystem.getRootDirectories().get(0),

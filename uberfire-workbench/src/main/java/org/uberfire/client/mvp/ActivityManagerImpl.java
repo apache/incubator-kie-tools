@@ -21,21 +21,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.security.Identity;
-import org.uberfire.security.authz.ResourceDecisionManager;
-import org.uberfire.security.authz.RoleDecisionManager;
-import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeResourceDecisionManager;
-import org.uberfire.security.impl.authz.RuntimeResourceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import static org.uberfire.shared.mvp.PlaceRequest.*;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 @Dependent
 public class ActivityManagerImpl
@@ -53,7 +48,8 @@ public class ActivityManagerImpl
     @Inject
     private IOCBeanManager                    iocManager;
 
-    @Inject RuntimeAuthorizationManager       authzManager;
+    @Inject
+    RuntimeAuthorizationManager               authzManager;
 
     @Inject
     private Identity                          identity;
@@ -71,7 +67,7 @@ public class ActivityManagerImpl
         switch ( activityBeans.size() ) {
             case 0 :
                 //No activities found. Show an error to the user.
-                final PlaceRequest notFoundPopup = new PlaceRequest( "workbench.activity.notfound" );
+                final PlaceRequest notFoundPopup = new PlaceRequestImpl( "workbench.activity.notfound" );
                 notFoundPopup.addParameter( "requestedPlaceIdentifier",
                                             identifier );
                 placeManager.goTo( notFoundPopup );
@@ -79,7 +75,7 @@ public class ActivityManagerImpl
             case 1 :
                 instance = getFirstActivity( activityBeans );
                 if ( instance == null ) {
-                    placeManager.goTo( NOWHERE );
+                    placeManager.goTo( PlaceRequestImpl.NOWHERE );
                 }
                 //Only WorkbenchActivities can be re-visited
                 if ( instance instanceof WorkbenchActivity ) {
@@ -89,7 +85,7 @@ public class ActivityManagerImpl
                 return instance;
             default :
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
-                final PlaceRequest multiplePopup = new PlaceRequest( "workbench.activities.multiple" );
+                final PlaceRequest multiplePopup = new PlaceRequestImpl( "workbench.activities.multiple" );
                 multiplePopup.addParameter( "requestedPlaceIdentifier",
                                             identifier );
                 placeManager.goTo( multiplePopup );
@@ -107,7 +103,8 @@ public class ActivityManagerImpl
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {
             final T instance = activityBean.getInstance();
-            if ( authzManager.authorize(instance, identity) ) {
+            if ( authzManager.authorize( instance,
+                                         identity ) ) {
                 activities.add( instance );
             } else {
                 //If user does not have permission destroy bean to avoid memory leak
@@ -126,7 +123,8 @@ public class ActivityManagerImpl
         }
         final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
         final Activity instance = activityBean.getInstance();
-        if ( !authzManager.authorize(instance, identity) ) {
+        if ( !authzManager.authorize( instance,
+                                      identity ) ) {
             //If user does not have permission destroy bean to avoid memory leak
             if ( activityBean.getScope().equals( Dependent.class ) ) {
                 iocManager.destroyBean( instance );

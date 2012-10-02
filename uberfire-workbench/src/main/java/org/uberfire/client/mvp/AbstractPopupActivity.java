@@ -37,7 +37,6 @@ public abstract class AbstractPopupActivity
     @Override
     public void launch(final PlaceRequest place) {
         onStart( place );
-        onReveal();
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
@@ -50,6 +49,7 @@ public abstract class AbstractPopupActivity
         } );
         popup.show();
         popup.center();
+        onReveal();
     }
 
     @Override

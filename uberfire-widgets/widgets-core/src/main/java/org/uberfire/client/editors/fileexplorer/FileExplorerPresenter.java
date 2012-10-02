@@ -48,6 +48,7 @@ import org.uberfire.client.workbench.annotations.DefaultPosition;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -158,7 +159,7 @@ public class FileExplorerPresenter {
                         }
                     } ).readAttributes( path );
                 } else if ( event.getSelectedItem().getUserObject() instanceof String && ((String) event.getSelectedItem().getUserObject()).equals( REPOSITORY_ID ) ) {
-                    placeManager.goTo( new PlaceRequest( "RepositoriesEditor" ) );
+                    placeManager.goTo( new PlaceRequestImpl( "RepositoriesEditor" ) );
                 } else if ( userObject != null && userObject instanceof Root ) {
                     final Root root = (Root) userObject;
                     placeManager.goTo( root.getPlaceRequest() );
@@ -215,7 +216,7 @@ public class FileExplorerPresenter {
         //Consequentially we check for an Activity here and, if none found, define the default editor.
         final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( fileType );
         if ( activityBeans.size() > 0 ) {
-            final PlaceRequest place = new PlaceRequest( fileType );
+            final PlaceRequest place = new PlaceRequestImpl( fileType );
             place.addParameter( "path:uri",
                                 path.toURI() ).addParameter( "path:name",
                                                              path.getFileName() );
@@ -227,7 +228,7 @@ public class FileExplorerPresenter {
     }
 
     private PlaceRequest defaultPlace(final Path path) {
-        PlaceRequest defaultPlace = new PlaceRequest( "TextEditor" );
+        PlaceRequest defaultPlace = new PlaceRequestImpl( "TextEditor" );
         defaultPlace.addParameter( "path:uri",
                                    path.toURI() ).addParameter( "path:name",
                                                                 path.getFileName() );

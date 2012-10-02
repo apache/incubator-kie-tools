@@ -16,100 +16,25 @@
 
 package org.uberfire.shared.mvp;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+public interface PlaceRequest {
 
-@Portable
-public class PlaceRequest {
+    public String getIdentifier();
 
-    public static final PlaceRequest  NOWHERE = new PlaceRequest( "NOWHERE" );
-
-    private final String              identifier;
-
-    private final Map<String, String> parameters = new HashMap<String, String>();
-
-    public PlaceRequest() {
-        this.identifier = "";
-    }
-
-    public PlaceRequest(String identifier) {
-        this.identifier = identifier;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public String getFullIdentifier() {
-        StringBuilder fullIdentifier = new StringBuilder();
-        fullIdentifier.append( this.getIdentifier() );
-
-        if ( this.getParameterNames().size() > 0 ) {
-            fullIdentifier.append( "?" );
-        }
-        for ( String name : this.getParameterNames() ) {
-            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name,
-                                                                                   null ) );
-            fullIdentifier.append( "&" );
-        }
-
-        if ( fullIdentifier.length() != 0 && fullIdentifier.lastIndexOf( "&" ) + 1 == fullIdentifier.length() ) {
-            fullIdentifier.deleteCharAt( fullIdentifier.length() - 1 );
-        }
-
-        return fullIdentifier.toString();
-    }
+    public String getFullIdentifier();
 
     public String getParameter(String key,
-                               String defaultValue) {
-        String value = null;
+                               String defaultValue);
 
-        if ( parameters != null ) {
-            value = parameters.get( key );
-        }
+    public Set<String> getParameterNames();
 
-        if ( value == null ) {
-            value = defaultValue;
-        }
-        return value;
-    }
-
-    public Set<String> getParameterNames() {
-        return parameters.keySet();
-    }
-
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
+    public Map<String, String> getParameters();
 
     public PlaceRequest addParameter(String name,
-                                     String value) {
-        this.parameters.put( name,
-                             value );
-        return this;
-    }
+                                     String value);
 
-    public PlaceRequest getPlace() {
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null ) return false;
-        if ( !(o instanceof PlaceRequest) ) return false;
-
-        PlaceRequest that = (PlaceRequest) o;
-        return this.getFullIdentifier().equals( that.getFullIdentifier() );
-    }
-
-    @Override
-    public int hashCode() {
-        final String fullIdentifier = getFullIdentifier();
-        return fullIdentifier != null ? fullIdentifier.hashCode() : 0;
-    }
+    public PlaceRequest getPlace();
 
 }

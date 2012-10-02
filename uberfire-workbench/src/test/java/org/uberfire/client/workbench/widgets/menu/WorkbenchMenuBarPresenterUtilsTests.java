@@ -26,6 +26,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;

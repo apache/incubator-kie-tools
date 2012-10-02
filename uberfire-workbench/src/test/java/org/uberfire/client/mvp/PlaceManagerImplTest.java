@@ -1,19 +1,24 @@
 package org.uberfire.client.mvp;
 
-import com.google.gwt.event.shared.EventBus;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import javax.enterprise.event.Event;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
-import javax.enterprise.event.Event;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
+import com.google.gwt.event.shared.EventBus;
 
 public class PlaceManagerImplTest {
 
@@ -32,7 +37,7 @@ public class PlaceManagerImplTest {
 
     @Test
     public void testGoToSomeWhere() throws Exception {
-        final PlaceRequest somewhere = new PlaceRequest( "Somewhere" );
+        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
         final WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
         when(
                 activity.getDefaultPosition() ).thenReturn(
@@ -61,7 +66,7 @@ public class PlaceManagerImplTest {
                                                               placeHistoryHandler,
                                                               event,
                                                               panelManager );
-        placeManager.goTo( NOWHERE );
+        placeManager.goTo( PlaceRequestImpl.NOWHERE );
 
         assertTrue( "Just checking we get no NPEs",
                     true );
@@ -80,7 +85,7 @@ public class PlaceManagerImplTest {
 
     @Test
     public void testGoToPreviouslyOpenedPlace() throws Exception {
-        PlaceRequest somewhere = new PlaceRequest( "Somewhere" );
+        PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
         WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
         when(
                 activityManager.getActivity( somewhere ) ).thenReturn(
@@ -98,7 +103,7 @@ public class PlaceManagerImplTest {
         verify( event,
                 times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
 
-        PlaceRequest somewhereSecondCall = new PlaceRequest( "Somewhere" );
+        PlaceRequest somewhereSecondCall = new PlaceRequestImpl( "Somewhere" );
         placeManager.goTo( somewhereSecondCall );
         verify( activity,
                 times( 1 ) ).launch( any( AcceptItem.class ),

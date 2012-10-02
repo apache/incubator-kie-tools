@@ -20,13 +20,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import org.jboss.errai.bus.client.ErraiBus;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,42 +39,48 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
-public class MonitoringPerspectiveViewImpl extends Composite implements MonitoringPerspectivePresenter.MyView {
-
+public class MonitoringPerspectiveViewImpl extends Composite
+    implements
+    MonitoringPerspectivePresenter.MyView {
 
     interface ViewBinder
             extends
             UiBinder<Widget, MonitoringPerspectiveViewImpl> {
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
-    
+    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
     @Inject
-    private PlaceManager placeManager;
+    private PlaceManager      placeManager;
 
-    @UiField public SpanElement userName;
+    @UiField
+    public SpanElement        userName;
 
-    @UiField public HTMLPanel titlePanel;
+    @UiField
+    public HTMLPanel          titlePanel;
 
-    @UiField public HTMLPanel footerPanel;
+    @UiField
+    public HTMLPanel          footerPanel;
 
-    @UiField public Button backWorkspace;
+    @UiField
+    public Button             backWorkspace;
 
-    @UiField public Button callService;
+    @UiField
+    public Button             callService;
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public void setUserName(String userName) {
-        this.userName.setInnerText(userName);
+        this.userName.setInnerText( userName );
     }
 
     @UiHandler("backWorkspace")
     public void backToWorkspace(ClickEvent e) {
-        PlaceRequest placeRequest = new PlaceRequest("AdminArea");
-        placeManager.goTo(placeRequest);
+        PlaceRequest placeRequest = new PlaceRequestImpl( "AdminArea" );
+        placeManager.goTo( placeRequest );
     }
 
     @UiHandler("callService")
@@ -81,10 +88,10 @@ public class MonitoringPerspectiveViewImpl extends Composite implements Monitori
         final RequestDispatcher dispatcher = ErraiBus.getDispatcher();
 
         MessageBuilder.createMessage()
-                .toSubject("IsDirtyService")
+                .toSubject( "IsDirtyService" )
                 .signalling()
                 .noErrorHandling()
-                .sendNowWith(dispatcher);
+                .sendNowWith( dispatcher );
     }
 
 }

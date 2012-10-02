@@ -1,32 +1,34 @@
 package org.uberfire.client.editors.home;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Set;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 @Dependent
 @WorkbenchScreen(identifier = "perspectives")
 public class PerspectivesScreen {
 
     private final Set<AbstractPerspectiveActivity> perspectives;
-    private final PlaceManager placeManager;
+    private final PlaceManager                     placeManager;
 
     @Inject
-    public PerspectivesScreen(ActivityManager activityManager, PlaceManager placeManager) {
-        this.perspectives = activityManager.getActivities(AbstractPerspectiveActivity.class);
+    public PerspectivesScreen(ActivityManager activityManager,
+                              PlaceManager placeManager) {
+        this.perspectives = activityManager.getActivities( AbstractPerspectiveActivity.class );
         this.placeManager = placeManager;
     }
 
@@ -39,18 +41,18 @@ public class PerspectivesScreen {
     public IsWidget getView() {
         VerticalPanel widgets = new VerticalPanel();
 
-        for (final AbstractPerspectiveActivity perspective : perspectives) {
+        for ( final AbstractPerspectiveActivity perspective : perspectives ) {
             InfoCube infoCube = new InfoCube();
-            infoCube.setTitle(perspective.getIdentifier());
+            infoCube.setTitle( perspective.getIdentifier() );
 
-            infoCube.addClickHandler(new ClickHandler() {
+            infoCube.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    placeManager.goTo(new PlaceRequest(perspective.getIdentifier()));
+                    placeManager.goTo( new PlaceRequestImpl( perspective.getIdentifier() ) );
                 }
-            });
+            } );
 
-            widgets.add(infoCube);
+            widgets.add( infoCube );
         }
 
         return widgets;

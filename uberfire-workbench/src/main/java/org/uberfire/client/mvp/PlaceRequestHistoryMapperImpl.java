@@ -20,9 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.http.client.URL;
-
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+
+import com.google.gwt.http.client.URL;
 
 public class PlaceRequestHistoryMapperImpl
     implements
@@ -35,7 +36,7 @@ public class PlaceRequestHistoryMapperImpl
         String query = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
         Map<String, String> parameters = getParameters( query );
 
-        PlaceRequest placeRequest = new PlaceRequest( identifier );
+        PlaceRequest placeRequest = new PlaceRequestImpl( identifier );
         for ( String parameterName : parameters.keySet() ) {
             placeRequest.addParameter( parameterName,
                                        parameters.get( parameterName ) );

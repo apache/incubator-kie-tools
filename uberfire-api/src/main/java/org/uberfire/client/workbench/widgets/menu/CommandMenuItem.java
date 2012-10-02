@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import org.uberfire.client.mvp.Command;
+
 /**
  * Meta-data for a menu item that represents a command
  */

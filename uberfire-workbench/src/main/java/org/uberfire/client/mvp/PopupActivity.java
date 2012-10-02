@@ -30,4 +30,6 @@ public interface PopupActivity
 
     public void onStart(final PlaceRequest place);
 
+    public void onReveal();
+
 }

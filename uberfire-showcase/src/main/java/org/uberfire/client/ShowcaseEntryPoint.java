@@ -24,23 +24,18 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.Paths;
-import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.ShowcaseResources;
-import org.uberfire.client.workbench.widgets.menu.Command;
 import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
 import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -89,7 +84,7 @@ public class ShowcaseEntryPoint {
 
                                                                   @Override
                                                                   public void execute() {
-                                                                      placeManager.goTo( new PlaceRequest( menuItem ) );
+                                                                      placeManager.goTo( new PlaceRequestImpl( menuItem ) );
                                                                   }
 
                                                               } );
@@ -97,13 +92,14 @@ public class ShowcaseEntryPoint {
         }
 
         //Add places
-        final CommandMenuItem item = new CommandMenuItem("Logout", new Command() {
-            @Override
-            public void execute() {
-                redirect("/uf_logout");
-            }
-        });
-        placesMenuBar.addItem(item);
+        final CommandMenuItem item = new CommandMenuItem( "Logout",
+                                                          new Command() {
+                                                              @Override
+                                                              public void execute() {
+                                                                  redirect( "/uf_logout" );
+                                                              }
+                                                          } );
+        placesMenuBar.addItem( item );
 
         menubar.addMenuItem( placesMenu );
     }

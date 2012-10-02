@@ -24,6 +24,7 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Base class for Perspective Activities
@@ -42,23 +43,23 @@ public abstract class AbstractPerspectiveActivity
     private Caller<WorkbenchServices> wbServices;
 
     @Override
-    public void launch() {
-        saveState();
+    public void launch(final PlaceRequest place) {
+        saveState( place );
     }
 
     //Save the current state of the Workbench
-    private void saveState() {
+    private void saveState(final PlaceRequest place) {
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
         if ( perspective == null ) {
             //On startup the Workbench has not been set to contain a perspective
-            loadState();
+            loadState( place );
 
         } else if ( perspective.isTransient() ) {
             //Transient Perspectives are not saved
             placeManager.closeAllPlaces();
-            loadState();
+            loadState( place );
 
         } else {
             //Save first, then close all places before loading persisted state
@@ -66,19 +67,20 @@ public abstract class AbstractPerspectiveActivity
                 @Override
                 public void callback(Void response) {
                     placeManager.closeAllPlaces();
-                    loadState();
+                    loadState( place );
                 }
             } ).save( perspective );
         }
     }
 
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
-    private void loadState() {
+    private void loadState(final PlaceRequest place) {
         final PerspectiveDefinition perspective = getPerspective();
 
         if ( perspective.isTransient() ) {
             //Transient Perspectives are not saved and hence cannot be loaded
-            initialisePerspective( perspective );
+            initialisePerspective( place,
+                                   perspective );
 
         } else {
 
@@ -86,9 +88,11 @@ public abstract class AbstractPerspectiveActivity
                 @Override
                 public void callback(PerspectiveDefinition response) {
                     if ( response == null ) {
-                        initialisePerspective( perspective );
+                        initialisePerspective( place,
+                                               perspective );
                     } else {
-                        initialisePerspective( response );
+                        initialisePerspective( place,
+                                               response );
                     }
                 }
             } ).load( perspective.getName() );
@@ -96,7 +100,8 @@ public abstract class AbstractPerspectiveActivity
     }
 
     //Initialise Workbench state to that of the provided perspective
-    private void initialisePerspective(final PerspectiveDefinition perspective) {
+    private void initialisePerspective(final PlaceRequest place,
+                                       final PerspectiveDefinition perspective) {
 
         panelManager.setPerspective( perspective );
 
@@ -124,11 +129,6 @@ public abstract class AbstractPerspectiveActivity
                                panel );
         }
         buildPerspective( panel );
-    }
-
-    @Override
-    public void onReveal() {
-        //Do nothing.   
     }
 
     public abstract PerspectiveDefinition getPerspective();

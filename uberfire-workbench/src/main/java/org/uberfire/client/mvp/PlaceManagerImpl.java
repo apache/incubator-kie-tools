@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.shared.mvp.PlaceRequest.NOWHERE;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +37,7 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -89,12 +88,12 @@ public class PlaceManagerImpl
     public void initPlaceHistoryHandler() {
         placeHistoryHandler.register( this,
                                       produceEventBus(),
-                                      NOWHERE );
+                                      PlaceRequestImpl.NOWHERE );
     }
 
     @Override
     public void goTo(final PlaceRequest placeRequest) {
-        if ( placeRequest == null || placeRequest.equals( NOWHERE ) ) {
+        if ( placeRequest == null || placeRequest.equals( PlaceRequestImpl.NOWHERE ) ) {
             return;
         }
         final Activity activity = activityManager.getActivity( placeRequest );
@@ -142,13 +141,13 @@ public class PlaceManagerImpl
         if ( currentPlaceRequest != null ) {
             return currentPlaceRequest;
         } else {
-            return NOWHERE;
+            return PlaceRequestImpl.NOWHERE;
         }
     }
 
     @Override
     public void closeCurrentPlace() {
-        if ( NOWHERE.equals( currentPlaceRequest ) ) {
+        if ( PlaceRequestImpl.NOWHERE.equals( currentPlaceRequest ) ) {
             return;
         }
         closePlace( currentPlaceRequest );
@@ -163,7 +162,7 @@ public class PlaceManagerImpl
         if ( partToClose != null ) {
             workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( partToClose ) );
             if ( currentPlaceRequest.equals( placeToClose ) ) {
-                currentPlaceRequest = NOWHERE;
+                currentPlaceRequest = PlaceRequestImpl.NOWHERE;
             }
         }
     }
@@ -176,10 +175,10 @@ public class PlaceManagerImpl
         }
     }
 
-    private void launchActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest place,
                                 final WorkbenchActivity activity,
                                 final Position position) {
-        final PartDefinition part = new PartDefinitionImpl( newPlace );
+        final PartDefinition part = new PartDefinitionImpl( place );
         final PanelDefinition panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
                                                                       position );
         launchActivity( activity,
@@ -227,10 +226,9 @@ public class PlaceManagerImpl
         activity.launch( place );
     }
 
-    private void launchActivity(final PlaceRequest newPlace,
+    private void launchActivity(final PlaceRequest place,
                                 final PerspectiveActivity activity) {
-        activity.launch();
-        activity.onReveal();
+        activity.launch( place );
     }
 
     public void updateHistory(PlaceRequest request) {
@@ -303,7 +301,7 @@ public class PlaceManagerImpl
         if ( activity == null ) {
             return;
         }
-        currentPlaceRequest = NOWHERE;
+        currentPlaceRequest = PlaceRequestImpl.NOWHERE;
         activity.onLostFocus();
     }
 

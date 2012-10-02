@@ -16,9 +16,12 @@
 
 package org.uberfire.backend.server.impl;
 
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,17 +32,18 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.PlaceRequest;
-
-import static java.util.Collections.*;
+import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
 @Service
 @ApplicationScoped
-public class FileExplorerRootServiceImpl implements FileExplorerRootService {
+public class FileExplorerRootServiceImpl
+    implements
+    FileExplorerRootService {
 
     protected final Set<Root> roots = new HashSet<Root>();
 
-    @Inject @Named("fs")
+    @Inject
+    @Named("fs")
     private ActiveFileSystems fileSystems;
 
     @PostConstruct
@@ -48,25 +52,26 @@ public class FileExplorerRootServiceImpl implements FileExplorerRootService {
     }
 
     private void setupGitRepos() {
-        final Path rootPath = fileSystems.getBootstrapFileSystem().getRootDirectories().get(0);
-        final Root root = new Root(rootPath, new PlaceRequest("RepositoryEditor"));
+        final Path rootPath = fileSystems.getBootstrapFileSystem().getRootDirectories().get( 0 );
+        final Root root = new Root( rootPath,
+                                    new PlaceRequestImpl( "RepositoryEditor" ) );
 
-        roots.add(root);
+        roots.add( root );
     }
 
     @Override
     public Collection<Root> listRoots() {
-        return unmodifiableSet(roots);
+        return unmodifiableSet( roots );
     }
 
     @Override
     public void addRoot(final Root root) {
-        roots.add(root);
+        roots.add( root );
     }
 
     @Override
     public void removeRoot(final Root root) {
-        roots.remove(root);
+        roots.remove( root );
     }
 
     @Override

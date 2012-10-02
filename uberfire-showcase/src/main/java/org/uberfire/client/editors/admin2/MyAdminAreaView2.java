@@ -16,48 +16,50 @@
 
 package org.uberfire.client.editors.admin2;
 
+import javax.annotation.PostConstruct;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MyAdminAreaView2 extends Composite
         implements
         RequiresResize,
         MyAdminAreaPresenter2.View {
 
-
     interface MyAdminAreaViewBinder
             extends
             UiBinder<Widget, MyAdminAreaView2> {
     }
 
-    private static MyAdminAreaViewBinder uiBinder = GWT.create(MyAdminAreaViewBinder.class);
+    private static MyAdminAreaViewBinder uiBinder = GWT.create( MyAdminAreaViewBinder.class );
 
     @UiField
-    public Label nameLabel;
+    public Label                         nameLabel;
 
     @UiField
-    public HTMLPanel panel;
+    public HTMLPanel                     panel;
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public void setName(final String name) {
-        nameLabel.setText(name);
+        nameLabel.setText( name );
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        panel.setPixelSize(width,
-                height);
+        panel.setPixelSize( width,
+                            height );
     }
 
 }

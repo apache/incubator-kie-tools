@@ -20,7 +20,8 @@ import org.uberfire.security.authz.RuntimeResource;
 /**
  * Base Activity life-cycles
  */
-public interface Activity extends RuntimeResource {
+public interface Activity
+    extends
+    RuntimeResource {
 
-    void onReveal();
 }

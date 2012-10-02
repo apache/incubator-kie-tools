@@ -51,6 +51,7 @@ public class AppSetup {
         env.put("password", password);
         env.put("giturl", gitURL);
 
+        @SuppressWarnings("unused")
         final FileSystem fs = FileSystems.newFileSystem(fsURI, env);
 
         final Path root = new PathImpl("guvnorng-playground", "default:///guvnorng-playground");
