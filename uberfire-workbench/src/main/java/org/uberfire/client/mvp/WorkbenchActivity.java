@@ -29,8 +29,6 @@ public interface WorkbenchActivity
     public void launch(final AcceptItem acceptItem,
                        final PlaceRequest place);
 
-    public void onReveal();
-
     public boolean onMayClose();
 
     public void onClose();

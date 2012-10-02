@@ -36,6 +36,7 @@ import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -63,6 +64,17 @@ public class ShowcaseEntryPoint {
         loadStyles();
         setupMenu();
         hideLoadingPopup();
+
+        //Register call-backs for demo
+        placeManager.registerCallback( new PlaceRequestImpl( "TestPerspective" ),
+                                       new Command() {
+
+                                           @Override
+                                           public void execute() {
+                                               Window.alert( "Callback!" );
+                                           }
+
+                                       } );
     }
 
     private void loadStyles() {

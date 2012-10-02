@@ -28,7 +28,7 @@ import org.uberfire.client.mvp.UberView;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
-import org.uberfire.client.mvp.AbstractEditorActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.backend.vfs.Path;
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest10Activity extends AbstractEditorActivity {
+public class WorkbenchEditorTest10Activity extends AbstractWorkbenchEditorActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 

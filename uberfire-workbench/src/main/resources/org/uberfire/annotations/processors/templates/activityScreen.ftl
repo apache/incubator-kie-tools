@@ -29,7 +29,7 @@ import org.uberfire.client.mvp.UberView;
 
 </#if>
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.mvp.AbstractScreenActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
 </#if>
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractScreenActivity {
+public class ${className} extends AbstractWorkbenchScreenActivity {
 
     <#if rolesList??>
     private static final Collection<String> ROLES = Arrays.asList(${rolesList});

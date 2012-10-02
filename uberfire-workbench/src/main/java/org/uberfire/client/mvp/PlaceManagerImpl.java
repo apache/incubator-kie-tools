@@ -36,6 +36,7 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.commons.util.Preconditions;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
 
@@ -50,6 +51,7 @@ public class PlaceManagerImpl
 
     private final Map<PlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<PlaceRequest, WorkbenchActivity>();
     private final Map<PlaceRequest, PartDefinition>    existingWorkbenchParts      = new HashMap<PlaceRequest, PartDefinition>();
+    private final Map<PlaceRequest, Command>           callbacks                   = new HashMap<PlaceRequest, Command>();
 
     private final ActivityManager                      activityManager;
 
@@ -70,7 +72,7 @@ public class PlaceManagerImpl
 
     private final PlaceHistoryHandler                  placeHistoryHandler;
 
-    PlaceRequest                                       currentPlaceRequest;
+    private PlaceRequest                               currentPlaceRequest;
 
     @Inject
     public PlaceManagerImpl(ActivityManager activityManager,
@@ -145,6 +147,22 @@ public class PlaceManagerImpl
         }
     }
 
+    /**
+     * Lookup the WorkbenchActivity corresponding to the WorkbenchPart
+     * 
+     * @param part
+     * @return
+     */
+    @Override
+    public WorkbenchActivity getActivity(final PartDefinition part) {
+        final PlaceRequest place = getPlaceForPart( part );
+        if ( place == null ) {
+            return null;
+        }
+        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
+        return activity;
+    }
+
     @Override
     public void closeCurrentPlace() {
         if ( PlaceRequestImpl.NOWHERE.equals( currentPlaceRequest ) ) {
@@ -172,6 +190,34 @@ public class PlaceManagerImpl
         final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>( existingWorkbenchParts.keySet() );
         for ( PlaceRequest placeToClose : placesToClose ) {
             closePlace( placeToClose );
+        }
+    }
+
+    @Override
+    public void registerCallback(final PlaceRequest place,
+                                 final Command command) {
+        Preconditions.checkNotNull( "place",
+                                    place );
+        Preconditions.checkNotNull( "command",
+                                    command );
+        this.callbacks.put( place,
+                            command );
+    }
+
+    @Override
+    public void unregisterCallback(final PlaceRequest place) {
+        Preconditions.checkNotNull( "place",
+                                    place );
+        this.callbacks.remove( place );
+    }
+
+    @Override
+    public void executeCallback(final PlaceRequest place) {
+        Preconditions.checkNotNull( "place",
+                                    place );
+        final Command callback = this.callbacks.get( place );
+        if ( callback != null ) {
+            callback.execute();
         }
     }
 
@@ -233,22 +279,6 @@ public class PlaceManagerImpl
 
     public void updateHistory(PlaceRequest request) {
         placeHistoryHandler.onPlaceChange( request );
-    }
-
-    /**
-     * Lookup the WorkbenchActivity corresponding to the WorkbenchPart
-     * 
-     * @param part
-     * @return
-     */
-    @Override
-    public WorkbenchActivity getActivity(final PartDefinition part) {
-        final PlaceRequest place = getPlaceForPart( part );
-        if ( place == null ) {
-            return null;
-        }
-        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
-        return activity;
     }
 
     @SuppressWarnings("unused")

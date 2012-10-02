@@ -37,4 +37,11 @@ public interface PlaceManager {
 
     public void closeAllPlaces();
 
+    public void registerCallback(final PlaceRequest place,
+                                 final Command command);
+
+    public void unregisterCallback(final PlaceRequest place);
+    
+    public void executeCallback(final PlaceRequest place);
+
 }

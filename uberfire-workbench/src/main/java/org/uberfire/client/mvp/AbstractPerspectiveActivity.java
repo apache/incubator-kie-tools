@@ -42,24 +42,27 @@ public abstract class AbstractPerspectiveActivity
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
+    private PlaceRequest              place;
+
     @Override
     public void launch(final PlaceRequest place) {
-        saveState( place );
+        this.place = place;
+        saveState();
     }
 
     //Save the current state of the Workbench
-    private void saveState(final PlaceRequest place) {
+    private void saveState() {
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
         if ( perspective == null ) {
             //On startup the Workbench has not been set to contain a perspective
-            loadState( place );
+            loadState();
 
         } else if ( perspective.isTransient() ) {
             //Transient Perspectives are not saved
             placeManager.closeAllPlaces();
-            loadState( place );
+            loadState();
 
         } else {
             //Save first, then close all places before loading persisted state
@@ -67,20 +70,19 @@ public abstract class AbstractPerspectiveActivity
                 @Override
                 public void callback(Void response) {
                     placeManager.closeAllPlaces();
-                    loadState( place );
+                    loadState();
                 }
             } ).save( perspective );
         }
     }
 
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
-    private void loadState(final PlaceRequest place) {
+    private void loadState() {
         final PerspectiveDefinition perspective = getPerspective();
 
         if ( perspective.isTransient() ) {
             //Transient Perspectives are not saved and hence cannot be loaded
-            initialisePerspective( place,
-                                   perspective );
+            initialisePerspective( perspective );
 
         } else {
 
@@ -88,11 +90,9 @@ public abstract class AbstractPerspectiveActivity
                 @Override
                 public void callback(PerspectiveDefinition response) {
                     if ( response == null ) {
-                        initialisePerspective( place,
-                                               perspective );
+                        initialisePerspective( perspective );
                     } else {
-                        initialisePerspective( place,
-                                               response );
+                        initialisePerspective( response );
                     }
                 }
             } ).load( perspective.getName() );
@@ -100,8 +100,7 @@ public abstract class AbstractPerspectiveActivity
     }
 
     //Initialise Workbench state to that of the provided perspective
-    private void initialisePerspective(final PlaceRequest place,
-                                       final PerspectiveDefinition perspective) {
+    private void initialisePerspective(final PerspectiveDefinition perspective) {
 
         panelManager.setPerspective( perspective );
 
@@ -110,6 +109,7 @@ public abstract class AbstractPerspectiveActivity
                                panelManager.getRoot() );
         }
         buildPerspective( panelManager.getRoot() );
+        onReveal();
     }
 
     private void buildPerspective(final PanelDefinition panel) {
@@ -132,6 +132,11 @@ public abstract class AbstractPerspectiveActivity
     }
 
     public abstract PerspectiveDefinition getPerspective();
+
+    @Override
+    public void onReveal() {
+        placeManager.executeCallback( this.place );
+    }
 
     public abstract String getIdentifier();
 

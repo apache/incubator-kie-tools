@@ -15,43 +15,14 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Base class for Screen Activities
  */
-public abstract class AbstractScreenActivity
+public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity
     implements
     WorkbenchScreenActivity {
-
-    @Override
-    public Position getDefaultPosition() {
-        return Position.ROOT;
-    }
-
-    @Override
-    public boolean onMayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //Do nothing.
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing.
-    }
 
     @Override
     public void launch(final AcceptItem acceptPanel,
@@ -70,30 +41,6 @@ public abstract class AbstractScreenActivity
     @Override
     public void onStart(final PlaceRequest place) {
         //Do nothing.  
-    }
-
-    @Override
-    public void onReveal() {
-        //Do nothing.   
-    }
-
-    public abstract String getTitle();
-
-    public abstract IsWidget getWidget();
-
-    @Override
-    public void onLostFocus() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onFocus() {
-        //Do nothing.
-    }
-
-    @Override
-    public WorkbenchMenuBar getMenuBar() {
-        return new WorkbenchMenuBar();
     }
 
 }

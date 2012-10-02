@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +15,16 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.security.authz.RuntimeResource;
-
 /**
- * Base Activity life-cycles
+ * Base class for Activities
  */
-public interface Activity
-    extends
-    RuntimeResource {
+public abstract class AbstractActivity
+        implements
+        Activity {
 
-    public void onReveal();
+    @Override
+    public void onReveal() {
+        //Do nothing.   
+    }
 
 }

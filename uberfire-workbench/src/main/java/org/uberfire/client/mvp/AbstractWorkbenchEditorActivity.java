@@ -17,43 +17,14 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.PathImpl;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Base class for Editor Activities
  */
-public abstract class AbstractEditorActivity
+public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity
         implements
         WorkbenchEditorActivity {
-
-    @Override
-    public Position getDefaultPosition() {
-        return Position.ROOT;
-    }
-
-    @Override
-    public boolean onMayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //Do nothing.
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return true;
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing.
-    }
 
     @Override
     public void launch(final AcceptItem acceptPanel,
@@ -93,15 +64,6 @@ public abstract class AbstractEditorActivity
     }
 
     @Override
-    public void onReveal() {
-        //Do nothing.   
-    }
-
-    public abstract String getTitle();
-
-    public abstract IsWidget getWidget();
-
-    @Override
     public void onSave() {
         //Do nothing.  
     }
@@ -109,21 +71,6 @@ public abstract class AbstractEditorActivity
     @Override
     public boolean isDirty() {
         return false;
-    }
-
-    @Override
-    public void onLostFocus() {
-        //Do nothing.  
-    }
-
-    @Override
-    public void onFocus() {
-        //Do nothing.   
-    }
-
-    @Override
-    public WorkbenchMenuBar getMenuBar() {
-        return new WorkbenchMenuBar();
     }
 
 }

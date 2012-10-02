@@ -27,7 +27,7 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.mvp.AbstractScreenActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest10Activity extends AbstractScreenActivity {
+public class WorkbenchScreenTest10Activity extends AbstractWorkbenchScreenActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 

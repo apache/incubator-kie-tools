@@ -26,10 +26,4 @@ public interface PopupActivity
 
     public void launch(final PlaceRequest place);
 
-    public void onStart();
-
-    public void onStart(final PlaceRequest place);
-
-    public void onReveal();
-
 }
