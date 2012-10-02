@@ -55,12 +55,14 @@ public class ${className} extends AbstractPopupActivity {
     <#if onStart1ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
+        super.onStart( place );
         realPresenter.${onStart1ParameterMethodName}( place );
     }
 
     <#elseif onStart0ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
+        super.onStart();
         realPresenter.${onStart0ParameterMethodName}();
     }
 
@@ -68,6 +70,7 @@ public class ${className} extends AbstractPopupActivity {
     <#if onRevealMethodName??>
     @Override
     public void onReveal() {
+        super.onReveal();
         realPresenter.${onRevealMethodName}();
     }
 

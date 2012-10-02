@@ -46,6 +46,7 @@ public class WorkbenchPopupTest6Activity extends AbstractPopupActivity {
 
     @Override
     public void onReveal() {
+        super.onReveal();
         realPresenter.onReveal();
     }
 

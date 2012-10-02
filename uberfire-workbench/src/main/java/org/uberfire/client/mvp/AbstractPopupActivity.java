@@ -47,11 +47,22 @@ public abstract class AbstractPopupActivity extends AbstractActivity
             }
 
         } );
+        onStart( place );
         popup.show();
         popup.center();
         onReveal();
     }
 
     public abstract PopupPanel getPopupPanel();
+
+    @Override
+    public void onStart() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onStart(final PlaceRequest place) {
+        //Do nothing.  
+    }
 
 }

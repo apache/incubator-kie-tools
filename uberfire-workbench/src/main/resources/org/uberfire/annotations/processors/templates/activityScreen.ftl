@@ -74,12 +74,14 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if onStart1ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
+        super.onStart( place );
         realPresenter.${onStart1ParameterMethodName}( place );
     }
 
     <#elseif onStart0ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
+        super.onStart();
         realPresenter.${onStart0ParameterMethodName}();
     }
 
@@ -94,6 +96,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if onCloseMethodName??>
     @Override
     public void onClose() {
+        super.onClose();
         realPresenter.${onCloseMethodName}();
     }
 
@@ -101,6 +104,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if onRevealMethodName??>
     @Override
     public void onReveal() {
+        super.onReveal();
         realPresenter.${onRevealMethodName}();
     }
 
@@ -108,6 +112,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if onLostFocusMethodName??>
     @Override
     public void onLostFocus() {
+        super.onLostFocus();
         realPresenter.${onLostFocusMethodName}();
     }
 
@@ -115,6 +120,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if onFocusMethodName??>
     @Override
     public void onFocus() {
+        super.onFocus();
         realPresenter.${onFocusMethodName}();
     }
 

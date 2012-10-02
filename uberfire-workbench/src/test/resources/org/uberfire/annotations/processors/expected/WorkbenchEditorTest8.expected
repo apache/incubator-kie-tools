@@ -51,6 +51,7 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     @Override
     public void onStart(final Path path,
                         final PlaceRequest place) {
+        super.onStart( path );
         realPresenter.onStart( path );
     }
 
@@ -61,21 +62,25 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
 
     @Override
     public void onClose() {
+        super.onClose();
         realPresenter.onClose();
     }
 
     @Override
     public void onReveal() {
+        super.onReveal();
         realPresenter.onReveal();
     }
 
     @Override
     public void onLostFocus() {
+        super.onLostFocus();
         realPresenter.onLostFocus();
     }
 
     @Override
     public void onFocus() {
+        super.onFocus();
         realPresenter.onFocus();
     }
 

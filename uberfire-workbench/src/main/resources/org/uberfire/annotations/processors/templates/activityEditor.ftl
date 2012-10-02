@@ -79,6 +79,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     @Override
     public void onStart(final Path path, 
                         final PlaceRequest place) {
+        super.onStart( path, place );
         realPresenter.${onStart2ParametersMethodName}( path, place );
     }
 
@@ -86,6 +87,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     @Override
     public void onStart(final Path path,
                         final PlaceRequest place) {
+        super.onStart( path );
         realPresenter.${onStart1ParameterMethodName}( path );
     }
 
@@ -100,6 +102,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     <#if onCloseMethodName??>
     @Override
     public void onClose() {
+        super.onClose();
         realPresenter.${onCloseMethodName}();
     }
 
@@ -107,6 +110,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     <#if onRevealMethodName??>
     @Override
     public void onReveal() {
+        super.onReveal();
         realPresenter.${onRevealMethodName}();
     }
 
@@ -114,6 +118,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     <#if onLostFocusMethodName??>
     @Override
     public void onLostFocus() {
+        super.onLostFocus();
         realPresenter.${onLostFocusMethodName}();
     }
 
@@ -121,6 +126,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     <#if onFocusMethodName??>
     @Override
     public void onFocus() {
+        super.onFocus();
         realPresenter.${onFocusMethodName}();
     }
 
@@ -162,6 +168,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     <#if onSaveMethodName??>
     @Override
     public void onSave() {
+        super.onSave();
         realPresenter.${onSaveMethodName}();
     }
 
