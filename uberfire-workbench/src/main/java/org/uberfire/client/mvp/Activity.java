@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Base Activity life-cycles
@@ -23,6 +24,8 @@ import org.uberfire.security.authz.RuntimeResource;
 public interface Activity
     extends
     RuntimeResource {
+
+    public void launch(final PlaceRequest place);
 
     public void onReveal();
 

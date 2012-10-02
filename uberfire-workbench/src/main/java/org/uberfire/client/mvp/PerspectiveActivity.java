@@ -16,7 +16,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Perspective Activity life-cycles
@@ -24,8 +23,6 @@ import org.uberfire.shared.mvp.PlaceRequest;
 public interface PerspectiveActivity
     extends
     Activity {
-
-    public void launch(final PlaceRequest place);
 
     public PerspectiveDefinition getPerspective();
 

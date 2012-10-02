@@ -15,15 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.shared.mvp.PlaceRequest;
-
 /**
  * Pop-up Activity life-cycles
  */
 public interface PopupActivity
     extends
     Activity {
-
-    public void launch(final PlaceRequest place);
 
 }

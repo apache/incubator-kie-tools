@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /**
  * Base class for Pop-up Activities
  */
-public abstract class AbstractPopupActivity
+public abstract class AbstractPopupActivity extends AbstractActivity
     implements
     PopupActivity {
 
@@ -36,6 +36,7 @@ public abstract class AbstractPopupActivity
 
     @Override
     public void launch(final PlaceRequest place) {
+        super.launch( place );
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
@@ -49,11 +50,6 @@ public abstract class AbstractPopupActivity
         popup.show();
         popup.center();
         onReveal();
-    }
-
-    @Override
-    public void onReveal() {
-        //Do nothing.   
     }
 
     public abstract PopupPanel getPopupPanel();

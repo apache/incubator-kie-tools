@@ -29,7 +29,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 /**
  * Base class for Perspective Activities
  */
-public abstract class AbstractPerspectiveActivity
+public abstract class AbstractPerspectiveActivity extends AbstractActivity
     implements
     PerspectiveActivity {
 
@@ -37,16 +37,14 @@ public abstract class AbstractPerspectiveActivity
     private PanelManager              panelManager;
 
     @Inject
-    PlaceManager                      placeManager;
+    private PlaceManager              placeManager;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
-    private PlaceRequest              place;
-
     @Override
     public void launch(final PlaceRequest place) {
-        this.place = place;
+        super.launch( place );
         saveState();
     }
 
@@ -132,11 +130,6 @@ public abstract class AbstractPerspectiveActivity
     }
 
     public abstract PerspectiveDefinition getPerspective();
-
-    @Override
-    public void onReveal() {
-        placeManager.executeCallback( this.place );
-    }
 
     public abstract String getIdentifier();
 

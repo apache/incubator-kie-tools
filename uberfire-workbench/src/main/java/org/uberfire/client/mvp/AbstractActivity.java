@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
+import javax.inject.Inject;
+
+import org.uberfire.shared.mvp.PlaceRequest;
+
 /**
  * Base class for Activities
  */
@@ -22,9 +26,19 @@ public abstract class AbstractActivity
         implements
         Activity {
 
+    @Inject
+    protected PlaceManager placeManager;
+
+    protected PlaceRequest place;
+
+    @Override
+    public void launch(final PlaceRequest place) {
+        this.place = place;
+    }
+
     @Override
     public void onReveal() {
-        //Do nothing.   
+        placeManager.executeCallback( this.place );
     }
 
 }
