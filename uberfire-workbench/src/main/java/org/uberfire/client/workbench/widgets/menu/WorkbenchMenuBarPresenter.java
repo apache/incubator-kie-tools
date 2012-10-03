@@ -189,7 +189,13 @@ public class WorkbenchMenuBarPresenter {
             //Add items for current WorkbenchPart
             activePart = event.getPart();
             items = new ArrayList<AbstractMenuItem>();
-            for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( activity.getMenuBar().getItems() ) ) {
+
+            final WorkbenchMenuBar menuBar = activity.getMenuBar();
+            if ( menuBar == null ) {
+                return;
+            }
+
+            for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() ) ) {
                 view.addMenuItem( item );
                 items.add( item );
             }

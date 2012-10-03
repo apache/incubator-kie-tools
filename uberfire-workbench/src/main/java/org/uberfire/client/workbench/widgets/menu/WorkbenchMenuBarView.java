@@ -35,7 +35,7 @@ public class WorkbenchMenuBarView extends Composite
 
     private final MenuBar                         menuBar      = new MenuBar();
 
-    //Map of Presenter menu items to GWT MenuItems
+    //Map of UberFire's AbstractMenuItems to GWT MenuItems
     private final Map<AbstractMenuItem, MenuItem> menuItemsMap = new HashMap<AbstractMenuItem, MenuItem>();
 
     public WorkbenchMenuBarView() {
@@ -48,7 +48,7 @@ public class WorkbenchMenuBarView extends Composite
      * conducted by the Presenter.
      */
     @Override
-    public void addMenuItem(AbstractMenuItem item) {
+    public void addMenuItem(final AbstractMenuItem item) {
         final MenuItem gwtItem = makeMenuItem( item );
         menuItemsMap.put( item,
                           gwtItem );
@@ -59,8 +59,8 @@ public class WorkbenchMenuBarView extends Composite
      * Remove a Presenter Menu item from the view.
      */
     @Override
-    public void removeMenuItem(AbstractMenuItem item) {
-        final MenuItem gwtItem = menuItemsMap.get( item );
+    public void removeMenuItem(final AbstractMenuItem item) {
+        final MenuItem gwtItem = menuItemsMap.remove( item );
         if ( gwtItem != null ) {
             menuBar.removeItem( gwtItem );
         }

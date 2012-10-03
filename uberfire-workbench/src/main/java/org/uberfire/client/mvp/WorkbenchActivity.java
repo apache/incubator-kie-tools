@@ -17,6 +17,7 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -45,4 +46,7 @@ public interface WorkbenchActivity
     public void onLostFocus();
 
     public WorkbenchMenuBar getMenuBar();
+
+    public ToolBar getToolBar();
+
 }

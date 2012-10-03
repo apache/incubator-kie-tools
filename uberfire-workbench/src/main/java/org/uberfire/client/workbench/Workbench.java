@@ -38,6 +38,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.Scheduler;
@@ -83,6 +84,9 @@ public class Workbench extends Composite {
     private WorkbenchMenuBarPresenter     menuBarPresenter;
 
     @Inject
+    private WorkbenchToolBarPresenter     toolBarPresenter;
+
+    @Inject
     private Caller<WorkbenchServices>     wbServices;
 
     @PostConstruct
@@ -90,6 +94,9 @@ public class Workbench extends Composite {
 
         //Menu bar
         container.add( menuBarPresenter.getView() );
+
+        //Tool bar
+        container.add( toolBarPresenter.getView() );
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
@@ -124,10 +131,12 @@ public class Workbench extends Composite {
 
         //Size environment
         final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
+        final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
+        final int availableHeight = HEIGHT - menuBarHeight - toolBarHeight;
         workbenchContainer.setPixelSize( WIDTH,
-                                         HEIGHT - menuBarHeight );
+                                         availableHeight );
         workbench.setPixelSize( WIDTH,
-                                HEIGHT - menuBarHeight );
+                                availableHeight );
 
         //Add default workbench widget
         final PanelDefinition root = new PanelDefinitionImpl( true );

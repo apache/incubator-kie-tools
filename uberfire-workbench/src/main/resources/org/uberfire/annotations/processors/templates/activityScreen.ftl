@@ -42,6 +42,10 @@ import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 </#if>
+<#if getToolBarMethodName??>
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+
+</#if>
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
@@ -165,6 +169,13 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @Override
     public WorkbenchMenuBar getMenuBar() {
         return realPresenter.${getMenuBarMethodName}();
+    }
+    
+    </#if>
+    <#if getToolBarMethodName??>
+    @Override
+    public ToolBar getToolBar() {
+        return realPresenter.${getToolBarMethodName}();
     }
     
     </#if>

@@ -30,6 +30,8 @@ import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
 import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
 import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.user.client.Window;
 
@@ -73,6 +75,7 @@ public class TestPresenter {
     }
 
     public void launchWithCallbackPlaceRequest() {
+        final PlaceRequest place = new DefaultPlaceRequest( "Test2" );
         final Command callback = new Command() {
 
             @Override
@@ -81,7 +84,7 @@ public class TestPresenter {
             }
 
         };
-        placeManager.goTo( "Test2",
+        placeManager.goTo( place,
                            callback );
     }
 

@@ -90,6 +90,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                             processingEnvironment );
         final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
                                                                                  processingEnvironment );
+        final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName( classElement,
+                                                                                 processingEnvironment );
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
         final String rolesList = GeneratorUtils.getRoleList( classElement );
 
@@ -112,6 +114,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
         logger.debug( "onSaveMethodName: " + onSaveMethodName );
         logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
+        logger.debug( "getToolBarMethodName: " + getToolBarMethodName );
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
@@ -181,6 +184,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   onSaveMethodName );
         root.put( "getMenuBarMethodName",
                   getMenuBarMethodName );
+        root.put( "getToolBarMethodName",
+                  getToolBarMethodName );
         root.put( "securityTraitList",
                   securityTraitList );
         root.put( "rolesList",
