@@ -34,6 +34,10 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     @Inject
     private IOCBeanManager iocManager;
 
+    public AbstractPopupActivity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
+
     @Override
     public void launch(final PlaceRequest place) {
         super.launch( place );

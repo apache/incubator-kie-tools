@@ -24,9 +24,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.annotations.Identifier;
-
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
 
 @ApplicationScoped
@@ -44,6 +45,12 @@ public class PerspectiveTest5Activity_getPerspective extends AbstractPerspective
 
     @Inject
     private PerspectiveTest5 realClass;
+
+    @Inject
+    //Constructor injection for testing
+    public PerspectiveTest5Activity_getPerspective(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     @Override
     public String getIdentifier() {

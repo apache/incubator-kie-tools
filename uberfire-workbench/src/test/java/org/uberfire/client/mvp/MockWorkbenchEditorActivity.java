@@ -15,37 +15,42 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import java.util.Collection;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Base class for Screen Activities
+ * Mock WorkbenchScreenActivity
  */
-public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity
-    implements
-    WorkbenchScreenActivity {
+public class MockWorkbenchEditorActivity extends AbstractWorkbenchEditorActivity {
 
-    public AbstractWorkbenchScreenActivity(final PlaceManager placeManager) {
+    public MockWorkbenchEditorActivity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
     @Override
-    public void launch(final AcceptItem acceptPanel,
-                       final PlaceRequest place) {
-        super.launch( place );
-        onStart( place );
-        acceptPanel.add( getTitle(),
-                         getWidget() );
-        onReveal();
+    public String getSignatureId() {
+        return null;
     }
 
     @Override
-    public void onStart() {
-        //Do nothing.  
+    public Collection<String> getRoles() {
+        return null;
     }
 
     @Override
-    public void onStart(final PlaceRequest place) {
-        //Do nothing.  
+    public Collection<String> getTraits() {
+        return null;
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
+    public IsWidget getWidget() {
+        return null;
     }
 
 }

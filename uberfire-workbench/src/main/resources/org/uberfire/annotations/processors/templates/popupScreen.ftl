@@ -23,6 +23,7 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -51,6 +52,12 @@ public class ${className} extends AbstractPopupActivity {
 
     @Inject
     private ${realClassName} realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public ${className}(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     <#if onStart1ParameterMethodName??>
     @Override

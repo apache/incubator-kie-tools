@@ -30,8 +30,11 @@ import org.uberfire.client.mvp.UberView;
 </#if>
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
 <#if getDefaultPositionMethodName??>
 import org.uberfire.client.workbench.Position;
+
 </#if>
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -63,6 +66,12 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
 
     @Inject
     private ${realClassName} realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public ${className}(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     <#if hasUberView>
     @PostConstruct

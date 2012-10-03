@@ -25,6 +25,8 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
@@ -45,6 +47,12 @@ public class WorkbenchScreenTest9Activity extends AbstractWorkbenchScreenActivit
 
     @Inject
     private WorkbenchScreenTest9 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public WorkbenchScreenTest9Activity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     @Override
     public String getTitle() {

@@ -23,6 +23,7 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -43,6 +44,12 @@ public class WorkbenchPopupTest7Activity extends AbstractPopupActivity {
 
     @Inject
     private WorkbenchPopupTest7 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public WorkbenchPopupTest7Activity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     @Override
     public void onStart(final PlaceRequest place) {

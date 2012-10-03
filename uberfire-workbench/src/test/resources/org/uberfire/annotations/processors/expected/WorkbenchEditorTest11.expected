@@ -26,6 +26,8 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import org.uberfire.backend.vfs.Path;
@@ -47,6 +49,12 @@ public class WorkbenchEditorTest11Activity extends AbstractWorkbenchEditorActivi
 
     @Inject
     private WorkbenchEditorTest11 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public WorkbenchEditorTest11Activity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     @Override
     public void onStart(final Path path,

@@ -42,6 +42,10 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
+    public AbstractPerspectiveActivity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
+
     @Override
     public void launch(final PlaceRequest place) {
         super.launch( place );

@@ -28,6 +28,8 @@ import org.uberfire.client.mvp.UberView;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -46,6 +48,12 @@ public class WorkbenchScreenTest13Activity extends AbstractWorkbenchScreenActivi
 
     @Inject
     private WorkbenchScreenTest13 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public WorkbenchScreenTest13Activity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
 
     @PostConstruct
     public void init() {

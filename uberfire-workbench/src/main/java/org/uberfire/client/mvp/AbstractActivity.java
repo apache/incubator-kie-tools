@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.inject.Inject;
-
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -26,10 +24,13 @@ public abstract class AbstractActivity
         implements
         Activity {
 
-    @Inject
     protected PlaceManager placeManager;
 
     protected PlaceRequest place;
+
+    public AbstractActivity(final PlaceManager placeManager) {
+        this.placeManager = placeManager;
+    }
 
     @Override
     public void launch(final PlaceRequest place) {

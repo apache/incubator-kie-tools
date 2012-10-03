@@ -26,6 +26,10 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         implements
         WorkbenchEditorActivity {
 
+    public AbstractWorkbenchEditorActivity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
+
     @Override
     public void launch(final AcceptItem acceptPanel,
                        final PlaceRequest place) {
