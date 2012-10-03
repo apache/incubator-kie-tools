@@ -20,14 +20,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -37,19 +40,25 @@ public class TestView extends Composite
     RequiresResize,
     TestPresenter.View {
 
-
     interface ViewBinder
             extends
             UiBinder<Widget, TestView> {
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private static ViewBinder        uiBinder = GWT.create( ViewBinder.class );
 
     @UiField
     public SimplePanel               panel;
 
     @Inject
     private Event<NotificationEvent> notification;
+
+    private TestPresenter            presenter;
+
+    @Override
+    public void init(final TestPresenter presenter) {
+        this.presenter = presenter;
+    }
 
     @PostConstruct
     public void init() {
@@ -67,6 +76,11 @@ public class TestView extends Composite
     @UiHandler("notificationButton")
     public void onClickNotificationButton(final ClickEvent event) {
         notification.fire( new NotificationEvent( "Something happened" ) );
+    }
+
+    @UiHandler("launchWithPlaceRequestAndCallback")
+    public void onClickLaunchWithCallbackPlaceRequest(final ClickEvent event) {
+        presenter.launchWithCallbackPlaceRequest();
     }
 
 }

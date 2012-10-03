@@ -31,7 +31,7 @@ import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
 import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
@@ -66,15 +66,15 @@ public class ShowcaseEntryPoint {
         hideLoadingPopup();
 
         //Register call-backs for demo
-        placeManager.registerCallback( new PlaceRequestImpl( "TestPerspective" ),
-                                       new Command() {
+        placeManager.registerOnRevealCallback( new DefaultPlaceRequest( "TestPerspective" ),
+                                               new Command() {
 
-                                           @Override
-                                           public void execute() {
-                                               Window.alert( "Callback!" );
-                                           }
+                                                   @Override
+                                                   public void execute() {
+                                                       Window.alert( "Callback!" );
+                                                   }
 
-                                       } );
+                                               } );
     }
 
     private void loadStyles() {
@@ -96,7 +96,7 @@ public class ShowcaseEntryPoint {
 
                                                                   @Override
                                                                   public void execute() {
-                                                                      placeManager.goTo( new PlaceRequestImpl( menuItem ) );
+                                                                      placeManager.goTo( new DefaultPlaceRequest( menuItem ) );
                                                                   }
 
                                                               } );
@@ -135,7 +135,7 @@ public class ShowcaseEntryPoint {
     }
 
     public static native void redirect(String url)/*-{
-        $wnd.location = url;
+		$wnd.location = url;
     }-*/;
 
 }

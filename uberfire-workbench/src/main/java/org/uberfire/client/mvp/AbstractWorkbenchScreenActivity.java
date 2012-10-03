@@ -30,8 +30,10 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
 
     @Override
     public void launch(final AcceptItem acceptPanel,
-                       final PlaceRequest place) {
-        super.launch( place );
+                       final PlaceRequest place,
+                       final Command callback) {
+        super.launch( place,
+                      callback );
         onStart( place );
         acceptPanel.add( getTitle(),
                          getWidget() );

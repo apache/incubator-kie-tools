@@ -32,7 +32,7 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @Service
 @ApplicationScoped
@@ -54,7 +54,7 @@ public class FileExplorerRootServiceImpl
     private void setupGitRepos() {
         final Path rootPath = fileSystems.getBootstrapFileSystem().getRootDirectories().get( 0 );
         final Root root = new Root( rootPath,
-                                    new PlaceRequestImpl( "RepositoryEditor" ) );
+                                    new DefaultPlaceRequest( "RepositoryEditor" ) );
 
         roots.add( root );
     }

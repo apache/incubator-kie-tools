@@ -32,8 +32,10 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     @Override
     public void launch(final AcceptItem acceptPanel,
-                       final PlaceRequest place) {
-        super.launch( place );
+                       final PlaceRequest place,
+                       final Command callback) {
+        super.launch( place,
+                      callback );
         String simplePath = place.getParameter( "path",
                                                 null );
         String uri = place.getParameter( "path:uri",

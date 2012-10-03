@@ -38,7 +38,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -137,7 +137,7 @@ public class Workbench extends Composite {
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         AbstractPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         if ( defaultPerspective != null ) {
-            placeManager.goTo( new PlaceRequestImpl( defaultPerspective.getIdentifier() ) );
+            placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
         }
 
         //Save Workbench state when Window is closed

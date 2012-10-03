@@ -32,7 +32,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -104,7 +104,7 @@ public class NewRepositoryWizard extends FormStylePopup {
                     public void callback(final FileSystem v) {
                         Window.alert( "The repository is created successfully" );
                         hide();
-                        final PlaceRequest repositoryEditor = new PlaceRequestImpl( "RepositoryEditor" )
+                        final PlaceRequest repositoryEditor = new DefaultPlaceRequest( "RepositoryEditor" )
                                 .addParameter( "path:uri",
                                                uri )
                                 .addParameter( "path:name",

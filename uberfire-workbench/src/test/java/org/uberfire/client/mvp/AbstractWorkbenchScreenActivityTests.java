@@ -2,6 +2,7 @@ package org.uberfire.client.mvp;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -15,7 +16,7 @@ import org.junit.Test;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
@@ -39,7 +40,7 @@ public class AbstractWorkbenchScreenActivityTests {
     //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
     public void tesGoToOnePlace() throws Exception {
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
@@ -54,13 +55,15 @@ public class AbstractWorkbenchScreenActivityTests {
         placeManager.goTo( somewhere );
 
         verify( spy ).launch( any( AcceptItem.class ),
-                              eq( somewhere ) );
+                              eq( somewhere ),
+                              isNull( Command.class ) );
         verify( spy ).onStart( eq( somewhere ) );
         verify( spy ).onReveal();
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( event,
                 times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
     }
@@ -69,8 +72,8 @@ public class AbstractWorkbenchScreenActivityTests {
     //Reveal the same Place twice. It should be launched, OnStart and OnReveal called once.
     public void tesGoToOnePlaceTwice() throws Exception {
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
-        final PlaceRequest somewhereTheSame = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+        final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
 
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
@@ -87,7 +90,8 @@ public class AbstractWorkbenchScreenActivityTests {
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( spy,
                 times( 1 ) ).onStart( eq( somewhere ) );
         verify( spy,
@@ -102,8 +106,8 @@ public class AbstractWorkbenchScreenActivityTests {
     //Reveal two different Places. Each should be launched, OnStart and OnReveal called once.
     public void tesGoToTwoDifferentPlaces() throws Exception {
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
-        final PlaceRequest somewhereElse = new PlaceRequestImpl( "SomewhereElse" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+        final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
 
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
@@ -126,7 +130,8 @@ public class AbstractWorkbenchScreenActivityTests {
 
         verify( spy1,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( spy1,
                 times( 1 ) ).onStart( eq( somewhere ) );
         verify( spy1,
@@ -134,7 +139,8 @@ public class AbstractWorkbenchScreenActivityTests {
 
         verify( spy2,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhereElse ) );
+                                     eq( somewhereElse ),
+                                     isNull( Command.class ) );
         verify( spy2,
                 times( 1 ) ).onStart( eq( somewhereElse ) );
         verify( spy2,

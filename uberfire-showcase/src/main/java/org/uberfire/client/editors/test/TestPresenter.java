@@ -24,13 +24,14 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
 import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
 import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -40,15 +41,18 @@ public class TestPresenter {
 
     public interface View
         extends
-        IsWidget {
+        UberView<TestPresenter> {
     }
 
     @Inject
-    public View             view;
+    public UberView<TestPresenter> view;
 
-    private static String[] PERMISSIONS_NIL   = new String[]{};
+    @Inject
+    private PlaceManager           placeManager;
 
-    private static String[] PERMISSIONS_ADMIN = new String[]{"ADMIN"};
+    private static String[]        PERMISSIONS_NIL   = new String[]{};
+
+    private static String[]        PERMISSIONS_ADMIN = new String[]{"ADMIN"};
 
     public TestPresenter() {
     }
@@ -59,13 +63,26 @@ public class TestPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
+    public UberView<TestPresenter> getView() {
         return view;
     }
 
     @OnMayClose
     public boolean onMayClose() {
         return Window.confirm( "Close me?" );
+    }
+
+    public void launchWithCallbackPlaceRequest() {
+        final Command callback = new Command() {
+
+            @Override
+            public void execute() {
+                Window.alert( "Launched Test2 with callback" );
+            }
+
+        };
+        placeManager.goTo( "Test2",
+                           callback );
     }
 
     @WorkbenchMenu

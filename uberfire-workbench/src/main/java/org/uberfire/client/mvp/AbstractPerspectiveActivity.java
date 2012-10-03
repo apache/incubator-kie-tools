@@ -47,8 +47,10 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     }
 
     @Override
-    public void launch(final PlaceRequest place) {
-        super.launch( place );
+    public void launch(final PlaceRequest place,
+                       final Command callback) {
+        super.launch( place,
+                      callback );
         saveState();
     }
 

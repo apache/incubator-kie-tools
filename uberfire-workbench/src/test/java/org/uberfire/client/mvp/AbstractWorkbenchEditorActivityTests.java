@@ -3,6 +3,7 @@ package org.uberfire.client.mvp;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -19,7 +20,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
@@ -44,7 +45,7 @@ public class AbstractWorkbenchEditorActivityTests {
     public void tesGoToOnePlace() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         somewhere.addParameter( "path",
                                 uri );
 
@@ -63,14 +64,16 @@ public class AbstractWorkbenchEditorActivityTests {
         placeManager.goTo( somewhere );
 
         verify( spy ).launch( any( AcceptItem.class ),
-                              eq( somewhere ) );
+                              eq( somewhere ),
+                              isNull( Command.class ) );
         verify( spy ).onStart( argThat( new EqualPaths( path ) ),
                                eq( somewhere ) );
         verify( spy ).onReveal();
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( event,
                 times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
     }
@@ -80,10 +83,10 @@ public class AbstractWorkbenchEditorActivityTests {
     public void tesGoToOnePlaceTwice() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         somewhere.addParameter( "path",
                                 uri );
-        final PlaceRequest somewhereTheSame = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
         somewhereTheSame.addParameter( "path",
                                        uri );
 
@@ -104,7 +107,8 @@ public class AbstractWorkbenchEditorActivityTests {
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( spy,
                 times( 1 ) ).onStart( argThat( new EqualPaths( path ) ),
                                       eq( somewhere ) );
@@ -122,10 +126,10 @@ public class AbstractWorkbenchEditorActivityTests {
         final String uri1 = "a/path/to/somewhere";
         final String uri2 = "a/path/to/somewhere/else";
         final PanelManager panelManager = mock( PanelManager.class );
-        final PlaceRequest somewhere = new PlaceRequestImpl( "Somewhere" );
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         somewhere.addParameter( "path",
                                 uri1 );
-        final PlaceRequest somewhereElse = new PlaceRequestImpl( "SomewhereElse" );
+        final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
         somewhereElse.addParameter( "path",
                                     uri2 );
 
@@ -154,7 +158,8 @@ public class AbstractWorkbenchEditorActivityTests {
 
         verify( spy1,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ) );
+                                     eq( somewhere ),
+                                     isNull( Command.class ) );
         verify( spy1,
                 times( 1 ) ).onStart( argThat( new EqualPaths( path1 ) ),
                                       eq( somewhere ) );
@@ -163,7 +168,8 @@ public class AbstractWorkbenchEditorActivityTests {
 
         verify( spy2,
                 times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhereElse ) );
+                                     eq( somewhereElse ),
+                                     isNull( Command.class ) );
         verify( spy2,
                 times( 1 ) ).onStart( argThat( new EqualPaths( path2 ) ),
                                       eq( somewhereElse ) );

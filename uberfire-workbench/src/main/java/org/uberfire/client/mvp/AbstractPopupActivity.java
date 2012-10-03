@@ -39,8 +39,10 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     }
 
     @Override
-    public void launch(final PlaceRequest place) {
-        super.launch( place );
+    public void launch(final PlaceRequest place,
+                       final Command callback) {
+        super.launch( place,
+                      callback );
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {

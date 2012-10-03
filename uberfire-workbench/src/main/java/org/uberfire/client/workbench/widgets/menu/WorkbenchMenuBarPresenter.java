@@ -41,7 +41,7 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -97,7 +97,7 @@ public class WorkbenchMenuBarPresenter {
                                                    new Command() {
                                                        @Override
                                                        public void execute() {
-                                                           placeManager.goTo( new PlaceRequestImpl( defaultPerspective.getIdentifier() ) );
+                                                           placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
                                                        }
                                                    } ) );
         }
@@ -113,7 +113,7 @@ public class WorkbenchMenuBarPresenter {
 
                 @Override
                 public void execute() {
-                    placeManager.goTo( new PlaceRequestImpl( perspective.getIdentifier() ) );
+                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
                 }
 
             };

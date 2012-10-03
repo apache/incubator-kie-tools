@@ -25,7 +25,8 @@ public interface Activity
     extends
     RuntimeResource {
 
-    public void launch(final PlaceRequest place);
+    public void launch(final PlaceRequest place,
+                       final Command callback);
 
     public void onReveal();
 

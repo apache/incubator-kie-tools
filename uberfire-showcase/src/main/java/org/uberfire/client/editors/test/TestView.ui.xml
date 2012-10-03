@@ -22,6 +22,7 @@
     <g:VerticalPanel height="100px">
       <g:Label>Some blurbage for TestView</g:Label>
       <g:Button ui:field="notificationButton">Notify</g:Button>
+      <g:Button ui:field="launchWithPlaceRequestAndCallback">Add tab with PlaceRequest and callback</g:Button>
     </g:VerticalPanel>
   </g:SimplePanel>
 </ui:UiBinder> 

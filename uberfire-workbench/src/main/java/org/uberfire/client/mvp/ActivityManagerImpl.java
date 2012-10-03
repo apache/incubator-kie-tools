@@ -30,7 +30,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class ActivityManagerImpl
@@ -67,7 +67,7 @@ public class ActivityManagerImpl
         switch ( activityBeans.size() ) {
             case 0 :
                 //No activities found. Show an error to the user.
-                final PlaceRequest notFoundPopup = new PlaceRequestImpl( "workbench.activity.notfound" );
+                final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
                 notFoundPopup.addParameter( "requestedPlaceIdentifier",
                                             identifier );
                 placeManager.goTo( notFoundPopup );
@@ -75,7 +75,7 @@ public class ActivityManagerImpl
             case 1 :
                 instance = getFirstActivity( activityBeans );
                 if ( instance == null ) {
-                    placeManager.goTo( PlaceRequestImpl.NOWHERE );
+                    placeManager.goTo( DefaultPlaceRequest.NOWHERE );
                 }
                 //Only WorkbenchActivities can be re-visited
                 if ( instance instanceof WorkbenchActivity ) {
@@ -85,7 +85,7 @@ public class ActivityManagerImpl
                 return instance;
             default :
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
-                final PlaceRequest multiplePopup = new PlaceRequestImpl( "workbench.activities.multiple" );
+                final PlaceRequest multiplePopup = new DefaultPlaceRequest( "workbench.activities.multiple" );
                 multiplePopup.addParameter( "requestedPlaceIdentifier",
                                             identifier );
                 placeManager.goTo( multiplePopup );

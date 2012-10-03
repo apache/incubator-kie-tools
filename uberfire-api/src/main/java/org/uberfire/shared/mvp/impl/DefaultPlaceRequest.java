@@ -24,21 +24,21 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 @Portable
-public class PlaceRequestImpl
+public class DefaultPlaceRequest
     implements
     PlaceRequest {
 
-    public static final PlaceRequest  NOWHERE    = new PlaceRequestImpl( "NOWHERE" );
+    public static final PlaceRequest  NOWHERE    = new DefaultPlaceRequest( "NOWHERE" );
 
     private final String              identifier;
 
     private final Map<String, String> parameters = new HashMap<String, String>();
 
-    public PlaceRequestImpl() {
+    public DefaultPlaceRequest() {
         this.identifier = "";
     }
 
-    public PlaceRequestImpl(final String identifier) {
+    public DefaultPlaceRequest(final String identifier) {
         this.identifier = identifier;
     }
 

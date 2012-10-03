@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -93,7 +93,7 @@ public class PlaceHistoryHandler {
 
     private PlaceManager                    placeManager;
 
-    private PlaceRequest                    defaultPlaceRequest = PlaceRequestImpl.NOWHERE;
+    private PlaceRequest                    defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
 
     /**
      * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
@@ -161,7 +161,7 @@ public class PlaceHistoryHandler {
 
         return new HandlerRegistration() {
             public void removeHandler() {
-                PlaceHistoryHandler.this.defaultPlaceRequest = PlaceRequestImpl.NOWHERE;
+                PlaceHistoryHandler.this.defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
                 PlaceHistoryHandler.this.placeManager = null;
                 //placeReg.removeHandler();
                 historyReg.removeHandler();

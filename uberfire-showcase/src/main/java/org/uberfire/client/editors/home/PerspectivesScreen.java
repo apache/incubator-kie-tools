@@ -11,7 +11,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -48,7 +48,7 @@ public class PerspectivesScreen {
             infoCube.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    placeManager.goTo( new PlaceRequestImpl( perspective.getIdentifier() ) );
+                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
                 }
             } );
 

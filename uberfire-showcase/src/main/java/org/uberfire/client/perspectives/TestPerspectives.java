@@ -27,7 +27,7 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.security.annotations.Roles;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.shared.security.ShowcaseRoles;
 
 /**
@@ -41,7 +41,7 @@ public class TestPerspectives {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "Show TestWidgets-1" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test" ) ) );
 
         return p;
     }
@@ -51,7 +51,7 @@ public class TestPerspectives {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "Show TestWidgets-2" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test2" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
 
         return p;
     }
@@ -62,7 +62,7 @@ public class TestPerspectives {
         p.setName( "Show TestWidgets-3" );
 
         final PanelDefinition south = new PanelDefinitionImpl();
-        south.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test" ) ) );
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test" ) ) );
         p.getRoot().setChild( Position.SOUTH,
                               south );
 
@@ -75,12 +75,12 @@ public class TestPerspectives {
         p.setName( "Show TestWidgets-4" );
 
         final PanelDefinition south = new PanelDefinitionImpl();
-        south.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test" ) ) );
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test" ) ) );
         p.getRoot().setChild( Position.SOUTH,
                               south );
 
         final PanelDefinition east = new PanelDefinitionImpl();
-        east.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test2" ) ) );
+        east.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
         south.setChild( Position.EAST,
                         east );
 
@@ -93,16 +93,16 @@ public class TestPerspectives {
         p.setName( "Show TestWidgets-5" );
 
         final PanelDefinition south = new PanelDefinitionImpl();
-        south.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test" ) ) );
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test" ) ) );
         p.getRoot().setChild( Position.SOUTH,
                               south );
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test2" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "MyAdminArea" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
 
         return p;
     }
@@ -114,7 +114,7 @@ public class TestPerspectives {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "Show TestWidgets-6" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "MyAdminArea" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
 
         return p;
     }
@@ -126,7 +126,7 @@ public class TestPerspectives {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "Show TestWidgets-7" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "MyAdminArea" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
 
         return p;
     }
@@ -141,11 +141,11 @@ public class TestPerspectives {
         west.setWidth( 200 );
         west.setMinHeight( 100 );
         west.setMinWidth( 100 );
-        west.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "MyAdminArea" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test2" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
 
         return p;
     }
@@ -161,11 +161,11 @@ public class TestPerspectives {
         west.setWidth( 200 );
         west.setMinHeight( 100 );
         west.setMinWidth( 100 );
-        west.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "MyAdminArea" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "Test2" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
 
         return p;
     }

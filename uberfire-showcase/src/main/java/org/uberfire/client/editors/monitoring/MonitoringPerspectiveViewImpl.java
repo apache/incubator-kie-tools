@@ -25,7 +25,7 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -79,7 +79,7 @@ public class MonitoringPerspectiveViewImpl extends Composite
 
     @UiHandler("backWorkspace")
     public void backToWorkspace(ClickEvent e) {
-        PlaceRequest placeRequest = new PlaceRequestImpl( "AdminArea" );
+        PlaceRequest placeRequest = new DefaultPlaceRequest( "AdminArea" );
         placeManager.goTo( placeRequest );
     }
 

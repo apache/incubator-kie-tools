@@ -27,7 +27,8 @@ public interface WorkbenchActivity
     Activity {
 
     public void launch(final AcceptItem acceptItem,
-                       final PlaceRequest place);
+                       final PlaceRequest place,
+                       final Command callback);
 
     public boolean onMayClose();
 

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.http.client.URL;
 
@@ -36,7 +36,7 @@ public class PlaceRequestHistoryMapperImpl
         String query = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
         Map<String, String> parameters = getParameters( query );
 
-        PlaceRequest placeRequest = new PlaceRequestImpl( identifier );
+        PlaceRequest placeRequest = new DefaultPlaceRequest( identifier );
         for ( String parameterName : parameters.keySet() ) {
             placeRequest.addParameter( parameterName,
                                        parameters.get( parameterName ) );

@@ -28,18 +28,29 @@ public abstract class AbstractActivity
 
     protected PlaceRequest place;
 
+    protected Command      callback;
+
     public AbstractActivity(final PlaceManager placeManager) {
         this.placeManager = placeManager;
     }
 
     @Override
-    public void launch(final PlaceRequest place) {
+    public void launch(final PlaceRequest place,
+                       final Command callback) {
         this.place = place;
+        this.callback = callback;
     }
 
     @Override
     public void onReveal() {
-        placeManager.executeCallback( this.place );
+        executeOnRevealCallback();
+        placeManager.executeOnRevealCallback( this.place );
+    }
+
+    private void executeOnRevealCallback() {
+        if ( callback != null ) {
+            callback.execute();
+        }
     }
 
 }

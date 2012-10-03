@@ -24,7 +24,7 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.shared.mvp.impl.PlaceRequestImpl;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * A Perspective to show File Explorer
@@ -37,10 +37,10 @@ public class FileExplorerPerspective {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "File Explorer" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new PlaceRequestImpl( "RepositoriesEditor" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new PlaceRequestImpl( "FileExplorer" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
 
