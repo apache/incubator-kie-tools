@@ -15,31 +15,18 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import org.uberfire.client.mvp.Command;
+
 /**
- * Meta-data for a menu item that represents a sub-menu
+ * Meta-data for a menu item that represents a command
  */
-public class SubMenuItem extends AbstractMenuItem {
-
-    private final WorkbenchMenuBar subMenu;
-
-    public SubMenuItem(final String caption,
-                       final WorkbenchMenuBar subMenu) {
-        super( caption );
-        if ( subMenu == null ) {
-            throw new NullPointerException( "subMenu cannot be null" );
-        }
-        this.subMenu = subMenu;
-    }
+public interface MenuItemCommand
+    extends
+    MenuItem {
 
     /**
-     * @return the subMenu
+     * @return the command
      */
-    public WorkbenchMenuBar getSubMenu() {
-        return subMenu;
-    }
+    public Command getCommand();
 
-    @Override
-    public String getSignatureId() {
-        return SubMenuItem.class.getName();
-    }
 }

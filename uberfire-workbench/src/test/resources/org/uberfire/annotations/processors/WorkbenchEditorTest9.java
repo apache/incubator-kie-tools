@@ -4,7 +4,8 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -23,8 +24,8 @@ public class WorkbenchEditorTest9 {
     }
 
     @WorkbenchMenu
-    public WorkbenchMenuBar getMenuBar() {
-        return new WorkbenchMenuBar();
+    public MenuBar getMenuBar() {
+        return new DefaultMenuBar();
     }
 
 }

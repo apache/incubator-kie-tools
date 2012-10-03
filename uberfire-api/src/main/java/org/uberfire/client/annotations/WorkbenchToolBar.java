@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * Methods annotated with this provide the Toolbar for the WorkbenchPart. The
  * method should have zero arguments and return a
- * {@code org.uberfire.client.workbench.WorkbenchToolBar}.
+ * {@code org.uberfire.client.workbench.widgets.toolbar.ToolBar}.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

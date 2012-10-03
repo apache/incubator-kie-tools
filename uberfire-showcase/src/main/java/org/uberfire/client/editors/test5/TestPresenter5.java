@@ -28,10 +28,11 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.AbstractMenuItem;
-import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
-import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -87,22 +88,22 @@ public class TestPresenter5 {
     }
 
     @WorkbenchMenu
-    public WorkbenchMenuBar getMenuBar() {
-        final WorkbenchMenuBar menuBar = new WorkbenchMenuBar();
-        final WorkbenchMenuBar subMenuBar = new WorkbenchMenuBar();
-        menuBar.addItem( new SubMenuItem( "TestPresenter5 menu",
-                                                   subMenuBar ) );
+    public MenuBar getMenuBar() {
+        final MenuBar menuBar = new DefaultMenuBar();
+        final MenuBar subMenuBar = new DefaultMenuBar();
+        menuBar.addItem( new DefaultMenuItemSubMenu( "TestPresenter5 menu",
+                                                     subMenuBar ) );
         for ( int i = 0; i < 3; i++ ) {
             final String caption = "TestPresenter5:Item:" + i;
-            final AbstractMenuItem item = new CommandMenuItem( caption,
-                                                                         new Command() {
+            final MenuItem item = new DefaultMenuItemCommand( caption,
+                                                              new Command() {
 
-                                                                             @Override
-                                                                             public void execute() {
-                                                                                 Window.alert( "You clicked " + caption );
-                                                                             }
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      Window.alert( "You clicked " + caption );
+                                                                  }
 
-                                                                         } );
+                                                              } );
             item.setRoles( i > 0 ? PERMISSIONS_NIL : PERMISSIONS_ADMIN );
             subMenuBar.addItem( item );
         }

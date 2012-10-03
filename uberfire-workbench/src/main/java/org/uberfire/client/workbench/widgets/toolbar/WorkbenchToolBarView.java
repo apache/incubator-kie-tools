@@ -32,13 +32,21 @@ public class WorkbenchToolBarView extends Composite
     implements
     WorkbenchToolBarPresenter.View {
 
-    private final HorizontalPanel            toolBar         = new HorizontalPanel();
+    private final HorizontalPanel            toolBar           = new HorizontalPanel();
+    private final HorizontalPanel            toolBarContainer  = new HorizontalPanel();
 
     //Map of ToolBarItems to GWT Widgets used to represent them
-    private final Map<ToolBarItem, IsWidget> toolBarItemsMap = new HashMap<ToolBarItem, IsWidget>();
+    private final Map<ToolBarItem, IsWidget> toolBarItemsMap   = new HashMap<ToolBarItem, IsWidget>();
+
+    private static final String              STYLENAME_DEFAULT = "gwt-MenuBar";
 
     public WorkbenchToolBarView() {
-        initWidget( toolBar );
+        initWidget( toolBarContainer );
+        toolBarContainer.setWidth( "100%" );
+        toolBarContainer.setHeight( "32px" );
+        toolBarContainer.setStyleName( STYLENAME_DEFAULT );
+        toolBarContainer.addStyleDependentName( "horizontal" );
+        toolBarContainer.add( toolBar );
     }
 
     /**

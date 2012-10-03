@@ -27,10 +27,13 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.ShowcaseResources;
-import org.uberfire.client.workbench.widgets.menu.CommandMenuItem;
-import org.uberfire.client.workbench.widgets.menu.SubMenuItem;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.animation.client.Animation;
@@ -84,33 +87,33 @@ public class ShowcaseEntryPoint {
 
     private void setupMenu() {
         //Places sub-menu
-        final WorkbenchMenuBar placesMenuBar = new WorkbenchMenuBar();
-        final SubMenuItem placesMenu = new SubMenuItem( "Places",
-                                                        placesMenuBar );
+        final MenuBar placesMenuBar = new DefaultMenuBar();
+        final MenuItemSubMenu placesMenu = new DefaultMenuItemSubMenu( "Places",
+                                                                       placesMenuBar );
 
         //Add places
         Arrays.sort( menuItems );
         for ( final String menuItem : menuItems ) {
-            final CommandMenuItem item = new CommandMenuItem( menuItem,
-                                                              new Command() {
+            final MenuItemCommand item = new DefaultMenuItemCommand( menuItem,
+                                                                     new Command() {
 
-                                                                  @Override
-                                                                  public void execute() {
-                                                                      placeManager.goTo( new DefaultPlaceRequest( menuItem ) );
-                                                                  }
+                                                                         @Override
+                                                                         public void execute() {
+                                                                             placeManager.goTo( new DefaultPlaceRequest( menuItem ) );
+                                                                         }
 
-                                                              } );
+                                                                     } );
             placesMenuBar.addItem( item );
         }
 
         //Add places
-        final CommandMenuItem item = new CommandMenuItem( "Logout",
-                                                          new Command() {
-                                                              @Override
-                                                              public void execute() {
-                                                                  redirect( "/uf_logout" );
-                                                              }
-                                                          } );
+        final MenuItemCommand item = new DefaultMenuItemCommand( "Logout",
+                                                                 new Command() {
+                                                                     @Override
+                                                                     public void execute() {
+                                                                         redirect( "/uf_logout" );
+                                                                     }
+                                                                 } );
         placesMenuBar.addItem( item );
 
         menubar.addMenuItem( placesMenu );

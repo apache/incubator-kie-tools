@@ -13,36 +13,41 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.menu;
+package org.uberfire.client.workbench.widgets.menu.impl;
 
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
+import org.uberfire.commons.util.Preconditions;
 
 /**
- * Meta-data for a menu item that represents a command
+ * Default implementation of MenuItemCommand
  */
-public class CommandMenuItem extends AbstractMenuItem {
+public class DefaultMenuItemCommand extends DefaultMenuItem
+    implements
+    MenuItemCommand {
 
     private final Command command;
 
-    public CommandMenuItem(final String caption,
-                           final Command command) {
+    public DefaultMenuItemCommand(final String caption,
+                                  final Command command) {
 
         super( caption );
-        if ( command == null ) {
-            throw new NullPointerException( "command cannot be null" );
-        }
+        Preconditions.checkNotNull( "command",
+                                    command );
         this.command = command;
     }
 
     /**
      * @return the command
      */
+    @Override
     public Command getCommand() {
         return command;
     }
 
     @Override
     public String getSignatureId() {
-        return CommandMenuItem.class.getName() + "#" + caption;
+        return DefaultMenuItemCommand.class.getName() + "#" + caption;
     }
+
 }

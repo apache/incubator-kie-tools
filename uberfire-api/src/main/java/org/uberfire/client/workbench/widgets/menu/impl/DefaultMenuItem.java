@@ -13,38 +13,38 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.menu;
+package org.uberfire.client.workbench.widgets.menu.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.commons.util.Preconditions;
 
 /**
- * Meta-data for a Workbench MenuItem including permissions. The default is that
- * all users have permission to access a MenuItem and that it is enabled.
+ * Default implementation of MenuItem
  */
-public abstract class AbstractMenuItem
+public abstract class DefaultMenuItem
     implements
-    RuntimeResource {
+    MenuItem {
 
-    private   boolean      enabled = true;
+    private boolean        enabled = true;
 
-    private   String[]     roles   = new String[]{};
+    private String[]       roles   = new String[]{};
 
     protected final String caption;
 
-    public AbstractMenuItem(final String caption) {
-        if ( caption == null ) {
-            throw new NullPointerException( "caption cannot be null" );
-        }
+    public DefaultMenuItem(final String caption) {
+        Preconditions.checkNotNull( "caption",
+                                    caption );
         this.caption = caption;
     }
 
     /**
      * @return the caption
      */
+    @Override
     public String getCaption() {
         return caption;
     }
@@ -52,6 +52,7 @@ public abstract class AbstractMenuItem
     /**
      * @return the enabled
      */
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -60,10 +61,12 @@ public abstract class AbstractMenuItem
      * @param enabled
      *            the enabled to set
      */
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    @Override
     public void setRoles(final String[] roles) {
         this.roles = roles;
     }
@@ -77,7 +80,7 @@ public abstract class AbstractMenuItem
                           0,
                           roles.length );
 
-        return Arrays.asList(clone);
+        return Arrays.asList( clone );
     }
 
     @Override

@@ -40,7 +40,7 @@ import org.uberfire.client.workbench.Position;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
 
 </#if>
 <#if getToolBarMethodName??>
@@ -188,7 +188,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     </#if>
     <#if getMenuBarMethodName??>
     @Override
-    public WorkbenchMenuBar getMenuBar() {
+    public MenuBar getMenuBar() {
         return realPresenter.${getMenuBarMethodName}();
     }
     

@@ -33,10 +33,10 @@ public class WorkbenchMenuBarView extends Composite
     implements
     WorkbenchMenuBarPresenter.View {
 
-    private final MenuBar                         menuBar      = new MenuBar();
+    private final MenuBar                                                            menuBar      = new MenuBar();
 
     //Map of UberFire's AbstractMenuItems to GWT MenuItems
-    private final Map<AbstractMenuItem, MenuItem> menuItemsMap = new HashMap<AbstractMenuItem, MenuItem>();
+    private final Map<org.uberfire.client.workbench.widgets.menu.MenuItem, MenuItem> menuItemsMap = new HashMap<org.uberfire.client.workbench.widgets.menu.MenuItem, MenuItem>();
 
     public WorkbenchMenuBarView() {
         initWidget( menuBar );
@@ -48,7 +48,7 @@ public class WorkbenchMenuBarView extends Composite
      * conducted by the Presenter.
      */
     @Override
-    public void addMenuItem(final AbstractMenuItem item) {
+    public void addMenuItem(final org.uberfire.client.workbench.widgets.menu.MenuItem item) {
         final MenuItem gwtItem = makeMenuItem( item );
         menuItemsMap.put( item,
                           gwtItem );
@@ -59,7 +59,7 @@ public class WorkbenchMenuBarView extends Composite
      * Remove a Presenter Menu item from the view.
      */
     @Override
-    public void removeMenuItem(final AbstractMenuItem item) {
+    public void removeMenuItem(final org.uberfire.client.workbench.widgets.menu.MenuItem item) {
         final MenuItem gwtItem = menuItemsMap.remove( item );
         if ( gwtItem != null ) {
             menuBar.removeItem( gwtItem );
@@ -67,16 +67,16 @@ public class WorkbenchMenuBarView extends Composite
     }
 
     //Recursively converts a Presenter Menu item to a GWT MenuItem
-    private MenuItem makeMenuItem(final AbstractMenuItem item) {
-        if ( item instanceof CommandMenuItem ) {
-            final CommandMenuItem cmdItem = (CommandMenuItem) item;
+    private MenuItem makeMenuItem(final org.uberfire.client.workbench.widgets.menu.MenuItem item) {
+        if ( item instanceof MenuItemCommand ) {
+            final MenuItemCommand cmdItem = (MenuItemCommand) item;
             final MenuItem gwtItem = new MenuItem( cmdItem.getCaption(),
                                                    wrapCommand( cmdItem.getCommand() ) );
             gwtItem.setEnabled( item.isEnabled() );
             return gwtItem;
 
-        } else if ( item instanceof SubMenuItem ) {
-            final SubMenuItem subMenuItem = (SubMenuItem) item;
+        } else if ( item instanceof MenuItemSubMenu ) {
+            final MenuItemSubMenu subMenuItem = (MenuItemSubMenu) item;
             final MenuBar gwtMenuBar = makeMenuBar( makeMenuItems( subMenuItem.getSubMenu().getItems() ) );
             final MenuItem gwtItem = new MenuItem( subMenuItem.getCaption(),
                                                    gwtMenuBar );
@@ -99,9 +99,9 @@ public class WorkbenchMenuBarView extends Composite
         return wrappedCommand;
     }
 
-    private List<MenuItem> makeMenuItems(final List<AbstractMenuItem> items) {
+    private List<MenuItem> makeMenuItems(final List<org.uberfire.client.workbench.widgets.menu.MenuItem> items) {
         final List<MenuItem> gwtItems = new ArrayList<MenuItem>();
-        for ( AbstractMenuItem item : items ) {
+        for ( org.uberfire.client.workbench.widgets.menu.MenuItem item : items ) {
             final MenuItem gwtItem = makeMenuItem( item );
             gwtItems.add( gwtItem );
         }

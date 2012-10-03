@@ -41,6 +41,9 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.user.client.Window;
@@ -60,9 +63,9 @@ public class WorkbenchMenuBarPresenter {
         extends
         IsWidget {
 
-        void addMenuItem(final AbstractMenuItem menuItem);
+        void addMenuItem(final MenuItem menuItem);
 
-        void removeMenuItem(final AbstractMenuItem menuItem);
+        void removeMenuItem(final MenuItem menuItem);
     }
 
     private PartDefinition                 activePart;
@@ -83,7 +86,7 @@ public class WorkbenchMenuBarPresenter {
     private WorkbenchMenuBarPresenterUtils menuBarUtils;
 
     //Transient items currently held with the menu bar (i.e. not the "core" entries)
-    private List<AbstractMenuItem>         items = new ArrayList<AbstractMenuItem>();
+    private List<MenuItem>                 items = new ArrayList<MenuItem>();
 
     @SuppressWarnings("unused")
     @AfterInitialization
@@ -93,19 +96,19 @@ public class WorkbenchMenuBarPresenter {
         //Home
         final AbstractPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         if ( defaultPerspective != null ) {
-            view.addMenuItem( new CommandMenuItem( "Home",
-                                                   new Command() {
-                                                       @Override
-                                                       public void execute() {
-                                                           placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
-                                                       }
-                                                   } ) );
+            view.addMenuItem( new DefaultMenuItemCommand( "Home",
+                                                          new Command() {
+                                                              @Override
+                                                              public void execute() {
+                                                                  placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                                                              }
+                                                          } ) );
         }
 
         //Perspectives
-        final WorkbenchMenuBar perspectivesMenuBar = new WorkbenchMenuBar();
-        final SubMenuItem perspectivesMenu = new SubMenuItem( "Perspectives",
-                                                              perspectivesMenuBar );
+        final MenuBar perspectivesMenuBar = new DefaultMenuBar();
+        final MenuItemSubMenu perspectivesMenu = new DefaultMenuItemSubMenu( "Perspectives",
+                                                                             perspectivesMenuBar );
         final List<AbstractPerspectiveActivity> perspectives = getPerspectiveActivities();
         for ( final AbstractPerspectiveActivity perspective : perspectives ) {
             final String name = perspective.getPerspective().getName();
@@ -117,22 +120,22 @@ public class WorkbenchMenuBarPresenter {
                 }
 
             };
-            final CommandMenuItem item = new CommandMenuItem( name,
-                                                              cmd );
+            final MenuItemCommand item = new DefaultMenuItemCommand( name,
+                                                                     cmd );
             perspectivesMenuBar.addItem( item );
         }
         view.addMenuItem( perspectivesMenu );
 
         //Simple "About" dialog
-        view.addMenuItem( new CommandMenuItem( "About",
-                                               new Command() {
+        view.addMenuItem( new DefaultMenuItemCommand( "About",
+                                                      new Command() {
 
-                                                   @Override
-                                                   public void execute() {
-                                                       Window.alert( "Uberfire" );
-                                                   }
+                                                          @Override
+                                                          public void execute() {
+                                                              Window.alert( "Uberfire" );
+                                                          }
 
-                                               } ) );
+                                                      } ) );
 
     }
 
@@ -188,14 +191,14 @@ public class WorkbenchMenuBarPresenter {
 
             //Add items for current WorkbenchPart
             activePart = event.getPart();
-            items = new ArrayList<AbstractMenuItem>();
+            items = new ArrayList<MenuItem>();
 
-            final WorkbenchMenuBar menuBar = activity.getMenuBar();
+            final MenuBar menuBar = activity.getMenuBar();
             if ( menuBar == null ) {
                 return;
             }
 
-            for ( AbstractMenuItem item : menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() ) ) {
+            for ( MenuItem item : menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() ) ) {
                 view.addMenuItem( item );
                 items.add( item );
             }
@@ -204,12 +207,12 @@ public class WorkbenchMenuBarPresenter {
 
     private void removeMenuItems() {
         activePart = null;
-        for ( AbstractMenuItem item : items ) {
+        for ( MenuItem item : items ) {
             view.removeMenuItem( item );
         }
     }
 
-    public void addMenuItem(final AbstractMenuItem menuItem) {
+    public void addMenuItem(final MenuItem menuItem) {
         if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
             view.addMenuItem( menuItem );
         }

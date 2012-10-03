@@ -23,8 +23,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.model.PartDefinition;
@@ -59,12 +57,6 @@ public class WorkbenchToolBarPresenter {
 
     @Inject
     private PlaceManager                   placeManager;
-
-    @Inject
-    private IOCBeanManager                 iocManager;
-
-    @Inject
-    private ActivityManager                activityManager;
 
     @Inject
     private WorkbenchToolBarPresenterUtils toolBarUtils;

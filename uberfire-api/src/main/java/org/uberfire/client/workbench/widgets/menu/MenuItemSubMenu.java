@@ -13,22 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.uberfire.client.workbench.widgets.menu;
 
 /**
- * Methods annotated with this provide the Menus for the WorkbenchPart. The
- * method should have zero arguments and return a
- * {@code org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar}.
+ * Meta-data for a menu item that represents a sub-menu
  */
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface WorkbenchMenu {
+public interface MenuItemSubMenu
+    extends
+    MenuItem {
+
+    /**
+     * @return the subMenu
+     */
+    public MenuBar getSubMenu();
 
 }

@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.uberfire.security.authz.RuntimeResource;
@@ -24,35 +22,12 @@ import org.uberfire.security.authz.RuntimeResource;
 /**
  * Meta-data for a Workbench MenuBar including permissions
  */
-public class WorkbenchMenuBar
-    implements
-        RuntimeResource {
+public interface MenuBar
+    extends
+    RuntimeResource {
 
-    private List<AbstractMenuItem> items = new ArrayList<AbstractMenuItem>();
+    public void addItem(final MenuItem item);
 
-    public void addItem(final AbstractMenuItem item) {
-        if ( item == null ) {
-            throw new NullPointerException( "WorkbenchMenuItem cannot be null" );
-        }
-        this.items.add( item );
-    }
+    public List<MenuItem> getItems();
 
-    public List<AbstractMenuItem> getItems() {
-        return items;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return WorkbenchMenuBar.class.getName();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return null;
-    }
 }
