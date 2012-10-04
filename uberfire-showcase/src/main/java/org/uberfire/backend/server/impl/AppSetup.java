@@ -29,7 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
 import org.uberfire.backend.vfs.impl.PathImpl;
-import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystems;
 
 import static java.util.Arrays.*;
@@ -44,17 +44,19 @@ public class AppSetup {
         final String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final String userName = "guvnorngtestuser1";
         final String password = "test1234";
-        final URI fsURI = URI.create("jgit:///guvnorng-playground");
+        final URI fsURI = URI.create("git://guvnorng-playground");
 
         final Map<String, Object> env = new HashMap<String, Object>();
         env.put("username", userName);
         env.put("password", password);
-        env.put("giturl", gitURL);
+        env.put("origin", gitURL);
 
-        @SuppressWarnings("unused")
-        final FileSystem fs = FileSystems.newFileSystem(fsURI, env);
+        try {
+            FileSystems.newFileSystem(fsURI, env);
+        } catch (FileSystemAlreadyExistsException ex) {
+        }
 
-        final Path root = new PathImpl("guvnorng-playground", "default:///guvnorng-playground");
+        final Path root = new PathImpl("guvnorng-playground", "default://guvnorng-playground");
 
         fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }

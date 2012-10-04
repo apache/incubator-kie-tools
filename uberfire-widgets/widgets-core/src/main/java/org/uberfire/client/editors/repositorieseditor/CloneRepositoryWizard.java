@@ -18,21 +18,9 @@ package org.uberfire.client.editors.repositorieseditor;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
-import org.uberfire.backend.vfs.FileSystem;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.resources.CoreImages;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,7 +29,19 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.PathImpl;
+import org.uberfire.client.common.FormStylePopup;
+import org.uberfire.client.resources.CoreImages;
+import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class CloneRepositoryWizard extends FormStylePopup {
@@ -60,7 +60,7 @@ public class CloneRepositoryWizard extends FormStylePopup {
     final private TextBox nameTextBox = new TextBox();
     final private TextBox gitURLTextBox = new TextBox();
     final private TextBox usernameTextBox = new TextBox();
-    final private TextBox passwordTextBox = new TextBox();
+    final private PasswordTextBox passwordTextBox = new PasswordTextBox();
 
     public CloneRepositoryWizard() {
         super(images.backupLarge(), "Clone Repository");
@@ -89,8 +89,8 @@ public class CloneRepositoryWizard extends FormStylePopup {
                 final Map<String, Object> env = new HashMap<String, Object>(3);
                 env.put("username", usernameTextBox.getText());
                 env.put("password", passwordTextBox.getText());
-                env.put("giturl", gitURLTextBox.getText());
-                final String uri = "jgit:///" + nameTextBox.getText();
+                env.put("origin", gitURLTextBox.getText());
+                final String uri = "git://" + nameTextBox.getText();
 
                 vfsService.call(new RemoteCallback<FileSystem>() {
                     @Override
@@ -100,8 +100,7 @@ public class CloneRepositoryWizard extends FormStylePopup {
                         final PlaceRequest repositoryEditor = new DefaultPlaceRequest("RepositoryEditor")
                                 .addParameter("path:uri", uri)
                                 .addParameter("path:name", nameTextBox.getText());
-                        final Root newRoot = new Root(fileSystem.getRootDirectories().get(0),
-                                repositoryEditor);
+                        final Root newRoot = new Root(new PathImpl(nameTextBox.getText(), uri), repositoryEditor);
                         rootService.call(new RemoteCallback<Root>() {
                             @Override
                             public void callback(Root response) {

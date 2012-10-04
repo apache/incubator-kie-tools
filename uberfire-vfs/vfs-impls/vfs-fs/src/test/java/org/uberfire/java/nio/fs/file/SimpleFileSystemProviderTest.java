@@ -159,6 +159,16 @@ public class SimpleFileSystemProviderTest {
         fsProvider.newOutputStream(path);
     }
 
+    @Test(expected = org.uberfire.java.nio.IOException.class)
+    public void outputStreamOnDirectory() throws IOException {
+        final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
+
+        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")), "/", false);
+
+        fsProvider.newOutputStream(path);
+    }
+
+
     @Test(expected = IllegalArgumentException.class)
     public void outputStreamNull() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();

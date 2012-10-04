@@ -98,8 +98,8 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter) throws IllegalArgumentException, NotDirectoryException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws IllegalArgumentException, NotDirectoryException, IOException {
+        return null;
     }
 
     @Override

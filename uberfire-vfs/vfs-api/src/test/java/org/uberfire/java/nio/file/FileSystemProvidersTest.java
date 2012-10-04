@@ -18,6 +18,7 @@ package org.uberfire.java.nio.file;
 
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -34,7 +35,7 @@ public class FileSystemProvidersTest {
 
         assertThat(FileSystemProviders.resolveProvider(URI.create("default:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
         assertThat(FileSystemProviders.resolveProvider(URI.create("file:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
-        assertThat(FileSystemProviders.resolveProvider(URI.create("jgit:///"))).isNotNull().isInstanceOf(JGitFileSystemProvider.class);
+        assertThat(FileSystemProviders.resolveProvider(URI.create("git:///"))).isNotNull().isInstanceOf(JGitFileSystemProvider.class);
     }
 
     @Test(expected = FileSystemNotFoundException.class)

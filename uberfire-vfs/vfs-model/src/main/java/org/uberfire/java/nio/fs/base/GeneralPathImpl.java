@@ -17,21 +17,77 @@
 package org.uberfire.java.nio.fs.base;
 
 import java.io.File;
-import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 import static org.uberfire.commons.util.Preconditions.*;
 
-public class GeneralPathImpl extends AbstractPath {
+public class GeneralPathImpl extends AbstractPath<FileSystem> {
 
     private GeneralPathImpl(final FileSystem fs, final File file) {
         super(fs, file);
     }
 
     private GeneralPathImpl(final FileSystem fs, final String path, boolean isRoot, boolean isRealPath, boolean isNormalized) {
-        super(fs, path, isRoot, isRealPath, isNormalized);
+        super(fs, path, "", isRoot, isRealPath, isNormalized);
+    }
+
+    @Override
+    protected RootInfo setupRoot(final FileSystem fs, final String path, final String host, final boolean isRoot) {
+
+        final boolean isRooted = isRoot ? true : path.startsWith("/");
+        final Matcher hasWindowsDrive = WINDOWS_DRIVER.matcher(path);
+
+        final boolean isAbsolute;
+        if (isRooted || hasWindowsDrive.matches()) {
+            isAbsolute = true;
+        } else {
+            isAbsolute = false;
+        }
+
+        int lastOffset = isAbsolute ? 1 : 0;
+        int windowsDriveEndsAt = -1;
+        if (isAbsolute && hasWindowsDrive.matches()) {
+            windowsDriveEndsAt = hasWindowsDrive.toMatchResult().end(1) + 1;
+            lastOffset = windowsDriveEndsAt;
+        }
+
+        final boolean isFinalRoot;
+        if (path.length() == 1 && lastOffset == 1) {
+            isFinalRoot = true;
+        } else if (hasWindowsDrive.matches() && path.length() == windowsDriveEndsAt) {
+            isFinalRoot = true;
+        } else {
+            isFinalRoot = isRoot;
+        }
+
+        return new RootInfo(lastOffset, isAbsolute, isFinalRoot, path.getBytes());
+    }
+
+    @Override
+    protected String defaultDirectory() {
+        if (usesWindowsFormat) {
+            final String result = new File("").getAbsolutePath().replaceAll("/", "\\\\") + "\\";
+
+            if (!hasWindowsDriver(result)) {
+                return DEFAULT_WINDOWS_DRIVER + result;
+            }
+            return result;
+        }
+        return new File("").getAbsolutePath() + "/";
+    }
+
+    @Override
+    protected BasicFileAttributes newAttrs() {
+        return new GeneralFileAttributes(this);
+    }
+
+    private boolean hasWindowsDriver(final String text) {
+        checkNotEmpty("text", text);
+        return WINDOWS_DRIVER.matcher(text).matches();
     }
 
     public static GeneralPathImpl newFromFile(final FileSystem fs, final File file) {
@@ -45,6 +101,10 @@ public class GeneralPathImpl extends AbstractPath {
         return create(fs, path, isRealPath, false);
     }
 
+    public static GeneralPathImpl createRoot(final FileSystem fs, final String path, boolean isRealPath) {
+        return new GeneralPathImpl(fs, path, true, isRealPath, true);
+    }
+
     public static GeneralPathImpl create(final FileSystem fs, final String path, boolean isRealPath, boolean isNormalized) {
         checkNotNull("fs", fs);
         checkNotNull("path", path);
@@ -52,11 +112,13 @@ public class GeneralPathImpl extends AbstractPath {
         return new GeneralPathImpl(fs, path, false, isRealPath, isNormalized);
     }
 
-    @Override Path newRoot(FileSystem fs, String substring, boolean realPath) {
+    @Override
+    protected Path newRoot(FileSystem fs, String substring, String host, boolean realPath) {
         return new GeneralPathImpl(fs, substring, true, realPath, true);
     }
 
-    @Override Path newPath(final FileSystem fs, final String substring, final boolean isRealPath, final boolean isNormalized) {
+    @Override
+    protected Path newPath(final FileSystem fs, final String substring, String host, final boolean isRealPath, final boolean isNormalized) {
         return new GeneralPathImpl(fs, substring, false, isRealPath, isNormalized);
     }
 }

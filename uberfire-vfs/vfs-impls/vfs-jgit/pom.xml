@@ -43,18 +43,18 @@
     </dependency>
 
 
-    <!-- Smart HTTP Servlet -->
-    <dependency>
-      <groupId>org.eclipse.jgit</groupId>
-      <artifactId>org.eclipse.jgit.http.server</artifactId>
-    </dependency>
+    <!--&lt;!&ndash; Smart HTTP Servlet &ndash;&gt;-->
+    <!--<dependency>-->
+      <!--<groupId>org.eclipse.jgit</groupId>-->
+      <!--<artifactId>org.eclipse.jgit.http.server</artifactId>-->
+    <!--</dependency>-->
 
 
-    <!-- AWT UI Helpers -->
-    <dependency>
-      <groupId>org.eclipse.jgit</groupId>
-      <artifactId>org.eclipse.jgit.ui</artifactId>
-    </dependency>
+    <!--&lt;!&ndash; AWT UI Helpers &ndash;&gt;-->
+    <!--<dependency>-->
+      <!--<groupId>org.eclipse.jgit</groupId>-->
+      <!--<artifactId>org.eclipse.jgit.ui</artifactId>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.slf4j</groupId>

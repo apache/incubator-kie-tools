@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
@@ -452,7 +453,7 @@ public class FilesTest extends AbstractBaseTest {
         final Map<String, Object> env = new HashMap<String, Object>(2);
         env.put("userName", "user");
         env.put("password", "pass");
-        final URI uri = URI.create("jgit:///test" + System.currentTimeMillis());
+        final URI uri = URI.create("git://test" + System.currentTimeMillis());
         FileSystems.newFileSystem(uri, env);
 
         Files.copy(Paths.get(uri), newTempDir());
@@ -558,9 +559,9 @@ public class FilesTest extends AbstractBaseTest {
         final Map<String, Object> env = new HashMap<String, Object>(2);
         env.put("userName", "user");
         env.put("password", "pass");
-        FileSystems.newFileSystem(URI.create("jgit:///testXXXXXXX"), env);
+        FileSystems.newFileSystem(URI.create("git://testXXXXXXX"), env);
 
-        Files.move(Paths.get(URI.create("jgit:///testXXXXXXX")), newTempDir());
+        Files.move(Paths.get(URI.create("git://testXXXXXXX")), newTempDir());
     }
 
     @Test
@@ -570,7 +571,7 @@ public class FilesTest extends AbstractBaseTest {
         final Map<String, Object> env = new HashMap<String, Object>(2);
         env.put("userName", "user");
         env.put("password", "pass");
-        final URI uri = URI.create("jgit:///testXXXXXXX" + System.currentTimeMillis());
+        final URI uri = URI.create("git://testXXXXXXX" + System.currentTimeMillis());
         FileSystems.newFileSystem(uri, env);
 
         assertThat(Files.getFileStore(Paths.get(uri))).isNotNull().isInstanceOf(JGitFileStore.class);

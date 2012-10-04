@@ -16,26 +16,61 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.lib.Ref;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.PathMatcher;
+import org.uberfire.java.nio.file.PatternSyntaxException;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 
-public final class JGitFileSystem implements FileSystem {
+import static org.eclipse.jgit.lib.Repository.*;
+import static org.uberfire.commons.util.Preconditions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+
+public class JGitFileSystem implements FileSystem {
+
+    private static final Set<String> SUPPORTED_ATTR_VIEWS = Collections.unmodifiableSet(new HashSet<String>() {{
+        add("basic");
+    }});
 
     private final FileSystemProvider provider;
+    private final Git gitRepo;
+    private final ListBranchCommand.ListMode listMode;
+    private boolean isClose = false;
+    private final FileStore fileStore;
+    private final String name;
 
-    JGitFileSystem(final FileSystemProvider provider) {
-        this.provider = provider;
+    JGitFileSystem(final FileSystemProvider provider, final Git git, final String name) {
+        this(provider, git, name, null);
+    }
+
+    JGitFileSystem(final FileSystemProvider provider, final Git git, final String name, final ListBranchCommand.ListMode listMode) {
+        this.provider = checkNotNull("provider", provider);
+        this.gitRepo = checkNotNull("git", git);
+        this.name = checkNotEmpty("name", name);
+        this.listMode = listMode;
+        this.fileStore = new JGitFileStore(gitRepo.getRepository());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Git gitRepo() {
+        return gitRepo;
     }
 
     @Override
@@ -45,7 +80,7 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public boolean isOpen() {
-        return true;
+        return !isClose;
     }
 
     @Override
@@ -55,33 +90,98 @@ public final class JGitFileSystem implements FileSystem {
 
     @Override
     public String getSeparator() {
-    	//REVIST: always use "/" as separator
-        return System.getProperty("file.separator", "/");
+        return "/";
     }
 
     @Override
     public Iterable<Path> getRootDirectories() {
-//        return File.listRoots();
-        return null;
+        checkClose();
+        return new Iterable<Path>() {
+            @Override
+            public Iterator<Path> iterator() {
+                return new Iterator<Path>() {
+
+                    Iterator<Ref> branches = null;
+
+                    @Override
+                    public boolean hasNext() {
+                        if (branches == null) {
+                            init();
+                        }
+                        return branches.hasNext();
+                    }
+
+                    private void init() {
+                        branches = branchList(gitRepo, listMode).iterator();
+                    }
+
+                    @Override
+                    public Path next() {
+                        if (branches == null) {
+                            init();
+                        }
+                        return JGitPathImpl.createRoot(JGitFileSystem.this, "/", shortenRefName(branches.next().getName()) + "@" + name, false);
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 
     @Override
     public Iterable<FileStore> getFileStores() {
-        return null;
+        checkClose();
+        return new Iterable<FileStore>() {
+            @Override
+            public Iterator<FileStore> iterator() {
+                return new Iterator<FileStore>() {
+
+                    private int i = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return i < 1;
+                    }
+
+                    @Override public FileStore next() {
+                        if (i < 1) {
+                            i++;
+                            return fileStore;
+                        } else {
+                            throw new NoSuchElementException();
+                        }
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 
     @Override
     public Set<String> supportedFileAttributeViews() {
-        return null;
+        checkClose();
+        return SUPPORTED_ATTR_VIEWS;
     }
 
     @Override
-    public Path getPath(String first, String... more) throws InvalidPathException {       
-        if (more == null) {
-            return GeneralPathImpl.create(this, first, false);
+    public Path getPath(final String first, final String... more)
+            throws InvalidPathException {
+        checkClose();
+        checkNotEmpty("first", first);
+
+        if (more == null || more.length == 0) {
+            return JGitPathImpl.create(this, first, JGitPathImpl.DEFAULT_REF_TREE + "@" + name, false);
         }
+
         final StringBuilder sb = new StringBuilder();
-        sb.append(first);
         for (final String segment : more) {
             if (segment.length() > 0) {
                 if (sb.length() > 0) {
@@ -90,26 +190,85 @@ public final class JGitFileSystem implements FileSystem {
                 sb.append(segment);
             }
         }
-        return GeneralPathImpl.create(this, sb.toString(), false);
+        return JGitPathImpl.create(this, sb.toString(), first + "@" + name, false);
     }
 
     @Override
-    public PathMatcher getPathMatcher(String syntaxAndPattern) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-        return null;
+    public PathMatcher getPathMatcher(final String syntaxAndPattern)
+            throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
+        checkClose();
+        checkNotEmpty("syntaxAndPattern", syntaxAndPattern);
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException {
-        return null;
+    public UserPrincipalLookupService getUserPrincipalLookupService()
+            throws UnsupportedOperationException {
+        checkClose();
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public WatchService newWatchService() throws UnsupportedOperationException, IOException {
-        return null;
+    public WatchService newWatchService()
+            throws UnsupportedOperationException, IOException {
+        checkClose();
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void close() throws IOException, UnsupportedOperationException {
-        throw new UnsupportedOperationException("can't close this file system.");
+    public void close() throws IOException {
+        checkClose();
+        gitRepo.getRepository().close();
+        isClose = true;
+    }
+
+    private void checkClose() throws IllegalStateException {
+        if (isClose) {
+            throw new IllegalStateException("FileSystem is close.");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        JGitFileSystem that = (JGitFileSystem) o;
+
+        if (isClose != that.isClose) {
+            return false;
+        }
+        if (fileStore != null ? !fileStore.equals(that.fileStore) : that.fileStore != null) {
+            return false;
+        }
+        if (!gitRepo.equals(that.gitRepo)) {
+            return false;
+        }
+        if (listMode != that.listMode) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (!provider.equals(that.provider)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = provider.hashCode();
+        result = 31 * result + gitRepo.hashCode();
+        result = 31 * result + (listMode != null ? listMode.hashCode() : 0);
+        result = 31 * result + (isClose ? 1 : 0);
+        result = 31 * result + (fileStore != null ? fileStore.hashCode() : 0);
+        result = 31 * result + name.hashCode();
+        return result;
     }
 }

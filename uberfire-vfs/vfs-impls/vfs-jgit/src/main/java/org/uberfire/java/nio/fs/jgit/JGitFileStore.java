@@ -16,26 +16,31 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import java.io.File;
-
+import org.eclipse.jgit.lib.Repository;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 
-import static org.uberfire.commons.util.Preconditions.checkNotNull;
+import static org.uberfire.commons.util.Preconditions.*;
 
 public class JGitFileStore implements FileStore {
 
+    private final Repository repository;
+
+    JGitFileStore(final Repository repository) {
+        this.repository = checkNotNull("repository", repository);
+    }
+
     @Override
     public String name() {
-        return "/";
+        return repository.getDirectory().getName();
     }
 
     @Override
     public String type() {
-        return "root";
+        return "file";
     }
 
     @Override
@@ -45,17 +50,17 @@ public class JGitFileStore implements FileStore {
 
     @Override
     public long getTotalSpace() throws IOException {
-        return File.listRoots()[0].getTotalSpace();
+        return repository.getDirectory().getTotalSpace();
     }
 
     @Override
     public long getUsableSpace() throws IOException {
-        return File.listRoots()[0].getUsableSpace();
+        return repository.getDirectory().getUsableSpace();
     }
 
     @Override
     public long getUnallocatedSpace() throws IOException {
-        return -1;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -70,6 +75,8 @@ public class JGitFileStore implements FileStore {
 
     @Override
     public boolean supportsFileAttributeView(final String name) {
+        checkNotEmpty("name", name);
+
         if (name.equals("basic")) {
             return true;
         }
@@ -78,19 +85,20 @@ public class JGitFileStore implements FileStore {
 
     @Override
     public <V extends FileStoreAttributeView> V getFileStoreAttributeView(Class<V> type) {
+        checkNotNull("type", type);
+
         return null;
     }
 
     @Override
     public Object getAttribute(final String attribute) throws UnsupportedOperationException, IOException {
+        checkNotEmpty("attribute", attribute);
+
         if (attribute.equals("totalSpace")) {
             return getTotalSpace();
         }
         if (attribute.equals("usableSpace")) {
             return getUsableSpace();
-        }
-        if (attribute.equals("unallocatedSpace")) {
-            return getUnallocatedSpace();
         }
         if (attribute.equals("readOnly")) {
             return isReadOnly();
@@ -98,9 +106,25 @@ public class JGitFileStore implements FileStore {
         if (attribute.equals("name")) {
             return name();
         }
-        if (attribute.equals("type")) {
-            return type();
-        }
         throw new UnsupportedOperationException("Attribute '" + attribute + "' not available");
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof FileStore)) {
+            return false;
+        }
+
+        final FileStore ofs = (FileStore) o;
+
+        return name().equals(ofs.name());
+    }
+
+    @Override
+    public int hashCode() {
+        return name().hashCode();
     }
 }

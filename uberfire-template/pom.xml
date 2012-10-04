@@ -297,7 +297,7 @@
 							<directory>${basedir}</directory>
 							<includes>
 								<include>.errai/**</include>
-								<include>.vfsjgit/**</include>
+								<include>.vfsgit/**</include>
 							</includes>
 						</fileset>
 					</filesets>

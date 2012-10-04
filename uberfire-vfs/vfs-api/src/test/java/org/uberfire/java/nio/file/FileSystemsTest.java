@@ -26,10 +26,13 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.java.nio.fs.base.GeneralPathImpl;
 import org.uberfire.java.nio.fs.file.BaseSimpleFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
 import static org.fest.assertions.api.Assertions.*;
 
@@ -59,11 +62,11 @@ public class FileSystemsTest {
         env.put("userName", "user");
         env.put("password", "pass");
 
-        final FileSystem fs = FileSystems.newFileSystem(URI.create("jgit:///test"), env);
+        final FileSystem fs = FileSystems.newFileSystem(URI.create("git://my-test"), env);
 
         assertThat(fs).isNotNull();
 
-        final FileSystem newFS = FileSystems.newFileSystem(GeneralPathImpl.create(fs, "/new_test", true), null);
+        final FileSystem newFS = FileSystems.newFileSystem(JGitPathImpl.create((JGitFileSystem) fs, "new_test", "my-other-test", false), null);
 
         assertThat(newFS).isNotNull();
     }
@@ -75,9 +78,9 @@ public class FileSystemsTest {
         env.put("userName", "user");
         env.put("password", "pass");
 
-        FileSystems.newFileSystem(URI.create("jgit:///test"), env);
+        FileSystems.newFileSystem(URI.create("git://test"), env);
 
-        FileSystems.newFileSystem(URI.create("jgit:///test"), env);
+        FileSystems.newFileSystem(URI.create("git://test"), env);
     }
 
     @Test(expected = IllegalArgumentException.class)

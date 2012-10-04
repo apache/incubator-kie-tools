@@ -14,33 +14,29 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.fs.base;
+package org.uberfire.java.nio.fs.jgit;
 
-import org.uberfire.java.nio.file.Path;
+import org.eclipse.jgit.lib.ObjectId;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.util.Preconditions.*;
+public class JGitFileAttributes implements BasicFileAttributes {
 
-public class GeneralFileAttributes implements BasicFileAttributes {
-
-    private final Path path;
+    private final String objectId;
     private final FileTime lastModifiedTime;
+    private final FileTime creationTime;
+    private final long size;
     private final boolean isRegularFile;
     private final boolean isDirectory;
-    private final boolean isHidden;
-    private final boolean isExecutable;
-    private final boolean isReadable;
-    private long fileLenght = -1;
 
-    GeneralFileAttributes(final Path path) {
-        this.path = checkNotNull("path", path);
-        this.lastModifiedTime = new FileTimeImpl(path.toFile().lastModified());
-        this.isRegularFile = path.toFile().isFile();
-        this.isDirectory = path.toFile().isDirectory();
-        this.isHidden = path.toFile().isHidden();
-        this.isExecutable = path.toFile().canExecute();
-        this.isReadable = path.toFile().canRead();
+    public JGitFileAttributes(final String objectId, final FileTime lastModifiedTime, final FileTime creationTime,
+            final long size, final boolean isRegularFile, final boolean isDirectory) {
+        this.objectId = objectId;
+        this.lastModifiedTime = lastModifiedTime;
+        this.creationTime = creationTime;
+        this.size = size;
+        this.isRegularFile = isRegularFile;
+        this.isDirectory = isDirectory;
     }
 
     @Override
@@ -55,7 +51,7 @@ public class GeneralFileAttributes implements BasicFileAttributes {
 
     @Override
     public FileTime creationTime() {
-        return null;
+        return creationTime;
     }
 
     @Override
@@ -80,26 +76,11 @@ public class GeneralFileAttributes implements BasicFileAttributes {
 
     @Override
     public long size() {
-        if (fileLenght == -1) {
-            fileLenght = path.toFile().length();
-        }
-        return fileLenght;
+        return size;
     }
 
     @Override
     public Object fileKey() {
-        return null;
-    }
-
-    public boolean isReadable() {
-        return isReadable;
-    }
-
-    public boolean isExecutable() {
-        return isExecutable;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
+        return objectId;
     }
 }

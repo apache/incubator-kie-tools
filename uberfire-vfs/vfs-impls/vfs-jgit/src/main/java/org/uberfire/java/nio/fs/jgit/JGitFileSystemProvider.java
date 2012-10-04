@@ -16,35 +16,31 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.FilterOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
-import com.gitblit.FileSettings;
-import com.gitblit.GitBlit;
-import com.gitblit.GitBlitException;
-import com.gitblit.models.PathModel;
-import com.gitblit.models.RepositoryModel;
-import com.gitblit.utils.JGitOutputStream;
-import com.gitblit.utils.JGitUtils;
-import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
@@ -70,25 +66,65 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.base.GeneralPathImpl;
+import org.uberfire.java.nio.fs.base.FlexibleFileAttributeView;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 
+import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
+import static org.eclipse.jgit.lib.Constants.*;
 import static org.uberfire.commons.util.Preconditions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 
 public class JGitFileSystemProvider implements FileSystemProvider {
 
-    public static final String DEFAULT_PASSWORD = "defaultPassword";
-    public static final String DEFAULT_USER = "defaultUser";
-    private final JGitFileSystem fileSystem;
+    public static final String GIT_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
+    private static final String SCHEME = "git";
+
+    public static final String REPOSITORIES_ROOT_DIR = ".vfsgit";
+    public static File FILE_REPOSITORIES_ROOT;
+
+    public static final String USER_NAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String INIT = "init";
+
+    public static final int SCHEME_SIZE = (SCHEME + "://").length();
+    public static final int DEFAULT_SCHEME_SIZE = ("default://").length();
+
+    private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
+
     private boolean isDefault;
 
-    public static final String REPOSITORIES_ROOT_DIR = ".vfsjgit";
-    public static final String CACHE_DIR = ".cache";
+    static {
+        loadConfig();
+    }
 
-    private static Map<String, JGitRepositoryConfiguration> repositoryConfigurations = new HashMap<String, JGitRepositoryConfiguration>();
-    private static Map<Path, File> inmemoryCommitCache = new HashMap<Path, File>();
+    public static void loadConfig() {
+        final String value = System.getProperty("org.uberfire.vfs.git.dir");
+        if (value == null || value.trim().isEmpty()) {
+            FILE_REPOSITORIES_ROOT = new File(REPOSITORIES_ROOT_DIR);
+        } else {
+            FILE_REPOSITORIES_ROOT = new File(value.trim(), REPOSITORIES_ROOT_DIR);
+        }
+    }
 
     public JGitFileSystemProvider() {
-        this.fileSystem = new JGitFileSystem(this);
+        final String[] repos = FILE_REPOSITORIES_ROOT.list(new FilenameFilter() {
+            @Override
+            public boolean accept(final File dir, String name) {
+                return name.endsWith(DOT_GIT_EXT);
+            }
+        });
+
+        if (repos != null) {
+            for (final String repo : repos) {
+                final File repoDir = new File(FILE_REPOSITORIES_ROOT, repo);
+                if (repoDir.isDirectory()) {
+                    final String name = repoDir.getName().substring(0, repoDir.getName().indexOf(DOT_GIT_EXT));
+                    final JGitFileSystem fs = new JGitFileSystem(this, newRepository(repoDir), name, ALL);
+                    fileSystems.put(name, fs);
+                }
+            }
+        }
     }
 
     @Override
@@ -101,358 +137,538 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return isDefault;
     }
 
-    @Override public String getScheme() {
-        return "jgit";
+    @Override
+    public String getScheme() {
+        return SCHEME;
     }
 
-    //Clone a git repository or create a new git repository if giturl parameter is not present. 
     @Override
-    public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
-        validateURI(uri);
+    public FileSystem newFileSystem(final Path path, final Map<String, ?> env)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+    }
 
-        String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
+    @Override
+    public FileSystem newFileSystem(final URI uri, final Map<String, ?> env)
+            throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
+        checkNotNull("uri", uri);
+        checkCondition("uri scheme not supported", uri.getScheme().equals(getScheme()) || uri.getScheme().equals("default"));
+        checkURI("uri", uri);
+        checkNotNull("env", env);
 
-        if (repositoryConfigurations.containsKey(rootJGitRepositoryName)) {
-            throw new FileSystemAlreadyExistsException("FileSystem identifed by URI: " + uri + " already exists");
-        }
-        String gitURL = (String) env.get("giturl");
-        String userName = (String) env.get("username");
-        String password = (String) env.get("password");
-        if (userName == null) {
-            userName = DEFAULT_USER;
-        }
-        if (password == null) {
-            password = DEFAULT_PASSWORD;
-        }
-        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
+        final String name = extractRepoName(uri);
 
-        if (gitURL == null || "".equals(gitURL)) {
-            //Create a new git repository
-            System.out.print("Creating repository " + rootJGitRepositoryName + "... ");
-            JGitUtils.createAndConfigRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName);
-            System.out.println("Creating done.");
+        if (fileSystems.containsKey(name)) {
+            throw new FileSystemAlreadyExistsException();
+        }
+
+        final Git git;
+        final File repoDest = new File(FILE_REPOSITORIES_ROOT, name + DOT_GIT_EXT);
+        final ListBranchCommand.ListMode listMode;
+        if (env.containsKey(GIT_DEFAULT_REMOTE_NAME)) {
+            final String originURI = env.get(GIT_DEFAULT_REMOTE_NAME).toString();
+            git = cloneRepository(repoDest, originURI, buildCredential(env));
+            listMode = ALL;
         } else {
-            // Clone an existing git repository
+            git = newRepository(repoDest);
+            listMode = null;
+        }
+
+        final JGitFileSystem fs = new JGitFileSystem(this, git, name, listMode);
+        fileSystems.put(name, fs);
+
+        if (!env.containsKey(GIT_DEFAULT_REMOTE_NAME) && env.containsKey(INIT) && env.get(INIT).equals(Boolean.TRUE)) {
             try {
-                System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
-                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, gitURL, true, credential);
-                System.out.println("Fetching done.");
-            } catch (Exception e) {
-                throw new IOException(e);
+                final URI initURI = URI.create(getScheme() + "://master@" + name + "/readme.md");
+                final JGitOp op = setupOp(env);
+                final OutputStream stream = newOutputStream(getPath(initURI), op);
+                stream.write("init content.".getBytes());
+                stream.close();
+            } catch (final Exception e) {
             }
         }
 
-        JGitRepositoryConfiguration jGitRepositoryConfiguration = new JGitRepositoryConfiguration();
-        jGitRepositoryConfiguration.setRepositoryName(rootJGitRepositoryName);
-        jGitRepositoryConfiguration.setGitURL(gitURL);
-        jGitRepositoryConfiguration.setUserName(userName);
-        jGitRepositoryConfiguration.setPassword(password);
-        repositoryConfigurations.put(rootJGitRepositoryName, jGitRepositoryConfiguration);
-
-        //TODO: Set up FileSystem more properly to represent the status of git repository
-        FileSystem jGitFileSystem = new JGitFileSystem(this);
-        return jGitFileSystem;
+        return fs;
     }
 
-    private void validateURI(URI uri) {
-        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {
-            throw new IllegalArgumentException(
-                    "URI does not match this provider");
-        } else if (uri.getAuthority() != null) {
-            throw new IllegalArgumentException("Authority component should not present");
-        } else if (uri.getPath() == null) {
-            throw new IllegalArgumentException("Path component is undefined");
-        } else if (uri.getQuery() != null) {
-            throw new IllegalArgumentException("Query component should not present");
-        } else if (uri.getFragment() != null) {
-            throw new IllegalArgumentException("Fragment component shoud not present");
-        }
-    }
-
-    //Fetch an existing git repository. 
-    @Override
-    public FileSystem getFileSystem(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(uri.getPath());
-
-        if (!repositoryConfigurations.containsKey(rootJGitRepositoryName)) {
-            throw new FileSystemNotFoundException("FileSystem identifed by URI: " + uri + " does not exist");
-        }
-//        JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
-//        String userName = jGitRepositoryConfiguration.getUserName();
-//        String password = jGitRepositoryConfiguration.getPassword();
-//        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
-//        try {
-//            if (jGitRepositoryConfiguration.getGitURL() != null) {
-//                System.out.print("Fetching repository " + rootJGitRepositoryName + "... ");
-//                JGitUtils.cloneRepository(new File(REPOSITORIES_ROOT_DIR), rootJGitRepositoryName, jGitRepositoryConfiguration.getGitURL(), true, credential);
-//                System.out.println("Fetching done.");
-//            }
-//        } catch (Exception e) {
-//            throw new IOException(e);
-//        }
-//
-//        //TODO: Set up FileSystem more properly to represent the status of git repository
-        return new JGitFileSystem(this);
-    }
-
-    private static String getRootJGitRepositoryName(final String path) {
-        String rootJGitRepositoryName = path;
-
-        if (rootJGitRepositoryName.startsWith("/")) {
-            rootJGitRepositoryName = rootJGitRepositoryName.substring(1);
-        }
-        if (rootJGitRepositoryName.indexOf("/") > 0) {
-            rootJGitRepositoryName = rootJGitRepositoryName.substring(0, rootJGitRepositoryName.indexOf("/"));
-        }
-        return rootJGitRepositoryName;
-    }
-
-    private static String getPathRelativeToRootJGitRepository(final String path) {
-        String rootJGitRepositoryName = getRootJGitRepositoryName(path);
-        int indexOfEndOfRootJGitRepositoryName = path.indexOf(rootJGitRepositoryName) + rootJGitRepositoryName.length() + 1;
-        String relativePath = indexOfEndOfRootJGitRepositoryName > path.length() ? "" : path.substring(indexOfEndOfRootJGitRepositoryName);
-        if (relativePath.startsWith("/")) {
-            relativePath = relativePath.substring(1);
-        }
-        return relativePath;
-    }
-
-    @Override
-    public Path getPath(final URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        FileSystem fileSystem = getFileSystem(uri);
-
-        return GeneralPathImpl.create(fileSystem, uri.getPath(), false);
-    }
-
-    @Override
-    public FileSystem newFileSystem(final Path path, final Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    private JGitOp setupOp(final Map<String, ?> env) {
         return null;
     }
 
     @Override
+    public FileSystem getFileSystem(final URI uri)
+            throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        checkNotNull("uri", uri);
+        checkCondition("uri scheme not supported", uri.getScheme().equals(getScheme()) || uri.getScheme().equals("default"));
+        checkURI("uri", uri);
+
+        final JGitFileSystem fileSystem = fileSystems.get(extractRepoName(uri));
+
+        if (fileSystem == null) {
+            throw new FileSystemNotFoundException();
+        }
+
+        return fileSystem;
+    }
+
+    @Override
+    public Path getPath(final URI uri)
+            throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        checkNotNull("uri", uri);
+        checkCondition("uri scheme not supported", uri.getScheme().equals(getScheme()) || uri.getScheme().equals("default"));
+        checkURI("uri", uri);
+
+        final JGitFileSystem fileSystem = fileSystems.get(extractRepoName(uri));
+
+        if (fileSystem == null) {
+            throw new FileSystemNotFoundException();
+        }
+
+        return JGitPathImpl.create(fileSystem, extractPath(uri), extractHost(uri), false);
+    }
+
+    @Override
     public InputStream newInputStream(final Path path, final OpenOption... options)
-            throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-        Repository repo;
-        try {
-            repo = getRepository(rootJGitRepositoryName);
-        } catch (java.io.IOException e) {
+            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        return resolveInputStream(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+    }
+
+    @Override
+    public OutputStream newOutputStream(final Path path, final OpenOption... options)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        final Pair<PathType, ObjectId> result = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+
+        if (result.getK1().equals(PathType.DIRECTORY)) {
             throw new IOException();
         }
 
-        byte[] byteContent = JGitUtils.getByteContent(repo, null, relativePath);
-        return new ByteArrayInputStream(byteContent);
-/*        
-        final File file = path.toFile();
-        if (!file.exists()) {
-            throw new NoSuchFileException(file.toString());
-        }
         try {
-            return new FileInputStream(path.toFile());
-        } catch (FileNotFoundException e) {
-            throw new NoSuchFileException(e.getMessage());
-        }*/
-    }
+            final File file = File.createTempFile("gitz", "woot");
+            return new FilterOutputStream(new FileOutputStream(file)) {
+                public void close() throws java.io.IOException {
+                    super.close();
+                    String name = null;
+                    String email = null;
+                    String message = null;
+                    TimeZone timeZone = null;
+                    Date when = null;
 
-    @Override
-    public OutputStream newOutputStream(final Path path, final OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-        //String relativePath = getPathRelativeToRootJGitRepository(path.toString());   
-        Repository repository;
-        try {
-            repository = getRepository(rootJGitRepositoryName);
-
-            File rootCacheDir = new File(CACHE_DIR);
-            if (!rootCacheDir.exists()) {
-                rootCacheDir.mkdir();
-            }
-            File tempFile = newTempFile();
-            inmemoryCommitCache.put(path, tempFile);
-            return new JGitOutputStream(new FileOutputStream(tempFile), this);
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            throw new IOException();
-        }
-    }
-
-    static File newTempFile() throws java.io.IOException {
-        return File.createTempFile("noz", null, new File(CACHE_DIR));
-    }
-
-    @Override
-    public FileChannel newFileChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override public AsynchronousFileChannel newAsynchronousFileChannel(final Path path, final Set<? extends OpenOption> options, final ExecutorService executor, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        final File file = checkNotNull("path", path).toFile();
-        if (file.exists()) {
-            throw new FileAlreadyExistsException("");
-        }
-        try {
-            file.createNewFile();
-            return new SeekableByteChannel() {
-                @Override public long position() throws IOException {
-                    return 0;
-                }
-
-                @Override public SeekableByteChannel position(long newPosition) throws IOException {
-                    return null;
-                }
-
-                @Override public long size() throws IOException {
-                    return 0;
-                }
-
-                @Override public SeekableByteChannel truncate(long size) throws IOException {
-                    return null;
-                }
-
-                @Override public int read(ByteBuffer dst) throws java.io.IOException {
-                    return 0;
-                }
-
-                @Override public int write(ByteBuffer src) throws java.io.IOException {
-                    return 0;
-                }
-
-                @Override public boolean isOpen() {
-                    return false;
-                }
-
-                @Override public void close() throws java.io.IOException {
-                }
-            };
-        } catch (java.io.IOException e) {
-            throw new IOException();
-        }
-    }
-
-    @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
-        try {
-            final String rootJGitRepositoryName = getRootJGitRepositoryName(dir.toString());
-            String relativePath = getPathRelativeToRootJGitRepository(dir.toString());
-            Repository repo = getRepository(rootJGitRepositoryName);
-
-            final List<PathModel> files = JGitUtils.getFilesInPath(repo, relativePath, null);
-
-            return new DirectoryStream<Path>() {
-                @Override
-                public void close() throws IOException {
-                }
-
-                @Override
-                public Iterator<Path> iterator() {
-                    return new Iterator<Path>() {
-                        private int i = 0;
-
-                        @Override public boolean hasNext() {
-                            return i < files.size();
-                        }
-
-                        @Override public Path next() {
-                            if (i < files.size()) {
-                                PathModel pathModel = files.get(i);
-                                i++;
-                                String uri = "/" + rootJGitRepositoryName + "/" + pathModel.path;
-                                return GeneralPathImpl.create(getDefaultFileSystem(), uri, false);
-                            } else {
-                                throw new NoSuchElementException();
+                    if (options != null && options.length > 0) {
+                        for (final OpenOption option : options) {
+                            if (option instanceof JGitOp) {
+                                final JGitOp op = (JGitOp) option;
+                                name = op.name;
+                                email = op.email;
+                                message = op.message;
+                                timeZone = op.timeZone;
+                                when = op.when;
+                                break;
                             }
                         }
+                    }
 
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
+                    commit(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath(), file, name, email, message, timeZone, when);
                 }
             };
         } catch (java.io.IOException e) {
-            IOException i = new IOException();
-            i.initCause(e);
-            throw i;
+            throw new IOException(e);
         }
     }
 
     @Override
-    public void createDirectory(final Path dir, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        checkNotNull("dir", dir).toFile().mkdirs();
+    public FileChannel newFileChannel(final Path path, Set<? extends OpenOption> options, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public AsynchronousFileChannel newAsynchronousFileChannel(final Path path, final Set<? extends OpenOption> options, final ExecutorService executor, FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createLink(final Path link, final Path existing) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public SeekableByteChannel newByteChannel(final Path path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs)
+            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        checkNotNull("path", path).toFile().delete();
-        //toGeneralPathImpl(path).clearCache();
-    }
-
-    @Override public boolean deleteIfExists(final Path path) throws DirectoryNotEmptyException, IOException, SecurityException {
-        return checkNotNull("path", path).toFile().delete();
-    }
-
-    @Override public Path readSymbolicLink(final Path link) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override public void copy(final Path source, final Path target, final CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override public void move(Path source, Path target, CopyOption... options) throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override public boolean isSameFile(Path path, Path path2) throws IOException, SecurityException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
+    public DirectoryStream<Path> newDirectoryStream(final Path path, final DirectoryStream.Filter<Path> filter)
+            throws NotDirectoryException, IOException, SecurityException {
         checkNotNull("path", path);
-        return ((JGitlFileAttributes) getFileAttributeView(path, BasicFileAttributeView.class, null).readAttributes()).isHidden();
-    }
 
-    @Override
-    public FileStore getFileStore(final Path path) throws IOException, SecurityException {
-        return new JGitFileStore();
-    }
+        final JGitPathImpl gPath = toPathImpl(path);
 
-    @Override
-    public void checkAccess(Path path, AccessMode... modes)
-            throws UnsupportedOperationException, AccessDeniedException, IOException, SecurityException {
-    }
+        final Pair<PathType, ObjectId> result = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
 
-    @Override
-    public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-        Repository repo;
-        try {
-            repo = getRepository(rootJGitRepositoryName);
-        } catch (java.io.IOException e) {
-            throw new IOException();
+        if (!result.getK1().equals(PathType.DIRECTORY)) {
+            throw new NotDirectoryException(path.toString());
         }
 
-        if (type == BasicFileAttributeView.class) {
-            PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
-            return (V) new JGitFileAttributeView(pathModel);
+        final List<JGitPathInfo> pathContent = listPathContent(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+
+        return new DirectoryStream<Path>() {
+            @Override
+            public void close() throws IOException {
+            }
+
+            @Override
+            public Iterator<Path> iterator() {
+                return new Iterator<Path>() {
+                    private Iterator<JGitPathInfo> contentIterator = pathContent.iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return contentIterator.hasNext();
+                    }
+
+                    @Override
+                    public Path next() {
+                        final JGitPathInfo content = contentIterator.next();
+                        return JGitPathImpl.create(gPath.getFileSystem(), "/" + content.getPath(), gPath.getHost(), content.getObjectId(), gPath.isRealPath());
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
+    }
+
+    @Override
+    public void createDirectory(final Path path, final FileAttribute<?>... attrs)
+            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        final Pair<PathType, ObjectId> result = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+
+        if (!result.getK1().equals(NOT_FOUND)) {
+            throw new FileAlreadyExistsException(path.toString());
+        }
+
+        try {
+            final OutputStream outputStream = newOutputStream(path.resolve(".gitignore"));
+            outputStream.write("# empty\n".getBytes());
+            outputStream.close();
+        } catch (final Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void createSymbolicLink(final Path link, final Path target, final FileAttribute<?>... attrs)
+            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void createLink(final Path link, final Path existing)
+            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(final Path path)
+            throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        if (isBranch(gPath)) {
+            deleteBranch(gPath);
+            return;
+        }
+
+        deleteAsset(gPath);
+    }
+
+    public void deleteAsset(final JGitPathImpl path) {
+        final Pair<PathType, ObjectId> result = checkPath(path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath());
+
+        if (result.getK1().equals(PathType.DIRECTORY)) {
+            throw new DirectoryNotEmptyException(path.toString());
+        }
+
+        if (result.getK1().equals(NOT_FOUND)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        JGitUtil.delete(path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath(), null, null, "delete {" + path.getPath() + "}", null, null);
+    }
+
+    public void deleteBranch(final JGitPathImpl path) {
+        final Ref branch = getBranch(path.getFileSystem().gitRepo(), path.getRefTree());
+
+        if (branch == null) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        JGitUtil.deleteBranch(path.getFileSystem().gitRepo(), branch);
+    }
+
+    @Override
+    public boolean deleteIfExists(final Path path)
+            throws DirectoryNotEmptyException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        if (isBranch(gPath)) {
+            return deleteBranchIfExists(gPath);
+        }
+
+        return deleteAssetIfExists(gPath);
+    }
+
+    public boolean deleteBranchIfExists(final JGitPathImpl path) {
+        final Ref branch = getBranch(path.getFileSystem().gitRepo(), path.getRefTree());
+
+        if (branch == null) {
+            return false;
+        }
+
+        JGitUtil.deleteBranch(path.getFileSystem().gitRepo(), branch);
+        return true;
+    }
+
+    public boolean deleteAssetIfExists(final JGitPathImpl path) {
+        final Pair<PathType, ObjectId> result = checkPath(path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath());
+
+        if (result.getK1().equals(PathType.DIRECTORY)) {
+            throw new DirectoryNotEmptyException(path.toString());
+        }
+
+        if (result.getK1().equals(NOT_FOUND)) {
+            return false;
+        }
+
+        JGitUtil.delete(path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath(), null, null, "delete {" + path.getPath() + "}", null, null);
+        return true;
+    }
+
+    @Override
+    public Path readSymbolicLink(final Path link)
+            throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
+        checkNotNull("link", link);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void copy(final Path source, final Path target, final CopyOption... options)
+            throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+        checkNotNull("source", source);
+        checkNotNull("target", target);
+
+        final JGitPathImpl gSource = toPathImpl(source);
+        final JGitPathImpl gTarget = toPathImpl(target);
+
+        final boolean isSourceBranch = isBranch(gSource);
+        final boolean isTargetBranch = isBranch(gTarget);
+
+        if (isSourceBranch && isTargetBranch) {
+            copyBranch(gSource, gTarget);
+            return;
+        }
+        copyAsset(gSource, gTarget);
+    }
+
+    private void copyBranch(final JGitPathImpl source, final JGitPathImpl target) {
+        checkCondition("source and taget should have same setup", !hasSameFileSystem(source, target));
+        if (existsBranch(target)) {
+            throw new FileAlreadyExistsException(target.toString());
+        }
+        if (!existsBranch(source)) {
+            throw new NoSuchFileException(target.toString());
+        }
+        createBranch(source, target);
+    }
+
+    private void copyAsset(final JGitPathImpl source, final JGitPathImpl target) {
+        final Pair<PathType, ObjectId> sourceResult = checkPath(source.getFileSystem().gitRepo(), source.getRefTree(), source.getPath());
+        final Pair<PathType, ObjectId> targetResult = checkPath(target.getFileSystem().gitRepo(), target.getRefTree(), target.getPath());
+
+        if (!isRoot(target) && targetResult.getK1() != NOT_FOUND) {
+            throw new FileAlreadyExistsException(target.toString());
+        }
+
+        if (sourceResult.getK1() == NOT_FOUND) {
+            throw new NoSuchFileException(target.toString());
+        }
+
+        if (sourceResult.getK1() == DIRECTORY) {
+            copyDirectory(source, target);
+            return;
+        }
+
+        copyFile(source, target);
+    }
+
+    private void copyDirectory(final JGitPathImpl source, final JGitPathImpl target) {
+        final List<JGitPathImpl> directories = new ArrayList<JGitPathImpl>();
+        for (final Path path : newDirectoryStream(source, null)) {
+            final JGitPathImpl gPath = toPathImpl(path);
+            final Pair<PathType, ObjectId> pathResult = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+            if (pathResult.getK1() == DIRECTORY) {
+                directories.add(gPath);
+                continue;
+            }
+            final JGitPathImpl gTarget = composePath(target, (JGitPathImpl) gPath.getFileName());
+
+            copyFile(gPath, gTarget);
+        }
+        for (final JGitPathImpl directory : directories) {
+            createDirectory(composePath(target, (JGitPathImpl) directory.getFileName()));
+        }
+    }
+
+    private JGitPathImpl composePath(final JGitPathImpl directory, final JGitPathImpl fileName) {
+        if (directory.getPath().endsWith("/")) {
+            return toPathImpl(getPath(URI.create(directory.toUri().toString() + fileName.toString(false))));
+        }
+        return toPathImpl(getPath(URI.create(directory.toUri().toString() + "/" + fileName.toString(false))));
+    }
+
+    private void copyFile(final JGitPathImpl source, final JGitPathImpl target) {
+
+        final InputStream in = newInputStream(source);
+        final OutputStream out = newOutputStream(target);
+
+        try {
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((count = in.read(buffer)) > 0) {
+                out.write(buffer, 0, count);
+            }
+            out.close();
+        } catch (Exception e) {
+            throw new IOException(e);
+        } finally {
+            try {
+                out.close();
+            } catch (java.io.IOException e) {
+                throw new IOException(e);
+            } finally {
+                try {
+                    in.close();
+                } catch (java.io.IOException e) {
+                    throw new IOException(e);
+                }
+            }
+        }
+    }
+
+    private void createBranch(final JGitPathImpl source, final JGitPathImpl target) {
+        JGitUtil.createBranch(source.getFileSystem().gitRepo(), source.getRefTree(), target.getRefTree());
+    }
+
+    private boolean existsBranch(final JGitPathImpl path) {
+        return hasBranch(path.getFileSystem().gitRepo(), path.getRefTree());
+    }
+
+    private boolean isBranch(final JGitPathImpl path) {
+        return path.getPath().length() == 1 && path.getPath().equals("/");
+    }
+
+    private boolean isRoot(final JGitPathImpl path) {
+        return path.getPath().length() == 1 && path.getPath().equals("/");
+    }
+
+    private boolean hasSameFileSystem(final JGitPathImpl source, final JGitPathImpl target) {
+        return source.getFileSystem().equals(target);
+    }
+
+    @Override
+    public void move(final Path source, final Path target, final CopyOption... options)
+            throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+        checkNotNull("source", source);
+        checkNotNull("target", target);
+
+        throw new AtomicMoveNotSupportedException(source.toString(), source.toString(), "atomic move not supported.");
+    }
+
+    @Override
+    public boolean isSameFile(final Path pathA, final Path pathB)
+            throws IOException, SecurityException {
+        checkNotNull("pathA", pathA);
+        checkNotNull("pathB", pathB);
+
+        final JGitPathImpl gPathA = toPathImpl(pathA);
+        final JGitPathImpl gPathB = toPathImpl(pathB);
+
+        final Pair<PathType, ObjectId> resultA = checkPath(gPathA.getFileSystem().gitRepo(), gPathA.getRefTree(), gPathA.getPath());
+        final Pair<PathType, ObjectId> resultB = checkPath(gPathB.getFileSystem().gitRepo(), gPathB.getRefTree(), gPathB.getPath());
+
+        if (resultA.getK1() == PathType.FILE && resultA.getK2().equals(resultB.getK2())) {
+            return true;
+        }
+
+        return pathA.equals(pathB);
+    }
+
+    @Override
+    public boolean isHidden(final Path path)
+            throws IllegalArgumentException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        if (gPath.getFileName() == null) {
+            return false;
+        }
+
+        return toPathImpl(path.getFileName()).toString(false).startsWith(".");
+    }
+
+    @Override
+    public FileStore getFileStore(final Path path)
+            throws IOException, SecurityException {
+        checkNotNull("path", path);
+
+        return new JGitFileStore(toPathImpl(path).getFileSystem().gitRepo().getRepository());
+    }
+
+    @Override
+    public void checkAccess(final Path path, final AccessMode... modes)
+            throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
+        checkNotNull("path", path);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        final Pair<PathType, ObjectId> result = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+
+        if (result.getK1().equals(NOT_FOUND)) {
+            throw new NoSuchFileException(path.toString());
+        }
+    }
+
+    @Override
+    public <V extends FileAttributeView> V getFileAttributeView(final Path path, final Class<V> type, final LinkOption... options)
+            throws NoSuchFileException {
+        checkNotNull("path", path);
+        checkNotNull("type", type);
+
+        final JGitPathImpl gPath = toPathImpl(path);
+
+        final Pair<PathType, ObjectId> pathResult = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+        if (pathResult.getK1().equals(NOT_FOUND)) {
+            throw new NoSuchFileException(path.toString());
+        }
+
+        if (type == BasicFileAttributeView.class || type == JGitFileAttributeView.class) {
+            return (V) new JGitFileAttributeView(gPath);
         }
 
         return null;
@@ -460,26 +676,19 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     @Override
     public <A extends BasicFileAttributes> A readAttributes(final Path path, final Class<A> type, final LinkOption... options)
-            throws UnsupportedOperationException, IOException, SecurityException {
+            throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
         checkNotNull("path", path);
         checkNotNull("type", type);
 
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-        Repository repo;
-        try {
-            repo = getRepository(rootJGitRepositoryName);
-        } catch (java.io.IOException e) {
-            throw new IOException();
-        }
+        final JGitPathImpl gPath = toPathImpl(path);
 
-        final PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
-        if (pathModel == null ) {
+        final Pair<PathType, ObjectId> pathResult = checkPath(gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath());
+        if (pathResult.getK1().equals(NOT_FOUND)) {
             throw new NoSuchFileException(path.toString());
         }
 
-        if (type == BasicFileAttributes.class) {
-            BasicFileAttributeView view = getFileAttributeView(path, BasicFileAttributeView.class, options);
+        if (type == BasicFileAttributes.class || type == JGitFileAttributes.class) {
+            final JGitFileAttributeView view = getFileAttributeView(path, JGitFileAttributeView.class, options);
             return (A) view.readAttributes();
         }
 
@@ -489,158 +698,136 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     @Override
     public Map<String, Object> readAttributes(final Path path, final String attributes, final LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
-        final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-        String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-        Repository repo;
-        try {
-            repo = getRepository(rootJGitRepositoryName);
-        } catch (java.io.IOException e) {
-            throw new IOException();
+        checkNotNull("path", path);
+        checkNotEmpty("attributes", attributes);
+
+        final String[] s = split(attributes);
+        if (s[0].length() == 0) {
+            throw new IllegalArgumentException(attributes);
         }
 
-        if (relativePath.length() == 0) {
-            final Map<String, Object> result = new HashMap<String, Object>();
-            result.put("giturl", repo.getConfig().getString("remote", "origin", "url"));
-            result.put("description", repo.getRepositoryState().getDescription());
-            return result;
-        } else if (attributes.equals("*")) {
-            PathModel pathModel = JGitUtils.getPathModel(repo, relativePath, null);
-            JGitlFileAttributes attrs = new JGitlFileAttributes(pathModel);
-            final Map<String, Object> result = new HashMap<String, Object>();
-            result.put("isRegularFile", attrs.isRegularFile());
-            result.put("isDirectory", attrs.isDirectory());
-            result.put("isSymbolicLink", attrs.isSymbolicLink());
-            result.put("isOther", attrs.isOther());
-            result.put("size", new Long(attrs.size()));
-            result.put("fileKey", attrs.fileKey());
-            result.put("exists", attrs.exists());
-            result.put("isReadable", attrs.isReadable());
-            result.put("isExecutable", attrs.isExecutable());
-            result.put("isHidden", attrs.isHidden());
-            //todo check why errai can't serialize it
-            result.put("lastModifiedTime", null);
-            result.put("lastAccessTime", null);
-            result.put("creationTime", null);
-            return result;
+        final FlexibleFileAttributeView view = getFileAttributeView(toPathImpl(path), s[0], options);
+        if (view == null) {
+            throw new UnsupportedOperationException("View '" + s[0] + "' not available");
         }
-        throw new IOException();
+
+        return view.readAttributes(s[1].split(","));
     }
 
     @Override
-    public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAttribute(final Path path, final String attribute, final Object value, final LinkOption... options)
+            throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+        checkNotNull("path", path);
+        checkNotEmpty("attributes", attribute);
+
+        final String[] s = split(attribute);
+        if (s[0].length() == 0) {
+            throw new IllegalArgumentException(attribute);
+        }
+        final FlexibleFileAttributeView view = getFileAttributeView(toPathImpl(path), s[0], options);
+        if (view == null) {
+            throw new UnsupportedOperationException("View '" + s[0] + "' not available");
+        }
+
+        view.setAttribute(s[1], value);
     }
 
-    private FileSystem getDefaultFileSystem() {
-        return fileSystem;
-    }
+    private void checkURI(final String paramName, final URI uri)
+            throws IllegalArgumentException {
+        checkNotNull("uri", uri);
 
-    public void commit(String commitMessage) {
-        try {
-            for (Path path : inmemoryCommitCache.keySet()) {
-                final File tempFile = inmemoryCommitCache.get(path);
-                final String rootJGitRepositoryName = getRootJGitRepositoryName(path.toString());
-                final JGitRepositoryConfiguration jGitRepositoryConfiguration = repositoryConfigurations.get(rootJGitRepositoryName);
-                final String userName = jGitRepositoryConfiguration.getUserName();
-                final String password = jGitRepositoryConfiguration.getPassword();
-                final UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider(userName, password);
+        if (uri.getAuthority() == null || uri.getAuthority().isEmpty()) {
+            throw new IllegalArgumentException("Parameter named '" + paramName + "' is invalid, missing host repository!");
+        }
 
-                final String relativePath = getPathRelativeToRootJGitRepository(path.toString());
-                final Repository repository = getRepository(rootJGitRepositoryName);
-
-                final PathModel pathModel = new PathModel(path.getFileName().toString(), relativePath, 0, 0, "");
-                JGitUtils.commit(repository, pathModel,
-                        new FileInputStream(tempFile), commitMessage,
-                        credential);
-
-                tempFile.delete();
-                inmemoryCommitCache.remove(path);
+        int atIndex = uri.getPath().indexOf("@");
+        if (atIndex != -1 && !uri.getAuthority().contains("@")) {
+            if (uri.getPath().indexOf("/", atIndex) == -1) {
+                throw new IllegalArgumentException("Parameter named '" + paramName + "' is invalid, missing host repository!");
             }
-        } catch (java.io.IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
+
     }
 
-    public static void main(String[] args) throws Exception {
-        JGitFileSystemProvider j = new JGitFileSystemProvider();
+    private String extractHost(final URI uri) {
+        checkNotNull("uri", uri);
 
-        String repositoryName = "mytestrepo";
-        JGitUtils.createAndConfigRepository(new File(REPOSITORIES_ROOT_DIR), repositoryName);
-        Repository r = getRepository(repositoryName);
-        ObjectId headId = r.resolve(Constants.HEAD);
-
-        List<PathModel> files2 = JGitUtils.getFilesInPath(r, null, null);
-        for (PathModel p : files2) {
-            System.out.println("name: " + p.name);
-            System.out.println("path: " + p.path);
-            System.out.println("isTree: " + p.isTree());
+        int atIndex = uri.getPath().indexOf("@");
+        if (atIndex != -1 && !uri.getAuthority().contains("@")) {
+            return uri.getAuthority() + uri.getPath().substring(0, uri.getPath().indexOf("/", atIndex));
         }
 
-        Map<String, String> env = new HashMap<String, String>();
-        String gitURL = "https://github.com/guvnorngtestuser1/mytestrepo.git";
-        String userName = "guvnorngtestuser1";
-        String password = "test1234";
-
-        env.put("giturl", gitURL);
-        env.put("username", userName);
-        env.put("password", password);
-        URI uri = URI.create("jgit:///mytestrepo");
-        //j.newFileSystem(uri, env);
-
-        //FileSystem fileSystem = j.getFileSystem(uri);
-
-        Repository repository = getRepository(repositoryName);
-
-        //Path p = new PathImpl("jgit:///guvnorng-playground");       
-
-        //OutputStream os = j.newOutputStream(p, null);
-
-        File source = new File("pom.xml");
-        System.out.println(source.getAbsolutePath());
-        PathModel pathModel = new PathModel("pom.xml", "mortgagesSample/sometestfile9", 0, 0, "");
-        String commitMessage = "test. pushed from jgit.";
-        InputStream inputStream = new FileInputStream(source);
-
-        UsernamePasswordCredentialsProvider credential = new UsernamePasswordCredentialsProvider("jervisliu", "uguess");
-        JGitUtils.commitAndPush(repository, pathModel, inputStream, commitMessage, credential);
-
-        Repository repository2 = getRepository(repositoryName);
-        List<PathModel> files = JGitUtils.getFilesInPath(repository2, null, null);
-        for (PathModel p : files) {
-            System.out.println("name: " + p.name);
-            System.out.println("path: " + p.path);
-            System.out.println("isTree: " + p.isTree());
-        }
-
-        List<PathModel> files1 = JGitUtils.getFilesInPath(repository2, "mortgagesSample", null);
-        for (PathModel p : files1) {
-            System.out.println(p.name);
-            System.out.println(p.path);
-            System.out.println("isTree: " + p.isTree());
-        }
-
-        String contentA = JGitUtils.getStringContent(repository2, null, "mortgagesSample/sometestfile9");
-        System.out.println(contentA);
+        return uri.getAuthority();
     }
 
-    public static Repository getRepository(String repositoryName) throws java.io.IOException {
-        // bare repository, ensure .git suffix
-        if (!repositoryName.toLowerCase().endsWith(Constants.DOT_GIT_EXT)) {
-            repositoryName += Constants.DOT_GIT_EXT;
+    private String extractRepoName(final URI uri) {
+        checkNotNull("uri", uri);
+
+        final String host = extractHost(uri);
+
+        int index = host.indexOf('@');
+        if (index != -1) {
+            return host.substring(index + 1);
         }
-        return new FileRepository(new File(REPOSITORIES_ROOT_DIR, repositoryName));
+
+        return host;
     }
 
-    private static void showRemoteBranches(String repositoryName) {
-        try {
-            FileSettings settings = new FileSettings("my.properties");
-            GitBlit.self().configureContext(settings, true);
-            RepositoryModel model = GitBlit.self().getRepositoryModel(repositoryName);
-            model.showRemoteBranches = true;
-            GitBlit.self().updateRepositoryModel(model.name, model, false);
-        } catch (GitBlitException g) {
-            g.printStackTrace();
+    private String extractPath(final URI uri) {
+        checkNotNull("uri", uri);
+
+        final String host = extractHost(uri);
+
+        final String path = uri.toString().substring(getSchemeSize(uri) + host.length());
+
+        if (path.startsWith("/:")) {
+            return path.substring(2);
         }
+
+        return path;
+    }
+
+    private CredentialsProvider buildCredential(final Map<String, ?> env) {
+        if (env.containsKey(USER_NAME)) {
+            if (env.containsKey(PASSWORD)) {
+                new UsernamePasswordCredentialsProvider(env.get(USER_NAME).toString(), env.get(PASSWORD).toString());
+            }
+            new UsernamePasswordCredentialsProvider(env.get(USER_NAME).toString(), "");
+        }
+        return UsernamePasswordCredentialsProvider.getDefault();
+    }
+
+    private JGitPathImpl toPathImpl(final Path path) {
+        if (path instanceof JGitPathImpl) {
+            return (JGitPathImpl) path;
+        }
+        throw new IllegalArgumentException("Path not supported by current provider.");
+    }
+
+    private FlexibleFileAttributeView getFileAttributeView(final JGitPathImpl path, final String name, final LinkOption... options) {
+        if (name.equals("basic")) {
+            return new JGitFileAttributeView(path);
+        }
+        return null;
+    }
+
+    private String[] split(final String attribute) {
+        final String[] s = new String[2];
+        final int pos = attribute.indexOf(':');
+        if (pos == -1) {
+            s[0] = "basic";
+            s[1] = attribute;
+        } else {
+            s[0] = attribute.substring(0, pos);
+            s[1] = (pos == attribute.length()) ? "" : attribute.substring(pos + 1);
+        }
+        return s;
+    }
+
+    private int getSchemeSize(final URI uri) {
+        if (uri.getScheme().equals(SCHEME)) {
+            return SCHEME_SIZE;
+        }
+        return DEFAULT_SCHEME_SIZE;
     }
 }

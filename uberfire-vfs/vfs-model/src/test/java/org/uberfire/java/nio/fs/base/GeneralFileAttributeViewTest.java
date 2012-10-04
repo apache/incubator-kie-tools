@@ -33,23 +33,7 @@ public class GeneralFileAttributeViewTest {
 
     final FileSystem fs = mock(FileSystem.class);
 
-    final FileTime dummyFileTime = new FileTime() {
-
-        @Override
-        public long to(TimeUnit unit) {
-            return -1;
-        }
-
-        @Override
-        public long toMillis() {
-            return -1;
-        }
-
-        @Override
-        public int compareTo(FileTime o) {
-            return 0;
-        }
-    };
+    final FileTime dummyFileTime = new FileTimeImpl(0);
 
     @Test
     public void checkReadAttrs() throws IOException {

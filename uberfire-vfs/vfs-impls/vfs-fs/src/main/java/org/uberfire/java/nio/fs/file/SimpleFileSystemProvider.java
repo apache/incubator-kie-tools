@@ -421,7 +421,13 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     @Override
     public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
         checkNotNull("path", path);
-        return toGeneralPathImpl(path).getAttrs().isHidden();
+
+        final BasicFileAttributes fileAttributes = toGeneralPathImpl(path).getAttrs();
+        if (fileAttributes instanceof GeneralFileAttributes) {
+            return ((GeneralFileAttributes) fileAttributes).isHidden();
+        }
+
+        return path.toFile().isHidden();
     }
 
     @Override

@@ -18,30 +18,31 @@ package org.uberfire.client.editors.repositorieseditor;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
-import org.uberfire.backend.vfs.FileSystem;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.resources.CoreImages;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.PathImpl;
+import org.uberfire.client.common.FormStylePopup;
+import org.uberfire.client.resources.CoreImages;
+import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class NewRepositoryWizard extends FormStylePopup {
@@ -60,7 +61,7 @@ public class NewRepositoryWizard extends FormStylePopup {
     private TextBox                         nameTextBox         = new TextBox();
     private TextBox                         descriptionTextArea = new TextBox();
     private TextBox                         usernameTextBox     = new TextBox();
-    private TextBox                         passwordTextBox     = new TextBox();
+    private PasswordTextBox                 passwordTextBox     = new PasswordTextBox();
 
     public NewRepositoryWizard() {
         super( images.backupLarge(),
@@ -93,11 +94,10 @@ public class NewRepositoryWizard extends FormStylePopup {
             public void onClick(ClickEvent arg0) {
 
                 final Map<String, Object> env = new HashMap<String, Object>( 2 );
-                env.put( "userName",
-                         passwordTextBox.getText() );
-                env.put( "password",
-                         usernameTextBox.getText() );
-                final String uri = "jgit:///" + nameTextBox.getText();
+                env.put( "username", passwordTextBox.getText() );
+                env.put( "password", usernameTextBox.getText() );
+                env.put( "init", true );
+                final String uri = "git://" + nameTextBox.getText();
 
                 vfsService.call( new RemoteCallback<FileSystem>() {
                     @Override
@@ -105,12 +105,11 @@ public class NewRepositoryWizard extends FormStylePopup {
                         Window.alert( "The repository is created successfully" );
                         hide();
                         final PlaceRequest repositoryEditor = new DefaultPlaceRequest( "RepositoryEditor" )
-                                .addParameter( "path:uri",
-                                               uri )
-                                .addParameter( "path:name",
-                                               nameTextBox.getText() );
-                        final Root newRoot = new Root( v.getRootDirectories().get( 0 ),
-                                                       repositoryEditor );
+                                .addParameter( "path:uri", uri )
+                                .addParameter( "path:name", nameTextBox.getText() );
+
+                        final Root newRoot = new Root(new PathImpl(nameTextBox.getText(), uri), repositoryEditor);
+
                         rootService.call( new RemoteCallback<Root>() {
                             @Override
                             public void callback(Root response) {
@@ -118,8 +117,7 @@ public class NewRepositoryWizard extends FormStylePopup {
                             }
                         } ).addRoot( newRoot );
                     }
-                } ).newFileSystem( uri,
-                                   env );
+                } ).newFileSystem( uri, env );
             }
         } );
         hp.add( create );
