@@ -104,6 +104,16 @@
       <artifactId>security-server</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
 		<!-- Errai Core -->
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
