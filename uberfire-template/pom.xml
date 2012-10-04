@@ -32,6 +32,7 @@
 	<description>ÜberFire Template</description>
 
 	<dependencies>
+    <!-- You need to include the sources for most of the uberfire dependencies. -->
 		<dependency>
 			<groupId>org.uberfire</groupId>
 			<artifactId>security-client</artifactId>
@@ -87,6 +88,21 @@
 			<groupId>org.uberfire</groupId>
 			<artifactId>vfs-fs</artifactId>
 		</dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+    </dependency>
 
 		<!-- Errai Core -->
 		<dependency>
