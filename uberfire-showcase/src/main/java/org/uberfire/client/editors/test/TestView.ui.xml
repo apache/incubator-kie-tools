@@ -23,6 +23,7 @@
       <g:Label>Some blurbage for TestView</g:Label>
       <g:Button ui:field="notificationButton">Notify</g:Button>
       <g:Button ui:field="launchWithPlaceRequestAndCallback">Add tab with PlaceRequest and callback</g:Button>
+      <g:Button ui:field="launchPerspectiveWithPlaceRequest">Goto Perspective 'salaboy2'</g:Button>
     </g:VerticalPanel>
   </g:SimplePanel>
 </ui:UiBinder> 

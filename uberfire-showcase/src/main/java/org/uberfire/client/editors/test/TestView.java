@@ -79,8 +79,13 @@ public class TestView extends Composite
     }
 
     @UiHandler("launchWithPlaceRequestAndCallback")
-    public void onClickLaunchWithCallbackPlaceRequest(final ClickEvent event) {
-        presenter.launchWithCallbackPlaceRequest();
+    public void onClickLaunchWithPlaceRequestAndCallback(final ClickEvent event) {
+        presenter.launchWithPlaceRequestAndCallback();
+    }
+
+    @UiHandler("launchPerspectiveWithPlaceRequest")
+    public void onClickLaunchPerspectiveWithPlaceRequest(final ClickEvent event) {
+        presenter.launchPerspectiveWithPlaceRequest();
     }
 
 }

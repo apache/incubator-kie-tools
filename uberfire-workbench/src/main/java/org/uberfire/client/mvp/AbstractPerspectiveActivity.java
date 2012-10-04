@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -111,10 +112,14 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
 
         panelManager.setPerspective( perspective );
 
-        for ( PartDefinition part : panelManager.getRoot().getParts() ) {
+        Set<PartDefinition> parts = panelManager.getRoot().getParts();
+        for ( PartDefinition part : parts ) {
             //TODO {manstis} Hack for salaboy until Perspectives become class-based
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
+            //Remove and re-add as the hashCode has changed by merging parameters
+            parts.remove( part );
             part.setPlace( place );
+            parts.add( part );
             //--- End of Hack
             placeManager.goTo( part,
                                panelManager.getRoot() );
@@ -135,10 +140,14 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     }
 
     private void addChildren(final PanelDefinition panel) {
-        for ( PartDefinition part : panel.getParts() ) {
+        Set<PartDefinition> parts = panel.getParts();
+        for ( PartDefinition part : parts ) {
             //TODO {manstis} Hack for salaboy until Perspectives become class-based
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
+            //Remove and re-add as the hashCode has changed by merging parameters
+            parts.remove( part );
             part.setPlace( place );
+            parts.add( part );
             //--- End of Hack
             placeManager.goTo( part,
                                panel );

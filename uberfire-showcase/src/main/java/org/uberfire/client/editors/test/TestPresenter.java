@@ -18,7 +18,6 @@ package org.uberfire.client.editors.test;
 
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -70,12 +69,7 @@ public class TestPresenter {
         return view;
     }
 
-    @OnMayClose
-    public boolean onMayClose() {
-        return Window.confirm( "Close me?" );
-    }
-
-    public void launchWithCallbackPlaceRequest() {
+    public void launchWithPlaceRequestAndCallback() {
         final PlaceRequest place = new DefaultPlaceRequest( "Test2" );
         final Command callback = new Command() {
 
@@ -87,6 +81,13 @@ public class TestPresenter {
         };
         placeManager.goTo( place,
                            callback );
+    }
+
+    public void launchPerspectiveWithPlaceRequest() {
+        final PlaceRequest place = new DefaultPlaceRequest( "salaboy2" );
+        place.addParameter( "test",
+                            "testValue" );
+        placeManager.goTo( place );
     }
 
     @WorkbenchMenu
