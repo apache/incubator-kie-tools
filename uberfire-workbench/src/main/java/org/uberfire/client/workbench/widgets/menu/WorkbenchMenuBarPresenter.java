@@ -15,38 +15,20 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.mvp.AbstractPerspectiveActivity;
-import org.uberfire.client.mvp.ActivityManager;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.annotations.DefaultPerspective;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -77,91 +59,13 @@ public class WorkbenchMenuBarPresenter {
     private PlaceManager                   placeManager;
 
     @Inject
-    private IOCBeanManager                 iocManager;
-
-    @Inject
-    private ActivityManager                activityManager;
-
-    @Inject
     private WorkbenchMenuBarPresenterUtils menuBarUtils;
 
     //Transient items currently held with the menu bar (i.e. not the "core" entries)
     private List<MenuItem>                 items = new ArrayList<MenuItem>();
 
-    @SuppressWarnings("unused")
-    @AfterInitialization
-    //Configure the default menu items
-    private void setupCoreItems() {
-
-        //Home
-        final AbstractPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-        if ( defaultPerspective != null ) {
-            view.addMenuItem( new DefaultMenuItemCommand( "Home",
-                                                          new Command() {
-                                                              @Override
-                                                              public void execute() {
-                                                                  placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
-                                                              }
-                                                          } ) );
-        }
-
-        //Perspectives
-        final MenuBar perspectivesMenuBar = new DefaultMenuBar();
-        final MenuItemSubMenu perspectivesMenu = new DefaultMenuItemSubMenu( "Perspectives",
-                                                                             perspectivesMenuBar );
-        final List<AbstractPerspectiveActivity> perspectives = getPerspectiveActivities();
-        for ( final AbstractPerspectiveActivity perspective : perspectives ) {
-            final String name = perspective.getPerspective().getName();
-            final Command cmd = new Command() {
-
-                @Override
-                public void execute() {
-                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
-                }
-
-            };
-            final MenuItemCommand item = new DefaultMenuItemCommand( name,
-                                                                     cmd );
-            perspectivesMenuBar.addItem( item );
-        }
-        view.addMenuItem( perspectivesMenu );
-
-        //Simple "About" dialog
-        view.addMenuItem( new DefaultMenuItemCommand( "About",
-                                                      new Command() {
-
-                                                          @Override
-                                                          public void execute() {
-                                                              Window.alert( "Uberfire" );
-                                                          }
-
-                                                      } ) );
-
-    }
-
     public IsWidget getView() {
         return this.view;
-    }
-
-    private List<AbstractPerspectiveActivity> getPerspectiveActivities() {
-
-        //Get Perspective Providers
-        final Set<AbstractPerspectiveActivity> activities = activityManager.getActivities( AbstractPerspectiveActivity.class );
-
-        //Sort Perspective Providers so they're always in the same sequence!
-        List<AbstractPerspectiveActivity> sortedActivities = new ArrayList<AbstractPerspectiveActivity>( activities );
-        Collections.sort( sortedActivities,
-                          new Comparator<AbstractPerspectiveActivity>() {
-
-                              @Override
-                              public int compare(AbstractPerspectiveActivity o1,
-                                                 AbstractPerspectiveActivity o2) {
-                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
-                              }
-
-                          } );
-
-        return sortedActivities;
     }
 
     //Handle removing the WorkbenchPart menu items
@@ -216,23 +120,6 @@ public class WorkbenchMenuBarPresenter {
         if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
             view.addMenuItem( menuItem );
         }
-    }
-
-    private AbstractPerspectiveActivity getDefaultPerspectiveActivity() {
-        AbstractPerspectiveActivity defaultPerspective = null;
-        Collection<IOCBeanDef<AbstractPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractPerspectiveActivity.class );
-        Iterator<IOCBeanDef<AbstractPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        outer_loop : while ( perspectivesIterator.hasNext() ) {
-            IOCBeanDef<AbstractPerspectiveActivity> perspective = perspectivesIterator.next();
-            Set<Annotation> annotations = perspective.getQualifiers();
-            for ( Annotation a : annotations ) {
-                if ( a instanceof DefaultPerspective ) {
-                    defaultPerspective = perspective.getInstance();
-                    break outer_loop;
-                }
-            }
-        }
-        return defaultPerspective;
     }
 
 }
