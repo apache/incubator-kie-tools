@@ -181,6 +181,18 @@
 	</dependencies>
 
 	<build>
+	
+	   <resources>
+            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+	
 		<plugins>
 
 			<plugin>
@@ -249,27 +261,6 @@
 				<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
-			</plugin>
-
-			<!-- TODO {manstis} Ensure in porcelli's refactoring -->
-			<!-- Ensure the generated source files are included in the source path -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-generated-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>target/generated-sources/annotations</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
