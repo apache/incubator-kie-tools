@@ -11,24 +11,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.enterprise.event.Event;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -36,29 +22,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
  * life-cycle events. There remains a lot more work to do in this class.
  */
-public class AbstractWorkbenchEditorActivityTests {
-
-    private PlaceHistoryHandler                  placeHistoryHandler;
-    private ActivityManager                      activityManager;
-    private BeanFactory                          factory;
-    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
-    private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
-    private Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
-    private Event<WorkbenchPartLostFocusEvent>   workbenchPartLostFocusEvent;
-    private Event<SelectWorkbenchPartEvent>      selectWorkbenchPartEvent;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        placeHistoryHandler = mock( PlaceHistoryHandler.class );
-        activityManager = mock( ActivityManager.class );
-        factory = mock( BeanFactory.class );
-        workbenchPanelOnFocusEvent = mock( Event.class );
-        workbenchPartBeforeCloseEvent = mock( Event.class );
-        workbenchPartOnFocusEvent = mock( Event.class );
-        workbenchPartLostFocusEvent = mock( Event.class );
-        selectWorkbenchPartEvent = mock( Event.class );
-    }
+public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
 
     @Test
     //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
@@ -67,27 +31,6 @@ public class AbstractWorkbenchEditorActivityTests {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         somewhere.addParameter( "path",
                                 uri );
-
-        final PanelManager panelManager = new PanelManager( factory,
-                                                            workbenchPanelOnFocusEvent,
-                                                            workbenchPartBeforeCloseEvent,
-                                                            workbenchPartOnFocusEvent,
-                                                            workbenchPartLostFocusEvent,
-                                                            selectWorkbenchPartEvent );
-        final PanelDefinition root = new PanelDefinitionImpl( true );
-        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
-        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
-
-        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
-        when( factory.newWorkbenchPart( any( String.class ),
-                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
-
-        panelManager.setRoot( root );
-
-        final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
-                                                                    placeHistoryHandler,
-                                                                    selectWorkbenchPartEvent,
-                                                                    panelManager );
 
         final Path path = mock( Path.class );
         doReturn( uri ).when( path ).toURI();
@@ -123,27 +66,6 @@ public class AbstractWorkbenchEditorActivityTests {
         final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
         somewhereTheSame.addParameter( "path",
                                        uri );
-
-        final PanelManager panelManager = new PanelManager( factory,
-                                                            workbenchPanelOnFocusEvent,
-                                                            workbenchPartBeforeCloseEvent,
-                                                            workbenchPartOnFocusEvent,
-                                                            workbenchPartLostFocusEvent,
-                                                            selectWorkbenchPartEvent );
-        final PanelDefinition root = new PanelDefinitionImpl( true );
-        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
-        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
-
-        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
-        when( factory.newWorkbenchPart( any( String.class ),
-                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
-
-        panelManager.setRoot( root );
-
-        final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
-                                                                    placeHistoryHandler,
-                                                                    selectWorkbenchPartEvent,
-                                                                    panelManager );
 
         final Path path = mock( Path.class );
         doReturn( uri ).when( path ).toURI();
@@ -181,27 +103,6 @@ public class AbstractWorkbenchEditorActivityTests {
         final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
         somewhereElse.addParameter( "path",
                                     uri2 );
-
-        final PanelManager panelManager = new PanelManager( factory,
-                                                            workbenchPanelOnFocusEvent,
-                                                            workbenchPartBeforeCloseEvent,
-                                                            workbenchPartOnFocusEvent,
-                                                            workbenchPartLostFocusEvent,
-                                                            selectWorkbenchPartEvent );
-        final PanelDefinition root = new PanelDefinitionImpl( true );
-        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
-        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
-
-        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
-        when( factory.newWorkbenchPart( any( String.class ),
-                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
-
-        panelManager.setRoot( root );
-
-        final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
-                                                                    placeHistoryHandler,
-                                                                    selectWorkbenchPartEvent,
-                                                                    panelManager );
 
         //The first place
         final Path path1 = mock( Path.class );
