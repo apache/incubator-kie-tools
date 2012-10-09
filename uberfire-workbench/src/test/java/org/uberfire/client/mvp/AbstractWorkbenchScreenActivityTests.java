@@ -13,7 +13,17 @@ import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
@@ -24,27 +34,52 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
  */
 public class AbstractWorkbenchScreenActivityTests {
 
-    private PlaceHistoryHandler             placeHistoryHandler;
-    private ActivityManager                 activityManager;
-    private Event<SelectWorkbenchPartEvent> event;
+    private PlaceHistoryHandler                  placeHistoryHandler;
+    private ActivityManager                      activityManager;
+    private BeanFactory                          factory;
+    private Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
+    private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
+    private Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
+    private Event<WorkbenchPartLostFocusEvent>   workbenchPartLostFocusEvent;
+    private Event<SelectWorkbenchPartEvent>      selectWorkbenchPartEvent;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         placeHistoryHandler = mock( PlaceHistoryHandler.class );
         activityManager = mock( ActivityManager.class );
-        event = mock( Event.class );
+        factory = mock( BeanFactory.class );
+        workbenchPanelOnFocusEvent = mock( Event.class );
+        workbenchPartBeforeCloseEvent = mock( Event.class );
+        workbenchPartOnFocusEvent = mock( Event.class );
+        workbenchPartLostFocusEvent = mock( Event.class );
+        selectWorkbenchPartEvent = mock( Event.class );
     }
 
     @Test
     //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
-    public void tesGoToOnePlace() throws Exception {
-        final PanelManager panelManager = mock( PanelManager.class );
+    public void testGoToOnePlace() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+
+        final PanelManager panelManager = new PanelManager( factory,
+                                                            workbenchPanelOnFocusEvent,
+                                                            workbenchPartBeforeCloseEvent,
+                                                            workbenchPartOnFocusEvent,
+                                                            workbenchPartLostFocusEvent,
+                                                            selectWorkbenchPartEvent );
+        final PanelDefinition root = new PanelDefinitionImpl( true );
+        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
+        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
+
+        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
+        when( factory.newWorkbenchPart( any( String.class ),
+                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
+
+        panelManager.setRoot( root );
 
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
-                                                                    event,
+                                                                    selectWorkbenchPartEvent,
                                                                     panelManager );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
@@ -64,20 +99,35 @@ public class AbstractWorkbenchScreenActivityTests {
                 times( 1 ) ).launch( any( AcceptItem.class ),
                                      eq( somewhere ),
                                      isNull( Command.class ) );
-        verify( event,
+        verify( selectWorkbenchPartEvent,
                 times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
     }
 
     @Test
     //Reveal the same Place twice. It should be launched, OnStart and OnReveal called once.
-    public void tesGoToOnePlaceTwice() throws Exception {
-        final PanelManager panelManager = mock( PanelManager.class );
+    public void testGoToOnePlaceTwice() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
 
+        final PanelManager panelManager = new PanelManager( factory,
+                                                            workbenchPanelOnFocusEvent,
+                                                            workbenchPartBeforeCloseEvent,
+                                                            workbenchPartOnFocusEvent,
+                                                            workbenchPartLostFocusEvent,
+                                                            selectWorkbenchPartEvent );
+        final PanelDefinition root = new PanelDefinitionImpl( true );
+        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
+        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
+
+        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
+        when( factory.newWorkbenchPart( any( String.class ),
+                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
+
+        panelManager.setRoot( root );
+
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
-                                                                    event,
+                                                                    selectWorkbenchPartEvent,
                                                                     panelManager );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
@@ -97,21 +147,36 @@ public class AbstractWorkbenchScreenActivityTests {
         verify( spy,
                 times( 1 ) ).onReveal();
 
-        verify( event,
+        verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
 
     }
 
     @Test
     //Reveal two different Places. Each should be launched, OnStart and OnReveal called once.
-    public void tesGoToTwoDifferentPlaces() throws Exception {
-        final PanelManager panelManager = mock( PanelManager.class );
+    public void testGoToTwoDifferentPlaces() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
 
+        final PanelManager panelManager = new PanelManager( factory,
+                                                            workbenchPanelOnFocusEvent,
+                                                            workbenchPartBeforeCloseEvent,
+                                                            workbenchPartOnFocusEvent,
+                                                            workbenchPartLostFocusEvent,
+                                                            selectWorkbenchPartEvent );
+        final PanelDefinition root = new PanelDefinitionImpl( true );
+        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
+        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
+
+        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
+        when( factory.newWorkbenchPart( any( String.class ),
+                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
+
+        panelManager.setRoot( root );
+        
         final PlaceManagerImpl placeManager = new PlaceManagerImpl( activityManager,
                                                                     placeHistoryHandler,
-                                                                    event,
+                                                                    selectWorkbenchPartEvent,
                                                                     panelManager );
 
         //The first place
@@ -146,7 +211,7 @@ public class AbstractWorkbenchScreenActivityTests {
         verify( spy2,
                 times( 1 ) ).onReveal();
 
-        verify( event,
+        verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
 
     }

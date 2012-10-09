@@ -292,10 +292,6 @@ public class PlaceManagerImpl
                          },
                          place,
                          callback );
-
-        //Select newly inserted part
-        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
-
     }
 
     private void launchActivity(final PlaceRequest place,

@@ -51,20 +51,17 @@ import com.google.gwt.user.client.ui.IsWidget;
 @ApplicationScoped
 public class PanelManager {
 
-    @Inject
-    private BeanFactory                                   factory;
+    private final BeanFactory                             factory;
 
-    @Inject
-    private Event<WorkbenchPanelOnFocusEvent>             workbenchPanelOnFocusEvent;
+    private final Event<WorkbenchPanelOnFocusEvent>       workbenchPanelOnFocusEvent;
 
-    @Inject
-    private Event<WorkbenchPartBeforeCloseEvent>          workbenchPartBeforeCloseEvent;
+    private final Event<WorkbenchPartBeforeCloseEvent>    workbenchPartBeforeCloseEvent;
 
-    @Inject
-    private Event<WorkbenchPartOnFocusEvent>              workbenchPartOnFocusEvent;
+    private final Event<WorkbenchPartOnFocusEvent>        workbenchPartOnFocusEvent;
 
-    @Inject
-    private Event<WorkbenchPartLostFocusEvent>            workbenchPartLostFocusEvent;
+    private final Event<WorkbenchPartLostFocusEvent>      workbenchPartLostFocusEvent;
+
+    private final Event<SelectWorkbenchPartEvent>         selectWorkbenchPartEvent;
 
     private PartDefinition                                activePart                    = null;
 
@@ -75,6 +72,22 @@ public class PanelManager {
     private Map<PartDefinition, WorkbenchPartPresenter>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+
+    @Inject
+    //Injected constructor for unit testing
+    public PanelManager(final BeanFactory factory,
+                        final Event<WorkbenchPanelOnFocusEvent> workbenchPanelOnFocusEvent,
+                        final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent,
+                        final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent,
+                        final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent,
+                        final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
+        this.factory = factory;
+        this.workbenchPanelOnFocusEvent = workbenchPanelOnFocusEvent;
+        this.workbenchPartBeforeCloseEvent = workbenchPartBeforeCloseEvent;
+        this.workbenchPartOnFocusEvent = workbenchPartOnFocusEvent;
+        this.workbenchPartLostFocusEvent = workbenchPartLostFocusEvent;
+        this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
+    }
 
     public PerspectiveDefinition getPerspective() {
         return this.perspective;
@@ -138,7 +151,9 @@ public class PanelManager {
         panelPresenter.addPart( title,
                                 part,
                                 partPresenter.getPartView() );
-        onPanelFocus( panel );
+
+        //Select newly inserted part
+        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
         return panelPresenter.getDefinition();
     }
 
