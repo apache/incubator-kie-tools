@@ -24,6 +24,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 
@@ -60,15 +61,29 @@ public class TestPresenter6 {
     @WorkbenchToolBar
     public ToolBar getToolBar() {
         final ToolBar toolBar = new DefaultToolBar();
-        toolBar.addItem( new DefaultToolBarItem( "Tool#1",
-                                                 new Command() {
+        final ToolBarItem button1 = new DefaultToolBarItem( "image/info.png",
+                                                            "Tool#1",
+                                                            new Command() {
 
-                                                     @Override
-                                                     public void execute() {
-                                                         Window.alert( "Go, go Gadget Toolbar..." );
-                                                     }
+                                                                @Override
+                                                                public void execute() {
+                                                                    Window.alert( "Go, go Gadget Toolbar..." );
+                                                                }
 
-                                                 } ) );
+                                                            } );
+        toolBar.addItem( button1 );
+        final ToolBarItem button2 = new DefaultToolBarItem( "image/info.png",
+                                                            "Tool#2",
+                                                            new Command() {
+
+                                                                @Override
+                                                                public void execute() {
+                                                                    Window.alert( "Go, go Gadget Toolbar..." );
+                                                                }
+
+                                                            } );
+        button2.setEnabled( false );
+        toolBar.addItem( button2 );
         return toolBar;
     }
 

@@ -13,7 +13,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
 .closeTabImage {
 	margin-left: 8px;
 	margin-top: 2px;
@@ -28,5 +27,5 @@
 }
 
 .tabLayoutPanelTabsScrollButtons {
-    padding-top: 3px;
+	padding-top: 3px;
 }

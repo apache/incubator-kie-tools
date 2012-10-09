@@ -22,8 +22,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PushButton;
 
 /**
  * The Tool Bar widget
@@ -38,14 +38,13 @@ public class WorkbenchToolBarView extends Composite
     //Map of ToolBarItems to GWT Widgets used to represent them
     private final Map<ToolBarItem, IsWidget> toolBarItemsMap   = new HashMap<ToolBarItem, IsWidget>();
 
-    private static final String              STYLENAME_DEFAULT = "gwt-MenuBar";
+    private static final String              STYLENAME_DEFAULT = "toolBar";
 
     public WorkbenchToolBarView() {
         initWidget( toolBarContainer );
-        toolBarContainer.setWidth( "100%" );
-        toolBarContainer.setHeight( "32px" );
         toolBarContainer.setStyleName( STYLENAME_DEFAULT );
-        toolBarContainer.addStyleDependentName( "horizontal" );
+        toolBarContainer.setSpacing( 0 );
+        toolBar.setSpacing( 0 );
         toolBarContainer.add( toolBar );
     }
 
@@ -55,10 +54,11 @@ public class WorkbenchToolBarView extends Composite
      */
     @Override
     public void addToolBarItem(final ToolBarItem item) {
-        //TODO {manstis} Image, enabled etc
-        final PushButton icon = new PushButton( item.getTooltip() );
+        final String url = item.getUrl();
+        final Image image = new Image( "uberFireImages?url=" + url );
+        final ToolBarButton button = new ToolBarButton( image );
         if ( item.getCommand() != null ) {
-            icon.addClickHandler( new ClickHandler() {
+            button.addClickHandler( new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
@@ -67,10 +67,10 @@ public class WorkbenchToolBarView extends Composite
 
             } );
         }
-        icon.setEnabled( item.isEnabled() );
+        button.setEnabled( item.isEnabled() );
         toolBarItemsMap.put( item,
-                             icon );
-        toolBar.add( icon );
+                             button );
+        toolBar.add( button );
     }
 
     /**

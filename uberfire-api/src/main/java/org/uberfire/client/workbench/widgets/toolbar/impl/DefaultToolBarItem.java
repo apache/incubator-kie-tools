@@ -34,16 +34,22 @@ public class DefaultToolBarItem
 
     private String[] roles     = new String[]{};
 
+    private String   url;
+
     private String   tooltip;
 
     private Command  command;
 
-    public DefaultToolBarItem(final String tooltip,
+    public DefaultToolBarItem(final String url,
+                              final String tooltip,
                               final Command command) {
+        Preconditions.checkNotNull( "url",
+                                    url );
         Preconditions.checkNotNull( "tooltip",
                                     tooltip );
         Preconditions.checkNotNull( "command",
                                     command );
+        this.url = url;
         this.tooltip = tooltip;
         this.command = command;
     }
@@ -51,6 +57,11 @@ public class DefaultToolBarItem
     @Override
     public String getTooltip() {
         return this.tooltip;
+    }
+
+    @Override
+    public String getUrl() {
+        return this.url;
     }
 
     @Override

@@ -14,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -100,20 +99,33 @@
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 
+        <!-- UberfireImageServlet -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
-	
-	   <resources>
-            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-            <resource>
-                <directory>src/main/java</directory>
-            </resource>
-            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
+
+		<resources>
+			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<!-- Include module descriptors from src/main/resources in order not to 
+				break the Intellij GWT plug-in -->
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 
 		<plugins>
 

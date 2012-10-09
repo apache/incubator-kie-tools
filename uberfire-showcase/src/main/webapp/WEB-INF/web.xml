@@ -57,6 +57,17 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/uberFireImages/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
 with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
 (perhaps under src/integration-test-settings/web.xml and alter the integration-test

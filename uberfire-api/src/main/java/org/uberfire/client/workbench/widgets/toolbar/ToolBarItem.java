@@ -33,6 +33,12 @@ public interface ToolBarItem
     public String getTooltip();
 
     /**
+     * @return The relative URL for the image for the ToolBarItem. Images must
+     *         be within the application WAR, i.e. not an external location.
+     */
+    public String getUrl();
+
+    /**
      * @return is the Tool Bar Item enabled
      */
     public boolean isEnabled();
