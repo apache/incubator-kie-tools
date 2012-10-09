@@ -79,9 +79,17 @@ public class PanelDefinitionImpl
             return;
         }
         checkPosition( position );
-        checkChildDoesNotExist( position );
         panel.setPosition( position );
-        children.add( panel );
+        final PanelDefinition existingChild = getChild( position );
+        if ( existingChild == null ) {
+            children.add( panel );
+        } else {
+            removeChild( position );
+            children.add( panel );
+            panel.setChild( position,
+                            existingChild );
+        }
+
     }
 
     public PanelDefinition getChild(final Position position) {
@@ -150,14 +158,6 @@ public class PanelDefinitionImpl
     private void checkPosition(final Position position) {
         if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
-        }
-    }
-
-    private void checkChildDoesNotExist(final Position position) {
-        for ( PanelDefinition panel : this.children ) {
-            if ( panel.getPosition() == position ) {
-                throw new IllegalArgumentException( "Child has already been set for position " + position.name() );
-            }
         }
     }
 

@@ -48,7 +48,10 @@ public interface PanelDefinition {
     public List<PanelDefinition> getChildren();
 
     /**
-     * Set this Panel's immediate child Panel for the given Position
+     * Set this Panel's immediate child Panel for the given Position. If this
+     * Panel already has a child at the specified position the existing Panel at
+     * that position becomes a child of the Panel being added at the same
+     * Position.
      * 
      * @param position
      *            The Position to add the child
