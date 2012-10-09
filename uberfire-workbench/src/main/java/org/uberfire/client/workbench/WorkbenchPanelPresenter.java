@@ -61,15 +61,20 @@ public class WorkbenchPanelPresenter {
 
     }
 
-    @Inject
     private View                 view;
 
-    @Inject
     private PanelManager         panelManager;
 
     private PanelDefinition      definition;
 
     private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
+
+    @Inject
+    public WorkbenchPanelPresenter(final View view,
+                                   final PanelManager panelManager) {
+        this.view = view;
+        this.panelManager = panelManager;
+    }
 
     @SuppressWarnings("unused")
     @PostConstruct

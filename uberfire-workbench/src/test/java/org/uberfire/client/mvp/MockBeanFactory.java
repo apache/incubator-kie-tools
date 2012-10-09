@@ -13,8 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench;
+package org.uberfire.client.mvp;
 
+import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
@@ -22,29 +26,54 @@ import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
 /**
- * A Factory definition to create new instances of managed beans.
+ * Mock BeanFactory that doesn't use CDI.
  */
-public interface BeanFactory {
+public class MockBeanFactory
+    implements
+    BeanFactory {
 
+    @Override
     public WorkbenchPartPresenter newWorkbenchPart(final String title,
-                                                   final PartDefinition definition);
+                                                   final PartDefinition definition) {
+        final WorkbenchPartPresenter part = new WorkbenchPartPresenter( new MockWorkbenchPartView() );
+        part.setTitle( title );
+        part.setDefinition( definition );
+        return part;
+    }
 
-    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition);
+    @Override
+    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition) {
+        final WorkbenchPanelPresenter panel = new WorkbenchPanelPresenter( new MockWorkbenchPanelView(),
+                                                                           null );
+        panel.setDefinition( definition );
+        return panel;
+    }
 
+    @Override
     public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
                                                               final WorkbenchPanelPresenter.View westPanel,
                                                               final Position position,
                                                               final Integer preferredSize,
-                                                              final Integer preferredMinSize);
+                                                              final Integer preferredMinSize) {
+        return null;
+    }
 
+    @Override
     public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
                                                           final WorkbenchPanelPresenter.View southPanel,
                                                           final Position position,
                                                           final Integer preferredSize,
-                                                          final Integer preferredMinSize);
+                                                          final Integer preferredMinSize) {
+        return null;
+    }
 
-    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view);
+    @Override
+    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view) {
+        return null;
+    }
 
-    public void destroy(final Object o);
+    @Override
+    public void destroy(final Object o) {
+    }
 
 }

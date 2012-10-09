@@ -43,12 +43,16 @@ public class WorkbenchPartPresenter {
         IsWidget getWrappedWidget();
     }
 
-    @Inject
     private View           view;
 
     private String         title;
 
     private PartDefinition definition;
+
+    @Inject
+    public WorkbenchPartPresenter(final View view) {
+        this.view = view;
+    }
 
     @SuppressWarnings("unused")
     @PostConstruct

@@ -15,18 +15,13 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
@@ -60,7 +55,7 @@ public abstract class BaseWorkbenchTest {
         activityManager = mock( ActivityManager.class );
 
         //CDI View-Presenter factory used by PanelManager
-        factory = mock( BeanFactory.class );
+        factory = new MockBeanFactory();
 
         //Events used by PanelManager and PlaceManager
         workbenchPanelOnFocusEvent = mock( Event.class );
@@ -77,12 +72,6 @@ public abstract class BaseWorkbenchTest {
                                          workbenchPartLostFocusEvent,
                                          selectWorkbenchPartEvent );
         final PanelDefinition root = new PanelDefinitionImpl( true );
-        final WorkbenchPanelPresenter rootPresenter = mock( WorkbenchPanelPresenter.class );
-        final WorkbenchPartPresenter partPresenter = mock( WorkbenchPartPresenter.class );
-
-        when( factory.newWorkbenchPanel( root ) ).thenReturn( rootPresenter );
-        when( factory.newWorkbenchPart( any( String.class ),
-                                        any( PartDefinition.class ) ) ).thenReturn( partPresenter );
 
         panelManager.setRoot( root );
 
