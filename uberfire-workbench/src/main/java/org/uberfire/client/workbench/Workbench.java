@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
@@ -33,6 +34,7 @@ import org.uberfire.client.mvp.AbstractPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.annotations.DefaultPerspective;
 import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
@@ -41,9 +43,6 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -104,25 +103,10 @@ public class Workbench extends Composite {
         container.add( workbenchContainer );
 
         initWidget( container );
-
-        //Schedule creation of the default perspective
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                //We need to defer execution until the browser has completed initial layout
-                final Timer t = new Timer() {
-                    public void run() {
-                        bootstrap();
-                    }
-                };
-                t.schedule( 500 );
-            }
-
-        } );
-
     }
 
+    @AfterInitialization
+    @SuppressWarnings("unused")
     private void bootstrap() {
 
         //Clear environment
@@ -154,12 +138,15 @@ public class Workbench extends Composite {
 
             @Override
             public void onWindowClosing(ClosingEvent event) {
-                wbServices.call( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void response) {
-                        //Nothing to do. Window is closing.
-                    }
-                } ).save( panelManager.getPerspective() );
+                final PerspectiveDefinition perspective = panelManager.getPerspective();
+                if ( perspective != null ) {
+                    wbServices.call( new RemoteCallback<Void>() {
+                        @Override
+                        public void callback(Void response) {
+                            //Nothing to do. Window is closing.
+                        }
+                    } ).save( perspective );
+                }
             }
 
         } );
