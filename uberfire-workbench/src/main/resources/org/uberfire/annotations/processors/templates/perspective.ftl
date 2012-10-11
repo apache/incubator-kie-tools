@@ -20,28 +20,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.AbstractPerspectiveActivity;
+import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.annotations.Identifier;
-<#if isDefault>
-import org.uberfire.client.workbench.annotations.DefaultPerspective;
-</#if>
+import org.uberfire.shared.mvp.PlaceRequest;
 
-@ApplicationScoped
-<#if isDefault>
-@DefaultPerspective
-</#if>
-@Generated("org.uberfire.annotations.processors.PerspectiveProcessor")
+@Dependent
+@Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Identifier("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractPerspectiveActivity {
+public class ${className} extends AbstractWorkbenchPerspectiveActivity {
 
     <#if rolesList??>
     private static final Collection<String> ROLES = Arrays.asList(${rolesList});
@@ -56,24 +51,64 @@ public class ${className} extends AbstractPerspectiveActivity {
     </#if>
 
     @Inject
-    private ${realClassName} realClass;
+    private ${realClassName} realPresenter;
 
     @Inject
     //Constructor injection for testing
     public ${className}(final PlaceManager placeManager) {
         super( placeManager );
     }
-
+    
     @Override
     public String getIdentifier() {
         return "${identifier}";
     }
 
+    <#if isDefault>
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
+
+    </#if>
+    <#if onStart1ParameterMethodName??>
+    @Override
+    public void onStart(final PlaceRequest place) {
+        super.onStart( place );
+        realPresenter.${onStart1ParameterMethodName}( place );
+    }
+
+    <#elseif onStart0ParameterMethodName??>
+    @Override
+    public void onStart(final PlaceRequest place) {
+        super.onStart();
+        realPresenter.${onStart0ParameterMethodName}();
+    }
+
+    </#if>
+    <#if onCloseMethodName??>
+    @Override
+    public void onClose() {
+        super.onClose();
+        realPresenter.${onCloseMethodName}();
+    }
+
+    </#if>
+    <#if onRevealMethodName??>
+    @Override
+    public void onReveal() {
+        super.onReveal();
+        realPresenter.${onRevealMethodName}();
+    }
+
+    </#if>
+    <#if getPerspectiveMethodName??>
     @Override
     public PerspectiveDefinition getPerspective() {
-        return realClass.${methodName}(); 
+        return realPresenter.${getPerspectiveMethodName}();
     }
     
+    </#if>
     @Override
     public Collection<String> getRoles() {
         return ROLES;

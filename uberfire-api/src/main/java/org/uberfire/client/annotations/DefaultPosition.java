@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.annotations;
+package org.uberfire.client.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -21,16 +21,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import org.uberfire.client.workbench.Position;
+
+import static org.uberfire.client.workbench.Position.ROOT;
 
 /**
- * Marker annotation to set a class implementing
- * {@code org.drools.guvnor.client.workbench.perspectives.IPerspectiveProvider}
- * as the default provider.
+ * Default position for WorkbenchParts added to the Workbench. Methods marked
+ * with this annotation should take zero arguments and return
+ * {@code org.drools.guvnor.client.workbench.Position} indicating the
+ * WorkbenchPart's default position.
  */
-@Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface DefaultPerspective {
+@Target({ElementType.METHOD})
+public @interface DefaultPosition {
+
+    Position getPosition() default ROOT;
+
 }

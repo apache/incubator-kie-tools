@@ -57,8 +57,10 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
         //Do nothing.
     }
 
+    @Override
     public abstract String getTitle();
 
+    @Override
     public abstract IsWidget getWidget();
 
     @Override

@@ -20,6 +20,8 @@ import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * Base Workbench Part Activity life-cycles
  */
@@ -44,6 +46,10 @@ public interface WorkbenchActivity
     public void onFocus();
 
     public void onLostFocus();
+
+    public String getTitle();
+
+    public IsWidget getWidget();
 
     public MenuBar getMenuBar();
 

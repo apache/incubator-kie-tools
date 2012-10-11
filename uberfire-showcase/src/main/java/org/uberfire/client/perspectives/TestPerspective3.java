@@ -28,23 +28,21 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * Test Perspective.
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective")
-public class FileExplorerPerspective {
+@WorkbenchPerspective(identifier = "TestPerspective3")
+public class TestPerspective3 {
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getPerspective3() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName( "File Explorer" );
+        p.setName( "Show TestWidgets-3" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
-
-        final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
-        p.getRoot().setChild( Position.WEST,
-                              west );
+        final PanelDefinition south = new PanelDefinitionImpl();
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test" ) ) );
+        p.getRoot().setChild( Position.SOUTH,
+                              south );
 
         return p;
     }

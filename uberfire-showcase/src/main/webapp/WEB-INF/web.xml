@@ -55,6 +55,17 @@
     <servlet-name>UberFireServlet</servlet-name>
     <url-pattern>/org.uberfire.UberfireShowcase/Uberfire.html</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>GoogleGadget</servlet-name>
+    <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GoogleGadget</servlet-name>
+    <url-pattern>google.gadget</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>UberFireImageServlet</servlet-name>

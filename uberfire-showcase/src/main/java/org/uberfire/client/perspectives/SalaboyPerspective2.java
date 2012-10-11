@@ -18,6 +18,7 @@ package org.uberfire.client.perspectives;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
@@ -27,9 +28,10 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
+@WorkbenchPerspective(identifier = "salaboy2")
 public class SalaboyPerspective2 {
 
-    @Perspective(identifier = "salaboy2")
+    @Perspective
     public PerspectiveDefinition getPerspective() {
 
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();

@@ -22,15 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with this define Perspectives for the Workbench.
+ * Methods annotated with this provide a PerspectiveDefinition. The method
+ * should have zero arguments and return a
+ * {@code org.uberfire.client.workbench.model.PerspectiveDefinition}.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface Perspective {
-
-    String identifier();
-
-    boolean isDefault() default false;
 
 }

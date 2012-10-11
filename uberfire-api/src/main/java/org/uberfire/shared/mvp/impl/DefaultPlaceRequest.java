@@ -23,6 +23,9 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.shared.mvp.PlaceRequest;
 
+/**
+ * Default implementation of PlaceRequest
+ */
 @Portable
 public class DefaultPlaceRequest
     implements

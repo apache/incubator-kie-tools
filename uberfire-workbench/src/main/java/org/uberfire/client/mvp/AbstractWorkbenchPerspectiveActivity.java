@@ -28,12 +28,12 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.shared.mvp.impl.PassThroughPlaceRequest;
 
 /**
  * Base class for Perspective Activities
  */
-public abstract class AbstractPerspectiveActivity extends AbstractActivity
+public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActivity
     implements
     PerspectiveActivity {
 
@@ -46,7 +46,7 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
-    public AbstractPerspectiveActivity(final PlaceManager placeManager) {
+    public AbstractWorkbenchPerspectiveActivity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
@@ -58,8 +58,41 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
         saveState();
     }
 
+    @Override
+    public void onStart() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onStart(final PlaceRequest place) {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onClose() {
+        //Do nothing.  
+    }
+
+    @Override
+    public void onReveal() {
+        //Do nothing.  
+    }
+
+    @Override
+    public abstract PerspectiveDefinition getPerspective();
+
+    @Override
+    public abstract String getIdentifier();
+
+    @Override
+    public boolean isDefault() {
+        return false;
+    }
+
     //Save the current state of the Workbench
     private void saveState() {
+
+        onClose();
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
@@ -110,21 +143,19 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective(final PerspectiveDefinition perspective) {
 
+        onStart( place );
+
         panelManager.setPerspective( perspective );
 
         Set<PartDefinition> parts = panelManager.getRoot().getParts();
         for ( PartDefinition part : parts ) {
-            //TODO {manstis} Hack for salaboy until Perspectives become class-based
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
-            //Remove and re-add as the hashCode has changed by merging parameters
-            parts.remove( part );
             part.setPlace( place );
-            parts.add( part );
-            //--- End of Hack
             placeManager.goTo( part,
                                panelManager.getRoot() );
         }
         buildPerspective( panelManager.getRoot() );
+
         onReveal();
     }
 
@@ -142,32 +173,23 @@ public abstract class AbstractPerspectiveActivity extends AbstractActivity
     private void addChildren(final PanelDefinition panel) {
         Set<PartDefinition> parts = panel.getParts();
         for ( PartDefinition part : parts ) {
-            //TODO {manstis} Hack for salaboy until Perspectives become class-based
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
-            //Remove and re-add as the hashCode has changed by merging parameters
-            parts.remove( part );
             part.setPlace( place );
-            parts.add( part );
-            //--- End of Hack
             placeManager.goTo( part,
                                panel );
         }
         buildPerspective( panel );
     }
 
-    public abstract PerspectiveDefinition getPerspective();
-
-    public abstract String getIdentifier();
-
     private PlaceRequest clonePlaceAndMergeParameters(final PlaceRequest place) {
-        final PlaceRequest clone = new DefaultPlaceRequest( place.getIdentifier() );
+        final PassThroughPlaceRequest clone = new PassThroughPlaceRequest( place.getIdentifier() );
         for ( Map.Entry<String, String> parameter : place.getParameters().entrySet() ) {
             clone.addParameter( parameter.getKey(),
                                 parameter.getValue() );
         }
         for ( Map.Entry<String, String> parameter : this.place.getParameters().entrySet() ) {
-            clone.addParameter( parameter.getKey(),
-                                parameter.getValue() );
+            clone.addPassThroughParameter( parameter.getKey(),
+                                           parameter.getValue() );
         }
         return clone;
     }

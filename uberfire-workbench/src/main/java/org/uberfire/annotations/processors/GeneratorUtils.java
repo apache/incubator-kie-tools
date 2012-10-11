@@ -27,7 +27,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -39,6 +38,7 @@ import javax.lang.model.util.Types;
 
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
 import org.uberfire.client.annotations.OnFocus;
@@ -47,12 +47,12 @@ import org.uberfire.client.annotations.OnMayClose;
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.annotations.DefaultPosition;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -396,19 +396,20 @@ public class GeneratorUtils {
     }
 
     /**
-     * Check whether the provided Element is suitable for annotation with
-     * {@code @Perspective}. The method must be public, non-static, have a
-     * return-type of PerspectiveDefinition and take zero parameters.
+     * Get the method name annotated with {@code @Perspective}. The method must
+     * be public, non-static, have a return-type of PerspectiveDefinition and
+     * take zero parameters.
      * 
-     * @param element
+     * @param classElement
      * @param processingEnvironment
-     * @return true if method is valid
+     * @return null if none found
      * @throws GenerationException
      */
-    public static boolean isPerspectiveMethodValid(final Element element,
-                                                   final ProcessingEnvironment processingEnvironment) {
-        return validatePerspectiveMethod( element,
-                                          processingEnvironment );
+    public static String getPerspectiveMethodName(final TypeElement classElement,
+                                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getPerspectiveMethodName( classElement,
+                                         processingEnvironment,
+                                         Perspective.class );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -845,37 +846,49 @@ public class GeneratorUtils {
         return match.getSimpleName().toString();
     }
 
-    // Check whether the provided Element is suitable for annotation with
-    // {@code @Perspective}. The method must be public, non-static, have a 
-    // return-type of WorkbenchMenuBar and take zero parameters.
-    private static boolean validatePerspectiveMethod(final Element element,
-                                                     final ProcessingEnvironment processingEnvironment) {
-        if ( element.getKind() != ElementKind.METHOD ) {
-            return false;
-        }
-
+    // Lookup a public method name with the given annotation. The method must be
+    // public, non-static, have a return-type of PerspectiveDefinition and take zero
+    // parameters.
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static String getPerspectiveMethodName(final TypeElement classElement,
+                                                   final ProcessingEnvironment processingEnvironment,
+                                                   final Class annotation) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.model.PerspectiveDefinition" ).asType();
+        final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
-        final ExecutableElement e = (ExecutableElement) element;
-        final TypeMirror actualReturnType = e.getReturnType();
+        ExecutableElement match = null;
+        for ( ExecutableElement e : methods ) {
 
-        //Check method
-        if ( !typeUtils.isAssignable( actualReturnType,
-                                      requiredReturnType ) ) {
-            return false;
+            final TypeMirror actualReturnType = e.getReturnType();
+
+            //Check method
+            if ( e.getAnnotation( annotation ) == null ) {
+                continue;
+            }
+            if ( !typeUtils.isAssignable( actualReturnType,
+                                          requiredReturnType ) ) {
+                continue;
+            }
+            if ( e.getParameters().size() != 0 ) {
+                continue;
+            }
+            if ( e.getModifiers().contains( Modifier.STATIC ) ) {
+                continue;
+            }
+            if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
+                continue;
+            }
+            if ( match != null ) {
+                throw new GenerationException( "Multiple methods with @" + annotation.getSimpleName() + " detected." );
+            }
+            match = e;
         }
-        if ( e.getParameters().size() != 0 ) {
-            return false;
+        if ( match == null ) {
+            return null;
         }
-        if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-            return false;
-        }
-        if ( !e.getModifiers().contains( Modifier.PUBLIC ) ) {
-            return false;
-        }
-        return true;
+        return match.getSimpleName().toString();
     }
 
     public static String getSecurityTraitList(final Element element) {

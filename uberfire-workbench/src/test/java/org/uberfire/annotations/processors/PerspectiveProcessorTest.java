@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.tools.Diagnostic;
@@ -59,7 +58,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                                                                                      }
                                                                                  } ),
                                                                                  "org/uberfire/annotations/processors/PerspectiveTest2" );
-        assertSuccessfulCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 
@@ -74,7 +74,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                                                                                      }
                                                                                  } ),
                                                                                  "org/uberfire/annotations/processors/PerspectiveTest3" );
-        assertSuccessfulCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 
@@ -125,75 +126,49 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testMultipleAllCorrect() throws FileNotFoundException {
+    public void testCorrectReturnTypeWithAllAnnotationsOnStart() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest6";
-        final String pathExpectedResult0 = "org/uberfire/annotations/processors/expected/PerspectiveTest6-0.expected";
-        final String pathExpectedResult1 = "org/uberfire/annotations/processors/expected/PerspectiveTest6-1.expected";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest6.expected";
 
-        final Result result0 = new Result();
-        result0.setExpectedCode( getExpectedSourceCode( pathExpectedResult0 ) );
-
-        final Result result1 = new Result();
-        result1.setExpectedCode( getExpectedSourceCode( pathExpectedResult1 ) );
-
-        final List<Result> results = new ArrayList<Result>();
-        results.add( result0 );
-        results.add( result1 );
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
 
-                                                                                     int resultIndex = 0;
-
                                                                                      @Override
                                                                                      public void generationComplete(String code) {
-                                                                                         results.get( resultIndex ).setActualCode( code );
-                                                                                         resultIndex++;
+                                                                                         result.setActualCode( code );
                                                                                      }
                                                                                  } ),
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result0.getActualCode() );
-        assertNotNull( result0.getExpectedCode() );
-        assertEquals( result0.getActualCode(),
-                      result0.getExpectedCode() );
-        assertNotNull( result1.getActualCode() );
-        assertNotNull( result1.getExpectedCode() );
-        assertEquals( result1.getActualCode(),
-                      result1.getExpectedCode() );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
     }
 
     @Test
-    public void testMultipleOneCorrectOneIncorrect() throws FileNotFoundException {
+    public void testCorrectReturnTypeWithAllAnnotationsOnStartWithPath() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest7";
-        final String pathExpectedResult0 = "org/uberfire/annotations/processors/expected/PerspectiveTest7-0.expected";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest7.expected";
 
-        final Result result0 = new Result();
-        result0.setExpectedCode( getExpectedSourceCode( pathExpectedResult0 ) );
-
-        final Result result1 = new Result();
-
-        final List<Result> results = new ArrayList<Result>();
-        results.add( result0 );
-        results.add( result1 );
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
 
-                                                                                     int resultIndex = 0;
-
                                                                                      @Override
                                                                                      public void generationComplete(String code) {
-                                                                                         results.get( resultIndex ).setActualCode( code );
-                                                                                         resultIndex++;
+                                                                                         result.setActualCode( code );
                                                                                      }
                                                                                  } ),
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result0.getActualCode() );
-        assertNotNull( result0.getExpectedCode() );
-        assertEquals( result0.getActualCode(),
-                      result0.getExpectedCode() );
-        assertNull( result1.getActualCode() );
-        assertNull( result1.getExpectedCode() );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
     }
 
 }

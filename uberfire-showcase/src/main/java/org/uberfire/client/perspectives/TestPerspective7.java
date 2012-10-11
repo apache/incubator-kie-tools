@@ -19,32 +19,27 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.security.annotations.Roles;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * Test Perspective.
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective")
-public class FileExplorerPerspective {
+@WorkbenchPerspective(identifier = "TestPerspective7")
+public class TestPerspective7 {
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    @Roles({"ADMIN"})
+    //This Perspective should not be shown as the default user does not poses this role
+    public PerspectiveDefinition getPerspective7() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName( "File Explorer" );
+        p.setName( "Show TestWidgets-7" );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
-
-        final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
-        p.getRoot().setChild( Position.WEST,
-                              west );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
 
         return p;
     }

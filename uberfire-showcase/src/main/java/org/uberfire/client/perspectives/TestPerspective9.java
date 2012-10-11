@@ -28,23 +28,28 @@ import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- * A Perspective to show File Explorer
+ * Test Perspective.
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective")
-public class FileExplorerPerspective {
+@WorkbenchPerspective(identifier = "TestTransientPerspective1")
+public class TestPerspective9 {
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getTransientPerspective1() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName( "File Explorer" );
-
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        p.setName( "Show TestTransient-1" );
+        p.setTransient( true );
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
+        west.setHeight( 200 );
+        west.setWidth( 200 );
+        west.setMinHeight( 100 );
+        west.setMinWidth( 100 );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "MyAdminArea" ) ) );
         p.getRoot().setChild( Position.WEST,
                               west );
+
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Test2" ) ) );
 
         return p;
     }

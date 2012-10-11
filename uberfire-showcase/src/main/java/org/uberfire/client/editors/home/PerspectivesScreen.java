@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.AbstractPerspectiveActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
@@ -22,13 +22,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 @WorkbenchScreen(identifier = "perspectives")
 public class PerspectivesScreen {
 
-    private final Set<AbstractPerspectiveActivity> perspectives;
+    private final Set<AbstractWorkbenchPerspectiveActivity> perspectives;
     private final PlaceManager                     placeManager;
 
     @Inject
     public PerspectivesScreen(ActivityManager activityManager,
                               PlaceManager placeManager) {
-        this.perspectives = activityManager.getActivities( AbstractPerspectiveActivity.class );
+        this.perspectives = activityManager.getActivities( AbstractWorkbenchPerspectiveActivity.class );
         this.placeManager = placeManager;
     }
 
@@ -41,7 +41,7 @@ public class PerspectivesScreen {
     public IsWidget getView() {
         VerticalPanel widgets = new VerticalPanel();
 
-        for ( final AbstractPerspectiveActivity perspective : perspectives ) {
+        for ( final AbstractWorkbenchPerspectiveActivity perspective : perspectives ) {
             InfoCube infoCube = new InfoCube();
             infoCube.setTitle( perspective.getIdentifier() );
 

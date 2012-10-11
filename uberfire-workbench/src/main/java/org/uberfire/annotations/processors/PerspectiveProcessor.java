@@ -35,12 +35,12 @@ import javax.tools.JavaFileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 
 /**
- * Processor for {@code Perspective} annotations
+ * Processor for {@code WorkbenchPerspective} annotations
  */
-@SupportedAnnotationTypes("org.uberfire.client.annotations.Perspective")
+@SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchPerspective")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class PerspectiveProcessor extends AbstractProcessor {
 
@@ -62,7 +62,6 @@ public class PerspectiveProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
-
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {
             return false;
@@ -73,23 +72,17 @@ public class PerspectiveProcessor extends AbstractProcessor {
             return false;
         }
 
-        //Scan for all methods with the Perspective annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( Perspective.class ) ) {
-            if ( e.getKind() == ElementKind.METHOD ) {
+        //Scan for all classes with the WorkbenchPerspective annotation
+        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchPerspective.class ) ) {
+            if ( e.getKind() == ElementKind.CLASS ) {
 
-                TypeElement classElement = (TypeElement) e.getEnclosingElement();
+                TypeElement classElement = (TypeElement) e;
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
 
-                //Validate method
-                if ( !GeneratorUtils.isPerspectiveMethodValid( e,
-                                                               processingEnv ) ) {
-                    continue;
-                }
-
-                logger.info( "Discovered method [" + e.getSimpleName() + "] in [" + classElement.getSimpleName() + "]" );
+                logger.info( "Discovered class [" + classElement.getSimpleName() + "]" );
 
                 final String packageName = packageElement.getQualifiedName().toString();
-                final String classNameActivity = classElement.getSimpleName() + "Activity_" + e.getSimpleName();
+                final String classNameActivity = classElement.getSimpleName() + "Activity";
 
                 try {
                     //Try generating code for each required class
@@ -97,7 +90,7 @@ public class PerspectiveProcessor extends AbstractProcessor {
                     final StringBuffer activityCode = activityGenerator.generate( packageName,
                                                                                   packageElement,
                                                                                   classNameActivity,
-                                                                                  e,
+                                                                                  classElement,
                                                                                   processingEnv );
 
                     //If code is successfully created write files, or send generated code to call-back.
@@ -116,7 +109,6 @@ public class PerspectiveProcessor extends AbstractProcessor {
                                                               msg );
                     logger.error( msg );
                 }
-
             }
         }
         return true;

@@ -20,36 +20,37 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.AbstractPerspectiveActivity;
+import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.shared.mvp.PlaceRequest;
 
-@ApplicationScoped
-@Generated("org.uberfire.annotations.processors.PerspectiveProcessor")
+@Dependent
+@Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Identifier("PerspectiveTest4")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PerspectiveTest4Activity_getPerspective extends AbstractPerspectiveActivity {
+public class PerspectiveTest4Activity extends AbstractWorkbenchPerspectiveActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
+    private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private PerspectiveTest4 realClass;
+    private PerspectiveTest4 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public PerspectiveTest4Activity_getPerspective(final PlaceManager placeManager) {
+    public PerspectiveTest4Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
-
+    
     @Override
     public String getIdentifier() {
         return "PerspectiveTest4";
@@ -57,7 +58,7 @@ public class PerspectiveTest4Activity_getPerspective extends AbstractPerspective
 
     @Override
     public PerspectiveDefinition getPerspective() {
-        return realClass.getPerspective(); 
+        return realPresenter.getPerspective();
     }
     
     @Override
@@ -72,6 +73,6 @@ public class PerspectiveTest4Activity_getPerspective extends AbstractPerspective
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest4Activity_getPerspective";
+        return "org.uberfire.annotations.processors.PerspectiveTest4Activity";
     }
 }

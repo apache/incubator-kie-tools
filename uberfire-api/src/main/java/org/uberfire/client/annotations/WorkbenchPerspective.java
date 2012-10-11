@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.annotations;
+package org.uberfire.client.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -21,21 +21,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.uberfire.client.workbench.Position;
-
-import static org.uberfire.client.workbench.Position.ROOT;
-
 /**
- * Default position for WorkbenchParts added to the Workbench. Methods marked
- * with this annotation should take zero arguments and return
- * {@code org.drools.guvnor.client.workbench.Position} indicating the
- * WorkbenchPart's default position.
+ * Classes annotated with this are considered Perspective providers.
+ * <p>
+ * Developers will need to provide a zero-argument method annotated with
+ * {@code @Perspective} with return type
+ * {@code org.uberfire.client.workbench.model.PerspectiveDefinition}.
+ * </p>
+ * <p>
+ * WorkbenchPerspectives can receive the following life-cycle calls:
+ * <ul>
+ * <li>{@code @OnClose}</li>
+ * <li>{@code @OnStart}</li>
+ * <li>{@code @OnReveal}</li>
+ * </p>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface DefaultPosition {
+@Target({ElementType.TYPE})
+public @interface WorkbenchPerspective {
 
-    Position getPosition() default ROOT;
+    String identifier();
+
+    boolean isDefault() default false;
 
 }

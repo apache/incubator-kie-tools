@@ -1,17 +1,31 @@
 package org.uberfire.annotations.processors;
 
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnReveal;
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.shared.mvp.PlaceRequest;
 
+@WorkbenchPerspective(identifier = "PerspectiveTest7", isDefault = true)
 public class PerspectiveTest7 {
 
-    @Perspective(identifier = "PerspectiveTest7-0")
-    public PerspectiveDefinition getPerspective0() {
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
         return null;
     }
 
-    @Perspective(identifier = "PerspectiveTest7-1")
-    public void getPerspective1() {
+    @OnStart
+    public void onStart(final PlaceRequest place) {
+    }
+
+    @OnClose
+    public void onClose() {
+    }
+
+    @OnReveal
+    public void onReveal() {
     }
 
 }

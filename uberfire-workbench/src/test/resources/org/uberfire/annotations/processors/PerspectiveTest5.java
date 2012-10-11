@@ -1,14 +1,17 @@
 package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.security.annotations.All;
 import org.uberfire.security.annotations.Roles;
 
+@WorkbenchPerspective(identifier = "PerspectiveTest5", isDefault = true)
 public class PerspectiveTest5 {
 
-    @Perspective(identifier = "PerspectiveTest5", isDefault = true)
-    @All @Roles({"ADMIN", "SUDO"})
+    @Perspective
+    @All
+    @Roles({"ADMIN", "SUDO"})
     public PerspectiveDefinition getPerspective() {
         return null;
     }

@@ -25,11 +25,12 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -50,23 +51,47 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
-        final TypeElement classElement = (TypeElement) element.getEnclosingElement();
-        final String methodName = element.getSimpleName().toString();
-        final String realClassName = classElement.getSimpleName().toString();
-        final Perspective perspective = element.getAnnotation( Perspective.class );
-        final String identifier = perspective.identifier();
-        final boolean isDefault = perspective.isDefault();
-        final String securityTraitList = GeneratorUtils.getSecurityTraitList( element );
-        final String rolesList = GeneratorUtils.getRoleList( element );
+        final TypeElement classElement = (TypeElement) element;
+        final WorkbenchPerspective wbp = classElement.getAnnotation( WorkbenchPerspective.class );
+        final String identifier = wbp.identifier();
+        final boolean isDefault = wbp.isDefault();
+        final String onStart0ParameterMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
+                                                                                                     processingEnvironment );
+        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
+                                                                                                             processingEnvironment );
+        final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
+                                                                              processingEnvironment );
+        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
+                                                                                processingEnvironment );
+        final String getPerspectiveMethodName = GeneratorUtils.getPerspectiveMethodName( classElement,
+                                                                                         processingEnvironment );
+        final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
+        final String rolesList = GeneratorUtils.getRoleList( classElement );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
-        logger.debug( "realClassName: " + realClassName );
         logger.debug( "Identifier: " + identifier );
         logger.debug( "isDefault: " + isDefault );
-        logger.debug( "methodName: " + methodName );
+        logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
+        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
+        logger.debug( "onCloseMethodName: " + onCloseMethodName );
+        logger.debug( "onRevealMethodName: " + onRevealMethodName );
+        logger.debug( "getPerspectiveMethodName: " + getPerspectiveMethodName );
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
+
+        //Validate onStart0ParameterMethodName and onStart1ParameterMethodName
+        if ( onStart0ParameterMethodName != null && onStart1ParameterMethodName != null ) {
+            final String msg = "The WorkbenchPerspective has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
+        }
+
+        //Validate getPerspectiveMethodName
+        if ( getPerspectiveMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+        }
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
@@ -74,14 +99,22 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   packageName );
         root.put( "className",
                   className );
-        root.put( "realClassName",
-                  realClassName );
         root.put( "identifier",
                   identifier );
         root.put( "isDefault",
                   isDefault );
-        root.put( "methodName",
-                  methodName );
+        root.put( "realClassName",
+                  classElement.getSimpleName().toString() );
+        root.put( "onStart0ParameterMethodName",
+                  onStart0ParameterMethodName );
+        root.put( "onStart1ParameterMethodName",
+                  onStart1ParameterMethodName );
+        root.put( "onCloseMethodName",
+                  onCloseMethodName );
+        root.put( "onRevealMethodName",
+                  onRevealMethodName );
+        root.put( "getPerspectiveMethodName",
+                  getPerspectiveMethodName );
         root.put( "securityTraitList",
                   securityTraitList );
         root.put( "rolesList",

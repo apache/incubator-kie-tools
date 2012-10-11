@@ -59,6 +59,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         onReveal();
     }
 
+    @Override
     public abstract PopupPanel getPopupPanel();
 
     @Override

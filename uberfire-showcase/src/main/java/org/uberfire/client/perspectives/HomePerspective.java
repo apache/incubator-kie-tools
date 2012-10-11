@@ -1,6 +1,7 @@
 package org.uberfire.client.perspectives;
 
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
@@ -9,9 +10,10 @@ import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+@WorkbenchPerspective(identifier = "homePerspective", isDefault = true)
 public class HomePerspective {
 
-    @Perspective(identifier = "homePerspective", isDefault = true)
+    @Perspective
     public PerspectiveDefinition getPerspective() {
         final PerspectiveDefinition definition = new PerspectiveDefinitionImpl();
         definition.setName( "home" );
