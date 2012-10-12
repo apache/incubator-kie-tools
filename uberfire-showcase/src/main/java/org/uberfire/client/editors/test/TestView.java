@@ -88,4 +88,14 @@ public class TestView extends Composite
         presenter.launchPerspectiveWithPlaceRequest();
     }
 
+    @UiHandler("launchPopup")
+    public void onClickLaunchPopup(final ClickEvent event) {
+        presenter.launchPopup();
+    }
+
+    @UiHandler("launchUnknownPlace")
+    public void onClickLaunchUnknownPlace(final ClickEvent event) {
+        presenter.launchUnknownPlace();
+    }
+
 }

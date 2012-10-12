@@ -51,10 +51,6 @@ public interface WorkbenchImages
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
 
-    //A warning triangle
-    @Source("images/warning-large.png")
-    ImageResource warningLarge();
-
     //Scroll TabPanel left
     @Source("images/tabPanelScrollLeft.png")
     ImageResource tabPanelScrollLeft();

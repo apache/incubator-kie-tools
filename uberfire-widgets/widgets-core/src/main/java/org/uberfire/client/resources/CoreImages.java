@@ -28,13 +28,17 @@ public interface CoreImages
 
     @Source("images/open_folder.gif")
     ImageResource openedFolder();
-    
+
     @Source("images/package.gif")
     ImageResource packageIcon();
-    
+
     @Source("images/file.gif")
     ImageResource file();
 
     @Source("images/backup_large.png")
     ImageResource backupLarge();
+
+    //A warning triangle
+    @Source("images/warning-large.png")
+    ImageResource warningLarge();
 }

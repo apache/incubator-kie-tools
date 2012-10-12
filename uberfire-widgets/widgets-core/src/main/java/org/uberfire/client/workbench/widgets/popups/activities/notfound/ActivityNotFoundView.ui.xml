@@ -17,15 +17,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
-
-  <g:SimplePanel ui:field="panel" >
-    <g:VerticalPanel height="100px">
-      <g:Label>Some blurbage for TestView</g:Label>
-      <g:Button ui:field="notificationButton">Notify</g:Button>
-      <g:Button ui:field="launchWithPlaceRequestAndCallback">Add tab with PlaceRequest and callback</g:Button>
-      <g:Button ui:field="launchPerspectiveWithPlaceRequest">Goto Perspective 'salaboy2'</g:Button>
-      <g:Button ui:field="launchUnknownPlace">Goto an unknown place</g:Button>
-      <g:Button ui:field="launchPopup">Goto TestPopup</g:Button>
+             
+  <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CoreConstants" />
+  <ui:with field="images" type="org.uberfire.client.resources.CoreImages" />
+               
+  <g:DecoratedPopupPanel>
+    <g:VerticalPanel>
+      <g:HorizontalPanel>
+        <g:Image resource="{images.warningLarge}"/>
+        <g:Label text="{i18n.activityNotFound}"/>
+      </g:HorizontalPanel>
+      <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
+      <g:Button ui:field="okButton">OK</g:Button>
     </g:VerticalPanel>
-  </g:SimplePanel>
+  </g:DecoratedPopupPanel>
+  
 </ui:UiBinder> 

@@ -4,13 +4,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
@@ -35,8 +33,4 @@ public class WelcomeScreen
         return "Welcome";
     }
 
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return this;
-    }
 }

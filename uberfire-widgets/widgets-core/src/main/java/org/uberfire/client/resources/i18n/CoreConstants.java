@@ -20,12 +20,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 /**
- * Workbench I18N constants
+ * Core Widgets I18N constants
  */
-public interface WorkbenchConstants
+public interface CoreConstants
         extends
         Messages {
 
-    WorkbenchConstants INSTANCE = GWT.create( WorkbenchConstants.class );
+    CoreConstants INSTANCE = GWT.create( CoreConstants.class );
 
+    String multipleMatchingActivitiesFound();
+
+    String activityNotFound();
+    
 }

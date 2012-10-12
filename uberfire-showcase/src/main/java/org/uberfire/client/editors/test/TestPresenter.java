@@ -90,6 +90,16 @@ public class TestPresenter {
         placeManager.goTo( place );
     }
 
+    public void launchPopup() {
+        final PlaceRequest place = new DefaultPlaceRequest( "TestPopup" );
+        placeManager.goTo( place );
+    }
+
+    public void launchUnknownPlace() {
+        final PlaceRequest place = new DefaultPlaceRequest( "somewhere.that.does.not.exist" );
+        placeManager.goTo( place );
+    }
+
     @WorkbenchMenu
     public MenuBar getMenuBar() {
         final MenuBar menuBar = new DefaultMenuBar();
