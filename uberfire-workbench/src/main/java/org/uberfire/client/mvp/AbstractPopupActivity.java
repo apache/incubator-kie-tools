@@ -43,6 +43,9 @@ public abstract class AbstractPopupActivity extends AbstractActivity
                        final Command callback) {
         super.launch( place,
                       callback );
+
+        onStart( place );
+
         final PopupPanel popup = getPopupPanel();
         //When pop-up is closed destroy bean to avoid memory leak
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
@@ -53,9 +56,9 @@ public abstract class AbstractPopupActivity extends AbstractActivity
             }
 
         } );
-        onStart( place );
         popup.show();
         popup.center();
+
         onReveal();
     }
 
