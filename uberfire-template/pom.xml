@@ -167,11 +167,6 @@
 			<artifactId>weld-se-core</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jboss.weld.servlet</groupId>
-			<artifactId>weld-servlet</artifactId>
-		</dependency>
-
 		<!-- GWT and GWT Extensions -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
