@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.uberfire.commons.util.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,17 @@ public class WorkbenchMenuBarPresenterUtilsTests {
             @Override
             public List<Role> getRoles() {
                 return ROLES;
+            }
+
+            @Override
+            public boolean hasRole(final Role role) {
+                checkNotNull("role", role);
+                for (final Role activeRole : ROLES) {
+                    if (activeRole.getName().equals(role.getName())){
+                        return true;
+                    }
+                }
+                return false;
             }
 
         };

@@ -142,6 +142,17 @@ public class HttpAuthenticationManager implements AuthenticationManager {
             }
 
             @Override
+            public boolean hasRole(final Role role) {
+                checkNotNull("role", role);
+                for (final Role activeRole : roles) {
+                    if (activeRole.getName().equals(role.getName())){
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
             public String getName() {
                 return name;
             }

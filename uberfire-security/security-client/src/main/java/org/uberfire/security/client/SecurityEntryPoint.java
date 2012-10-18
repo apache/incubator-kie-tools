@@ -32,6 +32,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
+import static org.uberfire.commons.util.Preconditions.checkNotNull;
 
 @EntryPoint
 public class SecurityEntryPoint {
@@ -81,6 +82,17 @@ public class SecurityEntryPoint {
             @Override
             public List<Role> getRoles() {
                 return roles;
+            }
+
+            @Override
+            public boolean hasRole(final Role role) {
+                checkNotNull("role", role);
+                for (final Role activeRole : roles) {
+                    if (activeRole.getName().equals(role.getName())){
+                        return true;
+                    }
+                }
+                return false;
             }
 
             @Override

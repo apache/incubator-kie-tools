@@ -24,4 +24,6 @@ public interface Subject extends Principal {
 
     List<Role> getRoles();
 
+    boolean hasRole(final Role role);
+
 }
