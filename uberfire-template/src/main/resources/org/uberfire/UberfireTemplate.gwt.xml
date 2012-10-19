@@ -3,7 +3,6 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.4.0/distro-source/core/src/gwt-module.dtd">
 <module>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
-  <inherits name="org.jboss.errai.uibinder.UIBinderForIOC"/>
 
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
