@@ -93,6 +93,11 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
 
     <!-- CDI Integration Modules -->
     <dependency>
@@ -100,17 +105,21 @@
       <artifactId>errai-cdi-client</artifactId>
     </dependency>
 
-    <!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.errai</groupId>-->
-      <!--<artifactId>errai-uibinder</artifactId>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-weld-integration</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-jetty</artifactId>
+    </dependency>
 
     <!-- CDI Development Utils -->
     <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
@@ -131,16 +140,15 @@
 
     <!-- Weld Modules -->
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-weld-integration</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
     </dependency>
 
-
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet</artifactId>
+    </dependency>
+    
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

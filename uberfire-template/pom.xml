@@ -32,16 +32,16 @@
 	<description>ÜberFire Template</description>
 
 	<dependencies>
-    <!-- You need to include the sources for most of the uberfire dependencies. -->
+		<!-- You need to include the sources for most of the uberfire dependencies. -->
 		<dependency>
 			<groupId>org.uberfire</groupId>
 			<artifactId>security-client</artifactId>
 		</dependency>
 
-	    <dependency>
-	      <groupId>org.uberfire</groupId>
-	      <artifactId>security-server</artifactId>
-	    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>security-server</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.uberfire</groupId>
@@ -89,35 +89,40 @@
 			<artifactId>vfs-fs</artifactId>
 		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>security-api</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>security-api</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>security-client</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>security-client</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>security-server</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>security-server</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>vfs-model</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>vfs-model</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.uberfire</groupId>
+			<artifactId>uberfire-commons</artifactId>
+		</dependency>
 
 		<!-- Errai Core -->
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-bus</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-ioc</artifactId>
 		</dependency>
 
 		<!-- CDI Integration Modules -->
@@ -126,7 +131,6 @@
 			<artifactId>errai-cdi-client</artifactId>
 		</dependency>
 
-		<!-- TODO I'd like to remove this from here, but it's a dependency of errai-cdi-client -->
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-javax-enterprise</artifactId>
@@ -135,7 +139,12 @@
 
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-uibinder</artifactId>
+			<artifactId>errai-weld-integration</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-cdi-jetty</artifactId>
 		</dependency>
 
 		<!-- CDI Development Utils -->
@@ -158,13 +167,13 @@
 
 		<!-- Weld Modules -->
 		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-weld-integration</artifactId>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
+			<groupId>org.jboss.weld.servlet</groupId>
+			<artifactId>weld-servlet</artifactId>
 		</dependency>
 
 		<!-- GWT and GWT Extensions -->
@@ -176,18 +185,19 @@
 	</dependencies>
 
 	<build>
-	
-	   <resources>
-            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-            <resource>
-                <directory>src/main/java</directory>
-            </resource>
-            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-	
+
+		<resources>
+			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<!-- Include module descriptors from src/main/resources in order not to 
+				break the Intellij GWT plug-in -->
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+
 		<plugins>
 
 			<plugin>
@@ -197,9 +207,9 @@
 					<module>org.uberfire.FastCompiledUberfireTemplate</module>
 					<logLevel>INFO</logLevel>
 					<compileSourcesArtifacts>
-			            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-			            <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
-			            <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
+						<compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
+						<compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
+						<compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
 						<compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
 						<compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
 						<compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
@@ -209,7 +219,8 @@
 						<compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
 					</compileSourcesArtifacts>
 					<runTarget>org.uberfire.UberfireTemplate/Uberfire.html</runTarget>
-					<extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m -Derrai.compile.perf.perform_reachability_analysis=true</extraJvmArgs>
+					<extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m
+						-Derrai.compile.perf.perform_reachability_analysis=true</extraJvmArgs>
 					<soyc>false</soyc>
 					<server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
 					<!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, 

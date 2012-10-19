@@ -51,7 +51,7 @@
     <errai.version>2.1.0.Final</errai.version>
     <gwt.version>2.4.0</gwt.version>
     <gwt.maven.version>2.4.0</gwt.maven.version>
-    <mvel.version>2.1.1-SNAPSHOT</mvel.version>
+    <mvel.version>2.1.Beta8</mvel.version>
     <weld.version>1.1.8.Final</weld.version>
     <jetty.version>6.1.25</jetty.version>
     <gwt-dnd.version>3.1.2</gwt-dnd.version>
