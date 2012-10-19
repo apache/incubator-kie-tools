@@ -13,44 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.mvp;
+package org.uberfire.client.workbench.widgets.events;
 
-import java.util.Collection;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Mock WorkbenchScreenActivity
+ * An event to change the content of a tab
  */
-public class MockWorkbenchEditorActivity extends AbstractWorkbenchEditorActivity {
+public class ChangeTabContentEvent {
 
-    public MockWorkbenchEditorActivity(final PlaceManager placeManager) {
-        super( placeManager );
+    private final PlaceRequest place;
+    private final IsWidget     tabContent;
+
+    public ChangeTabContentEvent(final PlaceRequest place,
+                                 final IsWidget tabContent) {
+        this.place = place;
+        this.tabContent = tabContent;
     }
 
-    @Override
-    public String getSignatureId() {
-        return null;
+    public PlaceRequest getPlaceRequest() {
+        return place;
     }
 
-    @Override
-    public Collection<String> getRoles() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getTabWidget() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getWidget() {
-        return null;
+    public IsWidget getTabContent() {
+        return this.tabContent;
     }
 
 }

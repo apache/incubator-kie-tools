@@ -25,6 +25,8 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
  */
@@ -37,10 +39,10 @@ public class DefaultBeanFactory
     private IOCBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
                                                    final PartDefinition definition) {
         final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
-        part.setTitle( title );
+        part.setTabWidget( tabWidget );
         part.setDefinition( definition );
         return part;
     }

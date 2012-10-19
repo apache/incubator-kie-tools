@@ -282,8 +282,8 @@ public class PlaceManagerImpl
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
-                             public void add(String tabTitle,
-                                             IsWidget widget) {
+                             public void add(final IsWidget tabTitle,
+                                             final IsWidget widget) {
                                  panelManager.addWorkbenchPart( tabTitle,
                                                                 part,
                                                                 panel,

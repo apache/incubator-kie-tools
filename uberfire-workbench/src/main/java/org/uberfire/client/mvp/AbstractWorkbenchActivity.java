@@ -58,7 +58,7 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
     }
 
     @Override
-    public abstract String getTitle();
+    public abstract IsWidget getTabWidget();
 
     @Override
     public abstract IsWidget getWidget();

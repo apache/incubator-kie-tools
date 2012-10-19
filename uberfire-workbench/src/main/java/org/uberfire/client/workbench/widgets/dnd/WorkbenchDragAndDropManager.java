@@ -25,7 +25,7 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A Manager of drag and drop operations within the Workbench.
@@ -37,18 +37,18 @@ public class WorkbenchDragAndDropManager {
     private Map<WorkbenchPanelPresenter.View, DropController> dropControllerMap = new HashMap<WorkbenchPanelPresenter.View, DropController>();
 
     //The context of the drag operation
-    private WorkbenchDragContext                     workbenchContext  = null;
+    private WorkbenchDragContext                              workbenchContext  = null;
 
     @Inject
-    private WorkbenchPickupDragController            dragController;
+    private WorkbenchPickupDragController                     dragController;
 
     @Inject
-    private BeanFactory                              factory;
+    private BeanFactory                                       factory;
 
-    public void makeDraggable(Widget draggable,
-                              Widget dragHandle) {
-        this.dragController.makeDraggable( draggable,
-                                           dragHandle );
+    public void makeDraggable(IsWidget draggable,
+                              IsWidget dragHandle) {
+        this.dragController.makeDraggable( draggable.asWidget(),
+                                           dragHandle.asWidget() );
     }
 
     public void registerDropController(final WorkbenchPanelPresenter.View owner,

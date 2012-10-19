@@ -22,6 +22,7 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import com.google.gwt.user.client.ui.InlineLabel;
 
 <#if hasUberView>
 import javax.annotation.PostConstruct;
@@ -138,10 +139,16 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     }
 
     </#if>
-    <#if getTitleMethodName??>
+    <#if getTabWidgetMethodName??>
     @Override
-    public String getTitle() {
-        return realPresenter.${getTitleMethodName}();
+    public IsWidget getTabWidget() {
+        return realPresenter.${getTabWidgetMethodName}();
+    }
+
+    <#elseif getTabTitleMethodName??>
+    @Override
+    public IsWidget getTabWidget() {
+        return new InlineLabel(realPresenter.${getTabTitleMethodName}());
     }
 
     </#if>

@@ -26,6 +26,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
+import org.uberfire.annotations.processors.AbstractProcessorTest.Result;
 
 /**
  * Tests for Screen related class generation
@@ -77,7 +78,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest3" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+                                "The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -349,6 +350,54 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  } ),
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTabWidget() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest16";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest16.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTabTitleAndTabWidget() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest17";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest17.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
+
+                                                                                     @Override
+                                                                                     public void generationComplete(final String code) {
+                                                                                         result.setActualCode( code );
+                                                                                     }
+                                                                                 } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertCompilationWarning( diagnostics,
+                                  "The WorkbenchScreen has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

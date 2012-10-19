@@ -20,6 +20,7 @@ import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.model.PanelDefinition;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -52,7 +53,7 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void addPart(String title,
+    public void addPart(IsWidget title,
                         View view) {
     }
 
@@ -60,6 +61,11 @@ public class MockWorkbenchPanelView
     public void addPanel(PanelDefinition panel,
                          org.uberfire.client.workbench.WorkbenchPanelPresenter.View view,
                          Position position) {
+    }
+
+    @Override
+    public void changeTabContent(int indexOfPartToChangeTabContent,
+                                 IsWidget tabContent) {
     }
 
     @Override

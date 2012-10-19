@@ -25,6 +25,8 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * Mock BeanFactory that doesn't use CDI.
  */
@@ -33,10 +35,10 @@ public class MockBeanFactory
     BeanFactory {
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
                                                    final PartDefinition definition) {
         final WorkbenchPartPresenter part = new WorkbenchPartPresenter( new MockWorkbenchPartView() );
-        part.setTitle( title );
+        part.setTabWidget( tabWidget );
         part.setDefinition( definition );
         return part;
     }

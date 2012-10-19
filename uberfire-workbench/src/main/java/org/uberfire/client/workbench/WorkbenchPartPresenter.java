@@ -45,7 +45,7 @@ public class WorkbenchPartPresenter {
 
     private View           view;
 
-    private String         title;
+    private IsWidget       tabWidget;
 
     private PartDefinition definition;
 
@@ -68,12 +68,12 @@ public class WorkbenchPartPresenter {
         this.definition = definition;
     }
 
-    public String getTitle() {
-        return title;
+    public IsWidget getTabWidget() {
+        return tabWidget;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTabWidget(IsWidget tabWidget) {
+        this.tabWidget = tabWidget;
     }
 
     public View getPartView() {

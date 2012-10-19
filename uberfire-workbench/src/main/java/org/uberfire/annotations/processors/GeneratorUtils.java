@@ -234,17 +234,34 @@ public class GeneratorUtils {
 
     /**
      * Get the method name annotated with {@code @WorkbenchPartTitle}. The
-     * method must be public, non-static, have a return-type of void and take
-     * zero parameters.
+     * method must be public, non-static, have a return-type of java.lang.String
+     * and take zero parameters.
      * 
      * @param classElement
      * @param processingEnvironment
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getTitleMethodName(final TypeElement classElement,
-                                            final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public static String getTabTitleMethodName(final TypeElement classElement,
+                                               final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getStringMethodName( classElement,
+                                    processingEnvironment,
+                                    WorkbenchPartTitle.class );
+    }
+
+    /**
+     * Get the method name annotated with {@code @WorkbenchPartTitle}. The
+     * method must be public, non-static, have a return-type of
+     * com.google.gwt.user.client.ui.IsWidget and take zero parameters.
+     * 
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static ExecutableElement getTabWidgetMethodName(final TypeElement classElement,
+                                                           final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getWidgetMethodName( classElement,
                                     processingEnvironment,
                                     WorkbenchPartTitle.class );
     }

@@ -72,15 +72,17 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                               processingEnvironment );
         final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName( classElement,
                                                                                                  processingEnvironment );
-        final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
-                                                                             processingEnvironment );
+        final String getTabTitleMethodName = GeneratorUtils.getTabTitleMethodName( classElement,
+                                                                                   processingEnvironment );
+        final ExecutableElement getTabWidgetMethod = GeneratorUtils.getTabWidgetMethodName( classElement,
+                                                                                            processingEnvironment );
+        final String getTabWidgetMethodName = getTabWidgetMethod == null ? null : getTabWidgetMethod.getSimpleName().toString();
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName( classElement,
                                                                                       processingEnvironment );
+        final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
         final boolean hasUberView = GeneratorUtils.hasUberViewReference( classElement,
                                                                          processingEnvironment,
                                                                          getWidgetMethod );
-
-        final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
 
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
@@ -107,7 +109,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
         logger.debug( "onFocusMethodName: " + onFocusMethodName );
         logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
-        logger.debug( "getTitleMethodName: " + getTitleMethodName );
+        logger.debug( "getTabTitleMethodName: " + getTabTitleMethodName );
+        logger.debug( "getTabWidgetMethodName: " + getTabWidgetMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
         logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
@@ -137,9 +140,15 @@ public class EditorActivityGenerator extends AbstractGenerator {
             logger.warn( msg );
         }
 
-        //Validate getTitleMethodName
-        if ( getTitleMethodName == null ) {
-            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+        //Validate getTabTitleMethodName and getTabWidgetMethodName
+        if ( getTabTitleMethodName == null && getTabWidgetMethodName == null ) {
+            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
+        }
+        if ( getTabTitleMethodName != null && getTabWidgetMethodName != null ) {
+            final String msg = "The WorkbenchEditor has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
         }
 
         //Setup data for template sub-system
@@ -170,8 +179,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   onFocusMethodName );
         root.put( "getDefaultPositionMethodName",
                   getDefaultPositionMethodName );
-        root.put( "getTitleMethodName",
-                  getTitleMethodName );
+        root.put( "getTabTitleMethodName",
+                  getTabTitleMethodName );
+        root.put( "getTabWidgetMethodName",
+                  getTabWidgetMethodName );
         root.put( "getWidgetMethodName",
                   getWidgetMethodName );
         root.put( "isWidget",

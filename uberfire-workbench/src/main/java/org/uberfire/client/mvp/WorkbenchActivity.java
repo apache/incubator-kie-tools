@@ -47,7 +47,7 @@ public interface WorkbenchActivity
 
     public void onLostFocus();
 
-    public String getTitle();
+    public IsWidget getTabWidget();
 
     public IsWidget getWidget();
 

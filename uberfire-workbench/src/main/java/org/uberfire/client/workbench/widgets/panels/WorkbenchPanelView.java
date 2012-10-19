@@ -41,7 +41,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
@@ -112,10 +112,10 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart(final String title,
+    public void addPart(final IsWidget tabWidget,
                         final WorkbenchPartPresenter.View view) {
         tabPanel.add( view,
-                      makeTabWidget( title,
+                      wrapTabWidget( tabWidget,
                                      view ) );
     }
 
@@ -157,6 +157,16 @@ public class WorkbenchPanelView extends ResizeComposite
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
+    }
+
+    @Override
+    public void changeTabContent(int indexOfPartToChangeTabContent,
+                                 IsWidget tabWidget) {
+        final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) tabPanel.getWidget( indexOfPartToChangeTabContent );
+        final Widget wrappedTabContent = wrapTabWidget( tabWidget,
+                                                        view );
+        tabPanel.setTabWidget( indexOfPartToChangeTabContent,
+                               wrappedTabContent );
     }
 
     @Override
@@ -261,11 +271,10 @@ public class WorkbenchPanelView extends ResizeComposite
         return tabPanel;
     }
 
-    private Widget makeTabWidget(final String title,
+    private Widget wrapTabWidget(final IsWidget tabWidget,
                                  final WorkbenchPartPresenter.View view) {
         final FlowPanel fp = new FlowPanel();
-        final InlineLabel tabLabel = new InlineLabel( title );
-        fp.add( tabLabel );
+        fp.add( tabWidget );
 
         //Clicking on the Tab takes focus
         fp.addDomHandler( new ClickHandler() {
@@ -279,7 +288,7 @@ public class WorkbenchPanelView extends ResizeComposite
                           ClickEvent.getType() );
 
         dndManager.makeDraggable( view.asWidget(),
-                                  tabLabel );
+                                  tabWidget );
 
         final FocusPanel image = new FocusPanel();
         image.getElement().getStyle().setFloat( Style.Float.RIGHT );

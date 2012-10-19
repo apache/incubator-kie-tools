@@ -33,6 +33,7 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.client.workbench.widgets.events.ChangeTabContentEvent;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
@@ -40,6 +41,7 @@ import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -130,7 +132,7 @@ public class PanelManager {
         onPanelFocus( panel );
     }
 
-    public PanelDefinition addWorkbenchPart(final String title,
+    public PanelDefinition addWorkbenchPart(final IsWidget tabWidget,
                                             final PartDefinition part,
                                             final PanelDefinition panel,
                                             final IsWidget partWidget) {
@@ -141,14 +143,14 @@ public class PanelManager {
 
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( title,
+            partPresenter = factory.newWorkbenchPart( tabWidget,
                                                       part );
             partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part,
                                               partPresenter );
         }
 
-        panelPresenter.addPart( title,
+        panelPresenter.addPart( tabWidget,
                                 part,
                                 partPresenter.getPartView() );
 
@@ -276,6 +278,22 @@ public class PanelManager {
     private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
         final PartDefinition part = event.getPart();
         removePart( part );
+    }
+
+    @SuppressWarnings("unused")
+    private void onChangeWorkbenchTabContentEvent(@Observes ChangeTabContentEvent event) {
+        final PlaceRequest place = event.getPlaceRequest();
+        final IsWidget tabContent = event.getTabContent();
+        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
+            final PanelDefinition panel = e.getKey();
+            final WorkbenchPanelPresenter presenter = e.getValue();
+            for ( PartDefinition part : panel.getParts() ) {
+                if ( place.equals( part.getPlace() ) ) {
+                    presenter.changeTabContent( part,
+                                                tabContent );
+                }
+            }
+        }
     }
 
     private void removePart(final PartDefinition part) {

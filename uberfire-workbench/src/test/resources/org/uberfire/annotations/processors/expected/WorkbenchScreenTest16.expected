@@ -34,28 +34,28 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("test5")
+@Identifier("test16")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest5Activity extends AbstractWorkbenchScreenActivity {
+public class WorkbenchScreenTest16Activity extends AbstractWorkbenchScreenActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
+    private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private WorkbenchScreenTest5 realPresenter;
+    private WorkbenchScreenTest16 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchScreenTest5Activity(final PlaceManager placeManager) {
+    public WorkbenchScreenTest16Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
     @Override
     public IsWidget getTabWidget() {
-        return new InlineLabel(realPresenter.getTitle());
+        return realPresenter.getTabWidget();
     }
 
     @Override
@@ -75,6 +75,6 @@ public class WorkbenchScreenTest5Activity extends AbstractWorkbenchScreenActivit
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchScreenTest5Activity";
+        return "org.uberfire.annotations.processors.WorkbenchScreenTest16Activity";
     }
 }

@@ -18,6 +18,8 @@ package org.uberfire.client.workbench.widgets.dnd;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * The context of a drag and drop operation within the Workbench.
  */
@@ -25,7 +27,7 @@ public class WorkbenchDragContext {
 
     private final PartDefinition  sourcePart;
     private final PanelDefinition sourcePanel;
-    private final String          title;
+    private final IsWidget        tabWidget;
 
     private Integer               height;
     private Integer               width;
@@ -34,14 +36,14 @@ public class WorkbenchDragContext {
 
     public WorkbenchDragContext(final PartDefinition sourcePart,
                                 final PanelDefinition sourcePanel,
-                                final String title,
+                                final IsWidget tabWidget,
                                 final Integer height,
                                 final Integer width,
                                 final Integer minHeight,
                                 final Integer minWidth) {
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
-        this.title = title;
+        this.tabWidget = tabWidget;
         this.height = height;
         this.width = width;
         this.minHeight = minHeight;
@@ -63,10 +65,10 @@ public class WorkbenchDragContext {
     }
 
     /**
-     * @return the title
+     * @return the tab widget
      */
-    public String getTitle() {
-        return title;
+    public IsWidget getTabWidget() {
+        return tabWidget;
     }
 
     public final Integer getHeight() {

@@ -30,6 +30,7 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -91,7 +92,7 @@ public class CompassDropController
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
-        final String title = workbenchContext.getTitle();
+        final IsWidget tabWidget = workbenchContext.getTabWidget();
         final Integer height = null;//workbenchContext.getHeight();
         final Integer width = null;//workbenchContext.getWidth();
         final Integer minHeight = workbenchContext.getMinHeight();
@@ -118,7 +119,7 @@ public class CompassDropController
                                                                             width,
                                                                             minHeight,
                                                                             minWidth );
-        panelManager.addWorkbenchPart( title,
+        panelManager.addWorkbenchPart( tabWidget,
                                        sourcePart,
                                        targetPanel,
                                        view.getWrappedWidget() );

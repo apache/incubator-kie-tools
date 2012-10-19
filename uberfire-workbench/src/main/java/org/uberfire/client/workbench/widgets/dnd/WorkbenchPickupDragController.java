@@ -29,6 +29,7 @@ import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -54,14 +55,14 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchPartPresenter.View sourceView = (WorkbenchPartPresenter.View) super.context.selectedWidgets.get( 0 );
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
-        final String title = sourceView.getPresenter().getTitle();
+        final IsWidget tabWidget = sourceView.getPresenter().getTabWidget();
         final Integer height = sourcePanel.getHeight();
         final Integer width = sourcePanel.getWidth();
         final Integer minHeight = sourcePanel.getMinHeight();
         final Integer minWidth = sourcePanel.getMinWidth();
         final WorkbenchDragContext context = new WorkbenchDragContext( sourcePart,
                                                                        sourcePanel,
-                                                                       title,
+                                                                       tabWidget,
                                                                        height,
                                                                        width,
                                                                        minHeight,

@@ -19,5 +19,5 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AcceptItem {
 
-    void add(String title, IsWidget widget);
+    void add(IsWidget title, IsWidget widget);
 }

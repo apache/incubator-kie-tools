@@ -21,12 +21,14 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * A Factory definition to create new instances of managed beans.
  */
 public interface BeanFactory {
 
-    public WorkbenchPartPresenter newWorkbenchPart(final String title,
+    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
                                                    final PartDefinition definition);
 
     public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition);

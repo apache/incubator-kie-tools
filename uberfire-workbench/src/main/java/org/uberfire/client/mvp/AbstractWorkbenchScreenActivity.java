@@ -35,7 +35,7 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
         super.launch( place,
                       callback );
         onStart( place );
-        acceptPanel.add( getTitle(),
+        acceptPanel.add( getTabWidget(),
                          getWidget() );
         onReveal();
     }

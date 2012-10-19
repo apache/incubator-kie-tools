@@ -27,6 +27,7 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
@@ -44,12 +45,15 @@ public class WorkbenchPanelPresenter {
 
         void clear();
 
-        void addPart(String title,
+        void addPart(IsWidget title,
                      WorkbenchPartPresenter.View view);
 
         void addPanel(PanelDefinition panel,
                       WorkbenchPanelPresenter.View view,
                       Position position);
+
+        void changeTabContent(int indexOfPartToChangeTabContent,
+                              IsWidget tabContent);
 
         void selectPart(int index);
 
@@ -90,7 +94,7 @@ public class WorkbenchPanelPresenter {
         this.definition = definition;
     }
 
-    public void addPart(final String title,
+    public void addPart(final IsWidget tabWidget,
                         final PartDefinition part,
                         final WorkbenchPartPresenter.View view) {
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
@@ -100,8 +104,18 @@ public class WorkbenchPanelPresenter {
         if ( !orderedParts.contains( part ) ) {
             orderedParts.add( part );
         }
-        getPanelView().addPart( title,
+        getPanelView().addPart( tabWidget,
                                 view );
+    }
+
+    public void changeTabContent(final PartDefinition part,
+                                 final IsWidget tabContent) {
+        if ( !contains( part ) ) {
+            return;
+        }
+        final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
+        getPanelView().changeTabContent( indexOfPartToChangeTabContent,
+                                         tabContent );
     }
 
     public void addPanel(final PanelDefinition panel,

@@ -869,6 +869,20 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     }
 
     /**
+     * Sets a tab's IsWidget contents
+     * 
+     * @param index
+     *            the index of the tab whose HTML is to be set
+     * @param tabWidget
+     *            the tab's new IsWidget contents
+     */
+    public void setTabWidget(int index,
+                             IsWidget tabWidget) {
+        checkIndex( index );
+        tabs.get( index ).setWidget( tabWidget );
+    }
+
+    /**
      * Sets a tab's HTML contents.
      * 
      * @param index

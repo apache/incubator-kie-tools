@@ -22,6 +22,7 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import com.google.gwt.user.client.ui.InlineLabel;
 
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.ResourceType;
@@ -57,8 +58,8 @@ public class WorkbenchEditorTest13Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public String getTitle() {
-        return realPresenter.getTitle();
+    public IsWidget getTabWidget() {
+        return new InlineLabel(realPresenter.getTitle());
     }
 
     @Override

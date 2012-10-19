@@ -40,6 +40,8 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -110,14 +112,21 @@ public class Workbench extends Composite {
         workbench.clear();
         dndManager.unregisterDropControllers();
 
-        //Size environment
-        final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
-        final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
-        final int availableHeight = HEIGHT - menuBarHeight - toolBarHeight;
-        workbenchContainer.setPixelSize( WIDTH,
-                                         availableHeight );
-        workbench.setPixelSize( WIDTH,
-                                availableHeight );
+        //Size environment - Defer so Widgets have been rendered and hence sizes available
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
+                final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
+                final int availableHeight = HEIGHT - menuBarHeight - toolBarHeight;
+                workbenchContainer.setPixelSize( WIDTH,
+                                                 availableHeight );
+                workbench.setPixelSize( WIDTH,
+                                        availableHeight );
+            }
+
+        } );
 
         //Add default workbench widget
         final PanelDefinition root = new PanelDefinitionImpl( true );

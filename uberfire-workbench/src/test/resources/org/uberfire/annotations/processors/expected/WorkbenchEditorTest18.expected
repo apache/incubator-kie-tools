@@ -25,37 +25,41 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
+import org.uberfire.client.workbench.annotations.ResourceType;
+import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import org.uberfire.backend.vfs.Path;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("test5")
+@Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
+@ResourceType("test18")
+@Identifier("test18")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest5Activity extends AbstractWorkbenchScreenActivity {
+public class WorkbenchEditorTest18Activity extends AbstractWorkbenchEditorActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
+    private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private WorkbenchScreenTest5 realPresenter;
+    private WorkbenchEditorTest18 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchScreenTest5Activity(final PlaceManager placeManager) {
+    public WorkbenchEditorTest18Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
     @Override
     public IsWidget getTabWidget() {
-        return new InlineLabel(realPresenter.getTitle());
+        return realPresenter.getTabWidget();
     }
 
     @Override
@@ -75,6 +79,6 @@ public class WorkbenchScreenTest5Activity extends AbstractWorkbenchScreenActivit
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchScreenTest5Activity";
+        return "org.uberfire.annotations.processors.WorkbenchEditorTest18Activity";
     }
 }
