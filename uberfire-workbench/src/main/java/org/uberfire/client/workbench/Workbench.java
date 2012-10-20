@@ -47,11 +47,15 @@ import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
-public class Workbench extends Composite {
+public class Workbench extends Composite
+    implements
+    RequiresResize {
 
     public static final int               WIDTH     = Window.getClientWidth();
 
@@ -112,6 +116,11 @@ public class Workbench extends Composite {
         workbench.clear();
         dndManager.unregisterDropControllers();
 
+        //Add default workbench widget
+        final PanelDefinition root = new PanelDefinitionImpl( true );
+        panelManager.setRoot( root );
+        workbench.setWidget( panelManager.getPanelView( root ) );
+
         //Size environment - Defer so Widgets have been rendered and hence sizes available
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
@@ -124,14 +133,10 @@ public class Workbench extends Composite {
                                                  availableHeight );
                 workbench.setPixelSize( WIDTH,
                                         availableHeight );
+                onResize();
             }
 
         } );
-
-        //Add default workbench widget
-        final PanelDefinition root = new PanelDefinitionImpl( true );
-        panelManager.setRoot( root );
-        workbench.setWidget( panelManager.getPanelView( root ) );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
@@ -173,6 +178,16 @@ public class Workbench extends Composite {
             }
         }
         return defaultPerspective;
+    }
+
+    @Override
+    public void onResize() {
+        final Widget w = workbench.getWidget();
+        if ( w != null ) {
+            if ( w instanceof RequiresResize ) {
+                ((RequiresResize) w).onResize();
+            }
+        }
     }
 
 }
