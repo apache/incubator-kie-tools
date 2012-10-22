@@ -31,6 +31,5 @@
   <modules>
     <module>vfs-fs</module>
     <module>vfs-jgit</module>
-    <module>vfs-eclipse</module>
   </modules>
 </project>
