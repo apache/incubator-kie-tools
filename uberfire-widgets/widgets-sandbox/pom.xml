@@ -19,18 +19,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire</artifactId>
+    <artifactId>uberfire-widgets</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>uberfire-widgets</artifactId>
+  <artifactId>widgets-sandbox</artifactId>
   <packaging>pom</packaging>
 
-  <name>ÜberFire Widgets</name>
+  <name>Widgets Sandbox</name>
 
   <modules>
-    <module>widgets-commons</module>
-    <module>widgets-core</module>
-    <module>widgets-sandbox</module>
+    <module>widget-markdown</module>
   </modules>
 </project>

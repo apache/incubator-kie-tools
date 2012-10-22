@@ -14,11 +14,6 @@
 * limitations under the License.
 */
 
-@sprite .header {
-	gwt-image: 'images.jbossrulesBlue';
-	height: 70px;
-}
-
 .logo {
 	float: left;
 }

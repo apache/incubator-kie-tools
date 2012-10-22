@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+package org.uberfire.client.markdown;
 
-/**
- * General CSS for Guvnor. Use of standalone CSS files should be migrated to
- * here
- */
-public interface ShowcaseCss
-        extends
-        CssResource {
-    
-    @ClassName("userInfo")
-    String userInfoClass();
+import javax.enterprise.context.ApplicationScoped;
 
-    @ClassName("perspectives")
-    String perspectivesClass();
+@ApplicationScoped
+public class MarkdownUtil {
 
-    @ClassName("controls")
-    String controlsClass();
-
-    @ClassName("logo")
-    String logoClass();
+    public native String toHTML(final String text) /*-{
+        var converter = new $wnd.Showdown.converter();
+        return converter.makeHtml(text);
+    }-*/;
 
 }

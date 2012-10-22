@@ -35,16 +35,18 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 public class FileExplorerPerspective {
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName( "File Explorer" );
+        p.setName("File Explorer");
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("RepositoriesEditor")));
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
-        p.getRoot().setChild( Position.WEST,
-                              west );
+        west.setWidth(200);
+        west.setMinWidth(150);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("FileExplorer")));
+
+        p.getRoot().setChild(Position.WEST, west);
 
         return p;
     }

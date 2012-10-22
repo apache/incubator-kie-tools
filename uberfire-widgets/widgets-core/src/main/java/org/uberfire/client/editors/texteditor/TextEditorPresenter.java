@@ -82,8 +82,7 @@ public class TextEditorPresenter {
             public void callback(Path response) {
                 view.setDirty( false );
             }
-        } ).write( path,
-                   view.getContent() );
+        } ).write( path, view.getContent() );
     }
 
     @IsDirty

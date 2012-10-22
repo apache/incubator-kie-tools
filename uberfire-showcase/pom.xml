@@ -69,6 +69,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>widget-markdown</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench</artifactId>
     </dependency>
 

@@ -367,6 +367,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- Widgets Sandbox -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>widget-markdown</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- Annotations -->
       <dependency>
         <groupId>org.freemarker</groupId>

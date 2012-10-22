@@ -28,16 +28,6 @@ public interface ShowcaseImages
 
     ShowcaseImages INSTANCE = GWT.create( ShowcaseImages.class );
 
-    @Source("images/monitoring.png")
-    ImageResource monitoringScreenshot();
-
-    @Source("images/hdrlogo_drools.gif")
-    ImageResource hdrlogoDrools();
-
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    @Source("images/jbossrulesBlue.gif")
-    ImageResource jbossrulesBlue();
-
     @Source("images/spinner.gif")
     ImageResource spinner();
 

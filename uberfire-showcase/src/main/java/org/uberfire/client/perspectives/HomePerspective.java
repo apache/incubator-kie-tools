@@ -1,5 +1,7 @@
 package org.uberfire.client.perspectives;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.Position;
@@ -10,31 +12,35 @@ import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+@ApplicationScoped
 @WorkbenchPerspective(identifier = "homePerspective", isDefault = true)
 public class HomePerspective {
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition definition = new PerspectiveDefinitionImpl();
-        definition.setName( "home" );
+    public PerspectiveDefinition buildPerspective() {
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
+        p.setName("Home");
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "perspectives" ) ) );
-        definition.getRoot().setChild( Position.WEST,
-                                       west );
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeVideos")));
+        west.setWidth(250);
+        west.setMinWidth(200);
+        p.getRoot().setChild(Position.WEST, west);
 
-        final PanelDefinition east1 = new PanelDefinitionImpl();
-        east1.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "notifications" ) ) );
-        definition.getRoot().setChild( Position.EAST,
-                                       east1 );
+        final PanelDefinition east = new PanelDefinitionImpl();
+        east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
+        east.setWidth(300);
+        east.setMinWidth(200);
+        p.getRoot().setChild(Position.EAST, east);
 
-        final PanelDefinition east2 = new PanelDefinitionImpl();
-        east2.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "rssFeed" ) ) );
-        east1.setChild( Position.EAST,
-                        east2 );
+        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("welcome")));
 
-        definition.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "welcome" ) ) );
+        final PanelDefinition south = new PanelDefinitionImpl();
+        south.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeScreen")));
+        south.setHeight(515);
+        south.setMinHeight(400);
+        p.getRoot().setChild(Position.SOUTH, south);
 
-        return definition;
+        return p;
     }
 }

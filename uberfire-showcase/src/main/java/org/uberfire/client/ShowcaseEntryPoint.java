@@ -76,7 +76,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager                 activityManager;
 
-    private String[]                        menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "Test6", "Test7", "FileExplorer", "RepositoriesEditor", "Chart", "chartPopulator", "GoogleGadgetScreen"};
+    private String[]                        menuItems = new String[]{"MyAdminArea", "MyAdminArea2", "Monitoring", "Test", "Test2", "Test6", "Test7", "FileExplorer", "RepositoriesEditor", "Chart", "chartPopulator", "GoogleGadgetScreen", "YouTubeScreen"};
 
     @AfterInitialization
     public void startApp() {

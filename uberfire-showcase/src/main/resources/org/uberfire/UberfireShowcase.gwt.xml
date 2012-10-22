@@ -13,6 +13,8 @@
 
   <inherits name='com.googlecode.gchart.GChart'/>
 
+  <inherits name="org.uberfire.UberfireMarkdownWidget"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
 
