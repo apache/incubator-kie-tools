@@ -73,15 +73,6 @@ public class DashboardPerspective {
         p.getRoot().setChild(Position.SOUTH, south);
         p.getRoot().setChild(Position.EAST, east);
 
-//        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("IPInfoGadget")));
-//        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
-
-//        final PanelDefinition south = new PanelDefinitionImpl();
-//        south.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeScreen")));
-//        south.setHeight(515);
-//        south.setMinHeight(400);
-//        p.getRoot().setChild(Position.SOUTH, south);
-
         return p;
     }
 }

@@ -65,10 +65,6 @@ public class RepositoriesEditorPresenter {
                            String link);
 
         void clear();
-
-        Button getCreateRepoButton();
-
-        Button getCloneRepoButton();
     }
 
     @Inject
@@ -98,40 +94,6 @@ public class RepositoriesEditorPresenter {
                 }
             }
         } ).listRoots();
-
-        view.getCreateRepoButton().addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                final NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
-                //When pop-up is closed destroy bean to avoid memory leak
-                newRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                    @Override
-                    public void onClose(CloseEvent<PopupPanel> event) {
-                        iocManager.destroyBean( newRepositoryWizard );
-                    }
-
-                } );
-                newRepositoryWizard.show();
-            }
-        } );
-
-        view.getCloneRepoButton().addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                final CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
-                //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                    @Override
-                    public void onClose(CloseEvent<PopupPanel> event) {
-                        iocManager.destroyBean( cloneRepositoryWizard );
-                    }
-
-                } );
-                cloneRepositoryWizard.show();
-            }
-        } );
     }
 
     @WorkbenchPartTitle

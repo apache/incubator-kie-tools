@@ -52,9 +52,7 @@ public class RepositoryEditorView extends Composite
                               String description,
                               String link) {
         panel.add( new HTML( "<li>" +
-                               "<h3>" +
-                                   "<a href=\"" + link + "\">" + repositoryName + "</a>" +
-                               "</h3>" +
+                               "<h3>" + repositoryName + "</h3>" +
                                "<div>" +
                                    "<p> Origin: <a href=\"" + gitURL + "\" target=\"_blank\">" + gitURL + "</a></p>" +
                                    "<p> Description: " + description + "</p>" +

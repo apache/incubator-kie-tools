@@ -20,11 +20,6 @@
 
 
   <gwt:VerticalPanel>
-    <gwt:HorizontalPanel>
-      <gwt:Button ui:field="createRepoButton" text='Create New Repository'/>
-      <gwt:HTML text='&nbsp;'/>
-      <gwt:Button ui:field="cloneRepoButton" text='Clone Repository'/>
-    </gwt:HorizontalPanel>
     <gwt:HTMLPanel>
     <p></p>
     <p></p>

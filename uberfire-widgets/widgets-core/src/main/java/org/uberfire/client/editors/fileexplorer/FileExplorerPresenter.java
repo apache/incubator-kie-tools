@@ -24,9 +24,14 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.Path;
@@ -39,12 +44,20 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.Util;
+import org.uberfire.client.editors.repositorieseditor.CloneRepositoryWizard;
+import org.uberfire.client.editors.repositorieseditor.NewRepositoryWizard;
 import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
+import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -77,6 +90,9 @@ public class FileExplorerPresenter {
 
     @Inject
     private IdentifierUtils                 idUtils;
+
+    @Inject
+    private IOCBeanManager                  iocManager;
 
     private static final String             REPOSITORY_ID = "repositories";
 
@@ -267,6 +283,56 @@ public class FileExplorerPresenter {
     public Position getDefaultPosition() {
         return Position.WEST;
     }
+
+    @WorkbenchToolBar
+    public ToolBar getToolBar() {
+        final ToolBar toolBar = new DefaultToolBar();
+        final ToolBarItem clone = new DefaultToolBarItem( "image/clone_repo.png",
+                "Clone Repo",
+                new Command() {
+
+                    @Override
+                    public void execute() {
+                        final CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                        //When pop-up is closed destroy bean to avoid memory leak
+                        cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+                            @Override
+                            public void onClose(CloseEvent<PopupPanel> event) {
+                                iocManager.destroyBean( cloneRepositoryWizard );
+                            }
+
+                        } );
+                        cloneRepositoryWizard.show();
+                    }
+
+                } );
+        toolBar.addItem( clone );
+
+        final ToolBarItem newRepo = new DefaultToolBarItem( "image/new_repo.png",
+                "New Repository",
+                new Command() {
+
+                    @Override
+                    public void execute() {
+                        final NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                        //When pop-up is closed destroy bean to avoid memory leak
+                        newRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+                            @Override
+                            public void onClose(CloseEvent<PopupPanel> event) {
+                                iocManager.destroyBean( newRepositoryWizard );
+                            }
+
+                        } );
+                        newRepositoryWizard.show();
+
+                    }
+
+                } );
+        toolBar.addItem( newRepo );
+        return toolBar;
+    }
+
 
     private boolean needsLoading(TreeItem item) {
         return item.getChildCount() == 1

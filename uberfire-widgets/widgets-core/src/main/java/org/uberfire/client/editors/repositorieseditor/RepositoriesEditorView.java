@@ -43,12 +43,6 @@ public class RepositoriesEditorView extends Composite
     @UiField
     public HTMLPanel                            panel;
 
-    @UiField
-    public Button                               createRepoButton;
-
-    @UiField
-    public Button                               cloneRepoButton;
-
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -60,9 +54,7 @@ public class RepositoriesEditorView extends Composite
                               String link) {
         panel.setWidth( "800px" );
         panel.add( new HTML( "<li  class=guvnor-repository-li>" +
-                               "<h3>" +
-                                   "<a href=\"" + link + "\">" + repositoryName + "</a>" +
-                               "</h3>" +
+                               "<h3>" + repositoryName + "</h3>" +
                                "<div class=guvnor-repository-body>" +
                                    "<p> Description: " + description + "</p>" +
                                    "<p >Last updated: </p>" +
@@ -81,16 +73,6 @@ public class RepositoriesEditorView extends Composite
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        panel.setPixelSize( width,
-                            height );
+        panel.setPixelSize( width, height );
     }
-
-    public Button getCreateRepoButton() {
-        return createRepoButton;
-    }
-
-    public Button getCloneRepoButton() {
-        return cloneRepoButton;
-    }
-
 }
