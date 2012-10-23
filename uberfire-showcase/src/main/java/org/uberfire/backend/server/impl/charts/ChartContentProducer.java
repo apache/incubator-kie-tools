@@ -21,6 +21,7 @@ public class ChartContentProducer {
     public void addNotification(@Observes ChartRefreshEvent event) {
         DataSet columns = new DataSet();
 
+        columns.addColumn(createColumn("Porcelli", Math.random() * 100));
         columns.addColumn(createColumn("Toni", Math.random() * 100));
         columns.addColumn(createColumn("Mark", Math.random() * 100));
         columns.addColumn(createColumn("Salaboy", Math.random() * 100));
