@@ -27,9 +27,12 @@ import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.shared.security.AppRoles;
+import org.uberfire.shared.security.ShowcaseRoles;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "dashboardPerspective")
+@ShowcaseRoles(value = {AppRoles.DIRECTOR, AppRoles.MANAGER})
 public class DashboardPerspective {
 
     @Perspective
@@ -56,7 +59,6 @@ public class DashboardPerspective {
 
         seast.setChild(Position.EAST, seast2);
         south.setChild(Position.EAST, seast);
-
 
         final PanelDefinition east = new PanelDefinitionImpl();
         east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));

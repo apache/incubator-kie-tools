@@ -31,7 +31,6 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Tree;
@@ -116,11 +115,13 @@ public class FileExplorerPresenter {
         void setFocus();
     }
 
-    private static CoreImages images = GWT.create(CoreImages.class);
-    private static final String LAZY_LOAD = "Loading...";
+    private static String[]     PERMISSIONS_ADMIN = new String[]{"ADMIN"};
+
+    private static CoreImages   images            = GWT.create(CoreImages.class);
+    private static final String LAZY_LOAD         = "Loading...";
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.cloneRepoCommand = new Command() {
 
             @Override
@@ -339,6 +340,7 @@ public class FileExplorerPresenter {
 
         final ToolBarItem newRepo = new DefaultToolBarItem("image/new_repo.png",
                 "New Repository", newRepoCommand);
+        newRepo.setRoles(PERMISSIONS_ADMIN);
         toolBar.addItem(newRepo);
         return toolBar;
     }
@@ -351,6 +353,7 @@ public class FileExplorerPresenter {
 
         final MenuItem cloneRepo = new DefaultMenuItemCommand("Clone Repo", cloneRepoCommand);
         final MenuItem newRepo = new DefaultMenuItemCommand("New Repo", newRepoCommand);
+        newRepo.setRoles(PERMISSIONS_ADMIN);
 
         subMenuBar.addItem(cloneRepo);
         subMenuBar.addItem(newRepo);
