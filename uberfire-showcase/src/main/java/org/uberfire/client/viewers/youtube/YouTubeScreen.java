@@ -46,7 +46,7 @@ public class YouTubeScreen
 
     }
 
-    private static final String URL = "http://www.youtube.com/embed/5nqOyuvGBHs?rel=0";
+    private static final String URL = "http://www.youtube.com/embed/xnmSR62_4Us?rel=0";
 
     @UiField
     protected Frame iframe;

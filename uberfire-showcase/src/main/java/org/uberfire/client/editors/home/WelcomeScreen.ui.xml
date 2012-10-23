@@ -20,29 +20,37 @@
 
   <ui:style>
     .background {
-      background-color: #90ee90;
+      background-color: #aaaa99;
       height: 100%;
     }
 
     .title {
-      padding: 50px 0px 10px 0px;
+      padding: 10px 0px 10px 0px;
       width: 100%;
       text-align: center;
-      font-size: 24px;
+      font-size: 30px;
+      font-family: Tahoma, Geneva, sans-serif;
     }
 
     .explanation {
-      padding: 0px 30px 0px 30px;
-      /*color: #f5f5f5;*/
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    .note {
+      padding-top: 20px;
+      padding-left: 10px;
+      padding-right: 10px;
+      font-weight: bold;
     }
   </ui:style>
 
   <gwt:HTMLPanel height="100%">
     <div class='{style.background}'>
       <div class='{style.title}'>
-        Welcome to ÜberFire
+        Welcome to UberFire
       </div>
-      <div class='{style.explanation}'>Feel free to customize this perspective or pick one from the left.
+      <div class='{style.explanation}'><span class='{style.note}'>Important Note:</span>This is an Alpha version, and no investments have been made on Look &amp; Feel.
       </div>
     </div>
   </gwt:HTMLPanel>

@@ -182,7 +182,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 final URI initURI = URI.create(getScheme() + "://master@" + name + "/readme.md");
                 final JGitOp op = setupOp(env);
                 final OutputStream stream = newOutputStream(getPath(initURI), op);
-                stream.write("init content.".getBytes());
+                final String init = "Repository Init Content\n" +
+                        "=======================\n" +
+                        "\n" +
+                        "Your project description here.";
+                stream.write(init.getBytes());
                 stream.close();
             } catch (final Exception e) {
             }

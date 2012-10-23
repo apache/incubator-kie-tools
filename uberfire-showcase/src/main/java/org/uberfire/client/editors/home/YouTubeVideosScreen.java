@@ -39,13 +39,10 @@ public class YouTubeVideosScreen {
     private static final List<YouTubeVideo> VIDEOS = new LinkedList<YouTubeVideo>() {{
         add(new YouTubeVideo("Quick Tour",
                 "A quick tour that shows UberFire cool features.",
-                "http://www.youtube.com/embed/5nqOyuvGBHs?rel=0"));
-        add(new YouTubeVideo("HowTo Create a Panel",
-                "Start creating your own panels in less than 5 minutes!",
-                "http://www.youtube.com/embed/Omj4PR3v-nI?rel=0"));
+                "http://www.youtube.com/embed/xnmSR62_4Us?rel=0"));
         add(new YouTubeVideo("Sample App",
                 "Here a good example of an application build on top of UberFire.",
-                "http://www.youtube.com/embed/T5D3hTjZlRc?rel=0"));
+                "http://www.youtube.com/embed/Y3LX4E9OKcs?rel=0"));
     }};
 
     @Inject

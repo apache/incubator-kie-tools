@@ -102,7 +102,7 @@ public class TextEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor [" + path.toURI() + "]";
+        return "Text Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

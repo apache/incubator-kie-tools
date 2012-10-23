@@ -44,7 +44,7 @@ public class AppSetup {
         final String gitURL = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final String userName = "guvnorngtestuser1";
         final String password = "test1234";
-        final URI fsURI = URI.create("git://guvnorng-playground");
+        final URI fsURI = URI.create("git://uf-playground");
 
         final Map<String, Object> env = new HashMap<String, Object>();
         env.put("username", userName);
@@ -56,7 +56,7 @@ public class AppSetup {
         } catch (FileSystemAlreadyExistsException ex) {
         }
 
-        final Path root = new PathImpl("guvnorng-playground", "default://guvnorng-playground");
+        final Path root = new PathImpl("uf-playground", "default://uf-playground");
 
         fileSystems.addBootstrapFileSystem(new FileSystemImpl(asList(root)));
     }

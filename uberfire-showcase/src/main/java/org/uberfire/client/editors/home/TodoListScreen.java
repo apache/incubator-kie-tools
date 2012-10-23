@@ -18,6 +18,7 @@ package org.uberfire.client.editors.home;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,6 +27,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -45,6 +50,9 @@ public class TodoListScreen
 
     private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
+    @Inject
+    private Caller<VFSService> vfsServices;
+
     @UiField
     protected Markdown markdown;
 
@@ -52,7 +60,16 @@ public class TodoListScreen
     public void init() {
         initWidget(uiBinder.createAndBindUi(this));
 
-        markdown.setContent("UberFire Todo List\n===\nUberFire is an amazing project, with a bright future, but as an Alpha version we know that it needs some improvements, here are some things in our todo list:\n\n  - Improve Design \n  - Implement Themes");
+        vfsServices.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(final String response) {
+                if (response == null) {
+                    markdown.setContent("<p>-- empty --</p>");
+                } else {
+                    markdown.setContent(response);
+                }
+            }
+        }).readAllString(new PathImpl("todo.md", "default://uf-playground/todo.md"));
     }
 
     @WorkbenchPartTitle
