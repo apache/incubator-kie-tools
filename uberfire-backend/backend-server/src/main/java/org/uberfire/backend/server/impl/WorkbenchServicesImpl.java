@@ -17,6 +17,7 @@ package org.uberfire.backend.server.impl;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,6 +30,8 @@ import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
 import com.thoughtworks.xstream.XStream;
+import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 /**
  * Workbench services
@@ -45,6 +48,10 @@ public class WorkbenchServicesImpl
     @Inject @Named("fs")
     private ActiveFileSystems fileSystems;
 
+
+    @Inject @SessionScoped
+    private Identity identity;
+
     private XStream    xs = new XStream();
 
     private Path bootstrapRoot = null;
@@ -59,12 +66,12 @@ public class WorkbenchServicesImpl
 
         final String rootURI = bootstrapRoot.toURI();
 
-        vfsService.write( new PathImpl( rootURI + "/.metadata/.perspectives/" + perspective.getName() ), xml );
+        vfsService.write( new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() ), xml );
     }
 
     public PerspectiveDefinition load(final String perspectiveName) {
         final String rootURI = bootstrapRoot.toURI();
-        final Path path = new PathImpl( rootURI + "/.metadata/.perspectives/" + perspectiveName );
+        final Path path = new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName );
 
         if ( vfsService.exists( path ) ){
             final String xml = vfsService.readAllString( path );
