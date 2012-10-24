@@ -16,10 +16,13 @@
 
 package org.uberfire.security.server.cdi;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
+import org.uberfire.security.Identity;
+import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -41,6 +44,27 @@ public class SecurityFactory {
     @RequestScoped
     public static Subject getSubject() {
         return subjects.get();
+    }
+
+    @Produces
+    @RequestScoped
+    public static Identity getIdentity() {
+        return new Identity() {
+            @Override
+            public List<Role> getRoles() {
+                return subjects.get().getRoles();
+            }
+
+            @Override
+            public boolean hasRole(final Role role) {
+                return subjects.get().hasRole(role);
+            }
+
+            @Override
+            public String getName() {
+                return subjects.get().getName();
+            }
+        };
     }
 
     @Produces
