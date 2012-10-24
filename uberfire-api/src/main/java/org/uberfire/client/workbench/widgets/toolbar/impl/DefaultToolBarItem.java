@@ -81,7 +81,7 @@ public class DefaultToolBarItem
 
     @Override
     public String getSignatureId() {
-        return DefaultToolBarItem.class.getName();
+        return DefaultToolBarItem.class.getName()  + "#" + tooltip;
     }
 
     @Override
