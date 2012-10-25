@@ -50,7 +50,7 @@ public class PerspectiveTest6Activity extends AbstractWorkbenchPerspectiveActivi
     public PerspectiveTest6Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
-    
+
     @Override
     public String getIdentifier() {
         return "PerspectiveTest6";
@@ -83,7 +83,7 @@ public class PerspectiveTest6Activity extends AbstractWorkbenchPerspectiveActivi
     public PerspectiveDefinition getPerspective() {
         return realPresenter.getPerspective();
     }
-    
+
     @Override
     public Collection<String> getRoles() {
         return ROLES;

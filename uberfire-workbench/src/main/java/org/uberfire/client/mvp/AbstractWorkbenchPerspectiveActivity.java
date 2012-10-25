@@ -26,7 +26,13 @@ import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
+import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.PassThroughPlaceRequest;
 
@@ -34,25 +40,31 @@ import org.uberfire.shared.mvp.impl.PassThroughPlaceRequest;
  * Base class for Perspective Activities
  */
 public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActivity
-    implements
-    PerspectiveActivity {
+        implements
+        PerspectiveActivity {
 
     @Inject
-    private PanelManager              panelManager;
+    private PanelManager panelManager;
 
     @Inject
-    private PlaceManager              placeManager;
+    private PlaceManager placeManager;
+
+    @Inject
+    private WorkbenchMenuBarPresenter menuBarPresenter;
+
+    @Inject
+    private WorkbenchToolBarPresenter toolBarPresenter;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
-    public AbstractWorkbenchPerspectiveActivity(final PlaceManager placeManager) {
+    public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
     @Override
-    public void launch(final PlaceRequest place,
-                       final Command callback) {
+    public void launch( final PlaceRequest place,
+                        final Command callback ) {
         super.launch( place,
                       callback );
         saveState();
@@ -64,7 +76,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void onStart(final PlaceRequest place) {
+    public void onStart( final PlaceRequest place ) {
         //Do nothing.  
     }
 
@@ -89,10 +101,23 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         return false;
     }
 
+    @Override
+    public MenuBar getMenuBar() {
+        return null;
+    }
+
+    @Override
+    public ToolBar getToolBar() {
+        return null;
+    }
+
     //Save the current state of the Workbench
     private void saveState() {
 
         onClose();
+
+        menuBarPresenter.clearWorkbenchPerspectiveItems();
+        toolBarPresenter.clearWorkbenchPerspectiveItems();
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
@@ -109,7 +134,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
             //Save first, then close all places before loading persisted state
             wbServices.call( new RemoteCallback<Void>() {
                 @Override
-                public void callback(Void response) {
+                public void callback( Void response ) {
                     placeManager.closeAllPlaces();
                     loadState();
                 }
@@ -129,7 +154,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
             wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
                 @Override
-                public void callback(PerspectiveDefinition response) {
+                public void callback( PerspectiveDefinition response ) {
                     if ( response == null ) {
                         initialisePerspective( perspective );
                     } else {
@@ -141,7 +166,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     //Initialise Workbench state to that of the provided perspective
-    private void initialisePerspective(final PerspectiveDefinition perspective) {
+    private void initialisePerspective( final PerspectiveDefinition perspective ) {
 
         onStart( place );
 
@@ -156,10 +181,26 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         }
         buildPerspective( panelManager.getRoot() );
 
+        //Set up Menu Bar for perspective
+        final MenuBar menuBar = getMenuBar();
+        if ( menuBar != null ) {
+            for ( MenuItem item : menuBar.getItems() ) {
+                menuBarPresenter.addWorkbenchPerspectiveItem( item );
+            }
+        }
+
+        //Set up Tool Bar for perspective
+        final ToolBar toolBar = getToolBar();
+        if ( toolBar != null ) {
+            for ( ToolBarItem item : toolBar.getItems() ) {
+                toolBarPresenter.addWorkbenchPerspectiveItem( item );
+            }
+        }
+
         onReveal();
     }
 
-    private void buildPerspective(final PanelDefinition panel) {
+    private void buildPerspective( final PanelDefinition panel ) {
         for ( PanelDefinition child : panel.getChildren() ) {
             if ( child != null ) {
                 final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
@@ -170,7 +211,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         }
     }
 
-    private void addChildren(final PanelDefinition panel) {
+    private void addChildren( final PanelDefinition panel ) {
         Set<PartDefinition> parts = panel.getParts();
         for ( PartDefinition part : parts ) {
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
@@ -181,7 +222,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         buildPerspective( panel );
     }
 
-    private PlaceRequest clonePlaceAndMergeParameters(final PlaceRequest place) {
+    private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest place ) {
         final PassThroughPlaceRequest clone = new PassThroughPlaceRequest( place.getIdentifier() );
         for ( Map.Entry<String, String> parameter : place.getParameters().entrySet() ) {
             clone.addParameter( parameter.getKey(),

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,34 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.mvp;
 
+package org.uberfire.annotations.processors;
+
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.shared.mvp.PlaceRequest;
 
-/**
- * Perspective Activity life-cycles
- */
-public interface PerspectiveActivity
-    extends
-    Activity {
+@WorkbenchPerspective(identifier = "PerspectiveTest10")
+public class PerspectiveTest10 {
 
-    public void onStart();
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
+        return null;
+    }
 
-    public void onStart(final PlaceRequest place);
-
-    public void onClose();
-
-    public PerspectiveDefinition getPerspective();
-    
-    public String getIdentifier();
-    
-    public boolean isDefault();
-
-    public MenuBar getMenuBar();
-
-    public ToolBar getToolBar();
+    @WorkbenchToolBar
+    public ToolBar getToolBar() {
+        return null;
+    }
 
 }

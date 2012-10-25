@@ -32,33 +32,28 @@ import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
-@Identifier("PerspectiveTest5")
+@Identifier("PerspectiveTest9")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PerspectiveTest5Activity extends AbstractWorkbenchPerspectiveActivity {
+public class PerspectiveTest9Activity extends AbstractWorkbenchPerspectiveActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private PerspectiveTest5 realPresenter;
+    private PerspectiveTest9 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public PerspectiveTest5Activity(final PlaceManager placeManager) {
+    public PerspectiveTest9Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
     @Override
     public String getIdentifier() {
-        return "PerspectiveTest5";
-    }
-
-    @Override
-    public boolean isDefault() {
-        return true;
+        return "PerspectiveTest9";
     }
 
     @Override
@@ -78,6 +73,6 @@ public class PerspectiveTest5Activity extends AbstractWorkbenchPerspectiveActivi
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest5Activity";
+        return "org.uberfire.annotations.processors.PerspectiveTest9Activity";
     }
 }

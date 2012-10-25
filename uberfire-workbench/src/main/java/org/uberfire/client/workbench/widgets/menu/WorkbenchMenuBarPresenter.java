@@ -42,48 +42,54 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class WorkbenchMenuBarPresenter {
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            IsWidget {
 
-        void addMenuItem(final MenuItem menuItem);
+        void addMenuItem( final MenuItem menuItem );
 
-        void removeMenuItem(final MenuItem menuItem);
+        void removeMenuItem( final MenuItem menuItem );
     }
 
-    private PartDefinition                 activePart;
+    private PartDefinition activePart;
 
     @Inject
-    private View                           view;
+    private View view;
 
     @Inject
-    private PlaceManager                   placeManager;
+    private PlaceManager placeManager;
 
     @Inject
     private WorkbenchMenuBarPresenterUtils menuBarUtils;
 
-    //Transient items currently held with the menu bar (i.e. not the "core" entries)
-    private List<MenuItem>                 items = new ArrayList<MenuItem>();
+    //Items relating to the Workbench as a whole
+    private List<MenuItem> workbenchItems = new ArrayList<MenuItem>();
+
+    //Transient items relating to the current Workbench Perspective
+    private List<MenuItem> workbenchPerspectiveItems = new ArrayList<MenuItem>();
+
+    //Transient items relating to the current WorkbenchPart context
+    private List<MenuItem> workbenchContextItems = new ArrayList<MenuItem>();
 
     public IsWidget getView() {
         return this.view;
     }
 
     //Handle removing the WorkbenchPart menu items
-    void onWorkbenchPartClose(@Observes WorkbenchPartCloseEvent event) {
+    void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
         if ( event.getPart().equals( activePart ) ) {
-            removeMenuItems();
+            clearWorkbenchContextItems();
         }
     }
 
     //Handle removing the WorkbenchPart menu items
-    void onWorkbenchPartLostFocus(@Observes WorkbenchPartLostFocusEvent event) {
+    void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
         if ( event.getDeselectedPart().equals( activePart ) ) {
-            removeMenuItems();
+            clearWorkbenchContextItems();
         }
     }
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
-    void onWorkbenchPartOnFocus(@Observes WorkbenchPartOnFocusEvent event) {
+    void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
         final WorkbenchActivity activity = placeManager.getActivity( event.getPart() );
         if ( activity == null ) {
             return;
@@ -91,35 +97,71 @@ public class WorkbenchMenuBarPresenter {
 
         if ( !event.getPart().equals( activePart ) ) {
 
-            removeMenuItems();
+            clearWorkbenchContextItems();
 
             //Add items for current WorkbenchPart
             activePart = event.getPart();
-            items = new ArrayList<MenuItem>();
 
             final MenuBar menuBar = activity.getMenuBar();
             if ( menuBar == null ) {
                 return;
             }
 
-            for ( MenuItem item : menuBarUtils.filterMenuItemsByPermission( menuBar.getItems() ) ) {
-                view.addMenuItem( item );
-                items.add( item );
+            for ( MenuItem item : menuBar.getItems() ) {
+                addWorkbenchContextItem( item );
             }
         }
     }
 
-    private void removeMenuItems() {
-        activePart = null;
-        for ( MenuItem item : items ) {
-            view.removeMenuItem( item );
-        }
-    }
-
-    public void addMenuItem(final MenuItem menuItem) {
+    public void addWorkbenchItem( final MenuItem menuItem ) {
         if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
+            workbenchItems.add( menuItem );
             view.addMenuItem( menuItem );
         }
     }
 
+    public void addWorkbenchPerspectiveItem( final MenuItem item ) {
+        if ( menuBarUtils.filterMenuItemByPermission( item ) != null ) {
+            workbenchPerspectiveItems.add( item );
+            view.addMenuItem( item );
+        }
+    }
+
+    public void addWorkbenchContextItem( final MenuItem menuItem ) {
+        if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
+            workbenchContextItems.add( menuItem );
+            view.addMenuItem( menuItem );
+        }
+    }
+
+    public void clearWorkbenchItems() {
+        if ( workbenchItems.isEmpty() ) {
+            return;
+        }
+        for ( MenuItem item : workbenchItems ) {
+            view.removeMenuItem( item );
+        }
+        workbenchItems.clear();
+    }
+
+    public void clearWorkbenchPerspectiveItems() {
+        if ( workbenchPerspectiveItems.isEmpty() ) {
+            return;
+        }
+        for ( MenuItem item : workbenchPerspectiveItems ) {
+            view.removeMenuItem( item );
+        }
+        workbenchPerspectiveItems.clear();
+    }
+
+    private void clearWorkbenchContextItems() {
+        activePart = null;
+        if ( workbenchContextItems.isEmpty() ) {
+            return;
+        }
+        for ( MenuItem item : workbenchContextItems ) {
+            view.removeMenuItem( item );
+        }
+        workbenchContextItems.clear();
+    }
 }

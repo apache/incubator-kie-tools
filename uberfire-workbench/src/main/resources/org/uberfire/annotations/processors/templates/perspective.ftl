@@ -30,6 +30,14 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
+<#if getMenuBarMethodName??>
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+
+</#if>
+<#if getToolBarMethodName??>
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Identifier("${identifier}")
@@ -58,7 +66,7 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     public ${className}(final PlaceManager placeManager) {
         super( placeManager );
     }
-    
+
     @Override
     public String getIdentifier() {
         return "${identifier}";
@@ -107,7 +115,21 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     public PerspectiveDefinition getPerspective() {
         return realPresenter.${getPerspectiveMethodName}();
     }
-    
+
+    </#if>
+    <#if getMenuBarMethodName??>
+    @Override
+    public MenuBar getMenuBar() {
+        return realPresenter.${getMenuBarMethodName}();
+    }
+
+    </#if>
+    <#if getToolBarMethodName??>
+    @Override
+    public ToolBar getToolBar() {
+        return realPresenter.${getToolBarMethodName}();
+    }
+
     </#if>
     @Override
     public Collection<String> getRoles() {

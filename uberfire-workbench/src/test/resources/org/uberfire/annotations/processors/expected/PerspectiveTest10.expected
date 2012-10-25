@@ -30,40 +30,42 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
-@Identifier("PerspectiveTest5")
+@Identifier("PerspectiveTest10")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PerspectiveTest5Activity extends AbstractWorkbenchPerspectiveActivity {
+public class PerspectiveTest10Activity extends AbstractWorkbenchPerspectiveActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private PerspectiveTest5 realPresenter;
+    private PerspectiveTest10 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public PerspectiveTest5Activity(final PlaceManager placeManager) {
+    public PerspectiveTest10Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
     @Override
     public String getIdentifier() {
-        return "PerspectiveTest5";
-    }
-
-    @Override
-    public boolean isDefault() {
-        return true;
+        return "PerspectiveTest10";
     }
 
     @Override
     public PerspectiveDefinition getPerspective() {
         return realPresenter.getPerspective();
+    }
+
+    @Override
+    public ToolBar getToolBar() {
+        return realPresenter.getToolBar();
     }
 
     @Override
@@ -78,6 +80,6 @@ public class PerspectiveTest5Activity extends AbstractWorkbenchPerspectiveActivi
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest5Activity";
+        return "org.uberfire.annotations.processors.PerspectiveTest10Activity";
     }
 }

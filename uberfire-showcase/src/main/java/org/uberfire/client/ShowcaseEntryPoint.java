@@ -74,7 +74,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    private String[] menuItems = new String[]{"FileExplorer", "Chart"};
+    private String[] menuItems = new String[]{ "FileExplorer", "Chart" };
 
     @AfterInitialization
     public void startApp() {
@@ -83,15 +83,15 @@ public class ShowcaseEntryPoint {
         hideLoadingPopup();
 
         //Register call-backs for demo
-        placeManager.registerOnRevealCallback(new DefaultPlaceRequest("TestPerspective"),
-                new Command() {
+        placeManager.registerOnRevealCallback( new DefaultPlaceRequest( "TestPerspective" ),
+                                               new Command() {
 
-                    @Override
-                    public void execute() {
-                        Window.alert("Callback!");
-                    }
+                                                   @Override
+                                                   public void execute() {
+                                                       Window.alert( "Callback!" );
+                                                   }
 
-                });
+                                               } );
     }
 
     private void loadStyles() {
@@ -103,79 +103,80 @@ public class ShowcaseEntryPoint {
 
         //Home
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-        if (defaultPerspective != null) {
-            menubar.addMenuItem(new DefaultMenuItemCommand("Home",
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            placeManager.goTo(new DefaultPlaceRequest(defaultPerspective.getIdentifier()));
-                        }
-                    }));
+        if ( defaultPerspective != null ) {
+            menubar.addWorkbenchItem( new DefaultMenuItemCommand( "Home",
+                                                                  new Command() {
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                                                                      }
+                                                                  } ) );
         }
 
         //Perspectives
         final MenuBar perspectivesMenuBar = new DefaultMenuBar();
-        final MenuItemSubMenu perspectivesMenu = new DefaultMenuItemSubMenu("Perspectives",
-                perspectivesMenuBar);
+        final MenuItemSubMenu perspectivesMenu = new DefaultMenuItemSubMenu( "Perspectives",
+                                                                             perspectivesMenuBar );
         final List<AbstractWorkbenchPerspectiveActivity> perspectives = getPerspectiveActivities();
-        for (final AbstractWorkbenchPerspectiveActivity perspective : perspectives) {
+        for ( final AbstractWorkbenchPerspectiveActivity perspective : perspectives ) {
             final String name = perspective.getPerspective().getName();
             final Command cmd = new Command() {
 
                 @Override
                 public void execute() {
-                    placeManager.goTo(new DefaultPlaceRequest(perspective.getIdentifier()));
+                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
                 }
 
             };
-            final MenuItemCommand item = new DefaultMenuItemCommand(name,
-                    cmd);
-            perspectivesMenuBar.addItem(item);
+            final MenuItemCommand item = new DefaultMenuItemCommand( name,
+                                                                     cmd );
+            perspectivesMenuBar.addItem( item );
         }
-        menubar.addMenuItem(perspectivesMenu);
+        menubar.addWorkbenchItem( perspectivesMenu );
 
         //Static places
         final MenuBar placesMenuBar = new DefaultMenuBar();
-        final MenuItemSubMenu placesMenu = new DefaultMenuItemSubMenu("Screens", placesMenuBar);
-        Arrays.sort(menuItems);
-        for (final String menuItem : menuItems) {
-            final MenuItemCommand item = new DefaultMenuItemCommand(menuItem,
-                    new Command() {
+        final MenuItemSubMenu placesMenu = new DefaultMenuItemSubMenu( "Screens",
+                                                                       placesMenuBar );
+        Arrays.sort( menuItems );
+        for ( final String menuItem : menuItems ) {
+            final MenuItemCommand item = new DefaultMenuItemCommand( menuItem,
+                                                                     new Command() {
 
-                        @Override
-                        public void execute() {
-                            placeManager.goTo(new DefaultPlaceRequest(menuItem));
-                        }
+                                                                         @Override
+                                                                         public void execute() {
+                                                                             placeManager.goTo( new DefaultPlaceRequest( menuItem ) );
+                                                                         }
 
-                    });
-            placesMenuBar.addItem(item);
+                                                                     } );
+            placesMenuBar.addItem( item );
         }
-        menubar.addMenuItem(placesMenu);
+        menubar.addWorkbenchItem( placesMenu );
 
-        final MenuItemCommand logout = new DefaultMenuItemCommand("Logout",
-                new Command() {
-                    @Override
-                    public void execute() {
-                        redirect("/uf_logout");
-                    }
-                });
+        final MenuItemCommand logout = new DefaultMenuItemCommand( "Logout",
+                                                                   new Command() {
+                                                                       @Override
+                                                                       public void execute() {
+                                                                           redirect( "/uf_logout" );
+                                                                       }
+                                                                   } );
 
-        menubar.addMenuItem(logout);
+        menubar.addWorkbenchItem( logout );
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
         AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans(AbstractWorkbenchPerspectiveActivity.class);
+        final Collection<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
         final Iterator<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
         outer_loop:
-        while (perspectivesIterator.hasNext()) {
+        while ( perspectivesIterator.hasNext() ) {
             final IOCBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
             final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
-            if (instance.isDefault()) {
+            if ( instance.isDefault() ) {
                 defaultPerspective = instance;
                 break outer_loop;
             } else {
-                iocManager.destroyBean(instance);
+                iocManager.destroyBean( instance );
             }
         }
         return defaultPerspective;
@@ -184,43 +185,43 @@ public class ShowcaseEntryPoint {
     private List<AbstractWorkbenchPerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<AbstractWorkbenchPerspectiveActivity> activities = activityManager.getActivities(AbstractWorkbenchPerspectiveActivity.class);
+        final Set<AbstractWorkbenchPerspectiveActivity> activities = activityManager.getActivities( AbstractWorkbenchPerspectiveActivity.class );
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<AbstractWorkbenchPerspectiveActivity> sortedActivities = new ArrayList<AbstractWorkbenchPerspectiveActivity>(activities);
-        Collections.sort(sortedActivities,
-                new Comparator<AbstractWorkbenchPerspectiveActivity>() {
+        List<AbstractWorkbenchPerspectiveActivity> sortedActivities = new ArrayList<AbstractWorkbenchPerspectiveActivity>( activities );
+        Collections.sort( sortedActivities,
+                          new Comparator<AbstractWorkbenchPerspectiveActivity>() {
 
-                    @Override
-                    public int compare(AbstractWorkbenchPerspectiveActivity o1,
-                            AbstractWorkbenchPerspectiveActivity o2) {
-                        return o1.getPerspective().getName().compareTo(o2.getPerspective().getName());
-                    }
+                              @Override
+                              public int compare( AbstractWorkbenchPerspectiveActivity o1,
+                                                  AbstractWorkbenchPerspectiveActivity o2 ) {
+                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
+                              }
 
-                });
+                          } );
 
         return sortedActivities;
     }
 
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get("loading").getElement();
+        final Element e = RootPanel.get( "loading" ).getElement();
 
         new Animation() {
 
             @Override
-            protected void onUpdate(double progress) {
-                e.getStyle().setOpacity(1.0 - progress);
+            protected void onUpdate( double progress ) {
+                e.getStyle().setOpacity( 1.0 - progress );
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
+                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
             }
-        }.run(500);
+        }.run( 500 );
     }
 
-    public static native void redirect(String url)/*-{
+    public static native void redirect( String url )/*-{
         $wnd.location = url;
     }-*/;
 

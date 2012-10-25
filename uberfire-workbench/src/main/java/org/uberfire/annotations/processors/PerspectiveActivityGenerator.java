@@ -65,6 +65,10 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                                                                 processingEnvironment );
         final String getPerspectiveMethodName = GeneratorUtils.getPerspectiveMethodName( classElement,
                                                                                          processingEnvironment );
+        final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
+                                                                                 processingEnvironment );
+        final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName( classElement,
+                                                                                 processingEnvironment );
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
         final String rolesList = GeneratorUtils.getRoleList( classElement );
 
@@ -77,6 +81,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
         logger.debug( "getPerspectiveMethodName: " + getPerspectiveMethodName );
+        logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
+        logger.debug( "getToolBarMethodName: " + getToolBarMethodName );
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
@@ -115,6 +121,10 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   onRevealMethodName );
         root.put( "getPerspectiveMethodName",
                   getPerspectiveMethodName );
+        root.put( "getMenuBarMethodName",
+                  getMenuBarMethodName );
+        root.put( "getToolBarMethodName",
+                  getToolBarMethodName );
         root.put( "securityTraitList",
                   securityTraitList );
         root.put( "rolesList",
