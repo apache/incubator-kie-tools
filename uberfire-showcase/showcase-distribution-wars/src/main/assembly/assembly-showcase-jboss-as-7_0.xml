@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-  <id>tomcat7.0</id>
+  <id>jboss-as7.0</id>
   <formats>
     <format>war</format>
   </formats>
@@ -11,7 +27,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/src/main/tomcat7</directory>
+      <directory>${project.basedir}/src/main/jbossas7</directory>
       <outputDirectory>.</outputDirectory>
     </fileSet>
   </fileSets>
@@ -40,6 +56,7 @@
           <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
           <exclude>WEB-INF/lib/gchart-*.jar</exclude>
 
+          <!-- General -->
           <exclude>WEB-INF/lib/*-sources.jar</exclude>
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
@@ -53,6 +70,22 @@
 
           <!-- Errai -->
           <exclude>WEB-INF/lib/errai-jaxrs-client-*.jar</exclude>
+
+          <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+          <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
+          <exclude>WEB-INF/lib/javassist-*.jar</exclude>
+          <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
+          <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
+          <exclude>WEB-INF/lib/commons-httpclient-*.jar</exclude>
+          <exclude>WEB-INF/lib/commons-logging-*.jar</exclude>
+          <exclude>WEB-INF/lib/activation-*.jar</exclude>
+          <exclude>WEB-INF/lib/scannotation-*.jar</exclude>
+          <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/weld-*.jar</exclude>
+          <exclude>WEB-INF/lib/javax*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>
+          <exclude>WEB-INF/lib/jaxrs-api-*.jar</exclude>
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>

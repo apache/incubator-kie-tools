@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>
+      org.uberfire.security.server.UberFireSecurityFilter
+    </filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/Uberfire.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GoogleGadget</servlet-name>
+    <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GoogleGadget</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/google.gadget</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
+    <init-param>
+      <param-name>org.uberfire.images.paths</param-name>
+      <param-value>/org.uberfire.UberfireShowcase</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/uberFireImages/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
+with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
+(perhaps under src/integration-test-settings/web.xml and alter the integration-test
+profile in pom.xml to use that. -->
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
+  <context-param>
+    <param-name>errai.properties</param-name>
+    <param-value>/WEB-INF/errai.properties</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>login.config</param-name>
+    <param-value>/WEB-INF/login.config</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>users.properties</param-name>
+    <param-value>/WEB-INF/users.properties</param-value>
+  </context-param>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

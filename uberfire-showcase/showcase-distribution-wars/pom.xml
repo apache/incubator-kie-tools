@@ -34,9 +34,7 @@
           <finalName>showcase-${project.version}</finalName>
           <descriptors>
             <descriptor>src/main/assembly/assembly-showcase-tomcat-7_0.xml</descriptor>
-            <!-- <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-guvnor-tomcat-7_0.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-guvnor-jetty-7_0.xml</descriptor> -->
+            <descriptor>src/main/assembly/assembly-showcase-jboss-as-7_0.xml</descriptor>
           </descriptors>
           <archive>
             <addMavenDescriptor>false</addMavenDescriptor>
