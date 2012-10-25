@@ -30,6 +30,6 @@
 
   <modules>
     <module>showcase-webapp</module>
-    <!-- <module>showcase-dist</module> -->
+    <module>showcase-distribution-wars</module>
   </modules>
 </project>

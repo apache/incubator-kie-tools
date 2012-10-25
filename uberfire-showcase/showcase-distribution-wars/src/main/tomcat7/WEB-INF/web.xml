@@ -6,19 +6,8 @@
          version="2.5">
 
   <context-param>
-    <param-name>resteasy.injector.factory</param-name>
-    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
-  </context-param>
-
-  <context-param>
     <param-name>resteasy.scan</param-name>
     <param-value>true</param-value>
-  </context-param>
-
-  <!-- We have to register RestEasy providers manually during integration testing because the scan doesn't see them. -->
-  <context-param>
-    <param-name>resteasy.providers</param-name>
-    <param-value>org.jboss.errai.jaxrs.ErraiProvider</param-value>
   </context-param>
 
   <filter>
@@ -85,11 +74,6 @@ with the DefaultBlockingServlet. If you change this setting, make a backup of th
 profile in pom.xml to use that. -->
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-
-    <init-param>
-      <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>tomcat7.0</id>
+  <formats>
+    <format>war</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/src/main/tomcat7</directory>
+      <outputDirectory>.</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.uberfire:showcase-webapp:war</include>
+      </includes>
+      <outputDirectory>.</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>WEB-INF/jetty-env.xml</exclude>
+
+          <!-- UF Client Related -->
+          <exclude>WEB-INF/lib/widget-markdown-*.jar</exclude>
+          <exclude>WEB-INF/lib/widgets-commons-*.jar</exclude>
+          <exclude>WEB-INF/lib/widgets-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/security-client-*.jar</exclude>
+
+          <!-- GWT Client Related -->
+          <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>
+          <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
+          <exclude>WEB-INF/lib/gchart-*.jar</exclude>
+
+          <exclude>WEB-INF/lib/*-sources.jar</exclude>
+          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+
+          <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
+
+          <!-- Jetty -->
+          <exclude>WEB-INF/lib/jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/mail-*.jar</exclude>
+          <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
+          <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
+
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-jaxrs-client-*.jar</exclude>
+
+          <!--<exclude>WEB-INF/lib/resteasy-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/activation-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/javassist-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/httpcore-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/httpclient-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/commons-httpclient-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/commons-logging-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/activation-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/scannotation-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/weld-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/javax*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>-->
+          <!--<exclude>WEB-INF/lib/jaxrs-api-*.jar</exclude>-->
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

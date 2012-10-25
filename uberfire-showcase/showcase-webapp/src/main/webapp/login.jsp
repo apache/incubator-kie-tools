@@ -28,7 +28,7 @@
       margin: 0;
       pading: 0;
       color: #fff;
-      background: url('/image/bg-login.png') repeat #1b1b1b;
+      background: url('<%=request.getContextPath()%>/image/bg-login.png') repeat #1b1b1b;
       font-size: 14px;
       text-shadow: #050505 0 -1px 0;
       font-weight: bold;
@@ -45,7 +45,7 @@
       border-bottom: solid 3px #777973;
       height: 250px;
       width: 100%;
-      background: url('/image/bg-login-top.png') repeat #fff;
+      background: url('<%=request.getContextPath()%>/image/bg-login-top.png') repeat #fff;
       z-index: 1;
     }
 
@@ -138,7 +138,7 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="/image/drools_logo.gif" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="<%=request.getContextPath()%>/image/drools_logo.gif" alt="UberFire Logo" title="Powered By Uberfire"/>
   </div>
 
   <div id="login-content">

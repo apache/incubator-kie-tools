@@ -51,6 +51,7 @@
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -99,18 +100,6 @@
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 
-        <!-- UberfireImageServlet -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		
 	</dependencies>
 
 	<build>

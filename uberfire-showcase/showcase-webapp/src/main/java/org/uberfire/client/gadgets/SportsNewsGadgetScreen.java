@@ -19,6 +19,7 @@ package org.uberfire.client.gadgets;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.user.client.ui.Frame;
@@ -41,7 +42,7 @@ public class SportsNewsGadgetScreen {
         frame.setWidth("100%");
         frame.setHeight("300px");
         frame.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
-        frame.setUrl(UriUtils.fromString("/google.gadget?src=" + URL).asString());
+        frame.setUrl(UriUtils.fromString(GWT.getModuleBaseURL() + "google.gadget?src=" + URL).asString());
     }
 
     @WorkbenchPartTitle

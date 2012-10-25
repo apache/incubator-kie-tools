@@ -205,14 +205,20 @@ public class UberFireSecurityFilter implements Filter {
 
         final SecurityContext context = securityManager.newSecurityContext(httpRequest, httpResponse);
 
-        logout(context, httpRequest, httpResponse);
+        try {
+            logout(context, httpRequest, httpResponse);
 
-        authenticate(context, httpResponse);
+            authenticate(context, httpResponse);
 
-        authorize(context, httpResponse);
+            authorize(context, httpResponse);
 
-        if (!response.isCommitted()) {
-            chain.doFilter(request, response);
+            if (!response.isCommitted()) {
+                chain.doFilter(request, response);
+            }
+        } catch (AuthenticationException e) {
+            if (!response.isCommitted()) {
+                throw new ServletException(e);
+            }
         }
     }
 
@@ -224,10 +230,23 @@ public class UberFireSecurityFilter implements Filter {
         if (isLogoutRequest(httpRequest)) {
             securityManager.logout(context);
             try {
-                httpResponse.sendRedirect(httpRequest.getContextPath());
+                httpResponse.sendRedirect(getBaseUrl(httpRequest));
             } catch (IOException e) {
                 LOG.error("Can't redirect. Message: " + e.toString());
             }
+        }
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        if ((request.getServerPort() == 80) ||
+                (request.getServerPort() == 443)) {
+            return request.getScheme() + "://" +
+                    request.getServerName() +
+                    request.getContextPath();
+        } else {
+            return request.getScheme() + "://" +
+                    request.getServerName() + ":" + request.getServerPort() +
+                    request.getContextPath();
         }
     }
 
@@ -236,17 +255,13 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private void authenticate(final SecurityContext context, final HttpServletResponse httpResponse)
-            throws ServletException {
+            throws AuthenticationException {
         if (httpResponse.isCommitted()) {
             return;
         }
 
-        try {
-            final Subject subject = securityManager.authenticate(context);
-            SecurityFactory.setSubject(subject);
-        } catch (AuthenticationException e) {
-            throw new ServletException(e);
-        }
+        final Subject subject = securityManager.authenticate(context);
+        SecurityFactory.setSubject(subject);
     }
 
     private void authorize(final SecurityContext context, final HttpServletResponse httpResponse)

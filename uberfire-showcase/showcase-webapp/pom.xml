@@ -59,7 +59,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>widgets-core</artifactId>
+      <artifactId>widgets-core-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -231,13 +236,9 @@
           <warName>${project.artifactId}</warName>
           <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
           <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
-
-          <!--<webResources>-->
-          <!--<resource>-->
-          <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
-          <!--<directory>src/${webDescriptor}</directory>-->
-          <!--</resource>-->
-          <!--</webResources>-->
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
         </configuration>
       </plugin>
 

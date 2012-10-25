@@ -157,7 +157,7 @@ public class ShowcaseEntryPoint {
                                                                    new Command() {
                                                                        @Override
                                                                        public void execute() {
-                                                                           redirect( "/uf_logout" );
+                                                                           redirect( GWT.getModuleBaseURL() + "uf_logout" );
                                                                        }
                                                                    } );
 

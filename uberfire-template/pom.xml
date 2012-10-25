@@ -16,335 +16,340 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.uberfire</groupId>
-		<artifactId>uberfire</artifactId>
-		<version>0.1-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>uberfire-template</artifactId>
-	<packaging>war</packaging>
+  <artifactId>uberfire-template</artifactId>
+  <packaging>war</packaging>
 
-	<name>ÜberFire Template</name>
-	<description>ÜberFire Template</description>
+  <name>ÜberFire Template</name>
+  <description>ÜberFire Template</description>
 
-	<dependencies>
-		<!-- You need to include the sources for most of the uberfire dependencies. -->
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>security-client</artifactId>
-		</dependency>
+  <dependencies>
+    <!-- You need to include the sources for most of the uberfire dependencies. -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-client</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>security-server</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-server</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-server</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>widgets-core</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core-backend</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>widgets-commons</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-core-client</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-workbench</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>widgets-commons</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-jgit</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-fs</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-jgit</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>security-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-fs</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>security-client</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>security-server</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-client</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-model</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>security-server</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-commons</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-model</artifactId>
+    </dependency>
 
-		<!-- Errai Core -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-bus</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-ioc</artifactId>
-		</dependency>
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
 
-		<!-- CDI Integration Modules -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-cdi-client</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-javax-enterprise</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <!-- CDI Integration Modules -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-weld-integration</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-cdi-jetty</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-weld-integration</artifactId>
+    </dependency>
 
-		<!-- CDI Development Utils -->
-		<!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty 
-			that is present there -->
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-jetty</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-plus</artifactId>
-		</dependency>
+    <!-- CDI Development Utils -->
+    <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty
+       that is present there -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-naming</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+    </dependency>
 
-		<!-- Weld Modules -->
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-naming</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.weld.servlet</groupId>
-			<artifactId>weld-servlet</artifactId>
-		</dependency>
+    <!-- Weld Modules -->
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+    </dependency>
 
-		<!-- GWT and GWT Extensions -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet</artifactId>
+    </dependency>
 
-	<build>
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
-		<resources>
-			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-			<!-- Include module descriptors from src/main/resources in order not to 
-				break the Intellij GWT plug-in -->
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+  <build>
 
-		<plugins>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to
+         break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<configuration>
-					<module>org.uberfire.FastCompiledUberfireTemplate</module>
-					<logLevel>INFO</logLevel>
-					<compileSourcesArtifacts>
-						<compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
-						<compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
-					</compileSourcesArtifacts>
-					<runTarget>org.uberfire.UberfireTemplate/Uberfire.html</runTarget>
-					<extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
-					<soyc>false</soyc>
-					<server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
-					<!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, 
-						see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
-					<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
-				</configuration>
-				<executions>
-					<execution>
-						<id>gwt-clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>gwt-compile</id>
-						<goals>
-							<goal>resources</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<warName>${project.artifactId}</warName>
-					<outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-					<packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
+    <plugins>
 
-					<!--<webResources> -->
-					<!--<resource> -->
-					<!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt; -->
-					<!--<directory>src/${webDescriptor}</directory> -->
-					<!--</resource> -->
-					<!--</webResources> -->
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <configuration>
+          <module>org.uberfire.FastCompiledUberfireTemplate</module>
+          <logLevel>INFO</logLevel>
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:vfs-model</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:backend-commons</compileSourcesArtifact>
+          </compileSourcesArtifacts>
+          <runTarget>org.uberfire.UberfireTemplate/Uberfire.html</runTarget>
+          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
+          <soyc>false</soyc>
+          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
+          <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile,
+              see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
+          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
+        </configuration>
+        <executions>
+          <execution>
+            <id>gwt-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>gwt-compile</id>
+            <goals>
+              <goal>resources</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>${project.artifactId}</warName>
+          <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
+          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
 
-			<!-- Tests are skipped by default because they require additional GWT 
-				dependencies. Run mvn with -Pintegration-test to enable testing. -->
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
+          <!--<webResources> -->
+          <!--<resource> -->
+          <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt; -->
+          <!--<directory>src/${webDescriptor}</directory> -->
+          <!--</resource> -->
+          <!--</webResources> -->
+        </configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.jboss.errai</groupId>
-				<artifactId>jacoco-gwt-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>jacoco-gwt-prepare-agent</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-gwt-report</id>
-						<phase>site</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+      <!-- Tests are skipped by default because they require additional GWT
+         dependencies. Run mvn with -Pintegration-test to enable testing. -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
 
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${basedir}</directory>
-							<includes>
-								<include>.errai/**</include>
-								<include>.vfsgit/**</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
+      <plugin>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>jacoco-gwt-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jacoco-gwt-prepare-agent</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-gwt-report</id>
+            <phase>site</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
-										<artifactId>gwt-maven-plugin</artifactId>
-										<versionRange>[2.3.0,)</versionRange>
-										<goals>
-											<goal>resources</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.jboss.errai</groupId>
-										<artifactId>jacoco-gwt-maven-plugin</artifactId>
-										<versionRange>[0.0,)</versionRange>
-										<goals>
-											<goal>prepare-agent</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>.errai/**</include>
+                <include>.vfsgit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <versionRange>[2.3.0,)</versionRange>
+                    <goals>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jboss.errai</groupId>
+                    <artifactId>jacoco-gwt-maven-plugin</artifactId>
+                    <versionRange>[0.0,)</versionRange>
+                    <goals>
+                      <goal>prepare-agent</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

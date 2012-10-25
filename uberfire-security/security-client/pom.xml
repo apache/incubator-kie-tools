@@ -37,6 +37,12 @@
       <artifactId>security-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Errai IoC -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -57,7 +63,7 @@
     </dependency>
 
   </dependencies>
-  
+
   <build>
     <resources>
       <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->

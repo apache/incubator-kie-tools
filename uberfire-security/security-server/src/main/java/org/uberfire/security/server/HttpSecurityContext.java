@@ -33,7 +33,13 @@ public class HttpSecurityContext implements SecurityContext {
     public HttpSecurityContext(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Object... objects) {
         this.request = httpRequest;
         this.response = httpResponse;
-        this.resource = new URLResource(request.getRequestURI());
+
+        final StringBuilder url = new StringBuilder(request.getServletPath());
+        if (request.getQueryString() != null) {
+            url.append("?").append(request.getQueryString());
+        }
+
+        this.resource = new URLResource(url.toString());
     }
 
     public HttpServletRequest getRequest() {
