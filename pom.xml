@@ -295,7 +295,6 @@
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
-    <module>uberfire-template</module>
     <module>uberfire-showcase</module>
   </modules>
 
