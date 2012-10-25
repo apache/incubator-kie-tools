@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -120,11 +121,11 @@ public class FileExplorerPerspective {
     @WorkbenchToolBar
     public ToolBar buildToolBar() {
         final ToolBar toolBar = new DefaultToolBar();
-        final ToolBarItem clone = new DefaultToolBarItem( "image/clone_repo.png",
+        final ToolBarItem clone = new DefaultToolBarItem( "images/clone_repo.png",
                                                           "Clone Repo", cloneRepoCommand );
         toolBar.addItem( clone );
 
-        final ToolBarItem newRepo = new DefaultToolBarItem( "image/new_repo.png",
+        final ToolBarItem newRepo = new DefaultToolBarItem( "images/new_repo.png",
                                                             "New Repository", newRepoCommand );
         newRepo.setRoles( PERMISSIONS_ADMIN );
         toolBar.addItem( newRepo );

@@ -70,6 +70,10 @@
   <servlet>
     <servlet-name>UberFireImageServlet</servlet-name>
     <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
+    <init-param>
+      <param-name>org.uberfire.images.paths</param-name>
+      <param-value>/org.uberfire.UberfireShowcase</param-value>
+    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
