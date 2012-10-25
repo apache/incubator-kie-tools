@@ -823,4 +823,18 @@
     </snapshotRepository>
   </distributionManagement>
 
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>uberfire-distro</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

@@ -69,7 +69,7 @@
         <include>org.uberfire:showcase-distribution-wars:war</include>
       </includes>
       <outputDirectory>showcase</outputDirectory>
-      <outputFileNameMapping>uberfire-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <outputFileNameMapping>showcase-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
   </dependencySets>
