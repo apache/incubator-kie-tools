@@ -21,12 +21,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 import static org.fest.assertions.api.Assertions.*;
 
+@Ignore
 public class FileTreeWalkerTest extends AbstractBaseTest {
 
     final AtomicInteger preDir = new AtomicInteger();
