@@ -130,7 +130,7 @@ public class UberfireServlet extends HttpServlet {
     }
 
     private void loadApp(PrintWriter writer) {
-        final Subject subject = SecurityFactory.getSubject();
+        final Subject subject = SecurityFactory.getIdentity();
 
         final Map<String, String> map = new HashMap<String, String>() {{
             put("name", subject.getName());
@@ -153,7 +153,7 @@ public class UberfireServlet extends HttpServlet {
     }
 
     private void loadUserInfo(PrintWriter writer) {
-        final Subject subject = SecurityFactory.getSubject();
+        final Subject subject = SecurityFactory.getIdentity();
 
         final Map<String, String> map = new HashMap<String, String>() {{
             put("name", subject.getName());

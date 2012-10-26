@@ -66,5 +66,11 @@
       <artifactId>slf4j-simple</artifactId>
     </dependency>
 
+    <!--URI Util-->
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

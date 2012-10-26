@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
@@ -312,9 +314,14 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     private org.uberfire.java.nio.file.Path fromPath(final Path path) {
-        //HACK: REVISIT: how to encode. We dont want to encode the whole URI string, we only want to encode the path element
-        String pathString = path.toURI();
-        pathString = pathString.replaceAll(" ", "%20");
-        return Paths.get(URI.create(pathString));
+        try {
+            return Paths.get(URI.create(path.toURI()));
+        } catch (IllegalArgumentException e) {
+            try {
+                return Paths.get(URI.create(URIUtil.encodePath(path.toURI())));
+            } catch (URIException ex) {
+                return null;
+            }
+        }
     }
 }

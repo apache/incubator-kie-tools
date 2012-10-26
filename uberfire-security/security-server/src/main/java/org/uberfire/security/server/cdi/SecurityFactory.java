@@ -40,11 +40,11 @@ public class SecurityFactory {
         SecurityFactory.authzManager = authzManager;
     }
 
-    @Produces
-    @RequestScoped
-    public static Subject getSubject() {
-        return subjects.get();
-    }
+//    @Produces
+//    @RequestScoped
+//    public static Subject getSubject() {
+//        return subjects.get();
+//    }
 
     @Produces
     @RequestScoped

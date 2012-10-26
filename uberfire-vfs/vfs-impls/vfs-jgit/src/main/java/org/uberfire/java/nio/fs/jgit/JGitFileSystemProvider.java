@@ -34,6 +34,8 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.lib.ObjectId;
@@ -228,7 +230,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             throw new FileSystemNotFoundException();
         }
 
-        return JGitPathImpl.create(fileSystem, extractPath(uri), extractHost(uri), false);
+        try {
+            return JGitPathImpl.create(fileSystem, URIUtil.decode(extractPath(uri)), extractHost(uri), false);
+        } catch (final URIException e) {
+            return null;
+        }
     }
 
     @Override

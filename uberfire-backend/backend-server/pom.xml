@@ -59,7 +59,13 @@
 			<artifactId>backend-commons</artifactId>
 		</dependency>
 
-		<dependency>
+    <!--URI Util-->
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+
+    <dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>

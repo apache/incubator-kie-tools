@@ -16,6 +16,8 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.file.Path;
@@ -92,6 +94,25 @@ public class JGitPathTest {
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://master@my-host/path/to/some/place.txt");
+
+        assertThat(path.getNameCount()).isEqualTo(4);
+
+        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
+        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+    }
+
+    @Test
+    public void testSimpleBranchedGitRoot2Spaced() throws URIException {
+        when(fs.getSeparator()).thenReturn("/");
+
+
+
+        final Path path = JGitPathImpl.create(fs, URIUtil.decode("/path/to/some/some%20place.txt"), "master@my-host", false);
+
+        assertThat(path).isNotNull();
+        assertThat(path.isAbsolute()).isTrue();
+        assertThat(path.toString()).isEqualTo("/path/to/some/some place.txt");
+        assertThat(path.toUri().toString()).isEqualTo("git://master@my-host/path/to/some/some%20place.txt");
 
         assertThat(path.getNameCount()).isEqualTo(4);
 

@@ -446,6 +446,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- VFS: Service -->
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
+      </dependency>
+
       <!-- VFS: Simple FileSystem -->
       <dependency>
         <groupId>commons-io</groupId>

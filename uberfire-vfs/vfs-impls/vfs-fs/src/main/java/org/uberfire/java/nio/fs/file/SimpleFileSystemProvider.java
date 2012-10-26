@@ -31,6 +31,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.FileUtils;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
@@ -126,7 +128,11 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         checkNotNull("uri", uri);
         checkCondition("uri scheme not supported", uri.getScheme().equals(getScheme()) || uri.getScheme().equals("default"));
 
-        return getDefaultFileSystem().getPath(uri.getPath());
+        try {
+            return getDefaultFileSystem().getPath(URIUtil.decode(uri.getPath()));
+        } catch (final URIException e) {
+            return null;
+        }
     }
 
     @Override

@@ -76,7 +76,6 @@
           <exclude>WEB-INF/lib/javassist-*.jar</exclude>
           <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
           <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
-          <exclude>WEB-INF/lib/commons-httpclient-*.jar</exclude>
           <exclude>WEB-INF/lib/commons-logging-*.jar</exclude>
           <exclude>WEB-INF/lib/activation-*.jar</exclude>
           <exclude>WEB-INF/lib/scannotation-*.jar</exclude>

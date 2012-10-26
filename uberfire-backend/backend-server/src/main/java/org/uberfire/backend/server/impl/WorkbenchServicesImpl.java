@@ -66,12 +66,12 @@ public class WorkbenchServicesImpl
 
         final String rootURI = bootstrapRoot.toURI();
 
-        vfsService.write( new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() ), xml );
+        vfsService.write( new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() + ".perspective" ), xml );
     }
 
     public PerspectiveDefinition load(final String perspectiveName) {
         final String rootURI = bootstrapRoot.toURI();
-        final Path path = new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName );
+        final Path path = new PathImpl( rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName + ".perspective" );
 
         if ( vfsService.exists( path ) ){
             final String xml = vfsService.readAllString( path );

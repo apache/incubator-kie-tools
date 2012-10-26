@@ -16,8 +16,11 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 
