@@ -39,45 +39,45 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @Dependent
 public class CompassDropController
-    implements
-    DropController {
+        implements
+        DropController {
 
-    private final CompassWidget              compass = CompassWidget.getInstance();
+    private final CompassWidget compass = CompassWidget.getInstance();
 
-    private WorkbenchPanelPresenter.View     dropTarget;
-
-    @Inject
-    private PanelManager                     panelManager;
+    private WorkbenchPanelPresenter.View dropTarget;
 
     @Inject
-    private WorkbenchDragAndDropManager      dndManager;
+    private PanelManager panelManager;
+
+    @Inject
+    private WorkbenchDragAndDropManager dndManager;
 
     @Inject
     private Event<WorkbenchPartDroppedEvent> workbenchPartDroppedEvent;
 
-    public void setup(final WorkbenchPanelPresenter.View view) {
+    public void setup( final WorkbenchPanelPresenter.View view ) {
         dropTarget = view;
     }
 
     @Override
     //When entering a WorkbenchPanel show the Compass
-    public void onEnter(DragContext context) {
+    public void onEnter( DragContext context ) {
         compass.onEnter( context );
     }
 
     @Override
     //Hide the WorkbenchPanel's Compass
-    public void onLeave(DragContext context) {
+    public void onLeave( DragContext context ) {
         compass.onLeave( context );
     }
 
     @Override
-    public void onMove(DragContext context) {
+    public void onMove( DragContext context ) {
         compass.onMove( context );
     }
 
     @Override
-    public void onDrop(DragContext context) {
+    public void onDrop( DragContext context ) {
 
         //If not dropTarget has been identified do nothing
         Position p = compass.getDropPosition();
@@ -93,8 +93,8 @@ public class CompassDropController
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final IsWidget tabWidget = workbenchContext.getTabWidget();
-        final Integer height = workbenchContext.getHeight();
-        final Integer width = workbenchContext.getWidth();
+        final Integer height = null;
+        final Integer width = null;
         final Integer minHeight = workbenchContext.getMinHeight();
         final Integer minWidth = workbenchContext.getMinWidth();
 
@@ -131,7 +131,7 @@ public class CompassDropController
     }
 
     @Override
-    public void onPreviewDrop(DragContext context) throws VetoDragException {
+    public void onPreviewDrop( DragContext context ) throws VetoDragException {
     }
 
 }
