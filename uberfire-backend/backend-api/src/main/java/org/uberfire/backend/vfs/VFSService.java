@@ -19,6 +19,8 @@ package org.uberfire.backend.vfs;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.bus.client.api.interceptor.InterceptedCall;
+import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
 import org.uberfire.java.nio.file.CopyOption;
@@ -118,6 +120,7 @@ public interface VFSService {
 //            Class<A> type)
 //            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException;
 
+    @InterceptedCall(VFSCacheInterceptor.class)
     Map<String, Object> readAttributes(Path path)
             throws UnsupportedOperationException, IllegalArgumentException, IOException;
 
