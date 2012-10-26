@@ -23,14 +23,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -46,11 +38,10 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.common.Util;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.resources.CoreImages;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -76,135 +67,68 @@ public class FileExplorerPresenter {
     @Inject
     private IdentifierUtils idUtils;
 
-    private static final String REPOSITORY_ID = "repositories";
-
     public interface View
             extends
-            IsWidget {
-
-        TreeItem getRootItem();
-
-        Tree getTree();
+            UberView<FileExplorerPresenter> {
 
         void setFocus();
+
+        void reset();
+
+        void removeIfExists(final Root root);
+
+        void addNewRoot(final Root root);
     }
 
-    private static CoreImages images = GWT.create( CoreImages.class );
-    private static final String LAZY_LOAD = "Loading...";
+    public static interface FileExplorerItem {
+
+        void addDirectory(final Path child);
+
+        void addFile(final Path child);
+    }
 
     @OnStart
     public void onStart() {
-        view.getRootItem().setUserObject( REPOSITORY_ID );
-        view.getRootItem().addItem( LAZY_LOAD );
 
-        view.getRootItem().removeItems();
+        view.reset();
 
-        rootService.call( new RemoteCallback<Collection<Root>>() {
+        rootService.call(new RemoteCallback<Collection<Root>>() {
             @Override
-            public void callback( Collection<Root> response ) {
-                for ( final Root root : response ) {
-                    loadRoot( root );
+            public void callback(Collection<Root> response) {
+                for (final Root root : response) {
+                    view.removeIfExists(root);
+                    view.addNewRoot(root);
                 }
             }
-        } ).listRoots();
-
-        view.getTree().addOpenHandler( new OpenHandler<TreeItem>() {
-            @Override
-            public void onOpen( final OpenEvent<TreeItem> event ) {
-                if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path ) {
-                    vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
-                        @Override
-                        public void callback( DirectoryStream<Path> response ) {
-                            event.getTarget().getChild( 0 ).remove();
-                            for ( final Path path : response ) {
-                                vfsService.call( new RemoteCallback<Map>() {
-                                    @Override
-                                    public void callback( final Map response ) {
-                                        final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
-                                        final TreeItem item;
-                                        if ( attrs.isDirectory() ) {
-                                            item = event.getTarget().addItem( Util.getHeader( images.openedFolder(),
-                                                                                              path.getFileName() ) );
-                                            item.addItem( LAZY_LOAD );
-                                        } else {
-                                            item = event.getTarget().addItem( Util.getHeader( images.file(),
-                                                                                              path.getFileName() ) );
-                                        }
-                                        item.setUserObject( path );
-                                    }
-                                } ).readAttributes( path );
-                            }
-                        }
-                    } ).newDirectoryStream( (Path) event.getTarget().getUserObject() );
-                }
-            }
-        } );
-
-        view.getTree().addSelectionHandler( new SelectionHandler<TreeItem>() {
-            @Override
-            public void onSelection( SelectionEvent<TreeItem> event ) {
-                final Object userObject = event.getSelectedItem().getUserObject();
-                if ( userObject != null && userObject instanceof Path ) {
-                    final Path path = (Path) userObject;
-                    vfsService.call( new RemoteCallback<Map>() {
-                        @Override
-                        public void callback( final Map response ) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
-                            if ( attrs.isRegularFile() ) {
-                                PlaceRequest placeRequest = getPlace( path );
-                                placeManager.goTo( placeRequest );
-                            }
-                        }
-                    } ).readAttributes( path );
-                } else if ( event.getSelectedItem().getUserObject() instanceof String && ( (String) event.getSelectedItem().getUserObject() ).equals( REPOSITORY_ID ) ) {
-                    placeManager.goTo( new DefaultPlaceRequest( "RepositoriesEditor" ) );
-                } else if ( userObject != null && userObject instanceof Root ) {
-                    final Root root = (Root) userObject;
-                    placeManager.goTo( root.getPlaceRequest() );
-                }
-            }
-        } );
+        }).listRoots();
     }
 
-    private void loadRoot( final Root root ) {
-
-        //TODO check if it already exists and cleanup
-
-        final TreeItem repositoryRootItem = view.getRootItem().addItem( Util.getHeader( images.packageIcon(),
-                                                                                        root.getPath().getFileName() ) );
-        repositoryRootItem.setState( true );
-        repositoryRootItem.setUserObject( root );
-
-        vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
+    public void loadDirectoryContent(final FileExplorerItem item, final Path path) {
+        vfsService.call(new RemoteCallback<DirectoryStream<Path>>() {
             @Override
-            public void callback( DirectoryStream<Path> response ) {
-                for ( final Path path : response ) {
-                    vfsService.call( new RemoteCallback<Map>() {
+            public void callback(DirectoryStream<Path> response) {
+                for (final Path child : response) {
+                    vfsService.call(new RemoteCallback<Map>() {
                         @Override
-                        public void callback( final Map response ) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
-                            final TreeItem item;
-                            if ( attrs.isDirectory() ) {
-                                item = repositoryRootItem.addItem( Util.getHeader( images.openedFolder(),
-                                                                                   path.getFileName() ) );
-                                item.addItem( LAZY_LOAD );
+                        public void callback(final Map response) {
+                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
+                            if (attrs.isDirectory()) {
+                                item.addDirectory(child);
                             } else {
-                                item = repositoryRootItem.addItem( Util.getHeader( images.file(),
-                                                                                   path.getFileName() ) );
+                                item.addFile(child);
                             }
-                            item.setUserObject( path );
                         }
-                    } ).readAttributes( path );
+                    }).readAttributes(child);
                 }
             }
-        } ).newDirectoryStream( root.getPath() );
+        }).newDirectoryStream(path);
     }
 
-    private PlaceRequest getPlace( final Path path ) {
+    private PlaceRequest getPlace(final Path path) {
 
-        final String fileType = getFileType( path.getFileName() );
-        if ( fileType == null ) {
-            return defaultPlace( path );
+        final String fileType = getFileType(path.getFileName());
+        if (fileType == null) {
+            return defaultPlace(path);
         }
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
@@ -212,31 +136,31 @@ public class FileExplorerPresenter {
         //an Activity for the fileType exists however that would place the decision as to what default editor
         //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
         //Consequentially we check for an Activity here and, if none found, define the default editor.
-        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( fileType );
-        if ( activityBeans.size() > 0 ) {
-            final PlaceRequest place = new DefaultPlaceRequest( fileType );
-            place.addParameter( "path:uri",
-                                path.toURI() ).addParameter( "path:name",
-                                                             path.getFileName() );
+        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities(fileType);
+        if (activityBeans.size() > 0) {
+            final PlaceRequest place = new DefaultPlaceRequest(fileType);
+            place.addParameter("path:uri",
+                    path.toURI()).addParameter("path:name",
+                    path.getFileName());
             return place;
         }
 
         //If a specific handler was not found use a TextEditor
-        return defaultPlace( path );
+        return defaultPlace(path);
     }
 
-    private PlaceRequest defaultPlace( final Path path ) {
-        PlaceRequest defaultPlace = new DefaultPlaceRequest( "TextEditor" );
-        defaultPlace.addParameter( "path:uri",
-                                   path.toURI() ).addParameter( "path:name",
-                                                                path.getFileName() );
+    private PlaceRequest defaultPlace(final Path path) {
+        PlaceRequest defaultPlace = new DefaultPlaceRequest("TextEditor");
+        defaultPlace.addParameter("path:uri",
+                path.toURI()).addParameter("path:name",
+                path.getFileName());
         return defaultPlace;
     }
 
-    private String getFileType( final String fileName ) {
-        final int dotIndex = fileName.indexOf( "." );
-        if ( dotIndex >= 0 ) {
-            return fileName.substring( dotIndex + 1 );
+    private String getFileType(final String fileName) {
+        final int dotIndex = fileName.indexOf(".");
+        if (dotIndex >= 0) {
+            return fileName.substring(dotIndex + 1);
         }
         return null;
     }
@@ -257,7 +181,7 @@ public class FileExplorerPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget() {
+    public UberView<FileExplorerPresenter> getWidget() {
         return view;
     }
 
@@ -266,13 +190,31 @@ public class FileExplorerPresenter {
         return Position.WEST;
     }
 
-    private boolean needsLoading( TreeItem item ) {
-        return item.getChildCount() == 1
-                && LAZY_LOAD.equals( item.getChild( 0 ).getText() );
+    public void redirect(final Path path) {
+        vfsService.call(new RemoteCallback<Map>() {
+            @Override
+            public void callback(final Map response) {
+                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
+                if (attrs.isRegularFile()) {
+                    PlaceRequest placeRequest = getPlace(path);
+                    placeManager.goTo(placeRequest);
+                }
+            }
+        }).readAttributes(path);
+
     }
 
-    public void newRootDirectory( @Observes Root root ) {
-        loadRoot( root );
+    public void redirectRepositoryList() {
+        placeManager.goTo(new DefaultPlaceRequest("RepositoriesEditor"));
+    }
+
+    public void redirect(Root root) {
+        placeManager.goTo(root.getPlaceRequest());
+    }
+
+    public void newRootDirectory(@Observes Root root) {
+        view.removeIfExists(root);
+        view.addNewRoot(root);
     }
 
 }
