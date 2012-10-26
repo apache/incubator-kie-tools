@@ -33,41 +33,41 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @Dependent
 public class HorizontalSplitterPanel extends ResizeComposite
-    implements
-    SplitPanel {
+        implements
+        SplitPanel {
 
-    private final WorkbenchSplitLayoutPanel slp                 = new WorkbenchSplitLayoutPanel();
-    private final SimpleLayoutPanel         eastWidgetContainer = new SimpleLayoutPanel();
-    private final SimpleLayoutPanel         westWidgetContainer = new SimpleLayoutPanel();
+    private final WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
+    private final SimpleLayoutPanel eastWidgetContainer = new SimpleLayoutPanel();
+    private final SimpleLayoutPanel westWidgetContainer = new SimpleLayoutPanel();
 
     public HorizontalSplitterPanel() {
         initWidget( slp );
     }
 
     @Override
-    public void setup(final WorkbenchPanelPresenter.View eastWidget,
-                      final WorkbenchPanelPresenter.View westWidget,
-                      final Position position,
-                      final Integer preferredSize,
-                      final Integer preferredMinSize) {
+    public void setup( final WorkbenchPanelPresenter.View eastWidget,
+                       final WorkbenchPanelPresenter.View westWidget,
+                       final Position position,
+                       final Integer preferredSize,
+                       final Integer preferredMinSize ) {
 
         final int size = assertSize( preferredSize );
         final int minSize = assertMinimumSize( preferredMinSize );
 
         switch ( position ) {
-            case EAST :
-                int eastChildSize = getChildSize( eastWidget.getPresenter().getDefinition() );
+            case EAST:
+                final int eastChildSize = getChildSize( eastWidget.getPresenter().getDefinition() );
                 slp.addEast( eastWidgetContainer,
                              size + eastChildSize );
                 slp.add( westWidgetContainer );
                 break;
-            case WEST :
-                int westChildSize = getChildSize( westWidget.getPresenter().getDefinition() );
+            case WEST:
+                final int westChildSize = getChildSize( westWidget.getPresenter().getDefinition() );
                 slp.addWest( westWidgetContainer,
                              size + westChildSize );
                 slp.add( eastWidgetContainer );
                 break;
-            default :
+            default:
                 throw new IllegalArgumentException( "position must be either EAST or WEST" );
         }
         slp.setWidgetMinSize( eastWidgetContainer,
@@ -86,13 +86,13 @@ public class HorizontalSplitterPanel extends ResizeComposite
     }
 
     @Override
-    public Widget getWidget(Position position) {
+    public Widget getWidget( Position position ) {
         switch ( position ) {
-            case EAST :
+            case EAST:
                 return this.westWidgetContainer.getWidget();
-            case WEST :
+            case WEST:
                 return this.eastWidgetContainer.getWidget();
-            default :
+            default:
                 throw new IllegalArgumentException( "position must be either EAST or WEST" );
         }
     }
@@ -108,15 +108,15 @@ public class HorizontalSplitterPanel extends ResizeComposite
         }
     }
 
-    private int assertSize(final Integer size) {
-        return (size == null ? DEFAULT_SIZE : size);
+    private int assertSize( final Integer size ) {
+        return ( size == null ? DEFAULT_SIZE : size );
     }
 
-    private int assertMinimumSize(final Integer minSize) {
-        return (minSize == null ? DEFAULT_MIN_SIZE : minSize);
+    private int assertMinimumSize( final Integer minSize ) {
+        return ( minSize == null ? DEFAULT_MIN_SIZE : minSize );
     }
 
-    private int getChildSize(final PanelDefinition panel) {
+    private int getChildSize( final PanelDefinition panel ) {
         int childSize = 0;
         final PanelDefinition eastPanel = panel.getChild( Position.EAST );
         final PanelDefinition westPanel = panel.getChild( Position.WEST );
@@ -129,7 +129,7 @@ public class HorizontalSplitterPanel extends ResizeComposite
         return childSize;
     }
 
-    private void scheduleResize(final Widget widget) {
+    private void scheduleResize( final Widget widget ) {
         if ( widget instanceof RequiresResize ) {
             final RequiresResize requiresResize = (RequiresResize) widget;
             Scheduler.get().scheduleDeferred( new ScheduledCommand() {

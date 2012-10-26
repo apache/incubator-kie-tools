@@ -121,11 +121,11 @@ public class WorkbenchPanelPresenter {
     public void addPanel(final PanelDefinition panel,
                          final WorkbenchPanelPresenter.View view,
                          final Position position) {
-        definition.setChild( position,
-                             panel );
         getPanelView().addPanel( panel,
                                  view,
                                  position );
+        definition.setChild( position,
+                             panel );
     }
 
     public void clear() {
@@ -137,9 +137,9 @@ public class WorkbenchPanelPresenter {
             return;
         }
         final int indexOfPartToRemove = orderedParts.indexOf( part );
+        view.removePart( indexOfPartToRemove );
         definition.getParts().remove( part );
         orderedParts.remove( part );
-        view.removePart( indexOfPartToRemove );
     }
 
     public void removePanel() {
