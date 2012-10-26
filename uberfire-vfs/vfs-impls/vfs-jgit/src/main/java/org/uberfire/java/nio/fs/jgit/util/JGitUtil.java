@@ -130,7 +130,7 @@ public final class JGitUtil {
             final ObjectId tree = git.getRepository().resolve(treeRef + "^{tree}");
             rw = new RevWalk(git.getRepository());
             tw = new TreeWalk(git.getRepository());
-            tw.setFilter(createFromStrings(singleton(gitPath)));
+            tw.setFilter(createFromStrings(singleton(gitPath.replace("%20", " "))));
             tw.reset(tree);
             while (tw.next()) {
                 if (tw.isSubtree() && !gitPath.equals(tw.getPathString())) {
