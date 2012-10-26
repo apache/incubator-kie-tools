@@ -22,6 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -54,42 +56,38 @@ import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 public class Workbench extends Composite
-    implements
-    RequiresResize {
+        implements
+        RequiresResize {
 
-    public static final int               WIDTH     = Window.getClientWidth();
+    private final VerticalPanel container = new VerticalPanel();
 
-    public static final int               HEIGHT    = Window.getClientHeight();
+    private final SimplePanel workbench = new SimplePanel();
 
-    private final VerticalPanel           container = new VerticalPanel();
-
-    private final SimplePanel             workbench = new SimplePanel();
-
-    private AbsolutePanel                 workbenchContainer;
+    private AbsolutePanel workbenchContainer;
 
     @Inject
-    private PanelManager                  panelManager;
+    private PanelManager panelManager;
 
     @Inject
-    private IOCBeanManager                iocManager;
+    private IOCBeanManager iocManager;
 
     @Inject
-    private WorkbenchDragAndDropManager   dndManager;
+    private WorkbenchDragAndDropManager dndManager;
 
     @Inject
-    private PlaceManager                  placeManager;
+    private PlaceManager placeManager;
 
     @Inject
     private WorkbenchPickupDragController dragController;
 
     @Inject
-    private WorkbenchMenuBarPresenter     menuBarPresenter;
+    private WorkbenchMenuBarPresenter menuBarPresenter;
 
     @Inject
-    private WorkbenchToolBarPresenter     toolBarPresenter;
+    private WorkbenchToolBarPresenter toolBarPresenter;
 
     @Inject
-    private Caller<WorkbenchServices>     wbServices;
+    private Caller<WorkbenchServices> wbServices;
 
     @PostConstruct
     public void setup() {
@@ -126,14 +124,10 @@ public class Workbench extends Composite
 
             @Override
             public void execute() {
-                final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
-                final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
-                final int availableHeight = HEIGHT - menuBarHeight - toolBarHeight;
-                workbenchContainer.setPixelSize( WIDTH,
-                                                 availableHeight );
-                workbench.setPixelSize( WIDTH,
-                                        availableHeight );
-                onResize();
+                final int width = Window.getClientWidth();
+                final int height = Window.getClientHeight();
+                doResizeWorkbenchContainer( width,
+                                            height );
             }
 
         } );
@@ -148,12 +142,12 @@ public class Workbench extends Composite
         Window.addWindowClosingHandler( new ClosingHandler() {
 
             @Override
-            public void onWindowClosing(ClosingEvent event) {
+            public void onWindowClosing( ClosingEvent event ) {
                 final PerspectiveDefinition perspective = panelManager.getPerspective();
                 if ( perspective != null ) {
                     wbServices.call( new RemoteCallback<Void>() {
                         @Override
-                        public void callback(Void response) {
+                        public void callback( Void response ) {
                             //Nothing to do. Window is closing.
                         }
                     } ).save( perspective );
@@ -161,13 +155,22 @@ public class Workbench extends Composite
             }
 
         } );
+
+        //Resizing the Window should resize everything
+        Window.addResizeHandler( new ResizeHandler() {
+            @Override public void onResize( ResizeEvent event ) {
+                doResizeWorkbenchContainer( event.getWidth(),
+                                            event.getHeight() );
+            }
+        } );
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
         AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
         final Collection<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
         final Iterator<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        outer_loop : while ( perspectivesIterator.hasNext() ) {
+        outer_loop:
+        while ( perspectivesIterator.hasNext() ) {
             final IOCBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
             final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
@@ -182,10 +185,26 @@ public class Workbench extends Composite
 
     @Override
     public void onResize() {
+        final int width = Window.getClientWidth();
+        final int height = Window.getClientHeight();
+        doResizeWorkbenchContainer( width,
+                                    height );
+    }
+
+    private void doResizeWorkbenchContainer( final int width,
+                                             final int height ) {
+        final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
+        final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
+        final int availableHeight = height - menuBarHeight - toolBarHeight;
+        workbenchContainer.setPixelSize( width,
+                                         availableHeight );
+        workbench.setPixelSize( width,
+                                availableHeight );
+
         final Widget w = workbench.getWidget();
         if ( w != null ) {
             if ( w instanceof RequiresResize ) {
-                ((RequiresResize) w).onResize();
+                ( (RequiresResize) w ).onResize();
             }
         }
     }
