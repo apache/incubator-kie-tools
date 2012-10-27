@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -28,8 +27,8 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.editors.repositorieseditor.CloneRepositoryWizard;
-import org.uberfire.client.editors.repositorieseditor.NewRepositoryWizard;
+import org.uberfire.client.editors.repository.clone.CloneRepositoryWizard;
+import org.uberfire.client.editors.repository.create.CreateNewRepositoryWizard;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
@@ -88,7 +87,7 @@ public class FileExplorerPerspective {
         this.newRepoCommand = new Command() {
             @Override
             public void execute() {
-                final NewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( NewRepositoryWizard.class ).getInstance();
+                final CreateNewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( CreateNewRepositoryWizard.class ).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
                 newRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
                     @Override

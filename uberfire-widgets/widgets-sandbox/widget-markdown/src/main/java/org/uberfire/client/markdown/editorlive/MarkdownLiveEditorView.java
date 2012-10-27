@@ -86,10 +86,6 @@ public class MarkdownLiveEditorView extends Composite
         fileContent.setText(content);
     }
 
-    public String getContent() {
-        return fileContent.getText();
-    }
-
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
