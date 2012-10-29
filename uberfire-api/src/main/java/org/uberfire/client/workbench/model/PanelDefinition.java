@@ -27,137 +27,121 @@ public interface PanelDefinition {
 
     /**
      * Add a Part to the Panel
-     * 
-     * @param part
-     *            The Part to add
+     * @param part The Part to add
      */
-    public void addPart(final PartDefinition part);
+    public void addPart( final PartDefinition part );
 
     /**
      * Get the Parts contained in the Panel
-     * 
      * @return The parts
      */
     public Set<PartDefinition> getParts();
 
     /**
      * Get all of this Panel's immediate child Panels (i.e. not recursive).
-     * 
      * @return All children
      */
     public List<PanelDefinition> getChildren();
 
     /**
-     * Set this Panel's immediate child Panel for the given Position. If this
+     * Insert a Panel as an immediate child at the given Position. If this
      * Panel already has a child at the specified position the existing Panel at
      * that position becomes a child of the Panel being added at the same
      * Position.
-     * 
-     * @param position
-     *            The Position to add the child
-     * @param panel
-     *            The child Panel
+     * @param position The Position to add the child
+     * @param panel The child Panel
      */
-    public void setChild(final Position position,
-                         final PanelDefinition panel);
+    public void insertChild( final Position position,
+                             final PanelDefinition panel );
+
+    /**
+     * Append a Panel at the first empty child position. If this Panel already
+     * has a child at the specified position the descendants are followed until
+     * an empty position is found.
+     * @param position The Position to add the child
+     * @param panel The child Panel
+     */
+    public void appendChild( final Position position,
+                             final PanelDefinition panel );
 
     /**
      * Get the Panel's immediate child Panel at the given Position
-     * 
-     * @param position
-     *            The child Panel's Position
+     * @param position The child Panel's Position
      * @return The child Panel or null, if a child does not exist at the given
      *         Position
      */
-    public PanelDefinition getChild(final Position position);
+    public PanelDefinition getChild( final Position position );
 
     /**
      * Remove a child from the Panel
-     * 
      * @param position
      */
-    public void removeChild(final Position position);
+    public void removeChild( final Position position );
 
     /**
      * Is this Panel the root of the Perspective definition
-     * 
      * @return True if the Panel is the root
      */
     public boolean isRoot();
 
     /**
      * Get the height of the Panel in pixels
-     * 
      * @return The height, or null if not set
      */
     public Integer getHeight();
 
     /**
      * Set the height of the Panel in pixels
-     * 
-     * @param height
-     *            The height, or null if not set
+     * @param height The height, or null if not set
      */
-    public void setHeight(Integer height);
+    public void setHeight( Integer height );
 
     /**
      * Get the width of the Panel in pixels
-     * 
      * @return The width, or null if not set
      */
     public Integer getWidth();
 
     /**
      * Set the width of the Panel in pixels
-     * 
-     * @param width
-     *            The width, or null if not set
+     * @param width The width, or null if not set
      */
-    public void setWidth(Integer width);
+    public void setWidth( Integer width );
 
     /**
      * Get the minimum height of the Panel in pixels
-     * 
      * @return The minimum height, or null if not set
      */
     public Integer getMinHeight();
 
     /**
      * Set the minimum height of the Panel in pixels
-     * 
-     * @param minHeight
-     *            The minimum height, or null if not set
+     * @param minHeight The minimum height, or null if not set
      */
-    public void setMinHeight(Integer minHeight);
+    public void setMinHeight( Integer minHeight );
 
     /**
      * Get the minimum width of the Panel in pixels
-     * 
      * @return The minimum width, or null if not set
      */
     public Integer getMinWidth();
 
     /**
      * Set the minimum width of the Panel in pixels
-     * 
-     * @param minWidth
-     *            The width, or null if not set
+     * @param minWidth The width, or null if not set
      */
-    public void setMinWidth(Integer minWidth);
+    public void setMinWidth( Integer minWidth );
 
     /**
      * Get the Position of the Panel relate to it's Parent
-     * 
      * @return The Position of the Panel
      */
     public Position getPosition();
 
     /**
      * Set the Position of the Panel relative to it's parent.
-     * 
-     * @param position
-     *            The Position of the Panel relative to it's parent
+     * @param position The Position of the Panel relative to it's parent
      */
-    public void setPosition(Position position);
+    public void setPosition( Position position );
 
 }

@@ -32,46 +32,49 @@ import org.uberfire.client.workbench.model.PartDefinition;
  */
 @Portable
 public class PanelDefinitionImpl
-    implements
-    PanelDefinition {
+        implements
+        PanelDefinition {
 
-    private Integer               height    = null;
-    private Integer               width     = null;
+    private Integer height = null;
+    private Integer width = null;
 
-    private Integer               minHeight = null;
-    private Integer               minWidth  = null;
+    private Integer minHeight = null;
+    private Integer minWidth = null;
 
-    private boolean               isRoot    = false;
-    private Set<PartDefinition>   parts     = new HashSet<PartDefinition>();
+    private boolean isRoot = false;
+    private Set<PartDefinition> parts = new HashSet<PartDefinition>();
 
     //Ideally this should be a Set but the order of insertion is important
-    private List<PanelDefinition> children  = new ArrayList<PanelDefinition>();
+    private List<PanelDefinition> children = new ArrayList<PanelDefinition>();
 
-    private Position              position;
+    private Position position;
 
     public PanelDefinitionImpl() {
     }
 
-    public PanelDefinitionImpl(final boolean isRoot) {
+    public PanelDefinitionImpl( final boolean isRoot ) {
         this.isRoot = isRoot;
         this.position = Position.ROOT;
     }
 
-    public void addPart(final PartDefinition part) {
+    public void addPart( final PartDefinition part ) {
         part.setParentPanel( this );
         this.parts.add( part );
     }
 
+    @Override
     public Set<PartDefinition> getParts() {
         return parts;
     }
 
+    @Override
     public List<PanelDefinition> getChildren() {
         return Collections.unmodifiableList( children );
     }
 
-    public void setChild(final Position position,
-                         final PanelDefinition panel) {
+    @Override
+    public void insertChild( final Position position,
+                             final PanelDefinition panel ) {
         if ( panel == null ) {
             return;
         }
@@ -86,13 +89,33 @@ public class PanelDefinitionImpl
         } else {
             removeChild( position );
             children.add( panel );
-            panel.setChild( position,
-                            existingChild );
+            panel.insertChild( position,
+                               existingChild );
         }
-
     }
 
-    public PanelDefinition getChild(final Position position) {
+    @Override
+    public void appendChild( final Position position,
+                             final PanelDefinition panel ) {
+        if ( panel == null ) {
+            return;
+        }
+        if ( children.contains( panel ) ) {
+            return;
+        }
+        checkPosition( position );
+        panel.setPosition( position );
+        final PanelDefinition existingChild = getChild( position );
+        if ( existingChild == null ) {
+            children.add( panel );
+        } else {
+            existingChild.appendChild( position,
+                                       panel );
+        }
+    }
+
+    @Override
+    public PanelDefinition getChild( final Position position ) {
         for ( PanelDefinition child : children ) {
             if ( child.getPosition() == position ) {
                 return child;
@@ -101,7 +124,8 @@ public class PanelDefinitionImpl
         return null;
     }
 
-    public void removeChild(final Position position) {
+    @Override
+    public void removeChild( final Position position ) {
         Iterator<PanelDefinition> itr = children.iterator();
         while ( itr.hasNext() ) {
             final PanelDefinition child = itr.next();
@@ -111,51 +135,62 @@ public class PanelDefinitionImpl
         }
     }
 
+    @Override
     public boolean isRoot() {
         return this.isRoot;
     }
 
+    @Override
     public Integer getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    @Override
+    public void setHeight( Integer height ) {
         this.height = height;
     }
 
+    @Override
     public Integer getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    @Override
+    public void setWidth( Integer width ) {
         this.width = width;
     }
 
+    @Override
     public final Integer getMinHeight() {
         return minHeight;
     }
 
-    public final void setMinHeight(Integer minHeight) {
+    @Override
+    public final void setMinHeight( Integer minHeight ) {
         this.minHeight = minHeight;
     }
 
+    @Override
     public final Integer getMinWidth() {
         return minWidth;
     }
 
-    public final void setMinWidth(Integer minWidth) {
+    @Override
+    public final void setMinWidth( Integer minWidth ) {
         this.minWidth = minWidth;
     }
 
+    @Override
     public final Position getPosition() {
         return position;
     }
 
-    public void setPosition(final Position position) {
+    @Override
+    public void setPosition( final Position position ) {
         this.position = position;
     }
 
-    private void checkPosition(final Position position) {
+    private void checkPosition( final Position position ) {
         if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
         }

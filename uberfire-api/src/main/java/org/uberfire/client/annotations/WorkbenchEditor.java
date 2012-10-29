@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  * <p>
  * WorkbechEditors can receive the following life-cycle calls:
  * <ul>
- * <li>{code @IsDirty}</li>
+ * <li>{@code @IsDirty}</li>
  * <li>{@code @OnClose}</li>
  * <li>{@code @OnFocus}</li>
  * <li>{@code @OnLostFocus}</li>

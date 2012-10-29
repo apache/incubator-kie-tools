@@ -32,4 +32,8 @@ public interface PopupActivity
 
     public PopupPanel getPopupPanel();
 
+    public boolean onMayClose();
+
+    public void onClose();
+
 }

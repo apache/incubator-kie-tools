@@ -43,14 +43,17 @@ public class PerspectiveDefinitionImpl
         this.isTransient = isTransient;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(final String name) {
         this.name = name;
     }
 
+    @Override
     public PanelDefinition getRoot() {
         return root;
     }

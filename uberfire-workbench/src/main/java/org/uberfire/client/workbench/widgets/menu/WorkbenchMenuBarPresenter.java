@@ -17,19 +17,17 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
-
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar
@@ -50,7 +48,7 @@ public class WorkbenchMenuBarPresenter {
         void removeMenuItem( final MenuItem menuItem );
     }
 
-    private PartDefinition activePart;
+    private PlaceRequest activePlace;
 
     @Inject
     private View view;
@@ -76,31 +74,31 @@ public class WorkbenchMenuBarPresenter {
 
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
-        if ( event.getPart().equals( activePart ) ) {
+        if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
-        if ( event.getDeselectedPart().equals( activePart ) ) {
+        if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
     void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
-        final WorkbenchActivity activity = placeManager.getActivity( event.getPart() );
+        final WorkbenchActivity activity = placeManager.getActivity( event.getPlace() );
         if ( activity == null ) {
             return;
         }
 
-        if ( !event.getPart().equals( activePart ) ) {
+        if ( !event.getPlace().equals( activePlace ) ) {
 
             clearWorkbenchContextItems();
 
             //Add items for current WorkbenchPart
-            activePart = event.getPart();
+            activePlace = event.getPlace();
 
             final MenuBar menuBar = activity.getMenuBar();
             if ( menuBar == null ) {
@@ -155,7 +153,7 @@ public class WorkbenchMenuBarPresenter {
     }
 
     private void clearWorkbenchContextItems() {
-        activePart = null;
+        activePlace = null;
         if ( workbenchContextItems.isEmpty() ) {
             return;
         }

@@ -112,7 +112,7 @@ public class FileExplorerPerspective {
         west.setMinWidth( 150 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
 
-        p.getRoot().setChild( Position.WEST, west );
+        p.getRoot().insertChild( Position.WEST, west );
 
         return p;
     }

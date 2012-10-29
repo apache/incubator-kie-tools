@@ -16,20 +16,21 @@
 package org.uberfire.client.workbench.widgets.events;
 
 import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * An event when a WorkbenchPart is dropped as part of a DnD operation
  */
 public class WorkbenchPartDroppedEvent {
 
-    private final PartDefinition part;
+    private final PlaceRequest place;
 
-    public WorkbenchPartDroppedEvent(final PartDefinition part) {
-        this.part = part;
+    public WorkbenchPartDroppedEvent( final PlaceRequest place ) {
+        this.place = place;
     }
 
-    public PartDefinition getPart() {
-        return part;
+    public PlaceRequest getPlace() {
+        return place;
     }
 
 }

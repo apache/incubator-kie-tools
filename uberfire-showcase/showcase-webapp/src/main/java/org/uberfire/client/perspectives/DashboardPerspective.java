@@ -57,8 +57,8 @@ public class DashboardPerspective {
         seast2.setHeight(340);
         seast2.setWidth(520);
 
-        seast.setChild(Position.EAST, seast2);
-        south.setChild(Position.EAST, seast);
+        seast.insertChild(Position.EAST, seast2);
+        south.insertChild(Position.EAST, seast);
 
         final PanelDefinition east = new PanelDefinitionImpl();
         east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
@@ -70,10 +70,10 @@ public class DashboardPerspective {
         eeast.setHeight(330);
         eeast.setWidth(380);
 
-        east.setChild(Position.EAST, eeast);
+        east.insertChild(Position.EAST, eeast);
 
-        p.getRoot().setChild(Position.SOUTH, south);
-        p.getRoot().setChild(Position.EAST, east);
+        p.getRoot().insertChild(Position.SOUTH, south);
+        p.getRoot().insertChild(Position.EAST, east);
 
         return p;
     }

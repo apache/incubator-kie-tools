@@ -24,10 +24,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Presenter for WorkbenchToolBar that mediates changes to the Workbench ToolBar
@@ -47,7 +47,7 @@ public class WorkbenchToolBarPresenter {
         void removeToolBarItem( final ToolBarItem item );
     }
 
-    private PartDefinition activePart;
+    private PlaceRequest activePlace;
 
     @Inject
     private View view;
@@ -73,30 +73,30 @@ public class WorkbenchToolBarPresenter {
 
     //Handle removing the WorkbenchPart Tool Bar items
     void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
-        if ( event.getPart().equals( activePart ) ) {
+        if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle removing the WorkbenchPart Tool Bar items
     void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
-        if ( event.getDeselectedPart().equals( activePart ) ) {
+        if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle setting up the Tool Bar for the specific WorkbenchPart selected
     void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
-        final WorkbenchActivity activity = placeManager.getActivity( event.getPart() );
+        final WorkbenchActivity activity = placeManager.getActivity( event.getPlace() );
         if ( activity == null ) {
             return;
         }
 
-        if ( !event.getPart().equals( activePart ) ) {
+        if ( !event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
 
             //Add items for current WorkbenchPart
-            activePart = event.getPart();
+            activePlace = event.getPlace();
 
             final ToolBar toolBar = activity.getToolBar();
             if ( toolBar == null ) {
@@ -151,7 +151,7 @@ public class WorkbenchToolBarPresenter {
     }
 
     private void clearWorkbenchContextItems() {
-        activePart = null;
+        activePlace = null;
         if ( workbenchContextItems.isEmpty() ) {
             return;
         }

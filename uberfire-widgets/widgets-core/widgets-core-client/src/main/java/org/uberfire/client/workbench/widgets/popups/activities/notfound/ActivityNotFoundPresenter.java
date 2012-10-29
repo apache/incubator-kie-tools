@@ -50,7 +50,7 @@ public class ActivityNotFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        final String identifier = placeManager.getCurrentPlaceRequest().getParameter( "identifier",
+        final String identifier = placeManager.getCurrentPlaceRequest().getParameter( "requestedPlaceIdentifier",
                                                                                       null );
         view.setRequestedPlaceIdentifier( identifier );
     }

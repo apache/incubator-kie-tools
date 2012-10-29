@@ -19,6 +19,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter;
@@ -26,12 +31,7 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * A Drop Controller covering the entire WorkbenchPanel that renders a Compass
@@ -90,9 +90,11 @@ public class CompassDropController
         //Move Part from source to target 
         final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) context.draggable;
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
+        final PlaceRequest place = workbenchContext.getPlace();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final IsWidget tabWidget = workbenchContext.getTabWidget();
+        final IsWidget widget = view.getWrappedWidget();
         final Integer height = null;
         final Integer width = null;
         final Integer minHeight = workbenchContext.getMinHeight();
@@ -112,17 +114,18 @@ public class CompassDropController
             }
         }
 
-        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( sourcePart ) );
+        workbenchPartDroppedEvent.fire( new WorkbenchPartDroppedEvent( place ) );
         final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
                                                                             p,
                                                                             height,
                                                                             width,
                                                                             minHeight,
                                                                             minWidth );
-        panelManager.addWorkbenchPart( tabWidget,
+        panelManager.addWorkbenchPart( place,
                                        sourcePart,
                                        targetPanel,
-                                       view.getWrappedWidget() );
+                                       tabWidget,
+                                       widget );
     }
 
     @Override

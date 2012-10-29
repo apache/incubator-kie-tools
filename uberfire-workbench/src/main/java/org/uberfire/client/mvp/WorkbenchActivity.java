@@ -37,10 +37,6 @@ public interface WorkbenchActivity
 
     public void onClose();
 
-    public boolean onMayStop();
-
-    public void onStop();
-
     public Position getDefaultPosition();
 
     public void onFocus();

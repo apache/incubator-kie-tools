@@ -16,20 +16,21 @@
 package org.uberfire.client.workbench.widgets.events;
 
 import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * An event when a WorkbenchPart is closed
  */
 public class WorkbenchPartCloseEvent {
 
-    private final PartDefinition part;
+    private final PlaceRequest place;
 
-    public WorkbenchPartCloseEvent(final PartDefinition part) {
-        this.part = part;
+    public WorkbenchPartCloseEvent( final PlaceRequest place ) {
+        this.place = place;
     }
 
-    public PartDefinition getPart() {
-        return part;
+    public PlaceRequest getPlace() {
+        return place;
     }
 
 }

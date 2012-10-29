@@ -16,20 +16,21 @@
 package org.uberfire.client.workbench.widgets.events;
 
 import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * An event when a WorkbenchPart looses focus
  */
 public class WorkbenchPartLostFocusEvent {
 
-    private final PartDefinition deselectedPart;
+    private final PlaceRequest place;
 
-    public WorkbenchPartLostFocusEvent(final PartDefinition deselectedPart) {
-        this.deselectedPart = deselectedPart;
+    public WorkbenchPartLostFocusEvent( final PlaceRequest place ) {
+        this.place = place;
     }
 
-    public PartDefinition getDeselectedPart() {
-        return deselectedPart;
+    public PlaceRequest getPlace() {
+        return place;
     }
 
 }

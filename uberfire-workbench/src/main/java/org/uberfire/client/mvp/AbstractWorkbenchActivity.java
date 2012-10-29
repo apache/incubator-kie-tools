@@ -38,16 +38,6 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
     }
 
     @Override
-    public boolean onMayStop() {
-        return true;
-    }
-
-    @Override
-    public void onStop() {
-        //Do nothing.
-    }
-
-    @Override
     public boolean onMayClose() {
         return true;
     }

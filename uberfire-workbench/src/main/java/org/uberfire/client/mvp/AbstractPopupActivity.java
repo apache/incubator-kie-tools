@@ -75,4 +75,14 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         //Do nothing.  
     }
 
+    @Override
+    public boolean onMayClose() {
+        return true;
+    }
+
+    @Override
+    public void onClose() {
+        //Do nothing.
+    }
+
 }

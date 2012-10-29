@@ -42,6 +42,7 @@ public class PartDefinitionImpl
     /**
      * @return the place
      */
+    @Override
     public PlaceRequest getPlace() {
         return place;
     }
@@ -50,6 +51,7 @@ public class PartDefinitionImpl
      * @param place
      *            the place to set
      */
+    @Override
     public void setPlace(final PlaceRequest place) {
         this.place = place;
     }
@@ -57,6 +59,7 @@ public class PartDefinitionImpl
     /**
      * @return the parentPanel
      */
+    @Override
     public PanelDefinition getParentPanel() {
         return parentPanel;
     }
@@ -65,6 +68,7 @@ public class PartDefinitionImpl
      * @param parentPanel
      *            the parentPanel to set
      */
+    @Override
     public void setParentPanel(final PanelDefinition parentPanel) {
         this.parentPanel = parentPanel;
     }

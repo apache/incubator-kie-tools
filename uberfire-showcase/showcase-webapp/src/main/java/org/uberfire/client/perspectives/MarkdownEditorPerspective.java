@@ -45,7 +45,7 @@ public class MarkdownEditorPerspective {
         westPanel.setWidth(600);
         westPanel.setMinWidth(300);
         westPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("MarkdownLiveEditor")));
-        p.getRoot().setChild(Position.WEST, westPanel);
+        p.getRoot().insertChild(Position.WEST, westPanel);
 
         return p;
     }

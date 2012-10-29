@@ -124,8 +124,8 @@ public class WorkbenchPanelPresenter {
         getPanelView().addPanel( panel,
                                  view,
                                  position );
-        definition.setChild( position,
-                             panel );
+        definition.insertChild( position,
+                                panel );
     }
 
     public void clear() {

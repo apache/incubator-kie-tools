@@ -25,13 +25,13 @@ public class HomePerspective {
         west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeVideos")));
         west.setWidth(250);
         west.setMinWidth(200);
-        p.getRoot().setChild(Position.WEST, west);
+        p.getRoot().insertChild(Position.WEST, west);
 
         final PanelDefinition east = new PanelDefinitionImpl();
         east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
         east.setWidth(300);
         east.setMinWidth(200);
-        p.getRoot().setChild(Position.EAST, east);
+        p.getRoot().insertChild(Position.EAST, east);
 
         p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("welcome")));
 
@@ -39,7 +39,7 @@ public class HomePerspective {
         south.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeScreen")));
         south.setHeight(515);
         south.setMinHeight(400);
-        p.getRoot().setChild(Position.SOUTH, south);
+        p.getRoot().insertChild(Position.SOUTH, south);
 
         return p;
     }

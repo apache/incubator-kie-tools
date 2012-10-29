@@ -22,34 +22,34 @@ import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface PlaceManager {
 
-    void goTo(final String identifier);
+    void goTo( final String identifier );
 
-    void goTo(final String identifier,
-              final Command callback);
+    void goTo( final String identifier,
+               final Command callback );
 
-    void goTo(final PlaceRequest place);
+    void goTo( final PlaceRequest place );
 
-    void goTo(final PlaceRequest place,
-              final Command callback);
+    void goTo( final PlaceRequest place,
+               final Command callback );
 
-    void goTo(final PartDefinition part,
-              final PanelDefinition panel);
+    void goTo( final PartDefinition part,
+               final PanelDefinition panel );
 
     public PlaceRequest getCurrentPlaceRequest();
 
-    public WorkbenchActivity getActivity(final PartDefinition part);
+    public WorkbenchActivity getActivity( final PlaceRequest place );
 
     public void closeCurrentPlace();
 
-    public void closePlace(final PlaceRequest place);
+    public void closePlace( final PlaceRequest place );
 
     public void closeAllPlaces();
 
-    public void registerOnRevealCallback(final PlaceRequest place,
-                                         final Command command);
+    public void registerOnRevealCallback( final PlaceRequest place,
+                                          final Command command );
 
-    public void unregisterOnRevealCallback(final PlaceRequest place);
+    public void unregisterOnRevealCallback( final PlaceRequest place );
 
-    public void executeOnRevealCallback(final PlaceRequest place);
+    public void executeOnRevealCallback( final PlaceRequest place );
 
 }

@@ -24,7 +24,6 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
@@ -35,17 +34,16 @@ import org.uberfire.client.workbench.widgets.panels.PanelManager;
  */
 public abstract class BaseWorkbenchTest {
 
-    protected PlaceHistoryHandler                  placeHistoryHandler;
-    protected ActivityManager                      activityManager;
-    protected PanelManager                         panelManager;
-    protected PlaceManagerImpl                     placeManager;
+    protected PlaceHistoryHandler placeHistoryHandler;
+    protected ActivityManager activityManager;
+    protected PanelManager panelManager;
+    protected PlaceManagerImpl placeManager;
 
-    protected BeanFactory                          factory;
-    protected Event<WorkbenchPanelOnFocusEvent>    workbenchPanelOnFocusEvent;
+    protected BeanFactory factory;
     protected Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
-    protected Event<WorkbenchPartOnFocusEvent>     workbenchPartOnFocusEvent;
-    protected Event<WorkbenchPartLostFocusEvent>   workbenchPartLostFocusEvent;
-    protected Event<SelectWorkbenchPartEvent>      selectWorkbenchPartEvent;
+    protected Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent;
+    protected Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
+    protected Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -58,7 +56,6 @@ public abstract class BaseWorkbenchTest {
         factory = new MockBeanFactory();
 
         //Events used by PanelManager and PlaceManager
-        workbenchPanelOnFocusEvent = mock( Event.class );
         workbenchPartBeforeCloseEvent = mock( Event.class );
         workbenchPartOnFocusEvent = mock( Event.class );
         workbenchPartLostFocusEvent = mock( Event.class );
@@ -66,7 +63,6 @@ public abstract class BaseWorkbenchTest {
 
         //Dummy Panel Manager\Workbench
         panelManager = new PanelManager( factory,
-                                         workbenchPanelOnFocusEvent,
                                          workbenchPartBeforeCloseEvent,
                                          workbenchPartOnFocusEvent,
                                          workbenchPartLostFocusEvent,

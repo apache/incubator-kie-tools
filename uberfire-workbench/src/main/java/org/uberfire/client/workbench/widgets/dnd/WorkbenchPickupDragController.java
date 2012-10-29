@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * A Drag Controller for the Workbench.
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class WorkbenchPickupDragController extends PickupDragController {
 
-    private final Image                 dragProxy = new Image( WorkbenchResources.INSTANCE.images().workbenchPanelDragProxy() );
+    private final Image dragProxy = new Image( WorkbenchResources.INSTANCE.images().workbenchPanelDragProxy() );
 
     @Inject
     private WorkbenchDragAndDropManager dndManager;
@@ -55,12 +56,14 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchPartPresenter.View sourceView = (WorkbenchPartPresenter.View) super.context.selectedWidgets.get( 0 );
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
+        final PlaceRequest place = sourcePart.getPlace();
         final IsWidget tabWidget = sourceView.getPresenter().getTabWidget();
         final Integer height = sourcePanel.getHeight();
         final Integer width = sourcePanel.getWidth();
         final Integer minHeight = sourcePanel.getMinHeight();
         final Integer minWidth = sourcePanel.getMinWidth();
-        final WorkbenchDragContext context = new WorkbenchDragContext( sourcePart,
+        final WorkbenchDragContext context = new WorkbenchDragContext( place,
+                                                                       sourcePart,
                                                                        sourcePanel,
                                                                        tabWidget,
                                                                        height,
@@ -89,7 +92,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
     }
 
     @Override
-    protected Widget newDragProxy(DragContext context) {
+    protected Widget newDragProxy( DragContext context ) {
         AbsolutePanel container = new AbsolutePanel();
         container.getElement().getStyle().setProperty( "overflow",
                                                        "visible" );
@@ -97,8 +100,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         //Offset to centre of dragProxy
-        int offsetX = 0 - ((int) (dragProxy.getWidth() * 0.5));
-        int offsetY = 0 - ((int) (dragProxy.getWidth() * 1.5));
+        int offsetX = 0 - ( (int) ( dragProxy.getWidth() * 0.5 ) );
+        int offsetY = 0 - ( (int) ( dragProxy.getWidth() * 1.5 ) );
         container.add( dragProxy,
                        offsetX,
                        offsetY );

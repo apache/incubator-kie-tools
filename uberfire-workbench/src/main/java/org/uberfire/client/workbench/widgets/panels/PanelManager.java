@@ -35,7 +35,6 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.widgets.events.ChangeTabContentEvent;
 import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPanelOnFocusEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
@@ -53,38 +52,34 @@ import com.google.gwt.user.client.ui.IsWidget;
 @ApplicationScoped
 public class PanelManager {
 
-    private final BeanFactory                             factory;
+    private final BeanFactory factory;
 
-    private final Event<WorkbenchPanelOnFocusEvent>       workbenchPanelOnFocusEvent;
+    private final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
 
-    private final Event<WorkbenchPartBeforeCloseEvent>    workbenchPartBeforeCloseEvent;
+    private final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent;
 
-    private final Event<WorkbenchPartOnFocusEvent>        workbenchPartOnFocusEvent;
+    private final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
 
-    private final Event<WorkbenchPartLostFocusEvent>      workbenchPartLostFocusEvent;
+    private final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent;
 
-    private final Event<SelectWorkbenchPartEvent>         selectWorkbenchPartEvent;
+    private PartDefinition activePart = null;
 
-    private PartDefinition                                activePart                    = null;
+    private PanelDefinition root = null;
 
-    private PanelDefinition                               root                          = null;
+    private PerspectiveDefinition perspective;
 
-    private PerspectiveDefinition                         perspective;
-
-    private Map<PartDefinition, WorkbenchPartPresenter>   mapPartDefinitionToPresenter  = new HashMap<PartDefinition, WorkbenchPartPresenter>();
+    private Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
     @Inject
     //Injected constructor for unit testing
-    public PanelManager(final BeanFactory factory,
-                        final Event<WorkbenchPanelOnFocusEvent> workbenchPanelOnFocusEvent,
-                        final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent,
-                        final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent,
-                        final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent,
-                        final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent) {
+    public PanelManager( final BeanFactory factory,
+                         final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent,
+                         final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent,
+                         final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent,
+                         final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent ) {
         this.factory = factory;
-        this.workbenchPanelOnFocusEvent = workbenchPanelOnFocusEvent;
         this.workbenchPartBeforeCloseEvent = workbenchPartBeforeCloseEvent;
         this.workbenchPartOnFocusEvent = workbenchPartOnFocusEvent;
         this.workbenchPartLostFocusEvent = workbenchPartLostFocusEvent;
@@ -95,7 +90,7 @@ public class PanelManager {
         return this.perspective;
     }
 
-    public void setPerspective(final PerspectiveDefinition perspective) {
+    public void setPerspective( final PerspectiveDefinition perspective ) {
         final PanelDefinition perspectiveRootPanel = perspective.getRoot();
         final WorkbenchPanelPresenter rootPresenter = mapPanelDefinitionToPresenter.remove( root );
         mapPanelDefinitionToPresenter.put( perspectiveRootPanel,
@@ -109,7 +104,7 @@ public class PanelManager {
         return this.root;
     }
 
-    public void setRoot(final PanelDefinition panel) {
+    public void setRoot( final PanelDefinition panel ) {
         if ( !panel.isRoot() ) {
             throw new IllegalArgumentException( "Panel is not a root panel." );
         }
@@ -132,10 +127,11 @@ public class PanelManager {
         onPanelFocus( panel );
     }
 
-    public PanelDefinition addWorkbenchPart(final IsWidget tabWidget,
-                                            final PartDefinition part,
-                                            final PanelDefinition panel,
-                                            final IsWidget partWidget) {
+    public PanelDefinition addWorkbenchPart( final PlaceRequest place,
+                                             final PartDefinition part,
+                                             final PanelDefinition panel,
+                                             final IsWidget tabWidget,
+                                             final IsWidget partWidget ) {
         final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
         if ( panelPresenter == null ) {
             throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
@@ -155,24 +151,24 @@ public class PanelManager {
                                 partPresenter.getPartView() );
 
         //Select newly inserted part
-        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( part ) );
+        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( place ) );
         return panelPresenter.getDefinition();
     }
 
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                             final Position position) {
+    public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
+                                              final Position position ) {
         final PanelDefinition childPanel = new PanelDefinitionImpl();
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
                                   position );
     }
 
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                             final Position position,
-                                             final Integer height,
-                                             final Integer width,
-                                             final Integer minHeight,
-                                             final Integer minWidth) {
+    public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
+                                              final Position position,
+                                              final Integer height,
+                                              final Integer width,
+                                              final Integer minHeight,
+                                              final Integer minWidth ) {
         final PanelDefinition childPanel = new PanelDefinitionImpl();
         childPanel.setHeight( height );
         childPanel.setWidth( width );
@@ -183,9 +179,9 @@ public class PanelManager {
                                   position );
     }
 
-    public PanelDefinition addWorkbenchPanel(final PanelDefinition targetPanel,
-                                             final PanelDefinition childPanel,
-                                             final Position position) {
+    public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
+                                              final PanelDefinition childPanel,
+                                              final Position position ) {
 
         PanelDefinition newPanel = null;
 
@@ -197,18 +193,18 @@ public class PanelManager {
         }
 
         switch ( position ) {
-            case ROOT :
+            case ROOT:
                 newPanel = root;
                 break;
 
-            case SELF :
+            case SELF:
                 newPanel = targetPanelPresenter.getDefinition();
                 break;
 
-            case NORTH :
-            case SOUTH :
-            case EAST :
-            case WEST :
+            case NORTH:
+            case SOUTH:
+            case EAST:
+            case WEST:
 
                 final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
                 mapPanelDefinitionToPresenter.put( childPanel,
@@ -220,7 +216,7 @@ public class PanelManager {
                 newPanel = childPanelPresenter.getDefinition();
                 break;
 
-            default :
+            default:
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
@@ -228,60 +224,65 @@ public class PanelManager {
         return newPanel;
     }
 
-    public void onPartFocus(final PartDefinition part) {
+    public void onPartFocus( final PartDefinition part ) {
         activePart = part;
-        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part ) );
+        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part.getPlace() ) );
     }
 
     public void onPartLostFocus() {
         if ( activePart == null ) {
             return;
         }
-        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( activePart ) );
+        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( activePart.getPlace() ) );
         this.activePart = null;
     }
 
-    public void onPanelFocus(final PanelDefinition panel) {
-        workbenchPanelOnFocusEvent.fire( new WorkbenchPanelOnFocusEvent( panel ) );
-    }
-
-    public void onBeforePartClose(final PartDefinition part) {
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part ) );
-    }
-
-    @SuppressWarnings("unused")
-    private void onWorkbenchPanelOnFocus(@Observes WorkbenchPanelOnFocusEvent event) {
-        final PanelDefinition panel = event.getPanel();
+    public void onPanelFocus( final PanelDefinition panel ) {
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             e.getValue().setFocus( e.getKey().equals( panel ) );
         }
     }
 
+    public void onBeforePartClose( final PartDefinition part ) {
+        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part.getPlace() ) );
+    }
+
     @SuppressWarnings("unused")
-    private void onSelectWorkbenchPartEvent(@Observes SelectWorkbenchPartEvent event) {
-        final PartDefinition part = event.getPart();
+    private void onSelectWorkbenchPartEvent( @Observes SelectWorkbenchPartEvent event ) {
+        final PlaceRequest place = event.getPlace();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
-            if ( e.getValue().getDefinition().getParts().contains( part ) ) {
-                e.getValue().selectPart( part );
-                onPanelFocus( e.getKey() );
+            for ( PartDefinition part : e.getValue().getDefinition().getParts() ) {
+                if ( part.getPlace().equals( place ) ) {
+                    e.getValue().selectPart( part );
+                    onPanelFocus( e.getKey() );
+                }
             }
         }
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartClosedEvent(@Observes WorkbenchPartCloseEvent event) {
-        final PartDefinition part = event.getPart();
+    private void onWorkbenchPartClosedEvent( @Observes WorkbenchPartCloseEvent event ) {
+        final PartDefinition part = getPartForPlace( event.getPlace() );
         removePart( part );
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartDroppedEvent(@Observes WorkbenchPartDroppedEvent event) {
-        final PartDefinition part = event.getPart();
+    private void onWorkbenchPartDroppedEvent( @Observes WorkbenchPartDroppedEvent event ) {
+        final PartDefinition part = getPartForPlace( event.getPlace() );
         removePart( part );
     }
 
+    private PartDefinition getPartForPlace( final PlaceRequest place ) {
+        for ( PartDefinition part : mapPartDefinitionToPresenter.keySet() ) {
+            if ( part.getPlace().equals( place ) ) {
+                return part;
+            }
+        }
+        return null;
+    }
+
     @SuppressWarnings("unused")
-    private void onChangeWorkbenchTabContentEvent(@Observes ChangeTabContentEvent event) {
+    private void onChangeWorkbenchTabContentEvent( @Observes ChangeTabContentEvent event ) {
         final PlaceRequest place = event.getPlaceRequest();
         final IsWidget tabContent = event.getTabContent();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
@@ -296,7 +297,7 @@ public class PanelManager {
         }
     }
 
-    private void removePart(final PartDefinition part) {
+    private void removePart( final PartDefinition part ) {
         factory.destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
@@ -322,16 +323,16 @@ public class PanelManager {
         }
     }
 
-    public WorkbenchPanelPresenter.View getPanelView(final PanelDefinition panel) {
+    public WorkbenchPanelPresenter.View getPanelView( final PanelDefinition panel ) {
         return mapPanelDefinitionToPresenter.get( panel ).getPanelView();
     }
 
-    public WorkbenchPartPresenter.View getPartView(final PartDefinition part) {
+    public WorkbenchPartPresenter.View getPartView( final PartDefinition part ) {
         return mapPartDefinitionToPresenter.get( part ).getPartView();
     }
 
-    private void removePanel(final PanelDefinition panelToRemove,
-                             final PanelDefinition panelToSearch) {
+    private void removePanel( final PanelDefinition panelToRemove,
+                              final PanelDefinition panelToSearch ) {
         final PanelDefinition northChild = panelToSearch.getChild( Position.NORTH );
         final PanelDefinition southChild = panelToSearch.getChild( Position.SOUTH );
         final PanelDefinition eastChild = panelToSearch.getChild( Position.EAST );
@@ -382,43 +383,24 @@ public class PanelManager {
         }
     }
 
-    private void removePanel(final PanelDefinition panelToRemove,
-                             final PanelDefinition panelToSearch,
-                             final Position position) {
+    private void removePanel( final PanelDefinition panelToRemove,
+                              final PanelDefinition panelToSearch,
+                              final Position position ) {
 
         panelToSearch.removeChild( position );
 
-        PanelDefinition holder = null;
-
-        final List<PanelDefinition> orphans = panelToRemove.getChildren();
-        Iterator<PanelDefinition> itr = orphans.iterator();
-        if ( itr.hasNext() ) {
-
-            //Add the first orphans parts to where the panel was removed
-            final PanelDefinition firstOrphan = itr.next();
-            holder = new PanelDefinitionImpl();
-            for ( PartDefinition part : firstOrphan.getParts() ) {
-                holder.addPart( part );
-            }
-
-            //Update presenter and map to use new holder
-            WorkbenchPanelPresenter presenter = mapPanelDefinitionToPresenter.remove( firstOrphan );
-            mapPanelDefinitionToPresenter.put( holder,
-                                               presenter );
-            presenter.setDefinition( holder );
-
-            //Add remaining orphans as children of new holder
-            while ( itr.hasNext() ) {
-                final PanelDefinition orphan = itr.next();
-                holder.setChild( orphan.getPosition(),
-                                 orphan );
-            }
-        }
-        if ( holder != null ) {
-            panelToSearch.setChild( position,
-                                    holder );
-        }
-
+        final PanelDefinition northOrphan = panelToRemove.getChild( Position.NORTH );
+        final PanelDefinition southOrphan = panelToRemove.getChild( Position.SOUTH );
+        final PanelDefinition eastOrphan = panelToRemove.getChild( Position.EAST );
+        final PanelDefinition westOrphan = panelToRemove.getChild( Position.WEST );
+        panelToSearch.appendChild( Position.NORTH,
+                                   northOrphan );
+        panelToSearch.appendChild( Position.SOUTH,
+                                   southOrphan );
+        panelToSearch.appendChild( Position.EAST,
+                                   eastOrphan );
+        panelToSearch.appendChild( Position.WEST,
+                                   westOrphan );
     }
 
 }

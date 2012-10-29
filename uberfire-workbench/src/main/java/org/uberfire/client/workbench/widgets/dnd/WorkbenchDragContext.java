@@ -19,28 +19,32 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * The context of a drag and drop operation within the Workbench.
  */
 public class WorkbenchDragContext {
 
-    private final PartDefinition  sourcePart;
+    private final PlaceRequest place;
+    private final PartDefinition sourcePart;
     private final PanelDefinition sourcePanel;
-    private final IsWidget        tabWidget;
+    private final IsWidget tabWidget;
 
-    private Integer               height;
-    private Integer               width;
-    private Integer               minHeight;
-    private Integer               minWidth;
+    private Integer height;
+    private Integer width;
+    private Integer minHeight;
+    private Integer minWidth;
 
-    public WorkbenchDragContext(final PartDefinition sourcePart,
-                                final PanelDefinition sourcePanel,
-                                final IsWidget tabWidget,
-                                final Integer height,
-                                final Integer width,
-                                final Integer minHeight,
-                                final Integer minWidth) {
+    public WorkbenchDragContext( final PlaceRequest place,
+                                 final PartDefinition sourcePart,
+                                 final PanelDefinition sourcePanel,
+                                 final IsWidget tabWidget,
+                                 final Integer height,
+                                 final Integer width,
+                                 final Integer minHeight,
+                                 final Integer minWidth ) {
+        this.place = place;
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
         this.tabWidget = tabWidget;
@@ -48,6 +52,13 @@ public class WorkbenchDragContext {
         this.width = width;
         this.minHeight = minHeight;
         this.minWidth = minWidth;
+    }
+
+    /**
+     * @return the place
+     */
+    public PlaceRequest getPlace() {
+        return this.place;
     }
 
     /**
