@@ -335,17 +335,7 @@ public class PlaceManagerImpl
                                              final PlaceRequest place ) {
         if ( activity.onMayClose() ) {
             activity.onClose();
-            existingWorkbenchActivities.remove( place );
-            existingWorkbenchParts.remove( place );
-            activityManager.removeActivity( place );
-            if ( place.equals( currentPlaceRequest ) ) {
-                workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( place ) );
-            }
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
-            if ( currentPlaceRequest.equals( place ) ) {
-                currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
-            }
-
         }
     }
 
@@ -353,12 +343,20 @@ public class PlaceManagerImpl
                                              final PlaceRequest place ) {
         if ( activity.onMayClose() ) {
             activity.onClose();
-            existingWorkbenchActivities.remove( place );
-            activityManager.removeActivity( place );
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
-            if ( currentPlaceRequest.equals( place ) ) {
-                currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
-            }
+        }
+    }
+
+    private void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
+        final PlaceRequest place = event.getPlace();
+        existingWorkbenchActivities.remove( place );
+        existingWorkbenchParts.remove( place );
+        activityManager.removeActivity( place );
+        if ( place.equals( currentPlaceRequest ) ) {
+            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( place ) );
+        }
+        if ( currentPlaceRequest.equals( place ) ) {
+            currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
         }
     }
 
