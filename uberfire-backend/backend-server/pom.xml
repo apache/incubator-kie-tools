@@ -16,38 +16,38 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.uberfire</groupId>
-		<artifactId>uberfire-backend</artifactId>
-		<version>0.1-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-backend</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>backend-server</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>backend-server</artifactId>
+  <packaging>jar</packaging>
 
-	<name>ÜberFire Backend Server</name>
-	<description>ÜberFire Backend Server</description>
+  <name>ÜberFire Backend Server</name>
+  <description>ÜberFire Backend Server</description>
 
-	<dependencies>
+  <dependencies>
 
-		<!-- Internal dependencies -->
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>vfs-api</artifactId>
-		</dependency>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>vfs-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -55,9 +55,15 @@
     </dependency>
 
     <dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>backend-commons</artifactId>
-		</dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>backend-commons</artifactId>
+    </dependency>
+
+    <!-- Workbench serialization -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
 
     <!--URI Util-->
     <dependency>
@@ -66,10 +72,10 @@
     </dependency>
 
     <dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
 		<!-- Errai Core -->
 		<dependency>
@@ -77,45 +83,6 @@
 			<artifactId>errai-bus</artifactId>
 		</dependency>
 
-		<!-- Errai JAX-RS API -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-jaxrs-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-jaxrs-provider</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-cdi</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
-		
-	</dependencies>
-	
-	<build>
-	  <resources>
-        <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-        <resource>
-          <directory>src/main/java</directory>
-        </resource>
-        <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-        <resource>
-          <directory>src/main/resources</directory>
-        </resource>
-      </resources>
-    </build>
+  </dependencies>
 
 </project>

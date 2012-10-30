@@ -68,23 +68,12 @@
           <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
           <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
 
-          <!-- Errai -->
-          <exclude>WEB-INF/lib/errai-jaxrs-client-*.jar</exclude>
-
-          <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
           <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
-          <exclude>WEB-INF/lib/javassist-*.jar</exclude>
-          <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
-          <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
-          <exclude>WEB-INF/lib/commons-logging-*.jar</exclude>
-          <exclude>WEB-INF/lib/activation-*.jar</exclude>
-          <exclude>WEB-INF/lib/scannotation-*.jar</exclude>
           <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
           <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
           <exclude>WEB-INF/lib/javax*.jar</exclude>
           <exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>
-          <exclude>WEB-INF/lib/jaxrs-api-*.jar</exclude>
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>

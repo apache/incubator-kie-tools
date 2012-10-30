@@ -16,12 +16,9 @@
 
 package org.uberfire.backend.server.impl;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,6 +30,8 @@ import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static java.util.Collections.*;
 
 @Service
 @ApplicationScoped

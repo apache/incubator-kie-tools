@@ -9,7 +9,6 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.backend.UberfireServerBackend"/>
 
   <inherits name='com.googlecode.gchart.GChart'/>
 

@@ -5,34 +5,6 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-  <context-param>
-    <param-name>resteasy.injector.factory</param-name>
-    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>resteasy.scan</param-name>
-    <param-value>true</param-value>
-  </context-param>
-
-  <!-- We have to register RestEasy providers manually during integration testing because the scan doesn't see them. -->
-  <context-param>
-    <param-name>resteasy.providers</param-name>
-    <param-value>org.jboss.errai.jaxrs.ErraiProvider</param-value>
-  </context-param>
-
-  <filter>
-    <filter-name>Resteasy</filter-name>
-    <filter-class>
-      org.jboss.resteasy.plugins.server.servlet.FilterDispatcher
-    </filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>Resteasy</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <filter>
     <filter-name>UberFire Security Filter</filter-name>
     <filter-class>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.backend.server.impl;
+package org.uberfire.backend.server;
 
 import java.net.URI;
 import java.nio.charset.Charset;

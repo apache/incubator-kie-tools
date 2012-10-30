@@ -19,7 +19,7 @@ package org.uberfire.security.impl.authz;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static com.google.common.base.Preconditions.*;
+import static org.uberfire.commons.util.Preconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class AffirmativeBasedVoter implements VotingStrategy {

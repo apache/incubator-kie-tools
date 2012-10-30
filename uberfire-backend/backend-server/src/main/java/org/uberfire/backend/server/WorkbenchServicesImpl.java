@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.backend.server.impl;
+package org.uberfire.backend.server;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +21,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
@@ -28,10 +29,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-
-import com.thoughtworks.xstream.XStream;
 import org.uberfire.security.Identity;
-import org.uberfire.security.Subject;
 
 /**
  * Workbench services

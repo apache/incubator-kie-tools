@@ -1,17 +1,14 @@
 package org.uberfire.backend.server.impl.charts;
 
-
-import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.shared.charts.ChartRefreshEvent;
-import org.uberfire.shared.charts.Column;
-import org.uberfire.shared.charts.DataSet;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-@Service
+import org.uberfire.shared.charts.ChartRefreshEvent;
+import org.uberfire.shared.charts.Column;
+import org.uberfire.shared.charts.DataSet;
+
 @ApplicationScoped
 public class ChartContentProducer {
 

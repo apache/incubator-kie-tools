@@ -16,17 +16,17 @@
 
 package org.uberfire.security.impl.authz;
 
-import com.google.common.base.Preconditions;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.VotingStrategy;
 
+import static org.uberfire.commons.util.Preconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class UnanimousBasedVoter implements VotingStrategy {
 
     @Override
     public AuthorizationResult vote(final Iterable<AuthorizationResult> results) {
-        Preconditions.checkNotNull("results", results);
+        checkNotNull("results", results);
         for (final AuthorizationResult currentResult : results) {
             if (!currentResult.equals(ACCESS_GRANTED)) {
                 return ACCESS_DENIED;
