@@ -19,16 +19,20 @@ package org.uberfire.backend.vfs.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class PathImpl implements Path {
+public class PathImpl implements Path, IsSerializable {
 
     private String uri = null;
     private String fileName = null;
     private HashMap<String, Object> attributes = null;
 
+    private String uuid;
+    
     public PathImpl() {
     }
 
@@ -64,7 +68,25 @@ public class PathImpl implements Path {
         return attributes;
     }
 
-    @Override
+    public String getUUID() {
+		return uuid;
+	}
+
+	public void setUUID(String uuid) {
+		uuid = uuid;
+	}
+	
+	public int compareTo(Path another) {
+		//TODO: compare using path
+		return this.getUUID().compareTo(another.getUUID());
+	}
+
+	public boolean equals(Path another) {
+		//TODO:
+		return this.getUUID().equals(another);
+	}
+	
+	@Override
     public String toString() {
         return "PathImpl{" +
                 "uri='" + uri + '\'' +

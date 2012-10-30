@@ -21,4 +21,10 @@ public interface Path {
     String getFileName();
 
     String toURI();
+    
+    String getUUID();
+    
+    void setUUID(String uuid);
+    
+    int compareTo(Path another);
 }
