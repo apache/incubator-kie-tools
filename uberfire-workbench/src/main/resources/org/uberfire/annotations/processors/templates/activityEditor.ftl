@@ -145,16 +145,16 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
-    <#if getTabWidgetMethodName??>
+    <#if getTitleWidgetMethodName??>
     @Override
-    public IsWidget getTabWidget() {
-        return realPresenter.${getTabWidgetMethodName}();
+    public IsWidget getTitleWidget() {
+        return realPresenter.${getTitleWidgetMethodName}();
     }
 
-    <#elseif getTabTitleMethodName??>
+    <#elseif getTitleMethodName??>
     @Override
-    public IsWidget getTabWidget() {
-        return new InlineLabel(realPresenter.${getTabTitleMethodName}());
+    public IsWidget getTitleWidget() {
+        return new InlineLabel(realPresenter.${getTitleMethodName}());
     }
 
     </#if>

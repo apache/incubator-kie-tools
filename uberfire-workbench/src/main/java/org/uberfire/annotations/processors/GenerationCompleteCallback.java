@@ -17,7 +17,7 @@ package org.uberfire.annotations.processors;
 
 /**
  * A call-back used for testing. When javac invokes the Annotation Processor the
- * generated source code is returned to the test via this call-back rather than
+ * generated source code is returned to the miscfeatures via this call-back rather than
  * having javac write the generated source code to a file and compiled.
  */
 interface GenerationCompleteCallback {

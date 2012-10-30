@@ -64,8 +64,8 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void changeTabContent(int indexOfPartToChangeTabContent,
-                                 IsWidget tabContent) {
+    public void changeTitle(int indexOfPartToChangeTabContent,
+                            IsWidget tabContent) {
     }
 
     @Override

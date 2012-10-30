@@ -23,25 +23,28 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ *
  */
-public class ActivityNotFoundView extends PopupPanel
-    implements
-    ActivityNotFoundPresenter.View {
+public class ActivityNotFoundView extends SimplePanel
+        implements
+        ActivityNotFoundPresenter.View {
 
     interface ActivityNotFoundViewBinder
             extends
             UiBinder<Widget, ActivityNotFoundView> {
+
     }
 
     private static ActivityNotFoundViewBinder uiBinder = GWT.create( ActivityNotFoundViewBinder.class );
 
+    private ActivityNotFoundPresenter presenter;
+
     @UiField
-    public Label                              requestedPlaceIdentifierLabel;
+    public Label requestedPlaceIdentifierLabel;
 
     @PostConstruct
     public void init() {
@@ -49,19 +52,18 @@ public class ActivityNotFoundView extends PopupPanel
     }
 
     @Override
-    public void setRequestedPlaceIdentifier(String identifier) {
-        requestedPlaceIdentifierLabel.setText( identifier );
+    public void init( final ActivityNotFoundPresenter presenter ) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void show() {
-        super.show();
-        center();
+    public void setRequestedPlaceIdentifier( String identifier ) {
+        requestedPlaceIdentifierLabel.setText( identifier );
     }
 
     @UiHandler("okButton")
-    public void onClickOkButton(final ClickEvent event) {
-        hide();
+    public void onClickOkButton( final ClickEvent event ) {
+        presenter.close();
     }
 
 }

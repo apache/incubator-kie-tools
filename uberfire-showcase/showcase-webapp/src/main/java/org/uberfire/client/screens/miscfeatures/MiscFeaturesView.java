@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.screens.test;
+package org.uberfire.client.screens.miscfeatures;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,35 +26,37 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
  */
-public class TestView extends Composite
-    implements
-    RequiresResize,
-    TestPresenter.View {
+public class MiscFeaturesView extends Composite
+        implements
+        RequiresResize,
+        MiscFeaturesPresenter.View {
 
     interface ViewBinder
             extends
-            UiBinder<Widget, TestView> {
+            UiBinder<Widget, MiscFeaturesView> {
+
     }
 
-    private static ViewBinder        uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @UiField
-    public SimplePanel               panel;
+    public HTMLPanel panel;
 
     @Inject
     private Event<NotificationEvent> notification;
 
-    private TestPresenter            presenter;
+    private MiscFeaturesPresenter presenter;
 
     @Override
-    public void init(final TestPresenter presenter) {
+    public void init( final MiscFeaturesPresenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -74,27 +74,12 @@ public class TestView extends Composite
     }
 
     @UiHandler("notificationButton")
-    public void onClickNotificationButton(final ClickEvent event) {
+    public void onClickNotificationButton( final ClickEvent event ) {
         notification.fire( new NotificationEvent( "Something happened" ) );
     }
 
-    @UiHandler("launchWithPlaceRequestAndCallback")
-    public void onClickLaunchWithPlaceRequestAndCallback(final ClickEvent event) {
-        presenter.launchWithPlaceRequestAndCallback();
-    }
-
-    @UiHandler("launchPerspectiveWithPlaceRequest")
-    public void onClickLaunchPerspectiveWithPlaceRequest(final ClickEvent event) {
-        presenter.launchPerspectiveWithPlaceRequest();
-    }
-
-    @UiHandler("launchPopup")
-    public void onClickLaunchPopup(final ClickEvent event) {
-        presenter.launchPopup();
-    }
-
     @UiHandler("launchUnknownPlace")
-    public void onClickLaunchUnknownPlace(final ClickEvent event) {
+    public void onClickLaunchUnknownPlace( final ClickEvent event ) {
         presenter.launchUnknownPlace();
     }
 

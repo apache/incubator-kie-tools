@@ -60,7 +60,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchPopupTest2" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPopup must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
+                                "The WorkbenchPopup must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -88,7 +88,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchPopupExtendsPopupPanel() throws FileNotFoundException {
+    public void testWorkbenchPopupExtendsIsWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest4";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest4.expected";
 
@@ -111,7 +111,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchPopupHasViewAnnotationAndExtendsPopupPanel() throws FileNotFoundException {
+    public void testWorkbenchPopupHasViewAnnotationAndExtendsIsWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest5";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest5.expected";
 
@@ -128,7 +128,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchPopup both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+                                  "The WorkbenchPopup both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -228,5 +228,54 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertEquals( result.getActualCode(),
                       result.getExpectedCode() );
     }
+
+    @Test
+    public void testWorkbenchPopupHasTitleWidget() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest10";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest10.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
+
+            @Override
+            public void generationComplete(final String code) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchPopupHasTitleAndTitleWidget() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest11";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest11.expected";
+
+        final Result result = new Result();
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
+
+            @Override
+            public void generationComplete(final String code) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                 pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertCompilationWarning( diagnostics,
+                                  "The WorkbenchPopup has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence." );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
 
 }

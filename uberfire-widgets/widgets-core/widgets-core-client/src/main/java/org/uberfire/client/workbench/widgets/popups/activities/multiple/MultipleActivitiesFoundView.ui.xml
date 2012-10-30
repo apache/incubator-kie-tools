@@ -20,16 +20,14 @@
              
   <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CoreConstants" />
   <ui:with field="images" type="org.uberfire.client.resources.CoreImages" />
-               
-  <g:DecoratedPopupPanel>
-    <g:VerticalPanel>
-      <g:HorizontalPanel>
-        <g:Image resource="{images.warningLarge}"/>
-        <g:Label text="{i18n.multipleMatchingActivitiesFound}"/>
-      </g:HorizontalPanel>
-      <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
-      <g:Button ui:field="okButton">OK</g:Button>
-    </g:VerticalPanel>
-  </g:DecoratedPopupPanel>
-  
+
+  <g:VerticalPanel>
+    <g:HorizontalPanel>
+      <g:Image resource="{images.warningLarge}"/>
+      <g:Label text="{i18n.multipleMatchingActivitiesFound}"/>
+    </g:HorizontalPanel>
+    <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
+    <g:Button ui:field="okButton">OK</g:Button>
+  </g:VerticalPanel>
+
 </ui:UiBinder> 

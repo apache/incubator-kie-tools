@@ -58,7 +58,7 @@ public class WorkbenchEditorTest5Activity extends AbstractWorkbenchEditorActivit
     }
 
     @Override
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return new InlineLabel(realPresenter.getTitle());
     }
 

@@ -71,11 +71,11 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                                               processingEnvironment );
         final String getDefaultPositionMethodName = GeneratorUtils.getDefaultPositionMethodName( classElement,
                                                                                                  processingEnvironment );
-        final String getTabTitleMethodName = GeneratorUtils.getTabTitleMethodName( classElement,
-                                                                                   processingEnvironment );
-        final ExecutableElement getTabWidgetMethod = GeneratorUtils.getTabWidgetMethodName( classElement,
-                                                                                            processingEnvironment );
-        final String getTabWidgetMethodName = getTabWidgetMethod == null ? null : getTabWidgetMethod.getSimpleName().toString();
+        final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
+                                                                             processingEnvironment );
+        final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
+                                                                                                processingEnvironment );
+        final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName( classElement,
                                                                                       processingEnvironment );
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
@@ -103,8 +103,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
         logger.debug( "onFocusMethodName: " + onFocusMethodName );
         logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
-        logger.debug( "getTabTitleMethodName: " + getTabTitleMethodName );
-        logger.debug( "getTabWidgetMethodName: " + getTabWidgetMethodName );
+        logger.debug( "getTitleMethodName: " + getTitleMethodName );
+        logger.debug( "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
         logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
         logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
         logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
@@ -115,10 +115,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
         if ( isWidget && getWidgetMethodName != null ) {
-            final String msg = "The WorkbenchScreen both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+            final String msg = "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );
@@ -132,11 +132,11 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             logger.warn( msg );
         }
 
-        //Validate getTabTitleMethodName and getTabWidgetMethodName
-        if ( getTabTitleMethodName == null && getTabWidgetMethodName == null ) {
+        //Validate getTitleMethodName and getTitleWidgetMethodName
+        if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
             throw new GenerationException( "The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
         }
-        if ( getTabTitleMethodName != null && getTabWidgetMethodName != null ) {
+        if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
             final String msg = "The WorkbenchScreen has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
@@ -169,10 +169,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   onFocusMethodName );
         root.put( "getDefaultPositionMethodName",
                   getDefaultPositionMethodName );
-        root.put( "getTabTitleMethodName",
-                  getTabTitleMethodName );
-        root.put( "getTabWidgetMethodName",
-                  getTabWidgetMethodName );
+        root.put( "getTitleMethodName",
+                  getTitleMethodName );
+        root.put( "getTitleWidgetMethodName",
+                  getTitleWidgetMethodName );
         root.put( "getWidgetMethodName",
                   getWidgetMethodName );
         root.put( "isWidget",

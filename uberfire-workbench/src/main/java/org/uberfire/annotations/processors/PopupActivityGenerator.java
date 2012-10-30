@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
@@ -58,12 +59,26 @@ public class PopupActivityGenerator extends AbstractGenerator {
                                                                                                      processingEnvironment );
         final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
                                                                                                              processingEnvironment );
+        final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
+                                                                                    processingEnvironment );
+        final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
+                                                                              processingEnvironment );
         final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
                                                                                 processingEnvironment );
-        final String getPopupMethodName = GeneratorUtils.getPopupMethodName( classElement,
+        final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
-        final boolean isPopup = GeneratorUtils.getIsPopup( classElement,
-                                                           processingEnvironment );
+        final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
+                                                                                                processingEnvironment );
+        final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
+        final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName( classElement,
+                                                                                      processingEnvironment );
+        final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
+        final boolean hasUberView = GeneratorUtils.hasUberViewReference( classElement,
+                                                                         processingEnvironment,
+                                                                         getWidgetMethod );
+
+        final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
+                                                             processingEnvironment );
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
         final String rolesList = GeneratorUtils.getRoleList( classElement );
 
@@ -72,18 +87,23 @@ public class PopupActivityGenerator extends AbstractGenerator {
         logger.debug( "Identifier: " + identifier );
         logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
         logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
+        logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
+        logger.debug( "onCloseMethodName: " + onCloseMethodName );
         logger.debug( "onRevealMethodName: " + onRevealMethodName );
-        logger.debug( "getPopupMethodName: " + getPopupMethodName );
-        logger.debug( "isPopup: " + Boolean.toString( isPopup ) );
+        logger.debug( "getTitleMethodName: " + getTitleMethodName );
+        logger.debug( "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
+        logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
+        logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
+        logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
-        //Validate getPopupMethodName and isPopup
-        if ( !isPopup && getPopupMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPopup must either extend PopupPanel or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.PopupPanel." );
+        //Validate getWidgetMethodName and isWidget
+        if ( !isWidget && getWidgetMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPopup must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         }
-        if ( isPopup && getPopupMethodName != null ) {
-            final String msg = "The WorkbenchPopup both extends com.google.gwt.user.client.ui.PopupPanel and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
+        if ( isWidget && getWidgetMethodName != null ) {
+            final String msg = "The WorkbenchPopup both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );
@@ -96,6 +116,18 @@ public class PopupActivityGenerator extends AbstractGenerator {
                                                               msg );
             logger.warn( msg );
         }
+
+        //Validate getTitleMethodName and getTitleWidgetMethodName
+        if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPopup must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
+        }
+        if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
+            final String msg = "The WorkbenchPopup has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
+            processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                              msg );
+            logger.warn( msg );
+        }
+
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
@@ -111,12 +143,22 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   onStart0ParameterMethodName );
         root.put( "onStart1ParameterMethodName",
                   onStart1ParameterMethodName );
+        root.put( "onMayCloseMethodName",
+                  onMayCloseMethodName );
+        root.put( "onCloseMethodName",
+                  onCloseMethodName );
         root.put( "onRevealMethodName",
                   onRevealMethodName );
-        root.put( "getPopupMethodName",
-                  getPopupMethodName );
-        root.put( "isPopup",
-                  isPopup );
+        root.put( "getTitleMethodName",
+                  getTitleMethodName );
+        root.put( "getTitleWidgetMethodName",
+                  getTitleWidgetMethodName );
+        root.put( "getWidgetMethodName",
+                  getWidgetMethodName );
+        root.put( "isWidget",
+                  isWidget );
+        root.put( "hasUberView",
+                  hasUberView );
         root.put( "securityTraitList",
                   securityTraitList );
         root.put( "rolesList",

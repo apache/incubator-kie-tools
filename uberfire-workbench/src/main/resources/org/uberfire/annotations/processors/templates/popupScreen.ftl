@@ -22,13 +22,19 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import com.google.gwt.user.client.ui.InlineLabel;
 
+<#if hasUberView>
+import javax.annotation.PostConstruct;
+import org.uberfire.client.mvp.UberView;
+
+</#if>
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
@@ -59,6 +65,13 @@ public class ${className} extends AbstractPopupActivity {
         super( placeManager );
     }
 
+    <#if hasUberView>
+    @PostConstruct
+    public void init() {
+        ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+    }
+
+    </#if>
     <#if onStart1ParameterMethodName??>
     @Override
     public void onStart(final PlaceRequest place) {
@@ -74,6 +87,21 @@ public class ${className} extends AbstractPopupActivity {
     }
 
     </#if>
+    <#if onMayCloseMethodName??>
+    @Override
+    public boolean onMayClose() {
+        return realPresenter.${onMayCloseMethodName}();
+    }
+
+    </#if>
+    <#if onCloseMethodName??>
+    @Override
+    public void onClose() {
+        super.onClose();
+        realPresenter.${onCloseMethodName}();
+    }
+
+    </#if>
     <#if onRevealMethodName??>
     @Override
     public void onReveal() {
@@ -82,17 +110,32 @@ public class ${className} extends AbstractPopupActivity {
     }
 
     </#if>
+    <#if getTitleWidgetMethodName??>
     @Override
-    public PopupPanel getPopupPanel() {
-        <#if getPopupMethodName??>
-        return realPresenter.${getPopupMethodName}();
-        <#elseif isPopup>
-        return realPresenter;
-        <#else>
-        return null;
-        </#if>
+    public IsWidget getTitleWidget() {
+        return realPresenter.${getTitleWidgetMethodName}();
     }
-    
+
+    <#elseif getTitleMethodName??>
+    @Override
+    public IsWidget getTitleWidget() {
+        return new InlineLabel(realPresenter.${getTitleMethodName}());
+    }
+
+    </#if>
+    <#if getWidgetMethodName??>
+    @Override
+    public IsWidget getWidget() {
+        return realPresenter.${getWidgetMethodName}();
+    }
+
+    <#elseif isWidget>
+    @Override
+    public IsWidget getWidget() {
+        return realPresenter;
+    }
+
+    </#if>
     @Override
     public Collection<String> getRoles() {
         return ROLES;

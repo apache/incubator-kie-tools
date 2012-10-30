@@ -37,7 +37,7 @@ public interface PlaceManager {
 
     public PlaceRequest getCurrentPlaceRequest();
 
-    public WorkbenchActivity getActivity( final PlaceRequest place );
+    public Activity getActivity( final PlaceRequest place );
 
     public void closeCurrentPlace();
 

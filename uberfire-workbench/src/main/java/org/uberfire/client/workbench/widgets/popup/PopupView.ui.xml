@@ -18,9 +18,15 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <g:HTMLPanel ui:field="panel">
-    <h2>Test7</h2>
-    <p>This test has a Widget on the tab.</p>
-    <g:Button ui:field="changeTabContent">Change tab content</g:Button>
-  </g:HTMLPanel>
+  <ui:with field="resources" type="org.uberfire.client.resources.WorkbenchResources"/>
+
+  <g:VerticalPanel>
+    <g:SimplePanel styleName="{resources.CSS.popupTitleBar}">
+      <g:FlowPanel ui:field="titleContainer" styleName="{resources.CSS.popupLabel}">
+        <g:FocusPanel ui:field="closeImage" styleName="{resources.CSS.popupCloseImage}"></g:FocusPanel>
+      </g:FlowPanel>
+    </g:SimplePanel>
+    <g:SimplePanel ui:field="container"/>
+  </g:VerticalPanel>
+
 </ui:UiBinder> 

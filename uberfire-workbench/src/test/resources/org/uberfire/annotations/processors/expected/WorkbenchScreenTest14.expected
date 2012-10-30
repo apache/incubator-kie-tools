@@ -56,7 +56,7 @@ public class WorkbenchScreenTest14Activity extends AbstractWorkbenchScreenActivi
     }
 
     @Override
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return new InlineLabel(realPresenter.getTitle());
     }
 

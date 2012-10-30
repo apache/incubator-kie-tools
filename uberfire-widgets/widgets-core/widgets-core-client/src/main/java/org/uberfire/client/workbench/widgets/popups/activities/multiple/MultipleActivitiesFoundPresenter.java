@@ -15,50 +15,77 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.OnReveal;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PopupPanel;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * 
+ *
  */
 @ApplicationScoped
 @WorkbenchPopup(identifier = "workbench.activities.multiple")
 public class MultipleActivitiesFoundPresenter {
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            UberView<MultipleActivitiesFoundPresenter> {
 
-        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
 
-        void show();
     }
 
     @Inject
-    private View         view;
+    private View view;
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+
+    private PlaceRequest place;
+
+    @PostConstruct
+    public void init() {
+        view.init( this );
+    }
+
+    @OnStart
+    public void onStart( final PlaceRequest place ) {
+        this.place = place;
+    }
 
     @OnReveal
     public void onReveal() {
         final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter( "requestedPlaceIdentifier",
                                                                                                     null );
         view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
-        view.show();
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "Multiple activities detected";
     }
 
     @WorkbenchPartView
-    public PopupPanel getView() {
-        return (PopupPanel) view;
+    public IsWidget getView() {
+        return view;
+    }
+
+    public void close() {
+        closePlaceEvent.fire( new WorkbenchPartBeforeCloseEvent( this.place ) );
     }
 
 }

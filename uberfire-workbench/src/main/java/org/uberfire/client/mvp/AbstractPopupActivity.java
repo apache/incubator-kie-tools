@@ -15,43 +15,60 @@
  */
 package org.uberfire.client.mvp;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.client.workbench.widgets.popup.PopupView;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * Base class for Pop-up Activities
  */
 public abstract class AbstractPopupActivity extends AbstractActivity
-    implements
-    PopupActivity {
+        implements
+        PopupActivity {
 
     @Inject
     private IOCBeanManager iocManager;
 
-    public AbstractPopupActivity(final PlaceManager placeManager) {
+    @Inject
+    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+
+    @Inject
+    private PopupView popup;
+
+    public AbstractPopupActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
     @Override
-    public void launch(final PlaceRequest place,
-                       final Command callback) {
+    public void launch( final PlaceRequest place,
+                        final Command callback ) {
         super.launch( place,
                       callback );
 
         onStart( place );
 
-        final PopupPanel popup = getPopupPanel();
+        final IsWidget widget = getWidget();
+        final IsWidget titleWidget = getTitleWidget();
+        popup.init( this );
+
+        popup.setContent( widget );
+        popup.setTitle( titleWidget );
+
         //When pop-up is closed destroy bean to avoid memory leak
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
 
             @Override
-            public void onClose(CloseEvent<PopupPanel> event) {
+            public void onClose( CloseEvent<PopupPanel> event ) {
                 iocManager.destroyBean( AbstractPopupActivity.this );
             }
 
@@ -63,7 +80,10 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     }
 
     @Override
-    public abstract PopupPanel getPopupPanel();
+    public abstract IsWidget getTitleWidget();
+
+    @Override
+    public abstract IsWidget getWidget();
 
     @Override
     public void onStart() {
@@ -71,7 +91,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     }
 
     @Override
-    public void onStart(final PlaceRequest place) {
+    public void onStart( final PlaceRequest place ) {
         //Do nothing.  
     }
 
@@ -83,6 +103,18 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     @Override
     public void onClose() {
         //Do nothing.
+    }
+
+    public void close() {
+        closePlaceEvent.fire( new WorkbenchPartBeforeCloseEvent( this.place ) );
+    }
+
+    @SuppressWarnings("unused")
+    private void onClose( @Observes WorkbenchPartCloseEvent event ) {
+        final PlaceRequest place = event.getPlace();
+        if ( place.equals( this.place ) ) {
+            popup.hide();
+        }
     }
 
 }

@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -88,10 +89,14 @@ public class WorkbenchMenuBarPresenter {
 
     //Handle setting up the MenuBar for the specific WorkbenchPart selected
     void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
-        final WorkbenchActivity activity = placeManager.getActivity( event.getPlace() );
+        final Activity activity = placeManager.getActivity( event.getPlace() );
         if ( activity == null ) {
             return;
         }
+        if ( !( activity instanceof WorkbenchActivity ) ) {
+            return;
+        }
+        final WorkbenchActivity wbActivity = (WorkbenchActivity) activity;
 
         if ( !event.getPlace().equals( activePlace ) ) {
 
@@ -100,7 +105,7 @@ public class WorkbenchMenuBarPresenter {
             //Add items for current WorkbenchPart
             activePlace = event.getPlace();
 
-            final MenuBar menuBar = activity.getMenuBar();
+            final MenuBar menuBar = wbActivity.getMenuBar();
             if ( menuBar == null ) {
                 return;
             }

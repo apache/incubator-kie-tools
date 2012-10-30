@@ -29,7 +29,6 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -75,24 +74,13 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    private String[] menuItems = new String[]{ "FileExplorer", "Chart" };
+    private String[] menuItems = new String[]{ "FileExplorer", "Chart", "MiscellaneousFeatures" };
 
     @AfterInitialization
     public void startApp() {
         loadStyles();
         setupMenu();
         hideLoadingPopup();
-
-        //Register call-backs for demo
-        placeManager.registerOnRevealCallback( new DefaultPlaceRequest( "TestPerspective" ),
-                                               new Command() {
-
-                                                   @Override
-                                                   public void execute() {
-                                                       Window.alert( "Callback!" );
-                                                   }
-
-                                               } );
     }
 
     private void loadStyles() {
@@ -105,13 +93,13 @@ public class ShowcaseEntryPoint {
         //Home
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         if ( defaultPerspective != null ) {
-            menubar.addWorkbenchItem(new DefaultMenuItemCommand("Home",
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            placeManager.goTo(new DefaultPlaceRequest(defaultPerspective.getIdentifier()));
-                        }
-                    }));
+            menubar.addWorkbenchItem( new DefaultMenuItemCommand( "Home",
+                                                                  new Command() {
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                                                                      }
+                                                                  } ) );
         }
 
         //Perspectives
@@ -133,7 +121,7 @@ public class ShowcaseEntryPoint {
                                                                      cmd );
             perspectivesMenuBar.addItem( item );
         }
-        menubar.addWorkbenchItem(perspectivesMenu);
+        menubar.addWorkbenchItem( perspectivesMenu );
 
         //Static places
         final MenuBar placesMenuBar = new DefaultMenuBar();
@@ -152,7 +140,7 @@ public class ShowcaseEntryPoint {
                                                                      } );
             placesMenuBar.addItem( item );
         }
-        menubar.addWorkbenchItem(placesMenu);
+        menubar.addWorkbenchItem( placesMenu );
 
         final MenuItemCommand logout = new DefaultMenuItemCommand( "Logout",
                                                                    new Command() {
@@ -162,7 +150,7 @@ public class ShowcaseEntryPoint {
                                                                        }
                                                                    } );
 
-        menubar.addWorkbenchItem(logout);
+        menubar.addWorkbenchItem( logout );
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {

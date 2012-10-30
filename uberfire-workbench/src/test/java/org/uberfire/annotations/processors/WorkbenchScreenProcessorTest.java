@@ -61,7 +61,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+                                "The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -95,7 +95,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  "org/uberfire/annotations/processors/WorkbenchScreenTest4" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchScreen must either extend isWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+                                "The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -163,7 +163,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                  pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchScreen both extends com.google.gwt.user.client.ui.isWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+                                  "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -357,7 +357,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchScreenHasTabWidget() throws FileNotFoundException {
+    public void testWorkbenchScreenHasTitleWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest16";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest16.expected";
 
@@ -380,7 +380,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchScreenHasTabTitleAndTabWidget() throws FileNotFoundException {
+    public void testWorkbenchScreenHasTitleAndTitleWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest17";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest17.expected";
 

@@ -38,14 +38,14 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 /**
- * Base test to generate source code with an Annotation Processor
+ * Base miscfeatures to generate source code with an Annotation Processor
  */
 public abstract class AbstractProcessorTest {
 
     private static final String SOURCE_FILETYPE = ".java";
 
     /**
-     * Container for test results.
+     * Container for miscfeatures results.
      */
     class Result {
         private String expectedCode;

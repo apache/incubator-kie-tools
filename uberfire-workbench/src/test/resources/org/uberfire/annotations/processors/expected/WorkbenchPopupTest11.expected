@@ -24,59 +24,44 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
-import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
-
-import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
-
+import org.uberfire.client.mvp.AbstractPopupActivity;
+import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
-@Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("test12")
+@Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
+@Identifier("test11")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchScreenTest12Activity extends AbstractWorkbenchScreenActivity {
+public class WorkbenchPopupTest11Activity extends AbstractPopupActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private WorkbenchScreenTest12 realPresenter;
+    private WorkbenchPopupTest11 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchScreenTest12Activity(final PlaceManager placeManager) {
+    public WorkbenchPopupTest11Activity(final PlaceManager placeManager) {
         super( placeManager );
-    }
-
-    @PostConstruct
-    public void init() {
-        ((UberView) realPresenter.getView()).init( realPresenter );
-    }
-
-    @Override
-    public void onStart(final PlaceRequest place) {
-        super.onStart( place );
-        realPresenter.onStart( place );
     }
 
     @Override
     public IsWidget getTitleWidget() {
-        return new InlineLabel(realPresenter.getTitle());
+        return realPresenter.getTitleWidget();
     }
 
     @Override
     public IsWidget getWidget() {
         return realPresenter.getView();
     }
-    
+
     @Override
     public Collection<String> getRoles() {
         return ROLES;
@@ -89,6 +74,6 @@ public class WorkbenchScreenTest12Activity extends AbstractWorkbenchScreenActivi
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchScreenTest12Activity";
+        return "org.uberfire.annotations.processors.WorkbenchPopupTest11Activity";
     }
 }

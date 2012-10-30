@@ -54,7 +54,7 @@ public class WorkbenchScreenTest16Activity extends AbstractWorkbenchScreenActivi
     }
 
     @Override
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return realPresenter.getTabWidget();
     }
 

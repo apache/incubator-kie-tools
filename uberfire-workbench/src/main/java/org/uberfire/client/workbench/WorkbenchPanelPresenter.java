@@ -37,45 +37,45 @@ import com.google.gwt.user.client.ui.RequiresResize;
 public class WorkbenchPanelPresenter {
 
     public interface View
-        extends
-        UberView<WorkbenchPanelPresenter>,
-        RequiresResize {
+            extends
+            UberView<WorkbenchPanelPresenter>,
+            RequiresResize {
 
         WorkbenchPanelPresenter getPresenter();
 
         void clear();
 
-        void addPart(IsWidget title,
-                     WorkbenchPartPresenter.View view);
+        void addPart( IsWidget titleWidget,
+                      WorkbenchPartPresenter.View view );
 
-        void addPanel(PanelDefinition panel,
-                      WorkbenchPanelPresenter.View view,
-                      Position position);
+        void addPanel( PanelDefinition panel,
+                       WorkbenchPanelPresenter.View view,
+                       Position position );
 
-        void changeTabContent(int indexOfPartToChangeTabContent,
-                              IsWidget tabContent);
+        void changeTitle( int indexOfPartToChangeTabContent,
+                          IsWidget titleWidget );
 
-        void selectPart(int index);
+        void selectPart( int index );
 
-        void removePart(int index);
+        void removePart( int index );
 
         void removePanel();
 
-        void setFocus(boolean hasFocus);
+        void setFocus( boolean hasFocus );
 
     }
 
-    private View                 view;
+    private View view;
 
-    private PanelManager         panelManager;
+    private PanelManager panelManager;
 
-    private PanelDefinition      definition;
+    private PanelDefinition definition;
 
     private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
 
     @Inject
-    public WorkbenchPanelPresenter(final View view,
-                                   final PanelManager panelManager) {
+    public WorkbenchPanelPresenter( final View view,
+                                    final PanelManager panelManager ) {
         this.view = view;
         this.panelManager = panelManager;
     }
@@ -90,13 +90,13 @@ public class WorkbenchPanelPresenter {
         return definition;
     }
 
-    public void setDefinition(final PanelDefinition definition) {
+    public void setDefinition( final PanelDefinition definition ) {
         this.definition = definition;
     }
 
-    public void addPart(final IsWidget tabWidget,
-                        final PartDefinition part,
-                        final WorkbenchPartPresenter.View view) {
+    public void addPart( final PartDefinition part,
+                         final IsWidget titleWidget,
+                         final WorkbenchPartPresenter.View view ) {
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
         if ( !definition.getParts().contains( part ) ) {
             definition.addPart( part );
@@ -104,23 +104,23 @@ public class WorkbenchPanelPresenter {
         if ( !orderedParts.contains( part ) ) {
             orderedParts.add( part );
         }
-        getPanelView().addPart( tabWidget,
+        getPanelView().addPart( titleWidget,
                                 view );
     }
 
-    public void changeTabContent(final PartDefinition part,
-                                 final IsWidget tabContent) {
+    public void changeTitle( final PartDefinition part,
+                             final IsWidget titleWidget ) {
         if ( !contains( part ) ) {
             return;
         }
         final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
-        getPanelView().changeTabContent( indexOfPartToChangeTabContent,
-                                         tabContent );
+        getPanelView().changeTitle( indexOfPartToChangeTabContent,
+                                    titleWidget );
     }
 
-    public void addPanel(final PanelDefinition panel,
-                         final WorkbenchPanelPresenter.View view,
-                         final Position position) {
+    public void addPanel( final PanelDefinition panel,
+                          final WorkbenchPanelPresenter.View view,
+                          final Position position ) {
         getPanelView().addPanel( panel,
                                  view,
                                  position );
@@ -132,7 +132,7 @@ public class WorkbenchPanelPresenter {
         view.clear();
     }
 
-    public void removePart(final PartDefinition part) {
+    public void removePart( final PartDefinition part ) {
         if ( !contains( part ) ) {
             return;
         }
@@ -146,11 +146,11 @@ public class WorkbenchPanelPresenter {
         view.removePanel();
     }
 
-    public void setFocus(final boolean hasFocus) {
+    public void setFocus( final boolean hasFocus ) {
         view.setFocus( hasFocus );
     }
 
-    public void selectPart(final PartDefinition part) {
+    public void selectPart( final PartDefinition part ) {
         if ( !contains( part ) ) {
             return;
         }
@@ -158,11 +158,11 @@ public class WorkbenchPanelPresenter {
         view.selectPart( indexOfPartToSelect );
     }
 
-    private boolean contains(final PartDefinition part) {
+    private boolean contains( final PartDefinition part ) {
         return definition.getParts().contains( part );
     }
 
-    public void onPartFocus(final PartDefinition part) {
+    public void onPartFocus( final PartDefinition part ) {
         panelManager.onPartFocus( part );
     }
 
@@ -174,7 +174,7 @@ public class WorkbenchPanelPresenter {
         panelManager.onPanelFocus( definition );
     }
 
-    public void onBeforePartClose(final PartDefinition part) {
+    public void onBeforePartClose( final PartDefinition part ) {
         panelManager.onBeforePartClose( part );
     }
 
@@ -182,8 +182,8 @@ public class WorkbenchPanelPresenter {
         return view;
     }
 
-    public void onResize(final int width,
-                         final int height) {
+    public void onResize( final int width,
+                          final int height ) {
         getDefinition().setWidth( width == 0 ? null : width );
         getDefinition().setHeight( height == 0 ? null : height );
     }

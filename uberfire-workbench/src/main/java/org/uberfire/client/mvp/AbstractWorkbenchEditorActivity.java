@@ -54,7 +54,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         onStart( path,
                  place );
 
-        acceptPanel.add( getTabWidget(),
+        acceptPanel.add( getTitleWidget(),
                          getWidget() );
         onReveal();
     }

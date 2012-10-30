@@ -58,7 +58,7 @@ public class WorkbenchEditorTest18Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return realPresenter.getTabWidget();
     }
 

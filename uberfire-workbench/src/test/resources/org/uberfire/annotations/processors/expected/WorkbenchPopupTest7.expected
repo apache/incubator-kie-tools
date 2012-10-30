@@ -22,13 +22,14 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import com.google.gwt.user.client.ui.InlineLabel;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
@@ -58,10 +59,15 @@ public class WorkbenchPopupTest7Activity extends AbstractPopupActivity {
     }
 
     @Override
-    public PopupPanel getPopupPanel() {
+    public IsWidget getTitleWidget() {
+        return new InlineLabel(realPresenter.getTitle());
+    }
+
+    @Override
+    public IsWidget getWidget() {
         return realPresenter.getView();
     }
-    
+
     @Override
     public Collection<String> getRoles() {
         return ROLES;

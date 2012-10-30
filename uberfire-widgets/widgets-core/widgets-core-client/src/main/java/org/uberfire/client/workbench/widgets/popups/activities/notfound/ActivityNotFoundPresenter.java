@@ -15,38 +15,57 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.notfound;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.OnReveal;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PopupPanel;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * 
+ *
  */
 @Dependent
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            UberView<ActivityNotFoundPresenter> {
 
-        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
 
-        void show();
     }
 
     @Inject
-    private View         view;
+    private View view;
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+
+    private PlaceRequest place;
+
+    @PostConstruct
+    public void init() {
+        view.init( this );
+    }
+
+    @OnStart
+    public void onStart( final PlaceRequest place ) {
+        this.place = place;
+    }
 
     @OnReveal
     public void onReveal() {
@@ -55,9 +74,18 @@ public class ActivityNotFoundPresenter {
         view.setRequestedPlaceIdentifier( identifier );
     }
 
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return "Activity not found";
+    }
+
     @WorkbenchPartView
-    public PopupPanel getView() {
-        return (PopupPanel) view;
+    public IsWidget getView() {
+        return view;
+    }
+
+    public void close() {
+        closePlaceEvent.fire( new WorkbenchPartBeforeCloseEvent( this.place ) );
     }
 
 }

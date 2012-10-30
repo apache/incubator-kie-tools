@@ -112,11 +112,11 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart(final IsWidget tabWidget,
+    public void addPart(final IsWidget titleWidget,
                         final WorkbenchPartPresenter.View view) {
         tabPanel.add( view,
-                      wrapTabWidget( tabWidget,
-                                     view ) );
+                      wrapTitleWidget( titleWidget,
+                                       view ) );
     }
 
     @Override
@@ -160,12 +160,12 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void changeTabContent(int indexOfPartToChangeTabContent,
-                                 IsWidget tabWidget) {
-        final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) tabPanel.getWidget( indexOfPartToChangeTabContent );
-        final Widget wrappedTabContent = wrapTabWidget( tabWidget,
-                                                        view );
-        tabPanel.setTabWidget( indexOfPartToChangeTabContent,
+    public void changeTitle(final int index,
+                            final IsWidget titleWidget) {
+        final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) tabPanel.getWidget( index );
+        final Widget wrappedTabContent = wrapTitleWidget( titleWidget,
+                                                          view );
+        tabPanel.setTabWidget( index,
                                wrappedTabContent );
     }
 
@@ -271,10 +271,10 @@ public class WorkbenchPanelView extends ResizeComposite
         return tabPanel;
     }
 
-    private Widget wrapTabWidget(final IsWidget tabWidget,
-                                 final WorkbenchPartPresenter.View view) {
+    private Widget wrapTitleWidget(final IsWidget titleWidget,
+                                   final WorkbenchPartPresenter.View view) {
         final FlowPanel fp = new FlowPanel();
-        fp.add( tabWidget );
+        fp.add( titleWidget );
 
         //Clicking on the Tab takes focus
         fp.addDomHandler( new ClickHandler() {
@@ -288,7 +288,7 @@ public class WorkbenchPanelView extends ResizeComposite
                           ClickEvent.getType() );
 
         dndManager.makeDraggable( view.asWidget(),
-                                  tabWidget );
+                                  titleWidget );
 
         final FocusPanel image = new FocusPanel();
         image.getElement().getStyle().setFloat( Style.Float.RIGHT );

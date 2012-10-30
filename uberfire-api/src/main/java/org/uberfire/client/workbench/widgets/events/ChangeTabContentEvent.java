@@ -25,20 +25,20 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class ChangeTabContentEvent {
 
     private final PlaceRequest place;
-    private final IsWidget     tabContent;
+    private final IsWidget titleWidget;
 
-    public ChangeTabContentEvent(final PlaceRequest place,
-                                 final IsWidget tabContent) {
+    public ChangeTabContentEvent( final PlaceRequest place,
+                                  final IsWidget titleWidget ) {
         this.place = place;
-        this.tabContent = tabContent;
+        this.titleWidget = titleWidget;
     }
 
     public PlaceRequest getPlaceRequest() {
         return place;
     }
 
-    public IsWidget getTabContent() {
-        return this.tabContent;
+    public IsWidget getTitleWidget() {
+        return this.titleWidget;
     }
 
 }

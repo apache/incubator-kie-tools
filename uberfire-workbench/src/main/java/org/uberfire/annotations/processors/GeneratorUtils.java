@@ -242,8 +242,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getTabTitleMethodName(final TypeElement classElement,
-                                               final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public static String getTitleMethodName(final TypeElement classElement,
+                                            final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getStringMethodName( classElement,
                                     processingEnvironment,
                                     WorkbenchPartTitle.class );
@@ -259,8 +259,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static ExecutableElement getTabWidgetMethodName(final TypeElement classElement,
-                                                           final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public static ExecutableElement getTitleWidgetMethodName(final TypeElement classElement,
+                                                             final ProcessingEnvironment processingEnvironment) throws GenerationException {
         return getWidgetMethodName( classElement,
                                     processingEnvironment,
                                     WorkbenchPartTitle.class );

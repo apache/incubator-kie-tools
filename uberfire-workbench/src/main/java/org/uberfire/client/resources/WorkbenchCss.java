@@ -28,4 +28,10 @@ public interface WorkbenchCss
 
     String tabLayoutPanelTabsScrollButtons();
 
+    String popupTitleBar();
+
+    String popupLabel();
+
+    String popupCloseImage();
+
 }

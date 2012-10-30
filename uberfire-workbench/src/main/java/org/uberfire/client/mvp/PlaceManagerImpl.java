@@ -47,7 +47,7 @@ public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<PlaceRequest, WorkbenchActivity> existingWorkbenchActivities = new HashMap<PlaceRequest, WorkbenchActivity>();
+    private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
     private final Map<PlaceRequest, Command> onRevealCallbacks = new HashMap<PlaceRequest, Command>();
 
@@ -179,11 +179,11 @@ public class PlaceManagerImpl
      * @return
      */
     @Override
-    public WorkbenchActivity getActivity( final PlaceRequest place ) {
+    public Activity getActivity( final PlaceRequest place ) {
         if ( place == null ) {
             return null;
         }
-        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
+        final Activity activity = existingWorkbenchActivities.get( place );
         return activity;
     }
 
@@ -201,9 +201,6 @@ public class PlaceManagerImpl
             return;
         }
         workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( placeToClose ) );
-        if ( currentPlaceRequest.equals( placeToClose ) ) {
-            currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
-        }
     }
 
     @Override
@@ -296,6 +293,12 @@ public class PlaceManagerImpl
     private void launchActivity( final PlaceRequest place,
                                  final PopupActivity activity,
                                  final Command callback ) {
+        //Record new place\part\activity
+        currentPlaceRequest = place;
+        existingWorkbenchActivities.put( place,
+                                         activity );
+        updateHistory( place );
+
         activity.launch( place,
                          callback );
     }
@@ -312,15 +315,24 @@ public class PlaceManagerImpl
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartBeforeClosed( @Observes WorkbenchPartBeforeCloseEvent event ) {
+    private void onWorkbenchPartBeforeClose( @Observes WorkbenchPartBeforeCloseEvent event ) {
         final PlaceRequest place = event.getPlace();
         if ( place == null ) {
             return;
         }
-        final WorkbenchActivity activity = existingWorkbenchActivities.get( place );
+        final Activity activity = existingWorkbenchActivities.get( place );
         if ( activity == null ) {
             return;
         }
+        if ( activity instanceof WorkbenchActivity ) {
+            onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place );
+        } else if ( activity instanceof PopupActivity ) {
+            onWorkbenchPartBeforeClose( (PopupActivity) activity, place );
+        }
+    }
+
+    private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
+                                             final PlaceRequest place ) {
         if ( activity.onMayClose() ) {
             activity.onClose();
             existingWorkbenchActivities.remove( place );
@@ -330,28 +342,49 @@ public class PlaceManagerImpl
                 workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( place ) );
             }
             workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
+            if ( currentPlaceRequest.equals( place ) ) {
+                currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
+            }
+
+        }
+    }
+
+    private void onWorkbenchPartBeforeClose( final PopupActivity activity,
+                                             final PlaceRequest place ) {
+        if ( activity.onMayClose() ) {
+            activity.onClose();
+            existingWorkbenchActivities.remove( place );
+            activityManager.removeActivity( place );
+            workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
+            if ( currentPlaceRequest.equals( place ) ) {
+                currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
+            }
         }
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
         final PlaceRequest place = event.getPlace();
-        final WorkbenchActivity activity = getActivity( place );
+        final Activity activity = getActivity( place );
         if ( activity == null ) {
             return;
         }
-        currentPlaceRequest = place;
-        activity.onFocus();
+        if ( activity instanceof WorkbenchActivity ) {
+            currentPlaceRequest = place;
+            ( (WorkbenchActivity) activity ).onFocus();
+        }
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
-        final WorkbenchActivity activity = getActivity( event.getPlace() );
+        final Activity activity = getActivity( event.getPlace() );
         if ( activity == null ) {
             return;
         }
-        currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
-        activity.onLostFocus();
+        if ( activity instanceof WorkbenchActivity ) {
+            currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
+            ( (WorkbenchActivity) activity ).onLostFocus();
+        }
     }
 
     @Produces

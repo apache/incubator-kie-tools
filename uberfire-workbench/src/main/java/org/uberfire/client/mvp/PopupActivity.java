@@ -15,9 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Pop-up Activity life-cycles
@@ -30,7 +29,9 @@ public interface PopupActivity
 
     public void onStart(final PlaceRequest place);
 
-    public PopupPanel getPopupPanel();
+    public IsWidget getTitleWidget();
+
+    public IsWidget getWidget();
 
     public boolean onMayClose();
 

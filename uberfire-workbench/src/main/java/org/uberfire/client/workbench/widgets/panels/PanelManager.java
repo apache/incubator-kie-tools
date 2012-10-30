@@ -146,8 +146,8 @@ public class PanelManager {
                                               partPresenter );
         }
 
-        panelPresenter.addPart( tabWidget,
-                                part,
+        panelPresenter.addPart( part,
+                                tabWidget,
                                 partPresenter.getPartView() );
 
         //Select newly inserted part
@@ -263,13 +263,17 @@ public class PanelManager {
     @SuppressWarnings("unused")
     private void onWorkbenchPartClosedEvent( @Observes WorkbenchPartCloseEvent event ) {
         final PartDefinition part = getPartForPlace( event.getPlace() );
-        removePart( part );
+        if ( part != null ) {
+            removePart( part );
+        }
     }
 
     @SuppressWarnings("unused")
     private void onWorkbenchPartDroppedEvent( @Observes WorkbenchPartDroppedEvent event ) {
         final PartDefinition part = getPartForPlace( event.getPlace() );
-        removePart( part );
+        if ( part != null ) {
+            removePart( part );
+        }
     }
 
     private PartDefinition getPartForPlace( final PlaceRequest place ) {
@@ -282,16 +286,16 @@ public class PanelManager {
     }
 
     @SuppressWarnings("unused")
-    private void onChangeWorkbenchTabContentEvent( @Observes ChangeTabContentEvent event ) {
+    private void onChangeWorkbenchTitleEvent( @Observes ChangeTabContentEvent event ) {
         final PlaceRequest place = event.getPlaceRequest();
-        final IsWidget tabContent = event.getTabContent();
+        final IsWidget titleWidget = event.getTitleWidget();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition panel = e.getKey();
             final WorkbenchPanelPresenter presenter = e.getValue();
             for ( PartDefinition part : panel.getParts() ) {
                 if ( place.equals( part.getPlace() ) ) {
-                    presenter.changeTabContent( part,
-                                                tabContent );
+                    presenter.changeTitle( part,
+                                           titleWidget );
                 }
             }
         }

@@ -29,3 +29,23 @@
 .tabLayoutPanelTabsScrollButtons {
 	padding-top: 3px;
 }
+
+.popupTitleBar {
+    background-color: #8080e0;
+}
+
+.popupLabel {
+    padding: 2px;
+    font-weight: bold;
+    color: #f5f5f5;
+}
+
+.popupCloseImage {
+    margin-left: 8px;
+    margin-top: 2px;
+    height: 16px;
+    width: 16px;
+    background: url("images/workbenchCloseTab.png") no-repeat;
+    background-position: 0px 0;
+    float: right;
+}

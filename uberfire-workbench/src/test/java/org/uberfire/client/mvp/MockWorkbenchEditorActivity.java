@@ -44,7 +44,7 @@ public class MockWorkbenchEditorActivity extends AbstractWorkbenchEditorActivity
     }
 
     @Override
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return null;
     }
 
