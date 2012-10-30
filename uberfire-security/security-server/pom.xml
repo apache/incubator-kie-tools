@@ -22,12 +22,12 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-security</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.uberfire</groupId>
   <artifactId>security-server</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
 
   <name>ÜberFire Security Server</name>
   <description>ÜberFire Security Server</description>
