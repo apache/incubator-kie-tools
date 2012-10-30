@@ -439,11 +439,6 @@
         <artifactId>vfs-jgit</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>vfs-eclipse</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <!-- VFS: Service -->
       <dependency>
