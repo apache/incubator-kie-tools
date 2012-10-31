@@ -73,7 +73,7 @@ public class PathImpl implements Path, IsSerializable {
 	}
 
 	public void setUUID(String uuid) {
-		uuid = uuid;
+		this.uuid = uuid;
 	}
 	
 	public int compareTo(Path another) {
