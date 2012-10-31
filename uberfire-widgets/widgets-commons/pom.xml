@@ -22,7 +22,7 @@
 	<parent>
 		<groupId>org.uberfire</groupId>
 		<artifactId>uberfire-widgets</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>${uberfire.version}</version>
 	</parent>
 
 	<artifactId>widgets-commons</artifactId>

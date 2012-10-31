@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>${uberfire.version}</version>
   </parent>
 
   <artifactId>uberfire-backend</artifactId>

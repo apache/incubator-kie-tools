@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>vfs-impls</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>${uberfire.version}</version>
   </parent>
 
   <artifactId>vfs-fs</artifactId>

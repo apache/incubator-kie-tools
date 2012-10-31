@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-vfs</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>${uberfire.version}</version>
   </parent>
 
   <artifactId>vfs-model</artifactId>
