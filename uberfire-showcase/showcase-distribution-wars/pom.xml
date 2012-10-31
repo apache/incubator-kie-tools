@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-showcase</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0.Alpha1</version>
   </parent>
 
   <artifactId>showcase-distribution-wars</artifactId>
