@@ -73,8 +73,12 @@
     #login-top {
       height: 120px;
       width: 401px;
-      padding-top: 140px;
+      padding-top: 20px;
       text-align: center;
+    }
+
+    #login-content {
+      margin-top: 120px;
     }
 
     label {
@@ -138,7 +142,7 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/drools_logo.gif" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
   </div>
 
   <div id="login-content">
