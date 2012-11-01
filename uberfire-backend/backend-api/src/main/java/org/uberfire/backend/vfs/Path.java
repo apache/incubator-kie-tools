@@ -22,9 +22,5 @@ public interface Path {
 
     String toURI();
     
-    String getUUID();
-    
-    void setUUID(String uuid);
-    
     int compareTo(Path another);
 }
