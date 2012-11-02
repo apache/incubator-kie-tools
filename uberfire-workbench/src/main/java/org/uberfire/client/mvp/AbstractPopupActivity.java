@@ -19,10 +19,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PopupPanel;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
 import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
@@ -63,16 +60,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity
 
         popup.setContent( widget );
         popup.setTitle( titleWidget );
-
-        //When pop-up is closed destroy bean to avoid memory leak
-        popup.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-            @Override
-            public void onClose( CloseEvent<PopupPanel> event ) {
-                iocManager.destroyBean( AbstractPopupActivity.this );
-            }
-
-        } );
         popup.show();
         popup.center();
 

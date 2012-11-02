@@ -15,8 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.notfound;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -34,7 +33,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 /**
  *
  */
-@Dependent
+@ApplicationScoped
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
@@ -57,11 +56,6 @@ public class ActivityNotFoundPresenter {
 
     private PlaceRequest place;
 
-    @PostConstruct
-    public void init() {
-        view.init( this );
-    }
-
     @OnStart
     public void onStart( final PlaceRequest place ) {
         this.place = place;
@@ -80,7 +74,7 @@ public class ActivityNotFoundPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
+    public UberView<ActivityNotFoundPresenter> getView() {
         return view;
     }
 

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -40,21 +39,21 @@ public class ActivityManagerImpl
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
 
     @Inject
-    private IdentifierUtils                   idUtils;
+    private IdentifierUtils idUtils;
 
     @Inject
-    private PlaceManager                      placeManager;
+    private PlaceManager placeManager;
 
     @Inject
-    private IOCBeanManager                    iocManager;
+    private IOCBeanManager iocManager;
 
     @Inject
-    RuntimeAuthorizationManager               authzManager;
+    RuntimeAuthorizationManager authzManager;
 
     @Inject
-    private Identity                          identity;
+    private Identity identity;
 
-    public Activity getActivity(final PlaceRequest placeRequest) {
+    public Activity getActivity( final PlaceRequest placeRequest ) {
         //Check and return any existing Activity for the PlaceRequest
         if ( activeActivities.containsKey( placeRequest ) ) {
             return activeActivities.get( placeRequest );
@@ -65,14 +64,14 @@ public class ActivityManagerImpl
         final String identifier = placeRequest.getIdentifier();
         Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( identifier );
         switch ( activityBeans.size() ) {
-            case 0 :
+            case 0:
                 //No activities found. Show an error to the user.
                 final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
                 notFoundPopup.addParameter( "requestedPlaceIdentifier",
                                             identifier );
                 placeManager.goTo( notFoundPopup );
                 break;
-            case 1 :
+            case 1:
                 instance = getFirstActivity( activityBeans );
                 if ( instance == null ) {
                     placeManager.goTo( DefaultPlaceRequest.NOWHERE );
@@ -83,7 +82,7 @@ public class ActivityManagerImpl
                                           instance );
                 }
                 return instance;
-            default :
+            default:
                 //TODO {manstis} Multiple activities found. Show a selector to the user.
                 final PlaceRequest multiplePopup = new DefaultPlaceRequest( "workbench.activities.multiple" );
                 multiplePopup.addParameter( "requestedPlaceIdentifier",
@@ -95,7 +94,7 @@ public class ActivityManagerImpl
     }
 
     @Override
-    public <T extends Activity> Set<T> getActivities(Class<T> clazz) {
+    public <T extends Activity> Set<T> getActivities( Class<T> clazz ) {
 
         final Collection<IOCBeanDef<T>> activityBeans = iocManager.lookupBeans( clazz );
 
@@ -117,7 +116,7 @@ public class ActivityManagerImpl
         return activities;
     }
 
-    private Activity getFirstActivity(final Set<IOCBeanDef<Activity>> activityBeans) {
+    private Activity getFirstActivity( final Set<IOCBeanDef<Activity>> activityBeans ) {
         if ( activityBeans == null || activityBeans.size() == 0 ) {
             return null;
         }
@@ -135,8 +134,9 @@ public class ActivityManagerImpl
     }
 
     @Override
-    public void removeActivity(final PlaceRequest placeRequest) {
-        activeActivities.remove( placeRequest );
+    public void removeActivity( final PlaceRequest placeRequest ) {
+        final Activity activity = activeActivities.remove( placeRequest );
+        iocManager.destroyBean( activity );
     }
 
 }

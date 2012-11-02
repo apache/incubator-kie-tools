@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -57,11 +56,6 @@ public class MultipleActivitiesFoundPresenter {
 
     private PlaceRequest place;
 
-    @PostConstruct
-    public void init() {
-        view.init( this );
-    }
-
     @OnStart
     public void onStart( final PlaceRequest place ) {
         this.place = place;
@@ -80,7 +74,7 @@ public class MultipleActivitiesFoundPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
+    public UberView<MultipleActivitiesFoundPresenter> getView() {
         return view;
     }
 
