@@ -13,8 +13,8 @@
 	<artifactId>widgets-core-client</artifactId>
 	<packaging>jar</packaging>
 
-	<name>ÜberFire Widgets Core Client</name>
-	<description>ÜberFire Widgets Core Client</description>
+	<name>UberFire Widgets Core Client</name>
+	<description>UberFire Widgets Core Client</description>
 
 	<dependencies>
     <dependency>

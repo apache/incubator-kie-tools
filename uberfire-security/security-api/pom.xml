@@ -28,8 +28,8 @@
   <artifactId>security-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>ÜberFire Security API</name>
-  <description>ÜberFire Security API</description>
+  <name>UberFire Security API</name>
+  <description>UberFire Security API</description>
 
   <dependencies>
     <dependency>

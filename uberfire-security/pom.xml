@@ -26,7 +26,7 @@
   <artifactId>uberfire-security</artifactId>
   <packaging>pom</packaging>
 
-  <name>ÜberFire Security</name>
+  <name>UberFire Security</name>
 
   <modules>
     <module>security-api</module>

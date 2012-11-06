@@ -27,8 +27,8 @@
 	<artifactId>uberfire-workbench</artifactId>
 	<packaging>jar</packaging>
 
-	<name>ÜberFire Workbench</name>
-	<description>ÜberFire Workbench</description>
+	<name>UberFire Workbench</name>
+	<description>UberFire Workbench</description>
 
 	<dependencies>
 

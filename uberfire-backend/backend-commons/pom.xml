@@ -28,8 +28,8 @@
   <artifactId>backend-commons</artifactId>
   <packaging>jar</packaging>
 
-  <name>ÜberFire Backend Commons</name>
-  <description>ÜberFire Backend Commons</description>
+  <name>UberFire Backend Commons</name>
+  <description>UberFire Backend Commons</description>
 
   <dependencies>
     <dependency>

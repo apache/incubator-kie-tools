@@ -28,8 +28,8 @@
   <groupId>org.uberfire</groupId>
   <artifactId>security-server</artifactId>
 
-  <name>ÜberFire Security Server</name>
-  <description>ÜberFire Security Server</description>
+  <name>UberFire Security Server</name>
+  <description>UberFire Security Server</description>
 
   <dependencies>
     <dependency>

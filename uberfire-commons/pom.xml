@@ -28,8 +28,8 @@
 	<artifactId>uberfire-commons</artifactId>
 	<packaging>jar</packaging>
 
-	<name>ÜberFire Commons</name>
-	<description>ÜberFire Commons</description>
+	<name>UberFire Commons</name>
+	<description>UberFire Commons</description>
 	
 	<build>
 	   <resources>

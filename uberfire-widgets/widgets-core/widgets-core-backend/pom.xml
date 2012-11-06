@@ -13,8 +13,8 @@
   <artifactId>widgets-core-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>ÜberFire Widgets Core Backend</name>
-  <description>ÜberFire Widgets Core Backend</description>
+  <name>UberFire Widgets Core Backend</name>
+  <description>UberFire Widgets Core Backend</description>
 
   <dependencies>
     <dependency>

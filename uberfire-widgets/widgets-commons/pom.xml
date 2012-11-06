@@ -28,8 +28,8 @@
 	<artifactId>widgets-commons</artifactId>
 	<packaging>jar</packaging>
 
-	<name>ÜberFire Widgets Commons</name>
-	<description>ÜberFire Widgets Commons</description>
+	<name>UberFire Widgets Commons</name>
+	<description>UberFire Widgets Commons</description>
 
 	<dependencies>
 

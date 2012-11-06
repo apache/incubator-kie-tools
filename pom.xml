@@ -29,9 +29,9 @@
   <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>ÜberFire Multiproject</name>
+  <name>UberFire Multiproject</name>
   <description>
-    ÜberFire - Web RCP Framework.
+    UberFire - Web RCP Framework.
   </description>
   <inceptionYear>2012</inceptionYear>
   <organization>

@@ -28,8 +28,8 @@
   <artifactId>backend-server</artifactId>
   <packaging>jar</packaging>
 
-  <name>ÜberFire Backend Server</name>
-  <description>ÜberFire Backend Server</description>
+  <name>UberFire Backend Server</name>
+  <description>UberFire Backend Server</description>
 
   <dependencies>
 

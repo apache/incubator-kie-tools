@@ -13,8 +13,8 @@
 	<artifactId>widgets-core</artifactId>
 	<packaging>pom</packaging>
 
-	<name>ÜberFire Widgets Core</name>
-	<description>ÜberFire Widgets Core</description>
+	<name>UberFire Widgets Core</name>
+	<description>UberFire Widgets Core</description>
 
   <modules>
     <module>widgets-core-backend</module>

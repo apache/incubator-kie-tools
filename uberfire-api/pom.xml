@@ -28,8 +28,8 @@
 	<artifactId>uberfire-api</artifactId>
 	<packaging>jar</packaging>
 
-	<name>ÜberFire API</name>
-	<description>ÜberFire API</description>
+	<name>UberFire API</name>
+	<description>UberFire API</description>
 
 	<dependencies>
 

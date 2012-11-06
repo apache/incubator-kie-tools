@@ -26,7 +26,7 @@
   <artifactId>uberfire-backend</artifactId>
   <packaging>pom</packaging>
 
-  <name>ÜberFire Backend</name>
+  <name>UberFire Backend</name>
 
   <modules>
     <module>backend-api</module>

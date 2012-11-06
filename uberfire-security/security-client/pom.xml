@@ -28,8 +28,8 @@
   <artifactId>security-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>ÜberFire Security Client</name>
-  <description>ÜberFire Security Client</description>
+  <name>UberFire Security Client</name>
+  <description>UberFire Security Client</description>
 
   <dependencies>
     <dependency>

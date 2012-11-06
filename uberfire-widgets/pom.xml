@@ -26,7 +26,7 @@
   <artifactId>uberfire-widgets</artifactId>
   <packaging>pom</packaging>
 
-  <name>ÜberFire Widgets</name>
+  <name>UberFire Widgets</name>
 
   <modules>
     <module>widgets-commons</module>
