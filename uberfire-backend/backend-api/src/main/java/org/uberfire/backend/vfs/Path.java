@@ -23,4 +23,6 @@ public interface Path {
     String toURI();
     
     int compareTo(Path another);
+    
+	public boolean equals(Path another);
 }

@@ -68,6 +68,13 @@ public class PathImpl implements Path {
 		return this.fileName.compareTo(another.getFileName());
 	}
 	
+	public boolean equals(Path another) {
+		if(another instanceof PathImpl) {
+			return this.fileName.equals(another.getFileName());
+		}
+		return false;
+	}
+	
 	@Override
     public String toString() {
         return "PathImpl{" +
