@@ -156,7 +156,7 @@
 
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet</artifactId>
+      <artifactId>weld-servlet-core</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
