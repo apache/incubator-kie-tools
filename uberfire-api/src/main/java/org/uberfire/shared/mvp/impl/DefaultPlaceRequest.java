@@ -59,8 +59,7 @@ public class DefaultPlaceRequest
             fullIdentifier.append( "?" );
         }
         for ( String name : this.getParameterNames() ) {
-            fullIdentifier.append( name ).append( "=" ).append( this.getParameterString( name,
-                                                                                   null ) );
+            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name, null ).toString() );
             fullIdentifier.append( "&" );
         }
 
