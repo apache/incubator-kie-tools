@@ -32,25 +32,25 @@ import com.google.gwt.user.client.ui.RequiresResize;
 public class WorkbenchPartPresenter {
 
     public interface View
-        extends
-        UberView<WorkbenchPartPresenter>,
-        RequiresResize {
+            extends
+            UberView<WorkbenchPartPresenter>,
+            RequiresResize {
 
         WorkbenchPartPresenter getPresenter();
 
-        void setWrappedWidget(IsWidget widget);
+        void setWrappedWidget( IsWidget widget );
 
         IsWidget getWrappedWidget();
     }
 
-    private View           view;
+    private View view;
 
-    private IsWidget       tabWidget;
+    private IsWidget titleWidget;
 
     private PartDefinition definition;
 
     @Inject
-    public WorkbenchPartPresenter(final View view) {
+    public WorkbenchPartPresenter( final View view ) {
         this.view = view;
     }
 
@@ -64,23 +64,23 @@ public class WorkbenchPartPresenter {
         return definition;
     }
 
-    public void setDefinition(final PartDefinition definition) {
+    public void setDefinition( final PartDefinition definition ) {
         this.definition = definition;
     }
 
-    public IsWidget getTabWidget() {
-        return tabWidget;
+    public IsWidget getTitleWidget() {
+        return titleWidget;
     }
 
-    public void setTabWidget(IsWidget tabWidget) {
-        this.tabWidget = tabWidget;
+    public void setTitleWidget( final IsWidget titleWidget ) {
+        this.titleWidget = titleWidget;
     }
 
     public View getPartView() {
         return view;
     }
 
-    public void setWrappedWidget(IsWidget widget) {
+    public void setWrappedWidget( final IsWidget widget ) {
         this.view.setWrappedWidget( widget );
     }
 

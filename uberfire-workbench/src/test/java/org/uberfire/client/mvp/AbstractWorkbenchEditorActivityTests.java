@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
+import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -53,7 +53,7 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( selectWorkbenchPartEvent,
-                times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
+                times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
     }
 
     @Test
@@ -88,7 +88,7 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
                 times( 1 ) ).onReveal();
 
         verify( selectWorkbenchPartEvent,
-                times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
+                times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
 
     }
 
@@ -143,7 +143,7 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
                 times( 1 ) ).onReveal();
 
         verify( selectWorkbenchPartEvent,
-                times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
+                times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
 
     }
 

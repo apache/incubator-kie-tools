@@ -28,4 +28,8 @@ public interface WorkbenchConstants
 
     WorkbenchConstants INSTANCE = GWT.create( WorkbenchConstants.class );
 
+    String maximizePanel();
+
+    String minimizePanel();
+
 }

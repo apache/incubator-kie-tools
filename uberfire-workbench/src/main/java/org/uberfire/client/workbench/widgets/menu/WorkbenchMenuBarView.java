@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 
 /**
- * The MenuBar widget
+ * The Menu Bar widget
  */
 public class WorkbenchMenuBarView extends Composite
     implements

@@ -35,31 +35,29 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
 
-    private LayoutPanel      panel;
-    private FlowPanel        tabBar;
-    private Image            scrollLeftImage;
-    private Image            scrollRightImage;
-    private SimplePanel      scrollLeftImageContainer;
-    private SimplePanel      scrollRightImageContainer;
+    private LayoutPanel panel;
+    private FlowPanel tabBar;
+    private Image scrollLeftImage;
+    private Image scrollRightImage;
+    private SimplePanel scrollLeftImageContainer;
+    private SimplePanel scrollRightImageContainer;
 
-    private int              scrollLeftImageWidth;
-    private int              scrollRightImageWidth;
+    private int scrollLeftImageWidth;
+    private int scrollRightImageWidth;
 
-    private int              scrollOffset = 0;
+    private int scrollOffset = 0;
 
-    private static final int SCROLL_STEP  = 20;
+    private static final int SCROLL_STEP = 20;
 
-    private ImageResource    leftArrowImage;
-    private ImageResource    rightArrowImage;
+    private ImageResource leftArrowImage;
+    private ImageResource rightArrowImage;
 
-    public WorkbenchScrolledTabLayoutPanel(final double barHeight,
-                                           final double focusBarHeight,
-                                           final Unit barUnit,
-                                           final ImageResource leftArrowImage,
-                                           final ImageResource rightArrowImage) {
+    public WorkbenchScrolledTabLayoutPanel( final int barHeight,
+                                            final int focusBarHeight,
+                                            final ImageResource leftArrowImage,
+                                            final ImageResource rightArrowImage ) {
         super( barHeight,
-               focusBarHeight,
-               barUnit );
+               focusBarHeight );
 
         this.leftArrowImage = leftArrowImage;
         this.rightArrowImage = rightArrowImage;
@@ -76,13 +74,12 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
             }
         }
 
-        initScrollButtons( barHeight,
-                           barUnit );
+        initScrollButtons( barHeight );
     }
 
     @Override
-    public void add(final Widget child,
-                    final Widget tab) {
+    public void add( final Widget child,
+                     final Widget tab ) {
         super.add( child,
                    tab );
 
@@ -97,7 +94,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
     }
 
     @Override
-    public boolean remove(final int index) {
+    public boolean remove( final int index ) {
         boolean b = super.remove( index );
         if ( tabBar.getWidgetCount() < 2 ) {
             resetScrollPosition();
@@ -107,12 +104,14 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
         return b;
     }
 
-    private ClickHandler createScrollClickHandler(final int diff) {
+    private ClickHandler createScrollClickHandler( final int diff ) {
         return new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 Widget lastTab = getLastTab();
-                if ( lastTab == null ) return;
+                if ( lastTab == null ) {
+                    return;
+                }
                 scrollOffset = scrollOffset + diff;
                 scrollTo( scrollOffset );
             }
@@ -120,8 +119,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
     }
 
     //Create and attach the scroll button images with a click handler
-    private void initScrollButtons(final double barHeight,
-                                   final Unit barUnit) {
+    private void initScrollButtons( final int barHeight ) {
 
         scrollLeftImage = new Image( leftArrowImage );
         scrollLeftImage.addClickHandler( createScrollClickHandler( -SCROLL_STEP ) );
@@ -146,7 +144,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
         panel.insert( scrollRightImageContainer,
                       0 );
         panel.setWidgetRightWidth( scrollRightImageContainer,
-                                   0,
+                                   getControlsWidth(),
                                    Unit.PX,
                                    scrollRightImageWidth,
                                    Unit.PX );
@@ -154,7 +152,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
                                   0,
                                   Unit.PX,
                                   barHeight,
-                                  barUnit );
+                                  Unit.PX );
 
         panel.insert( scrollLeftImageContainer,
                       0 );
@@ -167,7 +165,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
                                   0,
                                   Unit.PX,
                                   barHeight,
-                                  barUnit );
+                                  Unit.PX );
     }
 
     private void checkIfScrollButtonsNecessary() {
@@ -182,11 +180,11 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
         scrollTo( 0 );
     }
 
-    private void scrollTo(final int pos) {
+    private void scrollTo( final int pos ) {
         final Layer layer = (Layer) tabBar.getLayoutData();
         layer.setLeftRight( pos,
                             Unit.PX,
-                            0,
+                            getControlsWidth(),
                             Unit.PX );
         panel.forceLayout();
         checkIfScrollButtonsNecessary();
@@ -206,7 +204,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
         return scrollOffset < 0;
     }
 
-    private int getRightOfWidget(final Widget widget) {
+    private int getRightOfWidget( final Widget widget ) {
         return widget.getElement().getOffsetLeft() + widget.getElement().getOffsetWidth();
     }
 
@@ -225,7 +223,7 @@ public class WorkbenchScrolledTabLayoutPanel extends WorkbenchTabLayoutPanel {
     public void onResize() {
         super.onResize();
         panel.setWidgetRightWidth( scrollRightImageContainer,
-                                   0,
+                                   getControlsWidth(),
                                    Unit.PX,
                                    scrollRightImageWidth,
                                    Unit.PX );

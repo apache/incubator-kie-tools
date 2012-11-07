@@ -51,38 +51,38 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @Dependent
 public class WorkbenchPanelView extends ResizeComposite
-    implements
-    WorkbenchPanelPresenter.View {
+        implements
+        WorkbenchPanelPresenter.View {
 
-    public static final int                       TAB_BAR_HEIGHT   = 32;
+    private static final int TAB_BAR_HEIGHT = 32;
 
-    private static final int                      FOCUS_BAR_HEIGHT = 3;
+    private static final int FOCUS_BAR_HEIGHT = 3;
 
     @Inject
     @WorkbenchPosition(position = Position.NORTH)
-    private PanelHelper                           helperNorth;
+    private PanelHelper helperNorth;
 
     @Inject
     @WorkbenchPosition(position = Position.SOUTH)
-    private PanelHelper                           helperSouth;
+    private PanelHelper helperSouth;
 
     @Inject
     @WorkbenchPosition(position = Position.EAST)
-    private PanelHelper                           helperEast;
+    private PanelHelper helperEast;
 
     @Inject
     @WorkbenchPosition(position = Position.WEST)
-    private PanelHelper                           helperWest;
+    private PanelHelper helperWest;
 
     @Inject
-    private WorkbenchDragAndDropManager           dndManager;
+    private WorkbenchDragAndDropManager dndManager;
 
     @Inject
-    private BeanFactory                           factory;
+    private BeanFactory factory;
 
     private final WorkbenchScrolledTabLayoutPanel tabPanel;
 
-    private WorkbenchPanelPresenter               presenter;
+    private WorkbenchPanelPresenter presenter;
 
     public WorkbenchPanelView() {
         this.tabPanel = makeTabPanel();
@@ -97,7 +97,7 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void init(final WorkbenchPanelPresenter presenter) {
+    public void init( final WorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -112,56 +112,56 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart(final IsWidget titleWidget,
-                        final WorkbenchPartPresenter.View view) {
+    public void addPart( final IsWidget titleWidget,
+                         final WorkbenchPartPresenter.View view ) {
         tabPanel.add( view,
                       wrapTitleWidget( titleWidget,
                                        view ) );
     }
 
     @Override
-    public void addPanel(final PanelDefinition panel,
-                         final WorkbenchPanelPresenter.View view,
-                         final Position position) {
+    public void addPanel( final PanelDefinition panel,
+                          final WorkbenchPanelPresenter.View view,
+                          final Position position ) {
 
         switch ( position ) {
-            case NORTH :
+            case NORTH:
                 helperNorth.add( view,
                                  this,
                                  panel.getHeight(),
                                  panel.getMinHeight() );
                 break;
 
-            case SOUTH :
+            case SOUTH:
                 helperSouth.add( view,
                                  this,
                                  panel.getHeight(),
                                  panel.getMinHeight() );
                 break;
 
-            case EAST :
+            case EAST:
                 helperEast.add( view,
                                 this,
                                 panel.getWidth(),
                                 panel.getMinWidth() );
                 break;
 
-            case WEST :
+            case WEST:
                 helperWest.add( view,
                                 this,
                                 panel.getWidth(),
                                 panel.getMinWidth() );
                 break;
 
-            default :
+            default:
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
     }
 
     @Override
-    public void changeTitle(final int index,
-                            final IsWidget titleWidget) {
+    public void changeTitle( final int index,
+                             final IsWidget titleWidget ) {
         final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) tabPanel.getWidget( index );
         final Widget wrappedTabContent = wrapTitleWidget( titleWidget,
                                                           view );
@@ -170,13 +170,13 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void selectPart(int index) {
+    public void selectPart( int index ) {
         tabPanel.selectTab( index );
         scheduleResize( tabPanel.getWidget( index ) );
     }
 
     @Override
-    public void removePart(int indexOfPartToRemove) {
+    public void removePart( int indexOfPartToRemove ) {
         final int indexOfSelectedPart = tabPanel.getSelectedIndex();
         final int nextActiveTabIndex = indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0;
         tabPanel.remove( indexOfPartToRemove );
@@ -213,19 +213,19 @@ public class WorkbenchPanelView extends ResizeComposite
         }
 
         switch ( position ) {
-            case NORTH :
+            case NORTH:
                 helperNorth.remove( view );
                 break;
 
-            case SOUTH :
+            case SOUTH:
                 helperSouth.remove( view );
                 break;
 
-            case EAST :
+            case EAST:
                 helperEast.remove( view );
                 break;
 
-            case WEST :
+            case WEST:
                 helperWest.remove( view );
                 break;
         }
@@ -235,14 +235,18 @@ public class WorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void setFocus(boolean hasFocus) {
+    public void setFocus( boolean hasFocus ) {
         this.tabPanel.setFocus( hasFocus );
+    }
+
+    @Override
+    public void enableControls( boolean enable ) {
+        this.tabPanel.enableControls( enable );
     }
 
     private WorkbenchScrolledTabLayoutPanel makeTabPanel() {
         final WorkbenchScrolledTabLayoutPanel tabPanel = new WorkbenchScrolledTabLayoutPanel( TAB_BAR_HEIGHT,
                                                                                               FOCUS_BAR_HEIGHT,
-                                                                                              Unit.PX,
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollLeft(),
                                                                                               WorkbenchResources.INSTANCE.images().tabPanelScrollRight() );
 
@@ -250,7 +254,7 @@ public class WorkbenchPanelView extends ResizeComposite
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
 
             @Override
-            public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+            public void onBeforeSelection( BeforeSelectionEvent<Integer> event ) {
                 presenter.onPartLostFocus();
             }
         } );
@@ -259,32 +263,47 @@ public class WorkbenchPanelView extends ResizeComposite
         tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
 
             @Override
-            public void onSelection(SelectionEvent<Integer> event) {
+            public void onSelection( SelectionEvent<Integer> event ) {
                 final Widget widget = tabPanel.getWidget( event.getSelectedItem() );
                 scheduleResize( widget );
                 final int index = tabPanel.getSelectedIndex();
-                final PartDefinition partToSelect = ((WorkbenchPartView) tabPanel.getWidget( index )).getPresenter().getDefinition();
+                final PartDefinition partToSelect = ( (WorkbenchPartView) tabPanel.getWidget( index ) ).getPresenter().getDefinition();
                 presenter.onPartFocus( partToSelect );
             }
 
         } );
+
+        //Maximize and minimize controls
+        tabPanel.addMinimizeClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.minimize();
+            }
+        } );
+        tabPanel.addMaximizeClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.maximize();
+            }
+        } );
+
         return tabPanel;
     }
 
-    private Widget wrapTitleWidget(final IsWidget titleWidget,
-                                   final WorkbenchPartPresenter.View view) {
+    private Widget wrapTitleWidget( final IsWidget titleWidget,
+                                    final WorkbenchPartPresenter.View view ) {
         final FlowPanel fp = new FlowPanel();
         fp.add( titleWidget );
 
         //Clicking on the Tab takes focus
         fp.addDomHandler( new ClickHandler() {
 
-                              @Override
-                              public void onClick(ClickEvent event) {
-                                  presenter.onPanelFocus();
-                              }
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.onPanelFocus();
+            }
 
-                          },
+        },
                           ClickEvent.getType() );
 
         dndManager.makeDraggable( view.asWidget(),
@@ -296,7 +315,7 @@ public class WorkbenchPanelView extends ResizeComposite
         image.addClickHandler( new ClickHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 final PartDefinition partToDeselect = view.getPresenter().getDefinition();
                 presenter.onBeforePartClose( partToDeselect );
             }
@@ -306,7 +325,7 @@ public class WorkbenchPanelView extends ResizeComposite
         return fp;
     }
 
-    private void scheduleResize(final Widget widget) {
+    private void scheduleResize( final Widget widget ) {
         if ( widget instanceof RequiresResize ) {
             final RequiresResize requiresResize = (RequiresResize) widget;
             Scheduler.get().scheduleDeferred( new ScheduledCommand() {

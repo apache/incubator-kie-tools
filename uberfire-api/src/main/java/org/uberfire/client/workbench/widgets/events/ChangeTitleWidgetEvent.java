@@ -15,22 +15,30 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
- * An event when a WorkbenchPart gains focus
+ * An event to change the Title Widget of a WorkbenchPart container, e.g. a Tab in a TabPanel
  */
-public class WorkbenchPartOnFocusEvent {
+public class ChangeTitleWidgetEvent {
 
     private final PlaceRequest place;
+    private final IsWidget titleWidget;
 
-    public WorkbenchPartOnFocusEvent( final PlaceRequest place ) {
+    public ChangeTitleWidgetEvent( final PlaceRequest place,
+                                   final IsWidget titleWidget ) {
         this.place = place;
+        this.titleWidget = titleWidget;
     }
 
-    public PlaceRequest getPlace() {
+    public PlaceRequest getPlaceRequest() {
         return place;
+    }
+
+    public IsWidget getTitleWidget() {
+        return this.titleWidget;
     }
 
 }

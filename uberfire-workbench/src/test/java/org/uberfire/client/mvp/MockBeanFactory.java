@@ -31,51 +31,53 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Mock BeanFactory that doesn't use CDI.
  */
 public class MockBeanFactory
-    implements
-    BeanFactory {
+        implements
+        BeanFactory {
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
-                                                   final PartDefinition definition) {
+    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+                                                    final PartDefinition definition ) {
         final WorkbenchPartPresenter part = new WorkbenchPartPresenter( new MockWorkbenchPartView() );
-        part.setTabWidget( tabWidget );
+        part.setTitleWidget( titleWidget );
         part.setDefinition( definition );
         return part;
     }
 
     @Override
-    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition) {
+    public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
         final WorkbenchPanelPresenter panel = new WorkbenchPanelPresenter( new MockWorkbenchPanelView(),
+                                                                           null,
+                                                                           null,
                                                                            null );
         panel.setDefinition( definition );
         return panel;
     }
 
     @Override
-    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
-                                                              final WorkbenchPanelPresenter.View westPanel,
-                                                              final Position position,
-                                                              final Integer preferredSize,
-                                                              final Integer preferredMinSize) {
+    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelPresenter.View eastPanel,
+                                                               final WorkbenchPanelPresenter.View westPanel,
+                                                               final Position position,
+                                                               final Integer preferredSize,
+                                                               final Integer preferredMinSize ) {
         return null;
     }
 
     @Override
-    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
-                                                          final WorkbenchPanelPresenter.View southPanel,
-                                                          final Position position,
-                                                          final Integer preferredSize,
-                                                          final Integer preferredMinSize) {
+    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelPresenter.View northPanel,
+                                                           final WorkbenchPanelPresenter.View southPanel,
+                                                           final Position position,
+                                                           final Integer preferredSize,
+                                                           final Integer preferredMinSize ) {
         return null;
     }
 
     @Override
-    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view) {
+    public CompassDropController newDropController( final WorkbenchPanelPresenter.View view ) {
         return null;
     }
 
     @Override
-    public void destroy(final Object o) {
+    public void destroy( final Object o ) {
     }
 
 }

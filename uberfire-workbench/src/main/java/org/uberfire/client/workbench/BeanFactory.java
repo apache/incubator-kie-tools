@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface BeanFactory {
 
-    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
+    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget titleWidget,
                                                    final PartDefinition definition);
 
     public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition);

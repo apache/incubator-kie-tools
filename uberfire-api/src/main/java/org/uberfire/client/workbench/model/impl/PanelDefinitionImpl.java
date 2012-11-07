@@ -190,6 +190,21 @@ public class PanelDefinitionImpl
         this.position = position;
     }
 
+    @Override
+    public boolean isMinimized() {
+        for(PartDefinition part : getParts()) {
+            if(!part.isMinimized()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
+
     private void checkPosition( final Position position ) {
         if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );

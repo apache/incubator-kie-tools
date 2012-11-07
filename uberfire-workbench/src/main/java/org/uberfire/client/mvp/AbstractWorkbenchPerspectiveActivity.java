@@ -202,12 +202,10 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     private void buildPerspective( final PanelDefinition panel ) {
         for ( PanelDefinition child : panel.getChildren() ) {
-            if ( child != null ) {
-                final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                               child,
-                                                                               child.getPosition() );
-                addChildren( target );
-            }
+            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                           child,
+                                                                           child.getPosition() );
+            addChildren( target );
         }
     }
 

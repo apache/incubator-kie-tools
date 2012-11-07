@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
+import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -69,7 +69,7 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( selectWorkbenchPartEvent,
-                times( 1 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
+                times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
 
         PlaceRequest somewhereSecondCall = new DefaultPlaceRequest( "Somewhere" );
         placeManager.goTo( somewhereSecondCall );
@@ -79,7 +79,7 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( selectWorkbenchPartEvent,
-                times( 2 ) ).fire( any( SelectWorkbenchPartEvent.class ) );
+                times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
     }
 
     // TODO: Close

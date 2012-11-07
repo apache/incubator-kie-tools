@@ -23,10 +23,10 @@ import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
@@ -40,10 +40,10 @@ public abstract class BaseWorkbenchTest {
     protected PlaceManagerImpl placeManager;
 
     protected BeanFactory factory;
-    protected Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
-    protected Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent;
-    protected Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
-    protected Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent;
+    protected Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
+    protected Event<PlaceGainFocusEvent> workbenchPartOnFocusEvent;
+    protected Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
+    protected Event<SelectPlaceEvent> selectWorkbenchPartEvent;
 
     @Before
     @SuppressWarnings("unchecked")

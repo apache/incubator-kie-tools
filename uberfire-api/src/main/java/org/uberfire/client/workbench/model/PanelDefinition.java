@@ -144,4 +144,16 @@ public interface PanelDefinition {
      */
     public void setPosition( Position position );
 
+    /**
+     * Has the Panel been collapsed to a minimal size
+     * @return true If minimized
+     */
+    public boolean isMinimized();
+
+    /**
+     * Has the Panel been expanded to a maximum size
+     * @return true If maximized
+     */
+    public boolean isMaximized();
+
 }

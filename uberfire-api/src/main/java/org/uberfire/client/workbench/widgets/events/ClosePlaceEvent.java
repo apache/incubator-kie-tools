@@ -15,30 +15,22 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 /**
- * An event to change the content of a tab
+ * An event when a WorkbenchPart is closed
  */
-public class ChangeTabContentEvent {
+public class ClosePlaceEvent {
 
     private final PlaceRequest place;
-    private final IsWidget titleWidget;
 
-    public ChangeTabContentEvent( final PlaceRequest place,
-                                  final IsWidget titleWidget ) {
+    public ClosePlaceEvent( final PlaceRequest place ) {
         this.place = place;
-        this.titleWidget = titleWidget;
     }
 
-    public PlaceRequest getPlaceRequest() {
+    public PlaceRequest getPlace() {
         return place;
-    }
-
-    public IsWidget getTitleWidget() {
-        return this.titleWidget;
     }
 
 }

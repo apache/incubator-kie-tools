@@ -19,13 +19,13 @@ import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * An event when a WorkbenchPart is closed
+ * An event when a WorkbenchPart gains focus
  */
-public class WorkbenchPartCloseEvent {
+public class PlaceGainFocusEvent {
 
     private final PlaceRequest place;
 
-    public WorkbenchPartCloseEvent( final PlaceRequest place ) {
+    public PlaceGainFocusEvent( final PlaceRequest place ) {
         this.place = place;
     }
 

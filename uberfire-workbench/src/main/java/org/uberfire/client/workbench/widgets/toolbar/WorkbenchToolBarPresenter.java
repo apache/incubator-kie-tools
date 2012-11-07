@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -73,21 +73,21 @@ public class WorkbenchToolBarPresenter {
     }
 
     //Handle removing the WorkbenchPart Tool Bar items
-    void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
+    void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
         if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle removing the WorkbenchPart Tool Bar items
-    void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
+    void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
         if ( event.getPlace().equals( activePlace ) ) {
             clearWorkbenchContextItems();
         }
     }
 
     //Handle setting up the Tool Bar for the specific WorkbenchPart selected
-    void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
+    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
         final Activity activity = placeManager.getActivity( event.getPlace() );
         if ( activity == null ) {
             return;

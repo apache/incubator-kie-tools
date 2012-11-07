@@ -18,8 +18,10 @@ package org.uberfire.client.workbench.widgets.panels;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,6 +36,7 @@ import com.google.gwt.layout.client.Layout.Alignment;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.resources.client.CommonResources;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AnimatedLayout;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -59,73 +62,24 @@ import com.google.gwt.user.client.ui.Widget;
  * declaration.
  * </p>
  * <p>
- * This is a fork of the standard TabLayoutPanel with the following changes:-
- * <ol>
- * <li>Addition of a focus indicator to indicate whether the TabLayoutPanel has
- * the focus.</li>
- * </ol>
+ * This is a based upon GWT's standard TabLayoutPanel
  * </p>
- * <h3>CSS Style Rules</h3>
- * <dl>
- * <dt>.gwt-TabLayoutPanel
- * <dd>the panel itself
- * <dt>.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs
- * <dd>the tab bar element
- * <dt>.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab
- * <dd>an individual tab
- * <dt>.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabInner
- * <dd>an element nested in each tab (useful for styling)
- * <dt>.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent
- * <dd>applied to all child content widgets
- * </dl>
- * <p>
- * <h3>Example</h3> {@example com.google.gwt.examples.TabLayoutPanelExample}
- * <h3>Use in UiBinder Templates</h3>
- * <p>
- * A TabLayoutPanel element in a {@link com.google.gwt.uibinder.client.UiBinder
- * UiBinder} template must have a <code>barHeight</code> attribute with a double
- * value, and may have a <code>barUnit</code> attribute with a
- * {@link com.google.gwt.dom.client.Style.Unit Style.Unit} value.
- * <code>barUnit</code> defaults to PX.
- * <p>
- * The children of a TabLayoutPanel element are laid out in &lt;g:tab> elements.
- * Each tab can have one widget child and one of two types of header elements. A
- * &lt;g:header> element can hold html, or a &lt;g:customHeader> element can
- * hold a widget. (Note that the tags of the header elements are not
- * capitalized. This is meant to signal that the head is not a runtime object,
- * and so cannot have a <code>ui:field</code> attribute.)
- * <p>
- * For example:
- * 
- * <pre>
- * &lt;g:TabLayoutPanel barUnit='EM' barHeight='3'>
- *  &lt;g:tab>
- *    &lt;g:header size='7'>&lt;b>HTML&lt;/b> header&lt;/g:header>
- *    &lt;g:Label>able&lt;/g:Label>
- *  &lt;/g:tab>
- *  &lt;g:tab>
- *    &lt;g:customHeader size='7'>
- *      &lt;g:Label>Custom header&lt;/g:Label>
- *    &lt;/g:customHeader>
- *    &lt;g:Label>baker&lt;/g:Label>
- *  &lt;/g:tab>
- * &lt;/g:TabLayoutPanel>
- * </pre>
  */
 public class WorkbenchTabLayoutPanel extends ResizeComposite
-    implements
-    HasWidgets,
-    ProvidesResize,
-    IndexedPanel.ForIsWidget,
-    AnimatedLayout,
-    HasBeforeSelectionHandlers<Integer>,
-    HasSelectionHandlers<Integer> {
+        implements
+        HasWidgets,
+        ProvidesResize,
+        IndexedPanel.ForIsWidget,
+        AnimatedLayout,
+        HasBeforeSelectionHandlers<Integer>,
+        HasSelectionHandlers<Integer> {
 
     private class Tab extends SimplePanel {
+
         private Element inner;
         private boolean replacingWidget;
 
-        public Tab(Widget child) {
+        public Tab( Widget child ) {
             super( Document.get().createDivElement() );
             getElement().appendChild( inner = Document.get().createDivElement() );
 
@@ -136,13 +90,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
             getElement().addClassName( CommonResources.getInlineBlockStyle() );
         }
 
-        public HandlerRegistration addClickHandler(ClickHandler handler) {
+        public HandlerRegistration addClickHandler( ClickHandler handler ) {
             return addDomHandler( handler,
                                   ClickEvent.getType() );
         }
 
         @Override
-        public boolean remove(Widget w) {
+        public boolean remove( Widget w ) {
             /*
              * Removal of items from the TabBar is delegated to the
              * TabLayoutPanel to ensure consistency.
@@ -160,7 +114,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
             }
         }
 
-        public void setSelected(boolean selected) {
+        public void setSelected( boolean selected ) {
             if ( selected ) {
                 addStyleDependentName( "selected" );
             } else {
@@ -169,7 +123,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         }
 
         @Override
-        public void setWidget(Widget w) {
+        public void setWidget( Widget w ) {
             replacingWidget = true;
             super.setWidget( w );
             replacingWidget = false;
@@ -197,7 +151,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     private class TabbedDeckLayoutPanel extends DeckLayoutPanel {
 
         @Override
-        public void add(Widget w) {
+        public void add( Widget w ) {
             throw new UnsupportedOperationException( "Use TabLayoutPanel.add() to alter the DeckLayoutPanel" );
         }
 
@@ -207,13 +161,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         }
 
         @Override
-        public void insert(Widget w,
-                           int beforeIndex) {
+        public void insert( Widget w,
+                            int beforeIndex ) {
             throw new UnsupportedOperationException( "Use TabLayoutPanel.insert() to alter the DeckLayoutPanel" );
         }
 
         @Override
-        public boolean remove(Widget w) {
+        public boolean remove( Widget w ) {
             /*
              * Removal of items from the DeckLayoutPanel is delegated to the
              * TabLayoutPanel to ensure consistency.
@@ -221,61 +175,53 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
             return WorkbenchTabLayoutPanel.this.remove( w );
         }
 
-        protected void insertProtected(Widget w,
-                                       int beforeIndex) {
+        protected void insertProtected( Widget w,
+                                        int beforeIndex ) {
             super.insert( w,
                           beforeIndex );
         }
 
-        protected void removeProtected(Widget w) {
+        protected void removeProtected( Widget w ) {
             super.remove( w );
         }
     }
 
-    private static final String         CONTENT_CONTAINER_STYLE = "gwt-TabLayoutPanelContentContainer";
-    private static final String         CONTENT_STYLE           = "gwt-TabLayoutPanelContent";
-    private static final String         TAB_STYLE               = "gwt-TabLayoutPanelTab";
+    private static final String CONTENT_CONTAINER_STYLE = "gwt-TabLayoutPanelContentContainer";
+    private static final String CONTENT_STYLE = "gwt-TabLayoutPanelContent";
 
-    private static final String         TAB_INNER_STYLE         = "gwt-TabLayoutPanelTabInner";
+    private static final String TAB_STYLE = "gwt-TabLayoutPanelTab";
+    private static final String TAB_INNER_STYLE = "gwt-TabLayoutPanelTabInner";
 
-    private static final int            BIG_ENOUGH_TO_NOT_WRAP  = 16384;
+    private final LayoutPanel panel = new LayoutPanel();
 
-    private final SimpleLayoutPanel     focusBar                = new SimpleLayoutPanel();
-    private final TabbedDeckLayoutPanel deckPanel               = new TabbedDeckLayoutPanel();
-    private final FlowPanel             tabBar                  = new FlowPanel();
-    private final ArrayList<Tab>        tabs                    = new ArrayList<Tab>();
-    private int                         selectedIndex           = -1;
+    private final SimpleLayoutPanel focusBar = new SimpleLayoutPanel();
+    private final TabbedDeckLayoutPanel deckPanel = new TabbedDeckLayoutPanel();
+
+    private final FlowPanel tabBar = new FlowPanel();
+    private final ArrayList<Tab> tabs = new ArrayList<Tab>();
+    private int selectedIndex = -1;
+
+    private final WorkbenchTabLayoutPanelControls controls = new WorkbenchTabLayoutPanelControls();
+
+    private static final int BIG_ENOUGH_TO_NOT_WRAP = 16384;
 
     /**
      * Creates an empty tab panel.
-     * 
-     * @param barHeight
-     *            the size of the tab bar
-     * @param focusBarHeight
-     *            the size of the focus bar
-     * @param unit
-     *            the unit in which the tab bar and focus bar size is specified
+     * @param barHeight the size of the tab bar
+     * @param focusBarHeight the size of the focus bar
      */
-    public WorkbenchTabLayoutPanel(double barHeight,
-                                   double focusBarHeight,
-                                   Unit unit) {
-        LayoutPanel panel = new LayoutPanel();
+    public WorkbenchTabLayoutPanel( int barHeight,
+                                    int focusBarHeight ) {
         initWidget( panel );
 
         // Add the tab bar to the panel.
         panel.add( tabBar );
-        panel.setWidgetLeftRight( tabBar,
-                                  0,
-                                  Unit.PX,
-                                  0,
-                                  Unit.PX );
-        panel.setWidgetTopHeight( tabBar,
-                                  0,
-                                  Unit.PX,
-                                  barHeight,
-                                  unit );
-        panel.setWidgetVerticalPosition( tabBar,
-                                         Alignment.END );
+
+        //Add the tab bar controls to the panel.
+        panel.add( controls );
+
+        //Defer layout of tabBar and Controls until the Controls have been added to the DOM
+        sizeTabBarControls( barHeight );
 
         //Add focus bar
         panel.add( focusBar );
@@ -286,9 +232,9 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
                                   Unit.PX );
         panel.setWidgetTopHeight( focusBar,
                                   barHeight,
-                                  unit,
+                                  Unit.PX,
                                   focusBarHeight,
-                                  unit );
+                                  Unit.PX );
 
         // Add the deck panel to the panel.
         deckPanel.addStyleName( CONTENT_CONTAINER_STYLE );
@@ -300,7 +246,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
                                   Unit.PX );
         panel.setWidgetTopBottom( deckPanel,
                                   barHeight + focusBarHeight,
-                                  unit,
+                                  Unit.PX,
                                   0,
                                   Unit.PX );
 
@@ -316,15 +262,15 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void add(IsWidget w) {
+    public void add( IsWidget w ) {
         add( asWidgetOrNull( w ) );
     }
 
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void add(IsWidget w,
-                    IsWidget tab) {
+    public void add( IsWidget w,
+                     IsWidget tab ) {
         add( asWidgetOrNull( w ),
              asWidgetOrNull( tab ) );
     }
@@ -332,8 +278,8 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void add(IsWidget w,
-                    String text) {
+    public void add( IsWidget w,
+                     String text ) {
         add( asWidgetOrNull( w ),
              text );
     }
@@ -341,15 +287,15 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void add(IsWidget w,
-                    String text,
-                    boolean asHtml) {
+    public void add( IsWidget w,
+                     String text,
+                     boolean asHtml ) {
         add( asWidgetOrNull( w ),
              text,
              asHtml );
     }
 
-    public void add(Widget w) {
+    public void add( Widget w ) {
         insert( w,
                 getWidgetCount() );
     }
@@ -357,14 +303,11 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Adds a widget to the panel. If the Widget is already attached, it will be
      * moved to the right-most index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param text
-     *            the text to be shown on its tab
+     * @param child the widget to be added
+     * @param text the text to be shown on its tab
      */
-    public void add(Widget child,
-                    String text) {
+    public void add( Widget child,
+                     String text ) {
         insert( child,
                 text,
                 getWidgetCount() );
@@ -373,14 +316,11 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Adds a widget to the panel. If the Widget is already attached, it will be
      * moved to the right-most index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param html
-     *            the html to be shown on its tab
+     * @param child the widget to be added
+     * @param html the html to be shown on its tab
      */
-    public void add(Widget child,
-                    SafeHtml html) {
+    public void add( Widget child,
+                     SafeHtml html ) {
         add( child,
              html.asString(),
              true );
@@ -389,17 +329,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Adds a widget to the panel. If the Widget is already attached, it will be
      * moved to the right-most index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param text
-     *            the text to be shown on its tab
-     * @param asHtml
-     *            <code>true</code> to treat the specified text as HTML
+     * @param child the widget to be added
+     * @param text the text to be shown on its tab
+     * @param asHtml <code>true</code> to treat the specified text as HTML
      */
-    public void add(Widget child,
-                    String text,
-                    boolean asHtml) {
+    public void add( Widget child,
+                     String text,
+                     boolean asHtml ) {
         insert( child,
                 text,
                 asHtml,
@@ -409,36 +345,41 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Adds a widget to the panel. If the Widget is already attached, it will be
      * moved to the right-most index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param tab
-     *            the widget to be placed in the associated tab
+     * @param child the widget to be added
+     * @param tab the widget to be placed in the associated tab
      */
-    public void add(Widget child,
-                    Widget tab) {
+    public void add( Widget child,
+                     Widget tab ) {
         insert( child,
                 tab,
                 getWidgetCount() );
     }
 
-    public HandlerRegistration addBeforeSelectionHandler(BeforeSelectionHandler<Integer> handler) {
+    public HandlerRegistration addBeforeSelectionHandler( BeforeSelectionHandler<Integer> handler ) {
         return addHandler( handler,
                            BeforeSelectionEvent.getType() );
     }
 
-    public HandlerRegistration addSelectionHandler(SelectionHandler<Integer> handler) {
+    public HandlerRegistration addSelectionHandler( SelectionHandler<Integer> handler ) {
         return addHandler( handler,
                            SelectionEvent.getType() );
     }
 
-    public void animate(int duration) {
+    public HandlerRegistration addMinimizeClickHandler( final ClickHandler handler ) {
+        return controls.addMinimizeClickHandler( handler );
+    }
+
+    public HandlerRegistration addMaximizeClickHandler( final ClickHandler handler ) {
+        return controls.addMaximizeClickHandler( handler );
+    }
+
+    public void animate( int duration ) {
         animate( duration,
                  null );
     }
 
-    public void animate(int duration,
-                        AnimationCallback callback) {
+    public void animate( int duration,
+                         AnimationCallback callback ) {
         deckPanel.animate( duration,
                            callback );
     }
@@ -457,7 +398,6 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
     /**
      * Get the duration of the animated transition between tabs.
-     * 
      * @return the duration in milliseconds
      */
     public int getAnimationDuration() {
@@ -466,7 +406,6 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
     /**
      * Gets the index of the currently-selected tab.
-     * 
      * @return the selected index, or <code>-1</code> if none is selected.
      */
     public int getSelectedIndex() {
@@ -475,12 +414,10 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
     /**
      * Gets the widget in the tab at the given index.
-     * 
-     * @param index
-     *            the index of the tab to be retrieved
+     * @param index the index of the tab to be retrieved
      * @return the tab's widget
      */
-    public Widget getTabWidget(int index) {
+    public Widget getTabWidget( int index ) {
         checkIndex( index );
         return tabs.get( index ).getWidget();
     }
@@ -488,18 +425,16 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public Widget getTabWidget(IsWidget child) {
+    public Widget getTabWidget( IsWidget child ) {
         return getTabWidget( asWidgetOrNull( child ) );
     }
 
     /**
      * Gets the widget in the tab associated with the given child widget.
-     * 
-     * @param child
-     *            the child whose tab is to be retrieved
+     * @param child the child whose tab is to be retrieved
      * @return the tab's widget
      */
-    public Widget getTabWidget(Widget child) {
+    public Widget getTabWidget( Widget child ) {
         checkChild( child );
         return getTabWidget( getWidgetIndex( child ) );
     }
@@ -507,7 +442,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Returns the widget at the given index.
      */
-    public Widget getWidget(int index) {
+    public Widget getWidget( int index ) {
         return deckPanel.getWidget( index );
     }
 
@@ -521,22 +456,22 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public int getWidgetIndex(IsWidget child) {
+    public int getWidgetIndex( IsWidget child ) {
         return getWidgetIndex( asWidgetOrNull( child ) );
     }
 
     /**
      * Returns the index of the given child, or -1 if it is not a child.
      */
-    public int getWidgetIndex(Widget child) {
+    public int getWidgetIndex( Widget child ) {
         return deckPanel.getWidgetIndex( child );
     }
 
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void insert(IsWidget child,
-                       int beforeIndex) {
+    public void insert( IsWidget child,
+                        int beforeIndex ) {
         insert( asWidgetOrNull( child ),
                 beforeIndex );
     }
@@ -544,9 +479,9 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void insert(IsWidget child,
-                       IsWidget tab,
-                       int beforeIndex) {
+    public void insert( IsWidget child,
+                        IsWidget tab,
+                        int beforeIndex ) {
         insert( asWidgetOrNull( child ),
                 asWidgetOrNull( tab ),
                 beforeIndex );
@@ -555,10 +490,10 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void insert(IsWidget child,
-                       String text,
-                       boolean asHtml,
-                       int beforeIndex) {
+    public void insert( IsWidget child,
+                        String text,
+                        boolean asHtml,
+                        int beforeIndex ) {
         insert( asWidgetOrNull( child ),
                 text,
                 asHtml,
@@ -568,9 +503,9 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void insert(IsWidget child,
-                       String text,
-                       int beforeIndex) {
+    public void insert( IsWidget child,
+                        String text,
+                        int beforeIndex ) {
         insert( asWidgetOrNull( child ),
                 text,
                 beforeIndex );
@@ -579,14 +514,11 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it
      * will be moved to the requested index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param beforeIndex
-     *            the index before which it will be inserted
+     * @param child the widget to be added
+     * @param beforeIndex the index before which it will be inserted
      */
-    public void insert(Widget child,
-                       int beforeIndex) {
+    public void insert( Widget child,
+                        int beforeIndex ) {
         insert( child,
                 "",
                 beforeIndex );
@@ -595,17 +527,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it
      * will be moved to the requested index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param html
-     *            the html to be shown on its tab
-     * @param beforeIndex
-     *            the index before which it will be inserted
+     * @param child the widget to be added
+     * @param html the html to be shown on its tab
+     * @param beforeIndex the index before which it will be inserted
      */
-    public void insert(Widget child,
-                       SafeHtml html,
-                       int beforeIndex) {
+    public void insert( Widget child,
+                        SafeHtml html,
+                        int beforeIndex ) {
         insert( child,
                 html.asString(),
                 true,
@@ -615,20 +543,15 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it
      * will be moved to the requested index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param text
-     *            the text to be shown on its tab
-     * @param asHtml
-     *            <code>true</code> to treat the specified text as HTML
-     * @param beforeIndex
-     *            the index before which it will be inserted
+     * @param child the widget to be added
+     * @param text the text to be shown on its tab
+     * @param asHtml <code>true</code> to treat the specified text as HTML
+     * @param beforeIndex the index before which it will be inserted
      */
-    public void insert(Widget child,
-                       String text,
-                       boolean asHtml,
-                       int beforeIndex) {
+    public void insert( Widget child,
+                        String text,
+                        boolean asHtml,
+                        int beforeIndex ) {
         Widget contents;
         if ( asHtml ) {
             contents = new HTML( text );
@@ -643,17 +566,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it
      * will be moved to the requested index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param text
-     *            the text to be shown on its tab
-     * @param beforeIndex
-     *            the index before which it will be inserted
+     * @param child the widget to be added
+     * @param text the text to be shown on its tab
+     * @param beforeIndex the index before which it will be inserted
      */
-    public void insert(Widget child,
-                       String text,
-                       int beforeIndex) {
+    public void insert( Widget child,
+                        String text,
+                        int beforeIndex ) {
         insert( child,
                 text,
                 false,
@@ -663,17 +582,13 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it
      * will be moved to the requested index.
-     * 
-     * @param child
-     *            the widget to be added
-     * @param tab
-     *            the widget to be placed in the associated tab
-     * @param beforeIndex
-     *            the index before which it will be inserted
+     * @param child the widget to be added
+     * @param tab the widget to be placed in the associated tab
+     * @param beforeIndex the index before which it will be inserted
      */
-    public void insert(Widget child,
-                       Widget tab,
-                       int beforeIndex) {
+    public void insert( Widget child,
+                        Widget tab,
+                        int beforeIndex ) {
         insert( child,
                 new Tab( tab ),
                 beforeIndex );
@@ -682,7 +597,6 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Check whether or not transitions slide in vertically or horizontally.
      * Defaults to horizontally.
-     * 
      * @return true for vertical transitions, false for horizontal
      */
     public boolean isAnimationVertical() {
@@ -693,8 +607,8 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         return deckPanel.iterator();
     }
 
-    public boolean remove(int index) {
-        if ( (index < 0) || (index >= getWidgetCount()) ) {
+    public boolean remove( int index ) {
+        if ( ( index < 0 ) || ( index >= getWidgetCount() ) ) {
             return false;
         }
 
@@ -716,7 +630,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         return true;
     }
 
-    public boolean remove(Widget w) {
+    public boolean remove( Widget w ) {
         int index = getWidgetIndex( w );
         if ( index == -1 ) {
             return false;
@@ -727,39 +641,20 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
 
     /**
      * Programmatically selects the specified tab and fires events.
-     * 
-     * @param index
-     *            the index of the tab to be selected
+     * @param index the index of the tab to be selected
      */
-    public void selectTab(int index) {
+    public void selectTab( int index ) {
         selectTab( index,
                    true );
     }
 
     /**
-     * Programmatically activate the specified tab without selecting it.
-     * 
-     * @param index
-     *            the index of the tab to be selected
-     */
-    public void activateTab(int index) {
-        checkIndex( index );
-        if ( index == selectedIndex ) {
-            return;
-        }
-        deckPanel.showWidget( index );
-    }
-
-    /**
      * Programmatically selects the specified tab.
-     * 
-     * @param index
-     *            the index of the tab to be selected
-     * @param fireEvents
-     *            true to fire events, false not to
+     * @param index the index of the tab to be selected
+     * @param fireEvents true to fire events, false not to
      */
-    public void selectTab(int index,
-                          boolean fireEvents) {
+    public void selectTab( int index,
+                           boolean fireEvents ) {
         checkIndex( index );
         if ( index == selectedIndex ) {
             return;
@@ -770,7 +665,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         if ( fireEvents ) {
             BeforeSelectionEvent<Integer> event = BeforeSelectionEvent.fire( this,
                                                                              index );
-            if ( (event != null) && event.isCanceled() ) {
+            if ( ( event != null ) && event.isCanceled() ) {
                 return;
             }
         }
@@ -794,60 +689,71 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void selectTab(IsWidget child) {
+    public void selectTab( IsWidget child ) {
         selectTab( asWidgetOrNull( child ) );
     }
 
     /**
      * Convenience overload to allow {@link IsWidget} to be used directly.
      */
-    public void selectTab(IsWidget child,
-                          boolean fireEvents) {
+    public void selectTab( IsWidget child,
+                           boolean fireEvents ) {
         selectTab( asWidgetOrNull( child ),
                    fireEvents );
     }
 
     /**
      * Programmatically selects the specified tab and fires events.
-     * 
-     * @param child
-     *            the child whose tab is to be selected
+     * @param child the child whose tab is to be selected
      */
-    public void selectTab(Widget child) {
+    public void selectTab( Widget child ) {
         selectTab( getWidgetIndex( child ) );
     }
 
     /**
      * Programmatically selects the specified tab.
-     * 
-     * @param child
-     *            the child whose tab is to be selected
-     * @param fireEvents
-     *            true to fire events, false not to
+     * @param child the child whose tab is to be selected
+     * @param fireEvents true to fire events, false not to
      */
-    public void selectTab(Widget child,
-                          boolean fireEvents) {
+    public void selectTab( Widget child,
+                           boolean fireEvents ) {
         selectTab( getWidgetIndex( child ),
                    fireEvents );
     }
 
     /**
-     * Set the duration of the animated transition between tabs.
-     * 
-     * @param duration
-     *            the duration in milliseconds.
+     * Programmatically activate the specified tab without selecting it.
+     * @param index the index of the tab to be selected
      */
-    public void setAnimationDuration(int duration) {
+    public void activateTab( int index ) {
+        checkIndex( index );
+        if ( index == selectedIndex ) {
+            return;
+        }
+        deckPanel.showWidget( index );
+    }
+
+    public void enableControls( boolean enable ) {
+        if ( enable ) {
+            controls.getElement().getStyle().clearDisplay();
+        } else {
+            controls.getElement().getStyle().setDisplay( Style.Display.NONE );
+        }
+    }
+
+    /**
+     * Set the duration of the animated transition between tabs.
+     * @param duration the duration in milliseconds.
+     */
+    public void setAnimationDuration( int duration ) {
         deckPanel.setAnimationDuration( duration );
     }
 
     /**
      * Set whether or not transitions slide in vertically or horizontally.
-     * 
-     * @param isVertical
-     *            true for vertical transitions, false for horizontal
+     * @param isVertical true for vertical transitions, false for horizontal
      */
-    public void setAnimationVertical(boolean isVertical) {
+    public void setAnimationVertical( boolean isVertical ) {
         deckPanel.setAnimationVertical( isVertical );
     }
 
@@ -856,72 +762,60 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
      * an easy way to expose script-based security problems. Consider using
      * {@link #setTabHTML(int, SafeHtml)} or {@link #setTabText(int, String)}
      * whenever possible.
-     * 
-     * @param index
-     *            the index of the tab whose HTML is to be set
-     * @param html
-     *            the tab's new HTML contents
+     * @param index the index of the tab whose HTML is to be set
+     * @param html the tab's new HTML contents
      */
-    public void setTabHTML(int index,
-                           String html) {
+    public void setTabHTML( int index,
+                            String html ) {
         checkIndex( index );
         tabs.get( index ).setWidget( new HTML( html ) );
     }
 
     /**
      * Sets a tab's IsWidget contents
-     * 
-     * @param index
-     *            the index of the tab whose HTML is to be set
-     * @param tabWidget
-     *            the tab's new IsWidget contents
+     * @param index the index of the tab whose HTML is to be set
+     * @param tabWidget the tab's new IsWidget contents
      */
-    public void setTabWidget(int index,
-                             IsWidget tabWidget) {
+    public void setTabWidget( int index,
+                              IsWidget tabWidget ) {
         checkIndex( index );
         tabs.get( index ).setWidget( tabWidget );
     }
 
     /**
      * Sets a tab's HTML contents.
-     * 
-     * @param index
-     *            the index of the tab whose HTML is to be set
-     * @param html
-     *            the tab's new HTML contents
+     * @param index the index of the tab whose HTML is to be set
+     * @param html the tab's new HTML contents
      */
-    public void setTabHTML(int index,
-                           SafeHtml html) {
+    public void setTabHTML( int index,
+                            SafeHtml html ) {
         setTabHTML( index,
                     html.asString() );
     }
 
     /**
      * Sets a tab's text contents.
-     * 
-     * @param index
-     *            the index of the tab whose text is to be set
-     * @param text
-     *            the object's new text
+     * @param index the index of the tab whose text is to be set
+     * @param text the object's new text
      */
-    public void setTabText(int index,
-                           String text) {
+    public void setTabText( int index,
+                            String text ) {
         checkIndex( index );
         tabs.get( index ).setWidget( new Label( text ) );
     }
 
-    private void checkChild(Widget child) {
+    private void checkChild( Widget child ) {
         assert getWidgetIndex( child ) >= 0 : "Child is not a part of this panel";
     }
 
-    private void checkIndex(int index) {
-        assert (index >= 0) && (index < getWidgetCount()) : "Index out of bounds";
+    private void checkIndex( int index ) {
+        assert ( index >= 0 ) && ( index < getWidgetCount() ) : "Index out of bounds";
     }
 
-    private void insert(final Widget child,
-                        Tab tab,
-                        int beforeIndex) {
-        assert (beforeIndex >= 0) && (beforeIndex <= getWidgetCount()) : "beforeIndex out of bounds";
+    private void insert( final Widget child,
+                         Tab tab,
+                         int beforeIndex ) {
+        assert ( beforeIndex >= 0 ) && ( beforeIndex <= getWidgetCount() ) : "beforeIndex out of bounds";
 
         // Check to see if the TabPanel already contains the Widget. If so,
         // remove it and see if we need to shift the position to the left.
@@ -941,7 +835,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         tabBar.insert( tab,
                        beforeIndex );
         tab.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 selectTab( child );
             }
         } );
@@ -954,7 +848,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         }
     }
 
-    public void setFocus(boolean hasFocus) {
+    public void setFocus( boolean hasFocus ) {
         if ( hasFocus ) {
             this.focusBar.getElement().setClassName( "workbenchFocusIndicatorHasFocus" );
         } else {
@@ -964,6 +858,41 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
                 selectedIndex = -1;
             }
         }
+    }
+
+    protected int getControlsWidth() {
+        return this.controls.getOffsetWidth();
+    }
+
+    private void sizeTabBarControls( final int barHeight ) {
+        Scheduler.get().scheduleDeferred( new Command() {
+
+            @Override
+            public void execute() {
+                panel.setWidgetLeftRight( tabBar,
+                                          0,
+                                          Unit.PX,
+                                          getControlsWidth(),
+                                          Unit.PX );
+                panel.setWidgetTopHeight( tabBar,
+                                          0,
+                                          Unit.PX,
+                                          barHeight,
+                                          Unit.PX );
+                panel.setWidgetVerticalPosition( tabBar,
+                                                 Alignment.END );
+                panel.setWidgetRightWidth( controls,
+                                           0,
+                                           Unit.PX,
+                                           getControlsWidth(),
+                                           Unit.PX );
+                panel.setWidgetTopHeight( controls,
+                                          0,
+                                          Unit.PX,
+                                          barHeight,
+                                          Unit.PX );
+            }
+        } );
     }
 
 }

@@ -29,7 +29,8 @@ public class WorkbenchDragContext {
     private final PlaceRequest place;
     private final PartDefinition sourcePart;
     private final PanelDefinition sourcePanel;
-    private final IsWidget tabWidget;
+    private final IsWidget titleWidget;
+    private final IsWidget widget;
 
     private Integer height;
     private Integer width;
@@ -39,7 +40,8 @@ public class WorkbenchDragContext {
     public WorkbenchDragContext( final PlaceRequest place,
                                  final PartDefinition sourcePart,
                                  final PanelDefinition sourcePanel,
-                                 final IsWidget tabWidget,
+                                 final IsWidget titleWidget,
+                                 final IsWidget widget,
                                  final Integer height,
                                  final Integer width,
                                  final Integer minHeight,
@@ -47,7 +49,8 @@ public class WorkbenchDragContext {
         this.place = place;
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
-        this.tabWidget = tabWidget;
+        this.titleWidget = titleWidget;
+        this.widget = widget;
         this.height = height;
         this.width = width;
         this.minHeight = minHeight;
@@ -76,10 +79,14 @@ public class WorkbenchDragContext {
     }
 
     /**
-     * @return the tab widget
+     * @return the title widget
      */
-    public IsWidget getTabWidget() {
-        return tabWidget;
+    public IsWidget getTitleWidget() {
+        return titleWidget;
+    }
+
+    public IsWidget getWidget() {
+        return widget;
     }
 
     public final Integer getHeight() {

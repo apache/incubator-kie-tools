@@ -32,34 +32,34 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 @ApplicationScoped
 public class DefaultBeanFactory
-    implements
-    BeanFactory {
+        implements
+        BeanFactory {
 
     @Inject
     private IOCBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget tabWidget,
-                                                   final PartDefinition definition) {
+    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+                                                    final PartDefinition definition ) {
         final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
-        part.setTabWidget( tabWidget );
+        part.setTitleWidget( titleWidget );
         part.setDefinition( definition );
         return part;
     }
 
     @Override
-    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition) {
+    public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
         final WorkbenchPanelPresenter panel = iocManager.lookupBean( WorkbenchPanelPresenter.class ).getInstance();
         panel.setDefinition( definition );
         return panel;
     }
 
     @Override
-    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
-                                                              final WorkbenchPanelPresenter.View westPanel,
-                                                              final Position position,
-                                                              final Integer preferredSize,
-                                                              final Integer preferredMinSize) {
+    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelPresenter.View eastPanel,
+                                                               final WorkbenchPanelPresenter.View westPanel,
+                                                               final Position position,
+                                                               final Integer preferredSize,
+                                                               final Integer preferredMinSize ) {
         final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
         hsp.setup( eastPanel,
                    westPanel,
@@ -70,11 +70,11 @@ public class DefaultBeanFactory
     }
 
     @Override
-    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
-                                                          final WorkbenchPanelPresenter.View southPanel,
-                                                          final Position position,
-                                                          final Integer preferredSize,
-                                                          final Integer preferredMinSize) {
+    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelPresenter.View northPanel,
+                                                           final WorkbenchPanelPresenter.View southPanel,
+                                                           final Position position,
+                                                           final Integer preferredSize,
+                                                           final Integer preferredMinSize ) {
         final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();
         vsp.setup( northPanel,
                    southPanel,
@@ -85,14 +85,14 @@ public class DefaultBeanFactory
     }
 
     @Override
-    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view) {
+    public CompassDropController newDropController( final WorkbenchPanelPresenter.View view ) {
         final CompassDropController dropController = iocManager.lookupBean( CompassDropController.class ).getInstance();
         dropController.setup( view );
         return dropController;
     }
 
     @Override
-    public void destroy(final Object o) {
+    public void destroy( final Object o ) {
         iocManager.destroyBean( o );
     }
 

@@ -17,18 +17,19 @@ package org.uberfire.client.workbench;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
-
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.widgets.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
+import org.uberfire.client.workbench.widgets.panels.PanelManager;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -63,6 +64,8 @@ public class WorkbenchPanelPresenter {
 
         void setFocus( boolean hasFocus );
 
+        void enableControls( boolean enable );
+
     }
 
     private View view;
@@ -73,11 +76,19 @@ public class WorkbenchPanelPresenter {
 
     private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
 
+    private Event<MaximizePlaceEvent> maximizePanelEvent;
+
+    private Event<MinimizePlaceEvent> minimizePanelEvent;
+
     @Inject
     public WorkbenchPanelPresenter( final View view,
-                                    final PanelManager panelManager ) {
+                                    final PanelManager panelManager,
+                                    Event<MaximizePlaceEvent> maximizePanelEvent,
+                                    Event<MinimizePlaceEvent> minimizePanelEvent ) {
         this.view = view;
         this.panelManager = panelManager;
+        this.maximizePanelEvent = maximizePanelEvent;
+        this.minimizePanelEvent = minimizePanelEvent;
     }
 
     @SuppressWarnings("unused")
@@ -92,30 +103,26 @@ public class WorkbenchPanelPresenter {
 
     public void setDefinition( final PanelDefinition definition ) {
         this.definition = definition;
+        view.enableControls( !definition.isRoot() );
     }
 
     public void addPart( final PartDefinition part,
                          final IsWidget titleWidget,
                          final WorkbenchPartPresenter.View view ) {
-        //The model for a Perspective is already fully populated. Don't go adding duplicates.
-        if ( !definition.getParts().contains( part ) ) {
-            definition.addPart( part );
-        }
+        getPanelView().addPart( titleWidget,
+                                view );
         if ( !orderedParts.contains( part ) ) {
             orderedParts.add( part );
         }
-        getPanelView().addPart( titleWidget,
-                                view );
     }
 
-    public void changeTitle( final PartDefinition part,
-                             final IsWidget titleWidget ) {
+    public void removePart( final PartDefinition part ) {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
-        getPanelView().changeTitle( indexOfPartToChangeTabContent,
-                                    titleWidget );
+        final int indexOfPartToRemove = orderedParts.indexOf( part );
+        view.removePart( indexOfPartToRemove );
+        orderedParts.remove( part );
     }
 
     public void addPanel( final PanelDefinition panel,
@@ -128,22 +135,18 @@ public class WorkbenchPanelPresenter {
                                 panel );
     }
 
-    public void clear() {
-        view.clear();
+    public void removePanel() {
+        view.removePanel();
     }
 
-    public void removePart( final PartDefinition part ) {
+    public void changeTitle( final PartDefinition part,
+                             final IsWidget titleWidget ) {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToRemove = orderedParts.indexOf( part );
-        view.removePart( indexOfPartToRemove );
-        definition.getParts().remove( part );
-        orderedParts.remove( part );
-    }
-
-    public void removePanel() {
-        view.removePanel();
+        final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
+        getPanelView().changeTitle( indexOfPartToChangeTabContent,
+                                    titleWidget );
     }
 
     public void setFocus( final boolean hasFocus ) {
@@ -176,6 +179,22 @@ public class WorkbenchPanelPresenter {
 
     public void onBeforePartClose( final PartDefinition part ) {
         panelManager.onBeforePartClose( part );
+    }
+
+    public void maximize() {
+        if ( !getDefinition().isRoot() ) {
+            for ( PartDefinition part : getDefinition().getParts() ) {
+                maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
+            }
+        }
+    }
+
+    public void minimize() {
+        if ( !getDefinition().isRoot() ) {
+            for ( PartDefinition part : getDefinition().getParts() ) {
+                minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
+            }
+        }
     }
 
     public View getPanelView() {

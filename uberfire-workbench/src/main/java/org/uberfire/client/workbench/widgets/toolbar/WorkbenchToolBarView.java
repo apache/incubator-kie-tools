@@ -29,20 +29,20 @@ import com.google.gwt.user.client.ui.IsWidget;
  * The Tool Bar widget
  */
 public class WorkbenchToolBarView extends Composite
-    implements
-    WorkbenchToolBarPresenter.View {
+        implements
+        WorkbenchToolBarPresenter.View {
 
-    private final HorizontalPanel            toolBar           = new HorizontalPanel();
-    private final HorizontalPanel            toolBarContainer  = new HorizontalPanel();
+    private final HorizontalPanel toolBar = new HorizontalPanel();
+    private final HorizontalPanel toolBarContainer = new HorizontalPanel();
 
     //Map of ToolBarItems to GWT Widgets used to represent them
-    private final Map<ToolBarItem, IsWidget> toolBarItemsMap   = new HashMap<ToolBarItem, IsWidget>();
+    private final Map<ToolBarItem, IsWidget> toolBarItemsMap = new HashMap<ToolBarItem, IsWidget>();
 
-    private static final String              STYLENAME_DEFAULT = "toolBar";
+    private static final String STYLE_NAME = "toolBar";
 
     public WorkbenchToolBarView() {
         initWidget( toolBarContainer );
-        toolBarContainer.setStyleName( STYLENAME_DEFAULT );
+        toolBarContainer.setStyleName( STYLE_NAME );
         toolBarContainer.setSpacing( 0 );
         toolBar.setSpacing( 0 );
         toolBarContainer.add( toolBar );
@@ -53,7 +53,7 @@ public class WorkbenchToolBarView extends Composite
      * is conducted by the Presenter.
      */
     @Override
-    public void addToolBarItem(final ToolBarItem item) {
+    public void addToolBarItem( final ToolBarItem item ) {
         final String url = item.getUrl();
         final Image image = new Image( "uberFireImages?url=" + url );
         final ToolBarButton button = new ToolBarButton( image );
@@ -61,7 +61,7 @@ public class WorkbenchToolBarView extends Composite
             button.addClickHandler( new ClickHandler() {
 
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     item.getCommand().execute();
                 }
 
@@ -77,7 +77,7 @@ public class WorkbenchToolBarView extends Composite
      * Remove a Tool Bar item from the view.
      */
     @Override
-    public void removeToolBarItem(final ToolBarItem item) {
+    public void removeToolBarItem( final ToolBarItem item ) {
         final IsWidget icon = toolBarItemsMap.remove( item );
         if ( icon != null ) {
             toolBar.remove( icon );

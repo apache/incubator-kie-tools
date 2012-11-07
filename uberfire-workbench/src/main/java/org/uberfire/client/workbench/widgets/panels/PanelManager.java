@@ -16,15 +16,13 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
@@ -33,16 +31,16 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.widgets.events.ChangeTabContentEvent;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartDroppedEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.DropPlaceEvent;
+import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.RestorePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Manager responsible for adding or removing WorkbenchParts to WorkbenchPanels;
@@ -54,13 +52,13 @@ public class PanelManager {
 
     private final BeanFactory factory;
 
-    private final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
+    private final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent;
 
-    private final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent;
+    private final Event<PlaceGainFocusEvent> placeGainFocusEvent;
 
-    private final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
+    private final Event<PlaceLostFocusEvent> placeLostFocusEvent;
 
-    private final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent;
+    private final Event<SelectPlaceEvent> selectPlaceEvent;
 
     private PartDefinition activePart = null;
 
@@ -75,15 +73,15 @@ public class PanelManager {
     @Inject
     //Injected constructor for unit testing
     public PanelManager( final BeanFactory factory,
-                         final Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent,
-                         final Event<WorkbenchPartOnFocusEvent> workbenchPartOnFocusEvent,
-                         final Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent,
-                         final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent ) {
+                         final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent,
+                         final Event<PlaceGainFocusEvent> placeGainFocusEvent,
+                         final Event<PlaceLostFocusEvent> placeLostFocusEvent,
+                         final Event<SelectPlaceEvent> selectPlaceEvent ) {
         this.factory = factory;
-        this.workbenchPartBeforeCloseEvent = workbenchPartBeforeCloseEvent;
-        this.workbenchPartOnFocusEvent = workbenchPartOnFocusEvent;
-        this.workbenchPartLostFocusEvent = workbenchPartLostFocusEvent;
-        this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
+        this.beforeClosePlaceEvent = beforeClosePlaceEvent;
+        this.placeGainFocusEvent = placeGainFocusEvent;
+        this.placeLostFocusEvent = placeLostFocusEvent;
+        this.selectPlaceEvent = selectPlaceEvent;
     }
 
     public PerspectiveDefinition getPerspective() {
@@ -130,7 +128,7 @@ public class PanelManager {
     public PanelDefinition addWorkbenchPart( final PlaceRequest place,
                                              final PartDefinition part,
                                              final PanelDefinition panel,
-                                             final IsWidget tabWidget,
+                                             final IsWidget titleWidget,
                                              final IsWidget partWidget ) {
         final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
         if ( panelPresenter == null ) {
@@ -139,7 +137,7 @@ public class PanelManager {
 
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( tabWidget,
+            partPresenter = factory.newWorkbenchPart( titleWidget,
                                                       part );
             partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part,
@@ -147,11 +145,16 @@ public class PanelManager {
         }
 
         panelPresenter.addPart( part,
-                                tabWidget,
+                                titleWidget,
                                 partPresenter.getPartView() );
 
+        //The model for a Perspective is already fully populated. Don't go adding duplicates.
+        if ( !panel.getParts().contains( part ) ) {
+            panel.addPart( part );
+        }
+
         //Select newly inserted part
-        selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( place ) );
+        selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
         return panelPresenter.getDefinition();
     }
 
@@ -185,6 +188,10 @@ public class PanelManager {
 
         PanelDefinition newPanel = null;
 
+        if ( childPanel.isMinimized() ) {
+            return targetPanel;
+        }
+
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
@@ -213,27 +220,27 @@ public class PanelManager {
                 targetPanelPresenter.addPanel( childPanel,
                                                childPanelPresenter.getPanelView(),
                                                position );
-                newPanel = childPanelPresenter.getDefinition();
+                newPanel = childPanel;
                 break;
 
             default:
                 throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
         }
 
-        onPanelFocus( childPanel );
+        onPanelFocus( newPanel );
         return newPanel;
     }
 
     public void onPartFocus( final PartDefinition part ) {
         activePart = part;
-        workbenchPartOnFocusEvent.fire( new WorkbenchPartOnFocusEvent( part.getPlace() ) );
+        placeGainFocusEvent.fire( new PlaceGainFocusEvent( part.getPlace() ) );
     }
 
     public void onPartLostFocus() {
         if ( activePart == null ) {
             return;
         }
-        workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( activePart.getPlace() ) );
+        placeLostFocusEvent.fire( new PlaceLostFocusEvent( activePart.getPlace() ) );
         this.activePart = null;
     }
 
@@ -244,11 +251,11 @@ public class PanelManager {
     }
 
     public void onBeforePartClose( final PartDefinition part ) {
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( part.getPlace() ) );
+        beforeClosePlaceEvent.fire( new BeforeClosePlaceEvent( part.getPlace() ) );
     }
 
     @SuppressWarnings("unused")
-    private void onSelectWorkbenchPartEvent( @Observes SelectWorkbenchPartEvent event ) {
+    private void onSelectPlaceEvent( @Observes SelectPlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             for ( PartDefinition part : e.getValue().getDefinition().getParts() ) {
@@ -261,7 +268,7 @@ public class PanelManager {
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartClosedEvent( @Observes WorkbenchPartCloseEvent event ) {
+    private void onClosePlaceEvent( @Observes ClosePlaceEvent event ) {
         final PartDefinition part = getPartForPlace( event.getPlace() );
         if ( part != null ) {
             removePart( part );
@@ -269,11 +276,71 @@ public class PanelManager {
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartDroppedEvent( @Observes WorkbenchPartDroppedEvent event ) {
+    private void onDropPlaceEvent( @Observes DropPlaceEvent event ) {
         final PartDefinition part = getPartForPlace( event.getPlace() );
         if ( part != null ) {
             removePart( part );
         }
+    }
+
+    @SuppressWarnings("unused")
+    private void onMinimizePlaceEvent( @Observes MinimizePlaceEvent event ) {
+        final PlaceRequest placeToMinimize = event.getPlace();
+        final PartDefinition partToMinimize = getPartForPlace( placeToMinimize );
+
+        WorkbenchPanelPresenter presenterToMinimize = null;
+
+        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
+            final PanelDefinition definition = e.getKey();
+            final WorkbenchPanelPresenter presenter = e.getValue();
+            if ( presenter.getDefinition().getParts().contains( partToMinimize ) ) {
+                partToMinimize.setMinimized( true );
+                presenter.removePart( partToMinimize );
+                if ( presenter.getDefinition().isMinimized() ) {
+                    presenterToMinimize = presenter;
+                }
+                break;
+            }
+        }
+        if ( presenterToMinimize != null ) {
+            presenterToMinimize.removePanel();
+            factory.destroy( presenterToMinimize );
+            mapPanelDefinitionToPresenter.remove( presenterToMinimize.getDefinition() );
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void onRestorePlaceEvent( @Observes RestorePlaceEvent event ) {
+        final PlaceRequest place = event.getPlace();
+        final PartDefinition partToRestore = getPartForPlace( place );
+        final PanelDefinition panelToRestore = partToRestore.getParentPanel();
+
+        final Integer height = panelToRestore.getHeight();
+        final Integer width = panelToRestore.getWidth();
+        final Integer minHeight = panelToRestore.getMinHeight();
+        final Integer minWidth = panelToRestore.getMinWidth();
+
+        final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
+        final IsWidget titleWidget = mapPartDefinitionToPresenter.get( partToRestore ).getTitleWidget();
+
+        partToRestore.setMinimized( false );
+
+        //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
+        if ( mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
+            addWorkbenchPanel( root,
+                               panelToRestore,
+                               Position.SELF );
+        } else {
+            addWorkbenchPanel( root,
+                               panelToRestore,
+                               panelToRestore.getPosition() );
+        }
+
+        addWorkbenchPart( partToRestore.getPlace(),
+                          partToRestore,
+                          panelToRestore,
+                          titleWidget,
+                          widget );
     }
 
     private PartDefinition getPartForPlace( final PlaceRequest place ) {
@@ -286,7 +353,7 @@ public class PanelManager {
     }
 
     @SuppressWarnings("unused")
-    private void onChangeWorkbenchTitleEvent( @Observes ChangeTabContentEvent event ) {
+    private void onChangeTitleWidgetEvent( @Observes ChangeTitleWidgetEvent event ) {
         final PlaceRequest place = event.getPlaceRequest();
         final IsWidget titleWidget = event.getTitleWidget();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
@@ -305,24 +372,24 @@ public class PanelManager {
         factory.destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
-        WorkbenchPanelPresenter panelToRemove = null;
+        WorkbenchPanelPresenter presenterToRemove = null;
 
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition definition = e.getKey();
             final WorkbenchPanelPresenter presenter = e.getValue();
             if ( presenter.getDefinition().getParts().contains( part ) ) {
                 presenter.removePart( part );
+                definition.getParts().remove( part );
                 if ( !definition.isRoot() && definition.getParts().size() == 0 ) {
-                    panelToRemove = presenter;
+                    presenterToRemove = presenter;
                 }
                 break;
             }
         }
-        if ( panelToRemove != null ) {
-            panelToRemove.removePanel();
-            factory.destroy( panelToRemove );
-            mapPanelDefinitionToPresenter.remove( panelToRemove.getDefinition() );
-            removePanel( panelToRemove.getDefinition(),
+        if ( presenterToRemove != null ) {
+            presenterToRemove.removePanel();
+            factory.destroy( presenterToRemove );
+            removePanel( presenterToRemove.getDefinition(),
                          root );
         }
     }

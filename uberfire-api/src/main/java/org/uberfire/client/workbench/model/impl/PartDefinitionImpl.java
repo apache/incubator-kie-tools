@@ -25,17 +25,19 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 @Portable
 public class PartDefinitionImpl
-    implements
-    PartDefinition {
+        implements
+        PartDefinition {
 
-    private PlaceRequest    place;
+    private PlaceRequest place;
 
     private PanelDefinition parentPanel;
+
+    private boolean isMinimized = false;
 
     public PartDefinitionImpl() {
     }
 
-    public PartDefinitionImpl(final PlaceRequest place) {
+    public PartDefinitionImpl( final PlaceRequest place ) {
         this.place = place;
     }
 
@@ -48,11 +50,10 @@ public class PartDefinitionImpl
     }
 
     /**
-     * @param place
-     *            the place to set
+     * @param place the place to set
      */
     @Override
-    public void setPlace(final PlaceRequest place) {
+    public void setPlace( final PlaceRequest place ) {
         this.place = place;
     }
 
@@ -65,12 +66,26 @@ public class PartDefinitionImpl
     }
 
     /**
-     * @param parentPanel
-     *            the parentPanel to set
+     * @param parentPanel the parentPanel to set
      */
     @Override
-    public void setParentPanel(final PanelDefinition parentPanel) {
+    public void setParentPanel( final PanelDefinition parentPanel ) {
         this.parentPanel = parentPanel;
+    }
+
+    @Override
+    public void setMinimized( final boolean isMinimized ) {
+        this.isMinimized = isMinimized;
+    }
+
+    @Override
+    public boolean isMinimized() {
+        return this.isMinimized;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
     }
 
     @Override
@@ -79,10 +94,16 @@ public class PartDefinitionImpl
     }
 
     @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null ) return false;
-        if ( !(o instanceof PartDefinitionImpl) ) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null ) {
+            return false;
+        }
+        if ( !( o instanceof PartDefinitionImpl ) ) {
+            return false;
+        }
 
         PartDefinitionImpl that = (PartDefinitionImpl) o;
 

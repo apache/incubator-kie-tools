@@ -57,7 +57,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
         final PlaceRequest place = sourcePart.getPlace();
-        final IsWidget tabWidget = sourceView.getPresenter().getTabWidget();
+        final IsWidget titleWidget = sourceView.getPresenter().getTitleWidget();
+        final IsWidget widget = sourceView.getPresenter().getPartView().getWrappedWidget();
         final Integer height = sourcePanel.getHeight();
         final Integer width = sourcePanel.getWidth();
         final Integer minHeight = sourcePanel.getMinHeight();
@@ -65,7 +66,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchDragContext context = new WorkbenchDragContext( place,
                                                                        sourcePart,
                                                                        sourcePanel,
-                                                                       tabWidget,
+                                                                       titleWidget,
+                                                                       widget,
                                                                        height,
                                                                        width,
                                                                        minHeight,
@@ -101,7 +103,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
 
         //Offset to centre of dragProxy
         int offsetX = 0 - ( (int) ( dragProxy.getWidth() * 0.5 ) );
-        int offsetY = 0 - ( (int) ( dragProxy.getWidth() * 1.5 ) );
+        int offsetY = 0 - ( (int) ( dragProxy.getHeight() * 1.5 ) );
         container.add( dragProxy,
                        offsetX,
                        offsetY );

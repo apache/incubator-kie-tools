@@ -141,3 +141,45 @@
 	filter: alpha(opacity =   45);
 	zoom: 1;
 }
+
+.statusBar {
+    cursor: default;
+    height: 36px;
+    width: 100%;
+    border-spacing: 0px;
+    background: #c0c0c0;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.tabBarControlsContainer {
+    background-color: #cccccc;
+    height: 100%;
+    padding-top: 4px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.tabBarControlMaximize {
+    height: 24px;
+    width: 24px;
+    background: url("../images/maximizePanel.png") no-repeat;
+    background-position: -24px 0;
+}
+
+.tabBarControlMaximize:hover {
+    background-position: 0px 0;
+}
+
+.tabBarControlMinimize {
+    height: 24px;
+    width: 24px;
+    background: url("../images/minimizePanel.png") no-repeat;
+    background-position: -24px 0;
+}
+
+.tabBarControlMinimize:hover {
+    background-position: 0px 0;
+}

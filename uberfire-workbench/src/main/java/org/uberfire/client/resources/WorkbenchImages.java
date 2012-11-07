@@ -16,7 +16,6 @@
 
 package org.uberfire.client.resources;
 
-
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -58,6 +57,10 @@ public interface WorkbenchImages
     //Scroll TabPanel right
     @Source("images/tabPanelScrollRight.png")
     ImageResource tabPanelScrollRight();
-    
-    CollapseExpand collapseExpand();    
+
+    //Minimized Panel in Status Bar
+    @Source("images/minimizedPanel.png")
+    ImageResource minimizedPanel();
+
+    CollapseExpand collapseExpand();
 }

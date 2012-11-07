@@ -84,4 +84,8 @@ public class MockWorkbenchPanelView
     public void setFocus(boolean hasFocus) {
     }
 
+    @Override
+    public void enableControls( boolean enable ) {
+    }
+
 }

@@ -16,12 +16,12 @@ public class WorkbenchScreenTest17 {
     }
 
     @WorkbenchPartTitle
-    public String getTabTitle() {
+    public String getTitle() {
         return null;
     }
 
     @WorkbenchPartTitle
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return null;
     }
 

@@ -16,12 +16,12 @@ public class WorkbenchEditorTest18 {
     }
 
     @WorkbenchPartTitle
-    public String getTabTitle() {
+    public String getTitle() {
         return null;
     }
 
     @WorkbenchPartTitle
-    public IsWidget getTabWidget() {
+    public IsWidget getTitleWidget() {
         return null;
     }
 

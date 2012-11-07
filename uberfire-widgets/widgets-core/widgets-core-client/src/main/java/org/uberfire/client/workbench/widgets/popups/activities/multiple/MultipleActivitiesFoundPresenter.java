@@ -19,7 +19,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -27,7 +26,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
+import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -52,7 +51,7 @@ public class MultipleActivitiesFoundPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     private PlaceRequest place;
 
@@ -79,7 +78,7 @@ public class MultipleActivitiesFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire( new WorkbenchPartBeforeCloseEvent( this.place ) );
+        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.toolbar;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.Image;
 
@@ -23,11 +24,15 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class ToolBarButton extends CustomButton {
 
-    private static final String STYLENAME_DEFAULT = "toolBarButton";
+    private static final String STYLE_NAME = "toolBarButton";
 
-    public ToolBarButton(final Image image) {
+    public ToolBarButton( final ImageResource image ) {
+        this( new Image( image ) );
+    }
+
+    public ToolBarButton( final Image image ) {
         super( image );
-        setStyleName( STYLENAME_DEFAULT );
+        setStyleName( STYLE_NAME );
     }
 
 }

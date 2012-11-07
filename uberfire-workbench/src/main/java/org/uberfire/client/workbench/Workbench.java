@@ -39,6 +39,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -87,6 +88,9 @@ public class Workbench extends Composite
     private WorkbenchToolBarPresenter toolBarPresenter;
 
     @Inject
+    private WorkbenchStatusBarPresenter statusBarPresenter;
+
+    @Inject
     private Caller<WorkbenchServices> wbServices;
 
     @PostConstruct
@@ -102,6 +106,9 @@ public class Workbench extends Composite
         workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
+
+        //Status bar
+        container.add( statusBarPresenter.getView() );
 
         initWidget( container );
     }
@@ -195,7 +202,8 @@ public class Workbench extends Composite
                                              final int height ) {
         final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
         final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
-        final int availableHeight = height - menuBarHeight - toolBarHeight;
+        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
+        final int availableHeight = height - menuBarHeight - toolBarHeight - statusBarHeight;
         workbenchContainer.setPixelSize( width,
                                          availableHeight );
         workbench.setPixelSize( width,

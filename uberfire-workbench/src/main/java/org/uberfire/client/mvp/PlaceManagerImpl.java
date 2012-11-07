@@ -32,11 +32,11 @@ import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.client.workbench.widgets.events.SelectWorkbenchPartEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartOnFocusEvent;
+import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.commons.util.Preconditions;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -58,15 +58,15 @@ public class PlaceManagerImpl
     private final PanelManager panelManager;
 
     @Inject
-    private Event<WorkbenchPartBeforeCloseEvent> workbenchPartBeforeCloseEvent;
+    private Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
 
     @Inject
-    private Event<WorkbenchPartCloseEvent> workbenchPartCloseEvent;
+    private Event<ClosePlaceEvent> workbenchPartCloseEvent;
 
     @Inject
-    private Event<WorkbenchPartLostFocusEvent> workbenchPartLostFocusEvent;
+    private Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
 
-    private final Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent;
+    private final Event<SelectPlaceEvent> selectWorkbenchPartEvent;
 
     private final PlaceHistoryHandler placeHistoryHandler;
 
@@ -75,7 +75,7 @@ public class PlaceManagerImpl
     @Inject
     public PlaceManagerImpl( ActivityManager activityManager,
                              PlaceHistoryHandler placeHistoryHandler,
-                             Event<SelectWorkbenchPartEvent> selectWorkbenchPartEvent,
+                             Event<SelectPlaceEvent> selectWorkbenchPartEvent,
                              PanelManager panelManager ) {
         this.activityManager = activityManager;
         this.placeHistoryHandler = placeHistoryHandler;
@@ -200,7 +200,7 @@ public class PlaceManagerImpl
         if ( placeToClose == null ) {
             return;
         }
-        workbenchPartBeforeCloseEvent.fire( new WorkbenchPartBeforeCloseEvent( placeToClose ) );
+        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose ) );
     }
 
     @Override
@@ -246,7 +246,7 @@ public class PlaceManagerImpl
 
         //If we're already showing this place exit.
         if ( existingWorkbenchParts.containsKey( place ) ) {
-            selectWorkbenchPartEvent.fire( new SelectWorkbenchPartEvent( place ) );
+            selectWorkbenchPartEvent.fire( new SelectPlaceEvent( place ) );
             return;
         }
 
@@ -277,12 +277,12 @@ public class PlaceManagerImpl
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
-            public void add( final IsWidget tabTitle,
+            public void add( final IsWidget titleWidget,
                              final IsWidget widget ) {
                 panelManager.addWorkbenchPart( place,
                                                part,
                                                panel,
-                                               tabTitle,
+                                               titleWidget,
                                                widget );
             }
         },
@@ -315,7 +315,7 @@ public class PlaceManagerImpl
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartBeforeClose( @Observes WorkbenchPartBeforeCloseEvent event ) {
+    private void onWorkbenchPartBeforeClose( @Observes BeforeClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
         if ( place == null ) {
             return;
@@ -335,7 +335,7 @@ public class PlaceManagerImpl
                                              final PlaceRequest place ) {
         if ( activity.onMayClose() ) {
             activity.onClose();
-            workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
+            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
         }
     }
 
@@ -343,17 +343,17 @@ public class PlaceManagerImpl
                                              final PlaceRequest place ) {
         if ( activity.onMayClose() ) {
             activity.onClose();
-            workbenchPartCloseEvent.fire( new WorkbenchPartCloseEvent( place ) );
+            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
         }
     }
 
-    private void onWorkbenchPartClose( @Observes WorkbenchPartCloseEvent event ) {
+    private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
         existingWorkbenchActivities.remove( place );
         existingWorkbenchParts.remove( place );
         activityManager.removeActivity( place );
         if ( place.equals( currentPlaceRequest ) ) {
-            workbenchPartLostFocusEvent.fire( new WorkbenchPartLostFocusEvent( place ) );
+            workbenchPartLostFocusEvent.fire( new PlaceLostFocusEvent( place ) );
         }
         if ( currentPlaceRequest.equals( place ) ) {
             currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
@@ -361,7 +361,7 @@ public class PlaceManagerImpl
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartOnFocus( @Observes WorkbenchPartOnFocusEvent event ) {
+    private void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
         final PlaceRequest place = event.getPlace();
         final Activity activity = getActivity( place );
         if ( activity == null ) {
@@ -374,7 +374,7 @@ public class PlaceManagerImpl
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartLostFocus( @Observes WorkbenchPartLostFocusEvent event ) {
+    private void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
         final Activity activity = getActivity( event.getPlace() );
         if ( activity == null ) {
             return;

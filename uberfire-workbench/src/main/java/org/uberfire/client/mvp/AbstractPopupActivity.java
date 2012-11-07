@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartBeforeCloseEvent;
-import org.uberfire.client.workbench.widgets.events.WorkbenchPartCloseEvent;
+import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -37,7 +37,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     private IOCBeanManager iocManager;
 
     @Inject
-    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     @Inject
     private PopupView popup;
@@ -93,11 +93,11 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     }
 
     public void close() {
-        closePlaceEvent.fire( new WorkbenchPartBeforeCloseEvent( this.place ) );
+        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
     }
 
     @SuppressWarnings("unused")
-    private void onClose( @Observes WorkbenchPartCloseEvent event ) {
+    private void onClose( @Observes ClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
         if ( place.equals( this.place ) ) {
             popup.hide();
