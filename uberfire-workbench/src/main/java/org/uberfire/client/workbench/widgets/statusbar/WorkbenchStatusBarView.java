@@ -81,7 +81,7 @@ public class WorkbenchStatusBarView extends Composite
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.restorePlace( place );
+                presenter.restoreMinimizedPlace( place );
             }
 
         } );

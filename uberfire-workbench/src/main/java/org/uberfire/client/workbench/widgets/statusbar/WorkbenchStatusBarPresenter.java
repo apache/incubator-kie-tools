@@ -78,7 +78,11 @@ public class WorkbenchStatusBarPresenter {
         view.removePlace( place );
     }
 
-    public void restorePlace( final PlaceRequest place ) {
+    public void addMinimizedPlace( final PlaceRequest place ) {
+        view.addPlace( place );
+    }
+
+    public void restoreMinimizedPlace( final PlaceRequest place ) {
         restorePlaceEvent.fire( new RestorePlaceEvent( place ) );
     }
 

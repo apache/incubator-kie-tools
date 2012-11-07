@@ -40,6 +40,7 @@ import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.RestorePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -60,6 +61,8 @@ public class PanelManager {
 
     private final Event<SelectPlaceEvent> selectPlaceEvent;
 
+    private final WorkbenchStatusBarPresenter statusBar;
+
     private PartDefinition activePart = null;
 
     private PanelDefinition root = null;
@@ -76,12 +79,14 @@ public class PanelManager {
                          final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent,
                          final Event<PlaceGainFocusEvent> placeGainFocusEvent,
                          final Event<PlaceLostFocusEvent> placeLostFocusEvent,
-                         final Event<SelectPlaceEvent> selectPlaceEvent ) {
+                         final Event<SelectPlaceEvent> selectPlaceEvent,
+                         final WorkbenchStatusBarPresenter statusBar ) {
         this.factory = factory;
         this.beforeClosePlaceEvent = beforeClosePlaceEvent;
         this.placeGainFocusEvent = placeGainFocusEvent;
         this.placeLostFocusEvent = placeLostFocusEvent;
         this.selectPlaceEvent = selectPlaceEvent;
+        this.statusBar = statusBar;
     }
 
     public PerspectiveDefinition getPerspective() {
@@ -125,16 +130,11 @@ public class PanelManager {
         onPanelFocus( panel );
     }
 
-    public PanelDefinition addWorkbenchPart( final PlaceRequest place,
-                                             final PartDefinition part,
-                                             final PanelDefinition panel,
-                                             final IsWidget titleWidget,
-                                             final IsWidget partWidget ) {
-        final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
-        if ( panelPresenter == null ) {
-            throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
-        }
-
+    public void addWorkbenchPart( final PlaceRequest place,
+                                  final PartDefinition part,
+                                  final PanelDefinition panel,
+                                  final IsWidget titleWidget,
+                                  final IsWidget partWidget ) {
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
             partPresenter = factory.newWorkbenchPart( titleWidget,
@@ -144,9 +144,18 @@ public class PanelManager {
                                               partPresenter );
         }
 
-        panelPresenter.addPart( part,
-                                titleWidget,
-                                partPresenter.getPartView() );
+        if ( part.isMinimized() ) {
+            statusBar.addMinimizedPlace( part.getPlace() );
+        } else {
+            final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+            if ( panelPresenter == null ) {
+                throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
+            }
+
+            panelPresenter.addPart( part,
+                                    titleWidget,
+                                    partPresenter.getPartView() );
+        }
 
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
         if ( !panel.getParts().contains( part ) ) {
@@ -155,7 +164,6 @@ public class PanelManager {
 
         //Select newly inserted part
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
-        return panelPresenter.getDefinition();
     }
 
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
@@ -188,10 +196,6 @@ public class PanelManager {
 
         PanelDefinition newPanel = null;
 
-        if ( childPanel.isMinimized() ) {
-            return targetPanel;
-        }
-
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
@@ -213,13 +217,15 @@ public class PanelManager {
             case EAST:
             case WEST:
 
-                final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
-                mapPanelDefinitionToPresenter.put( childPanel,
-                                                   childPanelPresenter );
+                if ( !childPanel.isMinimized() ) {
+                    final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+                    mapPanelDefinitionToPresenter.put( childPanel,
+                                                       childPanelPresenter );
 
-                targetPanelPresenter.addPanel( childPanel,
-                                               childPanelPresenter.getPanelView(),
-                                               position );
+                    targetPanelPresenter.addPanel( childPanel,
+                                                   childPanelPresenter.getPanelView(),
+                                                   position );
+                }
                 newPanel = childPanel;
                 break;
 
@@ -320,9 +326,6 @@ public class PanelManager {
         final Integer minHeight = panelToRestore.getMinHeight();
         final Integer minWidth = panelToRestore.getMinWidth();
 
-        final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
-        final IsWidget titleWidget = mapPartDefinitionToPresenter.get( partToRestore ).getTitleWidget();
-
         partToRestore.setMinimized( false );
 
         //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
@@ -335,6 +338,9 @@ public class PanelManager {
                                panelToRestore,
                                panelToRestore.getPosition() );
         }
+
+        final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
+        final IsWidget titleWidget = mapPartDefinitionToPresenter.get( partToRestore ).getTitleWidget();
 
         addWorkbenchPart( partToRestore.getPlace(),
                           partToRestore,

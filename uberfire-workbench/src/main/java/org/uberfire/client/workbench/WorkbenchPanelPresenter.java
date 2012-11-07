@@ -120,9 +120,11 @@ public class WorkbenchPanelPresenter {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToRemove = orderedParts.indexOf( part );
-        view.removePart( indexOfPartToRemove );
-        orderedParts.remove( part );
+        if ( orderedParts.contains( part ) ) {
+            final int indexOfPartToRemove = orderedParts.indexOf( part );
+            view.removePart( indexOfPartToRemove );
+            orderedParts.remove( part );
+        }
     }
 
     public void addPanel( final PanelDefinition panel,
@@ -144,9 +146,11 @@ public class WorkbenchPanelPresenter {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
-        getPanelView().changeTitle( indexOfPartToChangeTabContent,
-                                    titleWidget );
+        if ( orderedParts.contains( part ) ) {
+            final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
+            getPanelView().changeTitle( indexOfPartToChangeTabContent,
+                                        titleWidget );
+        }
     }
 
     public void setFocus( final boolean hasFocus ) {
@@ -157,8 +161,10 @@ public class WorkbenchPanelPresenter {
         if ( !contains( part ) ) {
             return;
         }
-        final int indexOfPartToSelect = orderedParts.indexOf( part );
-        view.selectPart( indexOfPartToSelect );
+        if ( orderedParts.contains( part ) ) {
+            final int indexOfPartToSelect = orderedParts.indexOf( part );
+            view.selectPart( indexOfPartToSelect );
+        }
     }
 
     private boolean contains( final PartDefinition part ) {

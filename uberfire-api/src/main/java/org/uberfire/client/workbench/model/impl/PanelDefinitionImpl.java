@@ -192,8 +192,11 @@ public class PanelDefinitionImpl
 
     @Override
     public boolean isMinimized() {
-        for(PartDefinition part : getParts()) {
-            if(!part.isMinimized()) {
+        if ( getParts().size() == 0 ) {
+            return false;
+        }
+        for ( PartDefinition part : getParts() ) {
+            if ( !part.isMinimized() ) {
                 return false;
             }
         }

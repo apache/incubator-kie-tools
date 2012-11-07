@@ -28,6 +28,7 @@ import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 
 /**
  * Base class for tests requiring a dummy Workbench
@@ -44,6 +45,7 @@ public abstract class BaseWorkbenchTest {
     protected Event<PlaceGainFocusEvent> workbenchPartOnFocusEvent;
     protected Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
     protected Event<SelectPlaceEvent> selectWorkbenchPartEvent;
+    protected WorkbenchStatusBarPresenter statusBar;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -60,13 +62,15 @@ public abstract class BaseWorkbenchTest {
         workbenchPartOnFocusEvent = mock( Event.class );
         workbenchPartLostFocusEvent = mock( Event.class );
         selectWorkbenchPartEvent = mock( Event.class );
+        statusBar = mock( WorkbenchStatusBarPresenter.class );
 
         //Dummy Panel Manager\Workbench
         panelManager = new PanelManager( factory,
                                          workbenchPartBeforeCloseEvent,
                                          workbenchPartOnFocusEvent,
                                          workbenchPartLostFocusEvent,
-                                         selectWorkbenchPartEvent );
+                                         selectWorkbenchPartEvent,
+                                         statusBar );
         final PanelDefinition root = new PanelDefinitionImpl( true );
 
         panelManager.setRoot( root );
