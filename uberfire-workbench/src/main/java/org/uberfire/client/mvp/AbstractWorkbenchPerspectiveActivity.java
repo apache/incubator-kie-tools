@@ -222,11 +222,11 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest place ) {
         final PassThroughPlaceRequest clone = new PassThroughPlaceRequest( place.getIdentifier() );
-        for ( Map.Entry<String, String> parameter : place.getParameters().entrySet() ) {
+        for ( Map.Entry<String, Object> parameter : place.getParameters().entrySet() ) {
             clone.addParameter( parameter.getKey(),
                                 parameter.getValue() );
         }
-        for ( Map.Entry<String, String> parameter : this.place.getParameters().entrySet() ) {
+        for ( Map.Entry<String, Object> parameter : this.place.getParameters().entrySet() ) {
             clone.addPassThroughParameter( parameter.getKey(),
                                            parameter.getValue() );
         }

@@ -26,7 +26,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @Portable
 public class PassThroughPlaceRequest extends DefaultPlaceRequest {
 
-    private final Map<String, String> passThroughParameters = new HashMap<String, String>();
+    private final Map<String, Object> passThroughParameters = new HashMap<String, Object>();
 
     public PassThroughPlaceRequest() {
         super();
@@ -36,9 +36,10 @@ public class PassThroughPlaceRequest extends DefaultPlaceRequest {
         super( identifier );
     }
 
-    public String getPassThroughParameter(final String key,
-                                          final String defaultValue) {
-        String value = null;
+   	//TODO: Throw ValueFormatException if conversion to a String is not possible
+    public String getPassThroughParameterString(final String key,
+                                                final String defaultValue) {
+    	Object value = null;
 
         if ( passThroughParameters != null ) {
             value = passThroughParameters.get( key );
@@ -47,19 +48,33 @@ public class PassThroughPlaceRequest extends DefaultPlaceRequest {
         if ( value == null ) {
             value = defaultValue;
         }
-        return value;
+        return (String)value;
     }
 
+	public Object getPassThroughParameter(final String key,
+			final Object defaultValue) {
+		Object value = null;
+
+		if (passThroughParameters != null) {
+			value = passThroughParameters.get(key);
+		}
+
+		if (value == null) {
+			value = defaultValue;
+		}
+		return value;
+	} 
+    
     public Set<String> getPassThroughParameterNames() {
         return passThroughParameters.keySet();
     }
 
-    public Map<String, String> getPassThroughParameters() {
+    public Map<String, Object> getPassThroughParameters() {
         return passThroughParameters;
     }
 
     public PlaceRequest addPassThroughParameter(final String name,
-                                                final String value) {
+                                                final Object value) {
         this.passThroughParameters.put( name,
                                         value );
         return this;

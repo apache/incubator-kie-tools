@@ -62,7 +62,7 @@ public class MultipleActivitiesFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter( "requestedPlaceIdentifier",
+        final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
                                                                                                     null );
         view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
     }

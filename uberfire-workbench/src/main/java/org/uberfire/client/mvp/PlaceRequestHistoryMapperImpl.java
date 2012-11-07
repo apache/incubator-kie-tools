@@ -55,7 +55,7 @@ public class PlaceRequestHistoryMapperImpl
         }
         for ( String name : placeRequest.getParameterNames() ) {
             token.append( name ).append( "=" )
-                    .append( placeRequest.getParameter( name,
+                    .append( placeRequest.getParameterString( name,
                                                         null ) );
             token.append( "&" );
         }

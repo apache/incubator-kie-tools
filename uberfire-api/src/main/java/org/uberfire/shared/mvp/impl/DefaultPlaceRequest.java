@@ -35,7 +35,7 @@ public class DefaultPlaceRequest
 
     private final String              identifier;
 
-    private final Map<String, String> parameters = new HashMap<String, String>();
+    private final Map<String, Object> parameters = new HashMap<String, Object>();
 
     public DefaultPlaceRequest() {
         this.identifier = "";
@@ -59,7 +59,7 @@ public class DefaultPlaceRequest
             fullIdentifier.append( "?" );
         }
         for ( String name : this.getParameterNames() ) {
-            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name,
+            fullIdentifier.append( name ).append( "=" ).append( this.getParameterString( name,
                                                                                    null ) );
             fullIdentifier.append( "&" );
         }
@@ -71,10 +71,26 @@ public class DefaultPlaceRequest
         return fullIdentifier.toString();
     }
 
+   	//TODO: Throw ValueFormatException if conversion to a String is not possible
     @Override
-    public String getParameter(final String key,
+    public String getParameterString(final String key,
                                final String defaultValue) {
-        String value = null;
+    	Object value = null;
+
+        if ( parameters != null ) {
+            value = parameters.get( key );
+        }
+
+        if ( value == null ) {
+            value = defaultValue;
+        }
+        return value.toString();
+    }
+    
+    @Override
+    public Object getParameter(final String key,
+                               final Object defaultValue) {
+    	Object value = null;
 
         if ( parameters != null ) {
             value = parameters.get( key );
@@ -85,14 +101,14 @@ public class DefaultPlaceRequest
         }
         return value;
     }
-
+    
     @Override
     public Set<String> getParameterNames() {
         return parameters.keySet();
     }
 
     @Override
-    public Map<String, String> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 
@@ -103,7 +119,15 @@ public class DefaultPlaceRequest
                              value );
         return this;
     }
-
+    
+    @Override
+    public PlaceRequest addParameter(final String name,
+                                     final Object value) {
+        this.parameters.put( name,
+                             value );
+        return this;
+    }
+    
     @Override
     public PlaceRequest getPlace() {
         return this;

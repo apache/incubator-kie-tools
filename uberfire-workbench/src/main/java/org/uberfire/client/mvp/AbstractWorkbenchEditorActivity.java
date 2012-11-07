@@ -36,11 +36,11 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
                        final Command callback) {
         super.launch( place,
                       callback );
-        String simplePath = place.getParameter( "path",
+        String simplePath = place.getParameterString( "path",
                                                 null );
-        String uri = place.getParameter( "path:uri",
+        String uri = place.getParameterString( "path:uri",
                                          null );
-        String name = place.getParameter( "path:name",
+        String name = place.getParameterString( "path:name",
                                           null );
 
         final Path path;

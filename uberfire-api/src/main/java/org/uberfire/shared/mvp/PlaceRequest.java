@@ -25,16 +25,23 @@ public interface PlaceRequest {
 
     public String getFullIdentifier();
 
-    public String getParameter(String key,
-                               String defaultValue);
-
+    //TODO: add other getParameter methods if necessary, eg, getParameterDate, getParameterLong etc
+    public String getParameterString(String key,
+                                     String defaultValue);
+    
+    public Object getParameter(String key,
+                               Object defaultValue);
+    
     public Set<String> getParameterNames();
 
-    public Map<String, String> getParameters();
+    public Map<String, Object> getParameters();
 
     public PlaceRequest addParameter(String name,
                                      String value);
-
+    
+    public PlaceRequest addParameter(String name,
+                                     Object value);
+    
     public PlaceRequest getPlace();
 
 }
