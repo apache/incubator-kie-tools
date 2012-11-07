@@ -22,8 +22,10 @@ import java.util.Map;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 @Portable
-public class PathImpl implements Path {
+public class PathImpl implements Path, IsSerializable {
 
     private String uri = null;
     private String fileName = null;
