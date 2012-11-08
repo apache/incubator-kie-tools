@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.List;
 
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnStart;
@@ -36,11 +37,15 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @WorkbenchPopup(identifier = "workbench.activities.multiple")
 public class MultipleActivitiesFoundPresenter {
 
+    private String requestedPlaceIdentifier;
+
     public interface View
             extends
             UberView<MultipleActivitiesFoundPresenter> {
 
-        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
+        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+
+        void setActivities(List<Activity> activities);
 
     }
 
@@ -51,20 +56,33 @@ public class MultipleActivitiesFoundPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
+    private ActivityManager activityManager;
+
+    @Inject
+    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+
+    @Inject
+    private DefaultPlaceResolver defaultPlaceResolver;
 
     private PlaceRequest place;
 
+    @PostConstruct
+    public void init() {
+        view.init(this);
+    }
+
     @OnStart
-    public void onStart( final PlaceRequest place ) {
+    public void onStart(final PlaceRequest place) {
         this.place = place;
     }
 
     @OnReveal
     public void onReveal() {
-        final String requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
-                                                                                                    null );
-        view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
+        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter("requestedPlaceIdentifier",
+                null);
+        view.setRequestedPlaceIdentifier(requestedPlaceIdentifier);
+
+        view.setActivities(activityManager.listActivities(new DefaultPlaceRequest(requestedPlaceIdentifier)));
     }
 
     @WorkbenchPartTitle
@@ -78,7 +96,13 @@ public class MultipleActivitiesFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
+        closePlaceEvent.fire(new WorkbenchPartBeforeCloseEvent(this.place));
+    }
+
+    public void activitySelected(Activity activity) {
+        defaultPlaceResolver.saveDefaultEditor(new DefaultPlaceRequest(requestedPlaceIdentifier).getFullIdentifier(), activity.getSignatureId());
+        placeManager.goTo(new DefaultPlaceRequest(requestedPlaceIdentifier));
+        close();
     }
 
 }

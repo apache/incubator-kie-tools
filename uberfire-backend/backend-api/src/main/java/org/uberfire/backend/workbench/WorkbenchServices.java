@@ -18,6 +18,10 @@ package org.uberfire.backend.workbench;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * Workbench services
  */
@@ -27,4 +31,8 @@ public interface WorkbenchServices {
     public void save(final PerspectiveDefinition perspective);
 
     public PerspectiveDefinition load(final String perspectiveName);
+
+    public Map<String, String> loadDefaultEditorsMap();
+
+    void saveDefaultEditors(Map<String, String> properties);
 }

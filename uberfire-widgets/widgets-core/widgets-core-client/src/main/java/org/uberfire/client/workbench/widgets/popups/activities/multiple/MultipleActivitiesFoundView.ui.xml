@@ -27,6 +27,7 @@
       <g:Label text="{i18n.multipleMatchingActivitiesFound}"/>
     </g:HorizontalPanel>
     <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
+    <g:VerticalPanel ui:field="activitiesList" />
     <g:Button ui:field="okButton">OK</g:Button>
   </g:VerticalPanel>
 

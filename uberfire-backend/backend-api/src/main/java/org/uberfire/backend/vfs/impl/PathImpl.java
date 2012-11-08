@@ -16,6 +16,7 @@
 
 package org.uberfire.backend.vfs.impl;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 

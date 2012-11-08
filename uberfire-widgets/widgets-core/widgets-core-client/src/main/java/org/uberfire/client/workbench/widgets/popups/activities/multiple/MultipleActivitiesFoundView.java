@@ -15,16 +15,17 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
-import javax.annotation.PostConstruct;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.uberfire.client.mvp.Activity;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  *
@@ -39,31 +40,47 @@ public class MultipleActivitiesFoundView extends SimplePanel
 
     }
 
-    private static MultipleActivitiesFoundViewBinder uiBinder = GWT.create( MultipleActivitiesFoundViewBinder.class );
-    ;
+    private static MultipleActivitiesFoundViewBinder uiBinder = GWT.create(MultipleActivitiesFoundViewBinder.class);
 
     private MultipleActivitiesFoundPresenter presenter;
 
     @UiField
     public Label requestedPlaceIdentifierLabel;
 
+    @UiField
+    VerticalPanel activitiesList;
+
     @PostConstruct
     public void init() {
-        setWidget( uiBinder.createAndBindUi( this ) );
+        setWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final MultipleActivitiesFoundPresenter presenter ) {
+    public void init(final MultipleActivitiesFoundPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setRequestedPlaceIdentifier( String requestedPlaceIdentifier ) {
-        requestedPlaceIdentifierLabel.setText( requestedPlaceIdentifier );
+    public void setRequestedPlaceIdentifier(String requestedPlaceIdentifier) {
+        requestedPlaceIdentifierLabel.setText(requestedPlaceIdentifier);
+    }
+
+    @Override
+    public void setActivities(List<Activity> activities) {
+        for (final Activity activity : activities) {
+            Button button = new Button(activity.getSignatureId());
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    presenter.activitySelected(activity);
+                }
+            });
+            activitiesList.add(button);
+        }
     }
 
     @UiHandler("okButton")
-    public void onClickOkButton( final ClickEvent event ) {
+    public void onClickOkButton(final ClickEvent event) {
         presenter.close();
     }
 
