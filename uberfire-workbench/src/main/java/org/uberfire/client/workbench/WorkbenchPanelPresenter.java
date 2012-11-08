@@ -1,216 +1,68 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.uberfire.client.workbench;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
-@Dependent
-public class WorkbenchPanelPresenter {
+public interface WorkbenchPanelPresenter {
 
-    public interface View
-            extends
-            UberView<WorkbenchPanelPresenter>,
-            RequiresResize {
+    public PanelDefinition getDefinition();
 
-        WorkbenchPanelPresenter getPresenter();
-
-        void clear();
-
-        void addPart( IsWidget titleWidget,
-                      WorkbenchPartPresenter.View view );
-
-        void addPanel( PanelDefinition panel,
-                       WorkbenchPanelPresenter.View view,
-                       Position position );
-
-        void changeTitle( int indexOfPartToChangeTabContent,
-                          IsWidget titleWidget );
-
-        void selectPart( int index );
-
-        void removePart( int index );
-
-        void removePanel();
-
-        void setFocus( boolean hasFocus );
-
-        void enableControls( boolean enable );
-
-    }
-
-    private View view;
-
-    private PanelManager panelManager;
-
-    private PanelDefinition definition;
-
-    private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
-
-    private Event<MaximizePlaceEvent> maximizePanelEvent;
-
-    private Event<MinimizePlaceEvent> minimizePanelEvent;
-
-    @Inject
-    public WorkbenchPanelPresenter( final View view,
-                                    final PanelManager panelManager,
-                                    Event<MaximizePlaceEvent> maximizePanelEvent,
-                                    Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        this.view = view;
-        this.panelManager = panelManager;
-        this.maximizePanelEvent = maximizePanelEvent;
-        this.minimizePanelEvent = minimizePanelEvent;
-    }
-
-    @SuppressWarnings("unused")
-    @PostConstruct
-    private void init() {
-        view.init( this );
-    }
-
-    public PanelDefinition getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition( final PanelDefinition definition ) {
-        this.definition = definition;
-        view.enableControls( !definition.isRoot() );
-    }
+    public void setDefinition( final PanelDefinition definition );
 
     public void addPart( final PartDefinition part,
                          final IsWidget titleWidget,
-                         final WorkbenchPartPresenter.View view ) {
-        getPanelView().addPart( titleWidget,
-                                view );
-        if ( !orderedParts.contains( part ) ) {
-            orderedParts.add( part );
-        }
-    }
+                         final WorkbenchPartPresenter.View view );
 
-    public void removePart( final PartDefinition part ) {
-        if ( !contains( part ) ) {
-            return;
-        }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToRemove = orderedParts.indexOf( part );
-            view.removePart( indexOfPartToRemove );
-            orderedParts.remove( part );
-        }
-    }
+    public void removePart( final PartDefinition part );
 
     public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelPresenter.View view,
-                          final Position position ) {
-        getPanelView().addPanel( panel,
-                                 view,
-                                 position );
-        definition.insertChild( position,
-                                panel );
-    }
+                          final WorkbenchPanelView view,
+                          final Position position );
 
-    public void removePanel() {
-        view.removePanel();
-    }
+    public void removePanel();
 
     public void changeTitle( final PartDefinition part,
-                             final IsWidget titleWidget ) {
-        if ( !contains( part ) ) {
-            return;
-        }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
-            getPanelView().changeTitle( indexOfPartToChangeTabContent,
-                                        titleWidget );
-        }
-    }
+                             final IsWidget titleWidget );
 
-    public void setFocus( final boolean hasFocus ) {
-        view.setFocus( hasFocus );
-    }
+    public void setFocus( final boolean hasFocus );
 
-    public void selectPart( final PartDefinition part ) {
-        if ( !contains( part ) ) {
-            return;
-        }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToSelect = orderedParts.indexOf( part );
-            view.selectPart( indexOfPartToSelect );
-        }
-    }
+    public void selectPart( final PartDefinition part );
 
-    private boolean contains( final PartDefinition part ) {
-        return definition.getParts().contains( part );
-    }
+    public void onPartFocus( final PartDefinition part );
 
-    public void onPartFocus( final PartDefinition part ) {
-        panelManager.onPartFocus( part );
-    }
+    public void onPartLostFocus();
 
-    public void onPartLostFocus() {
-        panelManager.onPartLostFocus();
-    }
+    public void onPanelFocus();
 
-    public void onPanelFocus() {
-        panelManager.onPanelFocus( definition );
-    }
+    public void onBeforePartClose( final PartDefinition part );
 
-    public void onBeforePartClose( final PartDefinition part ) {
-        panelManager.onBeforePartClose( part );
-    }
+    public void maximize();
 
-    public void maximize() {
-        if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
-                maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
-            }
-        }
-    }
+    public void minimize();
 
-    public void minimize() {
-        if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
-                minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
-            }
-        }
-    }
-
-    public View getPanelView() {
-        return view;
-    }
+    public WorkbenchPanelView getPanelView();
 
     public void onResize( final int width,
-                          final int height ) {
-        getDefinition().setWidth( width == 0 ? null : width );
-        getDefinition().setHeight( height == 0 ? null : height );
-    }
+                          final int height );
 
 }

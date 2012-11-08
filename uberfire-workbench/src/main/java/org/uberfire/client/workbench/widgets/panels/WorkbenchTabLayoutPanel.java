@@ -21,7 +21,6 @@ import java.util.Iterator;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,10 +41,12 @@ import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -186,6 +187,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         }
     }
 
+    private static final String CONTROLS_CONTAINER_STYLE = "tabBarControlsContainer";
     private static final String CONTENT_CONTAINER_STYLE = "gwt-TabLayoutPanelContentContainer";
     private static final String CONTENT_STYLE = "gwt-TabLayoutPanelContent";
 
@@ -201,7 +203,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
     private final ArrayList<Tab> tabs = new ArrayList<Tab>();
     private int selectedIndex = -1;
 
-    private final WorkbenchTabLayoutPanelControls controls = new WorkbenchTabLayoutPanelControls();
+    private final Panel controls = new HorizontalPanel();
 
     private static final int BIG_ENOUGH_TO_NOT_WRAP = 16384;
 
@@ -218,6 +220,7 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
         panel.add( tabBar );
 
         //Add the tab bar controls to the panel.
+        controls.setStyleName( CONTROLS_CONTAINER_STYLE );
         panel.add( controls );
 
         //Defer layout of tabBar and Controls until the Controls have been added to the DOM
@@ -365,12 +368,8 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
                            SelectionEvent.getType() );
     }
 
-    public HandlerRegistration addMinimizeClickHandler( final ClickHandler handler ) {
-        return controls.addMinimizeClickHandler( handler );
-    }
-
-    public HandlerRegistration addMaximizeClickHandler( final ClickHandler handler ) {
-        return controls.addMaximizeClickHandler( handler );
+    public void addControl( final IsWidget w ) {
+        controls.add( w );
     }
 
     public void animate( int duration ) {
@@ -731,14 +730,6 @@ public class WorkbenchTabLayoutPanel extends ResizeComposite
             return;
         }
         deckPanel.showWidget( index );
-    }
-
-    public void enableControls( boolean enable ) {
-        if ( enable ) {
-            controls.getElement().getStyle().clearDisplay();
-        } else {
-            controls.getElement().getStyle().setDisplay( Style.Display.NONE );
-        }
     }
 
     /**

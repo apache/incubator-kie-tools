@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -36,17 +36,17 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 @WorkbenchPosition(position = Position.NORTH)
 public class PanelHelperNorth
-    implements
-    PanelHelper {
+        implements
+        PanelHelper {
 
     @Inject
     private BeanFactory factory;
 
     @Override
-    public void add(final WorkbenchPanelPresenter.View newPanel,
-                    final WorkbenchPanelPresenter.View targetPanel,
-                    final Integer preferredSize,
-                    final Integer preferredMinSize) {
+    public void add( final WorkbenchPanelView newPanel,
+                     final WorkbenchPanelView targetPanel,
+                     final Integer preferredSize,
+                     final Integer preferredMinSize ) {
 
         final Widget parent = targetPanel.asWidget().getParent();
 
@@ -71,7 +71,7 @@ public class PanelHelperNorth
     }
 
     @Override
-    public void remove(WorkbenchPanelPresenter.View panel) {
+    public void remove( final WorkbenchPanelView panel ) {
         final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
         final Widget southWidget = vsp.getWidget( Position.SOUTH );
@@ -80,7 +80,7 @@ public class PanelHelperNorth
 
         //Set parent's content to the SOUTH widget
         if ( parent instanceof SimplePanel ) {
-            ((SimplePanel) parent).setWidget( southWidget );
+            ( (SimplePanel) parent ).setWidget( southWidget );
         }
 
         if ( southWidget instanceof RequiresResize ) {
@@ -88,7 +88,7 @@ public class PanelHelperNorth
         }
     }
 
-    private void scheduleResize(final RequiresResize widget) {
+    private void scheduleResize( final RequiresResize widget ) {
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             @Override

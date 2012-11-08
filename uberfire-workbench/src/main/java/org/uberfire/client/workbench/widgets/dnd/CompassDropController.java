@@ -25,15 +25,16 @@ import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.events.DropPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- * A Drop Controller covering the entire WorkbenchPanel that renders a Compass
+ * A Drop Controller covering the entire DecoratedWorkbenchPanel that renders a Compass
  * with which to select the target position of the drag operation.
  */
 @Dependent
@@ -43,7 +44,7 @@ public class CompassDropController
 
     private final CompassWidget compass = CompassWidget.getInstance();
 
-    private WorkbenchPanelPresenter.View dropTarget;
+    private WorkbenchPanelView dropTarget;
 
     @Inject
     private PanelManager panelManager;
@@ -54,18 +55,18 @@ public class CompassDropController
     @Inject
     private Event<DropPlaceEvent> workbenchPartDroppedEvent;
 
-    public void setup( final WorkbenchPanelPresenter.View view ) {
+    public void setup( final WorkbenchPanelView view ) {
         dropTarget = view;
     }
 
     @Override
-    //When entering a WorkbenchPanel show the Compass
+    //When entering a DecoratedWorkbenchPanel show the Compass
     public void onEnter( DragContext context ) {
         compass.onEnter( context );
     }
 
     @Override
-    //Hide the WorkbenchPanel's Compass
+    //Hide the DecoratedWorkbenchPanel's Compass
     public void onLeave( DragContext context ) {
         compass.onLeave( context );
     }

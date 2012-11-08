@@ -18,7 +18,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Tests that the PanelManager keeps the underlying Perspective model consistent
- * when WorkbenchPanel(s) and/or WorkbenchPart(s) are added to or removed from
+ * when DecoratedWorkbenchPanel(s) and/or WorkbenchPart(s) are added to or removed from
  * the Workbench.
  */
 public class PanelManagerTest extends BaseWorkbenchTest {

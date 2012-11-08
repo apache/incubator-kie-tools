@@ -17,6 +17,7 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
@@ -26,6 +27,7 @@ import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 
 /**
  * Mock BeanFactory that doesn't use CDI.
@@ -45,17 +47,17 @@ public class MockBeanFactory
 
     @Override
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-        final WorkbenchPanelPresenter panel = new WorkbenchPanelPresenter( new MockWorkbenchPanelView(),
-                                                                           null,
-                                                                           null,
-                                                                           null );
+        final RootWorkbenchPanelPresenter panel = new RootWorkbenchPanelPresenter( new MockWorkbenchPanelView(),
+                                                                                   null,
+                                                                                   null,
+                                                                                   null );
         panel.setDefinition( definition );
         return panel;
     }
 
     @Override
-    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelPresenter.View eastPanel,
-                                                               final WorkbenchPanelPresenter.View westPanel,
+    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
+                                                               final WorkbenchPanelView westPanel,
                                                                final Position position,
                                                                final Integer preferredSize,
                                                                final Integer preferredMinSize ) {
@@ -63,8 +65,8 @@ public class MockBeanFactory
     }
 
     @Override
-    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelPresenter.View northPanel,
-                                                           final WorkbenchPanelPresenter.View southPanel,
+    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
+                                                           final WorkbenchPanelView southPanel,
                                                            final Position position,
                                                            final Integer preferredSize,
                                                            final Integer preferredMinSize ) {
@@ -72,7 +74,7 @@ public class MockBeanFactory
     }
 
     @Override
-    public CompassDropController newDropController( final WorkbenchPanelPresenter.View view ) {
+    public CompassDropController newDropController( final WorkbenchPanelView view ) {
         return null;
     }
 

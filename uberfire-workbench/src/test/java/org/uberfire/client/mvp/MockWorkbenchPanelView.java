@@ -16,26 +16,28 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.model.PanelDefinition;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 
 /**
  * A mock Workbench Panel view.
  */
 public class MockWorkbenchPanelView
-    implements
-    WorkbenchPanelPresenter.View {
+        implements
+        WorkbenchPanelView {
 
     @Override
     public void onResize() {
     }
 
     @Override
-    public void init(WorkbenchPanelPresenter presenter) {
+    public void init( WorkbenchPanelPresenter presenter ) {
     }
 
     @Override
@@ -44,7 +46,7 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public WorkbenchPanelPresenter getPresenter() {
+    public RootWorkbenchPanelPresenter getPresenter() {
         return null;
     }
 
@@ -53,27 +55,27 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void addPart(IsWidget title,
-                        View view) {
+    public void addPart( IsWidget title,
+                         View view ) {
     }
 
     @Override
-    public void addPanel(PanelDefinition panel,
-                         org.uberfire.client.workbench.WorkbenchPanelPresenter.View view,
-                         Position position) {
+    public void addPanel( PanelDefinition panel,
+                          WorkbenchPanelView view,
+                          Position position ) {
     }
 
     @Override
-    public void changeTitle(int indexOfPartToChangeTabContent,
-                            IsWidget tabContent) {
+    public void changeTitle( int indexOfPartToChangeTabContent,
+                             IsWidget tabContent ) {
     }
 
     @Override
-    public void selectPart(int index) {
+    public void selectPart( int index ) {
     }
 
     @Override
-    public void removePart(int index) {
+    public void removePart( int index ) {
     }
 
     @Override
@@ -81,11 +83,7 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void setFocus(boolean hasFocus) {
-    }
-
-    @Override
-    public void enableControls( boolean enable ) {
+    public void setFocus( boolean hasFocus ) {
     }
 
 }

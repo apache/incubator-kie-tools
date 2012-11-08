@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
@@ -400,7 +401,7 @@ public class PanelManager {
         }
     }
 
-    public WorkbenchPanelPresenter.View getPanelView( final PanelDefinition panel ) {
+    public WorkbenchPanelView getPanelView( final PanelDefinition panel ) {
         return mapPanelDefinitionToPresenter.get( panel ).getPanelView();
     }
 

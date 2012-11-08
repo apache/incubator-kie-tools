@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.widgets.panels;
 import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -45,8 +45,8 @@ public class HorizontalSplitterPanel extends ResizeComposite
     }
 
     @Override
-    public void setup( final WorkbenchPanelPresenter.View eastWidget,
-                       final WorkbenchPanelPresenter.View westWidget,
+    public void setup( final WorkbenchPanelView eastWidget,
+                       final WorkbenchPanelView westWidget,
                        final Position position,
                        final Integer preferredSize,
                        final Integer preferredMinSize ) {

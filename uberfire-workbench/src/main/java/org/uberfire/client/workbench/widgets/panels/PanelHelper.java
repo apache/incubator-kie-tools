@@ -15,18 +15,18 @@
  */
 package org.uberfire.client.workbench.widgets.panels;
 
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 
 /**
  * Operations to add or remove WorkbenchPanels from the Workbench.
  */
 public interface PanelHelper {
 
-    public void add(final WorkbenchPanelPresenter.View newPanel,
-                    final WorkbenchPanelPresenter.View targetPanel,
-                    final Integer preferredSize,
-                    final Integer preferredMinSize);
+    public void add( final WorkbenchPanelView newPanel,
+                     final WorkbenchPanelView targetPanel,
+                     final Integer preferredSize,
+                     final Integer preferredMinSize );
 
-    public void remove(final WorkbenchPanelPresenter.View panel);
+    public void remove( final WorkbenchPanelView panel );
 
 }

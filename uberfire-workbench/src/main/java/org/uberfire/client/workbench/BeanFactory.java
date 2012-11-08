@@ -22,31 +22,32 @@ import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 
 /**
  * A Factory definition to create new instances of managed beans.
  */
 public interface BeanFactory {
 
-    public WorkbenchPartPresenter newWorkbenchPart(final IsWidget titleWidget,
-                                                   final PartDefinition definition);
+    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+                                                    final PartDefinition definition );
 
-    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition);
+    public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition );
 
-    public HorizontalSplitterPanel newHorizontalSplitterPanel(final WorkbenchPanelPresenter.View eastPanel,
-                                                              final WorkbenchPanelPresenter.View westPanel,
-                                                              final Position position,
-                                                              final Integer preferredSize,
-                                                              final Integer preferredMinSize);
+    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
+                                                               final WorkbenchPanelView westPanel,
+                                                               final Position position,
+                                                               final Integer preferredSize,
+                                                               final Integer preferredMinSize );
 
-    public VerticalSplitterPanel newVerticalSplitterPanel(final WorkbenchPanelPresenter.View northPanel,
-                                                          final WorkbenchPanelPresenter.View southPanel,
-                                                          final Position position,
-                                                          final Integer preferredSize,
-                                                          final Integer preferredMinSize);
+    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
+                                                           final WorkbenchPanelView southPanel,
+                                                           final Position position,
+                                                           final Integer preferredSize,
+                                                           final Integer preferredMinSize );
 
-    public CompassDropController newDropController(final WorkbenchPanelPresenter.View view);
+    public CompassDropController newDropController( final WorkbenchPanelView view );
 
-    public void destroy(final Object o);
+    public void destroy( final Object o );
 
 }

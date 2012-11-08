@@ -16,7 +16,7 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,8 +31,8 @@ public interface SplitPanel {
     //The default minimum size should the Panel not provide one
     public static final int DEFAULT_MIN_SIZE = 32;
 
-    public void setup(final WorkbenchPanelPresenter.View eastWidget,
-                      final WorkbenchPanelPresenter.View westWidget,
+    public void setup(final WorkbenchPanelView eastWidget,
+                      final WorkbenchPanelView westWidget,
                       final Position position,
                       final Integer preferredSize,
                       final Integer preferredMinSize);
