@@ -16,13 +16,10 @@
 
 package org.uberfire.backend.vfs;
 
-public interface Path {
+public interface Path extends Comparable<Path> {
 
     String getFileName();
 
     String toURI();
-    
-    int compareTo(Path another);
-    
-	public boolean equals(Path another);
+
 }

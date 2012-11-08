@@ -81,11 +81,11 @@ public class DefaultPlaceRequest
         }
 
         if ( value == null ) {
-            value = defaultValue;
+            return defaultValue;
         }
         return value.toString();
     }
-    
+
     @Override
     public Object getParameter(final String key,
                                final Object defaultValue) {
@@ -100,7 +100,7 @@ public class DefaultPlaceRequest
         }
         return value;
     }
-    
+
     @Override
     public Set<String> getParameterNames() {
         return parameters.keySet();
@@ -118,7 +118,7 @@ public class DefaultPlaceRequest
                              value );
         return this;
     }
-    
+
     @Override
     public PlaceRequest addParameter(final String name,
                                      final Object value) {
@@ -126,7 +126,7 @@ public class DefaultPlaceRequest
                              value );
         return this;
     }
-    
+
     @Override
     public PlaceRequest getPlace() {
         return this;

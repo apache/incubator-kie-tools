@@ -19,10 +19,9 @@ package org.uberfire.backend.vfs.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 @Portable
 public class PathImpl implements Path, IsSerializable {
@@ -45,7 +44,7 @@ public class PathImpl implements Path, IsSerializable {
     public PathImpl(final String fileName, final String uri, final Map<String, Object> attrs) {
         this.fileName = fileName;
         this.uri = uri;
-        if (attrs == null){
+        if (attrs == null) {
             this.attributes = new HashMap<String, Object>();
         } else {
             this.attributes = new HashMap<String, Object>(attrs);
@@ -65,19 +64,25 @@ public class PathImpl implements Path, IsSerializable {
     public Map<String, Object> getAttributes() {
         return attributes;
     }
-	
-	public int compareTo(Path another) {
-		return this.fileName.compareTo(another.getFileName());
-	}
-	
-	public boolean equals(Path another) {
-		if(another instanceof PathImpl) {
-			return this.fileName.equals(another.getFileName());
-		}
-		return false;
-	}
-	
-	@Override
+
+    public int compareTo(Path another) {
+        return this.fileName.compareTo(another.getFileName());
+    }
+
+    public boolean equals(final Object o) {
+
+        if (o == null) {
+            return false;
+        }
+
+        if (o instanceof Path) {
+            return this.fileName.equals(((PathImpl) o).getFileName());
+        }
+
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "PathImpl{" +
                 "uri='" + uri + '\'' +
