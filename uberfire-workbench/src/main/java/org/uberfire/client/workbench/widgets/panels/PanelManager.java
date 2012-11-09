@@ -329,25 +329,69 @@ public class PanelManager {
 
         partToRestore.setMinimized( false );
 
-        //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
-        if ( mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
-            addWorkbenchPanel( root,
-                               panelToRestore,
-                               Position.SELF );
-        } else {
-            addWorkbenchPanel( root,
+        //Restore containing panel
+        if ( !mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
+            //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
+            PanelDefinition targetPanel = findTargetPanel( panelToRestore,
+                                                           root );
+            if ( targetPanel == null ) {
+                targetPanel = root;
+            }
+            addWorkbenchPanel( targetPanel,
                                panelToRestore,
                                panelToRestore.getPosition() );
         }
 
+        //Restore part
         final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
         final IsWidget titleWidget = mapPartDefinitionToPresenter.get( partToRestore ).getTitleWidget();
-
         addWorkbenchPart( partToRestore.getPlace(),
                           partToRestore,
                           panelToRestore,
                           titleWidget,
                           widget );
+    }
+
+    private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,
+                                             final PanelDefinition panelToSearch ) {
+        final PanelDefinition northChild = panelToSearch.getChild( Position.NORTH );
+        final PanelDefinition southChild = panelToSearch.getChild( Position.SOUTH );
+        final PanelDefinition eastChild = panelToSearch.getChild( Position.EAST );
+        final PanelDefinition westChild = panelToSearch.getChild( Position.WEST );
+        PanelDefinition targetPanel = null;
+        if ( northChild != null ) {
+            if ( northChild.equals( panelToFind ) ) {
+                return panelToSearch;
+            } else {
+                targetPanel = findTargetPanel( panelToFind,
+                                               northChild );
+            }
+        }
+        if ( southChild != null ) {
+            if ( southChild.equals( panelToFind ) ) {
+                return panelToSearch;
+            } else {
+                targetPanel = findTargetPanel( panelToFind,
+                                               southChild );
+            }
+        }
+        if ( eastChild != null ) {
+            if ( eastChild.equals( panelToFind ) ) {
+                return panelToSearch;
+            } else {
+                targetPanel = findTargetPanel( panelToFind,
+                                               eastChild );
+            }
+        }
+        if ( westChild != null ) {
+            if ( westChild.equals( panelToFind ) ) {
+                return panelToSearch;
+            } else {
+                targetPanel = findTargetPanel( panelToFind,
+                                               westChild );
+            }
+        }
+        return targetPanel;
     }
 
     private PartDefinition getPartForPlace( final PlaceRequest place ) {
