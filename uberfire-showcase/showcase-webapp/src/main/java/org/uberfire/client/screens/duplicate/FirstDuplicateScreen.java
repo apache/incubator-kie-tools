@@ -1,5 +1,4 @@
-package org.uberfire.client.screens.dublicate;
-
+package org.uberfire.client.screens.duplicate;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -8,17 +7,16 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
-@WorkbenchScreen(identifier = "Dublicate")
-public class FirstDublicateScreen {
-
+@WorkbenchScreen(identifier = "Duplicate")
+public class FirstDuplicateScreen {
 
     @WorkbenchPartTitle
     public String getName() {
-        return "1";
+        return "Duplicate - 1";
     }
 
     @WorkbenchPartView
     public IsWidget getView() {
-        return new Label("1");
+        return new Label( "Duplicate screen - 1" );
     }
 }

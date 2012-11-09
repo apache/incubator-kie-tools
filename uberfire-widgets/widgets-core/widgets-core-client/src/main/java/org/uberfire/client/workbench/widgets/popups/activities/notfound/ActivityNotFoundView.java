@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
+ * View for when an Activity cannot be found
  */
 public class ActivityNotFoundView extends SimplePanel
         implements

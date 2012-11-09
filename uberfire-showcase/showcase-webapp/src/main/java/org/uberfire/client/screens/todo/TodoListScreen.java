@@ -24,7 +24,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -32,7 +31,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.markdown.Markdown;
 
@@ -48,7 +46,7 @@ public class TodoListScreen
 
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -58,18 +56,18 @@ public class TodoListScreen
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        vfsServices.call(new RemoteCallback<String>() {
+        vfsServices.call( new RemoteCallback<String>() {
             @Override
-            public void callback(final String response) {
-                if (response == null) {
-                    markdown.setContent("<p>-- empty --</p>");
+            public void callback( final String response ) {
+                if ( response == null ) {
+                    markdown.setContent( "<p>-- empty --</p>" );
                 } else {
-                    markdown.setContent(response);
+                    markdown.setContent( response );
                 }
             }
-        }).readAllString(new PathImpl("todo.md", "default://uf-playground/todo.md"));
+        } ).readAllString( new PathImpl( "todo.md", "default://uf-playground/todo.md" ) );
     }
 
     @WorkbenchPartTitle
@@ -77,16 +75,11 @@ public class TodoListScreen
         return "Todo List";
     }
 
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return this;
-    }
-
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize(width, height);
+        setPixelSize( width, height );
     }
 
 }

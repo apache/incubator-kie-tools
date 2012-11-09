@@ -31,5 +31,7 @@ public interface CoreConstants
     String multipleMatchingActivitiesFound();
 
     String activityNotFound();
+
+    String cancel();
     
 }

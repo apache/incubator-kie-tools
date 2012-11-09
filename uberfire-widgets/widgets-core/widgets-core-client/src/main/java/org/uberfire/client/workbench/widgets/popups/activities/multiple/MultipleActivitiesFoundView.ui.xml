@@ -28,7 +28,7 @@
     </g:HorizontalPanel>
     <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
     <g:VerticalPanel ui:field="activitiesList" />
-    <g:Button ui:field="okButton">OK</g:Button>
+    <g:Button ui:field="cancelButton" text="{i18n.cancel}"/>
   </g:VerticalPanel>
 
 </ui:UiBinder> 

@@ -30,7 +30,7 @@ import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
- *
+ * Popup presenter for when an Activity cannot be found
  */
 @ApplicationScoped
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
@@ -63,7 +63,7 @@ public class ActivityNotFoundPresenter {
     @OnReveal
     public void onReveal() {
         final String identifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
-                                                                                      null );
+                                                                                            null );
         view.setRequestedPlaceIdentifier( identifier );
     }
 

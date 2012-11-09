@@ -22,11 +22,12 @@ import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface ActivityManager {
 
-    public Activity getActivity(PlaceRequest placeRequest);
+    public Activity getActivity( final PlaceRequest placeRequest );
 
-    <T extends Activity> Set<T> getActivities(Class<T> abstractScreenActivityClass);
+    <T extends Activity> Set<T> getActivities( final Class<T> abstractScreenActivityClass );
 
-    void removeActivity(final PlaceRequest placeRequest);
+    Set<Activity> getActivities( final PlaceRequest placeRequest );
 
-    List<Activity> listActivities(PlaceRequest placeRequest);
+    void removeActivity( final PlaceRequest placeRequest );
+
 }

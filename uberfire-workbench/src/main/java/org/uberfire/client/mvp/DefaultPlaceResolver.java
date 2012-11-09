@@ -1,5 +1,20 @@
-package org.uberfire.client.mvp;
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -25,25 +40,27 @@ public class DefaultPlaceResolver {
         wbServices.call(
                 new RemoteCallback<Map<String, String>>() {
                     @Override
-                    public void callback(Map<String, String> properties) {
-                       DefaultPlaceResolver.this.properties = properties;
+                    public void callback( Map<String, String> properties ) {
+                        DefaultPlaceResolver.this.properties = properties;
                     }
                 }
-        ).loadDefaultEditorsMap();
+                       ).loadDefaultEditorsMap();
     }
 
-    public String getEditorId(String  key) {
-        return properties.get(key);
+    public String getEditorId( String key ) {
+        return properties.get( key );
     }
 
-    public void saveDefaultEditor(String fullIdentifier, String signatureId) {
-        properties.put(fullIdentifier, signatureId);
+    public void saveDefaultEditor( final String fullIdentifier,
+                                   final String signatureId ) {
+        properties.put( fullIdentifier,
+                        signatureId );
 
-        wbServices.call(new RemoteCallback<Void>() {
+        wbServices.call( new RemoteCallback<Void>() {
             @Override
-            public void callback(Void response) {
+            public void callback( Void response ) {
 
             }
-        }).saveDefaultEditors(properties);
+        } ).saveDefaultEditors( properties );
     }
 }

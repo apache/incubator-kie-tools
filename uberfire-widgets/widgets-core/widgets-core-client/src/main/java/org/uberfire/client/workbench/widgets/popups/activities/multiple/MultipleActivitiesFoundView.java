@@ -26,9 +26,10 @@ import org.uberfire.client.mvp.Activity;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Set;
 
 /**
- *
+ * View for when there are multiple Activities for a Place
  */
 public class MultipleActivitiesFoundView extends SimplePanel
         implements
@@ -40,7 +41,7 @@ public class MultipleActivitiesFoundView extends SimplePanel
 
     }
 
-    private static MultipleActivitiesFoundViewBinder uiBinder = GWT.create(MultipleActivitiesFoundViewBinder.class);
+    private static MultipleActivitiesFoundViewBinder uiBinder = GWT.create( MultipleActivitiesFoundViewBinder.class );
 
     private MultipleActivitiesFoundPresenter presenter;
 
@@ -52,35 +53,36 @@ public class MultipleActivitiesFoundView extends SimplePanel
 
     @PostConstruct
     public void init() {
-        setWidget(uiBinder.createAndBindUi(this));
+        setWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void init(final MultipleActivitiesFoundPresenter presenter) {
+    public void init( final MultipleActivitiesFoundPresenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setRequestedPlaceIdentifier(String requestedPlaceIdentifier) {
-        requestedPlaceIdentifierLabel.setText(requestedPlaceIdentifier);
+    public void setRequestedPlaceIdentifier( String requestedPlaceIdentifier ) {
+        requestedPlaceIdentifierLabel.setText( requestedPlaceIdentifier );
     }
 
     @Override
-    public void setActivities(List<Activity> activities) {
-        for (final Activity activity : activities) {
-            Button button = new Button(activity.getSignatureId());
-            button.addClickHandler(new ClickHandler() {
+    public void setActivities( Set<Activity> activities ) {
+        activitiesList.clear();
+        for ( final Activity activity : activities ) {
+            Button button = new Button( activity.getSignatureId() );
+            button.addClickHandler( new ClickHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
-                    presenter.activitySelected(activity);
+                public void onClick( ClickEvent event ) {
+                    presenter.activitySelected( activity );
                 }
-            });
-            activitiesList.add(button);
+            } );
+            activitiesList.add( button );
         }
     }
 
-    @UiHandler("okButton")
-    public void onClickOkButton(final ClickEvent event) {
+    @UiHandler("cancelButton")
+    public void onClickCancelButton( final ClickEvent event ) {
         presenter.close();
     }
 

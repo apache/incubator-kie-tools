@@ -58,8 +58,8 @@ public class ActivityManagerImpl
 
     public Activity getActivity( final PlaceRequest placeRequest ) {
         //Check and return any existing Activity for the PlaceRequest
-        if (activeActivities.containsKey(placeRequest)) {
-            return activeActivities.get(placeRequest);
+        if ( activeActivities.containsKey( placeRequest ) ) {
+            return activeActivities.get( placeRequest );
         }
 
         //Lookup an Activity for the PlaceRequest
@@ -69,10 +69,10 @@ public class ActivityManagerImpl
         switch ( activityBeans.size() ) {
             case 0:
                 //No activities found. Show an error to the user.
-                final PlaceRequest notFoundPopup = new DefaultPlaceRequest("workbench.activity.notfound");
-                notFoundPopup.addParameter("requestedPlaceIdentifier",
-                        identifier);
-                placeManager.goTo(notFoundPopup);
+                final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
+                notFoundPopup.addParameter( "requestedPlaceIdentifier",
+                                            identifier );
+                placeManager.goTo( notFoundPopup );
                 break;
             case 1:
                 instance = getFirstActivity( activityBeans );
@@ -80,57 +80,66 @@ public class ActivityManagerImpl
                     placeManager.goTo( DefaultPlaceRequest.NOWHERE );
                 }
                 //Only WorkbenchActivities can be re-visited
-                if (instance instanceof WorkbenchActivity) {
-                    activeActivities.put(placeRequest,
-                            instance);
+                if ( instance instanceof WorkbenchActivity ) {
+                    activeActivities.put( placeRequest,
+                                          instance );
                 }
                 return instance;
             default:
 
                 // Check if there is a default
-                String editorId = defaultPlaceResolver.getEditorId(identifier);
-                if (editorId == null) {
-                    goToMultipleActivitiesPlace(identifier);
+                String editorId = defaultPlaceResolver.getEditorId( identifier );
+                if ( editorId == null ) {
+                    goToMultipleActivitiesPlace( identifier );
                 } else {
-                    for (Activity activity : listActivities(placeRequest)) {
-                        if (activity.getSignatureId().equals(editorId)) {
+                    for ( Activity activity : getActivities( placeRequest ) ) {
+                        if ( activity.getSignatureId().equals( editorId ) ) {
                             return activity;
                         }
                     }
-                    goToMultipleActivitiesPlace(identifier);
+                    goToMultipleActivitiesPlace( identifier );
                 }
         }
 
         return null;
     }
 
-    private void goToMultipleActivitiesPlace(String identifier) {
-        final PlaceRequest multiplePopup = new DefaultPlaceRequest("workbench.activities.multiple");
-        multiplePopup.addParameter("requestedPlaceIdentifier",
-                identifier);
-        placeManager.goTo(multiplePopup);
+    private void goToMultipleActivitiesPlace( String identifier ) {
+        final PlaceRequest multiplePopup = new DefaultPlaceRequest( "workbench.activities.multiple" );
+        multiplePopup.addParameter( "requestedPlaceIdentifier",
+                                    identifier );
+        placeManager.goTo( multiplePopup );
     }
 
     @Override
-    public <T extends Activity> Set<T> getActivities( Class<T> clazz ) {
+    public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
 
-        final Collection<IOCBeanDef<T>> activityBeans = iocManager.lookupBeans(clazz);
+        final Collection<IOCBeanDef<T>> activityBeans = iocManager.lookupBeans( clazz );
 
-        final Set<T> activities = new HashSet<T>(activityBeans.size());
+        final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
-        for (final IOCBeanDef<T> activityBean : activityBeans) {
+        for ( final IOCBeanDef<T> activityBean : activityBeans ) {
             final T instance = activityBean.getInstance();
-            if (authzManager.authorize(instance,
-                    identity)) {
-                activities.add(instance);
+            if ( authzManager.authorize( instance,
+                                         identity ) ) {
+                activities.add( instance );
             } else {
                 //If user does not have permission destroy bean to avoid memory leak
-                if (activityBean.getScope().equals(Dependent.class)) {
-                    iocManager.destroyBean(instance);
+                if ( activityBean.getScope().equals( Dependent.class ) ) {
+                    iocManager.destroyBean( instance );
                 }
             }
         }
 
+        return activities;
+    }
+
+    @Override
+    public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
+        final Set<Activity> activities = new HashSet<Activity>();
+        for ( IOCBeanDef<Activity> bean : idUtils.getActivities( placeRequest.getIdentifier() ) ) {
+            activities.add( bean.getInstance() );
+        }
         return activities;
     }
 
@@ -140,11 +149,11 @@ public class ActivityManagerImpl
         }
         final IOCBeanDef<Activity> activityBean = activityBeans.iterator().next();
         final Activity instance = activityBean.getInstance();
-        if (!authzManager.authorize(instance,
-                identity)) {
+        if ( !authzManager.authorize( instance,
+                                      identity ) ) {
             //If user does not have permission destroy bean to avoid memory leak
-            if (activityBean.getScope().equals(Dependent.class)) {
-                iocManager.destroyBean(instance);
+            if ( activityBean.getScope().equals( Dependent.class ) ) {
+                iocManager.destroyBean( instance );
             }
             return null;
         }
@@ -156,16 +165,5 @@ public class ActivityManagerImpl
         final Activity activity = activeActivities.remove( placeRequest );
         iocManager.destroyBean( activity );
     }
-    
-    @Override
-    public List<Activity> listActivities(PlaceRequest placeRequest) {
-        ArrayList<Activity> activities = new ArrayList<Activity>();
 
-        for (IOCBeanDef<Activity> bean : idUtils.getActivities(placeRequest.getIdentifier())) {
-            activities.add(bean.getInstance());
-        }
-
-        return activities;
-
-    }
 }

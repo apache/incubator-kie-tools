@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Set;
 
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnStart;
@@ -32,7 +33,7 @@ import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
- *
+ * Popup presenter for when there are multiple Activities for a Place
  */
 @ApplicationScoped
 @WorkbenchPopup(identifier = "workbench.activities.multiple")
@@ -44,9 +45,9 @@ public class MultipleActivitiesFoundPresenter {
             extends
             UberView<MultipleActivitiesFoundPresenter> {
 
-        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
 
-        void setActivities(List<Activity> activities);
+        void setActivities( Set<Activity> activities );
 
     }
 
@@ -69,21 +70,20 @@ public class MultipleActivitiesFoundPresenter {
 
     @PostConstruct
     public void init() {
-        view.init(this);
+        view.init( this );
     }
 
     @OnStart
-    public void onStart(final PlaceRequest place) {
+    public void onStart( final PlaceRequest place ) {
         this.place = place;
     }
 
     @OnReveal
     public void onReveal() {
-        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString("requestedPlaceIdentifier",
-                null);
-        view.setRequestedPlaceIdentifier(requestedPlaceIdentifier);
-
-        view.setActivities(activityManager.listActivities(new DefaultPlaceRequest(requestedPlaceIdentifier)));
+        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
+                                                                                             null );
+        view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
+        view.setActivities( activityManager.getActivities( new DefaultPlaceRequest( requestedPlaceIdentifier ) ) );
     }
 
     @WorkbenchPartTitle
@@ -97,12 +97,12 @@ public class MultipleActivitiesFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
+        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
     }
 
-    public void activitySelected(Activity activity) {
-        defaultPlaceResolver.saveDefaultEditor(new DefaultPlaceRequest(requestedPlaceIdentifier).getFullIdentifier(), activity.getSignatureId());
-        placeManager.goTo(new DefaultPlaceRequest(requestedPlaceIdentifier));
+    public void activitySelected( Activity activity ) {
+        defaultPlaceResolver.saveDefaultEditor( new DefaultPlaceRequest( requestedPlaceIdentifier ).getFullIdentifier(), activity.getSignatureId() );
+        placeManager.goTo( new DefaultPlaceRequest( requestedPlaceIdentifier ) );
         close();
     }
 

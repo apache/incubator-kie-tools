@@ -26,10 +26,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.events.YouTubeVideo;
 
@@ -65,11 +63,6 @@ public class YouTubeScreen
     @WorkbenchPartTitle
     public String getName() {
         return "YouTube Video";
-    }
-
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return this;
     }
 
     public void reloadContent(@Observes YouTubeVideo content) {
