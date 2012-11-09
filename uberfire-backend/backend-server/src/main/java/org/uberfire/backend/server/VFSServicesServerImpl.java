@@ -271,7 +271,7 @@ public class VFSServicesServerImpl implements VFSService {
 
     @Override
     public List<String> readAllLines(Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Files.readAllLines(fromPath(path), UTF_8);
     }
 
 //    @Override

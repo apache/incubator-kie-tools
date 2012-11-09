@@ -51,6 +51,9 @@ public class ActivityManagerImpl
     RuntimeAuthorizationManager authzManager;
 
     @Inject
+    private DefaultPlaceResolver defaultPlaceResolver;
+
+    @Inject
     private Identity identity;
 
     public Activity getActivity( final PlaceRequest placeRequest ) {

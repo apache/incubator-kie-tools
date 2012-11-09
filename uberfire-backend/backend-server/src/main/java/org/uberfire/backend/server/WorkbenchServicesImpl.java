@@ -31,11 +31,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Workbench services
@@ -67,6 +64,7 @@ public class WorkbenchServicesImpl
         this.bootstrapRoot = fileSystems.getBootstrapFileSystem().getRootDirectories().get(0);
     }
 
+    @Override
     public void save(final PerspectiveDefinition perspective) {
         final String xml = xs.toXML(perspective);
 
@@ -75,6 +73,7 @@ public class WorkbenchServicesImpl
         vfsService.write(new PathImpl(rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() + ".perspective"), xml);
     }
 
+    @Override
     public PerspectiveDefinition load(final String perspectiveName) {
         final String rootURI = bootstrapRoot.toURI();
         final Path path = new PathImpl(rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName + ".perspective");
@@ -87,79 +86,41 @@ public class WorkbenchServicesImpl
         return null;
     }
 
+    @Override
+    public HashMap<String, String> loadDefaultEditorsMap() {
 
-    public Map<String, String> loadDefaultEditorsMap() {
         HashMap<String, String> map = new HashMap<String, String>();
+        try {
 
-        Properties properties = loadDefaultEditorProperties();
-        for (Object key : properties.keySet()) {
-            String key1 = (String) key;
-            String property = properties.getProperty(key1);
-            System.out.println("K,V: "+key1 +" , " +property);
-            map.put(key1, property);
+            PathImpl path = getPathToDefaultEditors();
+            if (vfsService.exists(path)) {
+                for (String line : vfsService.readAllLines(path)) {
+                    if (!line.trim().startsWith("#")) {
+                        String[] split = line.split("=");
+                        map.put(split[0], split[1]);
+                    }
+                }
+            }
+
+            return map;
+
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
+            return map;
         }
-
-        return map;
     }
 
     @Override
-    public void saveDefaultEditors(Map<String, String> propertiesMap) {
-
-        System.out.println( "HEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE");
-        System.out.println( "HEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE");
-        System.out.println( "HEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE");
-        System.out.println( "HEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE");
-
-        Properties properties = new Properties();
-
-        for (String key : propertiesMap.keySet()) {
-            properties.setProperty(key, propertiesMap.get(key));
+    public void saveDefaultEditors(Map<String, String> properties) {
+        StringBuilder text = new StringBuilder();
+        for (String key : properties.keySet()) {
+            text.append(String.format("%s=%s", key, properties.get(key)));
         }
 
-        try {
-            saveDefaultEditorList(properties);
-            System.out.println( "SAVED : " + properties.toString());
-
-        } catch (IOException e) {
-            System.out.println( "FAILED");
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public Properties loadDefaultEditorProperties() {
-
-        System.out.println( "LOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOAD");
-        System.out.println( "LOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOAD");
-        System.out.println( "LOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOAD");
-        System.out.println( "LOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOADLOAD");
-        try {
-            Properties properties = new Properties();
-            properties.load(new StringReader(vfsService.readAllString(getPathToDefaultEditors())));
-
-            for(Object key:properties.keySet()){
-                System.out.println( "**** " + key +" "+properties.get(key));
-            }
-            System.out.println( "LOADED");
-
-            return properties;
-        } catch (NoSuchFileException e) {
-            System.out.println( "NSFE");
-            e.printStackTrace();
-            return new Properties();
-        } catch (IOException e) {
-            System.out.println( "IOE");
-            e.printStackTrace();
-            return new Properties();
-        }
-    }
-
-    private void saveDefaultEditorList(Properties properties) throws IOException {
-        vfsService.write(getPathToDefaultEditors(), properties.toString());
+        vfsService.write(getPathToDefaultEditors(), text.toString());
     }
 
     private PathImpl getPathToDefaultEditors() {
-        String uri = bootstrapRoot.toURI() + "/.metadata/.users/" + identity.getName() + "/.defaultEditors";
-        System.out.println( "SAVING TO PATH : " + uri);
-        return new PathImpl(uri);
+        return new PathImpl(bootstrapRoot.toURI() + "/.metadata/.users/" + identity.getName() + "/.defaultEditors");
     }
 }

@@ -26,11 +26,7 @@ public class DefaultPlaceResolver {
                 new RemoteCallback<Map<String, String>>() {
                     @Override
                     public void callback(Map<String, String> properties) {
-
-                        if(!properties.isEmpty())
-                            Window.alert(properties.keySet().iterator().next() +" => "+properties.get(0));
-
-                        DefaultPlaceResolver.this.properties = properties;
+                       DefaultPlaceResolver.this.properties = properties;
                     }
                 }
         ).loadDefaultEditorsMap();

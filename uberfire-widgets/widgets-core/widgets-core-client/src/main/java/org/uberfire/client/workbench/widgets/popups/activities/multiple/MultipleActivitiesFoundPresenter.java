@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -25,10 +26,10 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.*;
 import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  *
@@ -59,7 +60,7 @@ public class MultipleActivitiesFoundPresenter {
     private ActivityManager activityManager;
 
     @Inject
-    private Event<WorkbenchPartBeforeCloseEvent> closePlaceEvent;
+    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     @Inject
     private DefaultPlaceResolver defaultPlaceResolver;
@@ -78,7 +79,7 @@ public class MultipleActivitiesFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameter("requestedPlaceIdentifier",
+        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString("requestedPlaceIdentifier",
                 null);
         view.setRequestedPlaceIdentifier(requestedPlaceIdentifier);
 
@@ -96,7 +97,7 @@ public class MultipleActivitiesFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire(new WorkbenchPartBeforeCloseEvent(this.place));
+        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
     }
 
     public void activitySelected(Activity activity) {
