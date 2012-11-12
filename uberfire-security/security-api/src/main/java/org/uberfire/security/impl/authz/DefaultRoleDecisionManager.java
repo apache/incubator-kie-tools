@@ -17,7 +17,6 @@
 package org.uberfire.security.impl.authz;
 
 import java.util.Iterator;
-import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
@@ -25,7 +24,7 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class DefaultRoleDecisionManager implements RoleDecisionManager {

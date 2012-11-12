@@ -35,7 +35,6 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <!-- UberFire Libraries -->
-        <include>org.uberfire:uberfire-commons</include>
         <include>org.uberfire:vfs-model</include>
         <include>org.uberfire:vfs-fs</include>
         <include>org.uberfire:vfs-jgit</include>

@@ -29,7 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Util;
 import org.uberfire.client.resources.CoreImages;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class FileExplorerView extends Composite
         implements

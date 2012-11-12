@@ -17,7 +17,7 @@ package org.uberfire.client.workbench.widgets.menu.impl;
 
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
-import org.uberfire.commons.util.Preconditions;
+import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of MenuItemCommand
@@ -32,8 +32,8 @@ public class DefaultMenuItemCommand extends DefaultMenuItem
                                   final Command command) {
 
         super( caption );
-        Preconditions.checkNotNull( "command",
-                                    command );
+        PortablePreconditions.checkNotNull("command",
+                command);
         this.command = command;
     }
 

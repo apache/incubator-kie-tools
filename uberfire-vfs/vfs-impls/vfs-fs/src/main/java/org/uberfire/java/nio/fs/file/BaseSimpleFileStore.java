@@ -25,7 +25,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public abstract class BaseSimpleFileStore implements FileStore {
 

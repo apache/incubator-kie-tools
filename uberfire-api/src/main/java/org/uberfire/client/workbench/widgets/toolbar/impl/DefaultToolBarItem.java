@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
-import org.uberfire.commons.util.Preconditions;
+import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of ToolBarItem
@@ -43,12 +43,12 @@ public class DefaultToolBarItem
     public DefaultToolBarItem(final String url,
                               final String tooltip,
                               final Command command) {
-        Preconditions.checkNotNull( "url",
-                                    url );
-        Preconditions.checkNotNull( "tooltip",
-                                    tooltip );
-        Preconditions.checkNotNull( "command",
-                                    command );
+        PortablePreconditions.checkNotNull("url",
+                url);
+        PortablePreconditions.checkNotNull("tooltip",
+                tooltip);
+        PortablePreconditions.checkNotNull("command",
+                command);
         this.url = url;
         this.tooltip = tooltip;
         this.command = command;

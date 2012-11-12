@@ -28,7 +28,7 @@ import org.uberfire.java.nio.fs.base.AttrHolder;
 import org.uberfire.java.nio.fs.base.FlexibleFileAttributeView;
 import org.uberfire.java.nio.fs.base.NotImplementedException;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class JGitFileAttributeView<T extends JGitFileAttributes>
         implements BasicFileAttributeView, FlexibleFileAttributeView {

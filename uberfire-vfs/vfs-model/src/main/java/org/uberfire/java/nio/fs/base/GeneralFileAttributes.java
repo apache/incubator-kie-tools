@@ -20,7 +20,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class GeneralFileAttributes implements BasicFileAttributes {
 

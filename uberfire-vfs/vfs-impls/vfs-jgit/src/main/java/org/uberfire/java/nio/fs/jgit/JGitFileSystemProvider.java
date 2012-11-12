@@ -42,7 +42,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.uberfire.commons.data.Pair;
+import org.kie.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
@@ -73,7 +73,7 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 
 import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
 import static org.eclipse.jgit.lib.Constants.*;
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 

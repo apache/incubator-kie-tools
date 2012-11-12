@@ -21,7 +21,8 @@ import java.util.List;
 
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
-import org.uberfire.commons.util.Preconditions;
+
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * Default implementation of ToolBar
@@ -34,8 +35,8 @@ public class DefaultToolBar
 
     @Override
     public void addItem(ToolBarItem item) {
-        Preconditions.checkNotNull( "item",
-                                    item );
+        checkNotNull("item",
+                item);
         this.items.add( item );
     }
 

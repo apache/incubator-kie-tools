@@ -195,7 +195,7 @@
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>

@@ -17,7 +17,7 @@ package org.uberfire.client.workbench.widgets.menu.impl;
 
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
-import org.uberfire.commons.util.Preconditions;
+import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of MenuItemSubMenu
@@ -31,8 +31,8 @@ public class DefaultMenuItemSubMenu extends DefaultMenuItem
     public DefaultMenuItemSubMenu(final String caption,
                                   final MenuBar subMenu) {
         super( caption );
-        Preconditions.checkNotNull( "subMenu",
-                                    subMenu );
+        PortablePreconditions.checkNotNull("subMenu",
+                subMenu);
         this.subMenu = subMenu;
     }
 

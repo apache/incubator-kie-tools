@@ -30,7 +30,7 @@ import org.uberfire.security.auth.Principal;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
 import static java.util.Collections.*;
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
 

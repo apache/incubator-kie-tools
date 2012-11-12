@@ -32,7 +32,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-import static org.uberfire.commons.util.Preconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 @EntryPoint
 public class SecurityEntryPoint {

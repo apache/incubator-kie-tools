@@ -23,7 +23,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.Preconditions.*;
 
 public class EclipsePathImpl extends AbstractPath {
 

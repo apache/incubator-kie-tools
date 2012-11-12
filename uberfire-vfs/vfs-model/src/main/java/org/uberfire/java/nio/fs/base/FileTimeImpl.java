@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class FileTimeImpl implements FileTime {
 

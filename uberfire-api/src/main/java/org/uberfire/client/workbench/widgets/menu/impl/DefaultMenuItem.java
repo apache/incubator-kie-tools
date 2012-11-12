@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.commons.util.Preconditions;
+
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation of MenuItem
@@ -36,8 +37,7 @@ public abstract class DefaultMenuItem
     protected final String caption;
 
     public DefaultMenuItem(final String caption) {
-        Preconditions.checkNotNull( "caption",
-                                    caption );
+        checkNotNull("caption", caption);
         this.caption = caption;
     }
 

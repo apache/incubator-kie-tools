@@ -24,7 +24,7 @@ import org.uberfire.security.auth.AuthenticatedStorageProvider;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.server.HttpSecurityContext;
 
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
 
 public class HttpSessionStorage implements AuthenticatedStorageProvider {

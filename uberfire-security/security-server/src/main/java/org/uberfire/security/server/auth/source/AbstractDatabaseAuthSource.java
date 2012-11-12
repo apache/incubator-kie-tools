@@ -33,7 +33,7 @@ import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.Preconditions.*;
 
 public abstract class AbstractDatabaseAuthSource implements AuthenticationSource, RoleProvider {
 

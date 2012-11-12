@@ -32,8 +32,8 @@
   <dependencies>
     <!-- UberFire Libs -->
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-commons</artifactId>
     </dependency>
 
     <dependency>

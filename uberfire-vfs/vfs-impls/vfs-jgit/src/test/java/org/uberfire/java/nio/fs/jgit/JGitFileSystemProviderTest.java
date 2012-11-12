@@ -29,7 +29,7 @@ import java.util.Scanner;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Test;
-import org.uberfire.commons.data.Pair;
+import org.kie.commons.data.Pair;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;

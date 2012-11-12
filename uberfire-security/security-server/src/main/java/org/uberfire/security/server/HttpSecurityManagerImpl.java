@@ -48,8 +48,8 @@ import org.uberfire.security.server.auth.RememberMeCookieAuthProvider;
 import org.uberfire.security.server.authz.URLAccessDecisionManager;
 
 import static java.util.Collections.*;
-import static org.uberfire.commons.util.Preconditions.*;
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.Preconditions.*;
 
 public class HttpSecurityManagerImpl implements SecurityManager {
 

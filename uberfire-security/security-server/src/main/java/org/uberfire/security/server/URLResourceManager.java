@@ -32,8 +32,8 @@ import org.uberfire.security.server.util.AntPathMatcher;
 import org.yaml.snakeyaml.Yaml;
 
 import static java.util.Collections.*;
-import static org.uberfire.commons.util.Preconditions.*;
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
 
 public class URLResourceManager implements ResourceManager {

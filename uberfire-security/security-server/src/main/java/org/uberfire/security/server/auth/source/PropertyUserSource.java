@@ -35,7 +35,7 @@ import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 import org.uberfire.security.server.SecurityConstants;
 
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.Preconditions.*;
 
 public class PropertyUserSource implements AuthenticationSource, RoleProvider {
 

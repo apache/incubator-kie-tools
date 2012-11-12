@@ -71,7 +71,7 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
-import org.uberfire.commons.data.Pair;
+import org.kie.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -85,8 +85,8 @@ import static org.eclipse.jgit.lib.Constants.*;
 import static org.eclipse.jgit.lib.FileMode.*;
 import static org.eclipse.jgit.treewalk.filter.PathFilterGroup.*;
 import static org.eclipse.jgit.util.FS.*;
-import static org.uberfire.commons.data.Pair.*;
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.data.Pair.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public final class JGitUtil {
 

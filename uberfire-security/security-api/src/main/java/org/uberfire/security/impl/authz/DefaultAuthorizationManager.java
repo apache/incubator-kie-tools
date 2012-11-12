@@ -29,7 +29,7 @@ import org.uberfire.security.authz.ResourceDecisionManager;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class DefaultAuthorizationManager implements AuthorizationManager {

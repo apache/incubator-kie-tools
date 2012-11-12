@@ -28,7 +28,7 @@ import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 import static java.util.Collections.*;
-import static org.uberfire.commons.util.Preconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.

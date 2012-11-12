@@ -38,7 +38,7 @@ import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.commons.util.Preconditions;
+import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -214,25 +214,25 @@ public class PlaceManagerImpl
     @Override
     public void registerOnRevealCallback( final PlaceRequest place,
                                           final Command command ) {
-        Preconditions.checkNotNull( "place",
-                                    place );
-        Preconditions.checkNotNull( "command",
-                                    command );
+        PortablePreconditions.checkNotNull("place",
+                place);
+        PortablePreconditions.checkNotNull("command",
+                command);
         this.onRevealCallbacks.put( place,
                                     command );
     }
 
     @Override
     public void unregisterOnRevealCallback( final PlaceRequest place ) {
-        Preconditions.checkNotNull( "place",
-                                    place );
+        PortablePreconditions.checkNotNull("place",
+                place);
         this.onRevealCallbacks.remove( place );
     }
 
     @Override
     public void executeOnRevealCallback( final PlaceRequest place ) {
-        Preconditions.checkNotNull( "place",
-                                    place );
+        PortablePreconditions.checkNotNull("place",
+                place);
         final Command callback = this.onRevealCallbacks.get( place );
         if ( callback != null ) {
             callback.execute();

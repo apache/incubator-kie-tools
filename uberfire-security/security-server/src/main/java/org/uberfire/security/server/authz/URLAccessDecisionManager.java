@@ -31,7 +31,7 @@ import org.uberfire.security.impl.authz.RolesResourceImpl;
 import org.uberfire.security.server.URLResource;
 import org.uberfire.security.server.URLResourceManager;
 
-import static org.uberfire.commons.util.PreconditionsServer.*;
+import static org.kie.commons.validation.Preconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class URLAccessDecisionManager implements ResourceDecisionManager {

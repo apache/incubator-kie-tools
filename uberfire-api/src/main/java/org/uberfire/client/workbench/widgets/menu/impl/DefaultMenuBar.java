@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.commons.util.Preconditions;
+import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of MenuBar
@@ -34,8 +34,8 @@ public class DefaultMenuBar
 
     @Override
     public void addItem(final MenuItem item) {
-        Preconditions.checkNotNull( "item",
-                                    item );
+        PortablePreconditions.checkNotNull("item",
+                item);
         this.items.add( item );
     }
 
