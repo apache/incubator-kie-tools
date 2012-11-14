@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
@@ -36,9 +37,9 @@ import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.widgets.events.SavePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -214,25 +215,25 @@ public class PlaceManagerImpl
     @Override
     public void registerOnRevealCallback( final PlaceRequest place,
                                           final Command command ) {
-        PortablePreconditions.checkNotNull("place",
-                place);
-        PortablePreconditions.checkNotNull("command",
-                command);
+        PortablePreconditions.checkNotNull( "place",
+                                            place );
+        PortablePreconditions.checkNotNull( "command",
+                                            command );
         this.onRevealCallbacks.put( place,
                                     command );
     }
 
     @Override
     public void unregisterOnRevealCallback( final PlaceRequest place ) {
-        PortablePreconditions.checkNotNull("place",
-                place);
+        PortablePreconditions.checkNotNull( "place",
+                                            place );
         this.onRevealCallbacks.remove( place );
     }
 
     @Override
     public void executeOnRevealCallback( final PlaceRequest place ) {
-        PortablePreconditions.checkNotNull("place",
-                place);
+        PortablePreconditions.checkNotNull( "place",
+                                            place );
         final Command callback = this.onRevealCallbacks.get( place );
         if ( callback != null ) {
             callback.execute();
@@ -385,8 +386,21 @@ public class PlaceManagerImpl
         }
     }
 
+    @SuppressWarnings("unused")
+    private void onSavePlace( @Observes SavePlaceEvent event ) {
+        final Activity activity = getActivity( event.getPlace() );
+        if ( activity == null ) {
+            return;
+        }
+        if ( activity instanceof WorkbenchEditorActivity ) {
+            final WorkbenchEditorActivity editor = (WorkbenchEditorActivity) activity;
+            editor.onSave();
+        }
+    }
+
     @Produces
-    @ApplicationScoped EventBus produceEventBus() {
+    @ApplicationScoped
+    EventBus produceEventBus() {
         if ( tempBus == null ) {
             tempBus = new SimpleEventBus();
         }
