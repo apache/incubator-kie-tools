@@ -56,7 +56,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity
 
         final IsWidget widget = getWidget();
         final IsWidget titleWidget = getTitleWidget();
-        popup.init( this );
 
         popup.setContent( widget );
         popup.setTitle( titleWidget );
@@ -90,10 +89,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     @Override
     public void onClose() {
         //Do nothing.
-    }
-
-    public void close() {
-        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
     }
 
     @SuppressWarnings("unused")
