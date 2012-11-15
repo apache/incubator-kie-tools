@@ -52,17 +52,23 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @ApplicationScoped
 public class PanelManager {
 
-    private final BeanFactory factory;
+    @Inject
+    private BeanFactory factory;
 
-    private final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent;
+    @Inject
+    private Event<BeforeClosePlaceEvent> beforeClosePlaceEvent;
 
-    private final Event<PlaceGainFocusEvent> placeGainFocusEvent;
+    @Inject
+    private Event<PlaceGainFocusEvent> placeGainFocusEvent;
 
-    private final Event<PlaceLostFocusEvent> placeLostFocusEvent;
+    @Inject
+    private Event<PlaceLostFocusEvent> placeLostFocusEvent;
 
-    private final Event<SelectPlaceEvent> selectPlaceEvent;
+    @Inject
+    private Event<SelectPlaceEvent> selectPlaceEvent;
 
-    private final WorkbenchStatusBarPresenter statusBar;
+    @Inject
+    private WorkbenchStatusBarPresenter statusBar;
 
     private PartDefinition activePart = null;
 
@@ -74,8 +80,11 @@ public class PanelManager {
 
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
-    @Inject
-    //Injected constructor for unit testing
+    //
+    public PanelManager(){
+    }
+
+    //constructor for unit testing
     public PanelManager( final BeanFactory factory,
                          final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent,
                          final Event<PlaceGainFocusEvent> placeGainFocusEvent,

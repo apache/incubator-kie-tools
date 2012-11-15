@@ -89,39 +89,32 @@ public class PlaceHistoryHandler {
 
     private final Historian                 historian;
 
-    private final PlaceRequestHistoryMapper mapper;
+    @Inject
+    private PlaceRequestHistoryMapper       mapper;
 
     private PlaceManager                    placeManager;
 
     private PlaceRequest                    defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
 
-    /**
-     * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
-     * DefaultHistorian is created via a call to GWT.create(), so an alternative
-     * default implementation can be provided through &lt;replace-with&gt; rules
-     * in a {@code gwt.xml} file.
-     * 
-     * @param mapper
-     *            a {@link PlaceRequestHistoryMapper} instance
-     */
-    @Inject
-    public PlaceHistoryHandler(PlaceRequestHistoryMapper mapper) {
-        this( mapper,
-              (Historian) GWT.create( DefaultHistorian.class ) );
-    }
+//    /**
+//     * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
+//     * DefaultHistorian is created via a call to GWT.create(), so an alternative
+//     * default implementation can be provided through &lt;replace-with&gt; rules
+//     * in a {@code gwt.xml} file.
+//     *
+//     * @param mapper
+//     *            a {@link PlaceRequestHistoryMapper} instance
+//     */
+//    public PlaceHistoryHandler(PlaceRequestHistoryMapper mapper) {
+//        this( mapper,
+//              (Historian) GWT.create( DefaultHistorian.class ) );
+//    }
 
     /**
      * Create a new PlaceHistoryHandler.
-     * 
-     * @param mapper
-     *            a {@link PlaceRequestHistoryMapper} instance
-     * @param historian
-     *            a {@link Historian} instance
      */
-    public PlaceHistoryHandler(PlaceRequestHistoryMapper mapper,
-                               Historian historian) {
-        this.mapper = mapper;
-        this.historian = historian;
+    public PlaceHistoryHandler() {
+        this.historian = (Historian) GWT.create( DefaultHistorian.class );
     }
 
     /**
