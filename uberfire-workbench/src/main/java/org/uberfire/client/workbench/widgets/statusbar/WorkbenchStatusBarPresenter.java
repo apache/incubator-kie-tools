@@ -22,7 +22,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
@@ -47,9 +46,6 @@ public class WorkbenchStatusBarPresenter {
 
     @Inject
     private View view;
-
-    @Inject
-    private PlaceManager placeManager;
 
     @Inject
     private Event<RestorePlaceEvent> restorePlaceEvent;
