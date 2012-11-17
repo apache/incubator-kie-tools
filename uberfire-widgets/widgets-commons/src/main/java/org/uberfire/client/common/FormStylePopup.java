@@ -17,6 +17,7 @@
 package org.uberfire.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,8 +29,26 @@ public class FormStylePopup extends Popup {
 
     private FormStyleLayout form;
 
-    public FormStylePopup(ImageResource image,
-                          final String title) {
+    public FormStylePopup( Image image,
+                           final String title ) {
+
+        form = new FormStyleLayout( image, title );
+
+        setModal( true );
+
+        setTitle( title );
+
+    }
+
+    public FormStylePopup( Image image,
+                           final String title,
+                           Integer width ) {
+        this( image, title );
+        setWidth( width + "px" );
+    }
+
+    public FormStylePopup( ImageResource image,
+                           final String title ) {
 
         form = new FormStyleLayout( image,
                                     title );
@@ -44,9 +63,9 @@ public class FormStylePopup extends Popup {
         form = new FormStyleLayout();
     }
 
-    public FormStylePopup(ImageResource image,
-                          final String title,
-                          Integer width) {
+    public FormStylePopup( ImageResource image,
+                           final String title,
+                           Integer width ) {
         this( image,
               title );
         setWidth( width + "px" );
@@ -61,33 +80,31 @@ public class FormStylePopup extends Popup {
         this.form.clear();
     }
 
-    public int addAttribute(String label,
-                             IsWidget wid) {
+    public int addAttribute( String label,
+                             IsWidget wid ) {
         return form.addAttribute( label,
                                   wid );
     }
 
-    public int addAttribute(String label,
-                            Widget wid,
-                            boolean isVisible) {
-       return form.addAttribute( label,
-                                 wid,
-                                 isVisible );
-   }
+    public int addAttribute( String label,
+                             Widget wid,
+                             boolean isVisible ) {
+        return form.addAttribute( label,
+                                  wid,
+                                  isVisible );
+    }
 
-    
-    public int addRow(Widget wid) {
+    public int addRow( Widget wid ) {
         return form.addRow( wid );
     }
-    
+
     /**
      * Set the visibility of an Attribute
-     * 
      * @param row
      * @param isVisible
      */
-    public void setAttributeVisibility(int row,
-                                       boolean isVisible) {
+    public void setAttributeVisibility( int row,
+                                        boolean isVisible ) {
         form.setAttributeVisibility( row, isVisible );
     }
 

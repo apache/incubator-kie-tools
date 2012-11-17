@@ -17,8 +17,16 @@
 package org.uberfire.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This form style class is to be extended to provide "form style" dialogs (eg
@@ -33,15 +41,28 @@ public class FormStyleLayout extends Composite {
     /**
      * Create a new layout with a header and and icon.
      */
-    public FormStyleLayout(ImageResource image,
-                           String title) {
+    public FormStyleLayout( ImageResource image,
+                            String title ) {
         addHeader( image,
                    title );
 
         initWidget( layout );
     }
 
-    /** This has no header */
+    /**
+     * Create a new layout with a header and and icon.
+     */
+    public FormStyleLayout( Image image,
+                            String title ) {
+        addHeader( image,
+                   title );
+
+        initWidget( layout );
+    }
+
+    /**
+     * This has no header
+     */
     public FormStyleLayout() {
         initWidget( layout );
     }
@@ -56,15 +77,12 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form"
-     * 
-     * @param lbl
-     *            The label displayed in column 0
-     * @param editor
-     *            The Widget displayed in column 1
+     * @param lbl The label displayed in column 0
+     * @param editor The Widget displayed in column 1
      * @return Index of row created
      */
-    public int addAttribute(String lbl,
-                            IsWidget editor) {
+    public int addAttribute( String lbl,
+                             IsWidget editor ) {
         int row = numInLayout;
         HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
         layout.setWidget( numInLayout,
@@ -88,18 +106,14 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form"
-     * 
-     * @param lbl
-     *            The label displayed in column 0
-     * @param editor
-     *            The Widget displayed in column 1
-     * @param isVisible
-     *            Is the new row visible
+     * @param lbl The label displayed in column 0
+     * @param editor The Widget displayed in column 1
+     * @param isVisible Is the new row visible
      * @return Index of row created
      */
-    public int addAttribute(String lbl,
+    public int addAttribute( String lbl,
                              Widget editor,
-                             boolean isVisible) {
+                             boolean isVisible ) {
         int rowIndex = addAttribute( lbl,
                                      editor );
         setAttributeVisibility( rowIndex,
@@ -109,12 +123,10 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Add a widget to the "form" across an entire row
-     * 
-     * @param w
-     *            The Widget displayed in column 1
+     * @param w The Widget displayed in column 1
      * @return Index of row created
      */
-    public int addRow(Widget w) {
+    public int addRow( Widget w ) {
         int row = numInLayout;
         layout.setWidget( numInLayout,
                           0,
@@ -128,12 +140,11 @@ public class FormStyleLayout extends Composite {
 
     /**
      * Set the visibility of an Attribute
-     * 
      * @param row
      * @param isVisible
      */
-    public void setAttributeVisibility(int row,
-                                       boolean isVisible) {
+    public void setAttributeVisibility( int row,
+                                        boolean isVisible ) {
         layout.getWidget( row,
                           0 ).setVisible( isVisible );
         layout.getWidget( row,
@@ -143,16 +154,27 @@ public class FormStyleLayout extends Composite {
     /**
      * Adds a header at the top.
      */
-    protected void addHeader(ImageResource image,
-                             String title) {
+    protected void addHeader( ImageResource image,
+                              String title ) {
         HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         doHeader( image,
                   name );
     }
 
-    private void doHeader(ImageResource imageResource,
-                          Widget title) {
+    /**
+     * Adds a header at the top.
+     */
+    protected void addHeader( Image image,
+                              String title ) {
+        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
+        name.setStyleName( "resource-name-Label" );
+        doHeader( image,
+                  name );
+    }
+
+    private void doHeader( ImageResource imageResource,
+                           Widget title ) {
         Image image;
         if ( imageResource == null ) {
             image = new Image();
@@ -172,9 +194,27 @@ public class FormStyleLayout extends Composite {
         numInLayout++;
     }
 
-    protected void addHeader(ImageResource image,
-                             String title,
-                             Widget titleIcon) {
+    private void doHeader( Image image,
+                           Widget title ) {
+        if ( image.getAltText() == null ) {
+            image.setAltText( "" );
+        }
+        layout.setWidget( 0,
+                          0,
+                          image );
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_MIDDLE );
+        layout.setWidget( 0,
+                          1,
+                          title );
+        numInLayout++;
+    }
+
+    protected void addHeader( ImageResource image,
+                              String title,
+                              Widget titleIcon ) {
         HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         HorizontalPanel horiz = new HorizontalPanel();
@@ -185,9 +225,9 @@ public class FormStyleLayout extends Composite {
 
     }
 
-    public void setFlexTableWidget(int row,
-                                   int col,
-                                   Widget widget) {
+    public void setFlexTableWidget( int row,
+                                    int col,
+                                    Widget widget ) {
         layout.setWidget( row,
                           col,
                           widget );

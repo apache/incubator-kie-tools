@@ -20,65 +20,67 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiConstructor;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 
 /**
  * Really just an image, but tacks on the image-Button style name.
  */
-public class ImageButton extends Image {
+public class ImageButton extends FocusPanel {
 
-    private ImageResource       img;
-    private ImageResource       disabledImg;
-    private ClickHandler        clickHandler;
-    private HandlerRegistration handlerRegistration;
+    private final Image               img;
+    private final Image               disabledImg;
+    private       ClickHandler        clickHandler;
+    private       HandlerRegistration handlerRegistration;
 
-    public @UiConstructor
-    ImageButton(ImageResource img) {
-        super( img );
+    @UiConstructor
+    public ImageButton( Image img ) {
+        add( img );
         this.img = img;
         this.disabledImg = img;
         setStyleName( "image-Button" );
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg,
-                       String tooltip) {
-        super( img );
+    public ImageButton( Image img,
+                        Image disabledImg,
+                        String tooltip ) {
+        add( img );
+        this.img = img;
+        this.disabledImg = disabledImg;
+        setStyleName( "image-Button" );
+        setTitle( tooltip );
+    }
+
+    public ImageButton( Image img,
+                        Image disabledImg ) {
+        add( img );
         this.img = img;
         this.disabledImg = disabledImg;
         setStyleName( "image-Button" );
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg) {
-        super( img );
-        this.img = img;
-        this.disabledImg = disabledImg;
-        setStyleName( "image-Button" );
-    }
-
-    public ImageButton(ImageResource img,
-                       String tooltip) {
-        super( img );
+    public ImageButton( Image img,
+                        String tooltip ) {
+        add( img );
         this.img = img;
         this.disabledImg = img;
         setStyleName( "image-Button" );
         setTitle( tooltip );
     }
 
-    public ImageButton(ImageResource img,
-                       String tooltip,
-                       ClickHandler clickHandler) {
+    public ImageButton( Image img,
+                        String tooltip,
+                        ClickHandler clickHandler ) {
         this( img,
               tooltip );
         this.clickHandler = clickHandler;
         assertClickHandler();
     }
 
-    public ImageButton(ImageResource img,
-                       ImageResource disabledImg,
-                       String tooltip,
-                       ClickHandler clickHandler) {
+    public ImageButton( Image img,
+                        Image disabledImg,
+                        String tooltip,
+                        ClickHandler clickHandler ) {
         this( img,
               disabledImg,
               tooltip );
@@ -86,12 +88,13 @@ public class ImageButton extends Image {
         assertClickHandler();
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled( boolean enabled ) {
+        clear();
         if ( enabled ) {
-            super.setResource( img );
+            add( img );
             assertClickHandler();
         } else {
-            super.setResource( disabledImg );
+            add( disabledImg );
             removeClickHandler();
         }
     }

@@ -17,9 +17,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' 
-  xmlns:guvnor='urn:import:org.uberfire.client.common'>
+  xmlns:uf='urn:import:org.uberfire.client.common'>
 
   <ui:with field='resources' type='org.uberfire.client.resources.CommonResources'/>
+  <ui:with field='altedImages' type='org.uberfire.client.resources.CommonAltedImages'/>
 
   <gwt:HTMLPanel>
     <div id="titleBar" class='guvnor-PopupTitleBar-bar'>
@@ -27,7 +28,7 @@
         <gwt:Label ui:field="titleLabel"></gwt:Label>
       </div>
       <div class='guvnor-PopupTitleBar-close-button' style='float:right;'>
-        <guvnor:ImageButton ui:field="closeButton" img='{resources.images.close}'></guvnor:ImageButton>
+        <uf:ImageButton ui:field="closeButton" img='{altedImages.close}'></uf:ImageButton>
       </div>
       <div style='clear:both;'></div>
     </div>

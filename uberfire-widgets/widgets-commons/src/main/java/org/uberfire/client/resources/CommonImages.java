@@ -26,7 +26,7 @@ public interface CommonImages
         extends
         ClientBundle {
 
-    CommonImages INSTANCE = GWT.create( CommonImages.class );
+    public static final CommonImages INSTANCE = GWT.create( CommonImages.class );
 
     @Source("images/new_item.gif")
     ImageResource newItem();
@@ -88,9 +88,11 @@ public interface CommonImages
     @ImageOptions(repeatStyle = RepeatStyle.Vertical)
     @Source("images/corners/greyRightSide.gif")
     ImageResource greySideRight();
-    
+
     //A warning triangle
     @Source("images/warning-large.png")
     ImageResource warningLarge();
 
+    @Source("images/information.gif")
+    ImageResource information();
 }
