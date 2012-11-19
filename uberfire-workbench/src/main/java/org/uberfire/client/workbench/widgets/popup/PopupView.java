@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.client.workbench.widgets.popup;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
@@ -30,16 +32,29 @@ public class PopupView extends DialogBox {
 
     @PostConstruct
     public void init() {
-        setAnimationEnabled( true );
-        setGlassEnabled( true );
+        setAnimationEnabled(true);
+        setGlassEnabled(true);
+
     }
 
-    public void setContent( final IsWidget widget ) {
-        setWidget( widget );
+    public void setContent(final IsWidget widget) {
+        setWidget(widget);
     }
 
-    public void setTitle( final IsWidget titleWidget ) {
-        setHTML( titleWidget.asWidget().getElement().getInnerHTML() );
+    public void setTitle(final IsWidget titleWidget) {
+        setHTML(titleWidget.asWidget().getElement().getInnerHTML());
+    }
+
+    @Override
+    protected void onPreviewNativeEvent(NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        switch (event.getTypeInt()) {
+            case Event.ONKEYDOWN:
+                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    hide();
+                }
+                break;
+        }
     }
 
 }
