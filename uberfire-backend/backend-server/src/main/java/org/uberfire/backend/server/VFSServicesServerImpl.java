@@ -59,219 +59,257 @@ import static java.util.Arrays.*;
 @ApplicationScoped
 public class VFSServicesServerImpl implements VFSService {
 
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final Charset UTF_8 = Charset.forName( "UTF-8" );
 
     @Override
-    public Path get(final String first, final String... more) throws IllegalArgumentException {
-        return convert(Paths.get(first, more));
+    public Path get( final String first,
+                     final String... more ) throws IllegalArgumentException {
+        return convert( Paths.get( first, more ) );
     }
 
     @Override
-    public Path get(final Path path) throws IllegalArgumentException {
-        return convert(Paths.get(URI.create(path.toURI())));
+    public Path get( final Path path ) throws IllegalArgumentException {
+        return convert( Paths.get( URI.create( path.toURI() ) ) );
     }
 
     @Override
-    public FileSystem newFileSystem(final Path path, final Map<String, Object> env)
+    public FileSystem newFileSystem( final Path path,
+                                     final Map<String, Object> env )
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        return newFileSystem(path.toURI(), env);
+        return newFileSystem( path.toURI(), env );
     }
 
     @Override
-    public FileSystem newFileSystem(final String uri, final Map<String, Object> env)
+    public FileSystem newFileSystem( final String uri,
+                                     final Map<String, Object> env )
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        final URI furi = URI.create(uri);
-        final org.uberfire.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem(furi, env);
+        final URI furi = URI.create( uri );
+        final org.uberfire.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem( furi, env );
 
-        return new FileSystemImpl(asList(new Path[]{new PathImpl(furi.getPath(), uri)}));
+        return new FileSystemImpl( asList( new Path[]{ new PathImpl( furi.getPath(), uri ) } ) );
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir)
+    public DirectoryStream<Path> newDirectoryStream( final Path dir )
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.uberfire.java.nio.file.Path> content = Files.newDirectoryStream(fromPath(dir)).iterator();
+        final Iterator<org.uberfire.java.nio.file.Path> content = Files.newDirectoryStream( fromPath( dir ) ).iterator();
 
-        return newDirectoryStream(content);
+        return newDirectoryStream( content );
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(Path dir, String glob) throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException {
+    public DirectoryStream<Path> newDirectoryStream( Path dir,
+                                                     String glob ) throws IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException, NotDirectoryException, IOException {
         return null;
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(final Path dir, final DirectoryStream.Filter<? super Path> filter) throws IllegalArgumentException, NotDirectoryException, IOException {
+    public DirectoryStream<Path> newDirectoryStream( final Path dir,
+                                                     final DirectoryStream.Filter<? super Path> filter ) throws IllegalArgumentException, NotDirectoryException, IOException {
         return null;
     }
 
     @Override
-    public Path createFile(Path path, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+    public Path createFile( Path path,
+                            FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createDirectory(Path dir, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+    public Path createDirectory( Path dir,
+                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createDirectories(Path dir, FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException {
+    public Path createDirectories( Path dir,
+                                   FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createSymbolicLink(Path link, Path target, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+    public Path createSymbolicLink( Path link,
+                                    Path target,
+                                    FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createLink(Path link, Path existing) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+    public Path createLink( Path link,
+                            Path existing ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void delete(Path path) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
+    public void delete( Path path ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public boolean deleteIfExists(Path path) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
+    public boolean deleteIfExists( Path path ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createTempFile(Path dir, String prefix, String suffix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+    public Path createTempFile( Path dir,
+                                String prefix,
+                                String suffix,
+                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createTempFile(String prefix, String suffix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+    public Path createTempFile( String prefix,
+                                String suffix,
+                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createTempDirectory(Path dir, String prefix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+    public Path createTempDirectory( Path dir,
+                                     String prefix,
+                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path createTempDirectory(String prefix, FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException {
+    public Path createTempDirectory( String prefix,
+                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path copy(Path source, Path target, CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
+    public Path copy( Path source,
+                      Path target,
+                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path move(Path source, Path target, CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
+    public Path move( Path source,
+                      Path target,
+                      CopyOption... options )
+            throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
+        return null;
+    }
+
+    @Override
+    public Path readSymbolicLink( Path link ) throws IllegalArgumentException, UnsupportedOperationException, NotLinkException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path readSymbolicLink(Path link) throws IllegalArgumentException, UnsupportedOperationException, NotLinkException, IOException {
+    public String probeContentType( Path path ) throws UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String probeContentType(Path path) throws UnsupportedOperationException, IOException {
+    public Map<String, Object> readAttributes( final Path path ) throws UnsupportedOperationException, IllegalArgumentException, IOException {
+        return Files.readAttributes( fromPath( path ), "*", null );
+    }
+
+    @Override
+    public Path setAttribute( Path path,
+                              String attribute,
+                              Object value,
+                              LinkOption... options ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Map<String, Object> readAttributes(final Path path) throws UnsupportedOperationException, IllegalArgumentException, IOException {
-        return Files.readAttributes(fromPath(path), "*", null);
-    }
-
-    @Override
-    public Path setAttribute(Path path, String attribute, Object value, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException {
+    public Object getAttribute( Path path,
+                                String attribute,
+                                LinkOption... options ) throws UnsupportedOperationException, IllegalArgumentException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Object getAttribute(Path path, String attribute, LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException {
+    public UserPrincipal getOwner( Path path,
+                                   LinkOption... options ) throws UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public UserPrincipal getOwner(Path path, LinkOption... options) throws UnsupportedOperationException, IOException {
+    public Path setOwner( Path path,
+                          UserPrincipal owner ) throws UnsupportedOperationException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path setOwner(Path path, UserPrincipal owner) throws UnsupportedOperationException, IOException {
+    public Path setLastModifiedTime( Path path,
+                                     FileTime time ) throws IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Path setLastModifiedTime(Path path, FileTime time) throws IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public long size(Path path) throws IllegalArgumentException, IOException {
+    public long size( Path path ) throws IllegalArgumentException, IOException {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public boolean exists(Path path, LinkOption... options) throws IllegalArgumentException {
-        return Files.exists(fromPath(path), options);
+    public boolean exists( Path path,
+                           LinkOption... options ) throws IllegalArgumentException {
+        return Files.exists( fromPath( path ), options );
     }
 
     @Override
-    public boolean notExists(Path path, LinkOption... options) throws IllegalArgumentException {
-        return Files.notExists(fromPath(path), options);
+    public boolean notExists( Path path,
+                              LinkOption... options ) throws IllegalArgumentException {
+        return Files.notExists( fromPath( path ), options );
     }
 
     @Override
-    public boolean isSameFile(Path path, Path path2) throws IllegalArgumentException, IOException {
+    public boolean isSameFile( Path path,
+                               Path path2 ) throws IllegalArgumentException, IOException {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public boolean isExecutable(Path path) throws IllegalArgumentException {
+    public boolean isExecutable( Path path ) throws IllegalArgumentException {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public byte[] readAllBytes(Path path) throws IOException {
-        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+    public byte[] readAllBytes( Path path ) throws IOException {
+        return new byte[ 0 ];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String readAllString(Path path, String charset) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return readAllString(path, Charset.forName(charset));
+    public String readAllString( Path path,
+                                 String charset ) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return readAllString( path, Charset.forName( charset ) );
     }
 
     @Override
-    public String readAllString(final Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return readAllString(path, UTF_8);
+    public String readAllString( final Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return readAllString( path, UTF_8 );
     }
 
-    private String readAllString(final Path path, final Charset cs)
+    private String readAllString( final Path path,
+                                  final Charset cs )
             throws IllegalArgumentException, NoSuchFileException, IOException {
 
-        final List<String> result = Files.readAllLines(fromPath(path), cs);
-        if (result == null) {
+        final List<String> result = Files.readAllLines( fromPath( path ), cs );
+        if ( result == null ) {
             return "";
         }
         final StringBuilder sb = new StringBuilder();
-        for (final String s : result) {
-            sb.append(s).append('\n');
+        for ( final String s : result ) {
+            sb.append( s ).append( '\n' );
         }
         return sb.toString();
 
     }
 
     @Override
-    public List<String> readAllLines(Path path, String charset) throws IllegalArgumentException, NoSuchFileException, IOException {
+    public List<String> readAllLines( Path path,
+                                      String charset ) throws IllegalArgumentException, NoSuchFileException, IOException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public List<String> readAllLines(Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return Files.readAllLines(fromPath(path), UTF_8);
+    public List<String> readAllLines( Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return Files.readAllLines( fromPath( path ), UTF_8 );
     }
 
 //    @Override
@@ -295,31 +333,32 @@ public class VFSServicesServerImpl implements VFSService {
 //    }
 
     @Override
-    public Path write(Path path, String content) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert(Files.write(fromPath(path), content.getBytes()));
+    public Path write( Path path,
+                       String content ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return convert( Files.write( fromPath( path ), content.getBytes() ) );
     }
 
-    private Path convert(final org.uberfire.java.nio.file.Path path) {
-        final Map<String, Object> attributes = Files.readAttributes(path, "*");
+    private Path convert( final org.uberfire.java.nio.file.Path path ) {
+        final Map<String, Object> attributes = Files.readAttributes( path, "*" );
 
-        return new PathImpl(path.getFileName().toString(), path.toUri().toString(), attributes);
+        return new PathImpl( path.getFileName().toString(), path.toUri().toString(), attributes );
     }
 
-    private DirectoryStream<Path> newDirectoryStream(final Iterator<org.uberfire.java.nio.file.Path> iterator) {
+    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.uberfire.java.nio.file.Path> iterator ) {
         final List<Path> content = new LinkedList<Path>();
-        while (iterator.hasNext()) {
-            content.add(convert(iterator.next()));
+        while ( iterator.hasNext() ) {
+            content.add( convert( iterator.next() ) );
         }
-        return new DirectoryStreamImpl(content);
+        return new DirectoryStreamImpl( content );
     }
 
-    private org.uberfire.java.nio.file.Path fromPath(final Path path) {
+    private org.uberfire.java.nio.file.Path fromPath( final Path path ) {
         try {
-            return Paths.get(URI.create(path.toURI()));
-        } catch (IllegalArgumentException e) {
+            return Paths.get( URI.create( path.toURI() ) );
+        } catch ( IllegalArgumentException e ) {
             try {
-                return Paths.get(URI.create(URIUtil.encodePath(path.toURI())));
-            } catch (URIException ex) {
+                return Paths.get( URI.create( URIUtil.encodePath( path.toURI() ) ) );
+            } catch ( URIException ex ) {
                 return null;
             }
         }
