@@ -120,3 +120,35 @@
     border: none !important;
     width: 95%;
 }
+
+.uf-TabBar {
+    background: #ccc;
+    padding-bottom: 6px;
+}
+.uf-TabBar .uf-TabBarFirst {
+    width: 5px;  /* first tab distance from the left */
+}
+.uf-TabBar .uf-TabBarRest {
+}
+.uf-TabBar .uf-TabBarItem {
+    margin-left: 4px;
+    padding: 4px 8px 4px 8px;
+    cursor: pointer;
+    cursor: hand;
+    color: white;
+    font-weight: normal;
+    text-align: center;
+    background: #8E8E8E;
+    -moz-border-radius: 0px 0px 3px 3px ;
+    border-radius: 0px 0px 3px 3px;
+}
+.uf-TabBar .uf-TabBarItem-selected {
+    cursor: default;
+    background: white;
+    color: #333;
+    font-weight: bold;
+}
+.uf-TabBar .uf-TabBarItem-disabled {
+    cursor: default;
+    color: #999999;
+}

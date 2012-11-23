@@ -27,36 +27,42 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FormStylePopup extends Popup {
 
-    private FormStyleLayout form;
+    protected FormStyleLayout form;
 
-    public FormStylePopup( Image image,
+    public FormStylePopup( final Image image,
                            final String title ) {
+        setup( image, title );
+    }
 
+    protected void setup( final Image image,
+                          final String title ) {
         form = new FormStyleLayout( image, title );
 
         setModal( true );
 
         setTitle( title );
-
     }
 
-    public FormStylePopup( Image image,
+    public FormStylePopup( final Image image,
                            final String title,
-                           Integer width ) {
+                           final Integer width ) {
         this( image, title );
         setWidth( width + "px" );
     }
 
-    public FormStylePopup( ImageResource image,
+    public FormStylePopup( final ImageResource image,
                            final String title ) {
 
-        form = new FormStyleLayout( image,
-                                    title );
+        setup( image, title );
+    }
+
+    protected void setup( final ImageResource image,
+                        final String title ) {
+        form = new FormStyleLayout( image, title );
 
         setModal( true );
 
         setTitle( title );
-
     }
 
     public FormStylePopup() {

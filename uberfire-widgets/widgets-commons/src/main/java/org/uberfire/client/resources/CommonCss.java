@@ -18,8 +18,8 @@ package org.uberfire.client.resources;
 import com.google.gwt.resources.client.CssResource;
 
 public interface CommonCss
-    extends
-    CssResource {
+        extends
+        CssResource {
 
     @ClassName("whiteTopLeftCornerClass")
     String whiteTopLeftCornerClass();
@@ -77,5 +77,23 @@ public interface CommonCss
 
     @ClassName("clean-textarea")
     String cleanTextArea();
+
+    @ClassName("uf-TabBar")
+    String tabBar();
+
+    @ClassName("uf-TabBarFirst")
+    String tabBarFirst();
+
+    @ClassName("uf-TabBarRest")
+    String tabBarRest();
+
+    @ClassName("uf-TabBarItem")
+    String tabBarItem();
+
+    @ClassName("uf-TabBarItem-selected")
+    String tabBarItemSelected();
+
+    @ClassName("uf-TabBarItem-disabled")
+    String tabBarItemDisabled();
 
 }
