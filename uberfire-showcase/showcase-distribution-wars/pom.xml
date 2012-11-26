@@ -31,7 +31,7 @@
           </execution>
         </executions>
         <configuration>
-          <finalName>showcase-${project.version}</finalName>
+          <finalName>uberfire-showcase-${project.version}</finalName>
           <descriptors>
             <descriptor>src/main/assembly/assembly-showcase-tomcat-7_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-showcase-jboss-as-7_0.xml</descriptor>
@@ -47,7 +47,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>showcase-webapp</artifactId>
+      <artifactId>uberfire-webapp</artifactId>
       <type>war</type>
     </dependency>
   </dependencies>

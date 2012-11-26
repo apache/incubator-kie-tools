@@ -29,8 +29,8 @@
   <name>UberFire Backend</name>
 
   <modules>
-    <module>backend-api</module>
-    <module>backend-commons</module>
-    <module>backend-server</module>
+    <module>uberfire-backend-api</module>
+    <module>uberfire-backend-commons</module>
+    <module>uberfire-backend-server</module>
   </modules>
 </project>

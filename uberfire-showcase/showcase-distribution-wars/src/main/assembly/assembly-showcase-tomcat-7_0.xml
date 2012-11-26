@@ -18,7 +18,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>org.uberfire:showcase-webapp:war</include>
+        <include>org.uberfire:uberfire-webapp:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>
@@ -28,11 +28,11 @@
           <exclude>WEB-INF/web.xml</exclude>
 
           <!-- UF Client Related -->
-          <exclude>WEB-INF/lib/widget-markdown-*.jar</exclude>
-          <exclude>WEB-INF/lib/widgets-commons-*.jar</exclude>
-          <exclude>WEB-INF/lib/widgets-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
-          <exclude>WEB-INF/lib/security-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
 
           <!-- GWT Client Related -->
           <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>

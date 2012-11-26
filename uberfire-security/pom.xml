@@ -29,8 +29,8 @@
   <name>UberFire Security</name>
 
   <modules>
-    <module>security-api</module>
-    <module>security-client</module>
-    <module>security-server</module>
+    <module>uberfire-security-api</module>
+    <module>uberfire-security-client</module>
+    <module>uberfire-security-server</module>
   </modules>
 </project>

@@ -35,23 +35,23 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <!-- UberFire Libraries -->
-        <include>org.uberfire:vfs-model</include>
-        <include>org.uberfire:vfs-fs</include>
-        <include>org.uberfire:vfs-jgit</include>
-        <include>org.uberfire:vfs-api</include>
-        <include>org.uberfire:security-api</include>
-        <include>org.uberfire:security-client</include>
-        <include>org.uberfire:security-server</include>
+        <include>org.uberfire:uberfire-vfs-model</include>
+        <include>org.uberfire:uberfire-vfs-fs</include>
+        <include>org.uberfire:uberfire-vfs-jgit</include>
+        <include>org.uberfire:uberfire-vfs-api</include>
+        <include>org.uberfire:uberfire-security-api</include>
+        <include>org.uberfire:uberfire-security-client</include>
+        <include>org.uberfire:uberfire-security-server</include>
         <include>org.uberfire:uberfire-server</include>
         <include>org.uberfire:uberfire-api</include>
-        <include>org.uberfire:backend-api</include>
+        <include>org.uberfire:uberfire-backend-api</include>
         <include>org.uberfire:uberfire-workbench</include>
-        <include>org.uberfire:backend-commons</include>
-        <include>org.uberfire:backend-server</include>
-        <include>org.uberfire:widgets-commons</include>
-        <include>org.uberfire:widgets-core-backend</include>
-        <include>org.uberfire:widgets-core-client</include>
-        <include>org.uberfire:widget-markdown</include>
+        <include>org.uberfire:uberfire-backend-commons</include>
+        <include>org.uberfire:uberfire-backend-server</include>
+        <include>org.uberfire:uberfire-widgets-commons</include>
+        <include>org.uberfire:uberfire-widgets-core-backend</include>
+        <include>org.uberfire:uberfire-widgets-core-client</include>
+        <include>org.uberfire:uberfire-widget-markdown</include>
       </includes>
     </dependencySet>
     <dependencySet>

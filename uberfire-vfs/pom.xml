@@ -13,8 +13,8 @@
   <name>VFS</name>
 
   <modules>
-    <module>vfs-model</module>
-    <module>vfs-impls</module>
-    <module>vfs-api</module>
+    <module>uberfire-vfs-model</module>
+    <module>uberfire-vfs-impls</module>
+    <module>uberfire-vfs-api</module>
   </modules>
 </project>

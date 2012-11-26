@@ -29,8 +29,8 @@
   <name>UberFire Widgets</name>
 
   <modules>
-    <module>widgets-commons</module>
-    <module>widgets-core</module>
-    <module>widgets-sandbox</module>
+    <module>uberfire-widgets-commons</module>
+    <module>uberfire-widgets-core</module>
+    <module>uberfire-widgets-sandbox</module>
   </modules>
 </project>

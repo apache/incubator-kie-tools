@@ -34,12 +34,12 @@
 
 		<dependency>
 			<groupId>org.uberfire</groupId>
-			<artifactId>security-api</artifactId>
+			<artifactId>uberfire-security-api</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.uberfire</groupId>
-			<artifactId>backend-api</artifactId>
+			<artifactId>uberfire-backend-api</artifactId>
 		</dependency>
 
 		<dependency>

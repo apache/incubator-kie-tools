@@ -29,7 +29,7 @@
   <name>UberFire Showcase</name>
 
   <modules>
-    <module>showcase-webapp</module>
+    <module>uberfire-webapp</module>
     <module>showcase-distribution-wars</module>
   </modules>
 </project>
