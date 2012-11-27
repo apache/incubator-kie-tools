@@ -95,4 +95,8 @@ public interface CommonImages
 
     @Source("images/information.gif")
     ImageResource information();
+
+    @Source("images/validation_error.gif")
+    ImageResource validationError();
+
 }

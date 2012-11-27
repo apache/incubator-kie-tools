@@ -30,4 +30,9 @@ public interface CommonConstants
     String Information();
 
     String Close();
+
+    String Error();
+
+    String ShowDetail();
+
 }
