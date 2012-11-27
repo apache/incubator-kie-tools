@@ -25,6 +25,7 @@ import java.util.Set;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
@@ -42,27 +43,36 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystem implements FileSystem {
 
-    private static final Set<String> SUPPORTED_ATTR_VIEWS = Collections.unmodifiableSet(new HashSet<String>() {{
-        add("basic");
-    }});
+    private static final Set<String> SUPPORTED_ATTR_VIEWS = Collections.unmodifiableSet( new HashSet<String>() {{
+        add( "basic" );
+    }} );
 
-    private final FileSystemProvider provider;
-    private final Git gitRepo;
+    private final FileSystemProvider         provider;
+    private final Git                        gitRepo;
     private final ListBranchCommand.ListMode listMode;
     private boolean isClose = false;
-    private final FileStore fileStore;
-    private final String name;
+    private final FileStore           fileStore;
+    private final String              name;
+    private final CredentialsProvider credential;
 
-    JGitFileSystem(final FileSystemProvider provider, final Git git, final String name) {
-        this(provider, git, name, null);
+    JGitFileSystem( final FileSystemProvider provider,
+                    final Git git,
+                    final String name,
+                    final CredentialsProvider credential ) {
+        this( provider, git, name, null, credential );
     }
 
-    JGitFileSystem(final FileSystemProvider provider, final Git git, final String name, final ListBranchCommand.ListMode listMode) {
-        this.provider = checkNotNull("provider", provider);
-        this.gitRepo = checkNotNull("git", git);
-        this.name = checkNotEmpty("name", name);
+    JGitFileSystem( final FileSystemProvider provider,
+                    final Git git,
+                    final String name,
+                    final ListBranchCommand.ListMode listMode,
+                    final CredentialsProvider credential ) {
+        this.provider = checkNotNull( "provider", provider );
+        this.gitRepo = checkNotNull( "git", git );
+        this.name = checkNotEmpty( "name", name );
+        this.credential = checkNotNull( "credential", credential );
         this.listMode = listMode;
-        this.fileStore = new JGitFileStore(gitRepo.getRepository());
+        this.fileStore = new JGitFileStore( gitRepo.getRepository() );
     }
 
     public String getName() {
@@ -71,6 +81,10 @@ public class JGitFileSystem implements FileSystem {
 
     public Git gitRepo() {
         return gitRepo;
+    }
+
+    public CredentialsProvider getCredential() {
+        return credential;
     }
 
     @Override
@@ -105,22 +119,22 @@ public class JGitFileSystem implements FileSystem {
 
                     @Override
                     public boolean hasNext() {
-                        if (branches == null) {
+                        if ( branches == null ) {
                             init();
                         }
                         return branches.hasNext();
                     }
 
                     private void init() {
-                        branches = branchList(gitRepo, listMode).iterator();
+                        branches = branchList( gitRepo, listMode ).iterator();
                     }
 
                     @Override
                     public Path next() {
-                        if (branches == null) {
+                        if ( branches == null ) {
                             init();
                         }
-                        return JGitPathImpl.createRoot(JGitFileSystem.this, "/", shortenRefName(branches.next().getName()) + "@" + name, false);
+                        return JGitPathImpl.createRoot( JGitFileSystem.this, "/", shortenRefName( branches.next().getName() ) + "@" + name, false );
                     }
 
                     @Override
@@ -147,8 +161,9 @@ public class JGitFileSystem implements FileSystem {
                         return i < 1;
                     }
 
-                    @Override public FileStore next() {
-                        if (i < 1) {
+                    @Override
+                    public FileStore next() {
+                        if ( i < 1 ) {
                             i++;
                             return fileStore;
                         } else {
@@ -172,32 +187,33 @@ public class JGitFileSystem implements FileSystem {
     }
 
     @Override
-    public Path getPath(final String first, final String... more)
+    public Path getPath( final String first,
+                         final String... more )
             throws InvalidPathException {
         checkClose();
-        checkNotEmpty("first", first);
+        checkNotEmpty( "first", first );
 
-        if (more == null || more.length == 0) {
-            return JGitPathImpl.create(this, first, JGitPathImpl.DEFAULT_REF_TREE + "@" + name, false);
+        if ( more == null || more.length == 0 ) {
+            return JGitPathImpl.create( this, first, JGitPathImpl.DEFAULT_REF_TREE + "@" + name, false );
         }
 
         final StringBuilder sb = new StringBuilder();
-        for (final String segment : more) {
-            if (segment.length() > 0) {
-                if (sb.length() > 0) {
-                    sb.append(getSeparator());
+        for ( final String segment : more ) {
+            if ( segment.length() > 0 ) {
+                if ( sb.length() > 0 ) {
+                    sb.append( getSeparator() );
                 }
-                sb.append(segment);
+                sb.append( segment );
             }
         }
-        return JGitPathImpl.create(this, sb.toString(), first + "@" + name, false);
+        return JGitPathImpl.create( this, sb.toString(), first + "@" + name, false );
     }
 
     @Override
-    public PathMatcher getPathMatcher(final String syntaxAndPattern)
+    public PathMatcher getPathMatcher( final String syntaxAndPattern )
             throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
         checkClose();
-        checkNotEmpty("syntaxAndPattern", syntaxAndPattern);
+        checkNotEmpty( "syntaxAndPattern", syntaxAndPattern );
         throw new UnsupportedOperationException();
     }
 
@@ -223,38 +239,38 @@ public class JGitFileSystem implements FileSystem {
     }
 
     private void checkClose() throws IllegalStateException {
-        if (isClose) {
-            throw new IllegalStateException("FileSystem is close.");
+        if ( isClose ) {
+            throw new IllegalStateException( "FileSystem is close." );
         }
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals( Object o ) {
+        if ( this == o ) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
 
         JGitFileSystem that = (JGitFileSystem) o;
 
-        if (isClose != that.isClose) {
+        if ( isClose != that.isClose ) {
             return false;
         }
-        if (fileStore != null ? !fileStore.equals(that.fileStore) : that.fileStore != null) {
+        if ( fileStore != null ? !fileStore.equals( that.fileStore ) : that.fileStore != null ) {
             return false;
         }
-        if (!gitRepo.equals(that.gitRepo)) {
+        if ( !gitRepo.equals( that.gitRepo ) ) {
             return false;
         }
-        if (listMode != that.listMode) {
+        if ( listMode != that.listMode ) {
             return false;
         }
-        if (!name.equals(that.name)) {
+        if ( !name.equals( that.name ) ) {
             return false;
         }
-        if (!provider.equals(that.provider)) {
+        if ( !provider.equals( that.provider ) ) {
             return false;
         }
 
@@ -265,9 +281,9 @@ public class JGitFileSystem implements FileSystem {
     public int hashCode() {
         int result = provider.hashCode();
         result = 31 * result + gitRepo.hashCode();
-        result = 31 * result + (listMode != null ? listMode.hashCode() : 0);
-        result = 31 * result + (isClose ? 1 : 0);
-        result = 31 * result + (fileStore != null ? fileStore.hashCode() : 0);
+        result = 31 * result + ( listMode != null ? listMode.hashCode() : 0 );
+        result = 31 * result + ( isClose ? 1 : 0 );
+        result = 31 * result + ( fileStore != null ? fileStore.hashCode() : 0 );
         result = 31 * result + name.hashCode();
         return result;
     }

@@ -571,10 +571,14 @@ public class FilesTest extends AbstractBaseTest {
         final Map<String, Object> env = new HashMap<String, Object>(2);
         env.put("userName", "user");
         env.put("password", "pass");
-        final URI uri = URI.create("git://testXXXXXXX" + System.currentTimeMillis());
+        final String repoName = "git://testXXXXXXX" + System.currentTimeMillis();
+        final URI uri = URI.create(repoName);
         FileSystems.newFileSystem(uri, env);
 
         assertThat(Files.getFileStore(Paths.get(uri))).isNotNull().isInstanceOf(JGitFileStore.class);
+
+        final URI fetch = URI.create(repoName + "?fetch");
+        FileSystems.getFileSystem(fetch);
     }
 
     @Test(expected = IllegalArgumentException.class)

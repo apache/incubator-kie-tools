@@ -21,6 +21,8 @@ import java.io.IOException;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.Path;
@@ -31,295 +33,299 @@ import static org.mockito.Mockito.*;
 
 public class JGitFileSystemTest extends AbstractTestInfra {
 
+    static {
+        CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
+    }
+
     @Test
     public void testOnlyLocalRoot() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.isReadOnly()).isFalse();
-        assertThat(fileSystem.getSeparator()).isEqualTo("/");
-        assertThat(fileSystem.getName()).isEqualTo("my-repo");
+        assertThat( fileSystem.isReadOnly() ).isFalse();
+        assertThat( fileSystem.getSeparator() ).isEqualTo( "/" );
+        assertThat( fileSystem.getName() ).isEqualTo( "my-repo" );
 
-        assertThat(fileSystem.getRootDirectories()).hasSize(1);
+        assertThat( fileSystem.getRootDirectories() ).hasSize( 1 );
         final Path root = fileSystem.getRootDirectories().iterator().next();
-        assertThat(root.toString()).isEqualTo("/");
+        assertThat( root.toString() ).isEqualTo( "/" );
 
-        assertThat(root.getRoot().toString()).isEqualTo("/");
+        assertThat( root.getRoot().toString() ).isEqualTo( "/" );
     }
 
     @Test
     public void testRemoteRoot() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final File tempDir = createTempDirectory();
-        final Git git = Git.cloneRepository().setNoCheckout(false).setBare(true).setCloneAllBranches(true).setURI(setupGit().getRepository().getDirectory().toString()).setDirectory(tempDir).call();
+        final Git git = Git.cloneRepository().setNoCheckout( false ).setBare( true ).setCloneAllBranches( true ).setURI( setupGit().getRepository().getDirectory().toString() ).setDirectory( tempDir ).call();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.isReadOnly()).isFalse();
-        assertThat(fileSystem.getSeparator()).isEqualTo("/");
-        assertThat(fileSystem.getName()).isEqualTo("my-repo");
+        assertThat( fileSystem.isReadOnly() ).isFalse();
+        assertThat( fileSystem.getSeparator() ).isEqualTo( "/" );
+        assertThat( fileSystem.getName() ).isEqualTo( "my-repo" );
 
-        assertThat(fileSystem.getRootDirectories()).hasSize(1);
+        assertThat( fileSystem.getRootDirectories() ).hasSize( 1 );
         final Path root = fileSystem.getRootDirectories().iterator().next();
-        assertThat(root.toString()).isEqualTo("/");
+        assertThat( root.toString() ).isEqualTo( "/" );
 
-        assertThat(root.getRoot().toString()).isEqualTo("/");
+        assertThat( root.getRoot().toString() ).isEqualTo( "/" );
     }
 
     @Test
     public void testProvider() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.getName()).isEqualTo("my-repo");
-        assertThat(fileSystem.isReadOnly()).isFalse();
-        assertThat(fileSystem.getSeparator()).isEqualTo("/");
+        assertThat( fileSystem.getName() ).isEqualTo( "my-repo" );
+        assertThat( fileSystem.isReadOnly() ).isFalse();
+        assertThat( fileSystem.getSeparator() ).isEqualTo( "/" );
 
-        assertThat(fileSystem.provider()).isEqualTo(fsProvider);
+        assertThat( fileSystem.provider() ).isEqualTo( fsProvider );
     }
 
     @Test(expected = IllegalStateException.class)
     public void testClose() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.isReadOnly()).isFalse();
-        assertThat(fileSystem.getSeparator()).isEqualTo("/");
-        assertThat(fileSystem.getName()).isEqualTo("my-repo");
+        assertThat( fileSystem.isReadOnly() ).isFalse();
+        assertThat( fileSystem.getSeparator() ).isEqualTo( "/" );
+        assertThat( fileSystem.getName() ).isEqualTo( "my-repo" );
 
-        assertThat(fileSystem.isOpen()).isTrue();
-        assertThat(fileSystem.getFileStores()).isNotNull();
+        assertThat( fileSystem.isOpen() ).isTrue();
+        assertThat( fileSystem.getFileStores() ).isNotNull();
         fileSystem.close();
-        assertThat(fileSystem.isOpen()).isFalse();
-        assertThat(fileSystem.getFileStores()).isNotNull();
+        assertThat( fileSystem.isOpen() ).isFalse();
+        assertThat( fileSystem.getFileStores() ).isNotNull();
     }
 
     @Test
     public void testSupportedFileAttributeViews() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.isReadOnly()).isFalse();
-        assertThat(fileSystem.getSeparator()).isEqualTo("/");
-        assertThat(fileSystem.getName()).isEqualTo("my-repo");
+        assertThat( fileSystem.isReadOnly() ).isFalse();
+        assertThat( fileSystem.getSeparator() ).isEqualTo( "/" );
+        assertThat( fileSystem.getName() ).isEqualTo( "my-repo" );
 
-        assertThat(fileSystem.supportedFileAttributeViews()).isNotEmpty().hasSize(1).contains("basic");
+        assertThat( fileSystem.supportedFileAttributeViews() ).isNotEmpty().hasSize( 1 ).contains( "basic" );
     }
 
     @Test
     public void testPathNonBranchRooted() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("/path/to/some/place.txt");
+        final Path path = fileSystem.getPath( "/path/to/some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isTrue();
-        assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://master@my-repo/path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isTrue();
+        assertThat( path.toString() ).isEqualTo( "/path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://master@my-repo/path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "/" );
     }
 
     @Test
     public void testPathNonBranchNonRooted() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("path/to/some/place.txt");
+        final Path path = fileSystem.getPath( "path/to/some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isFalse();
-        assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://master@my-repo/:path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isFalse();
+        assertThat( path.toString() ).isEqualTo( "path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://master@my-repo/:path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "" );
     }
 
     @Test
     public void testPathBranchRooted() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("test-branch", "/path/to/some/place.txt");
+        final Path path = fileSystem.getPath( "test-branch", "/path/to/some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isTrue();
-        assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isTrue();
+        assertThat( path.toString() ).isEqualTo( "/path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://test-branch@my-repo/path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "/" );
     }
 
     @Test
     public void testPathBranchNonRooted() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("test-branch", "path/to/some/place.txt");
+        final Path path = fileSystem.getPath( "test-branch", "path/to/some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isFalse();
-        assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/:path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isFalse();
+        assertThat( path.toString() ).isEqualTo( "path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://test-branch@my-repo/:path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "" );
     }
 
     @Test
     public void testPathBranchRooted2() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("test-branch", "/path/to", "some/place.txt");
+        final Path path = fileSystem.getPath( "test-branch", "/path/to", "some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isTrue();
-        assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isTrue();
+        assertThat( path.toString() ).isEqualTo( "/path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://test-branch@my-repo/path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "/" );
     }
 
     @Test
     public void testPathBranchNonRooted2() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
-        when(fsProvider.isDefault()).thenReturn(false);
-        when(fsProvider.getScheme()).thenReturn("git");
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
+        when( fsProvider.isDefault() ).thenReturn( false );
+        when( fsProvider.getScheme() ).thenReturn( "git" );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        final Path path = fileSystem.getPath("test-branch", "path/to", "some/place.txt");
+        final Path path = fileSystem.getPath( "test-branch", "path/to", "some/place.txt" );
 
-        assertThat(path).isNotNull();
-        assertThat(path.isAbsolute()).isFalse();
-        assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
-        assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/:path/to/some/place.txt");
+        assertThat( path ).isNotNull();
+        assertThat( path.isAbsolute() ).isFalse();
+        assertThat( path.toString() ).isEqualTo( "path/to/some/place.txt" );
+        assertThat( path.toUri().toString() ).isEqualTo( "git://test-branch@my-repo/:path/to/some/place.txt" );
 
-        assertThat(path.getNameCount()).isEqualTo(4);
+        assertThat( path.getNameCount() ).isEqualTo( 4 );
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("");
+        assertThat( path.getName( 0 ).toString() ).isNotNull().isEqualTo( "path" );
+        assertThat( path.getRoot().toString() ).isNotNull().isEqualTo( "" );
     }
 
     @Test
     public void testFileStore() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final File tempDir = createTempDirectory();
-        final Git git = setupGit(tempDir);
+        final Git git = setupGit( tempDir );
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
 
-        assertThat(fileSystem.getFileStores()).hasSize(1);
+        assertThat( fileSystem.getFileStores() ).hasSize( 1 );
         final FileStore fileStore = fileSystem.getFileStores().iterator().next();
-        assertThat(fileStore).isNotNull();
+        assertThat( fileStore ).isNotNull();
 
-        assertThat(fileStore.getTotalSpace()).isEqualTo(tempDir.getTotalSpace());
-        assertThat(fileStore.getUsableSpace()).isEqualTo(tempDir.getUsableSpace());
+        assertThat( fileStore.getTotalSpace() ).isEqualTo( tempDir.getTotalSpace() );
+        assertThat( fileStore.getUsableSpace() ).isEqualTo( tempDir.getUsableSpace() );
     }
 
     @Test
     public void testPathEqualsWithDifferentRepos() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git1 = setupGit();
 
-        final JGitFileSystem fileSystem1 = new JGitFileSystem(fsProvider, git1, "my-repo1");
+        final JGitFileSystem fileSystem1 = new JGitFileSystem( fsProvider, git1, "my-repo1", CredentialsProvider.getDefault() );
 
         final Git git2 = setupGit();
 
-        final JGitFileSystem fileSystem2 = new JGitFileSystem(fsProvider, git2, "my-repo2");
+        final JGitFileSystem fileSystem2 = new JGitFileSystem( fsProvider, git2, "my-repo2", CredentialsProvider.getDefault() );
 
-        final Path path1 = fileSystem1.getPath("master", "/path/to/some.txt");
-        final Path path2 = fileSystem2.getPath("master", "/path/to/some.txt");
+        final Path path1 = fileSystem1.getPath( "master", "/path/to/some.txt" );
+        final Path path2 = fileSystem2.getPath( "master", "/path/to/some.txt" );
 
-        assertThat(path1).isNotEqualTo(path2);
+        assertThat( path1 ).isNotEqualTo( path2 );
 
-        assertThat(path1).isEqualTo(fileSystem1.getPath("/path/to/some.txt"));
+        assertThat( path1 ).isEqualTo( fileSystem1.getPath( "/path/to/some.txt" ) );
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testNewWatchService() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
         fileSystem.newWatchService();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetUserPrincipalLookupService() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
         fileSystem.getUserPrincipalLookupService();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetPathMatcher() throws IOException, GitAPIException {
-        final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+        final FileSystemProvider fsProvider = mock( FileSystemProvider.class );
 
         final Git git = setupGit();
 
-        final JGitFileSystem fileSystem = new JGitFileSystem(fsProvider, git, "my-repo");
-        fileSystem.getPathMatcher("*");
+        final JGitFileSystem fileSystem = new JGitFileSystem( fsProvider, git, "my-repo", CredentialsProvider.getDefault() );
+        fileSystem.getPathMatcher( "*" );
     }
 }

@@ -40,6 +40,7 @@ import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.LinkOption;
@@ -85,6 +86,14 @@ public class VFSServicesServerImpl implements VFSService {
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
         final URI furi = URI.create( uri );
         final org.uberfire.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem( furi, env );
+
+        return new FileSystemImpl( asList( new Path[]{ new PathImpl( furi.getPath(), uri ) } ) );
+    }
+
+    @Override
+    public FileSystem getFileSystem( final String uri ) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        final URI furi = URI.create( uri );
+        FileSystems.getFileSystem( furi );
 
         return new FileSystemImpl( asList( new Path[]{ new PathImpl( furi.getPath(), uri ) } ) );
     }
