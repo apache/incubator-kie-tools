@@ -125,15 +125,15 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
-    public Path createDirectory( Path dir,
-                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Path createDirectory( final Path dir,
+                                 final FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException {
+        return convert( Files.createDirectory( fromPath( dir ), attrs ) );
     }
 
     @Override
     public Path createDirectories( Path dir,
                                    FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return convert( Files.createDirectories( fromPath( dir ), attrs ) );
     }
 
     @Override
@@ -150,13 +150,13 @@ public class VFSServicesServerImpl implements VFSService {
     }
 
     @Override
-    public void delete( Path path ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void delete( final Path path ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
+        Files.delete( fromPath( path ) );
     }
 
     @Override
-    public boolean deleteIfExists( Path path ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean deleteIfExists( final Path path ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
+        return Files.deleteIfExists( fromPath( path ) );
     }
 
     @Override
@@ -164,27 +164,27 @@ public class VFSServicesServerImpl implements VFSService {
                                 String prefix,
                                 String suffix,
                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public Path createTempFile( String prefix,
                                 String suffix,
                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public Path createTempDirectory( Path dir,
                                      String prefix,
                                      FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public Path createTempDirectory( String prefix,
                                      FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
