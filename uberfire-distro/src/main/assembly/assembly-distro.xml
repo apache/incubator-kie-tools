@@ -35,10 +35,6 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <!-- UberFire Libraries -->
-        <include>org.uberfire:uberfire-vfs-model</include>
-        <include>org.uberfire:uberfire-vfs-fs</include>
-        <include>org.uberfire:uberfire-vfs-jgit</include>
-        <include>org.uberfire:uberfire-vfs-api</include>
         <include>org.uberfire:uberfire-security-api</include>
         <include>org.uberfire:uberfire-security-client</include>
         <include>org.uberfire:uberfire-security-server</include>
