@@ -18,8 +18,8 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.Map;
 
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.file.attribute.FileTime;
+import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
+import org.kie.commons.java.nio.file.attribute.FileTime;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

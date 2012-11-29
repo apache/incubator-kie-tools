@@ -23,7 +23,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.backend.workbench.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.java.nio.file.NoSuchFileException;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.uberfire.security.Identity;
 
 import javax.annotation.PostConstruct;

@@ -288,7 +288,6 @@
   </build>
 
   <modules>
-    <module>uberfire-vfs</module>
     <module>uberfire-security</module>
     <module>uberfire-server</module>
     <module>uberfire-api</module>
@@ -412,74 +411,12 @@
         <version>${project.version}</version>
       </dependency>
 
-      <!-- VFS -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-vfs-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-vfs-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-vfs-fs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-vfs-jgit</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <!-- VFS: Service -->
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
         <version>3.1</version>
       </dependency>
-
-      <!-- VFS: Simple FileSystem -->
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>1.4</version>
-      </dependency>
-
-      <!-- VFS: Eclipse -->
-      <dependency>
-        <groupId>org.eclipse.core</groupId>
-        <artifactId>org.eclipse.core.runtime</artifactId>
-        <version>3.6.0.v20100505</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.core</groupId>
-        <artifactId>org.eclipse.core.resources</artifactId>
-        <version>3.6.0.v20100526-0737</version>
-      </dependency>
-
-      <!-- VFS: jGIT -->
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>2.1.0.201209190230-r</version>
-      </dependency>
-
-      <!--&lt;!&ndash; jGIT: Smart HTTP Servlet &ndash;&gt;-->
-      <!--<dependency>-->
-      <!--<groupId>org.eclipse.jgit</groupId>-->
-      <!--<artifactId>org.eclipse.jgit.http.server</artifactId>-->
-      <!--<version>1.3.0.201202151440-r</version>-->
-      <!--</dependency>-->
-
-      <!--&lt;!&ndash; jGIT: AWT UI Helpers &ndash;&gt;-->
-      <!--<dependency>-->
-      <!--<groupId>org.eclipse.jgit</groupId>-->
-      <!--<artifactId>org.eclipse.jgit.ui</artifactId>-->
-      <!--<version>1.3.0.201202151440-r</version>-->
-      <!--</dependency>-->
 
       <!-- Runtime / Container dependencies -->
       <dependency>
@@ -499,10 +436,44 @@
         <version>${logback.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.4</version>
+      </dependency>
+
       <!-- KIE Commons -->
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-commons</artifactId>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-commons-data</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-commons-validation</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+
+      <!-- KIE Commons VFS -->
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-nio2-model</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-nio2-api</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-nio2-fs</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-nio2-jgit</artifactId>
         <version>${kie-commons.version}</version>
       </dependency>
 
@@ -569,12 +540,6 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
-        <version>${errai.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-uibinder</artifactId>
         <version>${errai.version}</version>
       </dependency>
 

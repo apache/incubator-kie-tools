@@ -39,8 +39,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-vfs-model</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-model</artifactId>
 		</dependency>
 
 		<!-- Errai Core -->

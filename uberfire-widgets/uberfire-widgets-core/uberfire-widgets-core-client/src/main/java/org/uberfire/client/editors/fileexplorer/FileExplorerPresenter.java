@@ -43,8 +43,8 @@ import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 

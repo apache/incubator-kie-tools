@@ -27,32 +27,32 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.java.nio.IOException;
+import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
+import org.kie.commons.java.nio.file.CopyOption;
+import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.FileAlreadyExistsException;
+import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
+import org.kie.commons.java.nio.file.FileSystemNotFoundException;
+import org.kie.commons.java.nio.file.FileSystems;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.LinkOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.commons.java.nio.file.NotDirectoryException;
+import org.kie.commons.java.nio.file.NotLinkException;
+import org.kie.commons.java.nio.file.Paths;
+import org.kie.commons.java.nio.file.PatternSyntaxException;
+import org.kie.commons.java.nio.file.ProviderNotFoundException;
+import org.kie.commons.java.nio.file.attribute.FileAttribute;
+import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.kie.commons.java.nio.file.attribute.UserPrincipal;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
 import org.uberfire.backend.vfs.impl.PathImpl;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
-import org.uberfire.java.nio.file.CopyOption;
-import org.uberfire.java.nio.file.DirectoryNotEmptyException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystemNotFoundException;
-import org.uberfire.java.nio.file.FileSystems;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.LinkOption;
-import org.uberfire.java.nio.file.NoSuchFileException;
-import org.uberfire.java.nio.file.NotDirectoryException;
-import org.uberfire.java.nio.file.NotLinkException;
-import org.uberfire.java.nio.file.Paths;
-import org.uberfire.java.nio.file.PatternSyntaxException;
-import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.file.attribute.UserPrincipal;
 
 import static java.util.Arrays.*;
 
@@ -85,7 +85,7 @@ public class VFSServicesServerImpl implements VFSService {
                                      final Map<String, Object> env )
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
         final URI furi = URI.create( uri );
-        final org.uberfire.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem( furi, env );
+        final org.kie.commons.java.nio.file.FileSystem newFileSystem = FileSystems.newFileSystem( furi, env );
 
         return new FileSystemImpl( asList( new Path[]{ new PathImpl( furi.getPath(), uri ) } ) );
     }
@@ -101,7 +101,7 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path dir )
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.uberfire.java.nio.file.Path> content = Files.newDirectoryStream( fromPath( dir ) ).iterator();
+        final Iterator<org.kie.commons.java.nio.file.Path> content = Files.newDirectoryStream( fromPath( dir ) ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -347,13 +347,13 @@ public class VFSServicesServerImpl implements VFSService {
         return convert( Files.write( fromPath( path ), content.getBytes() ) );
     }
 
-    private Path convert( final org.uberfire.java.nio.file.Path path ) {
+    private Path convert( final org.kie.commons.java.nio.file.Path path ) {
         final Map<String, Object> attributes = Files.readAttributes( path, "*" );
 
         return new PathImpl( path.getFileName().toString(), path.toUri().toString(), attributes );
     }
 
-    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.uberfire.java.nio.file.Path> iterator ) {
+    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.kie.commons.java.nio.file.Path> iterator ) {
         final List<Path> content = new LinkedList<Path>();
         while ( iterator.hasNext() ) {
             content.add( convert( iterator.next() ) );
@@ -361,7 +361,7 @@ public class VFSServicesServerImpl implements VFSService {
         return new DirectoryStreamImpl( content );
     }
 
-    private org.uberfire.java.nio.file.Path fromPath( final Path path ) {
+    private org.kie.commons.java.nio.file.Path fromPath( final Path path ) {
         try {
             return Paths.get( URI.create( path.toURI() ) );
         } catch ( IllegalArgumentException e ) {

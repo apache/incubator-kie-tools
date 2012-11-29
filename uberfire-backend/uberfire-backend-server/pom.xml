@@ -35,8 +35,8 @@
 
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-vfs-api</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-api</artifactId>
     </dependency>
 
     <dependency>

@@ -29,8 +29,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
 import org.uberfire.backend.vfs.impl.PathImpl;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystems;
+import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
+import org.kie.commons.java.nio.file.FileSystems;
 
 import static java.util.Arrays.*;
 

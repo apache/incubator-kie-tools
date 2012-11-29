@@ -98,13 +98,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-vfs-jgit</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-jgit</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-vfs-fs</artifactId>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
     </dependency>
 
     <!-- Errai Core -->
@@ -204,7 +204,8 @@
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.kie:kie-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
@@ -212,7 +213,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-vfs-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-commons</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
