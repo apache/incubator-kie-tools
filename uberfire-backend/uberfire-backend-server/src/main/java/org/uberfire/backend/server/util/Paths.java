@@ -26,12 +26,11 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.kie.commons.io.IOService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 
-import static org.uberfire.backend.vfs.PathFactory.newPath;
+import static org.uberfire.backend.vfs.PathFactory.*;
 
 @ApplicationScoped
-public final class Paths {
+public class Paths {
 
     @Inject
     @Named("ioStrategy")
