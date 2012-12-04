@@ -469,11 +469,6 @@
       </dependency>
       <dependency>
         <groupId>org.kie.commons</groupId>
-        <artifactId>kie-nio2-api</artifactId>
-        <version>${kie-commons.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.commons</groupId>
         <artifactId>kie-nio2-fs</artifactId>
         <version>${kie-commons.version}</version>
       </dependency>

@@ -37,11 +37,12 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.uberfire.backend.vfs.PathFactory.*;
 
 @Dependent
 public class CloneRepositoryWizard extends FormStylePopup {
@@ -55,73 +56,73 @@ public class CloneRepositoryWizard extends FormStylePopup {
     @Inject
     private Event<Root> event;
 
-    private static CoreImages images = GWT.create(CoreImages.class);
+    private static CoreImages images = GWT.create( CoreImages.class );
 
-    final private TextBox nameTextBox = new TextBox();
-    final private TextBox gitURLTextBox = new TextBox();
-    final private TextBox usernameTextBox = new TextBox();
+    final private TextBox         nameTextBox     = new TextBox();
+    final private TextBox         gitURLTextBox   = new TextBox();
+    final private TextBox         usernameTextBox = new TextBox();
     final private PasswordTextBox passwordTextBox = new PasswordTextBox();
 
     public CloneRepositoryWizard() {
-        super(images.backupLarge(), "Clone Repository");
+        super( images.backupLarge(), "Clone Repository" );
 
-        nameTextBox.setTitle("Repository Name");
-        nameTextBox.setWidth("200px");
-        addAttribute("Repository Name:", nameTextBox);
+        nameTextBox.setTitle( "Repository Name" );
+        nameTextBox.setWidth( "200px" );
+        addAttribute( "Repository Name:", nameTextBox );
 
-        gitURLTextBox.setTitle("Git URL");
-        gitURLTextBox.setWidth("200px");
-        addAttribute("Git URL:", gitURLTextBox);
+        gitURLTextBox.setTitle( "Git URL" );
+        gitURLTextBox.setWidth( "200px" );
+        addAttribute( "Git URL:", gitURLTextBox );
 
-        usernameTextBox.setWidth("200px");
-        usernameTextBox.setTitle("User Name");
-        addAttribute("User Name:", usernameTextBox);
+        usernameTextBox.setWidth( "200px" );
+        usernameTextBox.setTitle( "User Name" );
+        addAttribute( "User Name:", usernameTextBox );
 
-        passwordTextBox.setWidth("200px");
-        passwordTextBox.setTitle("Password");
-        addAttribute("Password:", passwordTextBox);
+        passwordTextBox.setWidth( "200px" );
+        passwordTextBox.setTitle( "Password" );
+        addAttribute( "Password:", passwordTextBox );
 
         final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button("Create");
-        create.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+        final Button create = new Button( "Create" );
+        create.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent arg0 ) {
 
-                final Map<String, Object> env = new HashMap<String, Object>(3);
-                env.put("username", usernameTextBox.getText());
-                env.put("password", passwordTextBox.getText());
-                env.put("origin", gitURLTextBox.getText());
+                final Map<String, Object> env = new HashMap<String, Object>( 3 );
+                env.put( "username", usernameTextBox.getText() );
+                env.put( "password", passwordTextBox.getText() );
+                env.put( "origin", gitURLTextBox.getText() );
                 final String uri = "git://" + nameTextBox.getText();
 
-                vfsService.call(new RemoteCallback<FileSystem>() {
+                vfsService.call( new RemoteCallback<FileSystem>() {
                     @Override
-                    public void callback(final FileSystem fileSystem) {
-                        Window.alert("The repository is cloned successfully");
+                    public void callback( final FileSystem fileSystem ) {
+                        Window.alert( "The repository is cloned successfully" );
                         hide();
-                        final PlaceRequest repositoryEditor = new DefaultPlaceRequest("RepositoryEditor")
-                                .addParameter("path:uri", uri)
-                                .addParameter("path:name", nameTextBox.getText());
-                        final Root newRoot = new Root(new PathImpl(nameTextBox.getText(), uri), repositoryEditor);
-                        rootService.call(new RemoteCallback<Root>() {
+                        final PlaceRequest repositoryEditor = new DefaultPlaceRequest( "RepositoryEditor" )
+                                .addParameter( "path:uri", uri )
+                                .addParameter( "path:name", nameTextBox.getText() );
+                        final Root newRoot = new Root( newPath( nameTextBox.getText(), uri ), repositoryEditor );
+                        rootService.call( new RemoteCallback<Root>() {
                             @Override
-                            public void callback(Root response) {
-                                event.fire(newRoot);
+                            public void callback( Root response ) {
+                                event.fire( newRoot );
                             }
-                        }).addRoot(newRoot);
+                        } ).addRoot( newRoot );
                     }
-                }).newFileSystem(uri, env);
+                } ).newFileSystem( uri, env );
             }
-        });
-        hp.add(create);
+        } );
+        hp.add( create );
 
-        Button cancel = new Button("Cancel");
-        cancel.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+        Button cancel = new Button( "Cancel" );
+        cancel.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent arg0 ) {
                 hide();
             }
-        });
-        hp.add(new HTML("&nbsp"));
-        hp.add(cancel);
-        addAttribute("", hp);
+        } );
+        hp.add( new HTML( "&nbsp" ) );
+        hp.add( cancel );
+        addAttribute( "", hp );
     }
 
 }

@@ -26,8 +26,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
@@ -41,25 +39,29 @@ import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.NotDirectoryException;
 import org.kie.commons.java.nio.file.OpenOption;
 import org.kie.commons.java.nio.file.ProviderNotFoundException;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 
 @Service
 @ApplicationScoped
 public class VFSServicesServerImpl implements VFSService {
 
-    @Inject @Named("ioStrategy")
+    @Inject
+    @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private Paths paths;
 
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path dir )
             throws IllegalArgumentException, NotDirectoryException, IOException {
 
-        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( convert( dir ) ).iterator();
+        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ) ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -68,7 +70,7 @@ public class VFSServicesServerImpl implements VFSService {
     public DirectoryStream<Path> newDirectoryStream( final Path dir,
                                                      final DirectoryStream.Filter<Path> filter )
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( convert( dir ), convert( filter ) ).iterator();
+        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ), convert( filter ) ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -77,73 +79,73 @@ public class VFSServicesServerImpl implements VFSService {
     public Path createDirectory( final Path dir )
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException {
-        return convert( ioService.createDirectory( convert( dir ) ) );
+        return paths.convert( ioService.createDirectory( paths.convert( dir ) ) );
     }
 
     @Override
     public Path createDirectories( final Path dir )
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return convert( ioService.createDirectories( convert( dir ) ) );
+        return paths.convert( ioService.createDirectories( paths.convert( dir ) ) );
     }
 
     @Override
     public Path createDirectory( final Path dir,
                                  final Map<String, ?> attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return convert( ioService.createDirectory( convert( dir ), attrs ) );
+        return paths.convert( ioService.createDirectory( paths.convert( dir ), attrs ) );
     }
 
     @Override
     public Path createDirectories( final Path dir,
                                    final Map<String, ?> attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return convert( ioService.createDirectories( convert( dir ), attrs ) );
+        return paths.convert( ioService.createDirectories( paths.convert( dir ), attrs ) );
     }
 
     @Override
     public Map<String, Object> readAttributes( final Path path ) throws UnsupportedOperationException, IllegalArgumentException, IOException {
-        return ioService.readAttributes( convert( path ) );
+        return ioService.readAttributes( paths.convert( path ) );
     }
 
     @Override
     public void setAttributes( final Path path,
                                final Map<String, Object> attrs ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        ioService.setAttributes( convert( path ), attrs );
+        ioService.setAttributes( paths.convert( path ), attrs );
     }
 
     @Override
     public void delete( final Path path ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
-        ioService.delete( convert( path ) );
+        ioService.delete( paths.convert( path ) );
     }
 
     @Override
     public boolean deleteIfExists( final Path path ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
-        return ioService.deleteIfExists( convert( path ) );
+        return ioService.deleteIfExists( paths.convert( path ) );
     }
 
     @Override
     public Path copy( final Path source,
                       final Path target,
                       final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
-        return convert( ioService.copy( convert( source ), convert( target ), options ) );
+        return paths.convert( ioService.copy( paths.convert( source ), paths.convert( target ), options ) );
     }
 
     @Override
     public Path move( final Path source,
                       final Path target,
                       final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
-        return convert( ioService.move( convert( source ), convert( target ), options ) );
+        return paths.convert( ioService.move( paths.convert( source ), paths.convert( target ), options ) );
     }
 
     @Override
     public String readAllString( final Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return ioService.readAllString( convert( path ) );
+        return ioService.readAllString( paths.convert( path ) );
     }
 
     @Override
     public Path write( final Path path,
                        final String content ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert( ioService.write( convert( path ), content ) );
+        return paths.convert( ioService.write( paths.convert( path ), content ) );
     }
 
     @Override
@@ -151,7 +153,7 @@ public class VFSServicesServerImpl implements VFSService {
                        final String content,
                        final Map<String, ?> attrs,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return convert( ioService.write( convert( path ), content, attrs, options ) );
+        return paths.convert( ioService.write( paths.convert( path ), content, attrs, options ) );
     }
 
     @Override
@@ -164,7 +166,7 @@ public class VFSServicesServerImpl implements VFSService {
     private DirectoryStream<Path> newDirectoryStream( final Iterator<org.kie.commons.java.nio.file.Path> iterator ) {
         final List<Path> content = new LinkedList<Path>();
         while ( iterator.hasNext() ) {
-            content.add( convert( iterator.next() ) );
+            content.add( paths.convert( iterator.next() ) );
         }
         return new DirectoryStreamImpl( content );
     }
@@ -172,7 +174,7 @@ public class VFSServicesServerImpl implements VFSService {
     private FileSystem convert( final org.kie.commons.java.nio.file.FileSystem fs ) {
         final List<Path> roots = new ArrayList<Path>();
         for ( final org.kie.commons.java.nio.file.Path root : fs.getRootDirectories() ) {
-            roots.add( convert( root ) );
+            roots.add( paths.convert( root ) );
         }
 
         return new FileSystemImpl( roots );
@@ -182,26 +184,8 @@ public class VFSServicesServerImpl implements VFSService {
         return new DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>() {
             @Override
             public boolean accept( final org.kie.commons.java.nio.file.Path entry ) throws IOException {
-                return filter.accept( convert( entry ) );
+                return filter.accept( paths.convert( entry ) );
             }
         };
-    }
-
-    private Path convert( final org.kie.commons.java.nio.file.Path path ) {
-        final Map<String, Object> attributes = ioService.readAttributes( path, "*" );
-
-        return new PathImpl( path.getFileName().toString(), path.toUri().toString(), attributes );
-    }
-
-    private org.kie.commons.java.nio.file.Path convert( final Path path ) {
-        try {
-            return ioService.get( URI.create( path.toURI() ) );
-        } catch ( IllegalArgumentException e ) {
-            try {
-                return ioService.get( URI.create( URIUtil.encodePath( path.toURI() ) ) );
-            } catch ( URIException ex ) {
-                return null;
-            }
-        }
     }
 }

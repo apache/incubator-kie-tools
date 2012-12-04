@@ -18,14 +18,15 @@ package org.uberfire.backend.vfs.impl;
 
 import org.jboss.errai.bus.client.api.interceptor.RemoteCallContext;
 import org.jboss.errai.bus.client.api.interceptor.RpcInterceptor;
+import org.uberfire.backend.vfs.PathFactory;
 
 public class VFSCacheInterceptor implements RpcInterceptor {
 
     @Override
-    public void aroundInvoke(final RemoteCallContext context) {
-        final Object o = context.getParameters()[0];
-        if (o instanceof PathImpl) {
-            context.setResult(((PathImpl) o).getAttributes());
+    public void aroundInvoke( final RemoteCallContext context ) {
+        final Object o = context.getParameters()[ 0 ];
+        if ( o instanceof PathFactory.PathImpl ) {
+            context.setResult( ( (PathFactory.PathImpl) o ).getAttributes() );
             return;
         }
 

@@ -27,7 +27,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -38,30 +37,31 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.resources.CoreImages;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
+import static org.uberfire.backend.vfs.PathFactory.*;
+
 @Dependent
 public class CreateNewRepositoryWizard extends FormStylePopup {
 
     @Inject
-    private Caller<VFSService>              vfsService;
+    private Caller<VFSService> vfsService;
 
     @Inject
     private Caller<FileExplorerRootService> rootService;
 
     @Inject
-    private Event<Root>                     event;
+    private Event<Root> event;
 
-    private static CoreImages               images              = GWT.create( CoreImages.class );
+    private static CoreImages images = GWT.create( CoreImages.class );
 
-    private TextBox                         nameTextBox         = new TextBox();
-    private TextBox                         descriptionTextArea = new TextBox();
-    private TextBox                         usernameTextBox     = new TextBox();
-    private PasswordTextBox                 passwordTextBox     = new PasswordTextBox();
+    private TextBox         nameTextBox         = new TextBox();
+    private TextBox         descriptionTextArea = new TextBox();
+    private TextBox         usernameTextBox     = new TextBox();
+    private PasswordTextBox passwordTextBox     = new PasswordTextBox();
 
     public CreateNewRepositoryWizard() {
         super( images.backupLarge(),
@@ -91,7 +91,7 @@ public class CreateNewRepositoryWizard extends FormStylePopup {
         HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( "Create" );
         create.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
 
                 final Map<String, Object> env = new HashMap<String, Object>( 2 );
                 env.put( "username", passwordTextBox.getText() );
@@ -101,18 +101,18 @@ public class CreateNewRepositoryWizard extends FormStylePopup {
 
                 vfsService.call( new RemoteCallback<FileSystem>() {
                     @Override
-                    public void callback(final FileSystem v) {
+                    public void callback( final FileSystem v ) {
                         Window.alert( "The repository is created successfully" );
                         hide();
                         final PlaceRequest repositoryEditor = new DefaultPlaceRequest( "RepositoryEditor" )
                                 .addParameter( "path:uri", uri )
                                 .addParameter( "path:name", nameTextBox.getText() );
 
-                        final Root newRoot = new Root(new PathImpl(nameTextBox.getText(), uri), repositoryEditor);
+                        final Root newRoot = new Root( newPath( nameTextBox.getText(), uri ), repositoryEditor );
 
                         rootService.call( new RemoteCallback<Root>() {
                             @Override
-                            public void callback(Root response) {
+                            public void callback( Root response ) {
                                 event.fire( newRoot );
                             }
                         } ).addRoot( newRoot );
@@ -124,7 +124,7 @@ public class CreateNewRepositoryWizard extends FormStylePopup {
 
         Button cancel = new Button( "Cancel" );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 hide();
             }
         } );

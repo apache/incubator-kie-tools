@@ -31,10 +31,10 @@ import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
 import org.uberfire.backend.vfs.impl.FileSystemImpl;
-import org.uberfire.backend.vfs.impl.PathImpl;
 
 import static java.util.Arrays.*;
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
+import static org.uberfire.backend.vfs.PathFactory.*;
 
 @Singleton
 public class AppSetup {
@@ -60,7 +60,7 @@ public class AppSetup {
         } catch ( FileSystemAlreadyExistsException ex ) {
         }
 
-        final Path root = new PathImpl( "uf-playground", "default://uf-playground" );
+        final Path root = newPath( "uf-playground", "default://uf-playground" );
         activeFileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
     }
 

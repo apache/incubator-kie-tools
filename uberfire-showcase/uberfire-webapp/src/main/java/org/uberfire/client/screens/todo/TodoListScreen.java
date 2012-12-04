@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.markdown.Markdown;
@@ -67,7 +67,7 @@ public class TodoListScreen
                     markdown.setContent( response );
                 }
             }
-        } ).readAllString( new PathImpl( "todo.md", "default://uf-playground/todo.md" ) );
+        } ).readAllString( PathFactory.newPath( "todo.md", "default://uf-playground/todo.md" ) );
     }
 
     @WorkbenchPartTitle

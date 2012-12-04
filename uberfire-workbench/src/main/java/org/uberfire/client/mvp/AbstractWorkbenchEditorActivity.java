@@ -16,8 +16,9 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.PathImpl;
 import org.uberfire.shared.mvp.PlaceRequest;
+
+import static org.uberfire.backend.vfs.PathFactory.*;
 
 /**
  * Base class for Editor Activities
@@ -26,47 +27,41 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         implements
         WorkbenchEditorActivity {
 
-    public AbstractWorkbenchEditorActivity(final PlaceManager placeManager) {
+    public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
     @Override
-    public void launch(final AcceptItem acceptPanel,
-                       final PlaceRequest place,
-                       final Command callback) {
-        super.launch( place,
-                      callback );
-        String simplePath = place.getParameterString( "path",
-                                                null );
-        String uri = place.getParameterString( "path:uri",
-                                         null );
-        String name = place.getParameterString( "path:name",
-                                          null );
+    public void launch( final AcceptItem acceptPanel,
+                        final PlaceRequest place,
+                        final Command callback ) {
+        super.launch( place, callback );
+        String simplePath = place.getParameterString( "path", null );
+        String uri = place.getParameterString( "path:uri", null );
+        String name = place.getParameterString( "path:name", null );
 
         final Path path;
-        if ( simplePath != null && (uri == null || name == null) ) {
-            path = new PathImpl( simplePath );
+        if ( simplePath != null && ( uri == null || name == null ) ) {
+            path = newPath( simplePath );
         } else {
-            path = new PathImpl( name,
-                                 uri );
+            path = newPath( name, uri );
         }
 
-        onStart( path,
-                 place );
+        onStart( path, place );
 
-        acceptPanel.add( getTitleWidget(),
-                         getWidget() );
+        acceptPanel.add( getTitleWidget(), getWidget() );
+
         onReveal();
     }
 
     @Override
-    public void onStart(final Path path) {
+    public void onStart( final Path path ) {
         //Do nothing.  
     }
 
     @Override
-    public void onStart(final Path path,
-                        final PlaceRequest place) {
+    public void onStart( final Path path,
+                         final PlaceRequest place ) {
         //Do nothing.  
     }
 
