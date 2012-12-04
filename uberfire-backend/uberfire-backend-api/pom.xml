@@ -16,57 +16,57 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.uberfire</groupId>
-		<artifactId>uberfire-backend</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-backend</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>uberfire-backend-api</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>uberfire-backend-api</artifactId>
+  <packaging>jar</packaging>
 
-	<name>UberFire Backend API</name>
-	<description>UberFire Backend API</description>
+  <name>UberFire Backend API</name>
+  <description>UberFire Backend API</description>
 
-	<dependencies>
+  <dependencies>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
-		<dependency>
+    <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-model</artifactId>
-		</dependency>
+    </dependency>
 
-		<!-- Errai Core -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-bus</artifactId>
-		</dependency>
-		
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
-        </dependency>
-	</dependencies>
-	
-	<build>
-        <resources>
-            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-            <resource>
-                <directory>src/main/java</directory>
-            </resource>
-            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${gwt.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 
 </project>

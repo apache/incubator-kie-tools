@@ -36,8 +36,8 @@ import static java.util.Collections.*;
 @Service
 @ApplicationScoped
 public class FileExplorerRootServiceImpl
-    implements
-    FileExplorerRootService {
+        implements
+        FileExplorerRootService {
 
     protected final Set<Root> roots = new HashSet<Root>();
 
@@ -64,12 +64,12 @@ public class FileExplorerRootServiceImpl
     }
 
     @Override
-    public void addRoot(final Root root) {
+    public void addRoot( final Root root ) {
         roots.add( root );
     }
 
     @Override
-    public void removeRoot(final Root root) {
+    public void removeRoot( final Root root ) {
         roots.remove( root );
     }
 

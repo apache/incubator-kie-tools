@@ -15,24 +15,26 @@
  */
 package org.uberfire.backend.server;
 
-import com.thoughtworks.xstream.XStream;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.PathImpl;
-import org.uberfire.backend.workbench.WorkbenchServices;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.uberfire.security.Identity;
-
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.thoughtworks.xstream.XStream;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.FileSystem;
+import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.commons.java.nio.file.Path;
+import org.uberfire.backend.workbench.WorkbenchServices;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.security.Identity;
+
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
  * Workbench services
@@ -44,12 +46,8 @@ public class WorkbenchServicesImpl
         WorkbenchServices {
 
     @Inject
-    private VFSService vfsService;
-
-    @Inject
-    @Named("fs")
-    private ActiveFileSystems fileSystems;
-
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     @SessionScoped
@@ -61,66 +59,72 @@ public class WorkbenchServicesImpl
 
     @PostConstruct
     public void init() {
-        this.bootstrapRoot = fileSystems.getBootstrapFileSystem().getRootDirectories().get(0);
+        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+        if ( fsIterator.hasNext() ) {
+            final FileSystem bootstrap = fsIterator.next();
+            final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
+            if ( rootIterator.hasNext() ) {
+                this.bootstrapRoot = rootIterator.next();
+            }
+        }
     }
 
     @Override
-    public void save(final PerspectiveDefinition perspective) {
-        final String xml = xs.toXML(perspective);
+    public void save( final PerspectiveDefinition perspective ) {
+        final String xml = xs.toXML( perspective );
 
-        final String rootURI = bootstrapRoot.toURI();
+        final Path perspectivePath = bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() + ".perspective" );
 
-        vfsService.write(new PathImpl(rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() + ".perspective"), xml);
+        ioService.write( perspectivePath, xml );
     }
 
     @Override
-    public PerspectiveDefinition load(final String perspectiveName) {
-        final String rootURI = bootstrapRoot.toURI();
-        final Path path = new PathImpl(rootURI + "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName + ".perspective");
+    public PerspectiveDefinition load( final String perspectiveName ) {
 
-        if (vfsService.exists(path)) {
-            final String xml = vfsService.readAllString(path);
-            return (PerspectiveDefinition) xs.fromXML(xml);
+        final Path perspectivePath = bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName + ".perspective" );
+
+        if ( ioService.exists( perspectivePath ) ) {
+            final String xml = ioService.readAllString( perspectivePath );
+            return (PerspectiveDefinition) xs.fromXML( xml );
         }
 
         return null;
     }
 
     @Override
-    public HashMap<String, String> loadDefaultEditorsMap() {
+    public Map<String, String> loadDefaultEditorsMap() {
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         try {
-
-            PathImpl path = getPathToDefaultEditors();
-            if (vfsService.exists(path)) {
-                for (String line : vfsService.readAllLines(path)) {
-                    if (!line.trim().startsWith("#")) {
-                        String[] split = line.split("=");
-                        map.put(split[0], split[1]);
+            final Path path = getPathToDefaultEditors();
+            if ( ioService.exists( path ) ) {
+                for ( String line : ioService.readAllLines( path ) ) {
+                    if ( !line.trim().startsWith( "#" ) ) {
+                        String[] split = line.split( "=" );
+                        map.put( split[ 0 ], split[ 1 ] );
                     }
                 }
             }
 
             return map;
 
-        } catch (NoSuchFileException e) {
+        } catch ( final NoSuchFileException e ) {
             e.printStackTrace();
             return map;
         }
     }
 
     @Override
-    public void saveDefaultEditors(Map<String, String> properties) {
-        StringBuilder text = new StringBuilder();
-        for (String key : properties.keySet()) {
-            text.append(String.format("%s=%s", key, properties.get(key)));
+    public void saveDefaultEditors( final Map<String, String> properties ) {
+        final StringBuilder text = new StringBuilder();
+        for ( String key : properties.keySet() ) {
+            text.append( String.format( "%s=%s", key, properties.get( key ) ) );
         }
 
-        vfsService.write(getPathToDefaultEditors(), text.toString());
+        ioService.write( getPathToDefaultEditors(), text.toString() );
     }
 
-    private PathImpl getPathToDefaultEditors() {
-        return new PathImpl(bootstrapRoot.toURI() + "/.metadata/.users/" + identity.getName() + "/.defaultEditors");
+    private Path getPathToDefaultEditors() {
+        return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.defaultEditors" );
     }
 }

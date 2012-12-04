@@ -59,6 +59,12 @@
       <artifactId>uberfire-backend-commons</artifactId>
     </dependency>
 
+    <!-- KIE Commons IO -->
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-io</artifactId>
+    </dependency>
+
     <!-- Workbench serialization -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
