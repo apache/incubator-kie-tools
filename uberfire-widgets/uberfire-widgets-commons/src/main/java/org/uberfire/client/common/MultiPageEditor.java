@@ -51,4 +51,5 @@ public class MultiPageEditor
     public Widget asWidget() {
         return view;
     }
+
 }

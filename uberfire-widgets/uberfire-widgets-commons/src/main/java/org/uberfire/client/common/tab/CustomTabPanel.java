@@ -19,6 +19,7 @@ package org.uberfire.client.common.tab;
 import java.util.Iterator;
 
 import com.google.gwt.aria.client.Roles;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
@@ -28,15 +29,16 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SourcesTabEvents;
 import com.google.gwt.user.client.ui.TabListener;
 import com.google.gwt.user.client.ui.UIObject;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -53,7 +55,8 @@ public class CustomTabPanel
                    HasAnimation,
                    IndexedPanel.ForIsWidget,
                    HasBeforeSelectionHandlers<Integer>,
-                   HasSelectionHandlers<Integer> {
+                   HasSelectionHandlers<Integer>,
+                   RequiresResize {
 
     /**
      * This extension of DeckPanel overrides the public mutator methods to prevent
@@ -197,30 +200,29 @@ public class CustomTabPanel
         }
     }
 
+    private final DockLayoutPanel panel = new DockLayoutPanel( Unit.PX );
     private final UnmodifiableTabBar tabBar = new UnmodifiableTabBar();
-    private final TabbedDeckPanel    deck   = new TabbedDeckPanel( tabBar );
+    private final TabbedDeckPanel deck = new TabbedDeckPanel( tabBar );
 
     /**
      * Creates an empty tab panel.
      */
     public CustomTabPanel() {
-        final VerticalPanel panel = new VerticalPanel();
+        panel.addSouth( tabBar,
+                        32 );
         panel.add( deck );
-        panel.add( tabBar );
 
-        panel.setCellHeight( deck, "100%" );
-        tabBar.setWidth( "100%" );
-
-        tabBar.addTabListener( this );
-        initWidget( panel );
-        setStyleName( "gwt-TabPanel" );
         deck.setStyleName( "gwt-TabPanelBottom" );
+
+        tabBar.setWidth( "100%" );
+        tabBar.addTabListener( this );
+
+        initWidget( panel );
+
+        setStyleName( "gwt-TabPanel" );
+
         // Add a11y role "tabpanel"
         Roles.getTabpanelRole().set( deck.getElement() );
-    }
-
-    public void setHeight( final String height ) {
-        deck.setHeight( height );
     }
 
     /**
@@ -541,4 +543,23 @@ public class CustomTabPanel
         tabBar.ensureDebugId( baseID + "-bar" );
         deck.ensureDebugId( baseID + "-bottom" );
     }
+
+    @Override
+    public void onResize() {
+        final Widget parent = getParent();
+        if ( parent != null ) {
+            final int width = parent.getOffsetWidth();
+            final int height = parent.getOffsetHeight();
+            setPixelSize( width,
+                          height );
+            for ( int index = 0; index < tabBar.getTabCount(); index++ ) {
+                final Widget tabWidget = getWidget( index );
+                if ( tabWidget instanceof RequiresResize ) {
+                    ( (RequiresResize) tabWidget ).onResize();
+                }
+            }
+        }
+
+    }
+
 }

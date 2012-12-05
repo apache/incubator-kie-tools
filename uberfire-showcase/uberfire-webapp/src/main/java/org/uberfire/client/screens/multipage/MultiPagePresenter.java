@@ -14,49 +14,38 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.screens.miscfeatures;
+package org.uberfire.client.screens.multipage;
 
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
  */
-@WorkbenchScreen(identifier = "MiscellaneousFeatures")
-public class MiscFeaturesPresenter {
+@WorkbenchScreen(identifier = "MultiPage")
+public class MultiPagePresenter {
 
     public interface View
             extends
-            UberView<MiscFeaturesPresenter> {
+            UberView<MultiPagePresenter> {
 
     }
 
     @Inject
     public View view;
 
-    @Inject
-    private PlaceManager placeManager;
-
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Miscellaneous features";
+        return "Multi View";
     }
 
     @WorkbenchPartView
-    public UberView<MiscFeaturesPresenter> getView() {
+    public UberView<MultiPagePresenter> getView() {
         return view;
-    }
-
-    public void launchUnknownPlace() {
-        final PlaceRequest place = new DefaultPlaceRequest( "somewhere.that.does.not.exist" );
-        placeManager.goTo( place );
     }
 
 }

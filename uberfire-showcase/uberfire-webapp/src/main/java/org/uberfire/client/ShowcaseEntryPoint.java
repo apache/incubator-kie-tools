@@ -74,7 +74,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    private String[] menuItems = new String[]{ "FileExplorer", "Chart", "MiscellaneousFeatures", "Duplicate" };
+    private String[] menuItems = new String[]{ "FileExplorer", "Chart", "MiscellaneousFeatures", "MultiPage", "Duplicate" };
 
     @AfterInitialization
     public void startApp() {

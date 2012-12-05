@@ -77,14 +77,24 @@ public class MultiPageEditorView
     }
 
     public void addPage( final Page page ) {
-        tabPanel.add( page.getView(), page.getLabel() );
+        tabPanel.add( page.getView(),
+                      page.getLabel() );
         tabPanel.selectTab( 0 );
     }
 
     @Override
     public void onResize() {
-        final int height = getParent().getOffsetHeight();
-        tabPanel.setHeight( height + "px" );
+        final Widget parent = getParent();
+        if ( parent != null ) {
+            final int width = parent.getOffsetWidth();
+            final int height = parent.getOffsetHeight();
+            setPixelSize( width,
+                          height );
+        }
+        final Widget widget = getWidget();
+        if ( widget instanceof RequiresResize ) {
+            ( (RequiresResize) widget ).onResize();
+        }
     }
 
 }

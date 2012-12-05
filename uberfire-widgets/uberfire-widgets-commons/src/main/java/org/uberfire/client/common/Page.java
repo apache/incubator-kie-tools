@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class Page {
 
-    private final String   label;
+    private final String label;
     private final PageView view;
 
     public Page( final IsWidget widget ) {
@@ -70,8 +70,10 @@ public abstract class Page {
         public void onResize() {
             final Widget parent = getParent();
             if ( parent != null ) {
-                sp.setPixelSize( parent.getOffsetWidth(),
-                                 parent.getOffsetHeight() );
+                final int width = parent.getOffsetWidth();
+                final int height = parent.getOffsetHeight();
+                sp.setPixelSize( width,
+                                 height );
             }
             super.onResize();
         }
