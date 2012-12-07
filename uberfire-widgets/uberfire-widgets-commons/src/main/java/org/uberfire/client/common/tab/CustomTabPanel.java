@@ -19,6 +19,7 @@ package org.uberfire.client.common.tab;
 import java.util.Iterator;
 
 import com.google.gwt.aria.client.Roles;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -209,7 +210,7 @@ public class CustomTabPanel
      */
     public CustomTabPanel() {
         panel.addSouth( tabBar,
-                        32 );
+                        0 );
         panel.add( deck );
 
         deck.setStyleName( "gwt-TabPanelBottom" );
@@ -223,6 +224,15 @@ public class CustomTabPanel
 
         // Add a11y role "tabpanel"
         Roles.getTabpanelRole().set( deck.getElement() );
+
+        //Size SOUTH correctly once TabBar's height is available
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                panel.setWidgetSize( tabBar,
+                                     tabBar.getOffsetHeight() );
+            }
+        } );
     }
 
     /**
