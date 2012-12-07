@@ -40,25 +40,71 @@ import com.google.gwt.user.client.ui.Widget;
 
 public abstract class Popup extends PopupPanel {
 
-    private boolean       dragged       = false;
-    private int           dragStartX;
-    private int           dragStartY;
+    private boolean dragged = false;
+    private int dragStartX;
+    private int dragStartY;
 
-    private Command       afterShowEvent;
-    private Command       afterCloseEvent;
-    private boolean       fixedLocation = false;
+    private Command afterShowEvent;
+    private Command afterCloseEvent;
+    private boolean fixedLocation = false;
 
+    private VerticalPanel container = new VerticalPanel();
+    private boolean initialized = false;
     private PopupTitleBar titleBar;
 
     public Popup() {
         setGlassEnabled( true );
+
+        container.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
+
+        this.titleBar = new PopupTitleBar( getTitle() );
+
+        this.titleBar.closeButton.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                hide();
+                if ( afterCloseEvent != null ) {
+                    afterCloseEvent.execute();
+                }
+            }
+        } );
+        this.titleBar.addMouseDownHandler( new MouseDownHandler() {
+
+            public void onMouseDown( MouseDownEvent event ) {
+                dragged = true;
+                dragStartX = event.getRelativeX( getElement() );
+                dragStartY = event.getRelativeY( getElement() );
+                DOM.setCapture( titleBar.getElement() );
+            }
+        } );
+        this.titleBar.addMouseMoveHandler( new MouseMoveHandler() {
+
+            public void onMouseMove( MouseMoveEvent event ) {
+                if ( dragged ) {
+                    setPopupPosition( event.getClientX() - dragStartX,
+                                      event.getClientY() - dragStartY );
+                }
+            }
+        } );
+        this.titleBar.addMouseUpHandler( new MouseUpHandler() {
+
+            public void onMouseUp( MouseUpEvent event ) {
+                dragged = false;
+                DOM.releaseCapture( titleBar.getElement() );
+            }
+        } );
+
+        container.add( titleBar );
+
+        add( container );
+        add( createKeyListeningFocusPanel( container ) );
+
     }
 
-    public void setAfterShow(Command afterShowEvent) {
+    public void setAfterShow( Command afterShowEvent ) {
         this.afterShowEvent = afterShowEvent;
     }
 
-    public void setAfterCloseEvent(Command afterCloseEvent) {
+    public void setAfterCloseEvent( Command afterCloseEvent ) {
         this.afterCloseEvent = afterCloseEvent;
     }
 
@@ -69,54 +115,8 @@ public abstract class Popup extends PopupPanel {
             afterShowEvent.execute();
         }
 
-        VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
-
-        this.titleBar = new PopupTitleBar( getTitle() );
-
-        this.titleBar.closeButton.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                hide();
-                if ( afterCloseEvent != null ) {
-                    afterCloseEvent.execute();
-                }
-            }
-        } );
-        this.titleBar.addMouseDownHandler( new MouseDownHandler() {
-
-            public void onMouseDown(MouseDownEvent event) {
-                dragged = true;
-                dragStartX = event.getRelativeX( getElement() );
-                dragStartY = event.getRelativeY( getElement() );
-                DOM.setCapture( titleBar.getElement() );
-            }
-        } );
-        this.titleBar.addMouseMoveHandler( new MouseMoveHandler() {
-
-            public void onMouseMove(MouseMoveEvent event) {
-                if ( dragged ) {
-                    setPopupPosition( event.getClientX() - dragStartX,
-                                      event.getClientY() - dragStartY );
-                }
-            }
-        } );
-        this.titleBar.addMouseUpHandler( new MouseUpHandler() {
-
-            public void onMouseUp(MouseUpEvent event) {
-                dragged = false;
-                DOM.releaseCapture( titleBar.getElement() );
-            }
-        } );
-
-        verticalPanel.add( titleBar );
-
-        Widget content = getContent();
-
-        content.setWidth( "100%" );
-        verticalPanel.add( content );
-        add( verticalPanel );
-
-        add( createKeyListeningFocusPanel( verticalPanel ) );
+        final Widget content = getContent();
+        addContent( content );
 
         super.show();
 
@@ -127,11 +127,21 @@ public abstract class Popup extends PopupPanel {
         }
     }
 
-    private FocusPanel createKeyListeningFocusPanel(VerticalPanel verticalPanel) {
+    //Lazy initialization of content as sub-classes may not have created content before super-classes' Constructor is invoked
+    private void addContent( final Widget content ) {
+        if ( initialized ) {
+            return;
+        }
+        content.setWidth( "100%" );
+        container.add( content );
+        initialized = true;
+    }
+
+    private FocusPanel createKeyListeningFocusPanel( VerticalPanel verticalPanel ) {
         FocusPanel focusPanel = new FocusPanel( verticalPanel );
 
         focusPanel.addKeyDownHandler( new KeyDownHandler() {
-            public void onKeyDown(KeyDownEvent event) {
+            public void onKeyDown( KeyDownEvent event ) {
                 if ( event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE ) {
                     hide();
                 }
@@ -144,7 +154,7 @@ public abstract class Popup extends PopupPanel {
         return focusPanel;
     }
 
-    private void focusFirstWidget(Widget content) {
+    private void focusFirstWidget( Widget content ) {
         if ( content instanceof FormStyleLayout ) {
             FormStyleLayout fsl = (FormStyleLayout) content;
             Widget ow = fsl.getWidget();
@@ -154,7 +164,7 @@ public abstract class Popup extends PopupPanel {
         }
     }
 
-    private boolean focusFirstWidget(HasWidgets container) {
+    private boolean focusFirstWidget( HasWidgets container ) {
         boolean bFocused = false;
         Iterator<Widget> iw = container.iterator();
         while ( !bFocused && iw.hasNext() ) {
@@ -162,11 +172,11 @@ public abstract class Popup extends PopupPanel {
             if ( w instanceof HasWidgets ) {
                 bFocused = focusFirstWidget( (HasWidgets) w );
             } else if ( w instanceof Focusable ) {
-                ((Focusable) w).setFocus( true );
+                ( (Focusable) w ).setFocus( true );
                 bFocused = true;
                 break;
             } else if ( w instanceof FocusWidget ) {
-                ((FocusWidget) w).setFocus( true );
+                ( (FocusWidget) w ).setFocus( true );
                 bFocused = true;
                 break;
             }
@@ -175,8 +185,8 @@ public abstract class Popup extends PopupPanel {
     }
 
     @Override
-    public void setPopupPosition(int left,
-                                 int top) {
+    public void setPopupPosition( int left,
+                                  int top ) {
         super.setPopupPosition( left,
                                 top );
 
@@ -187,7 +197,6 @@ public abstract class Popup extends PopupPanel {
 
     /**
      * This returns the height of the usable client space, excluding title bar.
-     * 
      * @return
      */
     public int getClientHeight() {
