@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.panels;
 
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;

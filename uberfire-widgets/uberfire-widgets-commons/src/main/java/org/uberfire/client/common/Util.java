@@ -17,6 +17,8 @@
 package org.uberfire.client.common;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
@@ -24,33 +26,42 @@ import com.google.gwt.user.client.ui.HTML;
 public class Util {
 
     /**
-     * Get a string representation of the header that includes an image and some
-     * text.
+     * Get a string representation of the header that includes an image and some text.
      * @param image the {@link ImageResource} to add next to the header
      * @param text the header text
      * @return the header as a string
      */
-    public static String getHeader(ImageResource image,
-            String text) {
-        return AbstractImagePrototype.create(image).getHTML() + " " + text;
+    public static String getHeader( final ImageResource image,
+                                    final String text ) {
+        return AbstractImagePrototype.create( image ).getHTML() + " " + text;
     }
 
     /**
-     * Get a string representation of the header that includes an image and some
-     * text.
+     * Get a HTML representation of the header that includes an image and some text.
      * @param image the {@link ImageResource} to add next to the header
      * @param text the header text
-     * @return the header as a string
+     * @return the header as HTML
      */
-    public static HTML getHeaderHTML(ImageResource image,
-            String text) {
-
+    public static HTML getHeaderHTML( final ImageResource image,
+                                      final String text ) {
         HeaderHTML headerHTML = new HeaderHTML();
+        headerHTML.setText( text );
+        headerHTML.setImageResource( image );
+        return new HTML( headerHTML.getElement().getString() );
+    }
 
-        headerHTML.setText(text);
-        headerHTML.setImageResource(image);
-
-        return new HTML(headerHTML.getElement().getString());
+    /**
+     * Get a SafeHtml representation of the header that includes an image and some text.
+     * @param image the {@link ImageResource} to add next to the header
+     * @param text the header text
+     * @return the header as SafeHtml
+     */
+    public static SafeHtml getHeaderSafeHtml( final ImageResource image,
+                                              final String text ) {
+        HeaderHTML headerHTML = new HeaderHTML();
+        headerHTML.setText( text );
+        headerHTML.setImageResource( image );
+        return toSafeHtml( headerHTML.getElement().getString() );
     }
 
     /**
@@ -59,10 +70,21 @@ public class Util {
      */
     public static String getSelfURL() {
         String selfURL = Window.Location.getHref();
-        if (selfURL.contains("#")) {
-            selfURL = selfURL.substring(0,
-                    selfURL.indexOf("#"));
+        if ( selfURL.contains( "#" ) ) {
+            selfURL = selfURL.substring( 0,
+                                         selfURL.indexOf( "#" ) );
         }
         return selfURL;
+    }
+
+    /**
+     * Convert String to a SafeHtml
+     * @param html
+     * @return
+     */
+    public static SafeHtml toSafeHtml( final String html ) {
+        final SafeHtmlBuilder builder = new SafeHtmlBuilder();
+        builder.appendHtmlConstant( html );
+        return builder.toSafeHtml();
     }
 }

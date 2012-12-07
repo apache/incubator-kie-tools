@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 
 import com.google.gwt.core.client.Scheduler;

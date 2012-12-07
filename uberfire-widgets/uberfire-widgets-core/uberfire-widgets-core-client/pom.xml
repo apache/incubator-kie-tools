@@ -32,10 +32,16 @@
       <artifactId>uberfire-workbench</artifactId>
     </dependency>
 
+    <!-- CDI Integration Modules -->
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
     </dependency>
 
     <!-- Errai Core -->

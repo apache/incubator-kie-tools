@@ -37,8 +37,6 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.annotations.DecoratedWorkbenchPanel;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.model.PanelDefinition;
@@ -268,18 +266,19 @@ public class DecoratedWorkbenchPanelView extends ResizeComposite
 
         } );
 
-        //Maximize and minimize controls
-        final FocusPanel maximize = new FocusPanel();
-        maximize.setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
-        maximize.setStyleName( "tabBarControlMaximize" );
-        maximize.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.maximize();
-            }
-        } );
-        tabPanel.addControl( maximize );
+        // TODO - Maximize control
+        //        final FocusPanel maximize = new FocusPanel();
+        //        maximize.setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
+        //        maximize.setStyleName( "tabBarControlMaximize" );
+        //        maximize.addClickHandler( new ClickHandler() {
+        //            @Override
+        //            public void onClick( ClickEvent event ) {
+        //                presenter.maximize();
+        //            }
+        //        } );
+        //        tabPanel.addControl( maximize );
 
+        // Minimize control
         final FocusPanel minimize = new FocusPanel();
         minimize.setTitle( WorkbenchConstants.INSTANCE.minimizePanel() );
         minimize.setStyleName( "tabBarControlMinimize" );

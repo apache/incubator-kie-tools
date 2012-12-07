@@ -18,7 +18,6 @@ package org.uberfire.client.workbench.widgets.panels;
 import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 
 import com.google.gwt.core.client.Scheduler;

@@ -17,9 +17,9 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;

@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.panels;
 
-import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
-
 /**
  * Operations to add or remove WorkbenchPanels from the Workbench.
  */

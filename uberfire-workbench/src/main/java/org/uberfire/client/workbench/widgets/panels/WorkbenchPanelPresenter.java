@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench;
+package org.uberfire.client.workbench.widgets.panels;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.

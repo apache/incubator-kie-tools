@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;

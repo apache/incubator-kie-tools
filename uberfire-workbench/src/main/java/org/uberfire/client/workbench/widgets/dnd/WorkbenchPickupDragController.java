@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 

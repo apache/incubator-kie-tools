@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -28,6 +29,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
+import org.uberfire.backend.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.VFSTempUtil;
@@ -62,6 +64,9 @@ public class FileExplorerPresenter {
     private Caller<FileExplorerRootService> rootService;
 
     @Inject
+    private Event<PathChangeEvent> pathChangedEvent;
+
+    @Inject
     private PlaceManager placeManager;
 
     @Inject
@@ -75,16 +80,16 @@ public class FileExplorerPresenter {
 
         void reset();
 
-        void removeIfExists(final Root root);
+        void removeIfExists( final Root root );
 
-        void addNewRoot(final Root root);
+        void addNewRoot( final Root root );
     }
 
     public static interface FileExplorerItem {
 
-        void addDirectory(final Path child);
+        void addDirectory( final Path child );
 
-        void addFile(final Path child);
+        void addFile( final Path child );
     }
 
     @OnStart
@@ -92,43 +97,44 @@ public class FileExplorerPresenter {
 
         view.reset();
 
-        rootService.call(new RemoteCallback<Collection<Root>>() {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
             @Override
-            public void callback(Collection<Root> response) {
-                for (final Root root : response) {
-                    view.removeIfExists(root);
-                    view.addNewRoot(root);
+            public void callback( Collection<Root> response ) {
+                for ( final Root root : response ) {
+                    view.removeIfExists( root );
+                    view.addNewRoot( root );
                 }
             }
-        }).listRoots();
+        } ).listRoots();
     }
 
-    public void loadDirectoryContent(final FileExplorerItem item, final Path path) {
-        vfsService.call(new RemoteCallback<DirectoryStream<Path>>() {
+    public void loadDirectoryContent( final FileExplorerItem item,
+                                      final Path path ) {
+        vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
             @Override
-            public void callback(DirectoryStream<Path> response) {
-                for (final Path child : response) {
-                    vfsService.call(new RemoteCallback<Map>() {
+            public void callback( DirectoryStream<Path> response ) {
+                for ( final Path child : response ) {
+                    vfsService.call( new RemoteCallback<Map>() {
                         @Override
-                        public void callback(final Map response) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
-                            if (attrs.isDirectory()) {
-                                item.addDirectory(child);
+                        public void callback( final Map response ) {
+                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                            if ( attrs.isDirectory() ) {
+                                item.addDirectory( child );
                             } else {
-                                item.addFile(child);
+                                item.addFile( child );
                             }
                         }
-                    }).readAttributes(child);
+                    } ).readAttributes( child );
                 }
             }
-        }).newDirectoryStream(path);
+        } ).newDirectoryStream( path );
     }
 
-    private PlaceRequest getPlace(final Path path) {
+    private PlaceRequest getPlace( final Path path ) {
 
-        final String fileType = getFileType(path.getFileName());
-        if (fileType == null) {
-            return defaultPlace(path);
+        final String fileType = getFileType( path.getFileName() );
+        if ( fileType == null ) {
+            return defaultPlace( path );
         }
 
         //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
@@ -136,31 +142,31 @@ public class FileExplorerPresenter {
         //an Activity for the fileType exists however that would place the decision as to what default editor
         //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
         //Consequentially we check for an Activity here and, if none found, define the default editor.
-        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities(fileType);
-        if (activityBeans.size() > 0) {
-            final PlaceRequest place = new DefaultPlaceRequest(fileType);
-            place.addParameter("path:uri",
-                    path.toURI()).addParameter("path:name",
-                    path.getFileName());
+        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( fileType );
+        if ( activityBeans.size() > 0 ) {
+            final PlaceRequest place = new DefaultPlaceRequest( fileType );
+            place.addParameter( "path:uri",
+                                path.toURI() ).addParameter( "path:name",
+                                                             path.getFileName() );
             return place;
         }
 
         //If a specific handler was not found use a TextEditor
-        return defaultPlace(path);
+        return defaultPlace( path );
     }
 
-    private PlaceRequest defaultPlace(final Path path) {
-        PlaceRequest defaultPlace = new DefaultPlaceRequest("TextEditor");
-        defaultPlace.addParameter("path:uri",
-                path.toURI()).addParameter("path:name",
-                path.getFileName());
+    private PlaceRequest defaultPlace( final Path path ) {
+        PlaceRequest defaultPlace = new DefaultPlaceRequest( "TextEditor" );
+        defaultPlace.addParameter( "path:uri",
+                                   path.toURI() ).addParameter( "path:name",
+                                                                path.getFileName() );
         return defaultPlace;
     }
 
-    private String getFileType(final String fileName) {
-        final int dotIndex = fileName.indexOf(".");
-        if (dotIndex >= 0) {
-            return fileName.substring(dotIndex + 1);
+    private String getFileType( final String fileName ) {
+        final int dotIndex = fileName.indexOf( "." );
+        if ( dotIndex >= 0 ) {
+            return fileName.substring( dotIndex + 1 );
         }
         return null;
     }
@@ -190,31 +196,33 @@ public class FileExplorerPresenter {
         return Position.WEST;
     }
 
-    public void redirect(final Path path) {
-        vfsService.call(new RemoteCallback<Map>() {
+    public void redirect( final Path path ) {
+        vfsService.call( new RemoteCallback<Map>() {
             @Override
-            public void callback(final Map response) {
-                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes(response);
-                if (attrs.isRegularFile()) {
-                    PlaceRequest placeRequest = getPlace(path);
-                    placeManager.goTo(placeRequest);
+            public void callback( final Map response ) {
+                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                if ( attrs.isRegularFile() ) {
+                    PlaceRequest placeRequest = getPlace( path );
+                    placeManager.goTo( placeRequest );
                 }
             }
-        }).readAttributes(path);
+        } ).readAttributes( path );
 
+        //Communicate change in context
+        pathChangedEvent.fire( new PathChangeEvent( path ) );
     }
 
     public void redirectRepositoryList() {
-        placeManager.goTo(new DefaultPlaceRequest("RepositoriesEditor"));
+        placeManager.goTo( new DefaultPlaceRequest( "RepositoriesEditor" ) );
     }
 
-    public void redirect(Root root) {
-        placeManager.goTo(root.getPlaceRequest());
+    public void redirect( Root root ) {
+        placeManager.goTo( root.getPlaceRequest() );
     }
 
-    public void newRootDirectory(@Observes Root root) {
-        view.removeIfExists(root);
-        view.addNewRoot(root);
+    public void newRootDirectory( @Observes Root root ) {
+        view.removeIfExists( root );
+        view.addNewRoot( root );
     }
 
 }

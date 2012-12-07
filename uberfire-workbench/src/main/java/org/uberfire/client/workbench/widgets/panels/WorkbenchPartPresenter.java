@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench;
+package org.uberfire.client.workbench.widgets.panels;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

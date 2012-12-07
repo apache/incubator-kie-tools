@@ -16,7 +16,6 @@
 package org.uberfire.client.workbench.widgets.panels;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.RootWorkbenchPanelPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
 
