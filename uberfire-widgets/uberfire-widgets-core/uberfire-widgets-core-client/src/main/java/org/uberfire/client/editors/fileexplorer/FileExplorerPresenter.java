@@ -27,6 +27,8 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.events.PathChangeEvent;
@@ -45,8 +47,6 @@ import org.uberfire.client.mvp.IdentifierUtils;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -205,11 +205,9 @@ public class FileExplorerPresenter {
                     PlaceRequest placeRequest = getPlace( path );
                     placeManager.goTo( placeRequest );
                 }
+                broadcastPathChange( path );
             }
         } ).readAttributes( path );
-
-        //Communicate change in context
-        pathChangedEvent.fire( new PathChangeEvent( path ) );
     }
 
     public void redirectRepositoryList() {
@@ -218,11 +216,17 @@ public class FileExplorerPresenter {
 
     public void redirect( Root root ) {
         placeManager.goTo( root.getPlaceRequest() );
+        broadcastPathChange( root.getPath() );
     }
 
     public void newRootDirectory( @Observes Root root ) {
         view.removeIfExists( root );
         view.addNewRoot( root );
+    }
+
+    //Communicate change in context
+    private void broadcastPathChange( final Path path ) {
+        pathChangedEvent.fire( new PathChangeEvent( path ) );
     }
 
 }
