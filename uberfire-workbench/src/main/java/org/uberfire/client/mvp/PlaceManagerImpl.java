@@ -15,20 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
@@ -42,6 +34,17 @@ import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @ApplicationScoped
 public class PlaceManagerImpl
@@ -67,6 +70,9 @@ public class PlaceManagerImpl
     @Inject
     private Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
 
+    @Inject
+    private IdentifierUtils idUtils;
+
     private final Event<SelectPlaceEvent> selectWorkbenchPartEvent;
 
     private final PlaceHistoryHandler placeHistoryHandler;
@@ -74,10 +80,10 @@ public class PlaceManagerImpl
     private PlaceRequest currentPlaceRequest;
 
     @Inject
-    public PlaceManagerImpl( ActivityManager activityManager,
-                             PlaceHistoryHandler placeHistoryHandler,
-                             Event<SelectPlaceEvent> selectWorkbenchPartEvent,
-                             PanelManager panelManager ) {
+    public PlaceManagerImpl(ActivityManager activityManager,
+                            PlaceHistoryHandler placeHistoryHandler,
+                            Event<SelectPlaceEvent> selectWorkbenchPartEvent,
+                            PanelManager panelManager) {
         this.activityManager = activityManager;
         this.placeHistoryHandler = placeHistoryHandler;
         this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
@@ -87,87 +93,138 @@ public class PlaceManagerImpl
     }
 
     public void initPlaceHistoryHandler() {
-        placeHistoryHandler.register( this,
-                                      produceEventBus(),
-                                      DefaultPlaceRequest.NOWHERE );
+        placeHistoryHandler.register(this,
+                produceEventBus(),
+                DefaultPlaceRequest.NOWHERE);
     }
 
     @Override
-    public void goTo( final String identifier ) {
-        final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
-        goTo( place,
-              null );
+    public void goTo(final String identifier) {
+        final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
+        goTo(place,
+                null);
     }
 
     @Override
-    public void goTo( final String identifier,
-                      final Command callback ) {
-        final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
-        goTo( place,
-              callback );
+    public void goTo(final String identifier,
+                     final Command callback) {
+        final DefaultPlaceRequest place = new DefaultPlaceRequest(identifier);
+        goTo(place,
+                callback);
     }
 
     @Override
-    public void goTo( PlaceRequest place ) {
-        goTo( place,
-              null );
+    public void goTo(PlaceRequest place) {
+        goTo(place,
+                null);
     }
 
     @Override
-    public void goTo( final PlaceRequest place,
-                      final Command callback ) {
-        if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
+    public void goTo(final PlaceRequest place,
+                     final Command callback) {
+        if (place == null || place.equals(DefaultPlaceRequest.NOWHERE)) {
             return;
         }
-        final Activity activity = activityManager.getActivity( place );
-        if ( activity == null ) {
+        final Activity activity = activityManager.getActivity(place);
+        if (activity == null) {
             return;
         }
 
-        if ( activity instanceof WorkbenchActivity ) {
+        if (activity instanceof WorkbenchActivity) {
             final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-            launchActivity( place,
-                            workbenchActivity,
-                            workbenchActivity.getDefaultPosition(),
-                            callback );
-        } else if ( activity instanceof PopupActivity ) {
-            launchActivity( place,
-                            (PopupActivity) activity,
-                            callback );
-        } else if ( activity instanceof PerspectiveActivity ) {
-            launchActivity( place,
-                            (PerspectiveActivity) activity,
-                            callback );
+            launchActivity(place,
+                    workbenchActivity,
+                    workbenchActivity.getDefaultPosition(),
+                    callback);
+        } else if (activity instanceof PopupActivity) {
+            launchActivity(place,
+                    (PopupActivity) activity,
+                    callback);
+        } else if (activity instanceof PerspectiveActivity) {
+            launchActivity(place,
+                    (PerspectiveActivity) activity,
+                    callback);
         }
     }
 
     @Override
-    public void goTo( final PartDefinition part,
-                      final PanelDefinition panel ) {
+    public void goTo(final PartDefinition part,
+                     final PanelDefinition panel) {
         final PlaceRequest place = part.getPlace();
-        if ( place == null ) {
+        if (place == null) {
             return;
         }
-        final Activity activity = activityManager.getActivity( place );
-        if ( activity == null ) {
+        final Activity activity = activityManager.getActivity(place);
+        if (activity == null) {
             return;
         }
 
-        if ( activity instanceof WorkbenchActivity ) {
+        if (activity instanceof WorkbenchActivity) {
             final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-            launchActivity( place,
-                            workbenchActivity,
-                            part,
-                            panel,
-                            null );
+            launchActivity(place,
+                    workbenchActivity,
+                    part,
+                    panel,
+                    null);
         } else {
-            throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
+            throw new IllegalArgumentException("placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel.");
         }
+    }
+
+    @Override
+    public void goTo(Path path) {
+        goTo(getPlace(path));
+    }
+
+    @Override
+    public void goTo(Path path, Command callback) {
+        goTo(getPlace(path), callback);
+    }
+
+    private PlaceRequest getPlace(final Path path) {
+
+        final String fileType = getFileType(path.getFileName());
+        if (fileType == null) {
+            return defaultPlace(path);
+        }
+
+        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
+        //We could simply construct a PlaceRequest for the fileType and leave PlaceManager to determine whether
+        //an Activity for the fileType exists however that would place the decision as to what default editor
+        //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
+        //Consequentially we check for an Activity here and, if none found, define the default editor.
+        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities(fileType);
+        if (activityBeans.size() > 0) {
+            final PlaceRequest place = new DefaultPlaceRequest(fileType);
+            place.addParameter("path:uri",
+                    path.toURI()).addParameter("path:name",
+                    path.getFileName());
+            return place;
+        }
+
+        //If a specific handler was not found use a TextEditor
+        return defaultPlace(path);
+    }
+
+    private PlaceRequest defaultPlace(final Path path) {
+        PlaceRequest defaultPlace = new DefaultPlaceRequest("TextEditor");
+        defaultPlace.addParameter("path:uri",
+                path.toURI()).addParameter("path:name",
+                path.getFileName());
+        return defaultPlace;
+    }
+
+    private String getFileType(final String fileName) {
+        final int dotIndex = fileName.indexOf(".");
+        if (dotIndex >= 0) {
+            return fileName.substring(dotIndex + 1);
+        }
+        return null;
     }
 
     @Override
     public PlaceRequest getCurrentPlaceRequest() {
-        if ( currentPlaceRequest != null ) {
+        if (currentPlaceRequest != null) {
             return currentPlaceRequest;
         } else {
             return DefaultPlaceRequest.NOWHERE;
@@ -176,223 +233,224 @@ public class PlaceManagerImpl
 
     /**
      * Lookup the WorkbenchActivity corresponding to the WorkbenchPart
+     *
      * @param place
      * @return
      */
     @Override
-    public Activity getActivity( final PlaceRequest place ) {
-        if ( place == null ) {
+    public Activity getActivity(final PlaceRequest place) {
+        if (place == null) {
             return null;
         }
-        final Activity activity = existingWorkbenchActivities.get( place );
+        final Activity activity = existingWorkbenchActivities.get(place);
         return activity;
     }
 
     @Override
     public void closeCurrentPlace() {
-        if ( DefaultPlaceRequest.NOWHERE.equals( currentPlaceRequest ) ) {
+        if (DefaultPlaceRequest.NOWHERE.equals(currentPlaceRequest)) {
             return;
         }
-        closePlace( currentPlaceRequest );
+        closePlace(currentPlaceRequest);
     }
 
     @Override
-    public void closePlace( final PlaceRequest placeToClose ) {
-        if ( placeToClose == null ) {
+    public void closePlace(final PlaceRequest placeToClose) {
+        if (placeToClose == null) {
             return;
         }
-        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose ) );
+        workbenchPartBeforeCloseEvent.fire(new BeforeClosePlaceEvent(placeToClose));
     }
 
     @Override
     public void closeAllPlaces() {
-        final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>( existingWorkbenchParts.keySet() );
-        for ( PlaceRequest placeToClose : placesToClose ) {
-            closePlace( placeToClose );
+        final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>(existingWorkbenchParts.keySet());
+        for (PlaceRequest placeToClose : placesToClose) {
+            closePlace(placeToClose);
         }
     }
 
     @Override
-    public void registerOnRevealCallback( final PlaceRequest place,
-                                          final Command command ) {
-        PortablePreconditions.checkNotNull( "place",
-                                            place );
-        PortablePreconditions.checkNotNull( "command",
-                                            command );
-        this.onRevealCallbacks.put( place,
-                                    command );
+    public void registerOnRevealCallback(final PlaceRequest place,
+                                         final Command command) {
+        PortablePreconditions.checkNotNull("place",
+                place);
+        PortablePreconditions.checkNotNull("command",
+                command);
+        this.onRevealCallbacks.put(place,
+                command);
     }
 
     @Override
-    public void unregisterOnRevealCallback( final PlaceRequest place ) {
-        PortablePreconditions.checkNotNull( "place",
-                                            place );
-        this.onRevealCallbacks.remove( place );
+    public void unregisterOnRevealCallback(final PlaceRequest place) {
+        PortablePreconditions.checkNotNull("place",
+                place);
+        this.onRevealCallbacks.remove(place);
     }
 
     @Override
-    public void executeOnRevealCallback( final PlaceRequest place ) {
-        PortablePreconditions.checkNotNull( "place",
-                                            place );
-        final Command callback = this.onRevealCallbacks.get( place );
-        if ( callback != null ) {
+    public void executeOnRevealCallback(final PlaceRequest place) {
+        PortablePreconditions.checkNotNull("place",
+                place);
+        final Command callback = this.onRevealCallbacks.get(place);
+        if (callback != null) {
             callback.execute();
         }
     }
 
-    private void launchActivity( final PlaceRequest place,
-                                 final WorkbenchActivity activity,
-                                 final Position position,
-                                 final Command callback ) {
+    private void launchActivity(final PlaceRequest place,
+                                final WorkbenchActivity activity,
+                                final Position position,
+                                final Command callback) {
 
         //If we're already showing this place exit.
-        if ( existingWorkbenchParts.containsKey( place ) ) {
-            selectWorkbenchPartEvent.fire( new SelectPlaceEvent( place ) );
+        if (existingWorkbenchParts.containsKey(place)) {
+            selectWorkbenchPartEvent.fire(new SelectPlaceEvent(place));
             return;
         }
 
-        final PartDefinition part = new PartDefinitionImpl( place );
-        final PanelDefinition panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
-                                                                      position );
+        final PartDefinition part = new PartDefinitionImpl(place);
+        final PanelDefinition panel = panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                position);
 
-        launchActivity( place,
-                        activity,
-                        part,
-                        panel,
-                        callback );
+        launchActivity(place,
+                activity,
+                part,
+                panel,
+                callback);
     }
 
-    private void launchActivity( final PlaceRequest place,
-                                 final WorkbenchActivity activity,
-                                 final PartDefinition part,
-                                 final PanelDefinition panel,
-                                 final Command callback ) {
+    private void launchActivity(final PlaceRequest place,
+                                final WorkbenchActivity activity,
+                                final PartDefinition part,
+                                final PanelDefinition panel,
+                                final Command callback) {
 
         //Record new place\part\activity
         currentPlaceRequest = place;
-        existingWorkbenchActivities.put( place,
-                                         activity );
-        existingWorkbenchParts.put( place,
-                                    part );
-        updateHistory( place );
+        existingWorkbenchActivities.put(place,
+                activity);
+        existingWorkbenchParts.put(place,
+                part);
+        updateHistory(place);
 
         //Reveal activity with call-back to attach to Workbench
-        activity.launch( new AcceptItem() {
-            public void add( final IsWidget titleWidget,
-                             final IsWidget widget ) {
-                panelManager.addWorkbenchPart( place,
-                                               part,
-                                               panel,
-                                               titleWidget,
-                                               widget );
+        activity.launch(new AcceptItem() {
+            public void add(final IsWidget titleWidget,
+                            final IsWidget widget) {
+                panelManager.addWorkbenchPart(place,
+                        part,
+                        panel,
+                        titleWidget,
+                        widget);
             }
         },
-                         place,
-                         callback );
+                place,
+                callback);
     }
 
-    private void launchActivity( final PlaceRequest place,
-                                 final PopupActivity activity,
-                                 final Command callback ) {
+    private void launchActivity(final PlaceRequest place,
+                                final PopupActivity activity,
+                                final Command callback) {
         //Record new place\part\activity
         currentPlaceRequest = place;
-        existingWorkbenchActivities.put( place,
-                                         activity );
-        updateHistory( place );
+        existingWorkbenchActivities.put(place,
+                activity);
+        updateHistory(place);
 
-        activity.launch( place,
-                         callback );
+        activity.launch(place,
+                callback);
     }
 
-    private void launchActivity( final PlaceRequest place,
-                                 final PerspectiveActivity activity,
-                                 final Command callback ) {
-        activity.launch( place,
-                         callback );
+    private void launchActivity(final PlaceRequest place,
+                                final PerspectiveActivity activity,
+                                final Command callback) {
+        activity.launch(place,
+                callback);
     }
 
-    public void updateHistory( PlaceRequest request ) {
-        placeHistoryHandler.onPlaceChange( request );
+    public void updateHistory(PlaceRequest request) {
+        placeHistoryHandler.onPlaceChange(request);
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartBeforeClose( @Observes BeforeClosePlaceEvent event ) {
+    private void onWorkbenchPartBeforeClose(@Observes BeforeClosePlaceEvent event) {
         final PlaceRequest place = event.getPlace();
-        if ( place == null ) {
+        if (place == null) {
             return;
         }
-        final Activity activity = existingWorkbenchActivities.get( place );
-        if ( activity == null ) {
+        final Activity activity = existingWorkbenchActivities.get(place);
+        if (activity == null) {
             return;
         }
-        if ( activity instanceof WorkbenchActivity ) {
-            onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place );
-        } else if ( activity instanceof PopupActivity ) {
-            onWorkbenchPartBeforeClose( (PopupActivity) activity, place );
+        if (activity instanceof WorkbenchActivity) {
+            onWorkbenchPartBeforeClose((WorkbenchActivity) activity, place);
+        } else if (activity instanceof PopupActivity) {
+            onWorkbenchPartBeforeClose((PopupActivity) activity, place);
         }
     }
 
-    private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
-                                             final PlaceRequest place ) {
-        if ( activity.onMayClose() ) {
+    private void onWorkbenchPartBeforeClose(final WorkbenchActivity activity,
+                                            final PlaceRequest place) {
+        if (activity.onMayClose()) {
             activity.onClose();
-            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
+            workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
         }
     }
 
-    private void onWorkbenchPartBeforeClose( final PopupActivity activity,
-                                             final PlaceRequest place ) {
-        if ( activity.onMayClose() ) {
+    private void onWorkbenchPartBeforeClose(final PopupActivity activity,
+                                            final PlaceRequest place) {
+        if (activity.onMayClose()) {
             activity.onClose();
-            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
+            workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
         }
     }
 
-    private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
+    private void onWorkbenchPartClose(@Observes ClosePlaceEvent event) {
         final PlaceRequest place = event.getPlace();
-        existingWorkbenchActivities.remove( place );
-        existingWorkbenchParts.remove( place );
-        activityManager.removeActivity( place );
-        if ( place.equals( currentPlaceRequest ) ) {
-            workbenchPartLostFocusEvent.fire( new PlaceLostFocusEvent( place ) );
+        existingWorkbenchActivities.remove(place);
+        existingWorkbenchParts.remove(place);
+        activityManager.removeActivity(place);
+        if (place.equals(currentPlaceRequest)) {
+            workbenchPartLostFocusEvent.fire(new PlaceLostFocusEvent(place));
         }
-        if ( currentPlaceRequest.equals( place ) ) {
+        if (currentPlaceRequest.equals(place)) {
             currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
         }
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
+    private void onWorkbenchPartOnFocus(@Observes PlaceGainFocusEvent event) {
         final PlaceRequest place = event.getPlace();
-        final Activity activity = getActivity( place );
-        if ( activity == null ) {
+        final Activity activity = getActivity(place);
+        if (activity == null) {
             return;
         }
-        if ( activity instanceof WorkbenchActivity ) {
+        if (activity instanceof WorkbenchActivity) {
             currentPlaceRequest = place;
-            ( (WorkbenchActivity) activity ).onFocus();
+            ((WorkbenchActivity) activity).onFocus();
         }
     }
 
     @SuppressWarnings("unused")
-    private void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
-        final Activity activity = getActivity( event.getPlace() );
-        if ( activity == null ) {
+    private void onWorkbenchPartLostFocus(@Observes PlaceLostFocusEvent event) {
+        final Activity activity = getActivity(event.getPlace());
+        if (activity == null) {
             return;
         }
-        if ( activity instanceof WorkbenchActivity ) {
+        if (activity instanceof WorkbenchActivity) {
             currentPlaceRequest = DefaultPlaceRequest.NOWHERE;
-            ( (WorkbenchActivity) activity ).onLostFocus();
+            ((WorkbenchActivity) activity).onLostFocus();
         }
     }
 
     @SuppressWarnings("unused")
-    private void onSavePlace( @Observes SavePlaceEvent event ) {
-        final Activity activity = getActivity( event.getPlace() );
-        if ( activity == null ) {
+    private void onSavePlace(@Observes SavePlaceEvent event) {
+        final Activity activity = getActivity(event.getPlace());
+        if (activity == null) {
             return;
         }
-        if ( activity instanceof WorkbenchEditorActivity ) {
+        if (activity instanceof WorkbenchEditorActivity) {
             final WorkbenchEditorActivity editor = (WorkbenchEditorActivity) activity;
             editor.onSave();
         }
@@ -401,7 +459,7 @@ public class PlaceManagerImpl
     @Produces
     @ApplicationScoped
     EventBus produceEventBus() {
-        if ( tempBus == null ) {
+        if (tempBus == null) {
             tempBus = new SimpleEventBus();
         }
         return tempBus;

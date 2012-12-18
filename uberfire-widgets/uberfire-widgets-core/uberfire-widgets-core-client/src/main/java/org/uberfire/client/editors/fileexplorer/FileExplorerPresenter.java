@@ -70,9 +70,6 @@ public class FileExplorerPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private IdentifierUtils idUtils;
-
     public interface View
             extends
             UberView<FileExplorerPresenter> {
@@ -137,47 +134,6 @@ public class FileExplorerPresenter {
         } ).newDirectoryStream( path );
     }
 
-    private PlaceRequest getPlace( final Path path ) {
-
-        final String fileType = getFileType( path.getFileName() );
-        if ( fileType == null ) {
-            return defaultPlace( path );
-        }
-
-        //Lookup an Activity that can handle the file extension and create a corresponding PlaceRequest.
-        //We could simply construct a PlaceRequest for the fileType and leave PlaceManager to determine whether
-        //an Activity for the fileType exists however that would place the decision as to what default editor
-        //to use within PlaceManager. It is a design decision to let FileExplorer determine the default editor.
-        //Consequentially we check for an Activity here and, if none found, define the default editor.
-        final Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( fileType );
-        if ( activityBeans.size() > 0 ) {
-            final PlaceRequest place = new DefaultPlaceRequest( fileType );
-            place.addParameter( "path:uri",
-                                path.toURI() ).addParameter( "path:name",
-                                                             path.getFileName() );
-            return place;
-        }
-
-        //If a specific handler was not found use a TextEditor
-        return defaultPlace( path );
-    }
-
-    private PlaceRequest defaultPlace( final Path path ) {
-        PlaceRequest defaultPlace = new DefaultPlaceRequest( "TextEditor" );
-        defaultPlace.addParameter( "path:uri",
-                                   path.toURI() ).addParameter( "path:name",
-                                                                path.getFileName() );
-        return defaultPlace;
-    }
-
-    private String getFileType( final String fileName ) {
-        final int dotIndex = fileName.indexOf( "." );
-        if ( dotIndex >= 0 ) {
-            return fileName.substring( dotIndex + 1 );
-        }
-        return null;
-    }
-
     @OnReveal
     public void onReveal() {
         view.setFocus();
@@ -209,8 +165,7 @@ public class FileExplorerPresenter {
             public void callback( final Map response ) {
                 final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
                 if ( attrs.isRegularFile() ) {
-                    PlaceRequest placeRequest = getPlace( path );
-                    placeManager.goTo( placeRequest );
+                    placeManager.goTo( path );
                 }
                 broadcastPathChange( path );
             }

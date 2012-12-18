@@ -16,6 +16,7 @@
 
 package org.uberfire.client.mvp;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
@@ -34,6 +35,12 @@ public interface PlaceManager {
 
     void goTo( final PartDefinition part,
                final PanelDefinition panel );
+
+    void goTo( final Path path);
+
+    void goTo( final Path path,
+               final Command callback );
+
 
     public PlaceRequest getCurrentPlaceRequest();
 
