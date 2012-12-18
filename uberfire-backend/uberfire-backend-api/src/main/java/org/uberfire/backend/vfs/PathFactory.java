@@ -86,10 +86,12 @@ public final class PathFactory {
             return attributes;
         }
 
+        @Override
         public int compareTo( Path another ) {
             return this.fileName.compareTo( another.getFileName() );
         }
 
+        @Override
         public boolean equals( final Object o ) {
 
             if ( o == null ) {
@@ -101,6 +103,11 @@ public final class PathFactory {
             }
 
             return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.fileName.hashCode();
         }
 
         @Override
