@@ -19,6 +19,7 @@ package org.uberfire.client.editors.fileexplorer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -90,6 +91,12 @@ public class FileExplorerPresenter {
         void addDirectory( final Path child );
 
         void addFile( final Path child );
+    }
+
+    @PostConstruct
+    public void assertActivePath() {
+        //When first launched no Path has been selected. Ensure remainder of Workbench knows.
+        broadcastPathChange( null );
     }
 
     @OnStart
@@ -212,6 +219,7 @@ public class FileExplorerPresenter {
 
     public void redirectRepositoryList() {
         placeManager.goTo( new DefaultPlaceRequest( "RepositoriesEditor" ) );
+        broadcastPathChange( null );
     }
 
     public void redirect( Root root ) {

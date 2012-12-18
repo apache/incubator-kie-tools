@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import com.google.gwt.user.client.ui.HasEnabled;
+import org.uberfire.client.workbench.widgets.menu.impl.HasEnabledStateChangeListeners;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
@@ -22,25 +24,16 @@ import org.uberfire.security.authz.RuntimeResource;
  * all users have permission to access a MenuItem and that it is enabled.
  */
 public interface MenuItem
-    extends
-    RuntimeResource {
+        extends
+        RuntimeResource,
+        HasEnabled,
+        HasEnabledStateChangeListeners {
 
     /**
      * @return the caption
      */
     public String getCaption();
 
-    /**
-     * @return the enabled
-     */
-    public boolean isEnabled();
-
-    /**
-     * @param enabled
-     *            the enabled to set
-     */
-    public void setEnabled(boolean enabled);
-
-    public void setRoles(final String[] roles);
+    public void setRoles( final String[] roles );
 
 }

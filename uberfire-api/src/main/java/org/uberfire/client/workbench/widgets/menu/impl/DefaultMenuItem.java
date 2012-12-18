@@ -15,29 +15,35 @@
  */
 package org.uberfire.client.workbench.widgets.menu.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.client.workbench.widgets.menu.MenuItem;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * Default implementation of MenuItem
  */
 public abstract class DefaultMenuItem
-    implements
-    MenuItem {
+        implements
+        MenuItem {
 
-    private boolean        enabled = true;
+    private boolean enabled = true;
 
-    private String[]       roles   = new String[]{};
+    private String[] roles = new String[]{ };
+
+    private List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
 
     protected final String caption;
 
-    public DefaultMenuItem(final String caption) {
-        checkNotNull("caption", caption);
+    public DefaultMenuItem( final String caption ) {
+        checkNotNull( "caption",
+                      caption );
         this.caption = caption;
     }
 
@@ -58,22 +64,35 @@ public abstract class DefaultMenuItem
     }
 
     /**
-     * @param enabled
-     *            the enabled to set
+     * @param enabled the enabled to set
      */
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled( boolean enabled ) {
         this.enabled = enabled;
+        notifyListeners( enabled );
     }
 
     @Override
-    public void setRoles(final String[] roles) {
+    public void setRoles( final String[] roles ) {
         this.roles = roles;
     }
 
     @Override
+    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
+        PortablePreconditions.checkNotNull( "listener",
+                                            listener );
+        this.enabledStateChangeListeners.add( listener );
+    }
+
+    private void notifyListeners( final boolean enabled ) {
+        for ( EnabledStateChangeListener listener : this.enabledStateChangeListeners ) {
+            listener.enabledStateChanged( enabled );
+        }
+    }
+
+    @Override
     public Collection<String> getRoles() {
-        String[] clone = new String[roles.length];
+        String[] clone = new String[ roles.length ];
         System.arraycopy( roles,
                           0,
                           clone,
