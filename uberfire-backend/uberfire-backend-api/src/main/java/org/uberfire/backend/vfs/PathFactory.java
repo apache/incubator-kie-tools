@@ -21,24 +21,26 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import static org.kie.commons.validation.PortablePreconditions.*;
+
 public final class PathFactory {
 
     private PathFactory() {
     }
 
     public static Path newPath( final String uri ) {
-        return new PathImpl( uri );
+        return new PathImpl( checkNotEmpty( "uri", uri ) );
     }
 
     public static Path newPath( final String fileName,
                                 final String uri ) {
-        return new PathImpl( fileName, uri );
+        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
     }
 
     public static Path newPath( final String fileName,
                                 final String uri,
                                 final Map<String, Object> attrs ) {
-        return new PathImpl( fileName, uri, attrs );
+        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
     }
 
     @Portable
@@ -87,19 +89,23 @@ public final class PathFactory {
         }
 
         @Override
-        public int compareTo( Path another ) {
-            return this.fileName.compareTo( another.getFileName() );
+        public int compareTo( final Path another ) {
+            return this.uri.compareTo( another.toURI() );
         }
 
         @Override
         public boolean equals( final Object o ) {
-
-            if ( o == null ) {
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
                 return false;
             }
 
-            if ( o instanceof Path ) {
-                return this.fileName.equals( ( (PathImpl) o ).getFileName() );
+            final PathImpl path = (PathImpl) o;
+
+            if ( uri.equals( path.uri ) ) {
+                return true;
             }
 
             return false;
@@ -107,7 +113,7 @@ public final class PathFactory {
 
         @Override
         public int hashCode() {
-            return this.fileName.hashCode();
+            return uri.hashCode();
         }
 
         @Override
