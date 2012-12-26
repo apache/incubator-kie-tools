@@ -1,22 +1,17 @@
 package org.uberfire.client.mvp;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.*;
 
 /**
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
@@ -29,8 +24,7 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
     public void testGoToOnePlace() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path",
-                                uri );
+        somewhere.addParameter( "path:uri", uri ).addParameter( "path:name", "somewhere" );
 
         final Path path = mock( Path.class );
         doReturn( uri ).when( path ).toURI();
@@ -61,10 +55,10 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
     public void testGoToOnePlaceTwice() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path",
-                                uri );
+        somewhere.addParameter( "path:uri",
+                                uri ).addParameter( "path:name", "somewhere" );
         final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
-        somewhereTheSame.addParameter( "path",
+        somewhereTheSame.addParameter( "path:uri",
                                        uri );
 
         final Path path = mock( Path.class );
@@ -98,11 +92,10 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
         final String uri1 = "a/path/to/somewhere";
         final String uri2 = "a/path/to/somewhere/else";
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path",
-                                uri1 );
+        somewhere.addParameter( "path:uri",
+                                uri1 ).addParameter( "path:name", "somewhere" );
         final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
-        somewhereElse.addParameter( "path",
-                                    uri2 );
+        somewhereElse.addParameter( "path:uri", uri2 ).addParameter( "path:name", "else" );
 
         //The first place
         final Path path1 = mock( Path.class );
@@ -151,12 +144,12 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
 
         private Path path;
 
-        private EqualPaths(final Path path) {
+        private EqualPaths( final Path path ) {
             this.path = path;
         }
 
         @Override
-        public boolean matches(Object argument) {
+        public boolean matches( Object argument ) {
             if ( argument instanceof Path ) {
                 final Path that = (Path) argument;
                 return that.toURI().equals( path.toURI() );

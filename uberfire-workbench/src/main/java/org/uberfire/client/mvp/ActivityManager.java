@@ -15,9 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.List;
 import java.util.Set;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface ActivityManager {

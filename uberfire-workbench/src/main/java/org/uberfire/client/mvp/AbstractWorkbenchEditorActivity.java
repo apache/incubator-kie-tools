@@ -36,16 +36,10 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
                         final PlaceRequest place,
                         final Command callback ) {
         super.launch( place, callback );
-        String simplePath = place.getParameterString( "path", null );
         String uri = place.getParameterString( "path:uri", null );
         String name = place.getParameterString( "path:name", null );
 
-        final Path path;
-        if ( simplePath != null && ( uri == null || name == null ) ) {
-            path = newPath( simplePath );
-        } else {
-            path = newPath( name, uri );
-        }
+        final Path path = newPath( name, uri );
 
         onStart( path, place );
 

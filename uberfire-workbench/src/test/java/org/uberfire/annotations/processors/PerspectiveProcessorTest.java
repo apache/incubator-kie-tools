@@ -59,7 +59,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         } ),
                                                                                 "org/uberfire/annotations/processors/PerspectiveTest2" );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+                                "org.uberfire.annotations.processors.PerspectiveTest2Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 
@@ -75,7 +75,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         } ),
                                                                                 "org/uberfire/annotations/processors/PerspectiveTest3" );
         assertCompilationError( diagnostics,
-                                "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+                                "org.uberfire.annotations.processors.PerspectiveTest3Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 

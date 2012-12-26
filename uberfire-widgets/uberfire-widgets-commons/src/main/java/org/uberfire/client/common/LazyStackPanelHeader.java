@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.common;
 
-import org.uberfire.client.resources.CommonImages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,43 +29,50 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.CommonImages;
 
 public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     interface LazyStackPanelHeaderBinder
-        extends
-        UiBinder<Widget, LazyStackPanelHeader> {
+            extends
+            UiBinder<Widget, LazyStackPanelHeader> {
+
     }
 
-    private static LazyStackPanelHeaderBinder uiBinder           = GWT.create( LazyStackPanelHeaderBinder.class );
+    private static LazyStackPanelHeaderBinder uiBinder = GWT.create( LazyStackPanelHeaderBinder.class );
 
     @UiField
-    Image                                     icon;
+    Image icon;
 
     @UiField
-    HorizontalPanel                           container;
+    HorizontalPanel container;
 
-    private ClickHandler                      expandClickHandler = new ClickHandler() {
+    private ClickHandler expandClickHandler = new ClickHandler() {
 
-                                                                     public void onClick(ClickEvent event) {
-                                                                         onTitleClicked();
-                                                                     }
-                                                                 };
+        public void onClick( ClickEvent event ) {
+            onTitleClicked();
+        }
+    };
 
-    public LazyStackPanelHeader(String headerText,
-                                ImageResource headerIcon) {
+    public LazyStackPanelHeader( final String headerText,
+                                 final ImageResource headerIcon ) {
+        this( headerText, new Image( headerIcon ) );
+    }
+
+    public LazyStackPanelHeader( final String headerText,
+                                 final Image headerIcon ) {
         this();
-        Image titleIcon = new Image( headerIcon );
+        final Image titleIcon = headerIcon;
         container.add( titleIcon );
-        Label titleLabel = new Label( headerText );
+        final Label titleLabel = new Label( headerText );
         titleLabel.setStyleName( "guvnor-cursor" );
         titleLabel.addClickHandler( expandClickHandler );
         container.add( titleLabel );
     }
 
-    public LazyStackPanelHeader(String headerText) {
+    public LazyStackPanelHeader( String headerText ) {
         this();
-        Label titleLabel = new Label( headerText );
+        final Label titleLabel = new Label( headerText );
         titleLabel.setStyleName( "guvnor-cursor" );
         titleLabel.addClickHandler( expandClickHandler );
         container.add( titleLabel );
@@ -82,14 +87,14 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
         setIconImage();
 
         addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
-            public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
+            public void onOpen( OpenEvent<AbstractLazyStackPanelHeader> event ) {
                 expanded = true;
                 setIconImage();
             }
         } );
 
         addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
-            public void onClose(CloseEvent<AbstractLazyStackPanelHeader> event) {
+            public void onClose( CloseEvent<AbstractLazyStackPanelHeader> event ) {
                 expanded = false;
                 setIconImage();
             }
@@ -119,11 +124,9 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     private void onTitleClicked() {
         if ( expanded ) {
-            CloseEvent.fire( this,
-                             this );
+            CloseEvent.fire( this, this );
         } else {
-            OpenEvent.fire( this,
-                            this );
+            OpenEvent.fire( this, this );
         }
     }
 }

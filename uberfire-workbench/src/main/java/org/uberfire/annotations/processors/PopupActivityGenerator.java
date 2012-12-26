@@ -100,7 +100,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPopup must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchPopup must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchPopup both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
@@ -119,7 +119,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         //Validate getTitleMethodName and getTitleWidgetMethodName
         if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPopup must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchPopup must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
         }
         if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
             final String msg = "The WorkbenchPopup has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";

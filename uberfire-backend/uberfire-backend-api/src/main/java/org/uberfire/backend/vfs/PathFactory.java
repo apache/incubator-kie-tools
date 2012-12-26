@@ -28,10 +28,6 @@ public final class PathFactory {
     private PathFactory() {
     }
 
-    public static Path newPath( final String uri ) {
-        return new PathImpl( checkNotEmpty( "uri", uri ) );
-    }
-
     public static Path newPath( final String fileName,
                                 final String uri ) {
         return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
@@ -51,10 +47,6 @@ public final class PathFactory {
         private HashMap<String, Object> attributes = null;
 
         public PathImpl() {
-        }
-
-        private PathImpl( final String uri ) {
-            this( null, uri, null );
         }
 
         private PathImpl( final String fileName,

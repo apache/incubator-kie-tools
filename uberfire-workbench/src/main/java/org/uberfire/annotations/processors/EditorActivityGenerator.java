@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -28,13 +27,14 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.client.annotations.WorkbenchEditor;
 
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import static org.kie.commons.regex.util.GlobToRegEx.*;
 
 /**
  * A source code generator for Activities
@@ -43,11 +43,11 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger( EditorActivityGenerator.class );
 
-    public StringBuffer generate(final String packageName,
-                                 final PackageElement packageElement,
-                                 final String className,
-                                 final Element element,
-                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final PackageElement packageElement,
+                                  final String className,
+                                  final Element element,
+                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
         logger.debug( "Starting code generation for [" + className + "]" );
 
@@ -123,7 +123,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
@@ -142,7 +142,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Validate getTitleMethodName and getTitleWidgetMethodName
         if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
+            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
         }
         if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
             final String msg = "The WorkbenchEditor has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
@@ -226,24 +226,27 @@ public class EditorActivityGenerator extends AbstractGenerator {
         return sw.getBuffer();
     }
 
-    private String format(final String[] fileTypes) {
+    private String format( final String[] fileTypes ) {
         final StringBuilder sb = new StringBuilder();
 
         if ( fileTypes != null && fileTypes.length > 0 ) {
             sb.append( '"' );
             for ( int i = 0; i < fileTypes.length; i++ ) {
-                final String fileType = fileTypes[i];
-                //sb.append('"').append(fileType).append('"');
-                sb.append( fileType );
-                if ( i != (fileTypes.length - 1) ) {
+                final String fileType = fileTypes[ i ];
+                sb.append( escape( globToRegex( fileType ) ) );
+                if ( i != ( fileTypes.length - 1 ) ) {
                     sb.append( ',' );
                 }
             }
             sb.append( '"' );
         } else {
-            sb.append( "\"\"" );
+            sb.append( "\"" + globToRegex( "*.*" ) + "\"" );
         }
         return sb.toString();
+    }
+
+    private String escape( final String s ) {
+        return s.replace( "\\", "\\\\" );
     }
 
 }

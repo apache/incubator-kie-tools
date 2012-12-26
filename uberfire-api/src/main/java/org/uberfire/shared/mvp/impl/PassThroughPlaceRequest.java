@@ -39,28 +39,20 @@ public class PassThroughPlaceRequest extends DefaultPlaceRequest {
    	//TODO: Throw ValueFormatException if conversion to a String is not possible
     public String getPassThroughParameterString(final String key,
                                                 final String defaultValue) {
-    	Object value = null;
-
-        if ( passThroughParameters != null ) {
-            value = passThroughParameters.get( key );
-        }
+    	final Object value = passThroughParameters.get( key );
 
         if ( value == null ) {
-            value = defaultValue;
+            return defaultValue;
         }
         return (String)value;
     }
 
 	public Object getPassThroughParameter(final String key,
 			final Object defaultValue) {
-		Object value = null;
-
-		if (passThroughParameters != null) {
-			value = passThroughParameters.get(key);
-		}
+		final Object value = passThroughParameters.get(key);
 
 		if (value == null) {
-			value = defaultValue;
+			return defaultValue;
 		}
 		return value;
 	} 

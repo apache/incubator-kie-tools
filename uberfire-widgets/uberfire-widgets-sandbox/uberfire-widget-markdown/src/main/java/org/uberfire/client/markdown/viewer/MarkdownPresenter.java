@@ -30,7 +30,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 @Dependent
-@WorkbenchEditor(identifier = "MarkdownViewer", fileTypes = "md")
+@WorkbenchEditor(identifier = "MarkdownViewer", fileTypes = "*.md")
 public class MarkdownPresenter {
 
     public interface View

@@ -15,85 +15,89 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.uberfire</groupId>
-		<artifactId>uberfire</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>uberfire-workbench</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>uberfire-workbench</artifactId>
+  <packaging>jar</packaging>
 
-	<name>UberFire Workbench</name>
-	<description>UberFire Workbench</description>
+  <name>UberFire Workbench</name>
+  <description>UberFire Workbench</description>
 
-	<dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-regex</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-security-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-backend-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
-		<!-- Annotations -->
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
+    <!-- Annotations -->
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
-		</dependency>
+    </dependency>
 
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
 
-		<!-- CDI Integration Modules -->
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <!-- CDI Integration Modules -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-cdi-client</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+    </dependency>
 
-		<!-- Errai IoC -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-ioc</artifactId>
-		</dependency>
+    <!-- Errai IoC -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
 
-		<!-- GWT and GWT Extensions -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.allen-sauer.gwt.dnd</groupId>
-			<artifactId>gwt-dnd</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>com.allen-sauer.gwt.dnd</groupId>
+      <artifactId>gwt-dnd</artifactId>
+    </dependency>
 
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -101,34 +105,34 @@
       <scope>test</scope>
     </dependency>
 
-	</dependencies>
+  </dependencies>
 
-	<build>
+  <build>
 
-		<resources>
-			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-			<!-- Include module descriptors from src/main/resources in order not to 
-				break the Intellij GWT plug-in -->
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to
+        break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
 
-		<plugins>
+    <plugins>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgument>-proc:none</compilerArgument>
+        </configuration>
+      </plugin>
 
-		</plugins>
+    </plugins>
 
-	</build>
+  </build>
 
 </project>

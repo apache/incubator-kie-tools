@@ -16,30 +16,40 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.Window;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.google.gwt.regexp.shared.RegExp;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.backend.workbench.WorkbenchServices;
+import org.uberfire.client.workbench.annotations.Identifier;
+import org.uberfire.client.workbench.annotations.ResourceType;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.*;
+import static java.util.Collections.*;
 
-@Dependent
+@ApplicationScoped
 public class ActivityManagerImpl
         implements
         ActivityManager {
 
     private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
-
-    @Inject
-    private IdentifierUtils idUtils;
 
     @Inject
     private PlaceManager placeManager;
@@ -48,7 +58,7 @@ public class ActivityManagerImpl
     private IOCBeanManager iocManager;
 
     @Inject
-    RuntimeAuthorizationManager authzManager;
+    private RuntimeAuthorizationManager authzManager;
 
     @Inject
     private DefaultPlaceResolver defaultPlaceResolver;
@@ -56,6 +66,53 @@ public class ActivityManagerImpl
     @Inject
     private Identity identity;
 
+    private final Map<String, IOCBeanDef<Activity>> cachedActivitiesById   = new HashMap<String, IOCBeanDef<Activity>>();
+    private final Map<String, IOCBeanDef<Activity>> cachedActivitiesByType = new LinkedHashMap<String, IOCBeanDef<Activity>>();
+
+    private IOCBeanDef<Activity> defaultActivity = null;
+
+    @PostConstruct
+    public void init() {
+        final Collection<IOCBeanDef<Activity>> activities = iocManager.lookupBeans( Activity.class );
+
+        final Map<String, IOCBeanDef<Activity>> tempTypes = new LinkedHashMap<String, IOCBeanDef<Activity>>();
+        for ( final IOCBeanDef<Activity> activityBean : activities ) {
+            final String id = getIdentifier( activityBean );
+            if ( id != null ) {
+                cachedActivitiesById.put( id, activityBean );
+                if ( id.equals( "TextEditor" ) ) {
+                    defaultActivity = activityBean;
+                }
+            }
+
+            final String type = getResourceType( activityBean );
+            if ( type != null ) {
+                tempTypes.put( type, activityBean );
+            }
+        }
+
+        //for an unknow reason... TreeMap doesn't work.. so I have to workaround with the following code
+        final List<String> result = new ArrayList<String>( tempTypes.keySet() );
+        Collections.sort( result, new Comparator<String>() {
+            @Override
+            public int compare( final String o1,
+                                final String o2 ) {
+                if ( o1.length() < o2.length() ) {
+                    return 1;
+                } else if ( o1.length() > o2.length() ) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        } );
+
+        for ( final String key : result ) {
+            cachedActivitiesByType.put( key, tempTypes.get( key ) );
+        }
+    }
+
+    @Override
     public Activity getActivity( final PlaceRequest placeRequest ) {
         //Check and return any existing Activity for the PlaceRequest
         if ( activeActivities.containsKey( placeRequest ) ) {
@@ -64,14 +121,21 @@ public class ActivityManagerImpl
 
         //Lookup an Activity for the PlaceRequest
         Activity instance = null;
+
         final String identifier = placeRequest.getIdentifier();
-        Set<IOCBeanDef<Activity>> activityBeans = idUtils.getActivities( identifier );
+        final Set<IOCBeanDef<Activity>> activityBeans;
+
+        if ( identifier.equals( DefaultPlaceRequest.PATH_ID ) ) {
+            activityBeans = resolveByPath( placeRequest.getParameterString( "path:name", null ) );
+        } else {
+            activityBeans = resolveById( identifier );
+        }
+
         switch ( activityBeans.size() ) {
             case 0:
                 //No activities found. Show an error to the user.
                 final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
-                notFoundPopup.addParameter( "requestedPlaceIdentifier",
-                                            identifier );
+                notFoundPopup.addParameter( "requestedPlaceIdentifier", identifier );
                 placeManager.goTo( notFoundPopup );
                 break;
             case 1:
@@ -86,9 +150,8 @@ public class ActivityManagerImpl
                 }
                 return instance;
             default:
-
                 // Check if there is a default
-                String editorId = defaultPlaceResolver.getEditorId( identifier );
+                final String editorId = defaultPlaceResolver.getEditorId( identifier );
                 if ( editorId == null ) {
                     goToMultipleActivitiesPlace( identifier );
                 } else {
@@ -137,7 +200,7 @@ public class ActivityManagerImpl
     @Override
     public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
         final Set<Activity> activities = new HashSet<Activity>();
-        for ( IOCBeanDef<Activity> bean : idUtils.getActivities( placeRequest.getIdentifier() ) ) {
+        for ( IOCBeanDef<Activity> bean : resolveById( placeRequest.getIdentifier() ) ) {
             activities.add( bean.getInstance() );
         }
         return activities;
@@ -166,4 +229,76 @@ public class ActivityManagerImpl
         iocManager.destroyBean( activity );
     }
 
+    ///FROM IDUTILS!
+
+    /**
+     * Get a set of Bean definitions that can handle the @Identifier
+     * @param identifier
+     * @return
+     */
+    //Don't return actual Activity instances as we'd need to release them later
+    private Set<IOCBeanDef<Activity>> resolveById( final String identifier ) {
+        if ( identifier == null ) {
+            return emptySet();
+        }
+
+        final IOCBeanDef<Activity> result = cachedActivitiesById.get( identifier );
+        if ( result == null ) {
+            return emptySet();
+        }
+
+        return unmodifiableSet( new HashSet<IOCBeanDef<Activity>>( 1 ) {{
+            add( result );
+        }} );
+    }
+
+    private Set<IOCBeanDef<Activity>> resolveByPath( final String fileName ) {
+        if ( fileName == null ) {
+            return Collections.emptySet();
+        }
+
+        final Set<IOCBeanDef<Activity>> matchingActivityBeans = new HashSet<IOCBeanDef<Activity>>();
+        for ( final String pattern : cachedActivitiesByType.keySet() ) {
+            if ( RegExp.compile( pattern ).test( fileName ) ) {
+                matchingActivityBeans.add( cachedActivitiesByType.get( pattern ) );
+                break;
+            }
+
+        }
+
+        if ( matchingActivityBeans.isEmpty() ) {
+            matchingActivityBeans.add( defaultActivity );
+        }
+
+        return unmodifiableSet( matchingActivityBeans );
+    }
+
+    /**
+     * Given a bean definition return it's @Identifier value
+     * @param beanDefinition
+     * @return List of possible identifier, empty if none
+     */
+    private String getIdentifier( final IOCBeanDef beanDefinition ) {
+        final Set<Annotation> annotations = beanDefinition.getQualifiers();
+        for ( Annotation a : annotations ) {
+            if ( a instanceof Identifier ) {
+                final Identifier identifier = (Identifier) a;
+                return identifier.value();
+            }
+        }
+        return null;
+    }
+
+    private String getResourceType( final IOCBeanDef beanDefinition ) {
+        final Set<Annotation> annotations = beanDefinition.getQualifiers();
+        for ( Annotation a : annotations ) {
+            if ( a instanceof ResourceType ) {
+                final ResourceType resourceType = (ResourceType) a;
+                if ( resourceType.value().trim().length() > 0 ) {
+                    return resourceType.value();
+                }
+            }
+        }
+        return null;
+    }
 }

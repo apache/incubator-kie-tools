@@ -28,12 +28,14 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 @Portable
 public class DefaultPlaceRequest
-    implements
-    PlaceRequest {
+        implements
+        PlaceRequest {
 
-    public static final PlaceRequest  NOWHERE    = new DefaultPlaceRequest( "NOWHERE" );
+    public static final String PATH_ID = "Path";
 
-    private final String              identifier;
+    public static final PlaceRequest NOWHERE = new DefaultPlaceRequest( "NOWHERE" );
+
+    private final String identifier;
 
     private final Map<String, Object> parameters = new HashMap<String, Object>();
 
@@ -41,7 +43,7 @@ public class DefaultPlaceRequest
         this.identifier = "";
     }
 
-    public DefaultPlaceRequest(final String identifier) {
+    public DefaultPlaceRequest( final String identifier ) {
         this.identifier = identifier;
     }
 
@@ -70,15 +72,12 @@ public class DefaultPlaceRequest
         return fullIdentifier.toString();
     }
 
-   	//TODO: Throw ValueFormatException if conversion to a String is not possible
+    //TODO: Throw ValueFormatException if conversion to a String is not possible
     @Override
-    public String getParameterString(final String key,
-                               final String defaultValue) {
-    	Object value = null;
+    public String getParameterString( final String key,
+                                      final String defaultValue ) {
 
-        if ( parameters != null ) {
-            value = parameters.get( key );
-        }
+        final Object value = parameters.get( key );
 
         if ( value == null ) {
             return defaultValue;
@@ -87,17 +86,14 @@ public class DefaultPlaceRequest
     }
 
     @Override
-    public Object getParameter(final String key,
-                               final Object defaultValue) {
-    	Object value = null;
-
-        if ( parameters != null ) {
-            value = parameters.get( key );
-        }
+    public Object getParameter( final String key,
+                                final Object defaultValue ) {
+        final Object value = parameters.get( key );
 
         if ( value == null ) {
-            value = defaultValue;
+            return defaultValue;
         }
+
         return value;
     }
 
@@ -112,18 +108,16 @@ public class DefaultPlaceRequest
     }
 
     @Override
-    public PlaceRequest addParameter(final String name,
-                                     final String value) {
-        this.parameters.put( name,
-                             value );
+    public PlaceRequest addParameter( final String name,
+                                      final String value ) {
+        this.parameters.put( name, value );
         return this;
     }
 
     @Override
-    public PlaceRequest addParameter(final String name,
-                                     final Object value) {
-        this.parameters.put( name,
-                             value );
+    public PlaceRequest addParameter( final String name,
+                                      final Object value ) {
+        this.parameters.put( name, value );
         return this;
     }
 
@@ -133,10 +127,16 @@ public class DefaultPlaceRequest
     }
 
     @Override
-    public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null ) return false;
-        if ( !(o instanceof PlaceRequest) ) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null ) {
+            return false;
+        }
+        if ( !( o instanceof PlaceRequest ) ) {
+            return false;
+        }
 
         PlaceRequest that = (PlaceRequest) o;
         return this.getFullIdentifier().equals( that.getFullIdentifier() );

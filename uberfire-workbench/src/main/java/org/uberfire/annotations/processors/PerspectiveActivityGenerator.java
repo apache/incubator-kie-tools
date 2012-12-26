@@ -96,7 +96,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
 
         //Validate getPerspectiveMethodName
         if ( getPerspectiveMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+            throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition.", packageName + "." + className );
         }
 
         //Setup data for template sub-system
