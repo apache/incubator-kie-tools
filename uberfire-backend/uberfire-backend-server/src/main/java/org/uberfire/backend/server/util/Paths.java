@@ -37,7 +37,7 @@ public class Paths {
     private IOService ioService;
 
     public Path convert( final org.kie.commons.java.nio.file.Path path ) {
-        final Map<String, Object> attributes = ioService.readAttributes( path, "*" );
+        final Map<String, Object> attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
 
         return newPath( path.getFileName().toString(), path.toUri().toString(), attributes );
     }

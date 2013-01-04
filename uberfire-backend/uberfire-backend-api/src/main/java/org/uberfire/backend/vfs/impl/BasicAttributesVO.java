@@ -18,9 +18,9 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.Map;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.kie.commons.java.nio.file.attribute.FileTime;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class BasicAttributesVO implements BasicFileAttributes {
@@ -29,43 +29,52 @@ public class BasicAttributesVO implements BasicFileAttributes {
     private boolean isDirectory;
     private boolean isSymbolicLink;
     private boolean isOther;
-    private Long fileLenght;
+    private Long    size;
     //    private FileTime lastModifiedTime;
 //    private FileTime lastAccessTime;
 //    private FileTime creationTime;
-    private Object fileKey;
-    private Boolean exists = null;
-    private Boolean isExecutable = null;
-    private Boolean isReadable = null;
-    private Boolean isHidden = null;
+    private Object  fileKey;
 
     public BasicAttributesVO() {
     }
 
-    public BasicAttributesVO(Map attrs) {
-        this.isRegularFile = (Boolean) attrs.get("isRegularFile");
-        this.isDirectory = (Boolean) attrs.get("isDirectory");
-        this.isOther = (Boolean) attrs.get("isOther");
-        this.isSymbolicLink = (Boolean) attrs.get("isSymbolicLink");
-        this.fileKey = attrs.get("fileKey");
+    public BasicAttributesVO( Map attrs ) {
+        this.isRegularFile = (Boolean) attrs.get( "isRegularFile" );
+        this.isDirectory = (Boolean) attrs.get( "isDirectory" );
+        this.fileKey = attrs.get( "fileKey" );
+//        this.isOther = (Boolean) attrs.get( "isOther" );
+//        this.isSymbolicLink = (Boolean) attrs.get( "isSymbolicLink" );
 //        this.creationTime = creationTime;
 //        this.lastAccessTime = lastAccessTime;
 //        this.lastModifiedTime = lastModifiedTime;
-        this.fileLenght = (Long) attrs.get("fileLenght");
-        this.exists = (Boolean) attrs.get("exists");
-        this.isReadable = (Boolean) attrs.get("isReadable");
-        this.isExecutable = (Boolean) attrs.get("isExecutable");
-        this.isHidden = (Boolean) attrs.get("isHidden");
+        this.size = (Long) attrs.get( "size" );
     }
 
-    public BasicAttributesVO(final boolean isRegularFile, final boolean isDirectory, final boolean isOther, final boolean isSymbolicLink,
-            final Object fileKey, final FileTime creationTime, final FileTime lastAccessTime, final FileTime lastModifiedTime, final long fileLenght) {
-        this(isRegularFile, isDirectory, isOther, isSymbolicLink, fileKey, creationTime, lastAccessTime, lastModifiedTime, fileLenght, null, null, null, null);
+    public BasicAttributesVO( final boolean isRegularFile,
+                              final boolean isDirectory,
+                              final boolean isOther,
+                              final boolean isSymbolicLink,
+                              final Object fileKey,
+                              final FileTime creationTime,
+                              final FileTime lastAccessTime,
+                              final FileTime lastModifiedTime,
+                              final long fileLenght ) {
+        this( isRegularFile, isDirectory, isOther, isSymbolicLink, fileKey, creationTime, lastAccessTime, lastModifiedTime, fileLenght, null, null, null, null );
     }
 
-    public BasicAttributesVO(final boolean isRegularFile, final boolean isDirectory, final boolean isOther, final boolean isSymbolicLink,
-            final Object fileKey, final FileTime creationTime, final FileTime lastAccessTime, final FileTime lastModifiedTime, final long fileLenght,
-            final Boolean exists, final Boolean isReadable, final Boolean isExecutable, final Boolean isHidden) {
+    public BasicAttributesVO( final boolean isRegularFile,
+                              final boolean isDirectory,
+                              final boolean isOther,
+                              final boolean isSymbolicLink,
+                              final Object fileKey,
+                              final FileTime creationTime,
+                              final FileTime lastAccessTime,
+                              final FileTime lastModifiedTime,
+                              final long fileLenght,
+                              final Boolean exists,
+                              final Boolean isReadable,
+                              final Boolean isExecutable,
+                              final Boolean isHidden ) {
         this.isRegularFile = isRegularFile;
         this.isDirectory = isDirectory;
         this.isOther = isOther;
@@ -74,12 +83,7 @@ public class BasicAttributesVO implements BasicFileAttributes {
 //        this.creationTime = creationTime;
 //        this.lastAccessTime = lastAccessTime;
 //        this.lastModifiedTime = lastModifiedTime;
-        this.fileLenght = fileLenght;
-
-        this.exists = exists;
-        this.isReadable = isReadable;
-        this.isExecutable = isExecutable;
-        this.isHidden = isHidden;
+        this.size = fileLenght;
     }
 
     @Override
@@ -122,27 +126,11 @@ public class BasicAttributesVO implements BasicFileAttributes {
 
     @Override
     public long size() {
-        return fileLenght;
+        return size;
     }
 
     @Override
     public Object fileKey() {
         return fileKey;
-    }
-
-    public boolean exists() {
-        return exists;
-    }
-
-    public boolean isReadable() {
-        return isReadable;
-    }
-
-    public boolean isExecutable() {
-        return isExecutable;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
     }
 }
