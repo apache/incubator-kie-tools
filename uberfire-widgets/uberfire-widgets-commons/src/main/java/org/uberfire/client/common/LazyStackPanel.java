@@ -50,7 +50,7 @@ public class LazyStackPanel extends Composite
 
         addSelectionHandler( new SelectionHandler<LazyStackPanelRow>() {
 
-            public void onSelection(SelectionEvent<LazyStackPanelRow> event) {
+            public void onSelection( SelectionEvent<LazyStackPanelRow> event ) {
                 LazyStackPanelRow row = event.getSelectedItem();
                 if ( row.isExpanded() ) {
                     row.compress();
@@ -63,29 +63,28 @@ public class LazyStackPanel extends Composite
 
     /**
      * Add a new (collapsed) element to the stack.
-     * 
      * @param headerText
      * @param contentLoad
      */
-    public void add(String headerText,
-                    LoadContentCommand contentLoad) {
+    public void add( String headerText,
+                     LoadContentCommand contentLoad ) {
         this.add( headerText,
                   contentLoad,
                   false );
     }
 
-    public void add(String headerText,
-                    LoadContentCommand contentLoad,
-                    boolean expanded) {
+    public void add( String headerText,
+                     LoadContentCommand contentLoad,
+                     boolean expanded ) {
         LazyStackPanelHeader header = new LazyStackPanelHeader( headerText );
         add( header,
              contentLoad,
              expanded );
     }
 
-    public void add(String headerText,
-                    ImageResource icon,
-                    LoadContentCommand contentLoad) {
+    public void add( String headerText,
+                     ImageResource icon,
+                     LoadContentCommand contentLoad ) {
         LazyStackPanelHeader header = new LazyStackPanelHeader( headerText,
                                                                 icon );
         add( header,
@@ -95,33 +94,32 @@ public class LazyStackPanel extends Composite
 
     /**
      * Add a new (collapsed) element to the stack.
-     * 
      * @param header
      * @param contentLoad
      */
-    public void add(AbstractLazyStackPanelHeader header,
-                    LoadContentCommand contentLoad) {
+    public void add( AbstractLazyStackPanelHeader header,
+                     LoadContentCommand contentLoad ) {
         this.add( header,
                   contentLoad,
                   false );
     }
 
-    public void add(AbstractLazyStackPanelHeader header,
-                    LoadContentCommand contentLoad,
-                    boolean expanded) {
+    public void add( AbstractLazyStackPanelHeader header,
+                     LoadContentCommand contentLoad,
+                     boolean expanded ) {
         final LazyStackPanelRow row = new LazyStackPanelRow( header,
                                                              contentLoad );
 
         header.addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
 
-            public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
+            public void onOpen( OpenEvent<AbstractLazyStackPanelHeader> event ) {
                 selectRow( row );
             }
         } );
 
         header.addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
 
-            public void onClose(com.google.gwt.event.logical.shared.CloseEvent<AbstractLazyStackPanelHeader> event) {
+            public void onClose( com.google.gwt.event.logical.shared.CloseEvent<AbstractLazyStackPanelHeader> event ) {
                 selectRow( row );
             }
         } );
@@ -135,7 +133,7 @@ public class LazyStackPanel extends Composite
         }
     }
 
-    private void addHeaderRow(final LazyStackPanelRow row) {
+    private void addHeaderRow( final LazyStackPanelRow row ) {
         flexTable.setWidget( rowIndex,
                              0,
                              row );
@@ -145,25 +143,25 @@ public class LazyStackPanel extends Composite
         rowIndex++;
     }
 
-    private void addContentRow(final SimplePanel panel) {
+    private void addContentRow( final SimplePanel panel ) {
         flexTable.setWidget( rowIndex++,
                              0,
                              panel );
     }
 
-    private void selectRow(LazyStackPanelRow row) {
+    private void selectRow( LazyStackPanelRow row ) {
         SelectionEvent.fire( this,
                              row );
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<LazyStackPanelRow> handler) {
+    public HandlerRegistration addSelectionHandler( SelectionHandler<LazyStackPanelRow> handler ) {
         return addHandler( handler,
                            SelectionEvent.getType() );
     }
 
-    public void swap(int firstIndex,
-                     int secondIndex) {
+    public void swap( int firstIndex,
+                      int secondIndex ) {
 
         // Every list item is made of the header and content row.
         // So we have twice as many rows.
@@ -200,18 +198,23 @@ public class LazyStackPanel extends Composite
         while ( iterator.hasNext() ) {
             Widget widget = (Widget) iterator.next();
             if ( widget instanceof LazyStackPanelRow ) {
-                result.add( ((LazyStackPanelRow) widget).getHeader() );
+                result.add( ( (LazyStackPanelRow) widget ).getHeader() );
             }
         }
 
         return result.iterator();
     }
 
-    public void remove(int index) {
+    public void remove( int index ) {
 
         index = index * 2;
 
         flexTable.removeRow( index + 1 );
         flexTable.removeRow( index );
+    }
+
+    public void clean() {
+        flexTable.removeAllRows();
+        rowIndex = 0;
     }
 }
