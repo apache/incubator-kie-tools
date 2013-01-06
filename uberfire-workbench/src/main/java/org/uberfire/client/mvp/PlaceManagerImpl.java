@@ -169,14 +169,33 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo( Path path ) {
+    public void goTo( final Path path ) {
         goTo( getPlace( path ) );
+    }
+
+    @Override
+    public void goTo( final Path path,
+                      final PlaceRequest placeRequest ) {
+        goTo( getPlace( placeRequest, path ) );
     }
 
     @Override
     public void goTo( Path path,
                       Command callback ) {
         goTo( getPlace( path ), callback );
+    }
+
+    private PlaceRequest getPlace( final PlaceRequest placeRequest,
+                                   final Path path ) {
+        final PlaceRequest request = new DefaultPlaceRequest( PATH_ID )
+                .addParameter( "path:uri", path.toURI() )
+                .addParameter( "path:name", path.getFileName() );
+
+        for ( final Map.Entry<String, Object> entry : placeRequest.getParameters().entrySet() ) {
+            request.addParameter( entry.getKey(), entry.getValue() );
+        }
+
+        return request;
     }
 
     private PlaceRequest getPlace( final Path path ) {

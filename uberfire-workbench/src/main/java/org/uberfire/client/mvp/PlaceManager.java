@@ -36,11 +36,13 @@ public interface PlaceManager {
     void goTo( final PartDefinition part,
                final PanelDefinition panel );
 
-    void goTo( final Path path);
+    void goTo( final Path path );
+
+    void goTo( final Path path,
+               final PlaceRequest place );
 
     void goTo( final Path path,
                final Command callback );
-
 
     public PlaceRequest getCurrentPlaceRequest();
 
