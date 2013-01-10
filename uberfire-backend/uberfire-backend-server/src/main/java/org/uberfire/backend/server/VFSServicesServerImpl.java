@@ -17,7 +17,6 @@
 package org.uberfire.backend.server;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,6 @@ import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
 
 @Service
 @ApplicationScoped
@@ -56,6 +54,11 @@ public class VFSServicesServerImpl implements VFSService {
 
     @Inject
     private Paths paths;
+
+    @Override
+    public Path get( final String uri ) {
+        return paths.convert( ioService.get( URI.create( uri ) ) );
+    }
 
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path dir )
@@ -160,7 +163,7 @@ public class VFSServicesServerImpl implements VFSService {
     public FileSystem newFileSystem( final String uri,
                                      final Map<String, Object> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
         final URI furi = URI.create( uri );
-        return convert( ioService.newFileSystem( furi, env ) );
+        return paths.convert( ioService.newFileSystem( furi, env ) );
     }
 
     private DirectoryStream<Path> newDirectoryStream( final Iterator<org.kie.commons.java.nio.file.Path> iterator ) {
@@ -169,15 +172,6 @@ public class VFSServicesServerImpl implements VFSService {
             content.add( paths.convert( iterator.next() ) );
         }
         return new DirectoryStreamImpl( content );
-    }
-
-    private FileSystem convert( final org.kie.commons.java.nio.file.FileSystem fs ) {
-        final List<Path> roots = new ArrayList<Path>();
-        for ( final org.kie.commons.java.nio.file.Path root : fs.getRootDirectories() ) {
-            roots.add( paths.convert( root ) );
-        }
-
-        return new FileSystemImpl( roots );
     }
 
     private DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> convert( final DirectoryStream.Filter<Path> filter ) {

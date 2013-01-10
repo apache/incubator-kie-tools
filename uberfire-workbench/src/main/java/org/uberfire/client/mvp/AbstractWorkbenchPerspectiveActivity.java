@@ -17,7 +17,6 @@ package org.uberfire.client.mvp;
 
 import java.util.Map;
 import java.util.Set;
-
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -34,7 +33,6 @@ import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PassThroughPlaceRequest;
 
 /**
  * Base class for Perspective Activities
@@ -176,8 +174,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         for ( PartDefinition part : parts ) {
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
             part.setPlace( place );
-            placeManager.goTo( part,
-                               panelManager.getRoot() );
+            placeManager.goTo( part, panelManager.getRoot() );
         }
         buildPerspective( panelManager.getRoot() );
 
@@ -214,22 +211,18 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         for ( PartDefinition part : parts ) {
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
             part.setPlace( place );
-            placeManager.goTo( part,
-                               panel );
+            placeManager.goTo( part, panel );
         }
         buildPerspective( panel );
     }
 
-    private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest place ) {
-        final PassThroughPlaceRequest clone = new PassThroughPlaceRequest( place.getIdentifier() );
-        for ( Map.Entry<String, Object> parameter : place.getParameters().entrySet() ) {
-            clone.addParameter( parameter.getKey(),
-                                parameter.getValue() );
+    private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
+        final PlaceRequest clone = _place.clone();
+
+        for ( Map.Entry<String, String> parameter : this.place.getParameters().entrySet() ) {
+            clone.addParameter( parameter.getKey(), parameter.getValue() );
         }
-        for ( Map.Entry<String, Object> parameter : this.place.getParameters().entrySet() ) {
-            clone.addPassThroughParameter( parameter.getKey(),
-                                           parameter.getValue() );
-        }
+
         return clone;
     }
 

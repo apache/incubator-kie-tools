@@ -16,16 +16,14 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.Window;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.workbench.WorkbenchServices;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 @ApplicationScoped
 public class DefaultPlaceResolver {
@@ -43,8 +41,7 @@ public class DefaultPlaceResolver {
                     public void callback( Map<String, String> properties ) {
                         DefaultPlaceResolver.this.properties = properties;
                     }
-                }
-                       ).loadDefaultEditorsMap();
+                } ).loadDefaultEditorsMap();
     }
 
     public String getEditorId( String key ) {
@@ -53,8 +50,7 @@ public class DefaultPlaceResolver {
 
     public void saveDefaultEditor( final String fullIdentifier,
                                    final String signatureId ) {
-        properties.put( fullIdentifier,
-                        signatureId );
+        properties.put( fullIdentifier, signatureId );
 
         wbServices.call( new RemoteCallback<Void>() {
             @Override

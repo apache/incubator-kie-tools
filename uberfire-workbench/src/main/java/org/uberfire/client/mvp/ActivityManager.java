@@ -17,17 +17,12 @@ package org.uberfire.client.mvp;
 
 import java.util.Set;
 
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 public interface ActivityManager {
 
-    public Activity getActivity( final PlaceRequest placeRequest );
-
     <T extends Activity> Set<T> getActivities( final Class<T> abstractScreenActivityClass );
 
     Set<Activity> getActivities( final PlaceRequest placeRequest );
-
-    void removeActivity( final PlaceRequest placeRequest );
 
 }

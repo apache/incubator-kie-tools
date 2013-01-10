@@ -15,6 +15,8 @@
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
+  <inherits name="org.kie.commons.KieCommonsData"/>
+
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
 

@@ -36,11 +36,11 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.resources.CoreImages;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PathPlaceRequest;
 
 import static org.uberfire.backend.vfs.PathFactory.*;
 
@@ -104,11 +104,9 @@ public class CreateNewRepositoryWizard extends FormStylePopup {
                     public void callback( final FileSystem v ) {
                         Window.alert( "The repository is created successfully" );
                         hide();
-                        final PlaceRequest repositoryEditor = new DefaultPlaceRequest( "RepositoryEditor" )
-                                .addParameter( "path:uri", uri )
-                                .addParameter( "path:name", nameTextBox.getText() );
 
-                        final Root newRoot = new Root( newPath( nameTextBox.getText(), uri ), repositoryEditor );
+                        final Path rootPath = newPath( v, nameTextBox.getText(), uri );
+                        final Root newRoot = new Root( rootPath, new PathPlaceRequest( rootPath, "RepositoryEditor" ) );
 
                         rootService.call( new RemoteCallback<Root>() {
                             @Override

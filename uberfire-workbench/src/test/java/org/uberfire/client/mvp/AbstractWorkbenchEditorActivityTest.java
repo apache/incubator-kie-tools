@@ -1,11 +1,14 @@
 package org.uberfire.client.mvp;
 
+import java.util.HashSet;
+
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
+import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -17,21 +20,42 @@ import static org.mockito.Mockito.*;
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
  * life-cycle events. There remains a lot more work to do in this class.
  */
-public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
+public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
     @Test
     //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
     public void testGoToOnePlace() throws Exception {
         final String uri = "a/path/to/somewhere";
-        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path:uri", uri ).addParameter( "path:name", "somewhere" );
+        final PlaceRequest somewhere = new PathPlaceRequest( new Path() {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public String getFileName() {
+                return "somewhere";
+            }
+
+            @Override
+            public String toURI() {
+                return uri;
+            }
+
+            @Override
+            public int compareTo( final Path o ) {
+                return 0;
+            }
+        } );
 
         final Path path = mock( Path.class );
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
         final WorkbenchEditorActivity spy = spy( activity );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
 
@@ -54,19 +78,41 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
     //Reveal the same Place twice. It should be launched, OnStart and OnReveal called once.
     public void testGoToOnePlaceTwice() throws Exception {
         final String uri = "a/path/to/somewhere";
-        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path:uri",
-                                uri ).addParameter( "path:name", "somewhere" );
-        final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
-        somewhereTheSame.addParameter( "path:uri",
-                                       uri );
+        final PlaceRequest somewhere = new PathPlaceRequest( new Path() {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public String getFileName() {
+                return "somewhere";
+            }
+
+            @Override
+            public String toURI() {
+                return uri;
+            }
+
+            @Override
+            public int compareTo( final Path o ) {
+                return 0;
+            }
+        } );
+        final PlaceRequest somewhereTheSame = somewhere.clone();
 
         final Path path = mock( Path.class );
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
         final WorkbenchEditorActivity spy = spy( activity );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
+
+        when( activityManager.getActivities( somewhereTheSame ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
         placeManager.goTo( somewhereTheSame );
@@ -91,11 +137,49 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
     public void testGoToTwoDifferentPlaces() throws Exception {
         final String uri1 = "a/path/to/somewhere";
         final String uri2 = "a/path/to/somewhere/else";
-        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        somewhere.addParameter( "path:uri",
-                                uri1 ).addParameter( "path:name", "somewhere" );
-        final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
-        somewhereElse.addParameter( "path:uri", uri2 ).addParameter( "path:name", "else" );
+        final PlaceRequest somewhere = new PathPlaceRequest( new Path() {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public String getFileName() {
+                return "somewhere";
+            }
+
+            @Override
+            public String toURI() {
+                return uri1;
+            }
+
+            @Override
+            public int compareTo( final Path o ) {
+                return 0;
+            }
+        } );
+
+        final PlaceRequest somewhereElse = new PathPlaceRequest( new Path() {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public String getFileName() {
+                return "else";
+            }
+
+            @Override
+            public String toURI() {
+                return uri2;
+            }
+
+            @Override
+            public int compareTo( final Path o ) {
+                return 0;
+            }
+        } );
 
         //The first place
         final Path path1 = mock( Path.class );
@@ -109,8 +193,12 @@ public class AbstractWorkbenchEditorActivityTests extends BaseWorkbenchTest {
         final WorkbenchEditorActivity activity2 = new MockWorkbenchEditorActivity( placeManager );
         final WorkbenchEditorActivity spy2 = spy( activity2 );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy1 );
-        when( activityManager.getActivity( somewhereElse ) ).thenReturn( spy2 );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy1 );
+        }} );
+        when( activityManager.getActivities( somewhereElse ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy2 );
+        }} );
 
         placeManager.goTo( somewhere );
         placeManager.goTo( somewhereElse );

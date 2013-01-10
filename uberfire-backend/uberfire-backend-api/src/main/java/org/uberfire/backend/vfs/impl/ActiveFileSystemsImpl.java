@@ -22,19 +22,20 @@ import java.util.List;
 
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.Path;
 
 public class ActiveFileSystemsImpl implements ActiveFileSystems {
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
 
     @Override
-    public void addBootstrapFileSystem(final FileSystem fs) {
-        fileSystems.add(0, fs);
+    public void addBootstrapFileSystem( final FileSystem fs ) {
+        fileSystems.add( 0, fs );
     }
 
     @Override
-    public void addFileSystem(final FileSystem fs) {
-        fileSystems.add(fs);
+    public void addFileSystem( final FileSystem fs ) {
+        fileSystems.add( fs );
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ActiveFileSystemsImpl implements ActiveFileSystems {
 
     @Override
     public FileSystem getBootstrapFileSystem() {
-        return fileSystems.get(0);
+        return fileSystems.get( 0 );
     }
 
 }

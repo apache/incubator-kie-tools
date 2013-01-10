@@ -26,15 +26,13 @@ import javax.inject.Singleton;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.backend.vfs.ActiveFileSystems;
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.impl.ActiveFileSystemsImpl;
-import org.uberfire.backend.vfs.impl.FileSystemImpl;
 
-import static java.util.Arrays.*;
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
-import static org.uberfire.backend.vfs.PathFactory.*;
 
 @Singleton
 public class AppSetup {
@@ -55,13 +53,17 @@ public class AppSetup {
             put( "origin", gitURL );
         }};
 
+        FileSystem fs = null;
+
         try {
-            ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
+            fs = ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
         } catch ( FileSystemAlreadyExistsException ex ) {
+            fs = ioService.getFileSystem( fsURI );
         }
 
-        final Path root = newPath( "uf-playground", "default://uf-playground" );
-        activeFileSystems.addBootstrapFileSystem( new FileSystemImpl( asList( root ) ) );
+        activeFileSystems.addBootstrapFileSystem( FileSystemFactory.newFS( new HashMap<String, String>() {{
+            put( "default://uf-playground", "uf-playground" );
+        }}, fs.supportedFileAttributeViews() ) );
     }
 
     @Produces

@@ -16,9 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
-
-import static org.uberfire.backend.vfs.PathFactory.*;
 
 /**
  * Base class for Editor Activities
@@ -36,12 +35,10 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
                         final PlaceRequest place,
                         final Command callback ) {
         super.launch( place, callback );
-        String uri = place.getParameterString( "path:uri", null );
-        String name = place.getParameterString( "path:name", null );
 
-        final Path path = newPath( name, uri );
+        final PathPlaceRequest pathPlace = (PathPlaceRequest) place;
 
-        onStart( path, place );
+        onStart( pathPlace.getPath(), place );
 
         acceptPanel.add( getTitleWidget(), getWidget() );
 

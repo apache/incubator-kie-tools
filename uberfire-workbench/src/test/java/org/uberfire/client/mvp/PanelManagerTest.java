@@ -1,12 +1,6 @@
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -15,6 +9,9 @@ import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests that the PanelManager keeps the underlying Perspective model consistent
@@ -32,7 +29,9 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity spy = spy( activity );
         when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
 
@@ -60,7 +59,9 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity spy = spy( activity );
         when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         //Goto Place once
         placeManager.goTo( somewhere );
@@ -106,12 +107,16 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity1 = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy1 = spy( activity1 );
         when( spy1.getDefaultPosition() ).thenReturn( Position.ROOT );
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy1 );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy1 );
+        }} );
 
         final WorkbenchScreenActivity activity2 = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy2 = spy( activity2 );
         when( spy2.getDefaultPosition() ).thenReturn( Position.ROOT );
-        when( activityManager.getActivity( elsewhere ) ).thenReturn( spy2 );
+        when( activityManager.getActivities( elsewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy2 );
+        }} );
 
         //Goto first Place
         placeManager.goTo( somewhere );
@@ -150,11 +155,11 @@ public class PanelManagerTest extends BaseWorkbenchTest {
                                1 ).getPlace() );
     }
 
-    private PartDefinition getPart(final Set<PartDefinition> parts,
-                                   final int index) {
-        final PartDefinition[] arrayParts = new PartDefinition[parts.size()];
+    private PartDefinition getPart( final Set<PartDefinition> parts,
+                                    final int index ) {
+        final PartDefinition[] arrayParts = new PartDefinition[ parts.size() ];
         parts.toArray( arrayParts );
-        return arrayParts[index];
+        return arrayParts[ index ];
     }
 
 }

@@ -15,19 +15,22 @@
  */
 package org.uberfire.client.workbench.widgets.popups.activities.multiple;
 
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Set;
 
 import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.*;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.DefaultPlaceResolver;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
@@ -80,8 +83,7 @@ public class MultipleActivitiesFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        requestedPlaceIdentifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
-                                                                                             null );
+        requestedPlaceIdentifier = place.getParameter( "requestedPlaceIdentifier", null );
         view.setRequestedPlaceIdentifier( requestedPlaceIdentifier );
         view.setActivities( activityManager.getActivities( new DefaultPlaceRequest( requestedPlaceIdentifier ) ) );
     }
@@ -100,8 +102,8 @@ public class MultipleActivitiesFoundPresenter {
         closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
     }
 
-    public void activitySelected( Activity activity ) {
-        defaultPlaceResolver.saveDefaultEditor( new DefaultPlaceRequest( requestedPlaceIdentifier ).getFullIdentifier(), activity.getSignatureId() );
+    public void activitySelected( final Activity activity ) {
+        defaultPlaceResolver.saveDefaultEditor( place.getIdentifier(), activity.getSignatureId() );
         placeManager.goTo( new DefaultPlaceRequest( requestedPlaceIdentifier ) );
         close();
     }

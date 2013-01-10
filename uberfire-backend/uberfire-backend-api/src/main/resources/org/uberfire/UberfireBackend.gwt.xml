@@ -7,7 +7,9 @@
   <inherits name='org.kie.commons.java.nio.KieCommonsVFSModel'/>
 
   <source path='backend'>
-    <exclude name="server/**" />
+    <exclude name="server/**"/>
   </source>
+
+  <source path='mvp'/>
 
 </module>

@@ -62,8 +62,7 @@ public class ActivityNotFoundPresenter {
 
     @OnReveal
     public void onReveal() {
-        final String identifier = placeManager.getCurrentPlaceRequest().getParameterString( "requestedPlaceIdentifier",
-                                                                                            null );
+        final String identifier = place.getParameter( "requestedPlaceIdentifier", null );
         view.setRequestedPlaceIdentifier( identifier );
     }
 

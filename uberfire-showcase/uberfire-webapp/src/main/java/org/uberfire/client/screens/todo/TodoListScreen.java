@@ -19,6 +19,7 @@ package org.uberfire.client.screens.todo;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -28,7 +29,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -51,6 +53,10 @@ public class TodoListScreen
     @Inject
     private Caller<VFSService> vfsServices;
 
+    @Inject
+    @Named("fs")
+    private ActiveFileSystems activeFileSystems;
+
     @UiField
     protected Markdown markdown;
 
@@ -58,16 +64,21 @@ public class TodoListScreen
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        vfsServices.call( new RemoteCallback<String>() {
+        vfsServices.call( new RemoteCallback<Path>() {
             @Override
-            public void callback( final String response ) {
-                if ( response == null ) {
-                    markdown.setContent( "<p>-- empty --</p>" );
-                } else {
-                    markdown.setContent( response );
-                }
+            public void callback( final Path o ) {
+                vfsServices.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( final String response ) {
+                        if ( response == null ) {
+                            markdown.setContent( "<p>-- empty --</p>" );
+                        } else {
+                            markdown.setContent( response );
+                        }
+                    }
+                } ).readAllString( o );
             }
-        } ).readAllString( PathFactory.newPath( "todo.md", "default://uf-playground/todo.md" ) );
+        } ).get( "default://uf-playground/todo.md" );
     }
 
     @WorkbenchPartTitle

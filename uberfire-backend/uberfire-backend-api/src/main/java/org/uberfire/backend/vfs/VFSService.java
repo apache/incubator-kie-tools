@@ -36,6 +36,8 @@ import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 @Remote
 public interface VFSService {
 
+    Path get( String uri );
+
     DirectoryStream<Path> newDirectoryStream( final Path dir )
             throws IllegalArgumentException, NotDirectoryException, IOException;
 
@@ -102,5 +104,4 @@ public interface VFSService {
     FileSystem newFileSystem( final String uri,
                               final Map<String, Object> env )
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
-
 }

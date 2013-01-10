@@ -20,9 +20,9 @@ import java.util.Collection;
 
 public interface ActiveFileSystems {
 
-    void addBootstrapFileSystem(final FileSystem fs);
+    void addBootstrapFileSystem( final FileSystem fs );
 
-    void addFileSystem(final FileSystem fs);
+    void addFileSystem( final FileSystem fs );
 
     FileSystem getBootstrapFileSystem();
 

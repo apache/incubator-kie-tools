@@ -44,11 +44,7 @@ public interface PlaceManager {
     void goTo( final Path path,
                final Command callback );
 
-    public PlaceRequest getCurrentPlaceRequest();
-
     public Activity getActivity( final PlaceRequest place );
-
-    public void closeCurrentPlace();
 
     public void closePlace( final PlaceRequest place );
 

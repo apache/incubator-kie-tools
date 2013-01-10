@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import java.util.HashSet;
+
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -27,7 +29,9 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
 
         final WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
         when( activity.getDefaultPosition() ).thenReturn( Position.ROOT );
-        when( activityManager.getActivity( somewhere ) ).thenReturn( activity );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( activity );
+        }} );
 
         placeManager.goTo( somewhere );
 
@@ -60,7 +64,9 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy = spy( activity );
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
 

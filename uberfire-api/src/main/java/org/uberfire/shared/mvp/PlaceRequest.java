@@ -19,29 +19,28 @@ package org.uberfire.shared.mvp;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
 public interface PlaceRequest {
 
-    public String getIdentifier();
+    public static final PlaceRequest NOWHERE = new DefaultPlaceRequest( "NOWHERE" );
 
-    public String getFullIdentifier();
+    String getIdentifier();
 
-    //TODO: add other getParameter methods if necessary, eg, getParameterDate, getParameterLong etc
-    public String getParameterString(String key,
-                                     String defaultValue);
-    
-    public Object getParameter(String key,
-                               Object defaultValue);
-    
-    public Set<String> getParameterNames();
+    String getFullIdentifier();
 
-    public Map<String, Object> getParameters();
+    String getParameter( final String key,
+                         final String defaultValue );
 
-    public PlaceRequest addParameter(String name,
-                                     String value);
-    
-    public PlaceRequest addParameter(String name,
-                                     Object value);
-    
-    public PlaceRequest getPlace();
+    Set<String> getParameterNames();
+
+    Map<String, String> getParameters();
+
+    PlaceRequest addParameter( final String name,
+                               final String value );
+
+    PlaceRequest getPlace();
+
+    PlaceRequest clone();
 
 }

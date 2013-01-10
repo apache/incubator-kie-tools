@@ -28,20 +28,23 @@ public final class PathFactory {
     private PathFactory() {
     }
 
-    public static Path newPath( final String fileName,
+    public static Path newPath( final FileSystem fs,
+                                final String fileName,
                                 final String uri ) {
-        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
+        return new PathImpl( checkNotNull( "fs", fs ), checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
     }
 
-    public static Path newPath( final String fileName,
+    public static Path newPath( final FileSystem fs,
+                                final String fileName,
                                 final String uri,
                                 final Map<String, Object> attrs ) {
-        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
+        return new PathImpl( checkNotNull( "fs", fs ), checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
     }
 
     @Portable
     public static class PathImpl implements Path {
 
+        private FileSystem              fs         = null;
         private String                  uri        = null;
         private String                  fileName   = null;
         private HashMap<String, Object> attributes = null;
@@ -49,14 +52,17 @@ public final class PathFactory {
         public PathImpl() {
         }
 
-        private PathImpl( final String fileName,
+        private PathImpl( final FileSystem fs,
+                          final String fileName,
                           final String uri ) {
-            this( fileName, uri, null );
+            this( fs, fileName, uri, null );
         }
 
-        private PathImpl( final String fileName,
+        private PathImpl( final FileSystem fs,
+                          final String fileName,
                           final String uri,
                           final Map<String, Object> attrs ) {
+            this.fs = fs;
             this.fileName = fileName;
             this.uri = uri;
             if ( attrs == null ) {
@@ -64,6 +70,11 @@ public final class PathFactory {
             } else {
                 this.attributes = new HashMap<String, Object>( attrs );
             }
+        }
+
+        @Override
+        public FileSystem getFileSystem() {
+            return fs;
         }
 
         @Override

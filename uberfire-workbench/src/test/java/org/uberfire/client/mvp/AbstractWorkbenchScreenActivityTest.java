@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import java.util.HashSet;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
@@ -17,7 +19,7 @@ import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
  * life-cycle events. There remains a lot more work to do in this class.
  */
-public class AbstractWorkbenchScreenActivityTests extends BaseWorkbenchTest {
+public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
     @Test
     //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
@@ -27,7 +29,9 @@ public class AbstractWorkbenchScreenActivityTests extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy = spy( activity );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
 
@@ -54,7 +58,9 @@ public class AbstractWorkbenchScreenActivityTests extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy = spy( activity );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy );
+        }} );
 
         placeManager.goTo( somewhere );
         placeManager.goTo( somewhereTheSame );
@@ -87,8 +93,12 @@ public class AbstractWorkbenchScreenActivityTests extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity2 = new MockWorkbenchScreenActivity( placeManager );
         final WorkbenchScreenActivity spy2 = spy( activity2 );
 
-        when( activityManager.getActivity( somewhere ) ).thenReturn( spy1 );
-        when( activityManager.getActivity( somewhereElse ) ).thenReturn( spy2 );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy1 );
+        }} );
+        when( activityManager.getActivities( somewhereElse ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+            add( spy2 );
+        }} );
 
         placeManager.goTo( somewhere );
         placeManager.goTo( somewhereElse );

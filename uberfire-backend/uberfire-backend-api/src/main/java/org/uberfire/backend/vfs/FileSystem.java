@@ -17,9 +17,12 @@
 package org.uberfire.backend.vfs;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FileSystem {
 
     List<Path> getRootDirectories();
+
+    Set<String> supportedFileAttributeViews();
 
 }

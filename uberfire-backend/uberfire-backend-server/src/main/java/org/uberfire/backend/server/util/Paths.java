@@ -17,6 +17,7 @@
 package org.uberfire.backend.server.util;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,6 +26,8 @@ import javax.inject.Named;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.kie.commons.io.IOService;
+import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.backend.vfs.PathFactory.*;
@@ -36,13 +39,28 @@ public class Paths {
     @Named("ioStrategy")
     private IOService ioService;
 
+    private Map<org.kie.commons.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.kie.commons.java.nio.file.FileSystem, FileSystem>();
+
     public Path convert( final org.kie.commons.java.nio.file.Path path ) {
+
+        if ( path == null ) {
+            return null;
+        }
+
         final Map<String, Object> attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
 
-        return newPath( path.getFileName().toString(), path.toUri().toString(), attributes );
+        if ( path.getFileName() == null ) {
+            return newPath( convert( path.getFileSystem() ), "/", path.toUri().toString(), attributes );
+        }
+
+        return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString(), attributes );
     }
 
     public org.kie.commons.java.nio.file.Path convert( final Path path ) {
+        if ( path == null ) {
+            return null;
+        }
+
         try {
             return ioService.get( URI.create( path.toURI() ) );
         } catch ( IllegalArgumentException e ) {
@@ -52,6 +70,18 @@ public class Paths {
                 return null;
             }
         }
+    }
+
+    public FileSystem convert( final org.kie.commons.java.nio.file.FileSystem fs ) {
+        if ( !cache.containsKey( fs ) ) {
+            final Map<String, String> roots = new HashMap<String, String>();
+            for ( final org.kie.commons.java.nio.file.Path root : fs.getRootDirectories() ) {
+                roots.put( root.toUri().toString(), root.getFileName() == null ? "/" : root.getFileName().toString() );
+            }
+            cache.put( fs, FileSystemFactory.newFS( roots, fs.supportedFileAttributeViews() ) );
+        }
+
+        return cache.get( fs );
     }
 
 }

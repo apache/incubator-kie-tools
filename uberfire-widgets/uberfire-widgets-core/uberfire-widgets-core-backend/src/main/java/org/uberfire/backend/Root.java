@@ -23,19 +23,16 @@ import org.uberfire.shared.mvp.PlaceRequest;
 @Portable
 public class Root {
 
-    private Path path;
+    private Path         path;
     private PlaceRequest placeRequest;
 
     public Root() {
     }
 
-    public Root(final Path path, PlaceRequest placeRequest1) {
+    public Root( final Path path,
+                 final PlaceRequest placeRequest1 ) {
         this.path = path;
         this.placeRequest = placeRequest1;
-
-        this.placeRequest
-                .addParameter("path:uri", path.toURI())
-                .addParameter("path:name", path.getFileName());
     }
 
     public Path getPath() {
