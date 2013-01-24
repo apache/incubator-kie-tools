@@ -16,10 +16,17 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:common="urn:import:org.uberfire.client.common">
 
+  <ui:style>
+    .betterSetup {
+      margin: 10px 10px 10px 10px;
+      resize: none;
+    }
+  </ui:style>
+
   <g:ResizeLayoutPanel>
-    <common:ResizableTextArea ui:field="fileContent"/>
+    <common:ResizableTextArea ui:field="fileContent" styleName="{style.betterSetup}"/>
   </g:ResizeLayoutPanel>
 </ui:UiBinder>

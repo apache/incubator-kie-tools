@@ -24,8 +24,7 @@ import org.uberfire.security.authz.RuntimeResource;
  * enabled.
  */
 public interface ToolBarItem
-    extends
-    RuntimeResource {
+        extends RuntimeResource {
 
     /**
      * @return the caption
@@ -33,10 +32,9 @@ public interface ToolBarItem
     public String getTooltip();
 
     /**
-     * @return The relative URL for the image for the ToolBarItem. Images must
-     *         be within the application WAR, i.e. not an external location.
+     * @return the toolbar icon information
      */
-    public String getUrl();
+    public ToolBarIcon getIcon();
 
     /**
      * @return is the Tool Bar Item enabled
@@ -44,10 +42,9 @@ public interface ToolBarItem
     public boolean isEnabled();
 
     /**
-     * @param enabled
-     *            the enabled to set
+     * @param enabled the enabled to set
      */
-    public void setEnabled(boolean enabled);
+    public void setEnabled( boolean enabled );
 
     /**
      * @return The command associated with the Tool Bar Item
@@ -56,9 +53,8 @@ public interface ToolBarItem
 
     /**
      * Set the roles required to access this Tool Bar Item
-     * 
      * @param roles
      */
-    public void setRoles(final String[] roles);
+    public void setRoles( final String[] roles );
 
 }

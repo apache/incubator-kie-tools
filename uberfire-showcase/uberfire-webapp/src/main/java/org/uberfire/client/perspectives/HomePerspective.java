@@ -19,27 +19,27 @@ public class HomePerspective {
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName("Home");
+        p.setName( "Home" );
 
         final PanelDefinition west = new PanelDefinitionImpl();
-        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeVideos")));
-        west.setWidth(250);
-        west.setMinWidth(200);
-        p.getRoot().insertChild(Position.WEST, west);
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "YouTubeVideos" ) ) );
+        west.setWidth( 250 );
+        west.setMinWidth( 200 );
+        p.getRoot().insertChild( Position.WEST, west );
 
         final PanelDefinition east = new PanelDefinitionImpl();
-        east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
-        east.setWidth(300);
-        east.setMinWidth(200);
-        p.getRoot().insertChild(Position.EAST, east);
+        east.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "TodoListScreen" ) ) );
+        east.setWidth( 300 );
+        east.setMinWidth( 200 );
+        p.getRoot().insertChild( Position.EAST, east );
 
-        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("welcome")));
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "welcome" ) ) );
+        p.getRoot().setMinHeight( 100 );
 
         final PanelDefinition south = new PanelDefinitionImpl();
-        south.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("YouTubeScreen")));
-        south.setHeight(515);
-        south.setMinHeight(400);
-        p.getRoot().insertChild(Position.SOUTH, south);
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "YouTubeScreen" ) ) );
+        south.setHeight( 400 );
+        p.getRoot().insertChild( Position.SOUTH, south );
 
         return p;
     }

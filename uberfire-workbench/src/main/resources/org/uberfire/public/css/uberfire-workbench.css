@@ -16,170 +16,35 @@
 
 /* Loading indicator at Startup */
 #loading {
-	position: absolute;
-	left: 45%;
-	top: 40%;
-	padding: 2px;
-	z-index: 20001;
-	height: auto;
-	border: 1px solid #ccc;
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    padding: 2px;
+    z-index: 20001;
+    height: auto;
+    border: 1px solid #ccc;
 }
 
 #loading a {
-	color: #225588;
+    color: #225588;
 }
 
 #loading .loading-indicator {
-	background: white;
-	color: #444;
-	font: bold 13px tahoma, arial, helvetica;
-	padding: 10px;
-	margin: 0;
-	height: auto;
+    background: white;
+    color: #444;
+    font: bold 13px tahoma, arial, helvetica;
+    padding: 10px;
+    margin: 0;
+    height: auto;
 }
 
 #loading-msg {
-	font: normal 10px arial, tahoma, sans-serif;
+    font: normal 10px arial, tahoma, sans-serif;
 }
 
-/* Workbench styles */
-.workbenchFocusIndicator {
-	background-color: #dcdcdc;
-	width: 100%;
-}
-
-.workbenchFocusIndicatorHasFocus {
-	background-color: #e0f020;
-	width: 100%;
-}
-
-.workbenchTabPanelBottom {
-	overflow: hidden;
-	padding: 6px;
-	width: 100%;
-	height: 100%;
-}
-
-.gwt-TabLayoutPanelContentContainer {
-	border: 0px !important;
-	padding: 2px !important;
-}
-
-.gwt-TabLayoutPanelContent {
-	border: 0px !important;
-}
-
-.dropTarget-highlight {
-	z-index: 100000;
-	background-color: #a0a0e0;
-	opacity: 0.50;
-	filter: alpha(opacity =   50);
-}
-
-.dropTarget-compass {
-	z-index: 200000;
-	border-style: none;
-	line-height: 0px;
-}
-
-.gwt-MenuItem-disabled {
-	color: #cdcdcd !important;
-}
-
-.toolBar {
-	cursor: default;
-	height: 36px;
-	width: 100%;
-    border-spacing: 0px;
-	background: #c0c0c0;
-}
-
-.toolBarButton-up,
-.toolBarButton-up-hovering,
-.toolBarButton-up-disabled,
-.toolBarButton-down,
-.toolBarButton-hovering,
-.toolBarButton-disabled {
-	text-decoration: none;
-    border-spacing: 0px;
-	padding-top: 5px;
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-bottom: 0px;
-}
-
-.toolBarButton-up {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.toolBarButton-hovering {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.toolBarButton-up-disabled {
-	cursor: default;
-	opacity: .5;
-	filter: alpha(opacity =   45);
-	zoom: 1;
-}
-
-.toolBarButton-down {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.toolBarButton-down-hovering {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.toolBarButton-down-disabled {
-	cursor: default;
-	opacity: 0.5;
-	filter: alpha(opacity =   45);
-	zoom: 1;
-}
-
-.statusBar {
-    cursor: default;
-    height: 36px;
-    width: 100%;
-    border-spacing: 0px;
-    background: #c0c0c0;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 2px;
-    padding-right: 2px;
-}
-
-.tabBarControlsContainer {
-    background-color: #cccccc;
-    height: 100%;
-    padding-top: 4px;
-    padding-left: 3px;
-    padding-right: 3px;
-}
-
-.tabBarControlMaximize {
-    height: 24px;
-    width: 24px;
-    background: url("../images/maximizePanel.png") no-repeat;
-    background-position: -24px 0;
-}
-
-.tabBarControlMaximize:hover {
-    background-position: 0px 0;
-}
-
-.tabBarControlMinimize {
-    height: 24px;
-    width: 24px;
-    background: url("../images/minimizePanel.png") no-repeat;
-    background-position: -24px 0;
-}
-
-.tabBarControlMinimize:hover {
-    background-position: 0px 0;
+/*
+TODO {porcelli} quick hack
+*/
+.navbar-fixed-top, .navbar-fixed-bottom {
+    position: static !important;
 }

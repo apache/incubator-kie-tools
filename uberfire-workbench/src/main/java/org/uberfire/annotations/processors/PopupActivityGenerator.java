@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -28,13 +27,12 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.client.annotations.WorkbenchPopup;
-
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 /**
  * A source code generator for Activities
@@ -43,11 +41,11 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger( PopupActivityGenerator.class );
 
-    public StringBuffer generate(final String packageName,
-                                 final PackageElement packageElement,
-                                 final String className,
-                                 final Element element,
-                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final PackageElement packageElement,
+                                  final String className,
+                                  final Element element,
+                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
         logger.debug( "Starting code generation for [" + className + "]" );
 
@@ -118,16 +116,9 @@ public class PopupActivityGenerator extends AbstractGenerator {
         }
 
         //Validate getTitleMethodName and getTitleWidgetMethodName
-        if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchPopup must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
+        if ( getTitleMethodName == null ) {
+            throw new GenerationException( "The WorkbenchPopup must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.", packageName + "." + className );
         }
-        if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
-            final String msg = "The WorkbenchPopup has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
-        }
-
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();

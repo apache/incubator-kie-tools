@@ -19,7 +19,14 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui" 
              xmlns:common="urn:import:org.uberfire.client.common">
 
+  <ui:style>
+    .betterSetup {
+      margin: 10px 10px 10px 10px;
+      resize: none;
+    }
+  </ui:style>
+
   <g:ResizeLayoutPanel>
-    <common:ResizableTextArea ui:field="fileContent"/>
+    <common:ResizableTextArea ui:field="fileContent" styleName="{style.betterSetup}"/>
   </g:ResizeLayoutPanel>
 </ui:UiBinder>

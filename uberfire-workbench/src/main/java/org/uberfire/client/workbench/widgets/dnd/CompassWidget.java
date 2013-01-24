@@ -15,9 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.Position;
-
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
@@ -35,28 +32,30 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.Position;
 
 /**
  * A pop-up "compass" widget that appears centralised on it's parent Drop Target
  * and permits drop events on the compass points.
  */
 public class CompassWidget extends PopupPanel
-    implements
-    DropController {
+        implements
+        DropController {
 
     private static CompassWidget instance;
 
-    private static Element       dropTargetHighlight;
+    private static Element dropTargetHighlight;
 
-    private final Image          northWidget        = new Image( WorkbenchResources.INSTANCE.images().compassNorth() );
-    private final Image          southWidget        = new Image( WorkbenchResources.INSTANCE.images().compassSouth() );
-    private final Image          eastWidget         = new Image( WorkbenchResources.INSTANCE.images().compassEast() );
-    private final Image          westWidget         = new Image( WorkbenchResources.INSTANCE.images().compassWest() );
-    private final Image          centreWidget       = new Image( WorkbenchResources.INSTANCE.images().compassCentre() );
+    private final Image northWidget  = new Image( WorkbenchResources.INSTANCE.images().compassNorth() );
+    private final Image southWidget  = new Image( WorkbenchResources.INSTANCE.images().compassSouth() );
+    private final Image eastWidget   = new Image( WorkbenchResources.INSTANCE.images().compassEast() );
+    private final Image westWidget   = new Image( WorkbenchResources.INSTANCE.images().compassWest() );
+    private final Image centreWidget = new Image( WorkbenchResources.INSTANCE.images().compassCentre() );
 
-    private final FlexTable      container          = new FlexTable();
+    private final FlexTable container = new FlexTable();
 
-    private Position             dropTargetPosition = Position.NONE;
+    private Position dropTargetPosition = Position.NONE;
 
     public static CompassWidget getInstance() {
         if ( instance == null ) {
@@ -67,7 +66,7 @@ public class CompassWidget extends PopupPanel
 
     private CompassWidget() {
         super();
-        this.setStyleName( "dropTarget-compass" );
+        this.setStyleName( WorkbenchResources.INSTANCE.CSS().dropTargetCompass() );
         this.container.setCellPadding( 0 );
         this.container.setCellSpacing( 0 );
 
@@ -76,7 +75,7 @@ public class CompassWidget extends PopupPanel
             dropTargetHighlight = Document.get().createDivElement();
             dropTargetHighlight.getStyle().setPosition( Style.Position.ABSOLUTE );
             dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
-            dropTargetHighlight.setClassName( "dropTarget-highlight" );
+            dropTargetHighlight.setClassName( WorkbenchResources.INSTANCE.CSS().dropTargetHighlight() );
             dropTargetHighlight.getStyle().setMargin( 0,
                                                       Unit.PX );
             dropTargetHighlight.getStyle().setPadding( 0,
@@ -111,17 +110,17 @@ public class CompassWidget extends PopupPanel
     }
 
     @Override
-    public void onEnter(DragContext context) {
+    public void onEnter( DragContext context ) {
         show( context );
     }
 
     @Override
-    public void onLeave(DragContext context) {
+    public void onLeave( DragContext context ) {
         hide();
     }
 
     @Override
-    public void onMove(DragContext context) {
+    public void onMove( DragContext context ) {
         final Location l = new CoordinateLocation( context.mouseX,
                                                    context.mouseY );
         final WidgetArea northWidgetArea = new WidgetArea( northWidget,
@@ -129,9 +128,9 @@ public class CompassWidget extends PopupPanel
         final WidgetArea southWidgetArea = new WidgetArea( southWidget,
                                                            null );
         final WidgetArea eastWidgetArea = new WidgetArea( eastWidget,
-                                                           null );
+                                                          null );
         final WidgetArea westWidgetArea = new WidgetArea( westWidget,
-                                                           null );
+                                                          null );
         final WidgetArea centreWidgetArea = new WidgetArea( centreWidget,
                                                             null );
         Position p = Position.NONE;
@@ -163,17 +162,17 @@ public class CompassWidget extends PopupPanel
     }
 
     @Override
-    public void onDrop(DragContext context) {
+    public void onDrop( DragContext context ) {
         this.dropTargetPosition = Position.NONE;
         hideDropTarget();
     }
 
     @Override
-    public void onPreviewDrop(DragContext context) throws VetoDragException {
+    public void onPreviewDrop( DragContext context ) throws VetoDragException {
         throw new UnsupportedOperationException();
     }
 
-    private void show(final DragContext context) {
+    private void show( final DragContext context ) {
 
         //Get centre of DropTarget
         final Widget dropTargetParent = context.dropController.getDropTarget();
@@ -192,30 +191,30 @@ public class CompassWidget extends PopupPanel
             setPopupPositionAndShow( new PositionCallback() {
 
                 @Override
-                public void setPosition(int offsetWidth,
-                                        int offsetHeight) {
-                    setPopupPosition( ca.getCenter().getLeft() - (offsetWidth / 2),
-                                                ca.getCenter().getTop() - (offsetHeight / 2) );
+                public void setPosition( int offsetWidth,
+                                         int offsetHeight ) {
+                    setPopupPosition( ca.getCenter().getLeft() - ( offsetWidth / 2 ),
+                                      ca.getCenter().getTop() - ( offsetHeight / 2 ) );
                 }
 
             } );
 
         } else {
-            setPopupPosition( ca.getCenter().getLeft() - (getOffsetWidth() / 2),
-                                        ca.getCenter().getTop() - (getOffsetHeight() / 2) );
+            setPopupPosition( ca.getCenter().getLeft() - ( getOffsetWidth() / 2 ),
+                              ca.getCenter().getTop() - ( getOffsetHeight() / 2 ) );
         }
 
     }
 
-    private void showDropTarget(final DragContext context,
-                                final Position p) {
+    private void showDropTarget( final DragContext context,
+                                 final Position p ) {
         int x = 0;
         int y = 0;
         int width = 0;
         int height = 0;
         final Widget dropTargetParent = context.dropController.getDropTarget();
         switch ( p ) {
-            case SELF :
+            case SELF:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
                 width = dropTargetParent.getOffsetWidth();
@@ -225,19 +224,19 @@ public class CompassWidget extends PopupPanel
                                 width,
                                 height );
                 break;
-            case NORTH :
+            case NORTH:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
                 width = dropTargetParent.getOffsetWidth();
-                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
+                height = (int) ( dropTargetParent.getOffsetHeight() * 0.50 );
                 showDropTarget( x,
                                 y,
                                 width,
                                 height );
                 break;
-            case SOUTH :
+            case SOUTH:
                 x = dropTargetParent.getAbsoluteLeft();
-                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
+                height = (int) ( dropTargetParent.getOffsetHeight() * 0.50 );
                 y = dropTargetParent.getOffsetHeight() + dropTargetParent.getAbsoluteTop() - height;
                 width = dropTargetParent.getOffsetWidth();
                 showDropTarget( x,
@@ -245,8 +244,8 @@ public class CompassWidget extends PopupPanel
                                 width,
                                 height );
                 break;
-            case EAST :
-                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
+            case EAST:
+                width = (int) ( dropTargetParent.getOffsetWidth() * 0.50 );
                 x = dropTargetParent.getOffsetWidth() + dropTargetParent.getAbsoluteLeft() - width;
                 y = dropTargetParent.getAbsoluteTop();
                 height = dropTargetParent.getOffsetHeight();
@@ -255,25 +254,25 @@ public class CompassWidget extends PopupPanel
                                 width,
                                 height );
                 break;
-            case WEST :
+            case WEST:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
-                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
+                width = (int) ( dropTargetParent.getOffsetWidth() * 0.50 );
                 height = dropTargetParent.getOffsetHeight();
                 showDropTarget( x,
                                 y,
                                 width,
                                 height );
                 break;
-            default :
+            default:
                 hideDropTarget();
         }
     }
 
-    private void showDropTarget(int x,
-                                int y,
-                                int width,
-                                int height) {
+    private void showDropTarget( int x,
+                                 int y,
+                                 int width,
+                                 int height ) {
         dropTargetHighlight.getStyle().setLeft( x,
                                                 Unit.PX );
         dropTargetHighlight.getStyle().setWidth( width,

@@ -28,16 +28,30 @@ import static org.kie.commons.validation.PortablePreconditions.*;
  * Default implementation of ToolBar
  */
 public class DefaultToolBar
-    implements
-    ToolBar {
+        implements ToolBar {
 
-    private List<ToolBarItem> items = new ArrayList<ToolBarItem>();
+    private final String            id;
+    private final List<ToolBarItem> items;
+
+    public DefaultToolBar( final String id ) {
+
+        this( id, new ArrayList<ToolBarItem>() );
+    }
+
+    public DefaultToolBar( final String id,
+                           final List<ToolBarItem> items ) {
+        this.id = checkNotEmpty( "id", id );
+        this.items = checkNotNull( "items", items );
+    }
 
     @Override
-    public void addItem(ToolBarItem item) {
-        checkNotNull("item",
-                item);
-        this.items.add( item );
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void addItem( final ToolBarItem item ) {
+        this.items.add( checkNotNull( "item", item ) );
     }
 
     @Override

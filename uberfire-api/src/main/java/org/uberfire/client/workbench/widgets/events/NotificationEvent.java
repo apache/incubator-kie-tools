@@ -20,14 +20,28 @@ package org.uberfire.client.workbench.widgets.events;
  */
 public class NotificationEvent {
 
-    private final String notification;
+    public static enum NotificationType {
+        DEFAULT, ERROR, SUCCESS, INFO, WARNING;
+    }
 
-    public NotificationEvent(final String notification) {
+    private final String           notification;
+    private final NotificationType type;
+
+    public NotificationEvent( final String notification ) {
+        this( notification, NotificationType.DEFAULT );
+    }
+
+    public NotificationEvent( final String notification,
+                              final NotificationType type ) {
         this.notification = notification;
+        this.type = type;
     }
 
     public String getNotification() {
         return this.notification;
     }
 
+    public NotificationType getType() {
+        return type;
+    }
 }

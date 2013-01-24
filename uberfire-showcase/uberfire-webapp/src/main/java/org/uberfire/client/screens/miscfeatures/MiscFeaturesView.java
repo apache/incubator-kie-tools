@@ -29,7 +29,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.uberfire.client.workbench.widgets.events.NotificationEvent.NotificationType.*;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -53,6 +57,9 @@ public class MiscFeaturesView extends Composite
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private PlaceManager placeManager;
+
     private MiscFeaturesPresenter presenter;
 
     @Override
@@ -73,14 +80,34 @@ public class MiscFeaturesView extends Composite
                             height );
     }
 
-    @UiHandler("notificationButton")
+    @UiHandler("notificationDefaultButton")
     public void onClickNotificationButton( final ClickEvent event ) {
         notification.fire( new NotificationEvent( "Something happened" ) );
     }
 
+    @UiHandler("notificationErrorButton")
+    public void onClickNotificationErrButton( final ClickEvent event ) {
+        notification.fire( new NotificationEvent( "Something happened", ERROR ) );
+    }
+
+    @UiHandler("notificationSuccessButton")
+    public void onClickNotificationSuccessButton( final ClickEvent event ) {
+        notification.fire( new NotificationEvent( "Something happened", SUCCESS ) );
+    }
+
+    @UiHandler("notificationInfoButton")
+    public void onClickNotificationInfoButton( final ClickEvent event ) {
+        notification.fire( new NotificationEvent( "Something happened", INFO ) );
+    }
+
+    @UiHandler("notificationWarnButton")
+    public void onClickNotificationWarnButton( final ClickEvent event ) {
+        notification.fire( new NotificationEvent( "Something happened", WARNING ) );
+    }
+
     @UiHandler("launchUnknownPlace")
     public void onClickLaunchUnknownPlace( final ClickEvent event ) {
-        presenter.launchUnknownPlace();
+        placeManager.goTo( new DefaultPlaceRequest( "MyTestPopUp" ) );
     }
 
 }

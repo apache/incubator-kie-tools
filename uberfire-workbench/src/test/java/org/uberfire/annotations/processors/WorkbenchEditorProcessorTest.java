@@ -25,12 +25,14 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.annotations.processors.WorkbenchEditorProcessor;
 
 /**
  * Tests for Editor related class generation
  */
+@Ignore
 public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
     @Test

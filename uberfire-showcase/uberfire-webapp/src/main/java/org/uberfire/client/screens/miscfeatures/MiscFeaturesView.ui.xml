@@ -16,16 +16,21 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <g:HTMLPanel ui:field="panel">
     <h2>Miscellaneous features</h2>
     <p>Uberfire supports notifications. Click on the following button for a demonstration.</p>
-    <g:Button ui:field="notificationButton">Notification event</g:Button>
-    <p>Uberfire has some built in popups to handle. Click on the following button for a demonstration
-      of trying to go to a place that does not exist. Normally this type of error would be caused by
-      misconfiguration or a programming fault.</p>
-    <g:Button ui:field="launchUnknownPlace">Go to an unknown place</g:Button>
+    <b:Button ui:field="notificationDefaultButton">Notification Default</b:Button>
+    <b:Button ui:field="notificationErrorButton">Notification Error</b:Button>
+    <b:Button ui:field="notificationSuccessButton">Notification Sucess</b:Button>
+    <b:Button ui:field="notificationInfoButton">Notification Info</b:Button>
+    <b:Button ui:field="notificationWarnButton">Notification Warn</b:Button>
+    <p>
+      Uberfire has some built in popups.
+    </p>
+    <b:Button ui:field="launchUnknownPlace">Open popup</b:Button>
   </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -19,18 +19,19 @@ package org.uberfire.client.workbench.widgets.notifications;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import org.uberfire.client.workbench.animations.LinearFadeInAnimation;
-import org.uberfire.client.workbench.animations.Pause;
-import org.uberfire.client.workbench.animations.Sequencer;
-
+import com.github.gwtbootstrap.client.ui.Alert;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.animations.LinearFadeInAnimation;
+import org.uberfire.client.workbench.animations.Pause;
+import org.uberfire.client.workbench.animations.Sequencer;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * A notification message
@@ -39,50 +40,51 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class NotificationPopupView extends DecoratedPopupPanel {
 
     interface NotificationPopupViewBinder
-        extends
-        UiBinder<Panel, NotificationPopupView> {
+            extends
+            UiBinder<Panel, NotificationPopupView> {
+
     }
 
     private static NotificationPopupViewBinder uiBinder = GWT.create( NotificationPopupViewBinder.class );
 
     @UiField
-    public Label                               notification;
-
-    @UiField
-    public SimplePanel                         container;
+    public Alert notification;
 
     @PostConstruct
     public void init() {
+        setStyleName( WorkbenchResources.INSTANCE.CSS().notification() );
         setWidget( uiBinder.createAndBindUi( this ) );
     }
 
     /**
      * Set the text to display
-     * 
      * @param text
      */
-    public void setNotification(final String text) {
+    public void setNotification( final String text ) {
         notification.setText( text );
+
+    }
+
+    public void setType( final NotificationEvent.NotificationType type ) {
+        notification.setType( AlertType.valueOf( type.toString() ) );
     }
 
     /**
      * Set the width of the Notification pop-up
-     * 
      * @param width
      */
-    public void setNotificationWidth(String width) {
+    public void setNotificationWidth( final String width ) {
         //Setting the width of the DecoratedPopupPanel causes it to be rendered incorrectly.
         //We therefore set the size of an internal element that holds the actual content.
-        container.setWidth( width );
+        notification.setWidth( width );
     }
 
     /**
      * Show the Notification pop-up. This consists of fading the pop-up into
      * view and pausing. Once complete the onCompleteCommand will be executed.
-     * 
      * @param onCompleteCommand
      */
-    public void show(final Command onCompleteCommand) {
+    public void show( final Command onCompleteCommand ) {
 
         //Fade in the notification message
         final LinearFadeInAnimation fadeInAnimation = new LinearFadeInAnimation( this ) {
@@ -106,10 +108,8 @@ public class NotificationPopupView extends DecoratedPopupPanel {
 
         };
         Sequencer s = new Sequencer();
-        s.add( fadeInAnimation,
-               250 );
-        s.add( pauseAnimation,
-               2000 );
+        s.add( fadeInAnimation, 250 );
+        s.add( pauseAnimation, 2000 );
         s.run();
     }
 

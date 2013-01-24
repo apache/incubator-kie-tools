@@ -78,7 +78,7 @@ public class PanelManager {
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
     //
-    public PanelManager(){
+    public PanelManager() {
     }
 
     //constructor for unit testing
@@ -140,15 +140,14 @@ public class PanelManager {
     public void addWorkbenchPart( final PlaceRequest place,
                                   final PartDefinition part,
                                   final PanelDefinition panel,
-                                  final IsWidget titleWidget,
+                                  final String title,
+                                  final IsWidget titleDecoration,
                                   final IsWidget partWidget ) {
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( titleWidget,
-                                                      part );
+            partPresenter = factory.newWorkbenchPart( title, titleDecoration, part );
             partPresenter.setWrappedWidget( partWidget );
-            mapPartDefinitionToPresenter.put( part,
-                                              partPresenter );
+            mapPartDefinitionToPresenter.put( part, partPresenter );
         }
 
         if ( part.isMinimized() ) {
@@ -159,9 +158,7 @@ public class PanelManager {
                 throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
             }
 
-            panelPresenter.addPart( part,
-                                    titleWidget,
-                                    partPresenter.getPartView() );
+            panelPresenter.addPart( partPresenter.getPartView() );
         }
 
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
@@ -350,11 +347,13 @@ public class PanelManager {
 
         //Restore part
         final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
-        final IsWidget titleWidget = mapPartDefinitionToPresenter.get( partToRestore ).getTitleWidget();
+        final String title = mapPartDefinitionToPresenter.get( partToRestore ).getTitle();
+        final IsWidget titleDecoration = mapPartDefinitionToPresenter.get( partToRestore ).getTitleDecoration();
         addWorkbenchPart( partToRestore.getPlace(),
                           partToRestore,
                           panelToRestore,
-                          titleWidget,
+                          title,
+                          titleDecoration,
                           widget );
     }
 
@@ -412,14 +411,14 @@ public class PanelManager {
     @SuppressWarnings("unused")
     private void onChangeTitleWidgetEvent( @Observes ChangeTitleWidgetEvent event ) {
         final PlaceRequest place = event.getPlaceRequest();
-        final IsWidget titleWidget = event.getTitleWidget();
+        final IsWidget titleDecoration = event.getTitleDecoration();
+        final String title = event.getTitle();
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition panel = e.getKey();
             final WorkbenchPanelPresenter presenter = e.getValue();
             for ( PartDefinition part : panel.getParts() ) {
                 if ( place.equals( part.getPlace() ) ) {
-                    presenter.changeTitle( part,
-                                           titleWidget );
+                    presenter.changeTitle( part, title, titleDecoration );
                 }
             }
         }

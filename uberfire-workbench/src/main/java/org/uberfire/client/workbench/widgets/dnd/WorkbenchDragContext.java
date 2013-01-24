@@ -15,10 +15,9 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
-
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -26,11 +25,12 @@ import org.uberfire.shared.mvp.PlaceRequest;
  */
 public class WorkbenchDragContext {
 
-    private final PlaceRequest place;
-    private final PartDefinition sourcePart;
+    private final PlaceRequest    place;
+    private final PartDefinition  sourcePart;
     private final PanelDefinition sourcePanel;
-    private final IsWidget titleWidget;
-    private final IsWidget widget;
+    private final String          title;
+    private final IsWidget        titleDecoration;
+    private final IsWidget        widget;
 
     private Integer height;
     private Integer width;
@@ -40,7 +40,8 @@ public class WorkbenchDragContext {
     public WorkbenchDragContext( final PlaceRequest place,
                                  final PartDefinition sourcePart,
                                  final PanelDefinition sourcePanel,
-                                 final IsWidget titleWidget,
+                                 final String title,
+                                 final IsWidget titleDecoration,
                                  final IsWidget widget,
                                  final Integer height,
                                  final Integer width,
@@ -49,7 +50,8 @@ public class WorkbenchDragContext {
         this.place = place;
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
-        this.titleWidget = titleWidget;
+        this.title = title;
+        this.titleDecoration = titleDecoration;
         this.widget = widget;
         this.height = height;
         this.width = width;
@@ -79,10 +81,14 @@ public class WorkbenchDragContext {
     }
 
     /**
-     * @return the title widget
+     * @return the title decoration widget
      */
-    public IsWidget getTitleWidget() {
-        return titleWidget;
+    public IsWidget getTitleDecoration() {
+        return titleDecoration;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public IsWidget getWidget() {

@@ -21,14 +21,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.editors.repository.clone.CloneRepositoryWizard;
-import org.uberfire.client.editors.repository.create.CreateNewRepositoryWizard;
+import org.uberfire.client.editors.repository.clone.CloneRepositoryForm;
+import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
@@ -42,10 +41,11 @@ import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import static org.uberfire.client.workbench.widgets.toolbar.IconType.*;
 
 /**
  * A Perspective to show File Explorer
@@ -69,12 +69,12 @@ public class FileExplorerPerspective {
 
             @Override
             public void execute() {
-                final CloneRepositoryWizard cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryWizard.class ).getInstance();
+                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+                cloneRepositoryWizard.addCloseHandler( new CloseHandler<CloneRepositoryForm>() {
 
                     @Override
-                    public void onClose( CloseEvent<PopupPanel> event ) {
+                    public void onClose( CloseEvent<CloneRepositoryForm> event ) {
                         iocManager.destroyBean( cloneRepositoryWizard );
                     }
 
@@ -87,11 +87,11 @@ public class FileExplorerPerspective {
         this.newRepoCommand = new Command() {
             @Override
             public void execute() {
-                final CreateNewRepositoryWizard newRepositoryWizard = iocManager.lookupBean( CreateNewRepositoryWizard.class ).getInstance();
+                final CreateRepositoryForm newRepositoryWizard = iocManager.lookupBean( CreateRepositoryForm.class ).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
-                newRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+                newRepositoryWizard.addCloseHandler( new CloseHandler<CreateRepositoryForm>() {
                     @Override
-                    public void onClose( CloseEvent<PopupPanel> event ) {
+                    public void onClose( CloseEvent<CreateRepositoryForm> event ) {
                         iocManager.destroyBean( newRepositoryWizard );
                     }
                 } );
@@ -119,16 +119,12 @@ public class FileExplorerPerspective {
 
     @WorkbenchToolBar
     public ToolBar buildToolBar() {
-        final ToolBar toolBar = new DefaultToolBar();
-        final ToolBarItem clone = new DefaultToolBarItem( "images/clone_repo.png",
-                                                          "Clone Repo", cloneRepoCommand );
-        toolBar.addItem( clone );
-
-        final ToolBarItem newRepo = new DefaultToolBarItem( "images/new_repo.png",
-                                                            "New Repository", newRepoCommand );
-        newRepo.setRoles( PERMISSIONS_ADMIN );
-        toolBar.addItem( newRepo );
-        return toolBar;
+        return new DefaultToolBar( "file.explorer" ) {{
+            addItem( new DefaultToolBarItem( FOLDER_CLOSE_ALT, "New Repository", newRepoCommand ) {{
+                setRoles( PERMISSIONS_ADMIN );
+            }} );
+            addItem( new DefaultToolBarItem( DOWNLOAD_ALT, "Clone Repository", cloneRepoCommand ) );
+        }};
     }
 
     @WorkbenchMenu

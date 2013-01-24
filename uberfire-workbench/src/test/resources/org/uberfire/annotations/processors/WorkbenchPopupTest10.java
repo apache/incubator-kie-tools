@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 
@@ -31,7 +32,7 @@ public class WorkbenchPopupTest10 {
         return new SimplePanel();
     }
 
-    @WorkbenchPartTitle
+    @WorkbenchPartTitleDecoration
     public IsWidget getTitleWidget() {
         return new Label( "title" );
     }

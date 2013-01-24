@@ -141,14 +141,15 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     </#if>
     <#if getTitleWidgetMethodName??>
     @Override
-    public IsWidget getTitleWidget() {
+    public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
 
-    <#elseif getTitleMethodName??>
+    </#if>
+    <#if getTitleMethodName??>
     @Override
-    public IsWidget getTitleWidget() {
-        return new InlineLabel(realPresenter.${getTitleMethodName}());
+    public String getTitle() {
+        return realPresenter.${getTitleMethodName}();
     }
 
     </#if>

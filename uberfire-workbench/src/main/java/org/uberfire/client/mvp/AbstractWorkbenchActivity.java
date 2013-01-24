@@ -15,11 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Base class for Activities
@@ -28,7 +27,7 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
         implements
         WorkbenchActivity {
 
-    public AbstractWorkbenchActivity(final PlaceManager placeManager) {
+    public AbstractWorkbenchActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
@@ -48,7 +47,12 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
     }
 
     @Override
-    public abstract IsWidget getTitleWidget();
+    public abstract String getTitle();
+
+    @Override
+    public IsWidget getTitleDecoration() {
+        return null;
+    }
 
     @Override
     public abstract IsWidget getWidget();

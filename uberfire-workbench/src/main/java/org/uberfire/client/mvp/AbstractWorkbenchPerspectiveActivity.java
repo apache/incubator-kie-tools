@@ -30,7 +30,6 @@ import org.uberfire.client.workbench.widgets.menu.MenuItem;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -189,9 +188,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         //Set up Tool Bar for perspective
         final ToolBar toolBar = getToolBar();
         if ( toolBar != null ) {
-            for ( ToolBarItem item : toolBar.getItems() ) {
-                toolBarPresenter.addWorkbenchPerspectiveItem( item );
-            }
+            toolBarPresenter.addWorkbenchPerspective( toolBar );
         }
 
         onReveal();

@@ -17,13 +17,24 @@ package org.uberfire.client.workbench;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -39,26 +50,13 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 @ApplicationScoped
-public class Workbench extends Composite
-        implements
-        RequiresResize {
+public class Workbench
+        extends Composite
+        implements RequiresResize {
 
     private final VerticalPanel container = new VerticalPanel();
 
@@ -87,15 +85,14 @@ public class Workbench extends Composite
     @Inject
     private WorkbenchToolBarPresenter toolBarPresenter;
 
-    @Inject
-    private WorkbenchStatusBarPresenter statusBarPresenter;
+//    @Inject
+//    private WorkbenchStatusBarPresenter statusBarPresenter;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
     @PostConstruct
     public void setup() {
-
         //Menu bar
         container.add( menuBarPresenter.getView() );
 
@@ -107,8 +104,8 @@ public class Workbench extends Composite
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
 
-        //Status bar
-        container.add( statusBarPresenter.getView() );
+//        //Status bar
+//        container.add( statusBarPresenter.getView() );
 
         initWidget( container );
     }
@@ -165,7 +162,8 @@ public class Workbench extends Composite
 
         //Resizing the Window should resize everything
         Window.addResizeHandler( new ResizeHandler() {
-            @Override public void onResize( ResizeEvent event ) {
+            @Override
+            public void onResize( ResizeEvent event ) {
                 doResizeWorkbenchContainer( event.getWidth(),
                                             event.getHeight() );
             }
@@ -202,8 +200,8 @@ public class Workbench extends Composite
                                              final int height ) {
         final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
         final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
-        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
-        final int availableHeight = height - menuBarHeight - toolBarHeight - statusBarHeight;
+//        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
+        final int availableHeight = height - menuBarHeight - toolBarHeight;// - statusBarHeight;
         workbenchContainer.setPixelSize( width,
                                          availableHeight );
         workbench.setPixelSize( width,

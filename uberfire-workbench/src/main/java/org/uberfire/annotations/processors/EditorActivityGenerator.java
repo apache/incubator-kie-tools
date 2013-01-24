@@ -140,15 +140,9 @@ public class EditorActivityGenerator extends AbstractGenerator {
             logger.warn( msg );
         }
 
-        //Validate getTitleMethodName and getTitleWidgetMethodName
-        if ( getTitleMethodName == null && getTitleWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
-        }
-        if ( getTitleMethodName != null && getTitleWidgetMethodName != null ) {
-            final String msg = "The WorkbenchEditor has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
+        //Validate getTitleMethodName
+        if ( getTitleMethodName == null ) {
+            throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.", packageName + "." + className );
         }
 
         //Setup data for template sub-system

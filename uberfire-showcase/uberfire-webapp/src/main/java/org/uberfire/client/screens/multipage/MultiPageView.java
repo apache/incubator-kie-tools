@@ -19,7 +19,7 @@ package org.uberfire.client.screens.multipage;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.Label;
+import com.github.gwtbootstrap.client.ui.Button;
 import org.uberfire.client.common.MultiPageEditor;
 
 /**
@@ -39,11 +39,9 @@ public class MultiPageView extends MultiPageEditor
 
     @PostConstruct
     public void init() {
-        addWidget( new Label( "Page 1" ),
-                   "Page 1" );
-        addWidget( new Label( "Page 2" ),
-                   "Page 2" );
-
+        for ( int i = 0; i < 10; i++ ) {
+            addWidget( new Button( "My Button " + i ), "Page " + i );
+        }
     }
 
 }

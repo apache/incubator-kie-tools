@@ -16,17 +16,18 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="resources" type="org.uberfire.client.resources.WorkbenchResources"/>
-
-  <g:VerticalPanel>
-    <g:SimplePanel styleName="{resources.CSS.popupTitleBar}">
-      <g:FlowPanel ui:field="titleContainer" styleName="{resources.CSS.popupLabel}">
-        <g:FocusPanel ui:field="closeImage" styleName="{resources.CSS.popupCloseImage}"></g:FocusPanel>
-      </g:FlowPanel>
-    </g:SimplePanel>
-    <g:SimplePanel ui:field="container"/>
-  </g:VerticalPanel>
+  <b:ResponsiveNavbar position="TOP" inverse="true">
+    <b:Brand ui:field="brand"/>
+    <b:NavCollapse>
+      <b:Nav alignment="LEFT" ui:field="menuBarLeft">
+      </b:Nav>
+      <b:Nav ui:field="menuBarCenter">
+      </b:Nav>
+      <b:Nav alignment="RIGHT" ui:field="menuBarRight">
+      </b:Nav>
+    </b:NavCollapse>
+  </b:ResponsiveNavbar>
 
 </ui:UiBinder> 

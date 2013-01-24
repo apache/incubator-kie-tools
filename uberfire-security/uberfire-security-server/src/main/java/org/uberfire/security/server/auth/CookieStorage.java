@@ -24,63 +24,57 @@ import org.uberfire.security.auth.AuthenticatedStorageProvider;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.crypt.CryptProvider;
 import org.uberfire.security.server.HttpSecurityContext;
-import org.uberfire.security.server.SecurityConstants;
 import org.uberfire.security.server.crypt.DefaultCryptProvider;
 
 import static org.kie.commons.validation.Preconditions.*;
 
 public class CookieStorage implements AuthenticatedStorageProvider {
 
-    private static final int DEFAULT_EXPIRE_48_HOURS = 60 * 60 * 48;
-    private static final String EMPTY = "__empty__";
-    private static final CryptProvider CRYPT_PROVIDER = new DefaultCryptProvider();
+    private static final int           DEFAULT_EXPIRE_48_HOURS = 60 * 60 * 48;
+    private static final String        EMPTY                   = "__empty__";
+    private static final CryptProvider CRYPT_PROVIDER          = new DefaultCryptProvider();
 
-    private String cookieName = SecurityConstants.DEFAULT_COOKIE_NAME;
+    private final String cookieName;
 
-    public CookieStorage() {
-        this(null);
-    }
-
-    public CookieStorage(final String cookieName) {
-        if (cookieName != null && !cookieName.isEmpty()) {
-            this.cookieName = cookieName;
-        }
+    public CookieStorage( final String cookieName ) {
+        this.cookieName = checkNotEmpty( "cookieName", cookieName );
     }
 
     @Override
-    public void store(final SecurityContext context, final Subject subject) {
-        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
+    public void store( final SecurityContext context,
+                       final Subject subject ) {
+        final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
-        final String content = CRYPT_PROVIDER.encrypt(subject.getName(), null);
-        final Cookie securityCookie = new Cookie(cookieName, content);
-        securityCookie.setPath("/");
-        securityCookie.setMaxAge(DEFAULT_EXPIRE_48_HOURS);
+        final String content = CRYPT_PROVIDER.encrypt( subject.getName(), null );
+        final Cookie securityCookie = new Cookie( cookieName, content );
+        securityCookie.setPath( "/" );
+        securityCookie.setMaxAge( DEFAULT_EXPIRE_48_HOURS );
 
-        httpContext.getResponse().addCookie(securityCookie);
+        httpContext.getResponse().addCookie( securityCookie );
     }
 
     @Override
-    public void cleanup(final SecurityContext context) {
-        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
+    public void cleanup( final SecurityContext context ) {
+        final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
-        final Cookie securityCookie = new Cookie(cookieName, EMPTY);
-        securityCookie.setPath("/");
-        securityCookie.setMaxAge(0);
+        final Cookie securityCookie = new Cookie( cookieName, EMPTY );
+        securityCookie.setPath( "/" );
+        securityCookie.setMaxAge( 0 );
 
-        httpContext.getResponse().addCookie(securityCookie);
+        httpContext.getResponse().addCookie( securityCookie );
 
     }
 
-    public Principal load(final SecurityContext context) {
-        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
-        final String originalCookieValue = getCookieValue(cookieName, null, httpContext.getRequest().getCookies());
+    public Principal load( final SecurityContext context ) {
+        final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
+        final String originalCookieValue = getCookieValue( cookieName, null, httpContext.getRequest().getCookies() );
 
-        if (originalCookieValue == null) {
+        if ( originalCookieValue == null ) {
             return null;
         }
 
-        final String userId = CRYPT_PROVIDER.decrypt(originalCookieValue, null);
-        if (userId == null) {
+        final String userId = CRYPT_PROVIDER.decrypt( originalCookieValue, null );
+        if ( userId == null ) {
             return null;
         }
 
@@ -92,13 +86,15 @@ public class CookieStorage implements AuthenticatedStorageProvider {
         };
     }
 
-    private String getCookieValue(final String cookieName, final String defaultValue, final Cookie... cookies) {
-        if (cookies == null || cookies.length == 0) {
+    private String getCookieValue( final String cookieName,
+                                   final String defaultValue,
+                                   final Cookie... cookies ) {
+        if ( cookies == null || cookies.length == 0 ) {
             return defaultValue;
         }
 
-        for (final Cookie cookie : cookies) {
-            if (cookieName.equals(cookie.getName())) {
+        for ( final Cookie cookie : cookies ) {
+            if ( cookieName.equals( cookie.getName() ) ) {
                 return cookie.getValue();
             }
         }

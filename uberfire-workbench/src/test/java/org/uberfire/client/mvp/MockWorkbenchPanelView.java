@@ -16,8 +16,10 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.model.PanelDefinition;
 
@@ -55,8 +57,7 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void addPart( IsWidget title,
-                         View view ) {
+    public void addPart( final View view ) {
     }
 
     @Override
@@ -66,16 +67,17 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void changeTitle( int indexOfPartToChangeTabContent,
-                             IsWidget tabContent ) {
+    public void changeTitle( final PartDefinition part,
+                             final String title,
+                             final IsWidget titleDecoration ) {
     }
 
     @Override
-    public void selectPart( int index ) {
+    public void selectPart( final PartDefinition part ) {
     }
 
     @Override
-    public void removePart( int index ) {
+    public void removePart( final PartDefinition part ) {
     }
 
     @Override

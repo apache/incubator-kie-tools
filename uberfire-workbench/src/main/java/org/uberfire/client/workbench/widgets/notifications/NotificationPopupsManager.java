@@ -54,11 +54,12 @@ public class NotificationPopupsManager {
     public void addNotification(@Observes final NotificationEvent event) {
 
         //Create a Notification pop-up. Because it is instantiated with CDI we need to manually destroy it when finished
-        final NotificationPopupView view = (NotificationPopupView) iocManager.lookupBean( NotificationPopupView.class ).getInstance();
+        final NotificationPopupView view = iocManager.lookupBean( NotificationPopupView.class ).getInstance();
         activeNotifications.add( view );
         view.setPopupPosition( getMargin(),
                                activeNotifications.size() * SPACING );
         view.setNotification( event.getNotification() );
+        view.setType(event.getType());
         view.setNotificationWidth( getWidth() + "px" );
         view.show( new Command() {
 

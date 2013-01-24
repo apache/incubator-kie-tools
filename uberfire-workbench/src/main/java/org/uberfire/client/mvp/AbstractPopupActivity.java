@@ -55,18 +55,21 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         onStart( place );
 
         final IsWidget widget = getWidget();
-        final IsWidget titleWidget = getTitleWidget();
 
         popup.setContent( widget );
-        popup.setTitle( titleWidget );
+        popup.setTitle( getTitle() );
         popup.show();
-        popup.center();
 
         onReveal();
     }
 
     @Override
-    public abstract IsWidget getTitleWidget();
+    public abstract String getTitle();
+
+    @Override
+    public IsWidget getTitleDecoration() {
+        return null;
+    }
 
     @Override
     public abstract IsWidget getWidget();

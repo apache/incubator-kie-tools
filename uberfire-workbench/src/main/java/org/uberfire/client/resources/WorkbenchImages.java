@@ -49,18 +49,4 @@ public interface WorkbenchImages
     //CompassDropController Centre
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
-
-    //Scroll TabPanel left
-    @Source("images/tabPanelScrollLeft.png")
-    ImageResource tabPanelScrollLeft();
-
-    //Scroll TabPanel right
-    @Source("images/tabPanelScrollRight.png")
-    ImageResource tabPanelScrollRight();
-
-    //Minimized Panel in Status Bar
-    @Source("images/minimizedPanel.png")
-    ImageResource minimizedPanel();
-
-    CollapseExpand collapseExpand();
 }

@@ -40,7 +40,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
         onStart( pathPlace.getPath(), place );
 
-        acceptPanel.add( getTitleWidget(), getWidget() );
+        acceptPanel.add( getTitle(), getTitleDecoration(), getWidget() );
 
         onReveal();
     }

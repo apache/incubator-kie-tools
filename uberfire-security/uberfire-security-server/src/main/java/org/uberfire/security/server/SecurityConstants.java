@@ -48,8 +48,6 @@ public interface SecurityConstants {
 
     final String HTTP_FORM_J_PASSWORD = "j_password";
 
-    final String DEFAULT_COOKIE_NAME = "uf.inf";
-
     final String CONFIG_USERS_PROPERTIES = "users.properties";
 
     final String URL_FILTER_CONFIG_YAML = "url_filter.yaml";

@@ -15,46 +15,28 @@
  */
 package org.uberfire.client.workbench.widgets.popup;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.DialogBox;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Skeleton for popups
  */
 @Dependent
-public class PopupView extends DialogBox {
+public class PopupView
+        extends Modal {
 
-    @PostConstruct
-    public void init() {
-        setAnimationEnabled(true);
-        setGlassEnabled(true);
-
+    public PopupView() {
+        setAnimation( true );
+        setKeyboard( true );
     }
 
-    public void setContent(final IsWidget widget) {
-        setWidget(widget);
+    public void setContent( final IsWidget widget ) {
+        super.add( widget );
     }
 
-    public void setTitle(final IsWidget titleWidget) {
-        setHTML(titleWidget.asWidget().getElement().getInnerHTML());
+    public void setTitle( final String title ) {
+        super.setTitle( title );
     }
-
-    @Override
-    protected void onPreviewNativeEvent(NativePreviewEvent event) {
-        super.onPreviewNativeEvent(event);
-        switch (event.getTypeInt()) {
-            case Event.ONKEYDOWN:
-                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
-                    hide();
-                }
-                break;
-        }
-    }
-
 }

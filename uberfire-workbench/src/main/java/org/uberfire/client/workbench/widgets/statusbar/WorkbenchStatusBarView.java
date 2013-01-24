@@ -18,14 +18,10 @@ package org.uberfire.client.workbench.widgets.statusbar;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBarButton;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -35,19 +31,17 @@ public class WorkbenchStatusBarView extends Composite
         implements
         WorkbenchStatusBarPresenter.View {
 
-    private final HorizontalPanel statusBar = new HorizontalPanel();
+    private final HorizontalPanel statusBar          = new HorizontalPanel();
     private final HorizontalPanel statusBarContainer = new HorizontalPanel();
 
     //Map of PlaceRequests to GWT Widgets used to represent them
     private final Map<PlaceRequest, IsWidget> statusBarItemsMap = new HashMap<PlaceRequest, IsWidget>();
 
-    private static final String STYLE_NAME = "statusBar";
-
     private WorkbenchStatusBarPresenter presenter;
 
     public WorkbenchStatusBarView() {
         initWidget( statusBarContainer );
-        statusBarContainer.setStyleName( STYLE_NAME );
+        statusBarContainer.setStyleName( WorkbenchResources.INSTANCE.CSS().statusBar() );
         statusBarContainer.setSpacing( 0 );
         statusBar.setSpacing( 0 );
         statusBarContainer.add( statusBar );
@@ -75,17 +69,18 @@ public class WorkbenchStatusBarView extends Composite
     }
 
     private IsWidget makeMinimizedWidget( final PlaceRequest place ) {
-        final CustomButton button = new ToolBarButton( WorkbenchResources.INSTANCE.images().minimizedPanel() );
-        button.setTitle( place.getIdentifier() );
-        button.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.restoreMinimizedPlace( place );
-            }
-
-        } );
-        return button;
+//        final CustomButton button = new ToolBarButton( WorkbenchResources.INSTANCE.images().minimizedPanel() );
+//        button.setTitle( place.getIdentifier() );
+//        button.addClickHandler( new ClickHandler() {
+//
+//            @Override
+//            public void onClick( ClickEvent event ) {
+//                presenter.restoreMinimizedPlace( place );
+//            }
+//
+//        } );
+//        return button;
+        return null;
     }
 
 }

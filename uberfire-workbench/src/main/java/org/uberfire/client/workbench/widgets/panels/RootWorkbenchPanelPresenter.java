@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.panels;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -43,8 +41,6 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
     private PanelDefinition definition;
 
-    private List<PartDefinition> orderedParts = new ArrayList<PartDefinition>();
-
     private Event<MaximizePlaceEvent> maximizePanelEvent;
 
     private Event<MinimizePlaceEvent> minimizePanelEvent;
@@ -66,35 +62,27 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
         view.init( this );
     }
 
+    @Override
     public PanelDefinition getDefinition() {
         return definition;
     }
 
+    @Override
     public void setDefinition( final PanelDefinition definition ) {
         this.definition = definition;
     }
 
-    public void addPart( final PartDefinition part,
-                         final IsWidget titleWidget,
-                         final WorkbenchPartPresenter.View view ) {
-        getPanelView().addPart( titleWidget,
-                                view );
-        if ( !orderedParts.contains( part ) ) {
-            orderedParts.add( part );
-        }
+    @Override
+    public void addPart( final WorkbenchPartPresenter.View view ) {
+        getPanelView().addPart( view );
     }
 
+    @Override
     public void removePart( final PartDefinition part ) {
-        if ( !contains( part ) ) {
-            return;
-        }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToRemove = orderedParts.indexOf( part );
-            view.removePart( indexOfPartToRemove );
-            orderedParts.remove( part );
-        }
+        view.removePart( part );
     }
 
+    @Override
     public void addPanel( final PanelDefinition panel,
                           final WorkbenchPanelView view,
                           final Position position ) {
@@ -105,56 +93,56 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
                                 panel );
     }
 
+    @Override
     public void removePanel() {
         view.removePanel();
     }
 
+    @Override
     public void changeTitle( final PartDefinition part,
-                             final IsWidget titleWidget ) {
-        if ( !contains( part ) ) {
-            return;
-        }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToChangeTabContent = orderedParts.indexOf( part );
-            getPanelView().changeTitle( indexOfPartToChangeTabContent,
-                                        titleWidget );
-        }
+                             final String title,
+                             final IsWidget titleDescorator ) {
+        getPanelView().changeTitle( part, title, titleDescorator );
     }
 
+    @Override
     public void setFocus( final boolean hasFocus ) {
         view.setFocus( hasFocus );
     }
 
+    @Override
     public void selectPart( final PartDefinition part ) {
         if ( !contains( part ) ) {
             return;
         }
-        if ( orderedParts.contains( part ) ) {
-            final int indexOfPartToSelect = orderedParts.indexOf( part );
-            view.selectPart( indexOfPartToSelect );
-        }
+        view.selectPart( part );
     }
 
     private boolean contains( final PartDefinition part ) {
         return definition.getParts().contains( part );
     }
 
+    @Override
     public void onPartFocus( final PartDefinition part ) {
         panelManager.onPartFocus( part );
     }
 
+    @Override
     public void onPartLostFocus() {
         panelManager.onPartLostFocus();
     }
 
+    @Override
     public void onPanelFocus() {
         panelManager.onPanelFocus( definition );
     }
 
+    @Override
     public void onBeforePartClose( final PartDefinition part ) {
         panelManager.onBeforePartClose( part );
     }
 
+    @Override
     public void maximize() {
         if ( !getDefinition().isRoot() ) {
             for ( PartDefinition part : getDefinition().getParts() ) {
@@ -163,6 +151,7 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
         }
     }
 
+    @Override
     public void minimize() {
         if ( !getDefinition().isRoot() ) {
             for ( PartDefinition part : getDefinition().getParts() ) {
@@ -171,10 +160,12 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
         }
     }
 
+    @Override
     public WorkbenchPanelView getPanelView() {
         return view;
     }
 
+    @Override
     public void onResize( final int width,
                           final int height ) {
         getDefinition().setWidth( width == 0 ? null : width );

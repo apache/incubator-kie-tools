@@ -27,6 +27,9 @@
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
+
+  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-workbench.css'/>
 

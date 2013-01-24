@@ -77,23 +77,4 @@ public interface CommonCss
 
     @ClassName("clean-textarea")
     String cleanTextArea();
-
-    @ClassName("uf-TabBar")
-    String tabBar();
-
-    @ClassName("uf-TabBarFirst")
-    String tabBarFirst();
-
-    @ClassName("uf-TabBarRest")
-    String tabBarRest();
-
-    @ClassName("uf-TabBarItem")
-    String tabBarItem();
-
-    @ClassName("uf-TabBarItem-selected")
-    String tabBarItemSelected();
-
-    @ClassName("uf-TabBarItem-disabled")
-    String tabBarItemDisabled();
-
 }

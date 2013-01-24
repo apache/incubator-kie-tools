@@ -16,19 +16,19 @@
 
 package org.uberfire.client.common;
 
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.TextArea;
 
 public class ResizableTextArea extends TextArea
-    implements
-    RequiresResize {
+        implements
+        RequiresResize {
 
     @Override
     public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width,
-                      height );
+        int height = getParent().getOffsetHeight() - 30;
+        int width = getParent().getOffsetWidth() - 30;
+        setPixelSize( width, height );
     }
 
 }

@@ -16,7 +16,8 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
              
   <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CoreConstants" />
   <ui:with field="images" type="org.uberfire.client.resources.CoreImages" />
@@ -28,7 +29,7 @@
     </g:HorizontalPanel>
     <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
     <g:VerticalPanel ui:field="activitiesList" />
-    <g:Button ui:field="cancelButton" text="{i18n.cancel}"/>
+    <b:Button ui:field="cancelButton" text="{i18n.cancel}"/>
   </g:VerticalPanel>
 
 </ui:UiBinder> 

@@ -327,17 +327,17 @@ public class PlaceManagerImpl
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
-            public void add( final IsWidget titleWidget,
+            public void add( final String title,
+                             final IsWidget titleDecoration,
                              final IsWidget widget ) {
                 panelManager.addWorkbenchPart( place,
                                                part,
                                                panel,
-                                               titleWidget,
+                                               title,
+                                               titleDecoration,
                                                widget );
             }
-        },
-                         place,
-                         callback );
+        }, place, callback );
     }
 
     private void launchActivity( final PlaceRequest place,

@@ -51,6 +51,7 @@
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
 
           <!-- GWT Client Related -->
+          <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
           <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>
           <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
           <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>

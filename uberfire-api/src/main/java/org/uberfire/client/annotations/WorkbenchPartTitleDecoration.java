@@ -13,26 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.toolbar;
+package org.uberfire.client.annotations;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.CustomButton;
-import com.google.gwt.user.client.ui.Image;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * A button in the ToolBar.
+ * Methods annotated with this provide a {@code java.lang.String} title for the
+ * WorkbenchPart. The method should have zero arguments and return a
+ * {@code java.lang.String}.
  */
-public class ToolBarButton extends CustomButton {
-
-    private static final String STYLE_NAME = "toolBarButton";
-
-    public ToolBarButton( final ImageResource image ) {
-        this( new Image( image ) );
-    }
-
-    public ToolBarButton( final Image image ) {
-        super( image );
-        setStyleName( STYLE_NAME );
-    }
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface WorkbenchPartTitleDecoration {
 
 }

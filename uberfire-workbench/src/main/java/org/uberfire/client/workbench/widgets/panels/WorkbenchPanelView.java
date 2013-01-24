@@ -21,32 +21,32 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * Panel views
  */
 public interface WorkbenchPanelView
-        extends
-        UberView<WorkbenchPanelPresenter>,
-        RequiresResize {
+        extends UberView<WorkbenchPanelPresenter>,
+                RequiresResize {
 
     WorkbenchPanelPresenter getPresenter();
 
     void clear();
 
-    void addPart( IsWidget titleWidget,
-                  WorkbenchPartPresenter.View view );
+    void addPart( final WorkbenchPartPresenter.View view );
 
-    void addPanel( PanelDefinition panel,
-                   WorkbenchPanelView view,
-                   Position position );
+    void addPanel( final PanelDefinition panel,
+                   final WorkbenchPanelView view,
+                   final Position position );
 
-    void changeTitle( int indexOfPartToChangeTabContent,
-                      IsWidget titleWidget );
+    void changeTitle( final PartDefinition part,
+                      final String title,
+                      final IsWidget titleDecoration );
 
-    void selectPart( int index );
+    void selectPart( final PartDefinition part );
 
-    void removePart( int index );
+    void removePart( final PartDefinition part );
 
     void removePanel();
 

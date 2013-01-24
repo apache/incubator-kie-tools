@@ -20,38 +20,58 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.uberfire.client.mvp.Command;
+import org.uberfire.client.workbench.widgets.toolbar.IconType;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarIcon;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarTypeIcon;
+import org.uberfire.client.workbench.widgets.toolbar.ToolBarUrlIcon;
+
+import static java.lang.System.*;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * Default implementation of ToolBarItem
  */
 public class DefaultToolBarItem
-    implements
-    ToolBarItem {
+        implements
+        ToolBarItem {
 
-    private boolean  isEnabled = true;
+    private final ToolBarIcon icon;
 
-    private String[] roles     = new String[]{};
+    private final String tooltip;
 
-    private String   url;
+    private final Command command;
 
-    private String   tooltip;
+    private boolean isEnabled = true;
 
-    private Command  command;
+    private String[] roles = new String[]{ };
 
-    public DefaultToolBarItem(final String url,
-                              final String tooltip,
-                              final Command command) {
-        PortablePreconditions.checkNotNull("url",
-                url);
-        PortablePreconditions.checkNotNull("tooltip",
-                tooltip);
-        PortablePreconditions.checkNotNull("command",
-                command);
-        this.url = url;
-        this.tooltip = tooltip;
-        this.command = command;
+    public DefaultToolBarItem( final String url,
+                               final String tooltip,
+                               final Command command ) {
+        this.tooltip = checkNotNull( "tooltip", tooltip );
+        this.command = checkNotNull( "command", command );
+        checkNotNull( "url", url );
+        this.icon = new ToolBarUrlIcon() {
+            @Override
+            public String getUrl() {
+                return url;
+            }
+        };
+    }
+
+    public DefaultToolBarItem( final IconType iconType,
+                               final String tooltip,
+                               final Command command ) {
+        this.tooltip = checkNotNull( "tooltip", tooltip );
+        this.command = checkNotNull( "command", command );
+        checkNotNull( "iconType", iconType );
+        this.icon = new ToolBarTypeIcon() {
+            @Override
+            public IconType getType() {
+                return iconType;
+            }
+        };
     }
 
     @Override
@@ -60,8 +80,8 @@ public class DefaultToolBarItem
     }
 
     @Override
-    public String getUrl() {
-        return this.url;
+    public ToolBarIcon getIcon() {
+        return icon;
     }
 
     @Override
@@ -70,7 +90,7 @@ public class DefaultToolBarItem
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
+    public void setEnabled( boolean isEnabled ) {
         this.isEnabled = isEnabled;
     }
 
@@ -81,22 +101,18 @@ public class DefaultToolBarItem
 
     @Override
     public String getSignatureId() {
-        return DefaultToolBarItem.class.getName()  + "#" + tooltip;
+        return DefaultToolBarItem.class.getName() + "#" + tooltip;
     }
 
     @Override
-    public void setRoles(final String[] roles) {
+    public void setRoles( final String[] roles ) {
         this.roles = roles;
     }
 
     @Override
     public Collection<String> getRoles() {
-        String[] clone = new String[roles.length];
-        System.arraycopy( roles,
-                          0,
-                          clone,
-                          0,
-                          roles.length );
+        final String[] clone = new String[ roles.length ];
+        arraycopy( roles, 0, clone, 0, roles.length );
 
         return Arrays.asList( clone );
     }

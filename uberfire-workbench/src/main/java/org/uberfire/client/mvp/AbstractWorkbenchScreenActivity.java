@@ -21,22 +21,20 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * Base class for Screen Activities
  */
 public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity
-    implements
-    WorkbenchScreenActivity {
+        implements
+        WorkbenchScreenActivity {
 
-    public AbstractWorkbenchScreenActivity(final PlaceManager placeManager) {
+    public AbstractWorkbenchScreenActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
     @Override
-    public void launch(final AcceptItem acceptPanel,
-                       final PlaceRequest place,
-                       final Command callback) {
-        super.launch( place,
-                      callback );
+    public void launch( final AcceptItem acceptPanel,
+                        final PlaceRequest place,
+                        final Command callback ) {
+        super.launch( place, callback );
         onStart( place );
-        acceptPanel.add( getTitleWidget(),
-                         getWidget() );
+        acceptPanel.add( getTitle(), getTitleDecoration(), getWidget() );
         onReveal();
     }
 
@@ -46,7 +44,7 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
     }
 
     @Override
-    public void onStart(final PlaceRequest place) {
+    public void onStart( final PlaceRequest place ) {
         //Do nothing.  
     }
 

@@ -33,6 +33,11 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>com.github.gwtbootstrap</groupId>
+      <artifactId>gwt-bootstrap</artifactId>
+    </dependency>
+
     <!-- Errai IoC - mandatory for entrypoint -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

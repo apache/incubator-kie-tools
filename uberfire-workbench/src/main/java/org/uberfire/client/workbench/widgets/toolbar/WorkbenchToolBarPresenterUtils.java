@@ -17,10 +17,10 @@ package org.uberfire.client.workbench.widgets.toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
@@ -32,31 +32,31 @@ public class WorkbenchToolBarPresenterUtils {
 
     private final RuntimeAuthorizationManager authzManager;
 
-    private final Identity                    identity;
+    private final Identity identity;
 
     @Inject
-    public WorkbenchToolBarPresenterUtils(final RuntimeAuthorizationManager authzManager,
-                                          final Identity identity) {
+    public WorkbenchToolBarPresenterUtils( final RuntimeAuthorizationManager authzManager,
+                                           final Identity identity ) {
         this.authzManager = authzManager;
         this.identity = identity;
     }
 
     //Remove menu bar items for which there are insufficient permissions
-    public List<ToolBarItem> filterToolBarItemsByPermission(final List<ToolBarItem> items) {
+    public ToolBar filterToolBarItemsByPermission( final ToolBar toolBar ) {
         final List<ToolBarItem> itemsClone = new ArrayList<ToolBarItem>();
-        for ( ToolBarItem item : items ) {
+        for ( ToolBarItem item : toolBar.getItems() ) {
             final ToolBarItem itemClone = filterToolBarItemByPermission( item );
             if ( itemClone != null ) {
                 itemsClone.add( itemClone );
             }
         }
-        return itemsClone;
+
+        return new DefaultToolBar( toolBar.getId(), itemsClone );
     }
 
     //Remove Tool Bar items for which there are insufficient permissions
-    public ToolBarItem filterToolBarItemByPermission(final ToolBarItem item) {
-        if ( !authzManager.authorize( item,
-                                      identity ) ) {
+    private ToolBarItem filterToolBarItemByPermission( final ToolBarItem item ) {
+        if ( !authzManager.authorize( item, identity ) ) {
             return null;
         }
         return item;

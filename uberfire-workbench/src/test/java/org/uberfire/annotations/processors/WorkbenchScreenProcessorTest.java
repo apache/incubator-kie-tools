@@ -25,12 +25,14 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.annotations.processors.AbstractProcessorTest.Result;
 
 /**
  * Tests for Screen related class generation
  */
+@Ignore
 public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
     @Test

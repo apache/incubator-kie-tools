@@ -19,18 +19,15 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.workbench.annotations.DecoratedWorkbenchPanel;
 import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
-import org.uberfire.client.workbench.widgets.panels.DecoratedWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
@@ -49,7 +46,7 @@ public class DefaultBeanFactory
     private static Annotation WORKBENCH_PANEL = new Annotation() {
         @Override
         public Class<? extends Annotation> annotationType() {
-            return DecoratedWorkbenchPanel.class;
+            return RootWorkbenchPanel.class;
         }
     };
 
@@ -61,10 +58,12 @@ public class DefaultBeanFactory
     };
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+                                                    final IsWidget titleDecoration,
                                                     final PartDefinition definition ) {
         final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
-        part.setTitleWidget( titleWidget );
+        part.setTitle( title );
+        part.setTitleDecoration( titleDecoration );
         part.setDefinition( definition );
         return part;
     }
@@ -77,7 +76,7 @@ public class DefaultBeanFactory
             panel.setDefinition( definition );
             return panel;
         }
-        final WorkbenchPanelPresenter panel = iocManager.lookupBean( DecoratedWorkbenchPanelPresenter.class,
+        final WorkbenchPanelPresenter panel = iocManager.lookupBean( RootWorkbenchPanelPresenter.class,
                                                                      WORKBENCH_PANEL ).getInstance();
         panel.setDefinition( definition );
         return panel;

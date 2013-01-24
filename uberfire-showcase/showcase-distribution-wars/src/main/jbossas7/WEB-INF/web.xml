@@ -25,6 +25,10 @@
     <filter-class>
       org.uberfire.security.server.UberFireSecurityFilter
     </filter-class>
+    <init-param>
+      <param-name>org.uberfire.cookie.id</param-name>
+      <param-value>uf.showcase</param-value>
+    </init-param>
   </filter>
 
   <filter-mapping>

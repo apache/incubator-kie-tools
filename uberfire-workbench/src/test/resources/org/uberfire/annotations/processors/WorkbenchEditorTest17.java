@@ -2,6 +2,7 @@ package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -15,7 +16,7 @@ public class WorkbenchEditorTest17 {
         return new SimplePanel();
     }
     
-    @WorkbenchPartTitle
+    @WorkbenchPartTitleDecoration
     public IsWidget getTabWidget() {
         return null;
     }

@@ -18,11 +18,6 @@ package org.uberfire.client.workbench.widgets.dnd;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
@@ -31,6 +26,10 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.model.PanelDefinition;
+import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
@@ -57,7 +56,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final PartDefinition sourcePart = sourceView.getPresenter().getDefinition();
         final PanelDefinition sourcePanel = sourceView.getPresenter().getDefinition().getParentPanel();
         final PlaceRequest place = sourcePart.getPlace();
-        final IsWidget titleWidget = sourceView.getPresenter().getTitleWidget();
+        final String title = sourceView.getPresenter().getTitle();
+        final IsWidget titleDecoration = sourceView.getPresenter().getTitleDecoration();
         final IsWidget widget = sourceView.getPresenter().getPartView().getWrappedWidget();
         final Integer height = sourcePanel.getHeight();
         final Integer width = sourcePanel.getWidth();
@@ -66,7 +66,8 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchDragContext context = new WorkbenchDragContext( place,
                                                                        sourcePart,
                                                                        sourcePanel,
-                                                                       titleWidget,
+                                                                       title,
+                                                                       titleDecoration,
                                                                        widget,
                                                                        height,
                                                                        width,

@@ -15,13 +15,12 @@
  */
 package org.uberfire.client.workbench;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
@@ -31,7 +30,8 @@ import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
  */
 public interface BeanFactory {
 
-    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+                                                    final IsWidget titleDecoration,
                                                     final PartDefinition definition );
 
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition );

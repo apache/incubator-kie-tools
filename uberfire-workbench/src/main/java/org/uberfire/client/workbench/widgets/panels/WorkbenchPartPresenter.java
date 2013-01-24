@@ -19,11 +19,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.model.PartDefinition;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.model.PartDefinition;
 
 /**
  * A Workbench panel part.
@@ -45,7 +44,9 @@ public class WorkbenchPartPresenter {
 
     private View view;
 
-    private IsWidget titleWidget;
+    private String title;
+
+    private IsWidget titleDecoration;
 
     private PartDefinition definition;
 
@@ -68,14 +69,6 @@ public class WorkbenchPartPresenter {
         this.definition = definition;
     }
 
-    public IsWidget getTitleWidget() {
-        return titleWidget;
-    }
-
-    public void setTitleWidget( final IsWidget titleWidget ) {
-        this.titleWidget = titleWidget;
-    }
-
     public View getPartView() {
         return view;
     }
@@ -84,4 +77,19 @@ public class WorkbenchPartPresenter {
         this.view.setWrappedWidget( widget );
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle( final String title ) {
+        this.title = title;
+    }
+
+    public IsWidget getTitleDecoration() {
+        return titleDecoration;
+    }
+
+    public void setTitleDecoration( final IsWidget titleDecoration ) {
+        this.titleDecoration = titleDecoration;
+    }
 }

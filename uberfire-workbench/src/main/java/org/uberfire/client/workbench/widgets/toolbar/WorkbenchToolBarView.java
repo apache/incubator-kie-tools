@@ -18,12 +18,16 @@ package org.uberfire.client.workbench.widgets.toolbar;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ButtonGroup;
+import com.github.gwtbootstrap.client.ui.ButtonToolbar;
+import com.github.gwtbootstrap.client.ui.Tooltip;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.resources.WorkbenchResources;
 
 /**
  * The Tool Bar widget
@@ -32,20 +36,14 @@ public class WorkbenchToolBarView extends Composite
         implements
         WorkbenchToolBarPresenter.View {
 
-    private final HorizontalPanel toolBar = new HorizontalPanel();
-    private final HorizontalPanel toolBarContainer = new HorizontalPanel();
+    private final ButtonToolbar toolBar = new ButtonToolbar();
 
-    //Map of ToolBarItems to GWT Widgets used to represent them
-    private final Map<ToolBarItem, IsWidget> toolBarItemsMap = new HashMap<ToolBarItem, IsWidget>();
-
-    private static final String STYLE_NAME = "toolBar";
+    //Map of ToolBar to GWT Widgets used to represent them
+    private final Map<String, ButtonGroup> toolBarItemsMap = new HashMap<String, ButtonGroup>();
 
     public WorkbenchToolBarView() {
-        initWidget( toolBarContainer );
-        toolBarContainer.setStyleName( STYLE_NAME );
-        toolBarContainer.setSpacing( 0 );
-        toolBar.setSpacing( 0 );
-        toolBarContainer.add( toolBar );
+        toolBar.addStyleName( WorkbenchResources.INSTANCE.CSS().toolbar() );
+        initWidget( toolBar );
     }
 
     /**
@@ -53,35 +51,37 @@ public class WorkbenchToolBarView extends Composite
      * is conducted by the Presenter.
      */
     @Override
-    public void addToolBarItem( final ToolBarItem item ) {
-        final String url = item.getUrl();
-        final Image image = new Image( "uberFireImages?url=" + url );
-        final ToolBarButton button = new ToolBarButton( image );
-        if ( item.getCommand() != null ) {
-            button.addClickHandler( new ClickHandler() {
+    public void addToolBar( final ToolBar _toolBar ) {
 
-                @Override
-                public void onClick( ClickEvent event ) {
-                    item.getCommand().execute();
-                }
+        final ButtonGroup bgroup = new ButtonGroup();
 
-            } );
+        for ( final ToolBarItem item : _toolBar.getItems() ) {
+            bgroup.add( new Tooltip( item.getTooltip() ) {{
+                setPlacement( Placement.BOTTOM );
+                add( new Button() {{
+                    setIcon( IconType.valueOf( ( (ToolBarTypeIcon) item.getIcon() ).getType().toString() ) );
+                    setEnabled( item.isEnabled() );
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( final ClickEvent event ) {
+                            item.getCommand().execute();
+                        }
+                    } );
+                }} );
+            }} );
         }
-        button.setEnabled( item.isEnabled() );
-        toolBarItemsMap.put( item,
-                             button );
-        toolBar.add( button );
+
+        toolBarItemsMap.put( _toolBar.getId(), bgroup );
+
+        toolBar.add( bgroup );
     }
 
     /**
      * Remove a Tool Bar item from the view.
      */
     @Override
-    public void removeToolBarItem( final ToolBarItem item ) {
-        final IsWidget icon = toolBarItemsMap.remove( item );
-        if ( icon != null ) {
-            toolBar.remove( icon );
-        }
+    public void removeToolBar( final ToolBar _toolBar ) {
+        toolBar.remove( toolBarItemsMap.remove( _toolBar.getId() ) );
     }
 
 }

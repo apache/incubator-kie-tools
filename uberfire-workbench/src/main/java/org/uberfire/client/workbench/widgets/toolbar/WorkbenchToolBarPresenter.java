@@ -43,9 +43,9 @@ public class WorkbenchToolBarPresenter {
             extends
             IsWidget {
 
-        void addToolBarItem( final ToolBarItem item );
+        void addToolBar( final ToolBar toolBar );
 
-        void removeToolBarItem( final ToolBarItem item );
+        void removeToolBar( final ToolBar toolBar );
     }
 
     private PlaceRequest activePlace;
@@ -60,13 +60,13 @@ public class WorkbenchToolBarPresenter {
     private WorkbenchToolBarPresenterUtils toolBarUtils;
 
     //Items relating to the Workbench as a whole
-    private List<ToolBarItem> workbenchItems = new ArrayList<ToolBarItem>();
+    private List<ToolBar> workbenchItems = new ArrayList<ToolBar>();
 
     //Transient items relating to the current Workbench Perspective
-    private List<ToolBarItem> workbenchPerspectiveItems = new ArrayList<ToolBarItem>();
+    private List<ToolBar> workbenchPerspectiveItems = new ArrayList<ToolBar>();
 
     //Transient items relating to the current WorkbenchPart context
-    private List<ToolBarItem> workbenchContextItems = new ArrayList<ToolBarItem>();
+    private List<ToolBar> workbenchContextItems = new ArrayList<ToolBar>();
 
     public IsWidget getView() {
         return this.view;
@@ -108,30 +108,35 @@ public class WorkbenchToolBarPresenter {
                 return;
             }
 
-            for ( ToolBarItem item : toolBar.getItems() ) {
-                addWorkbenchContextItem( item );
-            }
+            addWorkbenchContextItem( toolBar );
         }
     }
 
-    public void addWorkbenchItem( final ToolBarItem item ) {
-        if ( toolBarUtils.filterToolBarItemByPermission( item ) != null ) {
-            workbenchItems.add( item );
-            view.addToolBarItem( item );
+    public void addWorkbenchItem( final ToolBar toolBar ) {
+
+        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
         }
     }
 
-    public void addWorkbenchPerspectiveItem( final ToolBarItem item ) {
-        if ( toolBarUtils.filterToolBarItemByPermission( item ) != null ) {
-            workbenchPerspectiveItems.add( item );
-            view.addToolBarItem( item );
+    public void addWorkbenchPerspective( final ToolBar toolBar ) {
+        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchPerspectiveItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
         }
     }
 
-    public void addWorkbenchContextItem( final ToolBarItem item ) {
-        if ( toolBarUtils.filterToolBarItemByPermission( item ) != null ) {
-            workbenchContextItems.add( item );
-            view.addToolBarItem( item );
+    public void addWorkbenchContextItem( final ToolBar toolBar ) {
+        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchContextItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
         }
     }
 
@@ -139,8 +144,8 @@ public class WorkbenchToolBarPresenter {
         if ( workbenchItems.isEmpty() ) {
             return;
         }
-        for ( ToolBarItem item : workbenchItems ) {
-            view.removeToolBarItem( item );
+        for ( ToolBar item : workbenchItems ) {
+            view.removeToolBar( item );
         }
         workbenchItems.clear();
     }
@@ -149,8 +154,8 @@ public class WorkbenchToolBarPresenter {
         if ( workbenchPerspectiveItems.isEmpty() ) {
             return;
         }
-        for ( ToolBarItem item : workbenchPerspectiveItems ) {
-            view.removeToolBarItem( item );
+        for ( ToolBar item : workbenchPerspectiveItems ) {
+            view.removeToolBar( item );
         }
         workbenchPerspectiveItems.clear();
     }
@@ -160,8 +165,8 @@ public class WorkbenchToolBarPresenter {
         if ( workbenchContextItems.isEmpty() ) {
             return;
         }
-        for ( ToolBarItem item : workbenchContextItems ) {
-            view.removeToolBarItem( item );
+        for ( final ToolBar toolBar : workbenchContextItems ) {
+            view.removeToolBar( toolBar );
         }
         workbenchContextItems.clear();
     }

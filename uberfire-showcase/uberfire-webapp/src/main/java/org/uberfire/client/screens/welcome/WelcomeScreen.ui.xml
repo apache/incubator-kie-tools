@@ -16,42 +16,19 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:style>
-    .background {
-      background-color: #aaaa99;
-      height: 100%;
-    }
-
-    .title {
-      padding: 10px 0px 10px 0px;
-      width: 100%;
-      text-align: center;
-      font-size: 30px;
-      font-family: Tahoma, Geneva, sans-serif;
-    }
-
-    .explanation {
+    .welcome {
       padding-top: 20px;
+      margin-top: 10px;
       text-align: center;
-    }
-
-    .note {
-      padding-top: 20px;
-      padding-left: 10px;
-      padding-right: 10px;
-      font-weight: bold;
     }
   </ui:style>
 
-  <gwt:HTMLPanel height="100%">
-    <div class='{style.background}'>
-      <div class='{style.title}'>
-        Welcome to UberFire
-      </div>
-      <div class='{style.explanation}'><span class='{style.note}'>Important Note:</span>This is an Alpha version, and no investments have been made on Look &amp; Feel.
-      </div>
-    </div>
-  </gwt:HTMLPanel>
-</ui:UiBinder> 
+  <b:Hero addStyleNames="{style.welcome}">
+    <b:Heading size="2">Welcome to UberFire</b:Heading>
+    <b:Paragraph>Now with a bright new Look &amp; Feel based on Boostrap.</b:Paragraph>
+  </b:Hero>
+
+</ui:UiBinder>

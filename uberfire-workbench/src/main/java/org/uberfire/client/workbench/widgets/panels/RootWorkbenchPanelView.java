@@ -19,7 +19,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.WorkbenchResources;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
@@ -27,35 +33,16 @@ import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
 @RootWorkbenchPanel
-public class RootWorkbenchPanelView extends ResizeComposite
-        implements
-        WorkbenchPanelView {
-
-    protected static final int TAB_BAR_HEIGHT = 32;
-
-    protected static final int FOCUS_BAR_HEIGHT = 3;
+public class RootWorkbenchPanelView
+        extends ResizeComposite
+        implements WorkbenchPanelView {
 
     @Inject
     @WorkbenchPosition(position = Position.NORTH)
@@ -79,7 +66,7 @@ public class RootWorkbenchPanelView extends ResizeComposite
     @Inject
     private BeanFactory factory;
 
-    private WorkbenchScrolledTabLayoutPanel tabPanel;
+    private UberTabPanel tabPanel;
 
     protected WorkbenchPanelPresenter presenter;
 
@@ -91,13 +78,14 @@ public class RootWorkbenchPanelView extends ResizeComposite
     @SuppressWarnings("unused")
     @PostConstruct
     private void setupDragAndDrop() {
-        dndManager.registerDropController( this,
-                                           factory.newDropController( this ) );
+        dndManager.registerDropController( this, factory.newDropController( this ) );
     }
 
     @Override
     public void init( final WorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
+        tabPanel.setPresenter( presenter );
+        tabPanel.setDndManager( dndManager );
     }
 
     @Override
@@ -111,11 +99,8 @@ public class RootWorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void addPart( final IsWidget titleWidget,
-                         final WorkbenchPartPresenter.View view ) {
-        tabPanel.add( view,
-                      wrapTitleWidget( titleWidget,
-                                       view ) );
+    public void addPart( final WorkbenchPartPresenter.View view ) {
+        tabPanel.addTab( view );
     }
 
     @Override
@@ -159,33 +144,20 @@ public class RootWorkbenchPanelView extends ResizeComposite
     }
 
     @Override
-    public void changeTitle( final int index,
-                             final IsWidget titleWidget ) {
-        final WorkbenchPartPresenter.View view = (WorkbenchPartPresenter.View) tabPanel.getWidget( index );
-        final Widget wrappedTabContent = wrapTitleWidget( titleWidget,
-                                                          view );
-        tabPanel.setTabWidget( index,
-                               wrappedTabContent );
+    public void changeTitle( final PartDefinition part,
+                             final String title,
+                             final IsWidget titleDecoration ) {
+        tabPanel.changeTitle( part, title, titleDecoration );
     }
 
     @Override
-    public void selectPart( int index ) {
-        tabPanel.selectTab( index );
-        scheduleResize( tabPanel.getWidget( index ) );
+    public void selectPart( final PartDefinition part ) {
+        tabPanel.selectTab( part );
     }
 
     @Override
-    public void removePart( int indexOfPartToRemove ) {
-        final int indexOfSelectedPart = tabPanel.getSelectedIndex();
-        final int nextActiveTabIndex = indexOfPartToRemove > 0 ? indexOfPartToRemove - 1 : 0;
-        tabPanel.remove( indexOfPartToRemove );
-        if ( tabPanel.getWidgetCount() > 0 ) {
-            if ( indexOfSelectedPart == -1 ) {
-                tabPanel.activateTab( nextActiveTabIndex );
-            } else if ( indexOfSelectedPart == indexOfPartToRemove ) {
-                tabPanel.selectTab( nextActiveTabIndex );
-            }
-        }
+    public void removePart( final PartDefinition part ) {
+        tabPanel.remove( part );
     }
 
     @Override
@@ -238,85 +210,27 @@ public class RootWorkbenchPanelView extends ResizeComposite
         this.tabPanel.setFocus( hasFocus );
     }
 
-    protected WorkbenchScrolledTabLayoutPanel makeTabPanel() {
-        final WorkbenchScrolledTabLayoutPanel tabPanel = new WorkbenchScrolledTabLayoutPanel( TAB_BAR_HEIGHT,
-                                                                                              FOCUS_BAR_HEIGHT,
-                                                                                              WorkbenchResources.INSTANCE.images().tabPanelScrollLeft(),
-                                                                                              WorkbenchResources.INSTANCE.images().tabPanelScrollRight() );
+    protected UberTabPanel makeTabPanel() {
+        final UberTabPanel tabPanel = new UberTabPanel();
 
         //Selecting a tab causes the previously selected tab to receive a Lost Focus event
         tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
-
             @Override
-            public void onBeforeSelection( BeforeSelectionEvent<Integer> event ) {
+            public void onBeforeSelection( final BeforeSelectionEvent<Integer> event ) {
                 presenter.onPartLostFocus();
             }
         } );
 
         //When a tab is selected ensure content is resized and set focus
-        tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
+        tabPanel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
 
             @Override
-            public void onSelection( SelectionEvent<Integer> event ) {
-                final Widget widget = tabPanel.getWidget( event.getSelectedItem() );
-                scheduleResize( widget );
-                final int index = tabPanel.getSelectedIndex();
-                final PartDefinition partToSelect = ( (WorkbenchPartView) tabPanel.getWidget( index ) ).getPresenter().getDefinition();
-                presenter.onPartFocus( partToSelect );
+            public void onSelection( SelectionEvent<PartDefinition> event ) {
+                presenter.onPartFocus( event.getSelectedItem() );
             }
-
         } );
 
         return tabPanel;
-    }
-
-    private Widget wrapTitleWidget( final IsWidget titleWidget,
-                                    final WorkbenchPartPresenter.View view ) {
-        final FlowPanel fp = new FlowPanel();
-        fp.add( titleWidget );
-
-        //Clicking on the Tab takes focus
-        fp.addDomHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onPanelFocus();
-            }
-
-        },
-                          ClickEvent.getType() );
-
-        dndManager.makeDraggable( view.asWidget(),
-                                  titleWidget );
-
-        final FocusPanel image = new FocusPanel();
-        image.getElement().getStyle().setFloat( Style.Float.RIGHT );
-        image.setStyleName( WorkbenchResources.INSTANCE.CSS().closeTabImage() );
-        image.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                final PartDefinition partToDeselect = view.getPresenter().getDefinition();
-                presenter.onBeforePartClose( partToDeselect );
-            }
-
-        } );
-        fp.add( image );
-        return fp;
-    }
-
-    protected void scheduleResize( final Widget widget ) {
-        if ( widget instanceof RequiresResize ) {
-            final RequiresResize requiresResize = (RequiresResize) widget;
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-                @Override
-                public void execute() {
-                    requiresResize.onResize();
-                }
-
-            } );
-        }
     }
 
     @Override
@@ -324,10 +238,9 @@ public class RootWorkbenchPanelView extends ResizeComposite
         final Widget parent = getParent();
         final int width = parent.getOffsetWidth();
         final int height = parent.getOffsetHeight();
-        setPixelSize( width,
-                      height );
-        presenter.onResize( width,
-                            height );
+        setPixelSize( width, height );
+        presenter.onResize( width, height );
+        tabPanel.onResize();
         super.onResize();
     }
 

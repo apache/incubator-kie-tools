@@ -40,7 +40,6 @@ import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.resources.ShowcaseResources;
 import org.uberfire.client.workbench.widgets.menu.MenuBar;
 import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
 import org.uberfire.client.workbench.widgets.menu.MenuItemSubMenu;
@@ -78,14 +77,8 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        loadStyles();
         setupMenu();
         hideLoadingPopup();
-    }
-
-    private void loadStyles() {
-        //Ensure CSS has been loaded
-        ShowcaseResources.INSTANCE.CSS().ensureInjected();
     }
 
     private void setupMenu() {

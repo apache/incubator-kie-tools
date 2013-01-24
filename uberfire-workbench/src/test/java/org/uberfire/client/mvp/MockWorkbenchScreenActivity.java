@@ -29,6 +29,11 @@ public class MockWorkbenchScreenActivity extends AbstractWorkbenchScreenActivity
     }
 
     @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
     public String getSignatureId() {
         return null;
     }
@@ -40,11 +45,6 @@ public class MockWorkbenchScreenActivity extends AbstractWorkbenchScreenActivity
 
     @Override
     public Collection<String> getTraits() {
-        return null;
-    }
-
-    @Override
-    public IsWidget getTitleWidget() {
         return null;
     }
 

@@ -88,7 +88,8 @@ public class CompassDropController
 
         //Move Part from source to target 
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
-        final IsWidget titleWidget = workbenchContext.getTitleWidget();
+        final String title = workbenchContext.getTitle();
+        final IsWidget titleDecoration = workbenchContext.getTitleDecoration();
         final IsWidget widget = workbenchContext.getWidget();
         final PlaceRequest place = workbenchContext.getPlace();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
@@ -122,7 +123,8 @@ public class CompassDropController
         panelManager.addWorkbenchPart( place,
                                        sourcePart,
                                        targetPanel,
-                                       titleWidget,
+                                       title,
+                                       titleDecoration,
                                        widget );
     }
 

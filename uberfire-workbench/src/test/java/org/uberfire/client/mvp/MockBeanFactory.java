@@ -15,19 +15,18 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 
 /**
  * Mock BeanFactory that doesn't use CDI.
@@ -37,10 +36,12 @@ public class MockBeanFactory
         BeanFactory {
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart( final IsWidget titleWidget,
+    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+                                                    final IsWidget titleDecoration,
                                                     final PartDefinition definition ) {
         final WorkbenchPartPresenter part = new WorkbenchPartPresenter( new MockWorkbenchPartView() );
-        part.setTitleWidget( titleWidget );
+        part.setTitle( title );
+        part.setTitleDecoration( titleDecoration );
         part.setDefinition( definition );
         return part;
     }

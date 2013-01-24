@@ -29,9 +29,7 @@ public interface WorkbenchPanelPresenter {
 
     public void setDefinition( final PanelDefinition definition );
 
-    public void addPart( final PartDefinition part,
-                         final IsWidget titleWidget,
-                         final WorkbenchPartPresenter.View view );
+    public void addPart( final WorkbenchPartPresenter.View view );
 
     public void removePart( final PartDefinition part );
 
@@ -42,7 +40,8 @@ public interface WorkbenchPanelPresenter {
     public void removePanel();
 
     public void changeTitle( final PartDefinition part,
-                             final IsWidget titleWidget );
+                             final String title,
+                             final IsWidget titleDecoration );
 
     public void setFocus( final boolean hasFocus );
 

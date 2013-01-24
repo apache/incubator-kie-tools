@@ -25,11 +25,13 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests for Pop-up related class generation
  */
+@Ignore
 public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
 
     @Test

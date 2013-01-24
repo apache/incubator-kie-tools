@@ -23,16 +23,16 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A Workbench panel part.
  */
-public class WorkbenchPartView extends SimpleLayoutPanel
-    implements
-    WorkbenchPartPresenter.View {
+public class WorkbenchPartView
+        extends SimpleLayoutPanel
+        implements WorkbenchPartPresenter.View {
 
-    private WorkbenchPartPresenter     presenter;
+    private WorkbenchPartPresenter presenter;
 
     private final ScrollPanel sp = new ScrollPanel();
 
     @Override
-    public void init(WorkbenchPartPresenter presenter) {
+    public void init( WorkbenchPartPresenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -42,7 +42,7 @@ public class WorkbenchPartView extends SimpleLayoutPanel
     }
 
     @Override
-    public void setWrappedWidget(IsWidget widget) {
+    public void setWrappedWidget( final IsWidget widget ) {
         sp.setWidget( widget );
     }
 

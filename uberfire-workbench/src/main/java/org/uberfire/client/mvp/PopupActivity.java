@@ -29,7 +29,9 @@ public interface PopupActivity
 
     public void onStart(final PlaceRequest place);
 
-    public IsWidget getTitleWidget();
+    public String getTitle();
+
+    public IsWidget getTitleDecoration();
 
     public IsWidget getWidget();
 

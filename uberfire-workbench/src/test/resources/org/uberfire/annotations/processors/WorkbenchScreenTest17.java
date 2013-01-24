@@ -1,6 +1,7 @@
 package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
@@ -20,7 +21,7 @@ public class WorkbenchScreenTest17 {
         return null;
     }
 
-    @WorkbenchPartTitle
+    @WorkbenchPartTitleDecoration
     public IsWidget getTitleWidget() {
         return null;
     }

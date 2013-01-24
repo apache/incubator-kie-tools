@@ -1,0 +1,55 @@
+.notification {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.toolbar {
+    min-height: 30px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    padding: 5px 19px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.dropTargetHighlight {
+    z-index: 100000;
+    background-color: #a0a0e0;
+    opacity: 0.50;
+    filter: alpha(opacity = 50);
+}
+
+.dropTargetCompass {
+    z-index: 200000;
+    border-style: none;
+    line-height: 0px;
+}
+
+.statusBar {
+    cursor: default;
+    height: 36px;
+    width: 100%;
+    border-spacing: 0px;
+    background: #c0c0c0;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.activeNavTabs {
+    border-color: rgba(82, 168, 236, 0.8);
+    box-shadow: 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.tabCloseButton {
+    float: none;
+    margin: -2px 0 0 10px;
+}

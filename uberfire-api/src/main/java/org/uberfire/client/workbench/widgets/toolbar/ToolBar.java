@@ -23,11 +23,12 @@ import org.uberfire.security.authz.RuntimeResource;
  * Meta-data for a Workbench Tool Bar including permissions
  */
 public interface ToolBar
-    extends
-    RuntimeResource {
+        extends RuntimeResource {
 
-    public void addItem(final ToolBarItem item);
+    String getId();
 
-    public List<ToolBarItem> getItems();
+    void addItem( final ToolBarItem item );
+
+    List<ToolBarItem> getItems();
 
 }

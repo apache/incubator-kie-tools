@@ -24,14 +24,18 @@ public interface WorkbenchCss
         extends
         CssResource {
 
-    String closeTabImage();
+    String dropTargetHighlight();
 
-    String tabLayoutPanelTabsScrollButtons();
+    String dropTargetCompass();
 
-    String popupTitleBar();
+    String notification();
 
-    String popupLabel();
+    String toolbar();
 
-    String popupCloseImage();
+    String statusBar();
+
+    String activeNavTabs();
+
+    String tabCloseButton();
 
 }

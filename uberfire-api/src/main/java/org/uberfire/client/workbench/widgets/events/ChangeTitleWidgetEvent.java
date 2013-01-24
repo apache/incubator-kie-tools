@@ -15,9 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.events;
 
-import org.uberfire.shared.mvp.PlaceRequest;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 /**
  * An event to change the Title Widget of a WorkbenchPart container, e.g. a Tab in a TabPanel
@@ -25,20 +24,26 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class ChangeTitleWidgetEvent {
 
     private final PlaceRequest place;
-    private final IsWidget titleWidget;
+    private final String       title;
+    private final IsWidget     titleDecoration;
 
     public ChangeTitleWidgetEvent( final PlaceRequest place,
-                                   final IsWidget titleWidget ) {
+                                   final String title,
+                                   final IsWidget titleDecoration ) {
         this.place = place;
-        this.titleWidget = titleWidget;
+        this.title = title;
+        this.titleDecoration = titleDecoration;
     }
 
     public PlaceRequest getPlaceRequest() {
         return place;
     }
 
-    public IsWidget getTitleWidget() {
-        return this.titleWidget;
+    public String getTitle() {
+        return title;
     }
 
+    public IsWidget getTitleDecoration() {
+        return titleDecoration;
+    }
 }
