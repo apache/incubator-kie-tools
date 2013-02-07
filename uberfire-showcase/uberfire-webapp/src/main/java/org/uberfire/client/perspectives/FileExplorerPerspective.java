@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -71,10 +72,10 @@ public class FileExplorerPerspective {
             public void execute() {
                 final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<CloneRepositoryForm>() {
+                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
 
                     @Override
-                    public void onClose( CloseEvent<CloneRepositoryForm> event ) {
+                    public void onClose( CloseEvent<PopupPanel> event ) {
                         iocManager.destroyBean( cloneRepositoryWizard );
                     }
 

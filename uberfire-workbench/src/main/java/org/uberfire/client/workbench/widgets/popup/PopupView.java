@@ -18,25 +18,61 @@ package org.uberfire.client.workbench.widgets.popup;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.event.HideEvent;
+import com.github.gwtbootstrap.client.ui.event.HideHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Skeleton for popups
  */
 @Dependent
 public class PopupView
-        extends Modal {
+        extends Composite
+        implements HasCloseHandlers<PopupView> {
+
+    final Modal modal = new Modal( true, true );
 
     public PopupView() {
-        setAnimation( true );
-        setKeyboard( true );
+        final SimplePanel panel = new SimplePanel( modal );
+
+        initWidget( panel );
     }
 
     public void setContent( final IsWidget widget ) {
-        super.add( widget );
+        modal.add( widget );
     }
 
     public void setTitle( final String title ) {
-        super.setTitle( title );
+        modal.setTitle( title );
     }
+
+    public void show() {
+        modal.show();
+        modal.addHideHandler( new HideHandler() {
+            @Override
+            public void onHide( final HideEvent hideEvent ) {
+                cleanup();
+            }
+        } );
+    }
+
+    public void hide() {
+        modal.hide();
+    }
+
+    private void cleanup() {
+        CloseEvent.fire( this, this, false );
+    }
+
+    @Override
+    public HandlerRegistration addCloseHandler( final CloseHandler<PopupView> handler ) {
+        return addHandler( handler, CloseEvent.getType() );
+    }
+
 }

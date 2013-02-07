@@ -97,6 +97,7 @@ public class CreateRepositoryForm
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        popup.setDynamicSafe( true );
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {

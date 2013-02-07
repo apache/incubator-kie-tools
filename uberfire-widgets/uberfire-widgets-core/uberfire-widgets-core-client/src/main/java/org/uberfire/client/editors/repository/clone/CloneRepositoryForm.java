@@ -33,15 +33,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.Message;
@@ -58,8 +54,7 @@ import static org.uberfire.backend.vfs.PathFactory.*;
 
 @Dependent
 public class CloneRepositoryForm
-        extends Composite
-        implements HasCloseHandlers<CloneRepositoryForm> {
+        extends PopupPanel {
 
     interface CloneRepositoryFormBinder
             extends
@@ -107,7 +102,8 @@ public class CloneRepositoryForm
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        setWidget( uiBinder.createAndBindUi( this ) );
+        popup.setDynamicSafe( true );
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -124,10 +120,10 @@ public class CloneRepositoryForm
         } );
     }
 
-    @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<CloneRepositoryForm> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
-    }
+//    @Override
+//    public HandlerRegistration addCloseHandler( final CloseHandler<CloneRepositoryForm> handler ) {
+//        return addHandler( handler, CloseEvent.getType() );
+//    }
 
     @UiHandler("clone")
     public void onCloneClick( final ClickEvent e ) {
@@ -196,7 +192,7 @@ public class CloneRepositoryForm
 
     public void hide() {
         popup.hide();
-        CloseEvent.fire( this, this );
+        super.hide();
     }
 
     public void show() {
