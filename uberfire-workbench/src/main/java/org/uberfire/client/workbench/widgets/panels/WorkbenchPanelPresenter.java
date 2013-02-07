@@ -49,7 +49,7 @@ public interface WorkbenchPanelPresenter {
 
     public void onPartFocus( final PartDefinition part );
 
-    public void onPartLostFocus();
+    public void onPartLostFocus( final PartDefinition part );
 
     public void onPanelFocus();
 

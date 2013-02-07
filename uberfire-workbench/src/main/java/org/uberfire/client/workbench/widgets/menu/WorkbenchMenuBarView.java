@@ -97,6 +97,7 @@ public class WorkbenchMenuBarView extends Composite
         if ( item instanceof MenuItemCommand ) {
             final MenuItemCommand cmdItem = (MenuItemCommand) item;
             final NavLink gwtItem = new NavLink( cmdItem.getCaption() ) {{
+                setDisabled( !item.isEnabled() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( final ClickEvent event ) {
@@ -107,7 +108,7 @@ public class WorkbenchMenuBarView extends Composite
             item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
                 @Override
                 public void enabledStateChanged( final boolean enabled ) {
-                    gwtItem.setActive( enabled );
+                    gwtItem.setDisabled( !enabled );
                 }
             } );
 

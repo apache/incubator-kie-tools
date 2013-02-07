@@ -36,7 +36,7 @@ import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
 public class UberTabPanel
         extends Composite
         implements RequiresResize,
-                   HasBeforeSelectionHandlers<Integer>,
+                   HasBeforeSelectionHandlers<PartDefinition>,
                    HasSelectionHandlers<PartDefinition> {
 
     private static final int MARGIN = 20;
@@ -99,7 +99,7 @@ public class UberTabPanel
     }
 
     @Override
-    public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<Integer> handler ) {
+    public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<PartDefinition> handler ) {
         return addHandler( handler, BeforeSelectionEvent.getType() );
     }
 
@@ -114,7 +114,9 @@ public class UberTabPanel
             addShownHandler( new ShownEvent.Handler() {
                 @Override
                 public void onShow( final ShownEvent e ) {
-                    BeforeSelectionEvent.fire( UberTabPanel.this, 0 );
+                    if ( e.getRelatedTarget() != null ) {
+                        BeforeSelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( e.getRelatedTarget() ).getPresenter().getDefinition() );
+                    }
                 }
             } );
 

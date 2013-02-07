@@ -18,10 +18,18 @@ package org.uberfire.client.screens.multipage;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
+import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -46,6 +54,24 @@ public class MultiPagePresenter {
     @WorkbenchPartView
     public UberView<MultiPagePresenter> getView() {
         return view;
+    }
+
+    @WorkbenchMenu
+    public MenuBar buildMenu() {
+        final MenuBar menuBar = new DefaultMenuBar();
+        final MenuBar subMenuBar = new DefaultMenuBar();
+        menuBar.addItem( new DefaultMenuItemSubMenu( "My Context", subMenuBar ) );
+
+        final MenuItem newRepo = new DefaultMenuItemCommand( "New Menu", new Command() {
+            @Override
+            public void execute() {
+                Window.alert( "Ok!" );
+            }
+        } );
+
+        subMenuBar.addItem( newRepo );
+
+        return menuBar;
     }
 
 }

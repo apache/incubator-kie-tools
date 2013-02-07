@@ -214,10 +214,10 @@ public class RootWorkbenchPanelView
         final UberTabPanel tabPanel = new UberTabPanel();
 
         //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
+        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
             @Override
-            public void onBeforeSelection( final BeforeSelectionEvent<Integer> event ) {
-                presenter.onPartLostFocus();
+            public void onBeforeSelection( final BeforeSelectionEvent<PartDefinition> event ) {
+                presenter.onPartLostFocus(event.getItem());
             }
         } );
 

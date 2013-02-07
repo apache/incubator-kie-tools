@@ -67,8 +67,6 @@ public class PanelManager {
     @Inject
     private WorkbenchStatusBarPresenter statusBar;
 
-    private PartDefinition activePart = null;
-
     private PanelDefinition root = null;
 
     private PerspectiveDefinition perspective;
@@ -242,16 +240,14 @@ public class PanelManager {
     }
 
     public void onPartFocus( final PartDefinition part ) {
-        activePart = part;
         placeGainFocusEvent.fire( new PlaceGainFocusEvent( part.getPlace() ) );
     }
 
-    public void onPartLostFocus() {
-        if ( activePart == null ) {
+    public void onPartLostFocus( final PartDefinition part ) {
+        if ( part == null ) {
             return;
         }
-        placeLostFocusEvent.fire( new PlaceLostFocusEvent( activePart.getPlace() ) );
-        this.activePart = null;
+        placeLostFocusEvent.fire( new PlaceLostFocusEvent( part.getPlace() ) );
     }
 
     public void onPanelFocus( final PanelDefinition panel ) {
