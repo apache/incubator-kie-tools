@@ -74,15 +74,31 @@ public class UberTabPanel
         final TabLink tab = partTabIndex.get( id );
         if ( tab != null ) {
             int index = getTabs().getWidgetIndex( tab );
-            final boolean wasActive = tab.isActive();
+            if ( index < 0 ) {
+                final DropdownTab _dropdown = (DropdownTab) getLastTab();
+                for ( int i = 0; i < _dropdown.getTabList().size(); i++ ) {
+                    final TabLink activeTab = _dropdown.getTabList().get( i ).asTabLink();
+                    if ( activeTab.equals( tab ) ) {
+                        index = i;
+                        break;
+                    }
+                }
+                final DropdownTab cloneDropdown = cloneDropdown( _dropdown, index );
+                if (cloneDropdown.getTabList().size() > 0){
+                    tabPanel.add( cloneDropdown );
+                }
+                tabPanel.remove( _dropdown );
+            } else {
+                final boolean wasActive = tab.isActive();
 
-            tabPanel.remove( tab );
+                tabPanel.remove( tab );
 
-            if ( wasActive ) {
-                try {
-                    tabPanel.selectTab( index <= 0 ? 0 : index - 1 );
-                } catch ( final IndexOutOfBoundsException ex ) {
-                    //no more tabs, it's ok
+                if ( wasActive ) {
+                    try {
+                        tabPanel.selectTab( index <= 0 ? 0 : index - 1 );
+                    } catch ( final IndexOutOfBoundsException ex ) {
+                        //no more tabs, it's ok
+                    }
                 }
             }
 
@@ -143,12 +159,25 @@ public class UberTabPanel
     public void addTab( final WorkbenchPartPresenter.View view ) {
 
         if ( !tabIndex.containsKey( view ) ) {
-            final Tab newTab = addCloseToTab( createTab( view, false, 0, 0 ) );
+            final Tab newTab = createTab( view, false, 0, 0 );
 
-            tabPanel.add( newTab );
+            final Widget lastTab = getLastTab();
+            if ( lastTab != null && lastTab instanceof DropdownTab ) {
+                final Tab clonedTab = cloneTab( newTab.asTabLink(), false, true );
+                final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
 
-            if ( getTabs().getWidgetCount() == 1 ) {
-                tabPanel.selectTab( 0 );
+                dropdown.setText( "Active: " + newTab.asTabLink().getText() );
+                dropdown.addStyleName( Constants.ACTIVE );
+
+                dropdown.add( clonedTab );
+                tabPanel.add( dropdown );
+
+                tabPanel.remove( lastTab );
+            } else {
+                tabPanel.add( newTab );
+                if ( getTabs().getWidgetCount() == 1 ) {
+                    tabPanel.selectTab( 0 );
+                }
             }
 
             scheduleResize();
@@ -217,7 +246,7 @@ public class UberTabPanel
 
         dndManager.makeDraggable( view, tab.asTabLink().getWidget( 0 ) );
 
-        return tab;
+        return addCloseToTab( tab );
     }
 
     private Tab cloneTab( final TabLink tabLink,
@@ -314,7 +343,7 @@ public class UberTabPanel
 
         final TabLink tab = dropdown.getTabList().get( index ).asTabLink();
 
-        final Tab newTab = addCloseToTab( cloneTab( tab, true, false ) );
+        final Tab newTab = cloneTab( tab, true, false );
 
         tabPanel.add( newTab );
 
@@ -324,7 +353,7 @@ public class UberTabPanel
         } else if ( dropdown.getTabList().size() == 2 ) {
             final TabLink _tab = dropdown.getTabList().get( index - 1 ).asTabLink();
 
-            tabPanel.add( addCloseToTab( cloneTab( _tab, true, false ) ) );
+            tabPanel.add( cloneTab( _tab, true, false ) );
             maxDropdownTabLinkWidth = 0;
         }
 
@@ -376,6 +405,9 @@ public class UberTabPanel
 
     private Widget getLastTab() {
         final ComplexPanel tabs = getTabs();
+        if ( tabs.getWidgetCount() <= 0 ) {
+            return null;
+        }
         return tabs.getWidget( tabs.getWidgetCount() - 1 );
     }
 
