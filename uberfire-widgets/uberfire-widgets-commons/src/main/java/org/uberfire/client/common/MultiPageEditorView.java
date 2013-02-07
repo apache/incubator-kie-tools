@@ -287,8 +287,17 @@ public class MultiPageEditorView
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
                 final Widget widget = content.getWidget( i );
                 if ( widget instanceof TabPane ) {
-                    final LayoutPanel flowPanel = ( (LayoutPanel) ( (TabPane) widget ).getWidget( 0 ) );
+                    final TabPane tabPane = (TabPane) widget;
+                    final LayoutPanel flowPanel = ( (LayoutPanel) ( tabPane ).getWidget( 0 ) );
                     flowPanel.setPixelSize( width, height - getTabHeight() );
+
+                    //Resize children
+                    for ( int iChild = 0; iChild < tabPane.getWidgetCount(); iChild++ ) {
+                        final Widget childWidget = tabPane.getWidget( iChild );
+                        if ( childWidget instanceof RequiresResize ) {
+                            ( (RequiresResize) childWidget ).onResize();
+                        }
+                    }
                 }
             }
 
