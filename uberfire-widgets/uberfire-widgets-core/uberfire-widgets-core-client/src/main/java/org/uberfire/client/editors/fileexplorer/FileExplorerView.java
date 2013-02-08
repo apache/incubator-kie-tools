@@ -52,20 +52,7 @@ public class FileExplorerView extends Composite
         rootTreeItem = tree.addItem( Util.getHeaderSafeHtml( images.packageIcon(), "Repositories" ) );
         rootTreeItem.setState( true );
         initWidget( tree );
-    }
-
-    @Override
-    public void setFocus() {
-        tree.setFocus( true );
-    }
-
-    @Override
-    public void reset() {
-        rootTreeItem.setUserObject( REPOSITORY_ID );
-        rootTreeItem.addItem( Util.toSafeHtml( LAZY_LOAD ) );
-
-        rootTreeItem.removeItems();
-
+        
         tree.addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
             public void onOpen( final OpenEvent<TreeItem> event ) {
@@ -92,6 +79,19 @@ public class FileExplorerView extends Composite
             }
         } );
 
+    }
+
+    @Override
+    public void setFocus() {
+        tree.setFocus( true );
+    }
+
+    @Override
+    public void reset() {
+        rootTreeItem.setUserObject( REPOSITORY_ID );
+        rootTreeItem.addItem( Util.toSafeHtml( LAZY_LOAD ) );
+
+        rootTreeItem.removeItems();
     }
 
     @Override

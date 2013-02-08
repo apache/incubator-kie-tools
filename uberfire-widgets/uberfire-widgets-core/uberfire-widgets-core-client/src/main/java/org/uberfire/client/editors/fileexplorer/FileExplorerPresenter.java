@@ -44,7 +44,10 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+
+import com.google.gwt.user.client.Window;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileExplorer")
@@ -185,6 +188,17 @@ public class FileExplorerPresenter {
     //Communicate change in context
     private void broadcastPathChange( final Path path ) {
         pathChangedEvent.fire( new PathChangeEvent( path ) );
+    }
+    
+    /**
+     * refresh on Notification message if necessary
+     * 
+     * @param event
+     */
+    public void onNotification(@Observes final NotificationEvent event) {
+    	if(NotificationEvent.RefreshType.REFRESH == event.getRefreshType()) {
+    		onStart();
+    	}
     }
 
 }
