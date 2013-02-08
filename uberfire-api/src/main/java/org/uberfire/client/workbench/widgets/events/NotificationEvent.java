@@ -24,8 +24,13 @@ public class NotificationEvent {
         DEFAULT, ERROR, SUCCESS, INFO, WARNING;
     }
 
+    public static enum RefreshType {
+        NO_REFRESH, REFRESH;
+    }
+    
     private final String           notification;
     private final NotificationType type;
+    private final RefreshType refreshType;
 
     public NotificationEvent( final String notification ) {
         this( notification, NotificationType.DEFAULT );
@@ -33,8 +38,15 @@ public class NotificationEvent {
 
     public NotificationEvent( final String notification,
                               final NotificationType type ) {
+        this( notification, NotificationType.DEFAULT, RefreshType.NO_REFRESH );
+    }
+    
+    public NotificationEvent( final String notification,
+            final NotificationType type,
+            final RefreshType refreshType) {
         this.notification = notification;
         this.type = type;
+        this.refreshType = refreshType;
     }
 
     public String getNotification() {
@@ -43,5 +55,9 @@ public class NotificationEvent {
 
     public NotificationType getType() {
         return type;
+    }
+    
+    public RefreshType getRefreshType() {
+        return refreshType;
     }
 }
