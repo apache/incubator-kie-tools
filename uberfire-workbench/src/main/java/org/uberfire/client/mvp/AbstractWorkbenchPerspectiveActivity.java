@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.workbench.WorkbenchServices;
+import org.uberfire.client.workbench.services.WorkbenchServices;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;

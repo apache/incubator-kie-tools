@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.workbench.WorkbenchServices;
+import org.uberfire.client.workbench.services.WorkbenchServices;
 
 @ApplicationScoped
 public class DefaultPlaceResolver {

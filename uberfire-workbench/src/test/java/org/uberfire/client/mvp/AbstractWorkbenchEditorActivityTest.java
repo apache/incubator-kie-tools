@@ -7,7 +7,7 @@ import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
-import org.uberfire.mvp.PathPlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import static org.mockito.Matchers.any;

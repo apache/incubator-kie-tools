@@ -38,7 +38,12 @@
 			<artifactId>uberfire-security-client</artifactId>
 		</dependency>
 
-		<dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
+
+    <dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
       <scope>provided</scope>

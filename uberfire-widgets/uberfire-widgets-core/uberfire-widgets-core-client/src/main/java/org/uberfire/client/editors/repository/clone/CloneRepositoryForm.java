@@ -48,7 +48,7 @@ import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.mvp.PathPlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 import static org.uberfire.backend.vfs.PathFactory.*;
 

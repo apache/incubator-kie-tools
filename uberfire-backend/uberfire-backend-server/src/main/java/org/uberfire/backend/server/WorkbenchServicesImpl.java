@@ -30,7 +30,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
-import org.uberfire.backend.workbench.WorkbenchServices;
+import org.uberfire.client.workbench.services.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.security.Identity;
 

@@ -19,7 +19,7 @@ package org.uberfire.client.context;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.uberfire.backend.events.PathChangeEvent;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
 
 /**

@@ -42,7 +42,7 @@ import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.widgets.events.SavePlaceEvent;
 import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.mvp.PathPlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 

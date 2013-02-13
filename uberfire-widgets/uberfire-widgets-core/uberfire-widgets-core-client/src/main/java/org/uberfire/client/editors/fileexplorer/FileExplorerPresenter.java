@@ -30,7 +30,11 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
-import org.uberfire.backend.events.PathChangeEvent;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.VFSTempUtil;
@@ -44,10 +48,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
-
-import com.google.gwt.user.client.Window;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileExplorer")
@@ -189,16 +190,25 @@ public class FileExplorerPresenter {
     private void broadcastPathChange( final Path path ) {
         pathChangedEvent.fire( new PathChangeEvent( path ) );
     }
-    
-    /**
-     * refresh on Notification message if necessary
-     * 
-     * @param event
-     */
-    public void onNotification(@Observes final NotificationEvent event) {
-    	if(NotificationEvent.RefreshType.REFRESH == event.getRefreshType()) {
-    		onStart();
-    	}
+
+    // Refresh when a Resource has been added
+    public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
+        onStart();
+    }
+
+    // Refresh when a Resource has been deleted
+    public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
+        onStart();
+    }
+
+    // Refresh when a Resource has been copied
+    public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
+        onStart();
+    }
+
+    // Refresh when a Resource has been renamed
+    public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
+        onStart();
     }
 
 }

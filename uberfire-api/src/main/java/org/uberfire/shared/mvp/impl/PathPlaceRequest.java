@@ -1,4 +1,4 @@
-package org.uberfire.mvp;
+package org.uberfire.shared.mvp.impl;
 
 import java.util.Map;
 

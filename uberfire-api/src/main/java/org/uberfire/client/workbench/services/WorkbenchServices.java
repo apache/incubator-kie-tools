@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.backend.workbench;
+package org.uberfire.client.workbench.services;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;

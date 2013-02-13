@@ -29,7 +29,7 @@ import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.PathPlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 import static java.util.Collections.*;
 
