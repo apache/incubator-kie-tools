@@ -41,19 +41,35 @@ public class Paths {
 
     private Map<org.kie.commons.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.kie.commons.java.nio.file.FileSystem, FileSystem>();
 
-    public Path convert( final org.kie.commons.java.nio.file.Path path ) {
-
+    public Path convert( final org.kie.commons.java.nio.file.Path path,
+                         final boolean readAttrrs ) {
         if ( path == null ) {
             return null;
         }
 
-        final Map<String, Object> attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
+        final Map<String, Object> attributes;
+        if ( readAttrrs ) {
+            attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
+        } else {
+            attributes = null;
+        }
 
         if ( path.getFileName() == null ) {
+            if ( attributes == null ) {
+                return newPath( convert( path.getFileSystem() ), "/", path.toUri().toString() );
+            }
             return newPath( convert( path.getFileSystem() ), "/", path.toUri().toString(), attributes );
         }
 
+        if ( attributes == null ) {
+            return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString() );
+        }
+
         return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString(), attributes );
+    }
+
+    public Path convert( final org.kie.commons.java.nio.file.Path path ) {
+        return convert( path, true );
     }
 
     public org.kie.commons.java.nio.file.Path convert( final Path path ) {
