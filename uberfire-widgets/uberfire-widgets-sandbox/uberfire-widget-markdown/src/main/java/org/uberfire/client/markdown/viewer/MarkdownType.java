@@ -20,7 +20,17 @@ public class MarkdownType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "md";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".md" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

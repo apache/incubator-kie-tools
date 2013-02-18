@@ -24,7 +24,17 @@ public class TextResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "txt";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( ".txt" );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

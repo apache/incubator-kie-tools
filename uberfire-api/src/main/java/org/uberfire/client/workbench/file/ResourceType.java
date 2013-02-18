@@ -21,6 +21,18 @@ public interface ResourceType {
     public IsWidget getIcon();
 
     /**
+     * Resource prefix
+     * @return the prefix
+     */
+    public String getPrefix();
+
+    /**
+     * Resource suffix
+     * @return the prefix
+     */
+    public String getSuffix();
+
+    /**
      * Indicates if the current parameter path matched the current resource type
      * @return true if matches, otherwise false
      */

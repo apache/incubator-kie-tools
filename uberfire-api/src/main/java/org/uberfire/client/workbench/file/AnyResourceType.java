@@ -19,6 +19,16 @@ public class AnyResourceType implements ResourceType {
     }
 
     @Override
+    public String getPrefix() {
+        return "";
+    }
+
+    @Override
+    public String getSuffix() {
+        return "";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return true;
     }
