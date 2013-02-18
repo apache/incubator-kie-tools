@@ -4,9 +4,10 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.MyTestType;
 import org.uberfire.client.mvp.UberView;
 
-@WorkbenchEditor(identifier = "test10", fileTypes = "test10")
+@WorkbenchEditor(identifier = "test10", supportedTypes = { MyTestType.class })
 public class WorkbenchEditorTest10 {
 
     @WorkbenchPartView

@@ -15,10 +15,6 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
@@ -36,6 +31,8 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+
+import static org.junit.Assert.*;
 
 /**
  * Base miscfeatures to generate source code with an Annotation Processor
@@ -48,6 +45,7 @@ public abstract class AbstractProcessorTest {
      * Container for miscfeatures results.
      */
     class Result {
+
         private String expectedCode;
         private String actualCode;
 
@@ -55,7 +53,7 @@ public abstract class AbstractProcessorTest {
             return expectedCode;
         }
 
-        void setExpectedCode(final String expectedCode) {
+        void setExpectedCode( final String expectedCode ) {
             this.expectedCode = expectedCode;
         }
 
@@ -63,20 +61,19 @@ public abstract class AbstractProcessorTest {
             return actualCode;
         }
 
-        void setActualCode(final String actualCode) {
+        void setActualCode( final String actualCode ) {
             this.actualCode = actualCode;
         }
     }
 
     /**
      * Compile a unit of source code with the specified annotation processor
-     * 
      * @param annotationProcessor
      * @param compilationUnit
      * @return
      */
-    public List<Diagnostic< ? extends JavaFileObject>> compile(final Processor annotationProcessor,
-                                                               final String compilationUnit) {
+    public List<Diagnostic<? extends JavaFileObject>> compile( final Processor annotationProcessor,
+                                                               final String compilationUnit ) {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
@@ -89,7 +86,7 @@ public abstract class AbstractProcessorTest {
 
             //Convert compilation unit to file path and add to items to compile
             final String path = this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath();
-            final Iterable< ? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects( path );
+            final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects( path );
 
             //Compile with provide annotation processor
             final CompilationTask task = compiler.getTask( null,
@@ -112,12 +109,11 @@ public abstract class AbstractProcessorTest {
 
     /**
      * Retrieve the expected source code for a compilation unit
-     * 
      * @param compilationUnit
      * @return
      * @throws FileNotFoundException
      */
-    public String getExpectedSourceCode(final String compilationUnit) throws FileNotFoundException {
+    public String getExpectedSourceCode( final String compilationUnit ) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         try {
             final String path = this.getClass().getResource( "/" + compilationUnit ).getPath();
@@ -125,7 +121,7 @@ public abstract class AbstractProcessorTest {
             final BufferedReader input = new BufferedReader( fr );
             try {
                 String line = null;
-                while ( (line = input.readLine()) != null ) {
+                while ( ( line = input.readLine() ) != null ) {
                     sb.append( line );
                     sb.append( System.getProperty( "line.separator" ) );
                 }
@@ -143,24 +139,22 @@ public abstract class AbstractProcessorTest {
 
     /**
      * Assert that compilation was successful
-     * 
      * @param diagnostics
      */
-    public void assertSuccessfulCompilation(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
+    public void assertSuccessfulCompilation( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
         assertFalse( hasErrors( diagnostics ) );
     }
 
     /**
      * Assert that compilation failed
-     * 
      * @param diagnostics
      */
-    public void assertFailedCompilation(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
+    public void assertFailedCompilation( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
         assertTrue( hasErrors( diagnostics ) );
     }
 
-    private boolean hasErrors(final List<Diagnostic< ? extends JavaFileObject>> diagnostics) {
-        for ( Diagnostic< ? extends JavaFileObject> diagnostic : diagnostics ) {
+    private boolean hasErrors( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
+        for ( Diagnostic<? extends JavaFileObject> diagnostic : diagnostics ) {
             if ( diagnostic.getKind().equals( Kind.ERROR ) ) {
                 return true;
             }
@@ -171,12 +165,11 @@ public abstract class AbstractProcessorTest {
     /**
      * Assert that the given error message is contained in the compilation
      * diagnostics
-     * 
      * @param diagnostics
      * @param message
      */
-    public void assertCompilationError(List<Diagnostic< ? extends JavaFileObject>> diagnostics,
-                                       final String message) {
+    public void assertCompilationError( List<Diagnostic<? extends JavaFileObject>> diagnostics,
+                                        final String message ) {
         final List<String> messages = getMessages( diagnostics,
                                                    Kind.ERROR );
         assertTrue( messages.contains( "error: " + message ) );
@@ -185,21 +178,20 @@ public abstract class AbstractProcessorTest {
     /**
      * Assert that the given warning message is contained in the compilation
      * diagnostics
-     * 
      * @param diagnostics
      * @param message
      */
-    public void assertCompilationWarning(List<Diagnostic< ? extends JavaFileObject>> diagnostics,
-                                         final String message) {
+    public void assertCompilationWarning( List<Diagnostic<? extends JavaFileObject>> diagnostics,
+                                          final String message ) {
         final List<String> messages = getMessages( diagnostics,
                                                    Kind.WARNING );
         assertTrue( messages.contains( "warning: " + message ) );
     }
 
-    private List<String> getMessages(final List<Diagnostic< ? extends JavaFileObject>> diagnostics,
-                                     final Kind kind) {
+    private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,
+                                      final Kind kind ) {
         final List<String> messages = new ArrayList<String>();
-        for ( Diagnostic< ? extends JavaFileObject> diagnostic : diagnostics ) {
+        for ( Diagnostic<? extends JavaFileObject> diagnostic : diagnostics ) {
             if ( diagnostic.getKind().equals( kind ) ) {
                 System.out.println( diagnostic.getMessage( null ) );
                 messages.add( diagnostic.getMessage( null ) );

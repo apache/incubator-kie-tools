@@ -27,12 +27,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
-import static com.google.gwt.regexp.shared.RegExp.*;
 import static java.util.Collections.*;
 
 @ApplicationScoped
@@ -99,7 +98,7 @@ public class ActivityManagerImpl
         }
 
         return new ArrayList<IOCBeanDef<Activity>>( 1 ) {{
-            add( activityBeansCache.getActivityById( identifier ) );
+            add( activityBeansCache.getActivity( identifier ) );
         }};
     }
 
@@ -107,7 +106,7 @@ public class ActivityManagerImpl
         if ( place == null ) {
             return Collections.emptySet();
         }
-        final IOCBeanDef<Activity> result = activityBeansCache.getActivityById( place.getIdentifier() );
+        final IOCBeanDef<Activity> result = activityBeansCache.getActivity( place.getIdentifier() );
 
         if ( result != null ) {
             return new HashSet<IOCBeanDef<Activity>>( 1 ) {{
@@ -115,20 +114,17 @@ public class ActivityManagerImpl
             }};
         }
 
-        final Set<IOCBeanDef<Activity>> matchingActivityBeans = new HashSet<IOCBeanDef<Activity>>();
-        for ( final String pattern : activityBeansCache.getPatterns() ) {
-            if ( compile( pattern ).test( place.getPath().getFileName() ) ) {
-                matchingActivityBeans.add( activityBeansCache.cachedActivitiesByPattern( pattern ) );
-                break;
-            }
+        return asSet( activityBeansCache.getActivity( place.getPath() ) );
+    }
 
+    private Set<IOCBeanDef<Activity>> asSet( final IOCBeanDef<Activity> activity ) {
+        if ( activity == null ) {
+            return emptySet();
         }
 
-        if ( matchingActivityBeans.isEmpty() ) {
-            matchingActivityBeans.add( activityBeansCache.getDefaultActivity() );
-        }
-
-        return unmodifiableSet( matchingActivityBeans );
+        return unmodifiableSet( new HashSet<IOCBeanDef<Activity>>( 1 ) {{
+            add( activity );
+        }} );
     }
 
 }

@@ -15,19 +15,15 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.uberfire.annotations.processors.WorkbenchEditorProcessor;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Editor related class generation
@@ -38,14 +34,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
     @Test
     public void testNoWorkbenchEditorAnnotation() throws FileNotFoundException {
         final Result result = new Result();
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 "org/uberfire/annotations/processors/WorkbenchEditorTest1" );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                "org/uberfire/annotations/processors/WorkbenchEditorTest1" );
         assertSuccessfulCompilation( diagnostics );
         assertNull( result.getActualCode() );
     }
@@ -53,14 +49,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchEditorMissingViewAnnotation() {
         final Result result = new Result();
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 "org/uberfire/annotations/processors/WorkbenchEditorTest2" );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                "org/uberfire/annotations/processors/WorkbenchEditorTest2" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
                                 "org.uberfire.annotations.processors.WorkbenchEditorTest2Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
@@ -70,14 +66,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchEditorHasViewAnnotationMissingTitleAnnotation() {
         final Result result = new Result();
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 "org/uberfire/annotations/processors/WorkbenchEditorTest3" );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                "org/uberfire/annotations/processors/WorkbenchEditorTest3" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
                                 "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
@@ -87,14 +83,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchEditorMissingViewAnnotationHasTitleAnnotation() {
         final Result result = new Result();
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 "org/uberfire/annotations/processors/WorkbenchEditorTest4" );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                "org/uberfire/annotations/processors/WorkbenchEditorTest4" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
                                 "org.uberfire.annotations.processors.WorkbenchEditorTest4Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
@@ -109,14 +105,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -132,14 +128,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -155,14 +151,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                                   "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
@@ -180,14 +176,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -203,14 +199,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -226,14 +222,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -249,14 +245,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -272,14 +268,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -295,14 +291,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -318,14 +314,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                                   "The WorkbenchEditor has methods for both @OnStart(Path) and @OnStart(Path, Place). Method @OnStart(Path, Place) will take precedence." );
@@ -343,14 +339,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -366,14 +362,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -389,21 +385,21 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
                       result.getExpectedCode() );
     }
-    
+
     @Test
     public void testWorkbenchEditorHasTitleAndTitleWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest18";
@@ -412,14 +408,14 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic< ? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
 
-                                                                                     @Override
-                                                                                     public void generationComplete(final String code) {
-                                                                                         result.setActualCode( code );
-                                                                                     }
-                                                                                 } ),
-                                                                                 pathCompilationUnit );
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
+                                                                                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                                   "The WorkbenchEditor has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence." );

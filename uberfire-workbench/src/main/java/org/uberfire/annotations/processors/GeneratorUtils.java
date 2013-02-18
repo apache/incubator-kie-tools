@@ -927,7 +927,7 @@ public class GeneratorUtils {
         return collectionAsString( result );
     }
 
-    private static <T extends AnnotationValue> Collection<String> extractValue( final T value ) {
+    public static <T extends AnnotationValue> List<String> extractValue( final T value ) {
         if ( value.getValue() instanceof Collection ) {
             final Collection varray = (List) value.getValue();
             final ArrayList<String> result = new ArrayList<String>( varray.size() );
@@ -936,11 +936,9 @@ public class GeneratorUtils {
             }
             return result;
         }
-        return new ArrayList<String>( 1 ) {
-            {
-                add( value.getValue().toString() );
-            }
-        };
+        return new ArrayList<String>( 1 ) {{
+            add( value.getValue().toString() );
+        }};
     }
 
     private static String collectionAsString( final Collection<String> collection ) {

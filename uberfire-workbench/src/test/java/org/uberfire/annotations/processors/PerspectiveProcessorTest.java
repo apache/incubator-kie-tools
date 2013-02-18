@@ -15,23 +15,18 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Pop-up related class generation
  */
-@Ignore
 public class PerspectiveProcessorTest extends AbstractProcessorTest {
 
     @Test

@@ -19,8 +19,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.enterprise.context.ApplicationScoped;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
@@ -33,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.client.annotations.WorkbenchEditor;
-
-import static org.kie.commons.regex.util.GlobToRegEx.*;
 
 /**
  * A source code generator for Activities
@@ -53,9 +55,38 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final WorkbenchEditor wbw = classElement.getAnnotation( WorkbenchEditor.class );
-        final String identifier = wbw.identifier();
-        final String[] fileTypes = wbw.fileTypes();
+
+        final String annotationName = WorkbenchEditor.class.getName();
+        AnnotationValue action = null;
+
+        String identifier = null;
+        Integer priority = 0;
+        List<String> associatedResources = null;
+
+        for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
+            if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
+                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+                    if ( "identifier".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        identifier = entry.getValue().toString();
+                    } else if ( "priority".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        priority = (Integer) entry.getValue().getValue();
+                    } else if ( "supportedTypes".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        associatedResources = GeneratorUtils.extractValue( entry.getValue() );
+                    }
+                }
+                break;
+            }
+        }
+
+        if ( associatedResources != null && associatedResources.size() > 0 ) {
+            for ( final String resourceTypeName : associatedResources ) {
+                final TypeElement type = processingEnvironment.getElementUtils().getTypeElement( resourceTypeName );
+                if ( type.getAnnotation( ApplicationScoped.class ) == null ) {
+                    throw new GenerationException( "The '" + resourceTypeName + "' must be ApplicationScope`d ." );
+                }
+            }
+        }
+
         final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
                                                                                                      processingEnvironment );
         final String onStart2ParametersMethodName = GeneratorUtils.getOnStartPathPlaceRequestParametersMethodName( classElement,
@@ -100,7 +131,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
-        logger.debug( "File types: " + fileTypes );
+        logger.debug( "Priority: " + priority );
+        logger.debug( "Resource types: " + associatedResources );
         logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
         logger.debug( "onStart2ParametersMethodName: " + onStart2ParametersMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
@@ -153,8 +185,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
-        root.put( "fileTypes",
-                  format( fileTypes ) );
+        root.put( "priority",
+                  priority.toString().replace( ",", "" ) );
+        root.put( "associatedResources",
+                  format( associatedResources ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStart1ParameterMethodName",
@@ -220,27 +254,17 @@ public class EditorActivityGenerator extends AbstractGenerator {
         return sw.getBuffer();
     }
 
-    private String format( final String[] fileTypes ) {
+    private String format( final List<String> resourceTypes ) {
+        if ( resourceTypes == null || resourceTypes.size() == 0 ) {
+            return null;
+        }
+
         final StringBuilder sb = new StringBuilder();
 
-        if ( fileTypes != null && fileTypes.length > 0 ) {
-            sb.append( '"' );
-            for ( int i = 0; i < fileTypes.length; i++ ) {
-                final String fileType = fileTypes[ i ];
-                sb.append( escape( globToRegex( fileType ) ) );
-                if ( i != ( fileTypes.length - 1 ) ) {
-                    sb.append( ',' );
-                }
-            }
-            sb.append( '"' );
-        } else {
-            sb.append( "\"" + globToRegex( "*.*" ) + "\"" );
+        for ( final String resourceType : resourceTypes ) {
+            sb.append( "@AssociatedResource" ).append( '(' ).append( resourceType ).append( ".class" ).append( ')' ).append( "\n" );
         }
+
         return sb.toString();
     }
-
-    private String escape( final String s ) {
-        return s.replace( "\\", "\\\\" );
-    }
-
 }

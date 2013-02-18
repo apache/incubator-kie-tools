@@ -22,7 +22,6 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import com.google.gwt.user.client.ui.InlineLabel;
 
 <#if hasUberView>
 import javax.annotation.PostConstruct;
@@ -30,7 +29,10 @@ import org.uberfire.client.mvp.UberView;
 
 </#if>
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.workbench.annotations.ResourceType;
+<#if associatedResources??>
+import org.uberfire.client.workbench.annotations.AssociatedResource;
+</#if>
+import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -54,8 +56,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@ResourceType(${fileTypes})
-@Identifier("${identifier}")
+@Identifier(${identifier})
+<#if associatedResources??>
+${associatedResources}
+</#if>
+@Priority(${priority})
 /*
  * WARNING! This class is generated. Do not modify.
  */

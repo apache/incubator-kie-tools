@@ -30,14 +30,14 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
 @Dependent
-@WorkbenchEditor(identifier = "MarkdownViewer", fileTypes = "*.md")
+@WorkbenchEditor(identifier = "MarkdownViewer", supportedTypes = { MarkdownType.class })
 public class MarkdownPresenter {
 
     public interface View
             extends
             IsWidget {
 
-        void setContent(final String htmlContent);
+        void setContent( final String htmlContent );
     }
 
     @Inject
@@ -49,18 +49,18 @@ public class MarkdownPresenter {
     private String path;
 
     @OnStart
-    public void onStart(final Path path) {
+    public void onStart( final Path path ) {
         this.path = path.getFileName();
-        vfsServices.call(new RemoteCallback<String>() {
+        vfsServices.call( new RemoteCallback<String>() {
             @Override
-            public void callback(final String response) {
-                if (response == null) {
-                    view.setContent("<p>-- empty --</p>");
+            public void callback( final String response ) {
+                if ( response == null ) {
+                    view.setContent( "<p>-- empty --</p>" );
                 } else {
-                    view.setContent(response);
+                    view.setContent( response );
                 }
             }
-        }).readAllString(path);
+        } ).readAllString( path );
     }
 
     @WorkbenchPartTitle

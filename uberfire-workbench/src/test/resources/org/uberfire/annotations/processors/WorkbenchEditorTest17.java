@@ -7,8 +7,9 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.mvp.MyTestType;
 
-@WorkbenchEditor(identifier = "test17", fileTypes = "test17")
+@WorkbenchEditor(identifier = "test17", supportedTypes = { MyTestType.class })
 public class WorkbenchEditorTest17 {
 
     @WorkbenchPartView

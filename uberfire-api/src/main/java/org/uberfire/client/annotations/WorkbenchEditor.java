@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.uberfire.client.workbench.file.ResourceType;
+
 /**
  * Classes annotated with this are considered WorkbenchParts that perform some
  * "editor" function for the specified file-type.
@@ -55,11 +57,12 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface WorkbenchEditor {
 
     String identifier();
 
-    String[] fileTypes() default {""};
+    Class<? extends ResourceType>[] supportedTypes() default { };
 
+    int priority() default 0;
 }

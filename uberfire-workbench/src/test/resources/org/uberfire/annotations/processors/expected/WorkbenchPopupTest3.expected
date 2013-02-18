@@ -53,8 +53,8 @@ public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
     }
 
     @Override
-    public IsWidget getTitleWidget() {
-        return new InlineLabel(realPresenter.getTitle());
+    public String getTitle() {
+        return realPresenter.getTitle();
     }
 
     @Override

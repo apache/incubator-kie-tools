@@ -5,12 +5,13 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.MyTestType;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-@WorkbenchEditor(identifier = "test14", fileTypes = "test14")
+@WorkbenchEditor(identifier = "test14", supportedTypes = { MyTestType.class })
 public class WorkbenchEditorTest14 {
 
     @WorkbenchPartView

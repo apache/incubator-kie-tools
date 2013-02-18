@@ -1,20 +1,4 @@
-/*
- * Copyright 2012 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.uberfire.client.editors.texteditor;
+package org.uberfire.client.editors.metafile;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -32,28 +16,15 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.workbench.file.DotResourceType;
 
 @Dependent
-@WorkbenchEditor(identifier = "TextEditor", supportedTypes = { TextResourceType.class })
-public class TextEditorPresenter {
-
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( String content );
-
-        String getContent();
-
-        void setFocus();
-
-        void setDirty( boolean dirty );
-
-        boolean isDirty();
-    }
+@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE)
+public class MetaFileEditorPresenter {
 
     @Inject
-    public View view;
+    public TextEditorPresenter.View view;
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -102,7 +73,7 @@ public class TextEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor [" + path.getFileName() + "]";
+        return "Meta File Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

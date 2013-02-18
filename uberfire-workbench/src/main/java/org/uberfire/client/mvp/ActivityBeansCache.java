@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +14,12 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.kie.commons.data.Pair;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.annotations.AssociatedResource;
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.workbench.annotations.ResourceType;
+import org.uberfire.client.workbench.annotations.Priority;
+import org.uberfire.client.workbench.file.ResourceType;
 
 import static java.util.Collections.*;
 
@@ -27,58 +29,50 @@ import static java.util.Collections.*;
 @ApplicationScoped
 public class ActivityBeansCache {
 
-    @Inject
-    private IOCBeanManager iocManager;
+    private final Map<String, IOCBeanDef<Activity>> activitiesById;
+    private final List<ActivityAndMetaInfo>         activities;
+    private final IOCBeanManager                    iocManager;
 
-    private final Map<String, IOCBeanDef<Activity>> cachedActivitiesById      = new HashMap<String, IOCBeanDef<Activity>>();
-    private final Map<String, IOCBeanDef<Activity>> cachedActivitiesByPattern = new LinkedHashMap<String, IOCBeanDef<Activity>>();
-    private       IOCBeanDef<Activity>              defaultActivity           = null;
+    @Inject
+    public ActivityBeansCache( final IOCBeanManager iocManager ) {
+        this.iocManager = iocManager;
+        this.activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
+        this.activities = new ArrayList<ActivityAndMetaInfo>();
+    }
 
     @PostConstruct
     public void init() {
-        final Collection<IOCBeanDef<Activity>> activities = iocManager.lookupBeans( Activity.class );
+        final Collection<IOCBeanDef<Activity>> availableActivities = iocManager.lookupBeans( Activity.class );
 
-        final Set<String> ids = new HashSet<String>( activities.size() );
-
-        final Map<String, IOCBeanDef<Activity>> tempTypes = new LinkedHashMap<String, IOCBeanDef<Activity>>();
-        for ( final IOCBeanDef<Activity> activityBean : activities ) {
+        for ( final IOCBeanDef<Activity> activityBean : availableActivities ) {
             final String id = getIdentifier( activityBean );
 
-            if ( ids.contains( id ) ) {
+            if ( activitiesById.keySet().contains( id ) ) {
                 throw new RuntimeException( "Conflic detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
             }
 
-            ids.add( id );
-            cachedActivitiesById.put( id, activityBean );
-            if ( id.equals( "TextEditor" ) ) {
-                defaultActivity = activityBean;
-            }
+            activitiesById.put( id, activityBean );
 
-            final String type = getResourceType( activityBean );
-            if ( type != null ) {
-                tempTypes.put( type, activityBean );
+            final Pair<Integer, List<Class<? extends ResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
+            if ( metaInfo != null ) {
+                activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
             }
         }
 
-        //TODO: {porcelli} for an unknow reason... TreeMap doesn't work.. so I have to workaround with the following code
-        final List<String> result = new ArrayList<String>( tempTypes.keySet() );
-        sort( result, new Comparator<String>() {
+        sort( activities, new Comparator<ActivityAndMetaInfo>() {
             @Override
-            public int compare( final String o1,
-                                final String o2 ) {
-                if ( o1.length() < o2.length() ) {
+            public int compare( final ActivityAndMetaInfo o1,
+                                final ActivityAndMetaInfo o2 ) {
+
+                if ( o1.getPriority() < o2.getPriority() ) {
                     return 1;
-                } else if ( o1.length() > o2.length() ) {
+                } else if ( o1.getPriority() > o2.getPriority() ) {
                     return -1;
                 } else {
                     return 0;
                 }
             }
         } );
-
-        for ( final String key : result ) {
-            cachedActivitiesByPattern.put( key, tempTypes.get( key ) );
-        }
     }
 
     /**
@@ -97,32 +91,86 @@ public class ActivityBeansCache {
         throw new RuntimeException( "Invalid Activity, missing @Identifier " + beanDefinition.getBeanClass().getName() );
     }
 
-    private String getResourceType( final IOCBeanDef beanDefinition ) {
+    private Pair<Integer, List<Class<? extends ResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {
+        List<AssociatedResource> associatedResources = new ArrayList<AssociatedResource>();
+        Priority priority = null;
+
         final Set<Annotation> annotations = beanDefinition.getQualifiers();
         for ( Annotation a : annotations ) {
-            if ( a instanceof ResourceType ) {
-                final ResourceType resourceType = (ResourceType) a;
-                if ( resourceType.value().trim().length() > 0 ) {
-                    return resourceType.value();
+            if ( a instanceof AssociatedResource ) {
+                associatedResources.add( (AssociatedResource) a );
+                continue;
+            }
+            if ( a instanceof Priority ) {
+                priority = (Priority) a;
+                continue;
+            }
+        }
+
+        if ( associatedResources.isEmpty() ) {
+            return null;
+        }
+
+        final int priorityValue;
+        if ( priority == null ) {
+            priorityValue = 0;
+        } else {
+            priorityValue = priority.value();
+        }
+
+        final List<Class<? extends ResourceType>> types = new ArrayList<Class<? extends ResourceType>>( associatedResources.size() );
+        for ( int i = 0; i < associatedResources.size(); i++ ) {
+            types.add( associatedResources.get( i ).value() );
+        }
+
+        return Pair.newPair( priorityValue, types );
+    }
+
+    public IOCBeanDef<Activity> getActivity( final String id ) {
+        return activitiesById.get( id );
+    }
+
+    public IOCBeanDef<Activity> getActivity( final Path path ) {
+
+        for ( final ActivityAndMetaInfo currentActivity : activities ) {
+            for ( final ResourceType resourceType : currentActivity.getResourceTypes() ) {
+                if ( resourceType.accept( path ) ) {
+                    return currentActivity.getActivityBean();
                 }
             }
         }
+
         return null;
     }
 
-    public IOCBeanDef<Activity> getDefaultActivity() {
-        return defaultActivity;
-    }
+    private class ActivityAndMetaInfo {
 
-    public IOCBeanDef<Activity> getActivityById( final String id ) {
-        return cachedActivitiesById.get( id );
-    }
+        private final IOCBeanDef<Activity> activityBean;
+        private final int                  priority;
+        private final ResourceType[]       resourceTypes;
 
-    public IOCBeanDef<Activity> cachedActivitiesByPattern( final String type ) {
-        return cachedActivitiesByPattern.get( type );
-    }
+        private ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
+                                     final int priority,
+                                     final List<Class<? extends ResourceType>> resourceTypes ) {
+            this.activityBean = activityBean;
+            this.priority = priority;
+            this.resourceTypes = new ResourceType[ resourceTypes.size() ];
 
-    public Set<String> getPatterns() {
-        return cachedActivitiesByPattern.keySet();
+            for ( int i = 0; i < resourceTypes.size(); i++ ) {
+                this.resourceTypes[ i ] = iocManager.lookupBean( resourceTypes.get( i ) ).getInstance();
+            }
+        }
+
+        public IOCBeanDef<Activity> getActivityBean() {
+            return activityBean;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
+
+        public ResourceType[] getResourceTypes() {
+            return resourceTypes;
+        }
     }
 }
