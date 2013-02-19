@@ -16,21 +16,12 @@
 package org.uberfire.client.workbench.services;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-
-import java.util.Map;
+import org.kie.commons.java.nio.file.Path;
 
 /**
  * Workbench services
  */
 @Remote
-public interface WorkbenchServices {
-
-    public void save(final PerspectiveDefinition perspective);
-
-    public PerspectiveDefinition load(final String perspectiveName);
-
-    public Map<String, String> loadDefaultEditorsMap();
-
-    void saveDefaultEditors(Map<String, String> properties);
+public interface UserServices {
+	public Path buildPath(String userName, String serviceType, String relativePath);
 }

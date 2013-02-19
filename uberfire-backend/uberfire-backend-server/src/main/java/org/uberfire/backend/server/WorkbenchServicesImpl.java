@@ -16,9 +16,7 @@
 package org.uberfire.backend.server;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -27,14 +25,13 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
+import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.client.workbench.services.WorkbenchServices;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.security.Identity;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
  * Workbench services
@@ -50,38 +47,25 @@ public class WorkbenchServicesImpl
     private IOService ioService;
 
     @Inject
+    private UserServices userServices;
+    
+    @Inject
     @SessionScoped
     private Identity identity;
 
     private XStream xs = new XStream();
 
-    private Path bootstrapRoot = null;
-
-    @PostConstruct
-    public void init() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-        if ( fsIterator.hasNext() ) {
-            final FileSystem bootstrap = fsIterator.next();
-            final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
-            if ( rootIterator.hasNext() ) {
-                this.bootstrapRoot = rootIterator.next();
-            }
-        }
-    }
-
     @Override
     public void save( final PerspectiveDefinition perspective ) {
         final String xml = xs.toXML( perspective );
 
-        final Path perspectivePath = bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspective.getName() + ".perspective" );
-
+        Path perspectivePath = userServices.buildPath(identity.getName(), "perspectives", perspective.getName() +  ".perspective");
         ioService.write( perspectivePath, xml );
     }
 
     @Override
     public PerspectiveDefinition load( final String perspectiveName ) {
-
-        final Path perspectivePath = bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.perspectives/" + perspectiveName + ".perspective" );
+        Path perspectivePath = userServices.buildPath(identity.getName(), "perspectives", perspectiveName +  ".perspective");
 
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
@@ -125,6 +109,6 @@ public class WorkbenchServicesImpl
     }
 
     private Path getPathToDefaultEditors() {
-        return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/.defaultEditors" );
+    	return userServices.buildPath(identity.getName(), "defaultEditors", null);
     }
 }
