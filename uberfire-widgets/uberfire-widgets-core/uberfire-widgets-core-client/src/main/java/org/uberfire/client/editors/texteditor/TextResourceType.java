@@ -14,6 +14,11 @@ public class TextResourceType implements ResourceType {
     private final Icon icon = new Icon( IconType.FILE_ALT );
 
     @Override
+    public String getShortName() {
+        return "text";
+    }
+
+    @Override
     public String getDescription() {
         return "Text file";
     }
@@ -31,6 +36,11 @@ public class TextResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "txt";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

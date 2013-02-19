@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class MyTestType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "test";
+    }
+
+    @Override
     public String getDescription() {
         return "my test desc";
     }
@@ -27,6 +32,11 @@ public class MyTestType implements ResourceType {
     @Override
     public String getSuffix() {
         return "";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override

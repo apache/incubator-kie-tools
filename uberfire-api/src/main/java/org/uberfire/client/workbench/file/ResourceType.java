@@ -9,6 +9,12 @@ import org.uberfire.backend.vfs.Path;
 public interface ResourceType {
 
     /**
+     * A short name of the resource type
+     * @return the short name
+     */
+    public String getShortName();
+
+    /**
      * A description of the resource type
      * @return the description
      */
@@ -31,6 +37,12 @@ public interface ResourceType {
      * @return the prefix
      */
     public String getSuffix();
+
+    /**
+     * Defines the resource priority in terms of resource resolution
+     * @return the priority
+     */
+    public int getPriority();
 
     /**
      * Indicates if the current parameter path matched the current resource type

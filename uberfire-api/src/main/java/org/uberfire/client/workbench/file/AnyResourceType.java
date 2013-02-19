@@ -9,6 +9,11 @@ import org.uberfire.backend.vfs.Path;
 public class AnyResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "any";
+    }
+
+    @Override
     public String getDescription() {
         return "Any file";
     }
@@ -26,6 +31,11 @@ public class AnyResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "";
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MIN_VALUE;
     }
 
     @Override

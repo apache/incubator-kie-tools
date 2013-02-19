@@ -9,6 +9,11 @@ import org.uberfire.backend.vfs.Path;
 public class DotResourceType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "meta data";
+    }
+
+    @Override
     public String getDescription() {
         return "Dot file";
     }
@@ -26,6 +31,11 @@ public class DotResourceType implements ResourceType {
     @Override
     public String getSuffix() {
         return "";
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE;
     }
 
     @Override

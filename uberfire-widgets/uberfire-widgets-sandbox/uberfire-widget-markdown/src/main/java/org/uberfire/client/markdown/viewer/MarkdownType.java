@@ -10,6 +10,11 @@ import org.uberfire.client.workbench.file.ResourceType;
 public class MarkdownType implements ResourceType {
 
     @Override
+    public String getShortName() {
+        return "markdown";
+    }
+
+    @Override
     public String getDescription() {
         return "Markdown file";
     }
@@ -27,6 +32,11 @@ public class MarkdownType implements ResourceType {
     @Override
     public String getSuffix() {
         return "md";
+    }
+
+    @Override
+    public int getPriority() {
+        return 0;
     }
 
     @Override
