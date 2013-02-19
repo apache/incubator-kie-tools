@@ -15,12 +15,10 @@
  */
 package org.uberfire.backend.server;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,6 +27,8 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
 import org.uberfire.client.workbench.services.UserServices;
+import org.uberfire.security.Identity;
+
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
@@ -39,10 +39,14 @@ import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 public class UserServicesImpl
         implements
         UserServices {
-    
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    @SessionScoped
+    private Identity identity;
 
     private Path bootstrapRoot = null;
 
@@ -57,27 +61,14 @@ public class UserServicesImpl
             }
         }
     }
-    
+
     @Override
-    public Path buildPath(String userName, String serviceType, String relativePath) {
-    	if(relativePath !=null && !"".equals(relativePath)) {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType + "/." + relativePath );    		
-    	} else {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType );   		
-    	}
-	}
-    
-    public String[] listUsers() {
-    	//TODO: Just a temporary way to retrieve user list. Refactor later.
-    	List<String> userList = new ArrayList<String>();
-    	Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/");
-        final Iterator<Path> userIterator = userRoot.iterator();
-        if ( userIterator.hasNext() ) {
-            Path userDir = userIterator.next();
-            userList.add(userDir.getFileName().toString());
+    public Path buildPath( final String serviceType,
+                           final String relativePath ) {
+        if ( relativePath != null && !"".equals( relativePath ) ) {
+            return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType + "/." + relativePath );
+        } else {
+            return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType );
         }
-        
-        String[] result = new String[userList.size()];
-    	return userList.toArray(result);
-	}
+    }
 }

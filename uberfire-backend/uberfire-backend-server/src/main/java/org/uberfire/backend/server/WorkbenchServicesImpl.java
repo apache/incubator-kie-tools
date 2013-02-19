@@ -18,7 +18,6 @@ package org.uberfire.backend.server;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,11 +26,9 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
+import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.client.workbench.services.WorkbenchServices;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.security.Identity;
-
 
 /**
  * Workbench services
@@ -48,10 +45,6 @@ public class WorkbenchServicesImpl
 
     @Inject
     private UserServices userServices;
-    
-    @Inject
-    @SessionScoped
-    private Identity identity;
 
     private XStream xs = new XStream();
 
@@ -59,13 +52,13 @@ public class WorkbenchServicesImpl
     public void save( final PerspectiveDefinition perspective ) {
         final String xml = xs.toXML( perspective );
 
-        Path perspectivePath = userServices.buildPath(identity.getName(), "perspectives", perspective.getName() +  ".perspective");
+        final Path perspectivePath = userServices.buildPath( "perspectives", perspective.getName() + ".perspective" );
         ioService.write( perspectivePath, xml );
     }
 
     @Override
     public PerspectiveDefinition load( final String perspectiveName ) {
-        Path perspectivePath = userServices.buildPath(identity.getName(), "perspectives", perspectiveName +  ".perspective");
+        final Path perspectivePath = userServices.buildPath( "perspectives", perspectiveName + ".perspective" );
 
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
@@ -109,6 +102,6 @@ public class WorkbenchServicesImpl
     }
 
     private Path getPathToDefaultEditors() {
-    	return userServices.buildPath(identity.getName(), "defaultEditors", null);
+        return userServices.buildPath( "defaultEditors", null );
     }
 }

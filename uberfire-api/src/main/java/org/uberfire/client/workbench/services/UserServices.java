@@ -23,7 +23,7 @@ import org.kie.commons.java.nio.file.Path;
  */
 @Remote
 public interface UserServices {
-	public Path buildPath(String userName, String serviceType, String relativePath);
 
-	String[] listUsers();
+    public Path buildPath( final String serviceType,
+                           final String relativePath );
 }
