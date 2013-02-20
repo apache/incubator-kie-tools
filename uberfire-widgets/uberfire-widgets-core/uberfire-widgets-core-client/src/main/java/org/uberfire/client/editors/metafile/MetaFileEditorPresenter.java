@@ -20,7 +20,7 @@ import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.client.workbench.file.DotResourceType;
 
 @Dependent
-@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE)
+@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 100)
 public class MetaFileEditorPresenter {
 
     @Inject
