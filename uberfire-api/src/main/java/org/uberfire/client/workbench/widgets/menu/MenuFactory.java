@@ -37,6 +37,7 @@ public final class MenuFactory {
         MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu( final String caption );
 
         SearchMenuBuilder<TopLevelMenusBuilder<T>> newSearchItem( final String caption );
+
     }
 
     public interface Builder {
@@ -65,12 +66,17 @@ public final class MenuFactory {
         T endMenu();
     }
 
-    public interface SearchMenuBuilder<T>
-            extends SimpleMenuBuilder<SearchMenuBuilder<T>>,
-                    SecurityInfos<SearchMenuBuilder<T>> {
+    public interface SearchMenuBuilder<T> {
 
         TerminalMenu<T> respondsWith( final MenuSearchItem.SearchCommand command );
 
+        SearchMenuBuilder<T> withRole( final String role );
+
+        SearchMenuBuilder<T> withRoles( final String... roles );
+
+        SearchMenuBuilder<T> order( final int order );
+
+        SearchMenuBuilder<T> position( final MenuPosition position );
     }
 
     public interface SubMenuBuilder<T>

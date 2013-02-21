@@ -129,6 +129,9 @@ public class MultiPageEditorView
             scheduleResize();
         } else if ( lastTab instanceof DropdownTab ) {
             final TabLink lastTabLink = (TabLink) getBeforeLastTab();
+            if ( lastTabLink == null ) {
+                return;
+            }
 
             final Tab clonedTab = cloneTab( lastTabLink, false, true );
             final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
@@ -283,6 +286,11 @@ public class MultiPageEditorView
             final int height = parent.getOffsetHeight();
             setPixelSize( width, height );
 
+            if ( width == 0 && height == 0 ) {
+                //it's `invisible` = makes no sense try to resize
+                return;
+            }
+
             final ComplexPanel content = getTabContent();
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
                 final Widget widget = content.getWidget( i );
@@ -334,7 +342,11 @@ public class MultiPageEditorView
 
     private Widget getBeforeLastTab() {
         final ComplexPanel tabs = getTabs();
-        return tabs.getWidget( tabs.getWidgetCount() - 2 );
+        int index = tabs.getWidgetCount() - 2;
+        if ( index < 0 ) {
+            return null;
+        }
+        return tabs.getWidget( index );
     }
 
     private int getTabBarWidth() {

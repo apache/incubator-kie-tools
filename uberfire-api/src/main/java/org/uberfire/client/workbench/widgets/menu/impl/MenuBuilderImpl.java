@@ -496,10 +496,13 @@ public final class MenuBuilderImpl
 
     @Override
     public Menus build() {
+
+        context.clear();
+
         return new Menus() {
             @Override
             public List<MenuItem> getItems() {
-                return menuItems;
+                return unmodifiableList( menuItems );
             }
         };
     }
