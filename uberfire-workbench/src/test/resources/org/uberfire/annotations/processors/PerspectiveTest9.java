@@ -30,7 +30,7 @@ public class PerspectiveTest9 {
     }
 
     @WorkbenchMenu
-    public String getMenuBar() {
+    public String getMenus() {
         return "";
     }
 

@@ -21,13 +21,12 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.client.workbench.services.WorkbenchServices;
 import org.uberfire.client.workbench.model.PanelDefinition;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.services.WorkbenchServices;
+import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
@@ -47,7 +46,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     private PlaceManager placeManager;
 
     @Inject
-    private WorkbenchMenuBarPresenter menuBarPresenter;
+    private WorkbenchMenuBar menuBar;
 
     @Inject
     private WorkbenchToolBarPresenter toolBarPresenter;
@@ -99,7 +98,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public MenuBar getMenuBar() {
+    public Menus getMenus() {
         return null;
     }
 
@@ -113,7 +112,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
         onClose();
 
-        menuBarPresenter.clearWorkbenchPerspectiveItems();
+        menuBar.clearPerspectiveMenus();
         toolBarPresenter.clearWorkbenchPerspectiveItems();
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
@@ -178,12 +177,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         buildPerspective( panelManager.getRoot() );
 
         //Set up Menu Bar for perspective
-        final MenuBar menuBar = getMenuBar();
-        if ( menuBar != null ) {
-            for ( MenuItem item : menuBar.getItems() ) {
-                menuBarPresenter.addWorkbenchPerspectiveItem( item );
-            }
-        }
+        menuBar.aggregatePerspectiveMenus( getMenus() );
 
         //Set up Tool Bar for perspective
         final ToolBar toolBar = getToolBar();

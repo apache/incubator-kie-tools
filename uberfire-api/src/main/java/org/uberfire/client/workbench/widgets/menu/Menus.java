@@ -15,16 +15,13 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-/**
- * Meta-data for a menu item that represents a sub-menu
- */
-public interface MenuItemSubMenu
-    extends
-    MenuItem {
+import java.util.List;
 
-    /**
-     * @return the subMenu
-     */
-    public MenuBar getSubMenu();
+/**
+ * Menus that includes permission
+ */
+public interface Menus {
+
+    public List<MenuItem> getItems();
 
 }

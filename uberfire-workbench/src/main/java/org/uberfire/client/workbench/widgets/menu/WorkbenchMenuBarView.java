@@ -24,6 +24,7 @@ import com.github.gwtbootstrap.client.ui.Brand;
 import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.Nav;
 import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.NavSearch;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,7 +33,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.widgets.menu.impl.EnabledStateChangeListener;
 
 /**
  * The Menu Bar widget
@@ -62,10 +62,17 @@ public class WorkbenchMenuBarView extends Composite
     public Nav menuBarRight;
 
     //Map of UberFire's AbstractMenuItems to GWT MenuItems
-    private final Map<MenuItem, Widget> menuItemsMap = new HashMap<MenuItem, Widget>();
+    private final Map<MenuItem, Widget> leftMenuItemsMap   = new HashMap<MenuItem, Widget>();
+    private final Map<MenuItem, Widget> rightMenuItemsMap  = new HashMap<MenuItem, Widget>();
+    private final Map<MenuItem, Widget> centerMenuItemsMap = new HashMap<MenuItem, Widget>();
 
     public WorkbenchMenuBarView() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void setBrandMenu( final BrandMenuItem brand ) {
+        this.brand.setText( brand.getCaption() );
     }
 
     /**
@@ -75,10 +82,18 @@ public class WorkbenchMenuBarView extends Composite
      */
     @Override
     public void addMenuItem( final MenuItem item ) {
-        final Widget gwtItem = makeMenuItem( item );
-        menuItemsMap.put( item, gwtItem );
 
-        menuBarLeft.add( gwtItem );
+        final Widget gwtItem = makeMenuItem( item );
+        if ( item.getPosition().equals( MenuPosition.LEFT ) ) {
+            leftMenuItemsMap.put( item, gwtItem );
+            menuBarLeft.add( gwtItem );
+        } else if ( item.getPosition().equals( MenuPosition.CENTER ) ) {
+            rightMenuItemsMap.put( item, gwtItem );
+            menuBarRight.add( gwtItem );
+        } else if ( item.getPosition().equals( MenuPosition.RIGHT ) ) {
+            centerMenuItemsMap.put( item, gwtItem );
+            menuBarCenter.add( gwtItem );
+        }
     }
 
     /**
@@ -86,10 +101,23 @@ public class WorkbenchMenuBarView extends Composite
      */
     @Override
     public void removeMenuItem( final MenuItem item ) {
-        final Widget gwtItem = menuItemsMap.remove( item );
-        if ( gwtItem != null ) {
-            menuBarLeft.remove( gwtItem );
+        if ( leftMenuItemsMap.containsKey( item ) ) {
+            final Widget gwtItem = leftMenuItemsMap.remove( item );
+            if ( gwtItem != null ) {
+                menuBarLeft.remove( gwtItem );
+            }
+        } else if ( rightMenuItemsMap.containsKey( item ) ) {
+            final Widget gwtItem = rightMenuItemsMap.remove( item );
+            if ( gwtItem != null ) {
+                menuBarRight.remove( gwtItem );
+            }
+        } else if ( centerMenuItemsMap.containsKey( item ) ) {
+            final Widget gwtItem = centerMenuItemsMap.remove( item );
+            if ( gwtItem != null ) {
+                menuBarCenter.remove( gwtItem );
+            }
         }
+
     }
 
     //Recursively converts a Presenter Menu item to a GWT MenuItem
@@ -114,10 +142,25 @@ public class WorkbenchMenuBarView extends Composite
 
             return gwtItem;
 
-        } else if ( item instanceof MenuItemSubMenu ) {
-            final MenuItemSubMenu subMenuItem = (MenuItemSubMenu) item;
-            final Dropdown gwtItem = new Dropdown( subMenuItem.getCaption() );
-            for ( final Widget _item : makeMenuItems( subMenuItem.getSubMenu().getItems() ) ) {
+        }
+        if ( item instanceof MenuSearchItem ) {
+            final MenuSearchItem searchItem = (MenuSearchItem) item;
+            final NavSearch gwtItem = new NavSearch() {{
+                setPlaceholder( searchItem.getCaption() );
+                addSubmitHandler( new SubmitHandler() {
+                    @Override
+                    public void onSubmit( final SubmitEvent event ) {
+                        event.cancel();
+                    }
+                } );
+            }};
+
+            return gwtItem;
+
+        } else if ( item instanceof MenuGroup ) {
+            final MenuGroup groups = (MenuGroup) item;
+            final Dropdown gwtItem = new Dropdown( groups.getCaption() );
+            for ( final Widget _item : makeMenuItems( groups.getItems() ) ) {
                 gwtItem.add( _item );
             }
             return gwtItem;

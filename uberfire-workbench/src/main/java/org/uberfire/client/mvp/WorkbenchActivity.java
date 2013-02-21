@@ -16,7 +16,7 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -49,7 +49,7 @@ public interface WorkbenchActivity
 
     public IsWidget getWidget();
 
-    public MenuBar getMenuBar();
+    public Menus getMenus();
 
     public ToolBar getToolBar();
 

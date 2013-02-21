@@ -30,7 +30,7 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
@@ -64,8 +64,8 @@ public class PerspectiveTest8Activity extends AbstractWorkbenchPerspectiveActivi
     }
 
     @Override
-    public MenuBar getMenuBar() {
-        return realPresenter.getMenuBar();
+    public Menus getMenus() {
+        return realPresenter.getMenus();
     }
 
     @Override

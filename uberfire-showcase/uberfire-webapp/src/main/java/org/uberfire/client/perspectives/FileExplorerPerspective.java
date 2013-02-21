@@ -36,11 +36,8 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
@@ -129,18 +126,18 @@ public class FileExplorerPerspective {
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenuBar() {
-        final MenuBar menuBar = new DefaultMenuBar();
-        final MenuBar subMenuBar = new DefaultMenuBar();
-        menuBar.addItem( new DefaultMenuItemSubMenu( "Repositories", subMenuBar ) );
-
-        final MenuItem cloneRepo = new DefaultMenuItemCommand( "Clone Repo", cloneRepoCommand );
-        final MenuItem newRepo = new DefaultMenuItemCommand( "New Repo", newRepoCommand );
-        newRepo.setRoles( PERMISSIONS_ADMIN );
-
-        subMenuBar.addItem( cloneRepo );
-        subMenuBar.addItem( newRepo );
-
-        return menuBar;
+    public Menus buildMenuBar() {
+        return MenuFactory
+                .newTopLevelMenu( "Repositories" )
+                    .menus()
+                        .menu( "Clone Repo" )
+                            .respondsWith( cloneRepoCommand )
+                        .endMenu()
+                        .menu( "New Repo" )
+                            .withRoles( PERMISSIONS_ADMIN )
+                            .respondsWith( newRepoCommand )
+                        .endMenu()
+                    .endMenus().
+                endMenu().build();
     }
 }

@@ -31,7 +31,7 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 import org.uberfire.backend.vfs.Path;
 
@@ -70,8 +70,8 @@ public class WorkbenchEditorTest9Activity extends AbstractWorkbenchEditorActivit
     }
     
     @Override
-    public MenuBar getMenuBar() {
-        return realPresenter.getMenuBar();
+    public Menus getMenus() {
+        return realPresenter.getMenus();
     }
     
     @Override

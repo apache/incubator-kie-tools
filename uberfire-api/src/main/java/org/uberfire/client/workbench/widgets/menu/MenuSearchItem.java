@@ -15,19 +15,17 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.List;
-
-import org.uberfire.security.authz.RuntimeResource;
-
 /**
- * Meta-data for a Workbench MenuBar including permissions
+ * Meta-data for a menu item that represents a search
  */
-public interface MenuBar
-    extends
-    RuntimeResource {
+public interface MenuSearchItem
+        extends MenuItem {
 
-    public void addItem(final MenuItem item);
+    public SearchCommand getCommand();
 
-    public List<MenuItem> getItems();
+    public interface SearchCommand {
+
+        void execute( final String term );
+    }
 
 }

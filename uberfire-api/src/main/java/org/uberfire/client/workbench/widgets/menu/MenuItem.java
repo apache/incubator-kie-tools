@@ -16,7 +16,6 @@
 package org.uberfire.client.workbench.widgets.menu;
 
 import com.google.gwt.user.client.ui.HasEnabled;
-import org.uberfire.client.workbench.widgets.menu.impl.HasEnabledStateChangeListeners;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
@@ -24,16 +23,15 @@ import org.uberfire.security.authz.RuntimeResource;
  * all users have permission to access a MenuItem and that it is enabled.
  */
 public interface MenuItem
-        extends
-        RuntimeResource,
-        HasEnabled,
-        HasEnabledStateChangeListeners {
+        extends RuntimeResource,
+                HasEnabled,
+                HasEnabledStateChangeListeners {
 
-    /**
-     * @return the caption
-     */
+    public String getContributionPoint();
+
     public String getCaption();
 
-    public void setRoles( final String[] roles );
+    public MenuPosition getPosition();
 
+    public int getOrder();
 }

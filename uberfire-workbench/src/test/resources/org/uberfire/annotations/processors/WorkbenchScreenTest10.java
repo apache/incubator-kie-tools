@@ -20,7 +20,7 @@ public class WorkbenchScreenTest10 {
     }
 
     @WorkbenchMenu
-    public String getMenuBar() {
+    public String getMenus() {
         return "";
     }
 

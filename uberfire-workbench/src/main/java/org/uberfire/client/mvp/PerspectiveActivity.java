@@ -16,7 +16,7 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 import org.uberfire.shared.mvp.PlaceRequest;
 
@@ -24,22 +24,22 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * Perspective Activity life-cycles
  */
 public interface PerspectiveActivity
-    extends
-    Activity {
+        extends
+        Activity {
 
     public void onStart();
 
-    public void onStart(final PlaceRequest place);
+    public void onStart( final PlaceRequest place );
 
     public void onClose();
 
     public PerspectiveDefinition getPerspective();
-    
+
     public String getIdentifier();
-    
+
     public boolean isDefault();
 
-    public MenuBar getMenuBar();
+    public Menus getMenus();
 
     public ToolBar getToolBar();
 

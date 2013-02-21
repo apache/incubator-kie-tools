@@ -25,11 +25,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuItemSubMenu;
+import org.uberfire.client.workbench.widgets.menu.MenuFactory;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -57,21 +54,20 @@ public class MultiPagePresenter {
     }
 
     @WorkbenchMenu
-    public MenuBar buildMenu() {
-        final MenuBar menuBar = new DefaultMenuBar();
-        final MenuBar subMenuBar = new DefaultMenuBar();
-        menuBar.addItem( new DefaultMenuItemSubMenu( "My Context", subMenuBar ) );
-
-        final MenuItem newRepo = new DefaultMenuItemCommand( "New Menu", new Command() {
-            @Override
-            public void execute() {
-                Window.alert( "Ok!" );
-            }
-        } );
-
-        subMenuBar.addItem( newRepo );
-
-        return menuBar;
+    public Menus buildMenu() {
+        return MenuFactory
+                .newTopLevelMenu( "My Context" )
+                    .menus()
+                        .menu( "New Menu" )
+                            .respondsWith( new Command(){
+                                @Override
+                                public void execute() {
+                                    Window.alert( "Ok!" );
+                                }
+                            } )
+                        .endMenu()
+                    .endMenus().
+                endMenu().build();
     }
 
 }

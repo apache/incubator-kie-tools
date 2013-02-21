@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench.widgets.menu.impl;
 
-import com.google.gwt.event.shared.HasHandlers;
+package org.uberfire.client.workbench.widgets.menu;
 
 /**
- * A Listener for changes in a Widget's enabled state
+ * A source of EnabledStateChange actions.
  */
-public interface EnabledStateChangeListener {
+public interface HasEnabledStateChangeListeners {
 
     /**
      * Called when the enabled state of a Widget changes
-     * @param enabled
+     * @param listener
      */
-    void enabledStateChanged( final boolean enabled );
+    void addEnabledStateChangeListener( final EnabledStateChangeListener listener );
 }

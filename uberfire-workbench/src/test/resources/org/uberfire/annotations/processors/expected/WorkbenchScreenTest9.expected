@@ -30,7 +30,7 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.shared.mvp.PlaceRequest;
 
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -66,8 +66,8 @@ public class WorkbenchScreenTest9Activity extends AbstractWorkbenchScreenActivit
     }
     
     @Override
-    public MenuBar getMenuBar() {
-        return realPresenter.getMenuBar();
+    public Menus getMenus() {
+        return realPresenter.getMenus();
     }
     
     @Override

@@ -17,7 +17,7 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
 
 /**
@@ -68,7 +68,7 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
     }
 
     @Override
-    public MenuBar getMenuBar() {
+    public Menus getMenus() {
         return null;
     }
 

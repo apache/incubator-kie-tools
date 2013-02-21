@@ -20,7 +20,7 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 @WorkbenchPerspective(identifier = "PerspectiveTest8")
 public class PerspectiveTest8 {
@@ -31,7 +31,7 @@ public class PerspectiveTest8 {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
+    public Menus getMenus() {
         return null;
     }
 

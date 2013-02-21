@@ -31,7 +31,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.shared.mvp.PlaceRequest;
 
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 </#if>
 <#if getToolBarMethodName??>
@@ -119,7 +119,7 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     </#if>
     <#if getMenuBarMethodName??>
     @Override
-    public MenuBar getMenuBar() {
+    public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
 

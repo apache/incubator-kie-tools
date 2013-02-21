@@ -761,7 +761,7 @@ public class GeneratorUtils {
                                                 final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.widgets.menu.MenuBar" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.widgets.menu.Menus" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

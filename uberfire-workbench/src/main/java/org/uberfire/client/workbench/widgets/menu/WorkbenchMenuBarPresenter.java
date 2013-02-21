@@ -38,11 +38,13 @@ import org.uberfire.shared.mvp.PlaceRequest;
  * within Eclipse.
  */
 @ApplicationScoped
-public class WorkbenchMenuBarPresenter {
+public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     public interface View
             extends
             IsWidget {
+
+        void setBrandMenu( final BrandMenuItem brand );
 
         void addMenuItem( final MenuItem menuItem );
 
@@ -76,14 +78,14 @@ public class WorkbenchMenuBarPresenter {
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
         if ( event.getPlace().equals( activePlace ) ) {
-            clearWorkbenchContextItems();
+            clearContextMenus();
         }
     }
 
     //Handle removing the WorkbenchPart menu items
     void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
         if ( event.getPlace().equals( activePlace ) ) {
-            clearWorkbenchContextItems();
+            clearContextMenus();
         }
     }
 
@@ -100,44 +102,59 @@ public class WorkbenchMenuBarPresenter {
 
         if ( !event.getPlace().equals( activePlace ) ) {
 
-            clearWorkbenchContextItems();
+            clearContextMenus();
 
             //Add items for current WorkbenchPart
             activePlace = event.getPlace();
 
-            final MenuBar menuBar = wbActivity.getMenuBar();
-            if ( menuBar == null ) {
-                return;
+            aggregateContextMenus( wbActivity.getMenus() );
+        }
+    }
+
+    @Override
+    public void setBrandMenuItem( final BrandMenuItem brandMenuItem ) {
+        if ( brandMenuItem != null ) {
+            view.setBrandMenu( brandMenuItem );
+        }
+    }
+
+    @Override
+    public void aggregateWorkbenchMenus( final Menus menus ) {
+        if ( menus != null ) {
+            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
+
+            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
+                workbenchItems.add( activeMenu );
+                view.addMenuItem( activeMenu );
             }
+        }
+    }
 
-            for ( MenuItem item : menuBar.getItems() ) {
-                addWorkbenchContextItem( item );
+    @Override
+    public void aggregatePerspectiveMenus( final Menus menus ) {
+        if ( menus != null ) {
+            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
+
+            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
+                workbenchPerspectiveItems.add( activeMenu );
+                view.addMenuItem( activeMenu );
             }
         }
     }
 
-    public void addWorkbenchItem( final MenuItem menuItem ) {
-        if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
-            workbenchItems.add( menuItem );
-            view.addMenuItem( menuItem );
+    private void aggregateContextMenus( final Menus menus ) {
+        if ( menus != null ) {
+            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
+
+            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
+                workbenchContextItems.add( activeMenu );
+                view.addMenuItem( activeMenu );
+            }
         }
     }
 
-    public void addWorkbenchPerspectiveItem( final MenuItem item ) {
-        if ( menuBarUtils.filterMenuItemByPermission( item ) != null ) {
-            workbenchPerspectiveItems.add( item );
-            view.addMenuItem( item );
-        }
-    }
-
-    public void addWorkbenchContextItem( final MenuItem menuItem ) {
-        if ( menuBarUtils.filterMenuItemByPermission( menuItem ) != null ) {
-            workbenchContextItems.add( menuItem );
-            view.addMenuItem( menuItem );
-        }
-    }
-
-    public void clearWorkbenchItems() {
+    @Override
+    public void clearWorkbenchMenus() {
         if ( workbenchItems.isEmpty() ) {
             return;
         }
@@ -147,7 +164,8 @@ public class WorkbenchMenuBarPresenter {
         workbenchItems.clear();
     }
 
-    public void clearWorkbenchPerspectiveItems() {
+    @Override
+    public void clearPerspectiveMenus() {
         if ( workbenchPerspectiveItems.isEmpty() ) {
             return;
         }
@@ -155,9 +173,10 @@ public class WorkbenchMenuBarPresenter {
             view.removeMenuItem( item );
         }
         workbenchPerspectiveItems.clear();
+
     }
 
-    private void clearWorkbenchContextItems() {
+    private void clearContextMenus() {
         activePlace = null;
         if ( workbenchContextItems.isEmpty() ) {
             return;

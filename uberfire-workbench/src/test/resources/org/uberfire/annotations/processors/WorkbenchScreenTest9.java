@@ -1,14 +1,12 @@
 package org.uberfire.annotations.processors;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.widgets.menu.MenuBar;
-import org.uberfire.client.workbench.widgets.menu.impl.DefaultMenuBar;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.workbench.widgets.menu.Menus;
 
 @WorkbenchScreen(identifier = "test9")
 public class WorkbenchScreenTest9 {
@@ -24,8 +22,8 @@ public class WorkbenchScreenTest9 {
     }
 
     @WorkbenchMenu
-    public MenuBar getMenuBar() {
-        return new DefaultMenuBar();
+    public Menus getMenus() {
+        return null;
     }
 
 }
