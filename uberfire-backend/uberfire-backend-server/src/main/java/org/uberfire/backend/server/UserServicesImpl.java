@@ -15,7 +15,10 @@
  */
 package org.uberfire.backend.server;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -62,5 +65,19 @@ public class UserServicesImpl
     	} else {
             return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType );   		
     	}
+	}
+    
+    public String[] listUsers() {
+    	//TODO: Just a temporary way to retrieve user list. Refactor later.
+    	List<String> userList = new ArrayList<String>();
+    	Path userRoot = bootstrapRoot.resolve( "/.metadata/.users/");
+        final Iterator<Path> userIterator = userRoot.iterator();
+        if ( userIterator.hasNext() ) {
+            Path userDir = userIterator.next();
+            userList.add(userDir.getFileName().toString());
+        }
+        
+        String[] result = new String[userList.size()];
+    	return userList.toArray(result);
 	}
 }
