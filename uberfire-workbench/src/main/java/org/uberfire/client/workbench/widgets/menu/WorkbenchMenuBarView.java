@@ -151,6 +151,7 @@ public class WorkbenchMenuBarView extends Composite
                     @Override
                     public void onSubmit( final SubmitEvent event ) {
                         event.cancel();
+                        searchItem.getCommand().execute( getTextBox().getText() );
                     }
                 } );
             }};
