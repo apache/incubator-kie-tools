@@ -17,6 +17,7 @@
 package org.uberfire.client;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -25,12 +26,16 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
 
     @Inject
-    private Workbench         workbench;
+    private Workbench workbench;
+
+    @Inject
+    private Event<PathChangeEvent> pathChangedEvent;
 
     private final SimplePanel appWidget = new SimplePanel();
 
@@ -43,6 +48,9 @@ public class WorkbenchEntryPoint {
     public void startApp() {
         loadStyles();
         RootLayoutPanel.get().add( appWidget );
+
+        //No context by default.. Ensure dependent widgets know about it.
+        pathChangedEvent.fire( new PathChangeEvent( null ) );
     }
 
     private void loadStyles() {
