@@ -416,7 +416,9 @@ public class PanelManager {
             final WorkbenchPanelPresenter presenter = e.getValue();
             for ( PartDefinition part : panel.getParts() ) {
                 if ( place.equals( part.getPlace() ) ) {
+                    mapPartDefinitionToPresenter.get( part ).setTitle( title );
                     presenter.changeTitle( part, title, titleDecoration );
+                    break;
                 }
             }
         }

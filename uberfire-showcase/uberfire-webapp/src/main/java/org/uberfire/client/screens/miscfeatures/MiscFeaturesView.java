@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -108,6 +109,11 @@ public class MiscFeaturesView extends Composite
     @UiHandler("launchUnknownPlace")
     public void onClickLaunchUnknownPlace( final ClickEvent event ) {
         placeManager.goTo( new DefaultPlaceRequest( "MyTestPopUp" ) );
+    }
+
+    @UiHandler("setNewTitleButton")
+    public void onSetNewTitleButtonClick( final ClickEvent event ) {
+        presenter.setNewTitle("NewCoolTitle");
     }
 
 }

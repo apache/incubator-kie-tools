@@ -117,6 +117,16 @@ public class UberTabPanel
     public void changeTitle( final PartDefinition id,
                              final String title,
                              final IsWidget titleDecoration ) {
+        final TabLink tabLink = partTabIndex.get( id );
+        if ( tabLink != null ) {
+            tabLink.setText( title );
+
+            if ( tabLink.getParent().getParent() instanceof DropdownTab ) {
+                final DropdownTab dropdownTab = (DropdownTab) tabLink.getParent().getParent();
+                dropdownTab.setText( "Active: " + title );
+                dropdownTab.addStyleName( Constants.ACTIVE );
+            }
+        }
     }
 
     @Override

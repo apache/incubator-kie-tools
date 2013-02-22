@@ -31,6 +31,10 @@
       Uberfire has some built in popups.
     </p>
     <b:Button ui:field="launchUnknownPlace">Open popup</b:Button>
+    <p>
+      Sets a new Title
+    </p>
+    <b:Button ui:field="setNewTitleButton">New Title</b:Button>
   </g:HTMLPanel>
 
 </ui:UiBinder>

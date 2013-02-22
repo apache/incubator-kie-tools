@@ -16,13 +16,16 @@
 
 package org.uberfire.client.screens.miscfeatures;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
 import org.uberfire.shared.mvp.PlaceRequest;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
@@ -38,15 +41,27 @@ public class MiscFeaturesPresenter {
 
     }
 
+    private String title = "Miscellaneous features";
+
     @Inject
     public View view;
 
     @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
+
+    @Inject
     private PlaceManager placeManager;
+
+    private PlaceRequest placeRequest;
+
+    @OnStart
+    public void onStart( final PlaceRequest placeRequest ) {
+        this.placeRequest = placeRequest;
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Miscellaneous features";
+        return title;
     }
 
     @WorkbenchPartView
@@ -57,6 +72,11 @@ public class MiscFeaturesPresenter {
     public void launchUnknownPlace() {
         final PlaceRequest place = new DefaultPlaceRequest( "somewhere.that.does.not.exist" );
         placeManager.goTo( place );
+    }
+
+    public void setNewTitle( final String newCoolTitle ) {
+        title = "Cool!";
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title, null ) );
     }
 
 }
