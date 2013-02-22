@@ -166,7 +166,18 @@ public class WorkbenchMenuBarView extends Composite
             }
             return gwtItem;
         }
-        throw new IllegalArgumentException( "item type [" + item.getClass().getName() + "] is not recognised." );
+
+        final NavLink gwtItem = new NavLink( item.getCaption() ) {{
+            setDisabled( !item.isEnabled() );
+        }};
+        item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+            @Override
+            public void enabledStateChanged( final boolean enabled ) {
+                gwtItem.setDisabled( !enabled );
+            }
+        } );
+
+        return gwtItem;
     }
 
     private List<Widget> makeMenuItems( final List<MenuItem> items ) {
