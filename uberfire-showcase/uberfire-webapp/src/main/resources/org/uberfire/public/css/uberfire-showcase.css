@@ -82,13 +82,6 @@ td, th {
     solid #aa9;
 }
 
-select {
-    border: 1px solid #ccc;
-    color: #666;
-    border-color: #ccc !important;
-    padding: 0 !important;
-}
-
 .model-builder-Background {
     # -moz-border-radius: .7em;
     # -webkit-border-radius: .7em;
@@ -319,37 +312,10 @@ select {
     cursor: pointer;
 }
 
-button {
-    border: 1px solid #ccc;
-    margin-right: 1px;
-    border-bottom: 1px solid #aaa;
-    border-top-color: #ddd;
-    background: #fff;
-}
-
-button:active, button:focus {
-    color: #FFF;
-    border: 1px solid #444;
-    background: #999;
-}
-
 .DatePicker .cell .gwt-HTML span {
     width: 100%;
     height: 100%;
     line-height: 2em;
-}
-
-textarea {
-    color: #666;
-    border: 1px solid #ccc !important;
-    padding: .3em;
-    background: #fefefe !important;
-}
-
-textarea:focus, textarea:active {
-    color: #000;
-    border-color: #000 !important;
-    background: #fff !important;
 }
 
 .DatePicker .today .gwt-HTML {
@@ -358,22 +324,6 @@ textarea:focus, textarea:active {
 
 .image-Button {
     cursor: pointer !important;
-}
-
-a, a:visited {
-    color: #00008B;
-}
-
-select:focus, input:focus, input:active, .constraint-value-Editor:focus, .constraint-value-Editor:active {
-    color: #000;
-    border-color: #000 !important;
-}
-
-input, .constraint-value-Editor {
-    border: 1px solid #aa9;
-    color: #666;
-    border-color: #ccc !important;
-    padding: 2px !important;
 }
 
 .ks-info, .ks-List .ks-SinkItem-selected a, .sinkitem {
@@ -535,144 +485,6 @@ input, .constraint-value-Editor {
     background-color: rgb(180, 180, 180);
 }
 
-a.serviceTab, a.serviceTab:link, a.serviceTab:visited {
-    font-weight: bold;
-    text-decoration: none;
-    color: #000000;
-}
-
-a.serviceTab:hover {
-    font-weight: bold;
-    text-decoration: underline;
-    color: #000000;
-}
-
-a.serviceTab:active {
-    font-weight: bold;
-    text-decoration: none;
-    color: #000000;
-}
-
-/** Overridden GWT styles 
-.gwt-Frame {
-    border: 0;
-}
-
-.gwt-DisclosurePanel .content {
-    border-left: 3px solid #e3e3e3;
-    padding: 4px 0px 4px 8px;
-    margin-left: 16px;
-}
-
-.VerticalSplitPanel .vsplitter {
-    background-color: #f3f2e7;
-    border: 1px solid #aa9;
-    cursor: n-resize;
-    cursor: row-resize;
-}
-
-.HorizontalSplitPanel .hsplitter {
-    background-color: #f3f2e7;
-    border: 1px solid #aa9;
-    cursor: n-resize;
-    cursor: col-resize;
-}
-
-.gwt-SuggestBoxPopup {
-    background: white;
-    border: 1px solid black;
-}
-
-.gwt-SuggestBoxPopup .item {
-    font-size: 0.7em;
-}
-
-.gwt-SuggestBoxPopup .item-selected {
-    background: yellow;
-}
-
-.gwt-DialogBox {
-    sborder: 8px solid #aa9;
-    border: 1px solid #aa9;
-    background: #FFF;
-}
-
-.gwt-DialogBox .Caption {
-    font-weight: 700;
-    cursor: default;
-    margin: 2px;
-    padding: 3px;
-    background: #FFFFF0;
-}
-
-.gwt-HorizontalSplitter .Bar {
-    width: 8px;
-    background: #aa9;
-}
-
-.gwt-VerticalSplitter .Bar {
-    height: 8px;
-    background: #aa9;
-}
-
-.gwt-TabBar .gwt-TabBarFirst {
-    width: 0;
-    margin: 0;
-    padding: 0;
-}
-
-.gwt-TabBar .gwt-TabBarRest {
-    border-bottom: 1px solid #aa9;
-    padding-right: 3px;
-}
-
-.gwt-TabBar .gwt-TabBarItem {
-    border: 1px solid #aa9;
-    cursor: pointer;
-    color: #FFF;
-    padding: .5em 1em;
-}
-
-.gwt-TabBar .gwt-TabBarItem-selected {
-    border-bottom: 0 solid #aa9;
-    cursor: url;
-    border: 0 transparent none;
-    margin: 0;
-    padding: .5em 1em;
-    background: #f6f6f6;
-}
-
-.gwt-TabBarItem-selected {
-    color: #000 !important;
-}
-
-.gwt-TextArea {
-    border: 1px solid #aa9;
-    padding: 0;
-}
-
-.gwt-StackPanel .gwt-StackPanelItem {
-    cursor: hand;
-    background: #aa9;
-}
-
-.guvnor-Tree .gwt-TreeItem-selected {
-    background: none !important;
-}
-
-.gwt-TreeItem {
-    width: 100%;
-    cursor: pointer;
-    display: block !important;
-    line-height: em;
-    margin: 0;
-    padding: 0;
-}
-
-.gwt-CheckBox,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
-    font-size: smaller;
-}
-**/
 .guvnor-repository-body {
 	margin-top: 9px;
 	width: 100%;

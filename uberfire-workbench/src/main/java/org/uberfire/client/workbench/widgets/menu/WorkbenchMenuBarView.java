@@ -89,10 +89,10 @@ public class WorkbenchMenuBarView extends Composite
             menuBarLeft.add( gwtItem );
         } else if ( item.getPosition().equals( MenuPosition.CENTER ) ) {
             rightMenuItemsMap.put( item, gwtItem );
-            menuBarRight.add( gwtItem );
+            menuBarCenter.add( gwtItem );
         } else if ( item.getPosition().equals( MenuPosition.RIGHT ) ) {
             centerMenuItemsMap.put( item, gwtItem );
-            menuBarCenter.add( gwtItem );
+            menuBarRight.add( gwtItem );
         }
     }
 
