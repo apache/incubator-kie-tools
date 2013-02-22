@@ -1,6 +1,7 @@
 package org.uberfire.client.workbench.widgets.tab;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.gwtbootstrap.client.ui.DropdownTab;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
@@ -37,7 +39,8 @@ public class UberTabPanel
         extends Composite
         implements RequiresResize,
                    HasBeforeSelectionHandlers<PartDefinition>,
-                   HasSelectionHandlers<PartDefinition> {
+                   HasSelectionHandlers<PartDefinition>,
+                   ClickHandler {
 
     private static final int MARGIN = 20;
 
@@ -52,6 +55,8 @@ public class UberTabPanel
     private final Map<WorkbenchPartPresenter.View, TabLink> tabIndex         = new HashMap<WorkbenchPartPresenter.View, TabLink>();
     private final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
     private final Map<PartDefinition, TabLink>              partTabIndex     = new HashMap<PartDefinition, TabLink>();
+    private       boolean                                   hasFocus         = false;
+    private Command addOnFocusHandler;
 
     public void clear() {
         tabPanel.clear();
@@ -84,7 +89,7 @@ public class UberTabPanel
                     }
                 }
                 final DropdownTab cloneDropdown = cloneDropdown( _dropdown, index );
-                if (cloneDropdown.getTabList().size() > 0){
+                if ( cloneDropdown.getTabList().size() > 0 ) {
                     tabPanel.add( cloneDropdown );
                 }
                 tabPanel.remove( _dropdown );
@@ -147,6 +152,7 @@ public class UberTabPanel
                 }
             } );
 
+            addDomHandler( UberTabPanel.this, ClickEvent.getType() );
         }};
 
         initWidget( tabPanel );
@@ -222,7 +228,7 @@ public class UberTabPanel
         tab.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                presenter.onPanelFocus();
+                UberTabPanel.this.onClick( event );
                 if ( tab.asTabLink().getParent().getParent() instanceof DropdownTab ) {
                     final DropdownTab dropdownTab = (DropdownTab) tab.asTabLink().getParent().getParent();
                     dropdownTab.setText( "Active: " + view.getPresenter().getTitle() );
@@ -456,6 +462,7 @@ public class UberTabPanel
     }
 
     public void setFocus( final boolean hasFocus ) {
+        this.hasFocus = hasFocus;
         if ( hasFocus ) {
             getTabs().setStyleName( WorkbenchResources.INSTANCE.CSS().activeNavTabs(), true );
         } else {
@@ -463,4 +470,32 @@ public class UberTabPanel
         }
     }
 
+    @Override
+    public void onClick( final ClickEvent event ) {
+        if ( !hasFocus ) {
+            addOnFocusHandler.execute();
+
+            for ( int i = 0; i < getTabs().getWidgetCount(); i++ ) {
+                final Widget _widget = getTabs().getWidget( i );
+                if ( _widget instanceof TabLink && ( (TabLink) _widget ).isActive() ) {
+                    SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( _widget ).getPresenter().getDefinition() );
+                    break;
+                } else if ( _widget instanceof DropdownTab ) {
+                    final List<Tab> tabs = ( (DropdownTab) _widget ).getTabList();
+                    for ( final Tab activeTab : tabs ) {
+                        if ( activeTab.isActive() ) {
+                            SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( activeTab ).getPresenter().getDefinition() );
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    public void addOnFocusHandler( final Command command ) {
+        this.addOnFocusHandler = command;
+    }
 }

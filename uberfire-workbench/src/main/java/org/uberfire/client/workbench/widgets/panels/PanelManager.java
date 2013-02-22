@@ -74,8 +74,8 @@ public class PanelManager {
     private Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
     private Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+    private PartDefinition                                activePart                    = null;
 
-    //
     public PanelManager() {
     }
 
@@ -240,14 +240,16 @@ public class PanelManager {
     }
 
     public void onPartFocus( final PartDefinition part ) {
+        activePart = part;
         placeGainFocusEvent.fire( new PlaceGainFocusEvent( part.getPlace() ) );
     }
 
-    public void onPartLostFocus( final PartDefinition part ) {
-        if ( part == null ) {
+    public void onPartLostFocus() {
+        if ( activePart == null ) {
             return;
         }
-        placeLostFocusEvent.fire( new PlaceLostFocusEvent( part.getPlace() ) );
+        placeLostFocusEvent.fire( new PlaceLostFocusEvent( activePart.getPlace() ) );
+        activePart = null;
     }
 
     public void onPanelFocus( final PanelDefinition panel ) {

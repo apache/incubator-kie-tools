@@ -128,8 +128,8 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     }
 
     @Override
-    public void onPartLostFocus( final PartDefinition part ) {
-        panelManager.onPartLostFocus( part );
+    public void onPartLostFocus() {
+        panelManager.onPartLostFocus();
     }
 
     @Override

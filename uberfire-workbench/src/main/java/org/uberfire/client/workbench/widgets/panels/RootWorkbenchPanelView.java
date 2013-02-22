@@ -26,6 +26,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.Position;
 import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
@@ -62,6 +63,9 @@ public class RootWorkbenchPanelView
 
     @Inject
     private WorkbenchDragAndDropManager dndManager;
+
+    @Inject
+    private PanelManager panelManager;
 
     @Inject
     private BeanFactory factory;
@@ -213,20 +217,27 @@ public class RootWorkbenchPanelView
     protected UberTabPanel makeTabPanel() {
         final UberTabPanel tabPanel = new UberTabPanel();
 
-        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
-            @Override
-            public void onBeforeSelection( final BeforeSelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus(event.getItem());
-            }
-        } );
+//        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
+//        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
+//            @Override
+//            public void onBeforeSelection( final BeforeSelectionEvent<PartDefinition> event ) {
+//
+//            }
+//        } );
 
         //When a tab is selected ensure content is resized and set focus
         tabPanel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-
             @Override
             public void onSelection( SelectionEvent<PartDefinition> event ) {
+                presenter.onPartLostFocus();
                 presenter.onPartFocus( event.getSelectedItem() );
+            }
+        } );
+
+        tabPanel.addOnFocusHandler( new Command() {
+            @Override
+            public void execute() {
+                panelManager.onPanelFocus( presenter.getDefinition() );
             }
         } );
 
