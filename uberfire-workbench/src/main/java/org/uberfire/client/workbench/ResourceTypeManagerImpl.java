@@ -11,8 +11,8 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceTypeManager;
 import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.file.ResourceTypeManager;
 
 import static java.util.Collections.*;
 
@@ -49,6 +49,11 @@ public class ResourceTypeManagerImpl implements ResourceTypeManager {
             }
         } );
 
+    }
+
+    @Override
+    public Collection<ResourceType> getRegisteredTypes() {
+        return unmodifiableList( resourceTypes );
     }
 
     @Override
