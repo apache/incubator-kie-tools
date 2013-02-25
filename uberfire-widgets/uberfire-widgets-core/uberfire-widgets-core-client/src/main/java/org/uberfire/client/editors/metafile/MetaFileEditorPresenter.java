@@ -17,7 +17,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.workbench.file.DotResourceType;
+import org.uberfire.client.workbench.type.DotResourceType;
 
 @Dependent
 @WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 100)

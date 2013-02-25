@@ -19,7 +19,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResource;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.Priority;
-import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 import static java.util.Collections.*;
 
@@ -53,7 +53,7 @@ public class ActivityBeansCache {
 
             activitiesById.put( id, activityBean );
 
-            final Pair<Integer, List<Class<? extends ResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
+            final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
             if ( metaInfo != null ) {
                 activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
             }
@@ -91,7 +91,7 @@ public class ActivityBeansCache {
         throw new RuntimeException( "Invalid Activity, missing @Identifier " + beanDefinition.getBeanClass().getName() );
     }
 
-    private Pair<Integer, List<Class<? extends ResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {
+    private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {
         List<AssociatedResource> associatedResources = new ArrayList<AssociatedResource>();
         Priority priority = null;
 
@@ -118,7 +118,7 @@ public class ActivityBeansCache {
             priorityValue = priority.value();
         }
 
-        final List<Class<? extends ResourceType>> types = new ArrayList<Class<? extends ResourceType>>( associatedResources.size() );
+        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>( associatedResources.size() );
         for ( int i = 0; i < associatedResources.size(); i++ ) {
             types.add( associatedResources.get( i ).value() );
         }
@@ -133,7 +133,7 @@ public class ActivityBeansCache {
     public IOCBeanDef<Activity> getActivity( final Path path ) {
 
         for ( final ActivityAndMetaInfo currentActivity : activities ) {
-            for ( final ResourceType resourceType : currentActivity.getResourceTypes() ) {
+            for ( final ClientResourceType resourceType : currentActivity.getResourceTypes() ) {
                 if ( resourceType.accept( path ) ) {
                     return currentActivity.getActivityBean();
                 }
@@ -147,14 +147,14 @@ public class ActivityBeansCache {
 
         private final IOCBeanDef<Activity> activityBean;
         private final int                  priority;
-        private final ResourceType[]       resourceTypes;
+        private final ClientResourceType[] resourceTypes;
 
         private ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
                                      final int priority,
-                                     final List<Class<? extends ResourceType>> resourceTypes ) {
+                                     final List<Class<? extends ClientResourceType>> resourceTypes ) {
             this.activityBean = activityBean;
             this.priority = priority;
-            this.resourceTypes = new ResourceType[ resourceTypes.size() ];
+            this.resourceTypes = new ClientResourceType[ resourceTypes.size() ];
 
             for ( int i = 0; i < resourceTypes.size(); i++ ) {
                 this.resourceTypes[ i ] = iocManager.lookupBean( resourceTypes.get( i ) ).getInstance();
@@ -169,7 +169,7 @@ public class ActivityBeansCache {
             return priority;
         }
 
-        public ResourceType[] getResourceTypes() {
+        public ClientResourceType[] getResourceTypes() {
             return resourceTypes;
         }
     }

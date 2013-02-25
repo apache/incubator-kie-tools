@@ -17,7 +17,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.workbench.file.AnyResourceType;
+import org.uberfire.client.workbench.type.AnyResourceType;
 
 @Dependent
 @WorkbenchEditor(identifier = "DefaultFileEditor", supportedTypes = { AnyResourceType.class }, priority = Integer.MIN_VALUE)

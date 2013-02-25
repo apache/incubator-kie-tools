@@ -22,7 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
-import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
 /**
  * An identifier for a Place (WorkbenchPart or Popup)
@@ -32,6 +33,6 @@ import org.uberfire.client.workbench.file.ResourceType;
 @Target({ ElementType.TYPE })
 public @interface AssociatedResource {
 
-    Class<? extends ResourceType> value();
+    Class<? extends ClientResourceType> value();
 
 }

@@ -5,46 +5,18 @@ import javax.enterprise.context.ApplicationScoped;
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.shared.workbench.type.TextResourceTypeDefinition;
 
 @ApplicationScoped
-public class TextResourceType implements ResourceType {
+public class TextResourceType
+        extends TextResourceTypeDefinition
+        implements ClientResourceType {
 
     private final Icon icon = new Icon( IconType.FILE_ALT );
 
     @Override
-    public String getShortName() {
-        return "text";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Text file";
-    }
-
-    @Override
     public IsWidget getIcon() {
         return icon;
-    }
-
-    @Override
-    public String getPrefix() {
-        return "";
-    }
-
-    @Override
-    public String getSuffix() {
-        return "txt";
-    }
-
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
-    @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

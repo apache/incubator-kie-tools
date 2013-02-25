@@ -1,45 +1,39 @@
-package org.uberfire.client.workbench.file;
+package org.uberfire.shared.workbench.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class DotResourceType implements ResourceType {
+public class TextResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "meta data";
+        return "text";
     }
 
     @Override
     public String getDescription() {
-        return "Dot file";
-    }
-
-    @Override
-    public IsWidget getIcon() {
-        return null;
+        return "Text file";
     }
 
     @Override
     public String getPrefix() {
-        return ".";
-    }
-
-    @Override
-    public String getSuffix() {
         return "";
     }
 
     @Override
+    public String getSuffix() {
+        return "txt";
+    }
+
+    @Override
     public int getPriority() {
-        return Integer.MAX_VALUE;
+        return 0;
     }
 
     @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().startsWith( getPrefix() );
+        return path.getFileName().endsWith( "." + getSuffix() );
     }
 }

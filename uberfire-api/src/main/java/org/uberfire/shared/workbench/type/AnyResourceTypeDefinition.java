@@ -1,27 +1,20 @@
-package org.uberfire.client.markdown.viewer;
+package org.uberfire.shared.workbench.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
-public class MarkdownType implements ClientResourceType {
+public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "markdown";
+        return "any";
     }
 
     @Override
     public String getDescription() {
-        return "Markdown file";
-    }
-
-    @Override
-    public IsWidget getIcon() {
-        return null;
+        return "Any file";
     }
 
     @Override
@@ -31,16 +24,16 @@ public class MarkdownType implements ClientResourceType {
 
     @Override
     public String getSuffix() {
-        return "md";
+        return "";
     }
 
     @Override
     public int getPriority() {
-        return 0;
+        return Integer.MIN_VALUE;
     }
 
     @Override
     public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+        return true;
     }
 }

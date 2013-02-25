@@ -7,7 +7,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.MyTestType;
-import org.uberfire.client.workbench.file.DotResourceType;
+import org.uberfire.client.workbench.type.DotResourceType;
 
 @WorkbenchEditor(identifier = "test18", supportedTypes = { MyTestType.class, DotResourceType.class })
 public class WorkbenchEditorTest19 {

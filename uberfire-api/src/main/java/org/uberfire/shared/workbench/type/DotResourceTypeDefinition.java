@@ -1,31 +1,25 @@
-package org.uberfire.client.workbench.file;
+package org.uberfire.shared.workbench.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class AnyResourceType implements ResourceType {
+public class DotResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "any";
+        return "meta data";
     }
 
     @Override
     public String getDescription() {
-        return "Any file";
-    }
-
-    @Override
-    public IsWidget getIcon() {
-        return null;
+        return "Dot file";
     }
 
     @Override
     public String getPrefix() {
-        return "";
+        return ".";
     }
 
     @Override
@@ -35,11 +29,11 @@ public class AnyResourceType implements ResourceType {
 
     @Override
     public int getPriority() {
-        return Integer.MIN_VALUE;
+        return Integer.MAX_VALUE;
     }
 
     @Override
     public boolean accept( final Path path ) {
-        return true;
+        return path.getFileName().startsWith( getPrefix() );
     }
 }

@@ -1,12 +1,11 @@
-package org.uberfire.client.workbench.file;
+package org.uberfire.shared.workbench.type;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Definition of a Resource Type
  */
-public interface ResourceType {
+public interface ResourceTypeDefinition {
 
     /**
      * A short name of the resource type
@@ -19,12 +18,6 @@ public interface ResourceType {
      * @return the description
      */
     public String getDescription();
-
-    /**
-     * An icon representing the resource type
-     * @return the icon
-     */
-    public IsWidget getIcon();
 
     /**
      * Resource prefix

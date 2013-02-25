@@ -21,7 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.uberfire.client.workbench.file.ResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
  * Classes annotated with this are considered WorkbenchParts that perform some
@@ -62,7 +62,7 @@ public @interface WorkbenchEditor {
 
     String identifier();
 
-    Class<? extends ResourceType>[] supportedTypes() default { };
+    Class<? extends ClientResourceType>[] supportedTypes() default { };
 
     int priority() default 0;
 }
