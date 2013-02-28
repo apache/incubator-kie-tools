@@ -65,4 +65,14 @@ public class ClientTypeRegistryImpl implements ClientTypeRegistry {
         }
         return null;
     }
+
+    @Override
+    public String resolveWildcardPattern( final String shortName ) {
+        for ( final ClientResourceType resourceType : localResourceTypes ) {
+            if ( resourceType.getShortName().equalsIgnoreCase( shortName ) ) {
+                return resourceType.getSimpleWildcardPattern();
+            }
+        }
+        return shortName;
+    }
 }

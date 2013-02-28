@@ -38,6 +38,14 @@ public interface ResourceTypeDefinition {
     public int getPriority();
 
     /**
+     * A simple (and maybe not very accurate) wildcard pattern to search for
+     * this type of resource.
+     * This is only used in order to optimize index and search.
+     * @return the wildcard pattern
+     */
+    public String getSimpleWildcardPattern();
+
+    /**
      * Indicates if the current parameter path matched the current resource type
      * @return true if matches, otherwise false
      */

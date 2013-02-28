@@ -40,6 +40,11 @@ public class MarkdownType implements ClientResourceType {
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "*.md";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return path.getFileName().endsWith( "." + getSuffix() );
     }

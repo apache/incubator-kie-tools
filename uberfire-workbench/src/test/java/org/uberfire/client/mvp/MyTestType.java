@@ -40,6 +40,11 @@ public class MyTestType implements ClientResourceType {
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "anything*";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return true;
     }

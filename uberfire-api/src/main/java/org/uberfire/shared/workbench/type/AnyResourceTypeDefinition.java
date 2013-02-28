@@ -33,6 +33,11 @@ public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "*";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return true;
     }

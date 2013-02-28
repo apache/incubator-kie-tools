@@ -33,6 +33,11 @@ public class TextResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
+    public String getSimpleWildcardPattern() {
+        return "*.txt";
+    }
+
+    @Override
     public boolean accept( final Path path ) {
         return path.getFileName().endsWith( "." + getSuffix() );
     }

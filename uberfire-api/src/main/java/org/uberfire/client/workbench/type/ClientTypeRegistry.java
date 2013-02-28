@@ -8,5 +8,8 @@ public interface ClientTypeRegistry {
 
     Collection<ClientResourceType> getRegisteredTypes();
 
-    ClientResourceType resolve( Path path );
+    ClientResourceType resolve( final Path path );
+
+    String resolveWildcardPattern( final String shortName );
+
 }
