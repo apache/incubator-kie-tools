@@ -5,18 +5,18 @@ import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * An Event indicating a Resource has been added
+ * An Event indicating a Resource has been opened
  */
 @Portable
-public class ResourceAddedEvent {
+public class ResourceOpenedEvent {
 
     private Path path;
 
-    public ResourceAddedEvent() {
+    public ResourceOpenedEvent() {
         //Empty constructor for Errai marshalling
     }
 
-    public ResourceAddedEvent( final Path path ) {
+    public ResourceOpenedEvent( final Path path ) {
         this.path = PortablePreconditions.checkNotNull( "path", path );
     }
 

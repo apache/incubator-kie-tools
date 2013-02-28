@@ -1,15 +1,21 @@
 package org.uberfire.client.workbench.widgets.events;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * An Event indicating a Resource has been renamed
  */
+@Portable
 public class ResourceRenamedEvent {
 
-    private final Path sourcePath;
-    private final Path destinationPath;
+    private Path sourcePath;
+    private Path destinationPath;
+
+    public ResourceRenamedEvent() {
+        //Empty constructor for Errai marshalling
+    }
 
     public ResourceRenamedEvent( final Path sourcePath,
                                  final Path destinationPath ) {
