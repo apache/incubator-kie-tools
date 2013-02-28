@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+.cellListWidget {
+    width: 250px;
+    overflow: hidden;
+    padding: 2px;
+}
 
-package org.uberfire.client.resources.i18n;
+.cellListEvenItem {
+    padding: 1px;
+    margin-bottom: 1px;
+    cursor: pointer;
+    zoom: 1;
+}
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+.cellListEmptyItem {
+    padding: 1px;
+    cursor: pointer;
+    color: rgb(150, 150, 150);
+    font-style: italic;
+    zoom: 1;
+}
 
-/**
- * Core Widgets I18N constants
- */
-public interface CoreConstants
-        extends
-        Messages {
+.cellListOddItem {
+    padding: 1px;
+    margin-bottom: 1px;
+    cursor: pointer;
+    zoom: 1;
+}
 
-    CoreConstants INSTANCE = GWT.create( CoreConstants.class );
+.cellListKeyboardSelectedItem {
+    background: #ffc; 
+}
 
-    String multipleMatchingActivitiesFound();
-
-    String activityNotFound();
-
-    String cancel();
-
-    String Previous();
-
-    String Next();
-
-    String Finish();
-
-
+.cellListSelectedItem {
+    background-color: rgb(200,200,200);
 }

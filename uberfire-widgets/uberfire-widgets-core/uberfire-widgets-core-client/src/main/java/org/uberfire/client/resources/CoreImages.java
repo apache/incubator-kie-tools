@@ -41,4 +41,8 @@ public interface CoreImages
     //A warning triangle
     @Source("images/warning-large.png")
     ImageResource warningLarge();
+
+    @Source("images/tick.png")
+    ImageResource tick();
+
 }
