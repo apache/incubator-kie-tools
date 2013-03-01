@@ -71,4 +71,15 @@ public class UserServicesImpl
             return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType );
         }
     }
+    
+    @Override
+    public Path buildPath( final String userName,
+    		               final String serviceType,
+                           final String relativePath ) {
+        if ( relativePath != null && !"".equals( relativePath ) ) {
+            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType + "/." + relativePath );
+        } else {
+            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType );
+        }
+    }
 }

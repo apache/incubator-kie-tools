@@ -26,4 +26,6 @@ public interface UserServices {
 
     public Path buildPath( final String serviceType,
                            final String relativePath );
+
+	Path buildPath(String userName, String serviceType, String relativePath);
 }
