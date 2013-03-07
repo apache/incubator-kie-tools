@@ -99,4 +99,7 @@ public interface CommonImages
     @Source("images/validation_error.gif")
     ImageResource validationError();
 
+    @Source("images/spinner.gif")
+    ImageResource spinner();
+
 }
