@@ -13,29 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.animations;
-
-import com.google.gwt.user.client.ui.Widget;
+package org.uberfire.client.animations;
 
 /**
- * A linear animation to fade a Widget from 1.0 to 0.0 opacity
+ * A pause (in between animations). Does nothing.
  */
-public class LinearFadeOutAnimation extends SequencedAnimation {
-
-    private Widget widget;
-
-    public LinearFadeOutAnimation(final Widget widget) {
-        this.widget = widget;
-    }
+public class Pause extends SequencedAnimation {
 
     @Override
     public void onUpdate(double progress) {
-        this.widget.getElement().getStyle().setOpacity( 1.0 - progress );
-    }
-
-    @Override
-    public double interpolate(double progress) {
-        return progress;
+        //Do nothing. This animation simply acts as a delay
     }
 
 }

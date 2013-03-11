@@ -77,4 +77,8 @@ public interface CommonCss
 
     @ClassName("clean-textarea")
     String cleanTextArea();
+
+    @ClassName("busy-popup")
+    String busyPopup();
+
 }

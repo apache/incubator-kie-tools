@@ -27,10 +27,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Panel;
+import org.uberfire.client.animations.LinearFadeInAnimation;
+import org.uberfire.client.animations.Pause;
+import org.uberfire.client.animations.Sequencer;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.animations.LinearFadeInAnimation;
-import org.uberfire.client.workbench.animations.Pause;
-import org.uberfire.client.workbench.animations.Sequencer;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
@@ -107,7 +107,7 @@ public class NotificationPopupView extends DecoratedPopupPanel {
             }
 
         };
-        Sequencer s = new Sequencer();
+        final Sequencer s = new Sequencer();
         s.add( fadeInAnimation, 250 );
         s.add( pauseAnimation, 2000 );
         s.run();

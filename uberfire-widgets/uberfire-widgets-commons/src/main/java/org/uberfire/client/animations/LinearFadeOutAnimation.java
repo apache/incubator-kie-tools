@@ -13,24 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.animations;
+package org.uberfire.client.animations;
 
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A linear animation to fade a Widget from 0.0 to 1.0 opacity
+ * A linear animation to fade a Widget from 1.0 to 0.0 opacity
  */
-public class LinearFadeInAnimation extends SequencedAnimation {
+public class LinearFadeOutAnimation extends SequencedAnimation {
 
     private Widget widget;
 
-    public LinearFadeInAnimation(final Widget widget) {
+    public LinearFadeOutAnimation(final Widget widget) {
         this.widget = widget;
     }
 
     @Override
     public void onUpdate(double progress) {
-        this.widget.getElement().getStyle().setOpacity( progress );
+        this.widget.getElement().getStyle().setOpacity( 1.0 - progress );
     }
 
     @Override

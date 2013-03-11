@@ -21,7 +21,7 @@
 
   <g:HTMLPanel>
     <b:Modal ui:field="popup" title="Clone Repository" backdrop="STATIC" keyboard="true" animation="true">
-      <b:WellForm type="HORIZONTAL">
+      <b:Well>
         <b:Fieldset>
           <b:Legend>
             Repository Infomation
@@ -60,7 +60,7 @@
             </b:Controls>
           </b:ControlGroup>
         </b:Fieldset>
-      </b:WellForm>
+      </b:Well>
       <b:ModalFooter>
         <b:Button type="DEFAULT" ui:field="cancel">Cancel</b:Button>
         <b:Button icon="CLOUD_DOWNLOAD" type="PRIMARY" ui:field="clone">Clone</b:Button>

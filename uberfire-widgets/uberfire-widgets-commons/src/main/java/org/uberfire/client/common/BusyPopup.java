@@ -16,15 +16,19 @@
 
 package org.uberfire.client.common;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.animations.LinearFadeInAnimation;
+import org.uberfire.client.animations.LinearFadeOutAnimation;
 
-public class BusyPopup extends Composite {
+/**
+ * A simple pop-up to show messages while "long running" activities take place
+ */
+public class BusyPopup extends DecoratedPopupPanel {
 
     interface LoadingViewBinder
             extends
@@ -35,26 +39,43 @@ public class BusyPopup extends Composite {
     private static LoadingViewBinder uiBinder = GWT.create( LoadingViewBinder.class );
 
     @UiField
-    Modal popup;
-
-    @UiField
     Label message;
 
     private static final BusyPopup INSTANCE = new BusyPopup();
 
+    private static final LinearFadeInAnimation fadeInAnimation = new LinearFadeInAnimation( INSTANCE ) {
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            INSTANCE.center();
+        }
+    };
+
+    private static final LinearFadeOutAnimation fadeOutAnimation = new LinearFadeOutAnimation( INSTANCE ) {
+
+        @Override
+        public void onComplete() {
+            super.onComplete();
+            INSTANCE.hide();
+        }
+    };
+
     private BusyPopup() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
-        popup.setAnimation( false );
+        setWidget( uiBinder.createAndBindUi( this ) );
+
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        setGlassEnabled( true );
     }
 
     public static void showMessage( final String message ) {
         INSTANCE.message.setText( message );
-        INSTANCE.popup.show();
+        fadeInAnimation.run( 250 );
     }
 
     public static void close() {
-        INSTANCE.popup.hide();
+        fadeOutAnimation.run( 250 );
     }
 
 }

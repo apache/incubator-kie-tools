@@ -18,17 +18,15 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="images" type="org.uberfire.client.resources.CommonImages"/>
+  <ui:with field="resources" type="org.uberfire.client.resources.CommonResources"/>
 
-  <g:HTMLPanel>
-    <b:Modal ui:field="popup" backdrop="STATIC" keyboard="true" animation="true">
-      <b:Well>
-        <g:HorizontalPanel width="100%">
-          <g:Image resource="{images.spinner}"/>
-          <g:Label ui:field="message" />
-        </g:HorizontalPanel>
-      </b:Well>
-    </b:Modal>
+  <g:HTMLPanel styleName="{resources.CSS.busyPopup}">
+    <b:Well>
+      <g:HorizontalPanel width="100%">
+        <g:Image resource="{resources.images.spinner}"/>
+        <g:Label ui:field="message" />
+      </g:HorizontalPanel>
+    </b:Well>
   </g:HTMLPanel>
 
 </ui:UiBinder>

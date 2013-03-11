@@ -17,17 +17,15 @@ package org.uberfire.client.workbench.widgets.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.workbench.animations.LinearFadeOutAnimation;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.client.animations.LinearFadeOutAnimation;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
 /**
  * Manage the display and removal of Notification messages

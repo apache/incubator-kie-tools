@@ -121,3 +121,7 @@
     border: none !important;
     width: 95%;
 }
+
+.busy-popup {
+    width: 300px;
+}
