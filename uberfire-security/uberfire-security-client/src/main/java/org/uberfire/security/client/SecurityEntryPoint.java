@@ -32,6 +32,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
+import static org.jboss.errai.bus.client.api.base.MessageBuilder.createConversation;
 import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 @EntryPoint
@@ -110,7 +111,7 @@ public class SecurityEntryPoint {
                 } catch (AuthorizationException ex) {
                     redirect("/login.jsp");
                 } catch (Throwable ex) {
-                    throw new RuntimeException(ex);
+                    //Let other ErrorCallbacks handle specific errors
                 }
             }
         });
