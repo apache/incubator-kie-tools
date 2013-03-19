@@ -19,6 +19,7 @@ package org.uberfire.client.common;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,6 +39,15 @@ public class BusyPopup extends DecoratedPopupPanel {
 
     private static LoadingViewBinder uiBinder = GWT.create( LoadingViewBinder.class );
 
+    private static Timer deferredShowTimer = new Timer() {
+        @Override
+        public void run() {
+            fadeInAnimation.run( 250 );
+        }
+    };
+
+    private static MessageState state = MessageState.HIDDEN;
+
     @UiField
     Label message;
 
@@ -49,7 +59,9 @@ public class BusyPopup extends DecoratedPopupPanel {
         public void onStart() {
             super.onStart();
             INSTANCE.center();
+            state = MessageState.VISIBLE;
         }
+
     };
 
     private static final LinearFadeOutAnimation fadeOutAnimation = new LinearFadeOutAnimation( INSTANCE ) {
@@ -58,6 +70,7 @@ public class BusyPopup extends DecoratedPopupPanel {
         public void onComplete() {
             super.onComplete();
             INSTANCE.hide();
+            state = MessageState.HIDDEN;
         }
     };
 
@@ -71,11 +84,19 @@ public class BusyPopup extends DecoratedPopupPanel {
 
     public static void showMessage( final String message ) {
         INSTANCE.message.setText( message );
-        fadeInAnimation.run( 250 );
+        deferredShowTimer.schedule( 250 );
     }
 
     public static void close() {
-        fadeOutAnimation.run( 250 );
+        deferredShowTimer.cancel();
+        if ( state == MessageState.VISIBLE ) {
+            fadeOutAnimation.run( 250 );
+        }
+    }
+
+    private enum MessageState {
+        HIDDEN,
+        VISIBLE
     }
 
 }
