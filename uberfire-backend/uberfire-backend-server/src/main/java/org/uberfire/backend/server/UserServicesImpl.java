@@ -41,8 +41,8 @@ public class UserServicesImpl
         UserServices {
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    @Named("ioSystemStrategy")
+    private IOService ioSystemService;
 
     @Inject
     @SessionScoped
@@ -52,7 +52,7 @@ public class UserServicesImpl
 
     @PostConstruct
     public void init() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
         if ( fsIterator.hasNext() ) {
             final FileSystem bootstrap = fsIterator.next();
             final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
@@ -71,10 +71,10 @@ public class UserServicesImpl
             return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType );
         }
     }
-    
+
     @Override
     public Path buildPath( final String userName,
-    		               final String serviceType,
+                           final String serviceType,
                            final String relativePath ) {
         if ( relativePath != null && !"".equals( relativePath ) ) {
             return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType + "/." + relativePath );

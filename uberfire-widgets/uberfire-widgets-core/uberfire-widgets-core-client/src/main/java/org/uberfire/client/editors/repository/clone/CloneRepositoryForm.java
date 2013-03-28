@@ -45,6 +45,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -69,6 +70,9 @@ public class CloneRepositoryForm
 
     @Inject
     private Caller<FileExplorerRootService> rootService;
+
+    @Inject
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
     private Event<Root> event;
@@ -149,11 +153,16 @@ public class CloneRepositoryForm
             return;
         }
 
+        final String scheme = "git";
+        final String alias = nameTextBox.getText();
+        final String origin = gitURLTextBox.getText();
+        final String username = usernameTextBox.getText();
+        final String password = passwordTextBox.getText();
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( "username", usernameTextBox.getText() );
-        env.put( "password", passwordTextBox.getText() );
-        env.put( "origin", gitURLTextBox.getText() );
-        final String uri = "git://" + nameTextBox.getText();
+        env.put( "username", username );
+        env.put( "password", password );
+        env.put( "origin", origin );
+        final String uri = scheme + "://" + alias;
 
         vfsService.call( new RemoteCallback<FileSystem>() {
                              @Override
@@ -170,6 +179,17 @@ public class CloneRepositoryForm
                                          event.fire( newRoot );
                                      }
                                  } ).addRoot( newRoot );
+
+                                 repositoryService.call( new RemoteCallback<Void>() {
+                                     @Override
+                                     public void callback( Void response ) {
+                                         //Nothing to do
+                                     }
+                                 } ).cloneRepository( scheme,
+                                                      alias,
+                                                      origin,
+                                                      username,
+                                                      password );
                              }
                          },
                          new ErrorCallback() {

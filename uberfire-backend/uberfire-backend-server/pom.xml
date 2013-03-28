@@ -31,6 +31,10 @@
   <name>UberFire Backend Server</name>
   <description>UberFire Backend Server</description>
 
+  <properties>
+    <jasypt.version>1.9.0</jasypt.version>
+  </properties>
+
   <dependencies>
 
     <!-- Internal dependencies -->
@@ -83,6 +87,13 @@
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-bus</artifactId>
 		</dependency>
+
+    <!-- Encryption\Decryption service-->
+    <dependency>
+      <groupId>org.jasypt</groupId>
+      <artifactId>jasypt</artifactId>
+      <version>${jasypt.version}</version>
+    </dependency>
 
   </dependencies>
 

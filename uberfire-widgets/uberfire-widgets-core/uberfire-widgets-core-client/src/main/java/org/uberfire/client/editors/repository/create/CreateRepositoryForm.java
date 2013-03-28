@@ -47,6 +47,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -72,6 +73,9 @@ public class CreateRepositoryForm
 
     @Inject
     private Caller<FileExplorerRootService> rootService;
+
+    @Inject
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
     private Event<Root> event;
@@ -128,11 +132,15 @@ public class CreateRepositoryForm
             return;
         }
 
-        final Map<String, Object> env = new HashMap<String, Object>( 2 );
-        env.put( "username", passwordTextBox.getText() );
-        env.put( "password", usernameTextBox.getText() );
+        final String scheme = "git";
+        final String alias = nameTextBox.getText();
+        final String username = usernameTextBox.getText();
+        final String password = passwordTextBox.getText();
+        final Map<String, Object> env = new HashMap<String, Object>( 3 );
+        env.put( "username", username );
+        env.put( "password", password );
         env.put( "init", true );
-        final String uri = "git://" + nameTextBox.getText();
+        final String uri = scheme + "://" + alias;
 
         vfsService.call( new RemoteCallback<FileSystem>() {
             @Override
@@ -149,6 +157,17 @@ public class CreateRepositoryForm
                         event.fire( newRoot );
                     }
                 } ).addRoot( newRoot );
+
+                repositoryService.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void response ) {
+                        //Nothing to do
+                    }
+                } ).createRepository( scheme,
+                                      alias,
+                                      username,
+                                      password );
+
             }
         } ).newFileSystem( uri, env );
 

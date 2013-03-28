@@ -28,6 +28,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
 import org.uberfire.backend.vfs.ActiveFileSystems;
+import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
@@ -43,18 +44,21 @@ public class FileExplorerRootServiceImpl
 
     @Inject
     @Named("fs")
-    private ActiveFileSystems fileSystems;
+    private ActiveFileSystems activeFileSystems;
 
     @PostConstruct
     protected void init() {
-        setupGitRepos();
+        setupRepos();
     }
 
-    private void setupGitRepos() {
-        final Path rootPath = fileSystems.getBootstrapFileSystem().getRootDirectories().get( 0 );
-        final Root root = new Root( rootPath, new PathPlaceRequest( rootPath, "RepositoryEditor" ) );
-
-        roots.add( root );
+    private void setupRepos() {
+        final Collection<FileSystem> fileSystems = activeFileSystems.fileSystems();
+        for ( FileSystem fileSystem : fileSystems ) {
+            final Path rootPath = fileSystem.getRootDirectories().get( 0 );
+            final Root root = new Root( rootPath, new PathPlaceRequest( rootPath,
+                                                                        "RepositoryEditor" ) );
+            roots.add( root );
+        }
     }
 
     @Override
