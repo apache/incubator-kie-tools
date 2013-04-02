@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thoughtworks.xstream.XStream;
-
 public class ConfigGroup {
 
     private String name;
@@ -61,7 +59,6 @@ public class ConfigGroup {
         } else {
             return configItem.getValue();
         }
-
     }
 
     public boolean isEnabled() {
@@ -72,9 +69,4 @@ public class ConfigGroup {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        XStream xstream = new XStream();
-        return xstream.toXML( this );
-    }
 }

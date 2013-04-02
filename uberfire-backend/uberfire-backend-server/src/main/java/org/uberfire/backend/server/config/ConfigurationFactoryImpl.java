@@ -31,10 +31,10 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     @Override
     public ConfigItem<Boolean> newConfigItem( final String name,
                                               final boolean valueType ) {
-        final ConfigItem<Boolean> stringConfigItem = new ConfigItem<Boolean>();
-        stringConfigItem.setName( name );
-        stringConfigItem.setValue( valueType );
-        return stringConfigItem;
+        final ConfigItem<Boolean> booleanConfigItem = new ConfigItem<Boolean>();
+        booleanConfigItem.setName( name );
+        booleanConfigItem.setValue( valueType );
+        return booleanConfigItem;
     }
 
     @Override

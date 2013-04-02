@@ -32,7 +32,7 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
             repository.addEnvironmentParameter( GitRepository.USERNAME,
                                                 repoConfig.getConfigItemValue( "username" ) );
             repository.addEnvironmentParameter( GitRepository.PASSWORD,
-                                                repoConfig.getConfigItemValue( "password" ) );
+                                                secureService.decrypt( repoConfig.getConfigItemValue( "password" ) ) );
 
             if ( !repository.isValid() ) {
                 throw new IllegalStateException( "Repository " + repoConfig.getName() + " not valid" );

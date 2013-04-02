@@ -12,7 +12,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.thoughtworks.xstream.XStream;
 import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
@@ -31,6 +30,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Inject
     @Named("system")
     private Repository systemRepository;
+
+    @Inject
+    private ConfigGroupMarshaller marshaller;
 
     @Inject
     private Identity identity;
@@ -73,10 +75,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                                                                                            }
                                                                                        } );
         final Iterator<Path> it = foundConfigs.iterator();
-        final XStream xstream = new XStream();
         while ( it.hasNext() ) {
             final String content = ioSystemService.readAllString( it.next() );
-            final ConfigGroup configGroup = (ConfigGroup) xstream.fromXML( content );
+            final ConfigGroup configGroup = marshaller.unmarshall( content );
             configGroups.add( configGroup );
         }
         configuration.put( type,
@@ -93,8 +94,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             final OutputStream outputStream = ioSystemService.newOutputStream( filePath,
                                                                                StandardOpenOption.TRUNCATE_EXISTING,
                                                                                commentedOption );
-            System.out.println( configGroup.toString() );
-            outputStream.write( configGroup.toString().getBytes( "UTF-8" ) );
+
+            final String xml = marshaller.marshall( configGroup );
+            System.out.println( xml );
+            outputStream.write( xml.getBytes( "UTF-8" ) );
             outputStream.close();
 
             return true;

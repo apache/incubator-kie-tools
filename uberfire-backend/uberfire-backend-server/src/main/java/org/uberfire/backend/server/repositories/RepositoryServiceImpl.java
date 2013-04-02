@@ -88,8 +88,8 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                                             scheme ) );
         repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "username",
                                                                             username ) );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "password",
-                                                                            password ) );
+        repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( "password",
+                                                                                   password ) );
         repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "origin",
                                                                             origin ) );
         addRepository( repositoryConfig );
