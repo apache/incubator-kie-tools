@@ -51,7 +51,7 @@
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.7</logback.version>
     <errai.version>2.2.0.Final</errai.version>
-    <bootstrap.version>2.2.1.0-SNAPSHOT</bootstrap.version>
+    <bootstrap.version>2.2.1.0-20130321.211055-27</bootstrap.version>
     <gwt.version>2.5.0</gwt.version>
     <gwt.maven.version>2.5.0</gwt.maven.version>
     <mvel.version>2.1.Beta8</mvel.version>
