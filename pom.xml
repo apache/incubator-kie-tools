@@ -60,7 +60,7 @@
     <gwt-dnd.version>3.1.2</gwt-dnd.version>
     <hamcrest.version>1.3</hamcrest.version>
     <jasypt.version>1.9.0</jasypt.version>
-    <jacc.version>1.9.0</jacc.version>
+    <jacc.version>1.4.0</jacc.version>
   </properties>
 
   <scm>
