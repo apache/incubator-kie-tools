@@ -718,6 +718,12 @@
         <version>1.10</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jasypt</groupId>
+        <artifactId>jasypt</artifactId>
+        <version>${jasypt.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
