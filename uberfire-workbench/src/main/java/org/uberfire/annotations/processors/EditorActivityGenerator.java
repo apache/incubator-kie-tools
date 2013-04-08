@@ -188,7 +188,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         root.put( "priority",
                   priority.toString().replace( ",", "" ) );
         root.put( "associatedResources",
-                  format( associatedResources ) );
+                  GeneratorUtils.formatAssociatedResources( associatedResources ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStart1ParameterMethodName",
@@ -254,17 +254,4 @@ public class EditorActivityGenerator extends AbstractGenerator {
         return sw.getBuffer();
     }
 
-    private String format( final List<String> resourceTypes ) {
-        if ( resourceTypes == null || resourceTypes.size() == 0 ) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-
-        for ( final String resourceType : resourceTypes ) {
-            sb.append( "@AssociatedResource" ).append( '(' ).append( resourceType ).append( ".class" ).append( ')' ).append( "\n" );
-        }
-
-        return sb.toString();
-    }
 }

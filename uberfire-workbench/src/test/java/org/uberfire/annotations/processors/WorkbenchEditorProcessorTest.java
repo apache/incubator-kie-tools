@@ -20,7 +20,6 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,7 +27,6 @@ import static org.junit.Assert.*;
 /**
  * Tests for Editor related class generation
  */
-@Ignore
 public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
     @Test
@@ -76,7 +74,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                                                                                 "org/uberfire/annotations/processors/WorkbenchEditorTest3" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return either a java.lang.String or a com.google.gwt.user.client.ui.IsWidget." );
+                                "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 
@@ -378,7 +376,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchEditorHasTitleWidget() throws FileNotFoundException {
+    public void testWorkbenchEditorMultipleSupportedTypes() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest17";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest17.expected";
 
@@ -394,31 +392,6 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
-    }
-
-    @Test
-    public void testWorkbenchEditorHasTitleAndTitleWidget() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest18";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest18.expected";
-
-        final Result result = new Result();
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                                  "The WorkbenchEditor has a @WorkbenchPartTitle annotated method that returns java.lang.String and @WorkbenchPartTitle annotated method that returns com.google.gwt.user.client.ui.IsWidget. The IsWidget method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

@@ -22,10 +22,11 @@ import java.util.Collections;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import com.google.gwt.user.client.ui.InlineLabel;
 
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.workbench.annotations.ResourceType;
+import org.uberfire.client.workbench.annotations.AssociatedResource;
+import org.uberfire.client.workbench.annotations.AssociatedResources;
+import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -37,8 +38,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@ResourceType("test11")
 @Identifier("test11")
+@AssociatedResources({
+    org.uberfire.client.mvp.MyTestType.class
+})
+
+@Priority(0)
 /*
  * WARNING! This class is generated. Do not modify.
  */
@@ -65,8 +70,8 @@ public class WorkbenchEditorTest11Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public IsWidget getTitleWidget() {
-        return new InlineLabel(realPresenter.getTitle());
+    public String getTitle() {
+        return realPresenter.getTitle();
     }
 
     @Override

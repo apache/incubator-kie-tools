@@ -16,7 +16,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.annotations.AssociatedResource;
+import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -92,13 +92,13 @@ public class ActivityBeansCache {
     }
 
     private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {
-        List<AssociatedResource> associatedResources = new ArrayList<AssociatedResource>();
+        AssociatedResources associatedResources = null;
         Priority priority = null;
 
         final Set<Annotation> annotations = beanDefinition.getQualifiers();
         for ( Annotation a : annotations ) {
-            if ( a instanceof AssociatedResource ) {
-                associatedResources.add( (AssociatedResource) a );
+            if ( a instanceof AssociatedResources ) {
+                associatedResources = (AssociatedResources) a;
                 continue;
             }
             if ( a instanceof Priority ) {
@@ -107,7 +107,7 @@ public class ActivityBeansCache {
             }
         }
 
-        if ( associatedResources.isEmpty() ) {
+        if ( associatedResources==null ) {
             return null;
         }
 
@@ -118,10 +118,10 @@ public class ActivityBeansCache {
             priorityValue = priority.value();
         }
 
-        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>( associatedResources.size() );
-        for ( int i = 0; i < associatedResources.size(); i++ ) {
-            types.add( associatedResources.get( i ).value() );
-        }
+        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>( );
+//        for ( int i = 0; i < associatedResources.size(); i++ ) {
+//            types.add( associatedResources.get( i ).value() );
+//        }
 
         return Pair.newPair( priorityValue, types );
     }

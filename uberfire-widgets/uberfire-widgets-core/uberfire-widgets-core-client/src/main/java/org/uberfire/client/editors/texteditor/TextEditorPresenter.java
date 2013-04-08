@@ -32,9 +32,10 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.type.DotResourceType;
 
 @Dependent
-@WorkbenchEditor(identifier = "TextEditor", supportedTypes = { TextResourceType.class })
+@WorkbenchEditor(identifier = "TextEditor", supportedTypes = { TextResourceType.class, DotResourceType.class })
 public class TextEditorPresenter {
 
     public interface View

@@ -23,16 +23,15 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
 
 /**
- * An identifier for a Place (WorkbenchPart or Popup)
+ * Definition of a supported resource types
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface AssociatedResource {
+public @interface AssociatedResources {
 
-    Class<? extends ClientResourceType> value();
+    Class<? extends ClientResourceType>[] value();
 
 }

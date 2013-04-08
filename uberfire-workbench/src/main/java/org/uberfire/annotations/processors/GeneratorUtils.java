@@ -957,4 +957,23 @@ public class GeneratorUtils {
 
         return sb.toString();
     }
+
+    public static String formatAssociatedResources( final List<String> resourceTypes ) {
+        if ( resourceTypes == null || resourceTypes.size() == 0 ) {
+            return null;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append( "@AssociatedResources" ).append( "({\n" );
+        for ( final String resourceType : resourceTypes ) {
+            sb.append( "    ").append( resourceType ).append( ".class" ).append( ",\n" );
+        }
+        sb.delete( sb.length() - 2,
+                   sb.length() );
+        sb.append( "\n})\n" );
+
+        return sb.toString();
+    }
+
 }
