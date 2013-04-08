@@ -30,12 +30,14 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
@@ -80,6 +82,7 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         setupMenu();
+        setupFileSystems();
         hideLoadingPopup();
     }
 
@@ -101,31 +104,41 @@ public class ShowcaseEntryPoint {
                         } )
                         .endMenu()
                         .newTopLevelMenu( "Perspectives" )
-                            .withItems( getPerspectives() )
+                        .withItems( getPerspectives() )
                         .endMenu()
                         .newTopLevelMenu( "Screens" )
-                            .withItems( getScreens() )
+                        .withItems( getScreens() )
                         .endMenu()
                         .newTopLevelMenu( "Logout" )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    redirect( GWT.getModuleBaseURL() + "uf_logout" );
-                                }
-                            } )
+                        .respondsWith( new Command() {
+                            @Override
+                            public void execute() {
+                                redirect( GWT.getModuleBaseURL() + "uf_logout" );
+                            }
+                        } )
                         .endMenu()
                         .newSearchItem( "search" )
-                            .position( MenuPosition.RIGHT )
-                            .respondsWith( new MenuSearchItem.SearchCommand() {
-                                @Override
-                                public void execute( final String term ) {
-                                    Window.alert( "Search:" + term );
-                                }
-                            } )
+                        .position( MenuPosition.RIGHT )
+                        .respondsWith( new MenuSearchItem.SearchCommand() {
+                            @Override
+                            public void execute( final String term ) {
+                                Window.alert( "Search:" + term );
+                            }
+                        } )
                         .endMenu()
                         .build();
 
         menubar.aggregateWorkbenchMenus( menus );
+    }
+
+    private void setupFileSystems() {
+        rootService.call( new RemoteCallback<Collection<Root>>() {
+
+            @Override
+            public void callback( final Collection<Root> roots ) {
+                //Nothing to do; this just ensures FileSystems have been initialized
+            }
+        } ).listRoots();
     }
 
     private List<MenuItem> getScreens() {
