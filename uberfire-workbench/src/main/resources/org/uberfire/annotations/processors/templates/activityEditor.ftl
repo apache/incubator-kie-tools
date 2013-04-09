@@ -30,7 +30,6 @@ import org.uberfire.client.mvp.UberView;
 </#if>
 import org.uberfire.client.workbench.annotations.Identifier;
 <#if associatedResources??>
-import org.uberfire.client.workbench.annotations.AssociatedResource;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 </#if>
 import org.uberfire.client.workbench.annotations.Priority;

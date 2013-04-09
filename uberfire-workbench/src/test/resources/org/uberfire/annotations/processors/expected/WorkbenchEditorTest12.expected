@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.workbench.annotations.AssociatedResource;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;

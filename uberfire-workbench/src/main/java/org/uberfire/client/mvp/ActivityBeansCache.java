@@ -30,8 +30,8 @@ import static java.util.Collections.*;
 public class ActivityBeansCache {
 
     private final Map<String, IOCBeanDef<Activity>> activitiesById;
-    private final List<ActivityAndMetaInfo>         activities;
-    private final IOCBeanManager                    iocManager;
+    private final List<ActivityAndMetaInfo> activities;
+    private final IOCBeanManager iocManager;
 
     @Inject
     public ActivityBeansCache( final IOCBeanManager iocManager ) {
@@ -107,7 +107,7 @@ public class ActivityBeansCache {
             }
         }
 
-        if ( associatedResources==null ) {
+        if ( associatedResources == null ) {
             return null;
         }
 
@@ -118,10 +118,10 @@ public class ActivityBeansCache {
             priorityValue = priority.value();
         }
 
-        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>( );
-//        for ( int i = 0; i < associatedResources.size(); i++ ) {
-//            types.add( associatedResources.get( i ).value() );
-//        }
+        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>();
+        for ( Class<? extends ClientResourceType> type : associatedResources.value() ) {
+            types.add( type );
+        }
 
         return Pair.newPair( priorityValue, types );
     }
@@ -146,7 +146,7 @@ public class ActivityBeansCache {
     private class ActivityAndMetaInfo {
 
         private final IOCBeanDef<Activity> activityBean;
-        private final int                  priority;
+        private final int priority;
         private final ClientResourceType[] resourceTypes;
 
         private ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
