@@ -188,15 +188,18 @@ public class UberFireSecurityFilter implements Filter {
 
     private AuthenticationScheme getAuthenticationScheme( final Map<String, String> options ) {
         final String authScheme = options.get( AUTH_SCHEME_KEY );
+        AuthenticationScheme scheme = null;
         if ( authScheme == null || authScheme.isEmpty() ) {
             return new FormAuthenticationScheme();
+        }  else {
+            scheme =  loadConfigClazz( authScheme, AuthenticationScheme.class );
         }
 
-        if ( authScheme.equalsIgnoreCase( FORM ) ) {
+        if ( scheme == null && authScheme.equalsIgnoreCase( FORM ) ) {
             return new FormAuthenticationScheme();
         }
 
-        return null;
+        return scheme;
     }
 
     @Override
@@ -296,7 +299,7 @@ public class UberFireSecurityFilter implements Filter {
         try {
             final Class<?> clazz = Class.forName( clazzName );
 
-            if ( !clazz.isAssignableFrom( typeOf ) ) {
+            if ( !typeOf.isAssignableFrom( clazz ) ) {
                 LOG.error( "Invalid class type '" + typeOf.getName() + "'" );
                 return null;
             }

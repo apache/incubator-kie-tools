@@ -27,6 +27,7 @@ import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.AuthenticationStatus;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
+import org.uberfire.security.impl.auth.UserNameCredential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
 import static java.util.Collections.*;
@@ -74,7 +75,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
             };
         }
 
-        final UsernamePasswordCredential realCredential = UsernamePasswordCredential.class.cast(credential);
+        final UserNameCredential realCredential = UserNameCredential.class.cast(credential);
 
         if (!authenticationSource.authenticate(realCredential)) {
             return new AuthenticationResult() {

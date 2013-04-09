@@ -163,7 +163,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         final String originalRequest = requestCache.remove(httpContext.getRequest().getSession().getId());
-        if (originalRequest != null && !originalRequest.isEmpty()) {
+        if (originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted()) {
             try {
                 httpContext.getResponse().sendRedirect(originalRequest);
             } catch (IOException e) {
@@ -179,5 +179,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         for (final AuthenticatedStorageProvider storeProvider : authStorageProviders) {
             storeProvider.cleanup(context);
         }
+        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
+        httpContext.getRequest().getSession().invalidate();
     }
 }

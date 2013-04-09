@@ -60,7 +60,7 @@
     <gwt-dnd.version>3.1.2</gwt-dnd.version>
     <hamcrest.version>1.3</hamcrest.version>
     <jasypt.version>1.9.0</jasypt.version>
-    <jacc.version>1.4.0</jacc.version>
+    <jacc.version>1.4</jacc.version>
   </properties>
 
   <scm>
@@ -723,6 +723,13 @@
         <groupId>org.jasypt</groupId>
         <artifactId>jasypt</artifactId>
         <version>${jasypt.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.security.jacc</groupId>
+        <artifactId>javax.security.jacc-api</artifactId>
+        <version>${jacc.version}</version>
+        <scope>provided</scope>
       </dependency>
 
     </dependencies>

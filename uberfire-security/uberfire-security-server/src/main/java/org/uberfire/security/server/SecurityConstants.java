@@ -57,4 +57,7 @@ public interface SecurityConstants {
     final String LOGOUT_URI = "/uf_logout";
 
     final String SUBJECT_ON_SESSION_KEY = "org.uf.subject";
+
+    final String ROLES_IN_CONTEXT_KEY = "org.uf.context.roles";
+
 }

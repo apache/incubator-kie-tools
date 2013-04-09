@@ -18,18 +18,13 @@ package org.uberfire.security.impl.auth;
 
 import org.uberfire.security.auth.Credential;
 
-public class UsernamePasswordCredential implements Credential {
+public class UsernamePasswordCredential extends UserNameCredential {
 
-    private final String userName;
     private final Object passwd;
 
     public UsernamePasswordCredential(final String userName, final Object passwd) {
-        this.userName = userName;
+        super(userName);
         this.passwd = passwd;
-    }
-
-    public String getUserName() {
-        return userName;
     }
 
     public Object getPassword() {
