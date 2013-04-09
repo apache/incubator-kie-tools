@@ -26,19 +26,12 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
-import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.security.Identity;
 
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
-/**
- * Workbench services
- */
-@Service
 @ApplicationScoped
-public class UserServicesImpl
-        implements
-        UserServices {
+public class UserServicesImpl {
 
     @Inject
     @Named("ioSystemStrategy")
@@ -62,7 +55,6 @@ public class UserServicesImpl
         }
     }
 
-    @Override
     public Path buildPath( final String serviceType,
                            final String relativePath ) {
         if ( relativePath != null && !"".equals( relativePath ) ) {
@@ -72,7 +64,6 @@ public class UserServicesImpl
         }
     }
 
-    @Override
     public Path buildPath( final String userName,
                            final String serviceType,
                            final String relativePath ) {

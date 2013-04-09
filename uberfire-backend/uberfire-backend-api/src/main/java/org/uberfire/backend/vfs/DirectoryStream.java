@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package org.uberfire.backend.util;
+package org.uberfire.backend.vfs;
 
-import java.util.Date;
+import org.kie.commons.java.nio.IOException;
 
-/**
- * For showing a log in the GUI (last X messages).
- */
-public class LogEntry {
+public interface DirectoryStream<T> extends Iterable<T> {
 
-    public int severity;
-    public String message;
-    public Date timestamp;
+    public static interface Filter<T> {
 
+        boolean accept( T entry ) throws IOException;
+    }
 }

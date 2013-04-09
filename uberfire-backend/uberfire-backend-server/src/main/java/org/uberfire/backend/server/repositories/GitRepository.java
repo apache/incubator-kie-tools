@@ -52,8 +52,8 @@ public class GitRepository implements Repository {
     }
 
     @Override
-    public URI getUri() {
-        return URI.create( getScheme() + "://" + getAlias() );
+    public String getUri() {
+        return getScheme() + "://" + getAlias();
     }
 
     @Override

@@ -18,16 +18,15 @@ package org.uberfire.backend.vfs;
 
 import java.util.Map;
 
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.backend.vfs.impl.BasicAttributesVO;
 
-public final class VFSTempUtil {
+public final class AttrsUtil {
 
-    private VFSTempUtil() {
+    private AttrsUtil() {
     }
 
-    public static BasicFileAttributes toBasicFileAttributes(final Map attrs) {
-        return new BasicAttributesVO(attrs);
+    public static BasicFileAttributes toBasicFileAttributes( final Map<String, ?> attrs ) {
+        return new BasicAttributesVO( attrs );
     }
 
 }

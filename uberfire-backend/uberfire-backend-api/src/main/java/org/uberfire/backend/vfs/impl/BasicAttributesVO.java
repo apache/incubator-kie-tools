@@ -16,92 +16,47 @@
 
 package org.uberfire.backend.vfs.impl;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.backend.vfs.BasicFileAttributes;
 
 @Portable
 public class BasicAttributesVO implements BasicFileAttributes {
 
     private boolean isRegularFile;
     private boolean isDirectory;
-    private boolean isSymbolicLink;
-    private boolean isOther;
-    private Long    size;
-    //    private FileTime lastModifiedTime;
-//    private FileTime lastAccessTime;
-//    private FileTime creationTime;
-    private Object  fileKey;
+    private Long size;
+    private Date lastModifiedTime;
+    private Date lastAccessTime;
+    private Date creationTime;
 
     public BasicAttributesVO() {
     }
 
-    public BasicAttributesVO( Map attrs ) {
+    public BasicAttributesVO( final Map<String, ?> attrs ) {
         this.isRegularFile = (Boolean) attrs.get( "isRegularFile" );
         this.isDirectory = (Boolean) attrs.get( "isDirectory" );
-        this.fileKey = attrs.get( "fileKey" );
-//        this.isOther = (Boolean) attrs.get( "isOther" );
-//        this.isSymbolicLink = (Boolean) attrs.get( "isSymbolicLink" );
-//        this.creationTime = creationTime;
-//        this.lastAccessTime = lastAccessTime;
-//        this.lastModifiedTime = lastModifiedTime;
+        this.creationTime = (Date) attrs.get( "creationTime" );
+        this.lastAccessTime = (Date) attrs.get( "lastAccessTime" );
+        this.lastModifiedTime = (Date) attrs.get( "lastModifiedTime" );
         this.size = (Long) attrs.get( "size" );
     }
 
-    public BasicAttributesVO( final boolean isRegularFile,
-                              final boolean isDirectory,
-                              final boolean isOther,
-                              final boolean isSymbolicLink,
-                              final Object fileKey,
-                              final FileTime creationTime,
-                              final FileTime lastAccessTime,
-                              final FileTime lastModifiedTime,
-                              final long fileLenght ) {
-        this( isRegularFile, isDirectory, isOther, isSymbolicLink, fileKey, creationTime, lastAccessTime, lastModifiedTime, fileLenght, null, null, null, null );
-    }
-
-    public BasicAttributesVO( final boolean isRegularFile,
-                              final boolean isDirectory,
-                              final boolean isOther,
-                              final boolean isSymbolicLink,
-                              final Object fileKey,
-                              final FileTime creationTime,
-                              final FileTime lastAccessTime,
-                              final FileTime lastModifiedTime,
-                              final long fileLenght,
-                              final Boolean exists,
-                              final Boolean isReadable,
-                              final Boolean isExecutable,
-                              final Boolean isHidden ) {
-        this.isRegularFile = isRegularFile;
-        this.isDirectory = isDirectory;
-        this.isOther = isOther;
-        this.isSymbolicLink = isSymbolicLink;
-        this.fileKey = fileKey;
-//        this.creationTime = creationTime;
-//        this.lastAccessTime = lastAccessTime;
-//        this.lastModifiedTime = lastModifiedTime;
-        this.size = fileLenght;
+    @Override
+    public Date lastModifiedTime() {
+        return lastModifiedTime;
     }
 
     @Override
-    public FileTime lastModifiedTime() {
-        //return lastModifiedTime;
-        return null;
+    public Date lastAccessTime() {
+        return lastAccessTime;
     }
 
     @Override
-    public FileTime lastAccessTime() {
-//        return lastAccessTime;
-        return null;
-    }
-
-    @Override
-    public FileTime creationTime() {
-//        return creationTime;
-        return null;
+    public Date creationTime() {
+        return creationTime;
     }
 
     @Override
@@ -115,22 +70,7 @@ public class BasicAttributesVO implements BasicFileAttributes {
     }
 
     @Override
-    public boolean isSymbolicLink() {
-        return isSymbolicLink;
-    }
-
-    @Override
-    public boolean isOther() {
-        return isOther;
-    }
-
-    @Override
     public long size() {
         return size;
-    }
-
-    @Override
-    public Object fileKey() {
-        return fileKey;
     }
 }

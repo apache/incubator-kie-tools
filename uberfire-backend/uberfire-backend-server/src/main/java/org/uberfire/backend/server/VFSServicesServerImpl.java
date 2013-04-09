@@ -29,16 +29,14 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
-import org.kie.commons.java.nio.file.CopyOption;
 import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
-import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.NotDirectoryException;
-import org.kie.commons.java.nio.file.OpenOption;
 import org.kie.commons.java.nio.file.ProviderNotFoundException;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -73,7 +71,7 @@ public class VFSServicesServerImpl implements VFSService {
     public DirectoryStream<Path> newDirectoryStream( final Path dir,
                                                      final DirectoryStream.Filter<Path> filter )
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ), convert( filter ) ).iterator();
+        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ), null ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -128,16 +126,14 @@ public class VFSServicesServerImpl implements VFSService {
 
     @Override
     public Path copy( final Path source,
-                      final Path target,
-                      final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
-        return paths.convert( ioService.copy( paths.convert( source ), paths.convert( target ), options ) );
+                      final Path target ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
+        return paths.convert( ioService.copy( paths.convert( source ), paths.convert( target ) ) );
     }
 
     @Override
     public Path move( final Path source,
-                      final Path target,
-                      final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
-        return paths.convert( ioService.move( paths.convert( source ), paths.convert( target ), options ) );
+                      final Path target ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
+        return paths.convert( ioService.move( paths.convert( source ), paths.convert( target ) ) );
     }
 
     @Override
@@ -154,9 +150,8 @@ public class VFSServicesServerImpl implements VFSService {
     @Override
     public Path write( final Path path,
                        final String content,
-                       final Map<String, ?> attrs,
-                       final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return paths.convert( ioService.write( paths.convert( path ), content, attrs, options ) );
+                       final Map<String, ?> attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return paths.convert( ioService.write( paths.convert( path ), content, attrs ) );
     }
 
     @Override

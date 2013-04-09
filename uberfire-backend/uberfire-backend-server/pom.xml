@@ -78,11 +78,11 @@
       <scope>provided</scope>
     </dependency>
 
-		<!-- Errai Core -->
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-bus</artifactId>
-		</dependency>
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
 
     <!-- Encryption\Decryption service-->
     <dependency>

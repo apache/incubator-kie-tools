@@ -1,6 +1,7 @@
 package org.uberfire.backend.server.config;
 
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +44,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @PostConstruct
     public void setup() {
         try {
-            ioSystemService.newFileSystem( systemRepository.getUri(),
+            ioSystemService.newFileSystem( URI.create( systemRepository.getUri() ),
                                            systemRepository.getEnvironment(),
                                            FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE );
         } catch ( FileSystemAlreadyExistsException e ) {

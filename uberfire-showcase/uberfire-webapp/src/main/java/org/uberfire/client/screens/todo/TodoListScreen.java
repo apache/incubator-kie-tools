@@ -78,7 +78,7 @@ public class TodoListScreen
                     }
                 } ).readAllString( o );
             }
-        } ).get( "git://uf-playground/todo.md" );
+        } ).get( "default://uf-playground/todo.md" );
     }
 
     @WorkbenchPartTitle

@@ -38,6 +38,11 @@
       <artifactId>kie-nio2-model</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-validation</artifactId>
+    </dependency>
+
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

@@ -11,15 +11,15 @@ public interface RepositoryService {
 
     Collection<Repository> getRepositories();
 
-    void createRepository( String scheme,
-                           String alias,
-                           String userName,
-                           String password );
+    void createRepository( final String scheme,
+                           final String alias,
+                           final String userName,
+                           final String password );
 
-    void cloneRepository( String scheme,
-                          String alias,
-                          String origin,
-                          String userName,
-                          String password );
+    void cloneRepository( final String scheme,
+                          final String alias,
+                          final String origin,
+                          final String userName,
+                          final String password );
 
 }

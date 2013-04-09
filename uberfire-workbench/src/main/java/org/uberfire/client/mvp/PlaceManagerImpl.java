@@ -53,11 +53,9 @@ public class PlaceManagerImpl
         implements
         PlaceManager {
 
-    private final Map<PlaceRequest, Activity>       existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
-    private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts      = new HashMap<PlaceRequest, PartDefinition>();
-    private final Map<PlaceRequest, Command>        onRevealCallbacks           = new HashMap<PlaceRequest, Command>();
-
-    private final Map<PlaceRequest, Activity> activeActivities = new HashMap<PlaceRequest, Activity>();
+    private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
+    private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
+    private final Map<PlaceRequest, Command> onRevealCallbacks = new HashMap<PlaceRequest, Command>();
 
     private final ActivityManager activityManager;
 

@@ -68,7 +68,7 @@ public class ActiveFileSystemsFactory {
     private void addFileSystem( final Repository repository,
                                 final Map<String, Object> env ) {
         FileSystem fs = null;
-        final URI fsURI = repository.getUri();
+        final URI fsURI = URI.create( repository.getUri() );
         final String scheme = repository.getScheme();
         final String alias = repository.getAlias();
 

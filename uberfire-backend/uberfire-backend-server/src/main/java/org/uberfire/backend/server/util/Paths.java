@@ -17,6 +17,7 @@
 package org.uberfire.backend.server.util;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -26,6 +27,7 @@ import javax.inject.Named;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.attribute.FileTime;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
@@ -50,6 +52,9 @@ public class Paths {
         final Map<String, Object> attributes;
         if ( readAttrrs ) {
             attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
+            //TODO {porcelli} HACK! visit here when dealing with nio2 optimizations
+            attributes.put( "lastModifiedTime", new Date( ( (FileTime) attributes.get( "lastModifiedTime" ) ).toMillis() ) );
+            attributes.put( "creationTime", new Date( ( (FileTime) attributes.get( "creationTime" ) ).toMillis() ) );
         } else {
             attributes = null;
         }

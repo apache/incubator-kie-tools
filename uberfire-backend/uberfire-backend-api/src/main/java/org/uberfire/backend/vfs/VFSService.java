@@ -22,14 +22,11 @@ import org.jboss.errai.bus.client.api.interceptor.InterceptedCall;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
-import org.kie.commons.java.nio.file.CopyOption;
 import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
-import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.FileAlreadyExistsException;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.NotDirectoryException;
-import org.kie.commons.java.nio.file.OpenOption;
 import org.kie.commons.java.nio.file.ProviderNotFoundException;
 import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 
@@ -47,21 +44,21 @@ public interface VFSService {
 
     Path createDirectory( final Path dir )
             throws IllegalArgumentException, UnsupportedOperationException,
-            FileAlreadyExistsException, IOException, SecurityException;
+            FileAlreadyExistsException, IOException;
 
     Path createDirectories( final Path dir )
             throws UnsupportedOperationException, FileAlreadyExistsException,
-            IOException, SecurityException;
+            IOException;
 
     Path createDirectory( final Path dir,
                           final Map<String, ?> attrs )
             throws IllegalArgumentException, UnsupportedOperationException,
-            FileAlreadyExistsException, IOException, SecurityException;
+            FileAlreadyExistsException, IOException;
 
     Path createDirectories( final Path dir,
                             final Map<String, ?> attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException,
-            IOException, SecurityException;
+            IOException;
 
     @InterceptedCall(VFSCacheInterceptor.class)
     Map<String, Object> readAttributes( final Path path )
@@ -78,14 +75,12 @@ public interface VFSService {
             throws IllegalArgumentException, DirectoryNotEmptyException, IOException;
 
     Path copy( final Path source,
-               final Path target,
-               final CopyOption... options )
+               final Path target )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException;
 
     Path move( final Path source,
-               final Path target,
-               final CopyOption... options )
+               final Path target )
             throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException;
 
     String readAllString( final Path path )
@@ -97,8 +92,7 @@ public interface VFSService {
 
     Path write( final Path path,
                 final String content,
-                final Map<String, ?> attrs,
-                final OpenOption... options )
+                final Map<String, ?> attrs )
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
     FileSystem newFileSystem( final String uri,

@@ -27,7 +27,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
 import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.services.UserServices;
 import org.uberfire.client.workbench.services.WorkbenchServices;
 
 /**
@@ -44,7 +43,7 @@ public class WorkbenchServicesImpl
     private IOService ioSystemService;
 
     @Inject
-    private UserServices userServices;
+    private UserServicesImpl userServices;
 
     private XStream xs = new XStream();
 

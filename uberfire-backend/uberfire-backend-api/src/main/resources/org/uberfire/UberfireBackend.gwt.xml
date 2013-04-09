@@ -10,6 +10,4 @@
     <exclude name="server/**"/>
   </source>
 
-  <source path='mvp'/>
-
 </module>

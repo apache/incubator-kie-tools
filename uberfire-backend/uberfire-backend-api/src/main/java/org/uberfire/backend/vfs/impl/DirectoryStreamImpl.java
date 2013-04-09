@@ -21,9 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.DirectoryStream;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -35,12 +34,8 @@ public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
     }
 
-    public DirectoryStreamImpl(final List<Path> content) {
-        this.content = new ArrayList<Path>(content);
-    }
-
-    @Override
-    public void close() throws IOException {
+    public DirectoryStreamImpl( final List<Path> content ) {
+        this.content = new ArrayList<Path>( content );
     }
 
     @Override
@@ -55,8 +50,8 @@ public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
             @Override
             public Path next() {
-                if (i < content.size()) {
-                    final Path result = content.get(i);
+                if ( i < content.size() ) {
+                    final Path result = content.get( i );
                     i++;
                     return result;
                 } else {

@@ -43,8 +43,8 @@ public class DefaultSystemRepository implements Repository {
     }
 
     @Override
-    public URI getUri() {
-        return URI.create( getScheme() + "://" + getAlias() );
+    public String getUri() {
+        return getScheme() + "://" + getAlias();
     }
 
     @Override

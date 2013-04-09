@@ -26,10 +26,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
+import org.uberfire.backend.vfs.DirectoryStream;
+import org.uberfire.backend.vfs.AttrsUtil;
+import org.uberfire.backend.vfs.BasicFileAttributes;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
@@ -37,7 +38,6 @@ import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.VFSTempUtil;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.OnFocus;
 import org.uberfire.client.annotations.OnReveal;
@@ -120,7 +120,7 @@ public class FileExplorerPresenter {
                     vfsService.call( new RemoteCallback<Map>() {
                         @Override
                         public void callback( final Map response ) {
-                            final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                            final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
                             if ( attrs.isDirectory() ) {
                                 item.addDirectory( child );
                             } else {
@@ -162,7 +162,7 @@ public class FileExplorerPresenter {
         vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback( final Map response ) {
-                final BasicFileAttributes attrs = VFSTempUtil.toBasicFileAttributes( response );
+                final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
                 if ( attrs.isRegularFile() ) {
                     placeManager.goTo( path );
                 }

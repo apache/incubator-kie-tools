@@ -205,7 +205,6 @@
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.commons:kie-commons-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>

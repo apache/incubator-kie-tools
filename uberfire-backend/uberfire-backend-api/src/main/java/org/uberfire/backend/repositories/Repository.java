@@ -1,6 +1,5 @@
 package org.uberfire.backend.repositories;
 
-import java.net.URI;
 import java.util.Map;
 
 public interface Repository {
@@ -16,6 +15,6 @@ public interface Repository {
 
     boolean isValid();
 
-    URI getUri();
+    String getUri();
 
 }
