@@ -46,6 +46,12 @@ public class WorkbenchToolBarPresenter {
         void addToolBar( final ToolBar toolBar );
 
         void removeToolBar( final ToolBar toolBar );
+
+        int getHeight();
+
+        void hide();
+
+        void show();
     }
 
     private PlaceRequest activePlace;
@@ -70,6 +76,18 @@ public class WorkbenchToolBarPresenter {
 
     public IsWidget getView() {
         return this.view;
+    }
+
+    public int getHeight() {
+        return this.view.getHeight();
+    }
+
+    public void hide() {
+        this.view.hide();
+    }
+
+    public void show() {
+        this.view.show();
     }
 
     //Handle removing the WorkbenchPart Tool Bar items

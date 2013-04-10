@@ -19,6 +19,7 @@ public class HomePerspective {
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
+        p.setToolbarVisible( false );
         p.setName( "Home" );
 
         final PanelDefinition west = new PanelDefinitionImpl();

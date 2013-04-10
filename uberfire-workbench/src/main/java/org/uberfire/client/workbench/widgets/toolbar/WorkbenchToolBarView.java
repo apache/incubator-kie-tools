@@ -24,10 +24,20 @@ import com.github.gwtbootstrap.client.ui.ButtonToolbar;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import org.uberfire.client.resources.WorkbenchResources;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 
 /**
  * The Tool Bar widget
@@ -36,14 +46,47 @@ public class WorkbenchToolBarView extends Composite
         implements
         WorkbenchToolBarPresenter.View {
 
-    private final ButtonToolbar toolBar = new ButtonToolbar();
+    interface WorkbenchToolBarViewBinder
+            extends
+            UiBinder<Panel, WorkbenchToolBarView> {
+
+    }
+
+    private static WorkbenchToolBarViewBinder uiBinder = GWT.create( WorkbenchToolBarViewBinder.class );
+
+    @UiField
+    public FlowPanel masterContainer;
+
+    @UiField
+    public FlowPanel container;
+
+    @UiField
+    public ButtonToolbar toolBar;
+
+    @UiField
+    public SimplePanel simpleMargin;
+
+    @UiField
+    public com.google.gwt.user.client.ui.Button viewControl;
+
+    @UiField
+    public Tooltip tip;
+
+    private State state = State.EXPANDED;
+
+    enum State {
+        EXPANDED, COLLAPSED;
+    }
 
     //Map of ToolBar to GWT Widgets used to represent them
     private final Map<String, ButtonGroup> toolBarItemsMap = new HashMap<String, ButtonGroup>();
 
     public WorkbenchToolBarView() {
-        toolBar.addStyleName( WorkbenchResources.INSTANCE.CSS().toolbar() );
-        initWidget( toolBar );
+        initWidget( uiBinder.createAndBindUi( this ) );
+        tip.setText( WorkbenchConstants.INSTANCE.collapseToolbar() );
+        tip.setPlacement( Placement.LEFT );
+        tip.setWidget( viewControl );
+        simpleMargin.setVisible( false );
     }
 
     /**
@@ -54,6 +97,10 @@ public class WorkbenchToolBarView extends Composite
     public void addToolBar( final ToolBar _toolBar ) {
 
         final ButtonGroup bgroup = new ButtonGroup();
+
+        if ( toolBarItemsMap.size() == 0 ) {
+            bgroup.getElement().getStyle().setPaddingLeft( 19, Style.Unit.PX );
+        }
 
         for ( final ToolBarItem item : _toolBar.getItems() ) {
             bgroup.add( new Tooltip( item.getTooltip() ) {{
@@ -82,6 +129,135 @@ public class WorkbenchToolBarView extends Composite
     @Override
     public void removeToolBar( final ToolBar _toolBar ) {
         toolBar.remove( toolBarItemsMap.remove( _toolBar.getId() ) );
+    }
+
+    @Override
+    public int getHeight() {
+        if ( isExpanded() ) {
+            return getOffsetHeight();
+        }
+        return 0;
+    }
+
+    private boolean isExpanded() {
+        return state == State.EXPANDED;
+    }
+
+    @Override
+    public void hide() {
+        container.setVisible( false );
+        simpleMargin.setVisible( true );
+    }
+
+    @Override
+    public void show() {
+        container.setVisible( true );
+        simpleMargin.setVisible( false );
+    }
+
+    @UiHandler("viewControl")
+    void handleClick( final ClickEvent e ) {
+        if ( isExpanded() ) {
+            collapse();
+        } else {
+            expand();
+        }
+    }
+
+    private void expand() {
+        container.removeFromParent();
+        container.getElement().getStyle().clearTop();
+        container.getElement().getStyle().clearPosition();
+        container.getElement().getStyle().clearZIndex();
+        masterContainer.add( container );
+
+        tip.setText( WorkbenchConstants.INSTANCE.collapseToolbar() );
+        tip.setPlacement( Placement.LEFT );
+        tip.setWidget( viewControl );
+        tip.reconfigure();
+
+        new ExpandAnimation().animate( 8, getOffsetWidth() - 1, 500 );
+        state = State.EXPANDED;
+    }
+
+    private void collapse() {
+        new CollapseAnimation().animate( getOffsetWidth(), 8, 500 );
+
+        container.removeFromParent();
+        container.getElement().getStyle().setTop( getAbsoluteTop(), Style.Unit.PX );
+        container.getElement().getStyle().setPosition( Style.Position.FIXED );
+        container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        RootPanel.get().add( container );
+
+        tip.setText( WorkbenchConstants.INSTANCE.expandToolbar() );
+        tip.setPlacement( Placement.RIGHT );
+        tip.setWidget( viewControl );
+        tip.reconfigure();
+
+        state = State.COLLAPSED;
+    }
+
+    private class ExpandAnimation extends Animation {
+
+        private int endSize;
+        private int startSize;
+        private int startTabLeft;
+        private int endTabLeft;
+
+        @Override
+        protected void onComplete() {
+            toolBar.getElement().getStyle().clearLeft();
+            container.getElement().getStyle().clearWidth();
+        }
+
+        @Override
+        protected void onUpdate( double progress ) {
+            double delta = ( endSize - startSize ) * progress;
+            double newSize = startSize + delta;
+
+            double deltaLeft = ( endTabLeft - startTabLeft ) * progress;
+            double newLeft = startTabLeft + deltaLeft;
+
+            toolBar.getElement().getStyle().setLeft( newLeft, Style.Unit.PX );
+            container.setWidth( newSize + "px" );
+        }
+
+        void animate( int startSize,
+                      int endSize,
+                      int duration ) {
+            this.startSize = startSize;
+            this.endSize = endSize;
+            this.startTabLeft = toolBar.getAbsoluteLeft();
+            this.endTabLeft = 0;
+            run( duration );
+        }
+    }
+
+    private class CollapseAnimation extends Animation {
+
+        private int endSize;
+        private int startSize;
+
+        @Override
+        protected void onComplete() {
+            container.setWidth( null );
+        }
+
+        @Override
+        protected void onUpdate( double progress ) {
+            double delta = ( endSize - startSize ) * progress;
+            double newSize = startSize + delta;
+            toolBar.getElement().getStyle().setLeft( delta, Style.Unit.PX );
+            container.setWidth( newSize + "px" );
+        }
+
+        void animate( int startSize,
+                      int endSize,
+                      int duration ) {
+            this.startSize = startSize;
+            this.endSize = endSize;
+            run( duration );
+        }
     }
 
 }

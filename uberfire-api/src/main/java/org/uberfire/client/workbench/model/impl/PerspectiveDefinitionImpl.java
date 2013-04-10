@@ -24,14 +24,16 @@ import org.uberfire.client.workbench.model.PerspectiveDefinition;
  */
 @Portable
 public class PerspectiveDefinitionImpl
-    implements
-    PerspectiveDefinition {
+        implements
+        PerspectiveDefinition {
 
-    private String          name;
+    private String name;
 
-    private boolean         isTransient = false;
+    private boolean isTransient = false;
 
-    private PanelDefinition root        = new PanelDefinitionImpl( true );
+    private boolean isToolbarVisible = true;
+
+    private PanelDefinition root = new PanelDefinitionImpl( true );
 
     @Override
     public boolean isTransient() {
@@ -39,7 +41,7 @@ public class PerspectiveDefinitionImpl
     }
 
     @Override
-    public void setTransient(boolean isTransient) {
+    public void setTransient( boolean isTransient ) {
         this.isTransient = isTransient;
     }
 
@@ -49,8 +51,18 @@ public class PerspectiveDefinitionImpl
     }
 
     @Override
-    public void setName(final String name) {
+    public void setName( final String name ) {
         this.name = name;
+    }
+
+    @Override
+    public boolean isToolbarVisible() {
+        return isToolbarVisible;
+    }
+
+    @Override
+    public void setToolbarVisible( boolean isVisible ) {
+        this.isToolbarVisible = isVisible;
     }
 
     @Override

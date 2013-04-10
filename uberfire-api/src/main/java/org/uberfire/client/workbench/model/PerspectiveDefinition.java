@@ -24,38 +24,43 @@ public interface PerspectiveDefinition {
 
     /**
      * Get whether the Perspective is transient, i.e. will not be persisted.
-     * 
      * @return True if the Perspective is transient and is not to be persisted.
      */
     public boolean isTransient();
 
     /**
      * Set whether the Perspective is transient, i.e. will not be persisted.
-     * 
-     * @param isTransient
-     *            True if the Perspective is not to be persisted.
+     * @param isTransient True if the Perspective is not to be persisted.
      */
-    public void setTransient(final boolean isTransient);
+    public void setTransient( final boolean isTransient );
 
     /**
      * Get the name of the Perspective.
-     * 
      * @return The name of the Perspective.
      */
     public String getName();
 
     /**
      * Set the name of the Perspective.
-     * 
-     * @param name
-     *            The name of the Perspective.
+     * @param name The name of the Perspective.
      */
-    public void setName(final String name);
+    public void setName( final String name );
+
+    /**
+     * Get whether the Perspective has a visible toolbar.
+     * @return True if the Perspective has a visible toolbar.
+     */
+    public boolean isToolbarVisible();
+
+    /**
+     * Set whether the Perspective has a visible toolbar or not..
+     * @param isVisible True if the Perspective has a visible toolbar.
+     */
+    public void setToolbarVisible( boolean isVisible );
 
     /**
      * Get the root Panel for this Perspective. The root Panel contains all
      * child Panels. A Perspective is based on a single root Panel.
-     * 
      * @return The root Panel.
      */
     public PanelDefinition getRoot();

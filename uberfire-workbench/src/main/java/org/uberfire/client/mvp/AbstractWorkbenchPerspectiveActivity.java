@@ -179,10 +179,16 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         //Set up Menu Bar for perspective
         menuBar.aggregatePerspectiveMenus( getMenus() );
 
-        //Set up Tool Bar for perspective
-        final ToolBar toolBar = getToolBar();
-        if ( toolBar != null ) {
-            toolBarPresenter.addWorkbenchPerspective( toolBar );
+        if ( perspective.isToolbarVisible() ) {
+            toolBarPresenter.show();
+
+            //Set up Tool Bar for perspective
+            final ToolBar toolBar = getToolBar();
+            if ( toolBar != null ) {
+                toolBarPresenter.addWorkbenchPerspective( toolBar );
+            }
+        } else {
+            toolBarPresenter.hide();
         }
 
         onReveal();

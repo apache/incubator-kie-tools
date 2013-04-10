@@ -198,11 +198,10 @@ public class Workbench
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
         final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
-        final int toolBarHeight = toolBarPresenter.getView().asWidget().getOffsetHeight();
+        final int toolBarHeight = toolBarPresenter.getHeight();
 //        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
         final int availableHeight = height - menuBarHeight - toolBarHeight;// - statusBarHeight;
-        workbenchContainer.setPixelSize( width,
-                                         availableHeight );
+        workbenchContainer.setPixelSize( width, availableHeight );
         workbench.setPixelSize( width,
                                 availableHeight );
 

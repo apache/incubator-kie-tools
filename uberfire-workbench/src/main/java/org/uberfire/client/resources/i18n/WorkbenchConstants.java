@@ -32,4 +32,8 @@ public interface WorkbenchConstants
 
     String minimizePanel();
 
+    String expandToolbar();
+
+    String collapseToolbar();
+
 }
