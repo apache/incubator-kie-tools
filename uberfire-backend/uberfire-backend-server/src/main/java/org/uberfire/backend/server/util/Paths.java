@@ -53,8 +53,15 @@ public class Paths {
         if ( readAttrrs ) {
             attributes = ioService.readAttributes( path, "basic:isRegularFile,isDirectory,size,lastModifiedTime,creationTime" );
             //TODO {porcelli} HACK! visit here when dealing with nio2 optimizations
-            attributes.put( "lastModifiedTime", new Date( ( (FileTime) attributes.get( "lastModifiedTime" ) ).toMillis() ) );
-            attributes.put( "creationTime", new Date( ( (FileTime) attributes.get( "creationTime" ) ).toMillis() ) );
+            final Object _lastModifiedTime = attributes.get( "lastModifiedTime" );
+            if ( _lastModifiedTime != null ) {
+                attributes.put( "lastModifiedTime", new Date( ( (FileTime) _lastModifiedTime ).toMillis() ) );
+            }
+
+            final Object _creationTime = attributes.get( "creationTime" );
+            if ( _creationTime != null ) {
+                attributes.put( "creationTime", new Date( ( (FileTime) _creationTime ).toMillis() ) );
+            }
         } else {
             attributes = null;
         }

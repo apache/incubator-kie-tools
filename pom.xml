@@ -345,11 +345,6 @@
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-backend-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-backend-server</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -30,7 +30,6 @@
 
   <modules>
     <module>uberfire-backend-api</module>
-    <module>uberfire-backend-commons</module>
     <module>uberfire-backend-server</module>
   </modules>
 </project>

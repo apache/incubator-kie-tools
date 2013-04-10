@@ -49,11 +49,6 @@
       <artifactId>uberfire-security-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-commons</artifactId>
-    </dependency>
-
     <!-- KIE Commons IO -->
     <dependency>
       <groupId>org.kie.commons</groupId>
