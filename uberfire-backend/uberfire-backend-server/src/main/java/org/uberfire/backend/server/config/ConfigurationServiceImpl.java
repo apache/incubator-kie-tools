@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,14 +91,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     public boolean addConfiguration( final ConfigGroup configGroup ) {
         try {
             final Path filePath = ioSystemService.get( systemRepository.getUri() ).resolve( configGroup.getName() + configGroup.getType().getExt() );
-            final CommentedOption commentedOption = new CommentedOption( identity.getName(),
+            final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                          "Created config " + filePath.getFileName() );
             final OutputStream outputStream = ioSystemService.newOutputStream( filePath,
                                                                                StandardOpenOption.TRUNCATE_EXISTING,
                                                                                commentedOption );
 
             final String xml = marshaller.marshall( configGroup );
-            System.out.println( xml );
             outputStream.write( xml.getBytes( "UTF-8" ) );
             outputStream.close();
 
@@ -111,5 +111,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public boolean removeConfiguration( final ConfigGroup configGroup ) {
         return ioSystemService.deleteIfExists( ioSystemService.get( systemRepository.getUri() ).resolve( configGroup.getName() + configGroup.getType().getExt() ) );
+    }
+
+    protected String getIdentityName() {
+        try{
+            return identity.getName();
+        } catch (ContextNotActiveException e) {
+            return "unknown";
+        }
     }
 }
