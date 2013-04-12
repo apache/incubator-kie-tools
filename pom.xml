@@ -465,6 +465,12 @@
         <version>${kie-commons.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-commons-cdi</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+
       <!-- KIE Commons VFS -->
       <dependency>
         <groupId>org.kie.commons</groupId>
