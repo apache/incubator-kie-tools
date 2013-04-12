@@ -79,15 +79,7 @@ profile in pom.xml to use that. -->
   </servlet-mapping>
 
   <listener>
-    <!--
-
-    NOTE: The orig servlet listener has been patched,
-    until a solution to the bean validation problems in hosted mode is found.
-
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-    -->
-
-    <listener-class>org.jboss.errai.container.CDIServletStateListener</listener-class>
   </listener>
 
   <resource-env-ref>
