@@ -1,47 +1,39 @@
-/*
- * Copyright 2012 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.uberfire.backend.server.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import javax.inject.Inject;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.commons.services.cdi.Startup;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.repositories.DefaultSystemRepository;
+import org.uberfire.backend.repositories.RepositoryService;
 
+//This is a temporary solution when running in PROD-MODE as /webapp/.niogit/system.git folder
+//is not deployed to the Application Servers /bin folder. This will be remedied when an
+//installer is written to create the system.git repository in the correct location.
+@Startup
 @ApplicationScoped
 public class AppSetup {
 
-    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
+    private static final String PLAYGROUND_SCHEME = "git";
+    private static final String PLAYGROUND_ALIAS = "uf-playground";
+    private static final String PLAYGROUND_ORIGIN = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+    private static final String PLAYGROUND_UID = "guvnorngtestuser1";
+    private static final String PLAYGROUND_PWD = "test1234";
 
-    private final IOService ioService = new IOServiceDotFileImpl();
+    @Inject
+    private RepositoryService repositoryService;
 
-    @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
-    @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return systemRepository;
+    @PostConstruct
+    public void assertPlayground() {
+        final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
+        if ( repository == null ) {
+            repositoryService.cloneRepository( PLAYGROUND_SCHEME,
+                                               PLAYGROUND_ALIAS,
+                                               PLAYGROUND_ORIGIN,
+                                               PLAYGROUND_UID,
+                                               PLAYGROUND_PWD );
+        }
     }
 
 }
