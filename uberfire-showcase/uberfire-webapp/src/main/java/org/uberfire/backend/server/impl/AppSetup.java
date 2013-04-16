@@ -38,6 +38,8 @@ public class AppSetup {
                                                PLAYGROUND_UID,
                                                PLAYGROUND_PWD );
         }
+
+        //Ensure FileSystems are loaded
         activeFileSystemsFactory.fileSystems();
     }
 

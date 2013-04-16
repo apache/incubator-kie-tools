@@ -31,11 +31,9 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.Command;
@@ -62,9 +60,6 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private WorkbenchMenuBar menubar;
-
-    @Inject
-    private Caller<FileExplorerRootService> rootService;
 
     @Inject
     private PlaceManager placeManager;
