@@ -1,5 +1,7 @@
 package org.uberfire.backend.server.config;
 
+import java.util.List;
+
 public interface ConfigurationFactory {
 
     ConfigGroup newConfigGroup( ConfigType type,
@@ -14,4 +16,7 @@ public interface ConfigurationFactory {
 
     ConfigItem<String> newSecuredConfigItem( String name,
                                              String valueType );
+
+    ConfigItem<List> newConfigItem( String name,
+                                    List valueType );
 }

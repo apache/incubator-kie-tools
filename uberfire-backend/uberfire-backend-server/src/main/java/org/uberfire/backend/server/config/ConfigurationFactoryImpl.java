@@ -1,5 +1,6 @@
 package org.uberfire.backend.server.config;
 
+import java.util.List;
 import javax.inject.Inject;
 
 public class ConfigurationFactoryImpl implements ConfigurationFactory {
@@ -44,5 +45,13 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
         stringConfigItem.setName( name );
         stringConfigItem.setValue( secureService.encrypt( valueType ) );
         return stringConfigItem;
+    }
+
+    @Override
+    public ConfigItem<List> newConfigItem(String name, List valueType) {
+        final ConfigItem<List> listConfigItem = new ConfigItem<List>();
+        listConfigItem.setName(name);
+        listConfigItem.setValue(valueType);
+        return listConfigItem;
     }
 }
