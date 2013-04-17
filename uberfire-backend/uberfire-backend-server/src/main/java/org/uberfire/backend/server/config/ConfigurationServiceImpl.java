@@ -76,14 +76,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                                                                                                return false;
                                                                                            }
                                                                                        } );
+        //Only load and cache if a file was found!
         final Iterator<Path> it = foundConfigs.iterator();
-        while ( it.hasNext() ) {
-            final String content = ioSystemService.readAllString( it.next() );
-            final ConfigGroup configGroup = marshaller.unmarshall( content );
-            configGroups.add( configGroup );
+        if ( it.hasNext() ) {
+            while ( it.hasNext() ) {
+                final String content = ioSystemService.readAllString( it.next() );
+                final ConfigGroup configGroup = marshaller.unmarshall( content );
+                configGroups.add( configGroup );
+            }
+            configuration.put( type,
+                               configGroups );
         }
-        configuration.put( type,
-                           configGroups );
         return configGroups;
     }
 
@@ -114,9 +117,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     protected String getIdentityName() {
-        try{
+        try {
             return identity.getName();
-        } catch (ContextNotActiveException e) {
+        } catch ( ContextNotActiveException e ) {
             return "unknown";
         }
     }
