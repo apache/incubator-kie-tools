@@ -1,6 +1,8 @@
 package org.uberfire.backend.server.repositories;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.backend.repositories.Repository;
@@ -16,30 +18,33 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     @Inject
     private PasswordService secureService;
 
+    @Inject
+    @Any
+    private Instance<RepositoryFactoryHelper> helpers;
+
     @Override
     public Repository newRepository( final ConfigGroup repoConfig ) {
-        checkNotNull( "config",
+        checkNotNull( "repoConfig",
                       repoConfig );
-        final ConfigItem<String> scheme = repoConfig.getConfigItem( "scheme" );
-        checkNotNull( "scheme",
-                      scheme );
+        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
+        checkNotNull( "schemeConfigItem",
+                      schemeConfigItem );
 
+        //Find a Helper that can create a repository
         Repository repository = null;
-        if ( GitRepository.SCHEME.equals( scheme.getValue() ) ) {
-            repository = new GitRepository( repoConfig.getName() );
-            repository.addEnvironmentParameter( GitRepository.ORIGIN,
-                                                repoConfig.getConfigItemValue( "origin" ) );
-            repository.addEnvironmentParameter( GitRepository.USERNAME,
-                                                repoConfig.getConfigItemValue( "username" ) );
-            repository.addEnvironmentParameter( GitRepository.PASSWORD,
-                                                secureService.decrypt( repoConfig.getConfigItemValue( "password" ) ) );
-
-            if ( !repository.isValid() ) {
-                throw new IllegalStateException( "Repository " + repoConfig.getName() + " not valid" );
+        for ( RepositoryFactoryHelper helper : helpers ) {
+            if ( helper.accept( repoConfig ) ) {
+                repository = helper.newRepository( repoConfig );
+                break;
             }
-        } else {
-            throw new IllegalArgumentException( "Unrecognized scheme '" + scheme.getValue() + "'." );
         }
+
+        //Check one was created
+        if ( repository == null ) {
+            throw new IllegalArgumentException( "Unrecognized scheme '" + schemeConfigItem.getValue() + "'." );
+        }
+
         return repository;
     }
+
 }
