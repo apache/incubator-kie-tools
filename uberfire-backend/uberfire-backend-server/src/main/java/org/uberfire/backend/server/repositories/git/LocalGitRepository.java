@@ -1,30 +1,28 @@
-package org.uberfire.backend.server.repositories;
+package org.uberfire.backend.server.repositories.git;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.repositories.EnvironmentParameters;
 
 import static org.kie.commons.validation.Preconditions.*;
 
 @Portable
-public class GitRepository implements Repository {
+public class LocalGitRepository implements Repository {
 
     private String alias;
     private Map<String, Object> environment = new HashMap<String, Object>();
 
     public static final String SCHEME = "git";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String ORIGIN = "origin";
 
-    public GitRepository() {
+    public LocalGitRepository() {
     }
 
-    public GitRepository( final String alias ) {
-        checkNotNull( "alias", alias );
+    public LocalGitRepository( final String alias ) {
+        checkNotNull( "alias",
+                      alias );
         this.alias = alias;
     }
 
@@ -58,13 +56,11 @@ public class GitRepository implements Repository {
 
     @Override
     public boolean isValid() {
-        final Object username = environment.get( USERNAME );
-        final Object password = environment.get( PASSWORD );
-        final Object origin = environment.get( ORIGIN );
+        final Object username = environment.get( EnvironmentParameters.USER_NAME );
+        final Object password = environment.get( EnvironmentParameters.USER_PASSWORD );
         return alias != null &&
                 username != null &&
-                password != null &&
-                origin != null;
+                password != null;
     }
 
 }

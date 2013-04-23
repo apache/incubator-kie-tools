@@ -63,13 +63,15 @@ public class RepositoryServiceImpl implements RepositoryService {
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( ConfigType.REPOSITORY,
                                                                                   alias,
                                                                                   "" );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "scheme",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.SCHEME,
                                                                             scheme ) );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "username",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.USER_NAME,
                                                                             username ) );
-        repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( "password",
+        repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( EnvironmentParameters.USER_PASSWORD,
                                                                                    password ) );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "init",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.LOCATION,
+                                                                            Location.LOCAL.name() ) );
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.INITIALIZE,
                                                                             Boolean.TRUE ) );
         addRepository( repositoryConfig );
     }
@@ -84,13 +86,15 @@ public class RepositoryServiceImpl implements RepositoryService {
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( ConfigType.REPOSITORY,
                                                                                   alias,
                                                                                   "" );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "scheme",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.SCHEME,
                                                                             scheme ) );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "username",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.USER_NAME,
                                                                             username ) );
-        repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( "password",
+        repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( EnvironmentParameters.USER_PASSWORD,
                                                                                    password ) );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "origin",
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.LOCATION,
+                                                                            Location.REMOTE.name() ) );
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( EnvironmentParameters.ORIGIN,
                                                                             origin ) );
         addRepository( repositoryConfig );
     }
