@@ -28,14 +28,9 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.FileExplorerRootService;
 import org.uberfire.backend.Root;
-import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.AttrsUtil;
 import org.uberfire.backend.vfs.BasicFileAttributes;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
+import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -48,6 +43,12 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.Position;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
@@ -208,6 +209,11 @@ public class FileExplorerPresenter {
 
     // Refresh when a Resource has been renamed
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
+        onStart();
+    }
+
+    // Refresh when a batch Resource change has occurred
+    public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
         onStart();
     }
 
