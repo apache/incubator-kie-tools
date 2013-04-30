@@ -15,7 +15,7 @@ public class DefaultPasswordServiceImpl implements PasswordService {
     private static final String SECURE_STRING = System.getProperty( "org.kie.secure.key",
                                                                     "org.kie.admin" );
     private static final String SECURE_ALGORITHM = System.getProperty( "org.kie.secure.alg",
-                                                                       "PBEWithMD5AndTripleDES" );
+                                                                       "PBEWithMD5AndDES" );
 
     @Override
     public String encrypt( final String plainText ) {
