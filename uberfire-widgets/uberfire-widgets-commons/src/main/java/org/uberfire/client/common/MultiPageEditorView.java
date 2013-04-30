@@ -103,6 +103,10 @@ public class MultiPageEditorView
         } );
     }
 
+    public void selectPage(int index) {
+        tabPanel.selectTab(index);
+    }
+
     public void shrinkTabBar() {
         final Widget lastTab = getLastTab();
 
