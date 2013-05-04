@@ -301,16 +301,17 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         }
 
         //Load existing PackageConfiguration
-        PackageConfiguration packageConfiguration = new PackageConfiguration();
+        ProjectImports projectImports = new ProjectImports();
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
         final Path externalImportsPath = paths.convert( nioExternalImportsPath );
         if ( Files.exists( nioExternalImportsPath ) ) {
-            packageConfiguration = projectService.load( externalImportsPath );
+            projectImports = projectService.load( externalImportsPath );
         }
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
         List<String> existingImports = new ArrayList<String>();
         for ( org.drools.workbench.models.commons.shared.imports.Import item : packageConfiguration.getImports().getImports() ) {
+        for ( org.drools.guvnor.models.commons.shared.imports.Import item : projectImports.getImports().getImports() ) {
             existingImports.add( item.getType() );
         }
 
@@ -321,7 +322,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                 isModified = true;
                 result.addMessage( "Created Import for '" + item.getClassName() + "'.",
                                    ConversionMessageType.INFO );
-                packageConfiguration.getImports().addImport( new org.drools.workbench.models.commons.shared.imports.Import( item.getClassName() ) );
+                projectImports.getImports().addImport( new org.drools.guvnor.models.commons.shared.imports.Import( item.getClassName() ) );
             }
         }
 
@@ -329,7 +330,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         if ( isModified ) {
             final Metadata metadata = metadataService.getMetadata( context );
             projectService.save( externalImportsPath,
-                                 packageConfiguration,
+                    projectImports,
                                  metadata,
                                  "Imports added during XLS conversion" );
         }
