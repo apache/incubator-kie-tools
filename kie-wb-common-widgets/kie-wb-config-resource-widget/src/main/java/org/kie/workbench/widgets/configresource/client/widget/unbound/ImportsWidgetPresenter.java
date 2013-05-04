@@ -23,60 +23,98 @@ import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
 import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
+import org.drools.guvnor.models.commons.shared.imports.Import;
+import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
+import org.kie.guvnor.commons.ui.client.popups.text.PopupSetFieldCommand;
+import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.guvnor.project.model.ProjectImports;
+import org.kie.guvnor.project.service.ProjectService;
+import org.kie.guvnor.services.metadata.model.Metadata;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import javax.enterprise.event.Event;
+
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
-                   IsWidget {
+        IsWidget {
 
     private final ImportsWidgetView view;
     private final FormPopup addImportPopup;
+    private final Caller<ProjectService> projectService;
+    private final Event<NotificationEvent> notification;
 
     private Imports resourceImports;
+    private Path path;
+    private ProjectImports projectImports;
 
     @Inject
-    public ImportsWidgetPresenter( final ImportsWidgetView view,
-                                   final FormPopup addImportPopup ) {
+    public ImportsWidgetPresenter(final ImportsWidgetView view,
+                                  Caller<ProjectService> projectService,
+                                  Event<NotificationEvent> notification,
+                                  final FormPopup addImportPopup) {
         this.view = view;
+        this.projectService = projectService;
+        this.notification = notification;
         this.addImportPopup = addImportPopup;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    @Override
-    public void setContent( final Imports resourceImports,
-                            final boolean isReadOnly ) {
-        this.resourceImports = checkNotNull( "resourceImports",
-                                             resourceImports );
+    public void init(Path path,
+                     final boolean isReadOnly) {
+        this.path = checkNotNull("resourceImports",
+                path);
 
-        view.setReadOnly( isReadOnly );
+        projectService.call(getModelSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
 
-        for ( Import item : resourceImports.getImports() ) {
-            view.addImport( item.getType() );
+
+        view.setReadOnly(isReadOnly);
+
+        for (Import item : resourceImports.getImports()) {
+            view.addImport(item.getType());
         }
+    }
+
+    private RemoteCallback<ProjectImports> getModelSuccessCallback() {
+        return new RemoteCallback<ProjectImports>() {
+
+            @Override
+            public void callback(final ProjectImports projectImports) {
+                ImportsWidgetPresenter.this.projectImports = projectImports;
+
+                view.hideBusyIndicator();
+            }
+        };
     }
 
     @Override
     public void onAddImport() {
-        addImportPopup.show( new PopupSetFieldCommand() {
+        addImportPopup.show(new PopupSetFieldCommand() {
             @Override
-            public void setName( String name ) {
-                final Import item = new Import( name );
-                view.addImport( name );
-                resourceImports.getImports().add( item );
+            public void setName(String name) {
+                final Import item = new Import(name);
+                view.addImport(name);
+                resourceImports.getImports().add(item);
             }
-        } );
+        });
     }
 
     @Override
     public void onRemoveImport() {
         String selected = view.getSelected();
-        if ( selected == null ) {
+        if (selected == null) {
             view.showPleaseSelectAnImport();
         } else {
-            final Import item = new Import( selected );
-            view.removeImport( selected );
-            resourceImports.removeImport( item );
+            final Import item = new Import(selected);
+            view.removeImport(selected);
+            resourceImports.removeImport(item);
         }
     }
 
@@ -93,4 +131,27 @@ public class ImportsWidgetPresenter
         // TODO: -Rikkola-
     }
 
+    public boolean hasBeenInitialized() {
+        return resourceImports != null;
+    }
+
+    public void save(String comment, Metadata projectImportsMetadata) {
+        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        projectService.call(getSaveSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
+                projectImports,
+                projectImportsMetadata,
+                comment);
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback(final Path path) {
+                view.hideBusyIndicator();
+                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+            }
+        };
+    }
 }
