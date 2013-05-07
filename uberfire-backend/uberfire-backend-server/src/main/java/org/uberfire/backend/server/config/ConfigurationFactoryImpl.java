@@ -54,4 +54,12 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
         listConfigItem.setValue(valueType);
         return listConfigItem;
     }
+
+    @Override
+    public ConfigItem<Object> newConfigItem(String name, Object valueType) {
+        final ConfigItem<Object> listConfigItem = new ConfigItem<Object>();
+        listConfigItem.setName(name);
+        listConfigItem.setValue(valueType);
+        return listConfigItem;
+    }
 }

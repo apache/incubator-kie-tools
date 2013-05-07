@@ -5,7 +5,8 @@ public enum ConfigType {
     GLOBAL(".global"),
     REPOSITORY(".repository"),
     GROUP(".group"),
-    EDITOR(".editor");
+    EDITOR(".editor"),
+    DEPLOYMENT(".deployment");
 
     private String ext;
 
