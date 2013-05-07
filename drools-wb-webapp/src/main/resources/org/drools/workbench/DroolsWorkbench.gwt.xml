@@ -4,13 +4,14 @@
 <module>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
-  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
-
+  <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
-    <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
+  <!-- Guvnor dependencies -->
+  <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
 
   <!-- Infrastructure -->
   <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
@@ -18,6 +19,9 @@
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
+
+  <!-- Models for Editors -->
+  <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
 
   <!-- Editors -->
   <inherits name='org.kie.guvnor.categories.GuvnorCategoriesEditorClient'/>
@@ -39,7 +43,6 @@
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
   <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
-  <inherits name="org.kie.guvnor.inbox.GuvnorInboxClient"/>
 
   <inherits name="org.kie.guvnor.dtablexls.GuvnorDecisionTableXLSEditorClient"/>
   <inherits name="org.kie.guvnor.scorecardxls.GuvnorScoreCardXLSEditorClient"/>

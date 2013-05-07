@@ -260,17 +260,17 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-backend</artifactId>
     </dependency>
 
@@ -577,8 +577,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
 
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-inbox-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-inbox-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-dtable-xls-editor-client</compileSourcesArtifact>
