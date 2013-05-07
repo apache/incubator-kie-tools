@@ -125,3 +125,14 @@
 .busy-popup {
     width: 300px;
 }
+
+.titleTextCellContainer {
+    height: 32px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.titleTextCellDescription {
+    font-size: smaller;
+    font-style: italic;
+}

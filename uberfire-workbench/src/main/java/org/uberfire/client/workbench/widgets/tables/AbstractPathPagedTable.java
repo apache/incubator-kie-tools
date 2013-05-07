@@ -38,7 +38,12 @@ import com.google.gwt.view.client.ProvidesKey;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.resources.i18n.WorkbenchConstants;
+import org.uberfire.client.resources.i18n.CommonConstants;
+import org.uberfire.client.tables.AbstractPagedTable;
+import org.uberfire.client.tables.ColumnPicker;
+import org.uberfire.client.tables.SelectionColumn;
+import org.uberfire.client.tables.SortableHeader;
+import org.uberfire.client.tables.SortableHeaderGroup;
 
 /**
  * Widget that shows rows of paged data where columns "uuid", "name" and
@@ -131,14 +136,14 @@ public abstract class AbstractPathPagedTable<T extends AbstractPathPageRow>
         columnPicker.addColumn( uriColumn,
                                 new SortableHeader<T, String>(
                                         sortableHeaderGroup,
-                                        WorkbenchConstants.INSTANCE.AbstractTableFileURI(),
+                                        CommonConstants.INSTANCE.AbstractTableFileURI(),
                                         uriColumn ),
                                 false );
 
         // Add "Open" button column
         Column<T, String> openColumn = new Column<T, String>( new ButtonCell( ButtonSize.SMALL ) ) {
             public String getValue( T row ) {
-                return WorkbenchConstants.INSTANCE.AbstractTableOpen();
+                return CommonConstants.INSTANCE.AbstractTableOpen();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
@@ -149,7 +154,7 @@ public abstract class AbstractPathPagedTable<T extends AbstractPathPageRow>
             }
         } );
         columnPicker.addColumn( openColumn,
-                                new TextHeader( WorkbenchConstants.INSTANCE.AbstractTableOpen() ),
+                                new TextHeader( CommonConstants.INSTANCE.AbstractTableOpen() ),
                                 true );
 
         cellTable.setWidth( "100%" );

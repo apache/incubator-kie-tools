@@ -81,4 +81,10 @@ public interface CommonCss
     @ClassName("busy-popup")
     String busyPopup();
 
+    @ClassName("titleTextCellContainer")
+    String titleTextCellContainer();
+
+    @ClassName("titleTextCellDescription")
+    String titleTextCellDescription();
+
 }

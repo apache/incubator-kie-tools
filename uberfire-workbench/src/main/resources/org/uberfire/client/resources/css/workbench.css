@@ -54,14 +54,3 @@
     float: none;
     margin: -2px 0 0 10px;
 }
-
-.titleTextCellContainer {
-    height: 32px;
-    vertical-align: middle;
-    display: table-cell;
-}
-
-.titleTextCellDescription {
-    font-size: smaller;
-    font-style: italic;
-}

@@ -19,7 +19,7 @@ package org.uberfire.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
-import org.uberfire.client.workbench.widgets.tables.UberfireSimplePager;
+import org.uberfire.client.tables.UberfireSimplePager;
 
 /**
  * A ClientBundle that provides images for this widget.
@@ -103,6 +103,7 @@ public interface UberfireSimplePagerResources
     /**
      * The styles used in this widget.
      */
-    @Source("css/SimplePager.css")
+    @Source("css/UberfireSimplePager.css")
     UberfireSimplePager.Style simplePagerStyle();
+
 }

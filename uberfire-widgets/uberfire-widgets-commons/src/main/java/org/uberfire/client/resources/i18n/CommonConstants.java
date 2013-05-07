@@ -35,4 +35,14 @@ public interface CommonConstants
 
     String ShowDetail();
 
+    String AbstractTableOpen();
+
+    String AbstractTablePleaseSelectAnItemToDelete();
+
+    String AbstractTableRefreshList();
+
+    String AbstractTableOpenSelected();
+
+    String AbstractTableFileURI();
+
 }

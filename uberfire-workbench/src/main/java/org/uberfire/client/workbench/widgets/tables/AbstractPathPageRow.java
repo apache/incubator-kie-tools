@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench.widgets.tables;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.tables.AbstractPageRow;
 
 /**
  * A single row of a paged data

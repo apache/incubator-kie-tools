@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;

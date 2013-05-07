@@ -1,21 +1,20 @@
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
-import org.uberfire.client.resources.WorkbenchCss;
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.tables.TitledTextCell.TitledText;
+import org.uberfire.client.resources.CommonCss;
+import org.uberfire.client.resources.CommonResources;
 
 /**
  * An extension to the normal TextCell that renders upto two rows of text; one
  * being the title and the other being narrative.
  */
-public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
+public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledText> {
 
-    protected static final WorkbenchCss css = WorkbenchResources.INSTANCE.CSS();
+    protected static final CommonCss css = CommonResources.INSTANCE.CSS();
 
     /**
      * Constructs a TitledTextCell that uses a

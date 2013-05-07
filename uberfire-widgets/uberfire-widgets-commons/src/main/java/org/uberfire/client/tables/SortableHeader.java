@@ -1,4 +1,4 @@
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ClickableTextCell;
@@ -8,17 +8,17 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.resources.CommonResources;
 
 /**
  * Based on GWT bikeshed example.
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
-    private static final String DOWN_ARROW       = makeImage( WorkbenchResources.INSTANCE.images().downArrow() );
-    private static final String SMALL_DOWN_ARROW = makeImage( WorkbenchResources.INSTANCE.images().smallDownArrow() );
-    private static final String UP_ARROW         = makeImage( WorkbenchResources.INSTANCE.images().upArrow() );
-    private static final String SMALL_UP_ARROW   = makeImage( WorkbenchResources.INSTANCE.images().smallUpArrow() );
+    private static final String DOWN_ARROW       = makeImage( CommonResources.INSTANCE.images().downArrow() );
+    private static final String SMALL_DOWN_ARROW = makeImage( CommonResources.INSTANCE.images().smallDownArrow() );
+    private static final String UP_ARROW         = makeImage( CommonResources.INSTANCE.images().upArrow() );
+    private static final String SMALL_UP_ARROW   = makeImage( CommonResources.INSTANCE.images().smallUpArrow() );
 
     private static String makeImage( ImageResource resource ) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );

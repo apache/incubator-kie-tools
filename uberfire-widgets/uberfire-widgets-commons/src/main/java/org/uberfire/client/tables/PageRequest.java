@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 

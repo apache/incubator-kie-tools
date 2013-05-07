@@ -1,4 +1,4 @@
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import com.google.gwt.user.cellview.client.Column;
 

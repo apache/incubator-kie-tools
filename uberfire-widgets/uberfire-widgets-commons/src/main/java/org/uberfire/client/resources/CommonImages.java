@@ -102,4 +102,24 @@ public interface CommonImages
     @Source("images/spinner.gif")
     ImageResource spinner();
 
+    //Simple Pager
+    @Source("images/downArrow.png")
+    ImageResource downArrow();
+
+    //Simple Pager
+    @Source("images/smallDownArrow.png")
+    ImageResource smallDownArrow();
+
+    //Simple Pager
+    @Source("images/upArrow.png")
+    ImageResource upArrow();
+
+    //Simple Pager
+    @Source("images/smallUpArrow.png")
+    ImageResource smallUpArrow();
+
+    //Simple Pager
+    @Source("images/columnPicker.png")
+    ImageResource columnPicker();
+
 }

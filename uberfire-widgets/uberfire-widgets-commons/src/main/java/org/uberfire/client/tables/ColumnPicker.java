@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.resources.CommonResources;
 
 public class ColumnPicker<T> {
 
-    private final Image COLUMN_PICKER_IMAGE = new Image( WorkbenchResources.INSTANCE.images().columnPicker() );
+    private final Image COLUMN_PICKER_IMAGE = new Image( CommonResources.INSTANCE.images().columnPicker() );
 
     private final CellTable<T> cellTable;
     private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();

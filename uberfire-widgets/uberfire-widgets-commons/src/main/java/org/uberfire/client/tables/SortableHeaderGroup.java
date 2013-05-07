@@ -1,4 +1,4 @@
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.uberfire.client.workbench.widgets.tables;
+package org.uberfire.client.tables;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.uibinder.client.UiField;

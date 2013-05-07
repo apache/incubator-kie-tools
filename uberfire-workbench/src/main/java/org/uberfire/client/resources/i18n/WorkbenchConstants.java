@@ -36,14 +36,4 @@ public interface WorkbenchConstants
 
     String collapseToolbar();
 
-    String AbstractTableOpen();
-
-    String AbstractTablePleaseSelectAnItemToDelete();
-
-    String AbstractTableRefreshList();
-
-    String AbstractTableOpenSelected();
-
-    String AbstractTableFileURI();
-
 }
