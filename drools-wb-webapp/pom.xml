@@ -245,17 +245,17 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-backend</artifactId>
     </dependency>
 
@@ -574,8 +574,8 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-client</compileSourcesArtifact>
 
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-client</compileSourcesArtifact>

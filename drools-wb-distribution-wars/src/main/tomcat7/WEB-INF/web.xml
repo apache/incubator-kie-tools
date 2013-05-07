@@ -65,7 +65,7 @@
     
   <servlet>
     <servlet-name>M2RepoFileServlet</servlet-name>
-    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
+    <servlet-class>org.guvnor.m2repo.backend.server.FileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>M2RepoFileServlet</servlet-name>
@@ -74,7 +74,7 @@
     
   <servlet>
     <servlet-name>FileDownloadServlet</servlet-name>
-    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
+    <servlet-class>org.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>FileDownloadServlet</servlet-name>

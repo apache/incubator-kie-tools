@@ -12,6 +12,7 @@
 
   <!-- Guvnor dependencies -->
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
 
   <!-- Infrastructure -->
   <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
@@ -41,8 +42,6 @@
 
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
-
-  <inherits name="org.kie.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
 
   <inherits name="org.kie.guvnor.dtablexls.GuvnorDecisionTableXLSEditorClient"/>
   <inherits name="org.kie.guvnor.scorecardxls.GuvnorScoreCardXLSEditorClient"/>
