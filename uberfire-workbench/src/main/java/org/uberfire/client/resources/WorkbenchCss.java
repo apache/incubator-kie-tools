@@ -38,4 +38,10 @@ public interface WorkbenchCss
 
     String tabCloseButton();
 
+    @ClassName("titleTextCellContainer")
+    String titleTextCellContainer();
+
+    @ClassName("titleTextCellDescription")
+    String titleTextCellDescription();
+
 }

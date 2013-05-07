@@ -49,4 +49,20 @@ public interface WorkbenchImages
     //CompassDropController Centre
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
+
+    //TODO
+    @Source("images/downArrow.png")
+    ImageResource downArrow();
+
+    @Source("images/smallDownArrow.png")
+    ImageResource smallDownArrow();
+
+    @Source("images/upArrow.png")
+    ImageResource upArrow();
+
+    @Source("images/smallUpArrow.png")
+    ImageResource smallUpArrow();
+
+    @Source("images/columnPicker.png")
+    ImageResource columnPicker();
 }
