@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../.." xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml" xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Archived items</title>
+
+  <para>This is basically the trash bin.</para>
+
+  <figure>
+    <title>Archived items</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Part-User_Guide/Chapter-Administrative_Functions/ArchivedItems.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>If you've archived an asset (effectively deleting it), and you want to restore it, open this screen, select the
+  asset and click the button <guilabel>Restore selected asset</guilabel>.</para>
+
+  <para>If instead, you want to permanently delete it, select it and click the button <guilabel>Delete selected
+  asset</guilabel>.</para>
+</section>

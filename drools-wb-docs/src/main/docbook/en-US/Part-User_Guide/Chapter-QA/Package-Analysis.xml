@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Package analysis</title>
+
+  <para>Package analysis uses Drools rules to statically analyse knowledge modules. It produces a report that contains information about the quality of the knowledge module.</para>
+
+  <para>Package analysis message types:
+    <itemizedlist>
+      <listitem>
+        <para>Notes - Needs attention, may be ignored.</para>
+      </listitem>
+      <listitem>
+        <para>Warnings- Possible problem, usually there is an alternative way.</para>
+      </listitem>
+      <listitem>
+        <para>Errors - Needs correction, logical falacy etc.</para>
+      </listitem>
+    </itemizedlist> 
+  </para>
+  <section>
+    <title>Items that the analyser is searching for</title>
+      <itemizedlist>
+        <listitem>
+          <para>Range Validation - Making sure all the ranges for a field are covered. For example: Person's age is greater than 20 restriction exists. Check that the person's age is 20 or less than 20 is missing.</para>
+        </listitem>
+        <listitem>
+          <para>Missing Equality - When there are inequalities, but not equality being catered for. For example: LoanApplication has a field called approved. Approved field is checked to not equal to true ( LoanApplication.approved != true ), but a check where approved is equal to true is missing.</para>
+        </listitem>
+        <listitem>
+          <para>Redundancy - Rules or restrictions inside are rule are redundant. Redundancy in rule: Two rules fire with the same conditions and execute the same actions. Restriction redundancy example: Person has two restrictions for name, both are checking if the name is "Toni".</para>
+        </listitem>
+        <listitem>
+          <para>Subsumption - Rule subsumption: Both rules have the same actions. There exists one set of facts that can satisfy both of the rules and another set of facts that only satisfies the other rule. Restriction subsumption: Person fact has two restrictions, one checks that the age is greater than 20 and another checks that the age is greater than 50. Age greater than 50 restriction is subsumptant and can be removed.</para>
+        </listitem>
+        <listitem>
+          <para>Rule Incoherence - Nothing can meet the rule conditions. Example: Rule author has added two restrictions on one field that are incoherent. Person age is equal to 20 and age is equal to 30. The rule can never be satisfied. </para>
+        </listitem>
+        <listitem>
+          <para>Excessive Use of eval()- Eval should be avoided, eval is slow and doesn't make use of the RETE-network. If the rule consists mainly of eval statements then the user should be warned.</para>
+        </listitem>
+        <listitem>
+          <para>Rule Optimisation - The most strict restrictions should be declared first. Slower restrictions like eval last.</para>
+        </listitem>
+        <listitem>
+          <para>Rule Should Have an Action - If the rule does not have an action it does nothing.</para>
+        </listitem>
+        <listitem>
+          <para>Rules and Patterns That Always Pass - Pattern example: Persons age field has restrictions that check that the age is greater or equal to 20 and a restriction that checks that the age is less than 20. All the ranges for age are checked in one pattern.</para>
+        </listitem>
+      </itemizedlist>
+  </section>
+</section>

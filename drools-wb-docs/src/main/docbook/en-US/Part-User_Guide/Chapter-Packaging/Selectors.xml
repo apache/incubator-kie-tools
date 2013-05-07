@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Selectors</title>
+
+    <para>When building packages using the "Packages" feature you have the option to use a "selector". 
+    This selector will filter the list of rules that are built into the package. </para>
+      
+    <section>
+      <title>Built-in Selector</title>
+      
+      <para>Guvnor provides several built-in selectors which allow you to choose what assets form 
+      part of a package build according to asset's status and category. </para>
+
+      <figure>
+        <title>Built-in Selector</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/builtinselector.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+    
+    <section>
+      <title>Custom Selector</title>
+
+      <para>You can use a custom selector if the built-in selector does not satisfy your requirement.</para>
+
+      <para>To configure a custom selector, you will need to "explode" the WAR file for Guvnor, and locate the
+      <filename>selectors.properties</filename> file (note you can also put your own <filename>selectors.properties</filename> 
+      file in the system classpath if you like). In this file, you will
+      find details on how you can configure a custom selector. The options are to use a DRL file, or the name of
+      a class that you have written (and which is available on the classpath). Classes must implement the
+      <code>AssetSelector</code> interface. DRL files can also be used and there is an example one in the
+      <filename>selectors.properties</filename> file). Each selector you configure has a unique name in this
+      properties file - and this is the name that you can use when building packages. </para>
+
+    </section>
+
+</section>

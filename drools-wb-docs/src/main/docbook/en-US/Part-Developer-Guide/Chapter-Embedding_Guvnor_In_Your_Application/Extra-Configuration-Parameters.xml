@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Extra HTTP parameters</title>
+
+  <para>We already covered all the HTTP parameters that must be used for
+  each Edition Mode. You can combine these parameters with some others to
+  customize the appearance and behavior of the editor.</para>
+  
+  <section>
+    <title>Rule’s Sections Visibility Parameters</title>
+    
+    <para>When you edit or create rules using the Rule Guided Editor, 
+    you can choose which part of the rules would be visible (LHS, RHS and Attributes). 
+    By default, all these sections are visible in the editor.</para>
+    <para>You can specify which sections should be hidden using 3 different 
+    HTTP parameters:</para>
+    
+    <table>
+        <title>HTTP parameters for Rule's Sections Visibility:</title>
+        <tgroup cols="4">
+            <thead>
+                <row>
+                    <entry align="center">Parameter Name</entry>
+                    <entry align="center">Explanation</entry>
+                    <entry align="center">Allow multiple values</entry>
+                    <entry align="center">Example</entry>
+                </row>
+            </thead>
+            <tbody>
+                <row>
+                    <entry align="center">hideRuleLHS</entry>
+                    <entry>Should the LHS of the rules be hidden?
+                    </entry>
+                    <entry align="center">false</entry>
+                    <entry>true / false</entry>
+                </row>
+                <row>
+                    <entry align="center">hideRuleRHS</entry>
+                    <entry>Should the RHS of the rules be hidden?
+                    </entry>
+                    <entry align="center">false</entry>
+                    <entry>true / false</entry>
+                </row>
+                <row>
+                    <entry align="center">hideRuleAttributes</entry>
+                    <entry>Should the Attributes of the rules 
+                    be hidden?</entry>
+                    <entry align="center">false</entry>
+                    <entry>true / false</entry>
+                </row>
+            </tbody>
+        </tgroup>
+    </table>
+    
+  </section>
+  
+  <section>
+    <title>Constraining Fact Types</title>
+    
+    <para>When you edit or create rules in BRL format (using the Guided Editor), 
+    you can define a subset of the Fact Types defined in the rule’s package. 
+    When authoring the rule, you will only see the Fact Types defined in that 
+    subset. This is the same concept as Working-Sets. In fact, a Working-Set 
+    will be created and applied on-the-fly using the provided subset.</para>
+    
+    <para>If you want to define this set of Fact Types you could use this 
+    parameter:</para>
+    
+    <table>
+        <title>HTTP parameters for Fact Types Constraints:</title>
+        <tgroup cols="4">
+            <thead>
+                <row>
+                    <entry align="center">Parameter Name</entry>
+                    <entry align="center">Explanation</entry>
+                    <entry align="center">Allow multiple values</entry>
+                    <entry align="center">Example</entry>
+                </row>
+            </thead>
+            <tbody>
+                <row>
+                    <entry align="center">validFactType</entry>
+                    <entry >The name of a valid Fact Type. 
+                    This is just the class name and not the fqn.</entry>
+                    <entry align="center">true</entry>
+                    <entry>Bankruptcy</entry>
+                </row>
+            </tbody>
+        </tgroup>
+    </table>
+    
+  </section>
+  
+  <section>
+    <title>Use existing Working-Sets</title>
+    
+    <para>When you edit or create rules in BRL format (using the Guided Editor), 
+    you can define which working-sets must be activated in the editor. In order
+    to do this you must provide one or more UUID of existing working-sets.
+    If you want to use this feature when editing multiple rules, all of
+    them must belong to the same package where the working-sets you specify
+    are defined.</para>
+    
+    <para>In order to  you want to define this set of Fact Types you could use this 
+    parameter:</para>
+    
+    <table>
+        <title>HTTP parameters to specify the Working-Sets to be applied:</title>
+        <tgroup cols="4">
+            <thead>
+                <row>
+                    <entry align="center">Parameter Name</entry>
+                    <entry align="center">Explanation</entry>
+                    <entry align="center">Allow multiple values</entry>
+                    <entry align="center">Example</entry>
+                </row>
+            </thead>
+            <tbody>
+                <row>
+                    <entry align="center">activeWorkingSetUUIDs</entry>
+                    <entry>The UUID of an existing Working-Set
+                    </entry>
+                    <entry align="center">true</entry>
+                    <entry>968c9b3c-bc19-40ba-bb38-44435956ccab</entry>
+                </row>
+            </tbody>
+        </tgroup>
+    </table>
+    
+    <note><para>The asset’s UUID could be found in Guvnor's UI or through 
+    REST-API.</para></note>
+    
+  </section>
+  
+</section>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../.." xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/2000/svg" xmlns:ns4="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>User permissions</title>
+
+  <para>When role based permissions are enabled (see administration guide), it's possible limit user permissions.</para>
+
+  <figure>
+    <title>User permission mappings</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Part-User_Guide/Chapter-Administrative_Functions/UserPermissionMappings.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>To add a new user, click the button <guilabel>Create new user mapping</guilabel>.</para>
+
+  <note>
+    <para>The user <literal>guest</literal> is special: if the user exists, Guvnor will automatically log in users as
+    guest.</para>
+  </note>
+
+  <warning>
+    <para>Do not delete or cripple the users <literal>admin</literal> or <literal>mailman</literal>. They are users used
+    by the system.</para>
+  </warning>
+
+  <para>To add or remove a permission to a user, select a user and click on the button <guilabel>Open</guilabel>. Click
+  on the green <guilabel>+</guilabel> to add a permission type:</para>
+
+  <figure>
+    <title>User permission mapping dialog</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Part-User_Guide/Chapter-Administrative_Functions/UserPermissionMappingDialog.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>There are several permission types: </para>
+
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Admin</emphasis>: this user can do everything</para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Analyst</emphasis> or <emphasis role="bold">Analyst read-only</emphasis>: analyst
+      permissions for a specific <emphasis>category</emphasis>. Create the category before attempting to assign users to
+      it.</para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Package admin</emphasis>, <emphasis role="bold">Package developer</emphasis> or
+      <emphasis role="bold">Package read-only</emphasis>: package permissions for a specific
+      <emphasis>package</emphasis>. Create the package before attempting to assign users to it.</para>
+    </listitem>
+  </itemizedlist>
+</section>

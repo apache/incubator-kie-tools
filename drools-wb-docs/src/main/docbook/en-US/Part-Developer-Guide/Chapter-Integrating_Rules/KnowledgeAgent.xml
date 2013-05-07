@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/2000/svg"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/1999/xhtml"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>The Knowledge Agent</title>
+
+  <para>The knowledge agent is a component which is embedded in knowledge-api.
+  To use this, you don't need any extra components. In fact, if you are using
+  Guvnor, your application should only need to include the knowledge-api and
+  drools-core dependencies in its classpath (drools and mvel JARs only), and
+  no other rules specific dependencies.</para>
+
+  <para>Note that there is also a drools-ant ant task, so you can build rules
+  as part of an Ant script (for example in cases where the rules are edited in
+  the IDE) without using Guvnor at all - the drools-ant task will generate
+  .pkg files the same as Guvnor.</para>
+
+  <para>Once you have "built" your rules in a package in Guvnor (or from the
+  ant task), you are ready to use the agent in your target application.</para>
+
+  <para>The Following example constructs an agent that will build a new
+  KnowledgeBase from the files specified in the path String. It will poll
+  those files every 60 seconds, which is the default, to see if they are
+  updated. If new files are found it will construct a new KnowledgeBase. If
+  the change set specifies a resource that is a directory it's contents will
+  be scanned for changes too.</para>
+
+  <programlisting language="Java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
+KnowledgeBase kbase = kagent.getKnowledgeBase();</programlisting>
+
+  <para>The KnowledgeAgent can accept a configuration that allows for some of
+  the defaults to be changed. An example property is
+  <code>drools.agent.scanDirectories</code>, by default any specified
+  directories are scanned for new additions, it is possible to disable
+  this.</para>
+
+  <programlisting language="Java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+
+// we do not want to scan directories, just files
+kaconf.setProperty( "drools.agent.scanDirectories", "false" ); 
+
+// the name of the agent
+KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", kaconf );
+
+// resource to the change-set xml for the resources to add                                                                  
+kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); </programlisting>
+
+  <para>An example of the <filename>change-set.xml</filename> file.</para>
+
+  <programlisting language="XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;change-set xmlns="http://drools.org/drools-5.0/change-set"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+            xs:schemaLocation="http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd" &gt;
+    &lt;add&gt;
+      &lt;resource source="&guvnor.url.base;/org.drools.guvnor.Guvnor/package/mortgages/LATEST" type="PKG" basicAuthentication="enabled" username="uid" password="pwd"/&gt;
+    &lt;/add&gt; 
+&lt;/change-set&gt;</programlisting>
+
+  <important>
+    <para>The User ID and Password in the change-set should be consistent with
+    the requirements of the Authenticator configured in components.xml. By
+    default, a NilAuthenticator is configured that does not authenticate HTTP
+    requests and hence the "basicAuthentication", "username" and "password"
+    attributes are not required. If you change components.xml to use another
+    Authenticator you will need to ensure appropriate authentication
+    credentials are set in the change-set. Please refer to the "Security -
+    Authentication and basic access" section of the "Administration Guide" for
+    more details.</para>
+  </important>
+
+  <note>
+    <para>The change-set schema, change-set-1.0.0.xsd, is also included in the
+    knowledge-api JAR file applicable to the version of Drools you are
+    running.</para>
+  </note>
+
+  <para>Resource scanning is not on by default, it's a service and must be
+  started, the same is for notification. This can be done via the
+  ResourceFactory.</para>
+
+  <programlisting language="Java">ResourceFactory.getResourceChangeNotifierService().start();
+ResourceFactory.getResourceChangeScannerService().start();</programlisting>
+
+  <para>Following shows the deployment screen of Guvnor, which provides URLs
+  and downloads of packages.</para>
+
+  <figure>
+    <title>Snapshot deployment</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/SnapshotDeploy.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>You can see the "Package URI" - this is the URL that you would copy
+  and paste into the <filename>change-set.xml</filename> file to specify that
+  you want this package. It specifies an exact version (in this case to a
+  snapshot) - each snapshot has its own URL. If you want the latest snapshot,
+  replace the name of the snapshot in the URL with the word "LATEST".</para>
+
+  <para>You can also download a .pkg file from here, which you can drop in a
+  directory and use the "file" or "dir" feature of the KnowledgeAgent if
+  needed (in some cases people will not want to have the runtime automatically
+  contact Guvnor for updates - but that is generally the easiest way for many
+  people).</para>
+</section>

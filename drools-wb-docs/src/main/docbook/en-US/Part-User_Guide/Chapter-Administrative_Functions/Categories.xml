@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook"  xml:base="../..">
+  <title>Categories</title>
+
+  <figure>
+    <title>Categories</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/CatZoom.png"
+                   format="PNG"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Categories allow rules (assets) to be labeled (or tagged) with any
+  number of categories that you define. This means that you can then view a
+  list of rules that match a specific category. Rules can belong to any number
+  of categories. In the above diagram, you can see this can in effect create a
+  folder/explorer like view of assets. The names can be anything you want, and
+  are defined by the Guvnor administrator (you can also remove/add new
+  categories - you can only remove them if they are not currently in
+  use).</para>
+
+  <para>Generally categories are created with meaningful name that match the
+  area of the business the rule applies to (if the rule applies to multiple
+  areas, multiple categories can be attached). Categories can also be used to
+  "tag" rules as part of their life-cycle, for example to mark as "Draft" or
+  "For Review".</para>
+
+  <figure>
+    <title>Assets can have multiple categories</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/CatEdit.png"
+                   format="PNG"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The view above shows the category editor/viewer that is seen when you
+  open an asset. In this example you can see the asset belongs to 2
+  categories, with a "+" button to add additional items (use the trash can
+  item to remove them). This means that when either category is used to show a
+  list of assets, you will see that asset.</para>
+
+  <para>In the above example, the first Category "Finance" is a "top level"
+  category. The second one: "HR/Awards/QAS" is a still a single category, but
+  its a nested category: Categories are hierarchical. This means there is a
+  category called "HR", which contains a category "Awards" (it will in fact
+  have more sub-categories of course), and "Awards" has a sub-category of QAS.
+  The screen shows this as "HR/Awards/QAS" - its very much like a folder
+  structure you would have on your hard disk (the notable exception is of
+  course that rules can appear in multiple places).</para>
+
+  <para>When you open an asset to view or edit, it will show a list of
+  categories that it currently belongs to If you make a change (remove or add
+  a category) you will need to save the asset - this will create a new item in
+  the version history. Changing the categories of a rule has no effect on its
+  execution.</para>
+
+  <figure>
+    <title>Creating categories</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/AdminCats.png" format="PNG"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The above view shows the administration screen for setting up
+  categories (there) are no categories in the system by default. As the
+  categories can be hierarchical you chose the "parent" category that you want
+  to create a sub-category for. From here categories can also be removed (but
+  only if they are not in use by any current versions of assets).</para>
+
+  <para>As a general rule, an asset should only belong to 1 or 2 categories at
+  a time. Categories are critical in cases where you have large numbers of
+  rules. The hierarchies do not need to be too deep, but should be able to see
+  how this can help you break down rules/assets into manageable chunks. Its ok
+  if its not clear at first, you are free to change categories as you
+  go.</para>
+</section>

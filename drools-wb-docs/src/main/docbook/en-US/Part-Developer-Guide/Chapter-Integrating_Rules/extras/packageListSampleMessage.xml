@@ -1,0 +1,13 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages">
+  <title type="text">Packages</title>
+  <entry>
+    <title type="text">defaultPackage</title>
+    <link
+      href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/defaultPackage" />
+  </entry>
+  <entry>
+    <title type="text">mortgages</title>
+    <link
+      href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages" />
+  </entry>
+</feed>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-wb</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-wb-jcr2vfs-migration</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools Workbench - JCR to UberFire VFS migration parent</name>
+  <description>Migrates the data of Guvnor 5 to Drools Workbench 6</description>
+
+  <properties>
+    <jcrGuvnor.version>5.5.1-SNAPSHOT</jcrGuvnor.version>
+  </properties>
+
+  <modules>
+    <module>drools-wb-jcr2vfs-migration-core</module>
+  </modules>
+
+</project>

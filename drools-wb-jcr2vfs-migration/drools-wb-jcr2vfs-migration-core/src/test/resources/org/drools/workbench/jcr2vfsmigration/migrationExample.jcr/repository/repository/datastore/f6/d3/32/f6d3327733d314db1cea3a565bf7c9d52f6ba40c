@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="flow" >
+
+  <header>
+  </header>
+
+  <nodes>
+    <workItem id="15" name="Log" x="48" y="477" >
+      <work name="Log" >
+        <parameter name="Message" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+      </work>
+    </workItem>
+    <humanTask id="4" name="Human Task" x="130" y="372" >
+      <work name="Human Task" >
+        <parameter name="Comment" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="TaskName" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="ActorId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+      </work>
+    </humanTask>
+    <subProcess id="8" name="SubProcess" x="424" y="114" width="80" height="40" >
+    </subProcess>
+    <join id="11" name="Join" x="230" y="174" />
+    <eventNode id="16" name="Event" x="37" y="272" >
+      <eventFilters>
+      </eventFilters>
+    </eventNode>
+    <forEach id="3" name="ForEach" x="278" y="439" >
+      <nodes>
+    <actionNode id="1" name="Action" x="10" y="38" />
+      </nodes>
+      <connections>
+      </connections>
+      <in-ports>
+      </in-ports>
+      <out-ports>
+      </out-ports>
+    </forEach>
+    <actionNode id="7" name="Action" x="163" y="303" />
+    <ruleSet id="12" name="RuleSet" x="504" y="467" width="80" height="40" ruleFlowGroup="" />
+    <composite id="2" name="CompositeNode" x="389" y="204" width="200" height="150" >
+      <nodes>
+    <actionNode id="2" name="Action" x="60" y="100" width="80" height="40" />
+    <actionNode id="1" name="Action" x="57" y="43" />
+      </nodes>
+      <connections>
+    <connection from="1" to="2" />
+      </connections>
+      <in-ports>
+      </in-ports>
+      <out-ports>
+      </out-ports>
+    </composite>
+    <end id="13" name="End" x="753" y="268" width="80" height="40" />
+    <milestone id="9" name="Event Wait" x="683" y="466" width="80" height="40" />
+    <timerNode id="6" name="Timer" x="148" y="51" width="80" height="40" delay="0" />
+    <start id="1" name="Start" x="67" y="162" width="80" height="40" />
+    <workItem id="14" name="Email" x="152" y="475" >
+      <work name="Email" >
+        <parameter name="To" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="From" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="Text" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="Subject" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+      </work>
+    </workItem>
+    <split id="10" name="Split" x="291" y="64" width="80" height="40" />
+    <fault id="5" name="Fault" x="746" y="74" width="80" height="40" />
+  </nodes>
+
+  <connections>
+    <connection from="10" to="8" />
+    <connection from="10" to="11" />
+    <connection from="2" to="11" />
+    <connection from="11" to="7" />
+    <connection from="7" to="12" />
+    <connection from="8" to="2" />
+    <connection from="9" to="13" />
+    <connection from="12" to="9" />
+    <connection from="1" to="6" />
+    <connection from="6" to="10" />
+  </connections>
+
+</process>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-wb</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-wb-docs</artifactId>
+  <packaging>jdocbook</packaging>
+
+  <name>Drools Workbench documentation</name>
+  <description>Drools Workbench documentation</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <configuration>
+          <sourceDocumentName>Drools_Workbench_Manual.xml</sourceDocumentName>
+          <injections>
+            <injection><!-- Fix maven-jdocbook-plugin so project.version doesn't need to be duplicated -->
+              <name>project.version</name>
+              <value>${project.version}</value>
+            </injection>
+            <!-- Docbook variables that can be replaced by BRMS-->
+            <injection>
+              <name>guvnor.app.name</name>
+              <value>Guvnor</value>
+              <!--<value>BRMS</value>-->
+            </injection>
+            <injection>
+              <name>guvnor.war.name</name>
+              <value>guvnor.war</value>
+              <!--<value>jboss-brms.war</value>-->
+            </injection>
+            <injection>
+              <name>guvnor.url.base</name>
+              <value>http://localhost:8080/guvnor-${project.version}</value>
+              <!--<value>http://localhost:8080/jboss-brms</value>-->
+            </injection>
+          </injections>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

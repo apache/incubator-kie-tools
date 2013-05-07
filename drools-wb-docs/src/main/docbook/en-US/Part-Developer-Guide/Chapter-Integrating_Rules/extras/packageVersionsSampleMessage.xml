@@ -1,0 +1,16 @@
+<feed xmlns="http://www.w3.org/2005/Atom"
+  xml:base="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages">
+  <title type="text">Version history of mortgages</title>
+  <entry>
+    <title type="text">3</title>
+    <updated>2012-04-26T09:22:23.519Z</updated>
+    <link
+      href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/versions/3" />
+  </entry>
+  <entry>
+    <title type="text">4</title>
+    <updated>2012-04-26T09:23:07.500Z</updated>
+    <link
+      href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/versions/4" />
+  </entry>
+</feed>

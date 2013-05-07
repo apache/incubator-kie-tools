@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>WebDAV and HTTP</title>
+
+  <para>The repository back end can also be accessed via webdav. WebDAV is a
+  http based file system API - which has clients on all platforms (some
+  operating systems such as windows can connect directly to WebDAV
+  repositories almost like a file system.</para>
+
+  <section>
+    <title>WebDAV</title>
+
+    <figure>
+      <title>Windows webdav</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/WebDAVWindows.png"
+                     format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>In windows the "web folders" feature can be used. On OSX - the free
+    Cyberduck client can work well. To access the repository as webdav, you
+    the url is the same as the web interface, only with /webdav at the end,
+    instead of <filename>Guvnor.html</filename>. Authentication will be
+    required to get access this way. This will show a packages and snapshots
+    directory - the snapshots directory is read only (a view of created
+    snapshots of packages). The packages directory will contain a list of
+    packages in the repository, drilling in to them will show the individual
+    assets as files.</para>
+  </section>
+
+  <section>
+    <title>URLs</title>
+
+    <para>There are a few other URLs which are handy to know exist. The
+    package deployment URL mentioned in the section about knowledge agent
+    deployment also has a few other features: By appending
+    <filename>.drl</filename> to the end of a URL, you will show the generated
+    DRL for that package. e.g.:
+    <filename>/package/testPDSGetPackage/LATEST.drl</filename> - will show the
+    DRL (not the binary package) for the latest package. Further to this, you
+    can append <filename>/assetName.drl</filename> - and it will show the
+    generated DRL for that item. (even if it isn't a DRL file). E.g.
+    <filename>/package/testPDSGetPackage/LATEST/SomeFile.drl</filename>.</para>
+  </section>
+</section>

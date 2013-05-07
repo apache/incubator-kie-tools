@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Interacting with the Editor</title>
+
+  <para>After the Editor is open, you can interact with it using JavaScript.
+    The Editor defines a JavaScript object in the Window element where it is 
+    rendered. This object looks like this:
+  </para>
+  
+  <para>The <emphasis>window.guvnorEditorObject</emphasis> defines 5 functions 
+  that you can use to interact with it. <emphasis>getDRL()</emphasis> and 
+  <emphasis>getBRL()</emphasis> receive a callback function as parameter. 
+  This function will receive a String containing the DRL or BRL of the rules you 
+  are editing.
+  </para>
+  <programlisting language="Javascript" linenumbering="numbered">var guvnorEditorObject = {
+    getDRL: function (callbackFunction),
+    getBRL: function (callbackFunction),
+    registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction),
+    registerAfterCancelButtonCallbackFunction: function (callbackFunction),
+    getAssetsUUIDs: function()
+}
+  </programlisting>
+  <para>
+    The next 2 functions are for register callbacks for “Save”, “Done” and “Cancel” 
+    buttons. These callback functions don’t accept any parameter.
+    The last function is used to retrieve the UUIDs of the assets you are editing.
+    This is very useful when you are creating a new rule asset and you don’t know 
+    the UUID of it.
+  </para>
+</section>

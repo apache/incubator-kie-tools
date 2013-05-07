@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Administrative Functions</title>
+
+  <xi:include href="Categories.xml" xpointer="element(/1)" />
+
+  <xi:include href="Statuses.xml" xpointer="element(/1)" />
+
+  <xi:include href="ArchivedItems.xml" xpointer="element(/1)" />
+
+  <xi:include href="EventLog.xml" xpointer="element(/1)" />
+
+  <xi:include href="UserPermissions.xml" xpointer="element(/1)" />
+
+  <xi:include href="RepositoryImportExport.xml" xpointer="element(/1)" />
+
+  <!--xi:include href="RuleVerification.xml" xpointer="element(/1)" /-->
+
+  <xi:include href="RepositoryConfiguration.xml" xpointer="element(/1)" />
+</chapter>

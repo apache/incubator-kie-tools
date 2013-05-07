@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Advanced configuration</title>
+
+  <para>As drools supports various configuration options for a package (such
+  as adding functions for "accumulate" etc), this can be done by adding a
+  <filename>X.package</filename> or <filename>X.conf</filename> file to the
+  package - files which contain name/value pairs in the "properties" style.
+  These will then be automatically added to the package configuration. See the
+  main drools documentation for all the things you can do.</para>
+</section>

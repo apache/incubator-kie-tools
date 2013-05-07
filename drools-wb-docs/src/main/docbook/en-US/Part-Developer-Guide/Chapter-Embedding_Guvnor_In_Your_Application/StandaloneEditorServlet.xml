@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Embedded Editor Entry-Point: StandaloneEditorServlet</title>
+
+  <para>Guvnor defines a single entry-point to embed any of its editors in a web 
+  application: StandaloneEditorServlet. This servlet is found in 
+  /standaloneEditorServlet URL, and according to the parameters you pass to it 
+  (parameters names and possible values are going to be explained later), you can
+  open the editor in 3 different modes: BRL Edition Mode, Edition of Existing 
+  Assets Mode and Create New Asset Mode.
+  So, if you want to embed a Guvnor Editor in your application you will need to 
+  perform a request to /standaloneEditorServlet URL. Once opened, you can interact 
+  with the editor using JavaScript.
+  </para>
+  <important><para>
+  Because you need to invoke JavaScript in order to interact with the editor, Guvnor 
+  and your application must be running in the same server. Otherwise you will find 
+  cross-domain JavaScript invocation problems.</para></important>
+</section>

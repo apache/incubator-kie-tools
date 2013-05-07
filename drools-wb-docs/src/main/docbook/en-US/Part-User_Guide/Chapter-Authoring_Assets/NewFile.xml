@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/2000/svg"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/1999/xhtml"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>File</title>
+
+  <para>Files can be stored in Guvnor as assets.</para>
+
+  <para>You need to provide the asset name and file extension in the "New
+  Asset" popup dialog.</para>
+
+  <figure>
+    <title>Creating a new file asset</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/NewFile1.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Once you have created the asset a screen to upload (or download) the
+  file itself is shown.</para>
+
+  <figure>
+    <title>File upload\download screen</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/NewFile2.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>If you specify a file extension of "properties" a standard Java
+  properties file can also be created.</para>
+
+  <figure>
+    <title>Creating a new properties file asset</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewFile-properties1.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The properties name\value pairs can be maintained from within
+  Guvnor.</para>
+
+  <figure>
+    <title>Maintaining a properties file</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewFile-properties2.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+</section>

@@ -1,0 +1,98 @@
+<entry xmlns="http://www.w3.org/2005/Atom"
+  xml:base="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages">
+  <title type="text">mortgages</title>
+  <summary type="text">Mortgages that aren't stupid</summary>
+  <published>2011-05-02T09:16:16.246Z</published>
+  <author>
+    <name>mic</name>
+  </author>
+  <id>http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages
+  </id>
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/drools"
+    title="drools" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/MortgageModel"
+    title="MortgageModel" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Underage"
+    title="Underage" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Are%20they%20old%20enough"
+    title="Are they old enough" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/No%20bankruptcies"
+    title="No bankruptcies" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Bankruptcies"
+    title="Bankruptcies" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Bankruptcy%20history"
+    title="Bankruptcy history" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/credit%20ratings"
+    title="credit ratings" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/No%20bad%20credit%20checks"
+    title="No bad credit checks" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Good%20credit%20history%20only"
+    title="Good credit history only" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/no%20NINJAs"
+    title="no NINJAs" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/NINJAs"
+    title="NINJAs" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Pricing%20loans"
+    title="Pricing loans" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Pricing%20low%20end"
+    title="Pricing low end" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Unapprove%20by%20default"
+    title="Unapprove by default" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/Dummy%20rule"
+    title="Dummy rule" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/ApplicantDsl"
+    title="ApplicantDsl" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/CreditScoreApproval"
+    title="CreditScoreApproval" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/CreditApproval"
+    title="CreditApproval" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/DateDslRule"
+    title="DateDslRule" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/RegexDslRule"
+    title="RegexDslRule" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/DSLWithDate"
+    title="DSLWithDate" rel="asset" />
+  <link
+    href="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/assets/myws"
+    title="myws" rel="asset" />
+  <metadata xmlns="">
+    <archived>
+      <value>false</value>
+    </archived>
+    <uuid>
+      <value>da98caef-e1c4-4f98-880c-46a740c9131f</value>
+    </uuid>
+    <state>
+      <value></value>
+    </state>
+    <versionNumber>
+      <value>2</value>
+    </versionNumber>
+    <checkinComment>
+      <value>Mortgages that aren't stupid</value>
+    </checkinComment>
+  </metadata>
+  <content src="http://127.0.0.1:8080/guvnor-5.4.0-SNAPSHOT-jboss-as-7.0/rest/packages/mortgages/binary" />
+</entry>

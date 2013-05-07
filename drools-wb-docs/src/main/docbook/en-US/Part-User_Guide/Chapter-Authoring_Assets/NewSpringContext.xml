@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Spring Contexts</title>
+
+  <para>This textual editor allows you to define Drools (and potentially any)
+  Spring context file. These files are later accessible through HTTP.</para>
+
+  <figure>
+    <title>Spring Context - Editor</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-editor.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The editor comes with a basic pallete that you can use to paste
+  predefined Spring Beans templates like kbases, ksessions and so on.</para>
+
+  <para>The pallete also has a Package tree that can be used to add resources
+  to the Spring Context file being edited.</para>
+
+  <para>The Beans are inserted in the caret position of the editor</para>
+
+  <para>The elements in the pallete can be customized editing the file
+  $GUVNOR_HOME/WEB-INF/Clases/springContextElements.properties</para>
+
+  <figure>
+    <title>Spring Context - Pallete Configuration</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-properties-file.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Each Spring Context has its own URL that applications can use to
+  access it. These URLs are shown in the Package Edit Screen</para>
+
+  <figure>
+    <title>Spring Context - Public URLs</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-urls.png"
+                   format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+</section>

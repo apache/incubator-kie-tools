@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>org.uberfire.security.server.UberFireSecurityFilter</filter-class>
+    <init-param>
+      <param-name>org.uberfire.cookie.id</param-name>
+      <param-value>guvnor.app</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
+    <init-param>
+      <param-name>org.uberfire.images.paths</param-name>
+      <param-value>/org.drools.workbench.DroolsWorkbench</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireImageServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/uberFireImages/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.dtablexls.backend.server.DecisionTableXLSFileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DTableXLSFileServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/dtablexls/file</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.scorecardxls.backend.server.ScoreCardXLSFileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreCardFileServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/scorecardxls/file</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>M2RepoFileServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>M2RepoFileServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/m2repo/file</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <servlet-class>org.kie.guvnor.m2repo.backend.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <url-pattern>/maven2/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+      
+  <context-param>
+    <param-name>errai.properties</param-name>
+    <param-value>/WEB-INF/errai.properties</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>login.config</param-name>
+    <param-value>/WEB-INF/login.config</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>users.properties</param-name>
+    <param-value>/WEB-INF/users.properties</param-value>
+  </context-param>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

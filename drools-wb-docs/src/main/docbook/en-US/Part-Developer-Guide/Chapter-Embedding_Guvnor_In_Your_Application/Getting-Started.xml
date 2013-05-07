@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Getting Started</title>
+
+  <para>The Embedded Version of Guvnor’s Editors lets you to use just the 
+  editor window inside your applications. 
+  So, basically what you need to do to is to embed just the editor you want to
+  use in your web application using an iframe.
+  In order to be able to invoke an Editor instance from an external application, 
+  Guvnor must be running: 
+  Standalone Editor is just a part of Guvnor and not a different application.  
+  The first step is to have Guvnor deployed and running in a web/application server.
+  </para>
+  <para>Using the Embedded version of Guvnor’s Editor you can create or edit assets 
+  only inside existing categories and packages. You must configure at least one 
+  category and package with a valid model inside Guvnor to start working with this 
+  feature.</para>
+</section>

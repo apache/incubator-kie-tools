@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>REST API</title>
+
+  <para>The repository back end can also be accessed via Rest. Rest is a http
+  based protocol API, which has clients on all platforms and in all
+  programming languages.</para>
+
+  <section>
+    <title>REST</title>
+
+    <para>Representational State Transfer (REST) is a style of software
+    architecture for distributed hypermedia systems such as the World Wide
+    Web. The term Representational State Transfer was introduced and defined
+    in 2000 by <link
+    xlink:href="http://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</link>
+    in his doctoral dissertation.</para>
+
+    <para>REST-style architectures consist of clients and servers. Clients
+    initiate requests to servers; servers process requests and return
+    appropriate responses. Requests and responses are built around the
+    transfer of representations of resources. A resource can be essentially
+    any coherent and meaningful concept that may be addressed. A
+    representation of a resource is typically a document that captures the
+    current or intended state of a resource. The REST protocol is often
+    considered as a light protocol versus SOAP.</para>
+  </section>
+
+  <section>
+    <title>Guvnor REST API</title>
+
+    <para>The Guvnor Rest API is divided in two groups of services : one
+    around accessing rule assets by their names and packages and the second 
+    accessing rule assets by categories.</para>
+
+    <para>A rule asset represents any element that can be stored and handled
+    in Guvnor : a guided rule, a web decision table, a test scenario,
+    etc.</para>
+
+    <para>The http address to use as base address is
+    http://{ServerName}/{httpPort}/{guvnorWarFilename}/rest where ServerName is
+    the host name on the server on which Guvnor is deployed, httpPort the port
+    number (8080 by default development) and guvnorWarFilename the name of the
+    archived deployed (guvnor-webapp-5.3.0 for version 5.3.0) without the extension.</para>
+
+    <section>
+         	<title>Accessing Rules by Package</title>
+		<para>
+			Use the URLs listed below to access rules assets by package. The 
+			examples below assume a base URL of <link xlink:href="&guvnor.url.base;/rest/">&guvnor.url.base;/rest/</link>.
+		</para>
+		<formalpara>
+			<title>/packages</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages">&guvnor.url.base;/rest/packages</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+XML
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method return all packages contained in the repository in the 
+			requested format (Atom feed, JSON, or XML).
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+XML
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates a new package from an input stream of DRL, an 
+			Atom feed, JSON, or XML, and returns the newly created package in the 
+			requested format (Atom feed, JSON, or XML).
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}">&guvnor.url.base;/rest/packages/{packageName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of the package {packageName} as 
+			an Atom entry when the MIME-Type is application/atom+xml, and as a 
+			package element when the MIME-Type is application/json or 
+			application/xml.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>		
+		</itemizedlist>
+		<para>
+			The PUT method updates the metadata of package {packageName} with the 
+			provided format (Atom Entry, JSON, or XML).
+		</para>
+		<para>
+			The DELETE method deletes package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/source</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/source">&guvnor.url.base;/rest/packages/{packageName}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					text/plain
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of the package {packageName} 
+			as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/binary</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/binary">&guvnor.url.base;/rest/packages/{packageName}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the compiled binary of the package 
+			{packageName} as a binary stream. If the package has not been 
+			compiled yet or its binary is not up to date, this will compile the 
+			package first.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions">&guvnor.url.base;/rest/packages/{packageName}/versions</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of package {packageName} versions as 
+			an Atom Feed.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions/{version}">&guvnor.url.base;/rest/packages/{packageName}/versions/{version}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of package {packageName} and of 
+			version {version} as an Atom Entry.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}/source</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/versions/{version}/source">&guvnor.url.base;/rest/packages{packageName}/versions/{version}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					text/plain
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of package {packageName} and 
+			of version {version} as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/versions/{version}/binary</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages/{packageName}/versions/{version}/binary">&guvnor.url.base;/rest/packages/{packageName}/versions/{version}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary (compiled code) of package 
+			{packageName} and of version {version} as an octet stream. If the 
+			package version has not been built, it returns HTTP code 500 with an 
+			error message.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets">&guvnor.url.base;/rest/packages{packageName}/assets</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of rule assets contained in package 
+			{packageName} in the requested format (Atom feed, JSON, or XML).
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates an asset in package {packageName}.
+		</para>
+		<para>
+			When an Atom Entry is provided the following information must be 
+			included in the input: asset name, asset description, asset initial 
+			category, and asset format.
+		</para>
+		<para>
+			When an octet-stream is provided the value of slug header is used to 
+			indicate the name of the asset. If the slug header is missing a HTTP 
+			500 error is returned.
+		</para>
+		<para>
+			The POST method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					multipart/form-data
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The POST method creates the asset {assetName} for the package 
+			{packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the rule asset {assetName} contained in 
+			package {packageName} in the requested format (Atom feed, JSON, or 
+			XML).
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method consumes MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					multipart/form-data
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the metadata of the rule asset {assetName} 
+			contained in package {packageName} with the provided format (Atom 
+			Entry, JSON, or XML). When Multipart/form-data is supplied the asset 
+			{assetName} in package {packageName} is updated.
+		</para>
+		<para>
+			The DELETE method deletes the rule asset {assetName} contained in 
+			package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/binary</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/binary">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary content of rule asset {assetName} 
+			contained in package {packageName}. If this asset has no binary 
+			content, the source content is returned instead.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the binary content of the rule asset 
+			{assetName} contained in package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/source</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/source">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the content of rule asset {assetName} 
+			contained in package {packageName}. If this is a binary asset, the 
+			binary data is returned as a byte array.
+		</para>
+		<para>
+			The PUT method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The PUT method updates the source code of the rule asset {assetName} 
+			contained in package {packageName}.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the list of rule asset {assetName} versions 
+			contained in package {packageName} as an Atom Feed.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the metadata of rule asset {assetName} of 
+			version {version} contained in package {packageName} as an Atom 
+			Entry.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/source</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/source">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/source</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					plain/text
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the source code of rule asset {assetName} of 
+			version {version} contained in package {packageName} as a text file.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/assets/{assetName}/versions/{version}/binary</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary">&guvnor.url.base;/rest/packages{packageName}/assets/{assetName}/versions/{version}/binary</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/octet-stream
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns the binary content of rule asset {assetName} 
+			of version {version} contained in package {packageName}. If this 
+			asset has no binary content, the source content is returned instead.
+		</para>
+		<formalpara>
+			<title>/packages/{packageName}/snapshot/{snapshotName}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/packages{packageName}/snapshot/{snapshotName}">&guvnor.url.base;/rest/packages{packageName}/snapshot/{snapshotName}</link>
+			</para>
+		</formalpara>
+		<para>
+			The POST method creates a snapshot {snapshotName} for the package 
+			{packageName}.
+		</para>
+
+      <figure>
+        <title>UML representation of the Package Object</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/PackageUMLRepresentation.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
+
+      <figure>
+        <title>UML representation of the Asset Object</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
+    </section>
+    
+	<section>
+		<title>Accessing Rules by Category</title>
+		<para>
+			Use the URLs listed below to access rules assets by category. The examples below assume a base URL of <link xlink:href="&guvnor.url.base;/rest/">&guvnor.url.base;/rest/</link>
+		</para>
+		<formalpara>
+			<title>/categories/</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/categories">&guvnor.url.base;/rest/categories</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method lists all categories.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}">&guvnor.url.base;/rest/categories/{categoryPath}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns information for a single category.
+		</para>
+		<para>
+			The PUT method creates a new category with the supplied category path {categoryPath}.
+		</para>
+		<para>
+			The DELETE method deletes the category with the supplied category path {categoryPath}.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/children</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/children">&guvnor.url.base;/rest/categories/{categoryPath}/children</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method lists all subcategories under the provided category {categoryPath}.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/assets</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/assets">&guvnor.url.base;/rest/categories/{categoryPath}/assets</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/atom+xml
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns an Atom feed to all the rule assets that the listed category {category} when the MIME-type is application/atom+xml, and returns a list of asset objects representing rule assets that have the category {categoryPath} when the MIME-Type is either application/json or application/xml.
+		</para>
+		<formalpara>
+			<title>/categories/{categoryPath}/assets/page/{page}</title>
+			<para>
+				<link xlink:href="&guvnor.url.base;/rest/categories/{categoryPath}/assets/page/{page}">&guvnor.url.base;/rest/categories/{categoryPath}/assets/page/{page}</link>
+			</para>
+		</formalpara>
+		<para>
+			The GET method produces MIME-Types:
+		</para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					application/json
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					application/xml
+				</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+			The GET method returns a list of asset objects representing rules assets that have the listed category {categoryPath} and retrieves page {page}, which is a numeric value starting at 1. A page contains 10 elements. If the list contains 20 elements then the list will have 2 pages. Page 1 must be called before page 2 and so on.
+		</para>
+	</section>
+
+    
+  </section>
+
+  <section>
+    <title>Source code Example</title>
+
+    <para>We are giving a list of examples to help using the Guvnor's Rest
+    API</para>
+
+    <section>
+      <title>Retrieving and updating Web decision table</title>
+
+      <para>We are using apache CXF in our example to show how to access the
+      Rest API of Guvnor. In the example here we are getting and updating a
+      web decision table. But this example applies to all Guvnor asset
+      type.</para>
+
+      <example>
+        <title>Retrieving the source code of the web decision table</title>
+
+        <programlisting>WebClient client = WebClient.create("http://127.0.0.1:8080/");
+String content=client.path("guvnor-webapp-${project.version}/rest/packages/essaiRest/assets/tab2/source").accept("text/plain").get(String.class);
+GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal(content);        </programlisting>
+      </example>
+
+      <para>In the first line of code above, we are first creating a WebClient
+      variable that points to the server (here on localhost on port
+      8080).</para>
+
+      <para>In the second line of code above, we are retrieving the source
+      content by accessing the
+      /rest/packages/{packageName}/assets/{assetName}/source, where in our case
+      packageName is "essaiRest" and assetName is "tab2".</para>
+
+      <para>In the third line of code above, the source code we get is the
+      data structure of a Web decision table. So to be able to manipulate the
+      Web decision table, we have to transform the string variable (the source
+      code that contains the xml of the data structure of the web decision
+      table) in the java structure (a java class) for web decision table
+      GuidedDecisionTable52. All guided asset in Guvnor have a java structure
+      to manipulate them</para>
+
+      <example>
+        <title>updating the source code of the web decision table</title>
+
+        <programlisting>String authorizationHeader = "Basic " + org.apache.cxf.common.util.Base64Utility.encode("guest:".getBytes());
+GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+.. 
+Do some stuff here
+..
+String newContent = GuidedDTXMLPersistence.getInstance().marshal(dt);
+WebClient client2 = WebClient.create("http://127.0.0.1:8080/");
+client2.header("Authorization", authorizationHeader);
+Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/essaiRest/assets/tab2/source").accept("application/xml").put(newContent);        </programlisting>
+      </example>
+
+      <para>In the first line of code above, we are first creating a java
+      String variable that contains the authorization element needed to update
+      an asset in the Guvnor repository.</para>
+
+      <para>In the next lines of code above, we are doing some stuff to modify
+      the Web decision table.</para>
+
+      <para>In the following lines of code above, we are first transforming
+      the java structure in an xml structure that we put in a java String
+      variable. Then we again create a WebClient but this time we are also
+      filling the header with a variable "Authorization" that contains the
+      String we built in the first line and that contains the user name
+      "guest" and its password (here no password). We then put the new content
+      on the Guvnor repository.</para>
+
+      <para>Next you can find the pom.xml file to use the Guvnor Rest API in
+      case you are using Maven.</para>
+
+      <example>
+        <title>pom.xml content for our example</title>
+
+        <programlisting>&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;org.drools.examples&lt;/groupId&gt;
+  &lt;artifactId&gt;dt-example&lt;/artifactId&gt;
+  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+  &lt;build&gt;
+    &lt;finalName&gt;cxf-rest-example&lt;/finalName&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+        &lt;configuration&gt;
+          &lt;source&gt;1.6&lt;/source&gt;
+          &lt;target&gt;1.6&lt;/target&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.cxf&lt;/groupId&gt;
+      &lt;artifactId&gt;cxf-bundle-jaxrs&lt;/artifactId&gt;
+      &lt;version&gt;2.3.0&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.drools&lt;/groupId&gt;
+      &lt;artifactId&gt;droolsjbpm-ide-common&lt;/artifactId&gt;
+      &lt;version&gt;5.3.0&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;        </programlisting>
+      </example>
+    </section>
+    
+    <section>
+        <title>Retriving package list, package metadata, package source and binary, package version info etc using Atom</title>
+        <para>In this example we are using Apache Abdera to help parsing and creating Atom Entry and Feed.</para>   
+          
+        <section>
+          <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+          <example>
+            <title>Retrieving all packages contained in the Guvnor repository in Atom Feed format</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageListSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageListSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+          <para>The client can navigate to specific packages using the package URL retrieved from package list.</para>   
+          
+          <example>
+            <title>Retrieving the metadata of the specified package as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageMetadataSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageMetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the source code of the specified package as plain text</title>           
+          <example>
+            <title>Retrieving the source code of the specified package as plain text</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageSourceSampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>
+        
+        <section>
+          <title>Retrieving the compiled binary of the specified package as binary stream</title>
+          <para>Retrieving the compiled binary of the specified package as a binary stream. If the package has not been compiled yet or its binary is not up to date, Guvnor will compile the package first.</para>   
+          
+          <example>
+            <title>Retrieving the compiled binary of the specified package as binary stream</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageBinarySampleCode.java" parse="text" /></programlisting>
+          </example>
+        </section>          
+        
+        <section>
+          <title>Retrieving package versions as an Atom Feed</title>
+          
+          <example>
+            <title>Retrieving package versions as an Atom Feed</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersionsSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersionsSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+         
+        <section>
+          <title>Retrieving package metadata with specified version as an Atom Entry</title>
+          <para>Retrieving package metadata with specified version as an Atom Entry.</para>   
+          
+          <example>
+            <title>Retrieving package metadata with specified version as an Atom Entry</title>
+            <programlisting language="Java" role="JAVA"><xi:include href="extras/packageVersion5MetadataSampleCode.java" parse="text" /></programlisting>
+          </example>
+          <example>
+            <title>Sample message returned from server</title>          
+            <programlisting language="XML" role="XML"><xi:include href="extras/packageVersion5MetadataSampleMessage.xml" parse="text" /></programlisting>
+          </example>
+        </section>
+                                    
+    </section>
+
+  </section>
+</section>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns5="http://www.w3.org/2000/svg"
+         xmlns:ns4="http://www.w3.org/1999/xhtml" xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Snapshots</title>
+
+  <para>URLs are central to how built packages are provided. Guvnor provides packages via URLs (for download and use by
+  the Knowledge Agent). These URLs take the form of:</para>
+
+  <synopsis>http://&lt;server&gt;/guvnor-webapp/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</synopsis>
+
+  <para>&lt;packageName&gt; is the name you gave the package. &lt;packageVersion&gt; is either the name of a snapshot,
+  or "LATEST" (if its LATEST, then it will be the latest built version from the main package, not a snapshot). You can
+  use these in the Knowledge Agent, or you can paste them into your browser and it will download them as a file.</para>
+
+  <para>Refer to the section on the Knowledge Agent for details on how you can use these URLs (and binary downloads) in
+  your application, and how rules can be updated on the fly.</para>
+
+  <figure>
+    <title>Deployment snapshots</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/Snapshots.png" format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The above shows the Package Snapshots view. On the left there is a list of packages. Clicking on a specific
+  package will show you a list of snapshots for that package (if any). From there you can copy, remove or view the
+  assets contained within the snapshot. You can also compare one snapshot to another. Each snapshot is available for
+  download or access via a URL for deployment.</para>
+</section>

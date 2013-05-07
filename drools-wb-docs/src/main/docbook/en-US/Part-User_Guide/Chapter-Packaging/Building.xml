@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML" xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Building</title>
+
+  <para>You can <emphasis>build</emphasis> a package by clicking on the button <emphasis>Build package</emphasis>. Any
+  building errors (such as compilation errors) are shown, failing the build. You can chose to build the whole package or
+  a subset of it (see next sections).</para>
+
+  <figure>
+    <title>Package building</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Guvnor/PackageBuild.png" format="PNG" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <warning>
+    <para>In cases of a large number of rules, all these operations can take some time.</para>
+  </warning>
+
+  <para>If the build was successful, you can download the binary package as a pkg file. Also you will have the option to
+  create a snapshot for deployment. You can also view the DRL that this package results in by clicking on the package
+  source link.</para>
+
+  <note>
+    <para>If you wish to rebuild all packages in bulk, you can do that faster with the left menu <emphasis>Knowledge
+    Bases</emphasis>, menu <emphasis>Create New</emphasis>, menu item <emphasis>Rebuild all packages
+    binaries</emphasis>.</para>
+  </note>
+</section>

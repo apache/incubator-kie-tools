@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Navigating and finding rules</title>
+
+  <para>The two main ways of viewing the repository are by using the Package
+  Explorer or user-driven Categorization (tagging) as outlined
+  previously.</para>
+
+  <section>
+    <title>Package explorer</title>
+
+    <para>The Package Explorer appears in the "Knowledge Bases" section of the
+    left-hand side navigation bar. The Package Explorer shows a list of all
+    packages (other than those that have been archived).</para>
+
+    <para>The list of packages can either be viewed hierarchically or flat and
+    fully expanded or collapsed using the icons below the tree-view.</para>
+
+    <figure>
+      <title>Hierarchical view</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/PackageManagement1.png"
+                     format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Flat view</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/PackageManagement2.png"
+                     format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Clicking on a package name in the tree-view will launch the Asset
+    Viewer.</para>
+
+    <section>
+      <title>Asset Viewer</title>
+
+      <para>The Asset Viewer is launched when a package in the Package
+      Explorer is clicked.</para>
+
+      <para>The Asset Viewer shows a list of assets in the package grouped by
+      their type. If no assets exist in the package a warning is
+      displayed.</para>
+
+      <figure>
+        <title>A package with assets</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/PackageManagement3.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>A package without assets</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/PackageManagement4b.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Expanding a section using the [+] icon reveals the assets
+      contained therein.</para>
+
+      <para>Assets are listed in a table that can be paged forwards or
+      backwards and can be opened by either clicking their respective "Open"
+      button, or selecting the required rows and clicking the "Open selected"
+      button. Multiple assets can be opened into a single editor by selecting
+      the required rows and clicking the "Open selected to single tab"
+      button.</para>
+
+      <figure>
+        <title>Showing individual assets</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/PackageManagement4a.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Package configuration</title>
+
+      <para>A package can be configured by clicking on the "Edit" tab on the
+      Asset Viewer.</para>
+
+      <para>The facilities here relate to compiling the package into a binary
+      form. The "Packaging" section of this user-guide provides a detailed
+      narrative on this section.</para>
+
+      <figure>
+        <title>Package configuration</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/PackageManagement5.png"
+                       format="PNG" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Category view</title>
+
+    <para>The category view provides a way to navigate your rules in a way
+    that makes sense to your organization.</para>
+
+    <figure>
+      <title>Category view</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/CategoryExplorer.png"
+                     format="PNG" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The above diagram shows categories in action. Generally under each
+    category you should have no more then a few dozen rules, if
+    possible.</para>
+  </section>
+
+  <section>
+    <title>Inbox and comments</title>
+
+    <para>Built into the Guvnor are two useful features to helping manage
+    changes: an Inbox, and a comments section. These features do not affect
+    any execution or access to rules, but are purely for documentation and
+    notification purposes, and are of course always optional to use.</para>
+
+    <section>
+      <title>Inbox</title>
+
+      <para>In the "browse" section of the application, there is an "Inbox"
+      tree item, below this are 3 inboxes. "Incoming changes" contains changes
+      to any artifacts that the current logged in user has edited in the past,
+      or commented on. Simply editing or commenting on an artifact registers
+      interest in it to be notified of changes the next time you log
+      in."Recently opened" contains items that have been recently opened
+      (simply opening an artifact will make it appear here, the last 100
+      recently opened items will appear here). "Recently edited" contains the
+      last 100 recently edited items (artifacts that the current user has made
+      changes to).</para>
+    </section>
+
+    <section>
+      <title>Comments</title>
+
+      <para>Below the documentation box of each artifact, is a "comments"
+      section - simply, you can add a new comment. Administrators can clear
+      all comments on a given artifact, but other users can only append
+      comments. Each comment records what user made the comment, and when.
+      Users who can't edit artifacts can still comment on them.</para>
+    </section>
+  </section>
+</section>

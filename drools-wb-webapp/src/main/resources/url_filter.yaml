@@ -1,0 +1,12 @@
+filter:
+   - pattern: /admin/**
+     access: ADMIN
+   - pattern: /config/**
+     access: ADMIN, USER
+   - pattern: /private/**
+
+exclude:
+   - /*.ico
+   - /org.drools.workbench.DroolsWorkbench/images/**
+   - /org.drools.workbench.DroolsWorkbench/css/**
+   - /css/**

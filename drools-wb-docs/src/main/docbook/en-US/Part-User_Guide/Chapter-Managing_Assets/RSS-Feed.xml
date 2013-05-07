@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Feed</title>
+
+  <para>Feeds make it easier for users to keep track of Guvnor content. Following Guvnor content are published in Atom Feed:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Package version history</para>
+      </listitem>
+
+      <listitem>
+        <para>Asset version history</para>
+      </listitem>
+
+      <listitem>
+        <para>Asset Discussion</para>
+      </listitem>
+
+      <listitem>
+        <para>Categories</para>
+      </listitem>
+
+      <listitem>
+        <para>Package assets</para>
+      </listitem>
+    </itemizedlist>
+
+</section>
