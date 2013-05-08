@@ -1,7 +1,5 @@
 package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
-import java.io.InputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,16 +7,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
-import org.drools.repository.RulesRepository;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.workbench.io.IOService;
+import org.kie.workbench.java.nio.base.options.CommentedOption;
+import org.kie.workbench.java.nio.file.NoSuchFileException;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +38,7 @@ public class AttachementAssetMigrater {
 
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final org.kie.workbench.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
         try {

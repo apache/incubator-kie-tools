@@ -23,10 +23,10 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.commons.io.FileSystemType;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.kie.commons.java.nio.file.FileSystem;
+import org.kie.workbench.io.FileSystemType;
+import org.kie.workbench.io.IOService;
+import org.kie.workbench.io.impl.IOServiceDotFileImpl;
+import org.kie.workbench.java.nio.file.FileSystem;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 

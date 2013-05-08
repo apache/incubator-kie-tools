@@ -15,9 +15,9 @@ import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.workbench.io.IOService;
+import org.kie.workbench.java.nio.base.options.CommentedOption;
+import org.kie.workbench.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageHeaderInfo;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
@@ -65,7 +65,7 @@ public class GuidedDecisionTableMigrater {
         }
         
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);        
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final org.kie.workbench.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
         try {

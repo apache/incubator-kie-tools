@@ -11,22 +11,18 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
-import org.drools.guvnor.server.util.BRDRTPersistence;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.server.util.BRDRLPersistence;
-import org.drools.ide.common.server.util.BRDRTXMLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
+import org.kie.workbench.io.IOService;
+import org.kie.workbench.java.nio.base.options.CommentedOption;
+import org.kie.workbench.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
@@ -86,7 +82,7 @@ public class GuidedEditorMigrater {
                 path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem, false);                        
             }
             
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+            final org.kie.workbench.java.nio.file.Path nioPath = paths.convert( path );
 
             Map<String, Object> attrs;
             try {
