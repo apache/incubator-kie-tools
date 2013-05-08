@@ -19,4 +19,7 @@ public interface ConfigurationFactory {
 
     ConfigItem<List> newConfigItem( String name,
                                     List valueType );
+
+    ConfigItem<Object> newConfigItem(String name,
+                                     Object valueType);
 }
