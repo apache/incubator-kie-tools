@@ -196,7 +196,7 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>org.kie.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp</mainClass>
+                        <mainClass>org.drools.workbench.jcr2vfsmigration.Jcr2VfsMigrationApp</mainClass>
                     </manifest>
                 </archive>
             </configuration>          
