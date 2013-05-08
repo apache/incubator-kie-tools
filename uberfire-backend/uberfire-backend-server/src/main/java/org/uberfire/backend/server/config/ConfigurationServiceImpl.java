@@ -101,7 +101,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                                                                                commentedOption );
 
             final String xml = marshaller.marshall( configGroup );
-            System.out.println(xml);
             outputStream.write( xml.getBytes( "UTF-8" ) );
             outputStream.close();
 

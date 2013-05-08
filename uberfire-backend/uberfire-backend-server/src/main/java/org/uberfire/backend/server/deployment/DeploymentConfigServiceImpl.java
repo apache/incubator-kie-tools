@@ -48,6 +48,9 @@ public class DeploymentConfigServiceImpl implements DeploymentConfigService {
         deploymentConfig.addConfigItem(configurationFactory.newConfigItem("unit", deploymentUnit));
 
         configurationService.addConfiguration(deploymentConfig);
+
+        DeploymentConfig deployment = deploymentFactory.newDeployment(deploymentConfig);
+        registeredDeployments.put(deployment.getIdentifier(), deployment);
     }
 
     @Override
