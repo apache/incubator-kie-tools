@@ -1,0 +1,359 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.workbench.widgets.decoratedgrid.data;
+
+import org.junit.Test;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.widgets.decoratedgrid.client.widget.data.Coordinate;
+
+import static junit.framework.Assert.assertEquals;
+
+/**
+ * Tests for DynamicData
+ */
+public class DynamicDataTestsWithoutMergingRowDeletions extends BaseDynamicDataTests {
+
+    @Test
+    public void testIndexing_DataCoordinates() {
+
+        Coordinate c;
+        c = data.get( 0 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 2 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 2 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        data.deleteRow( 1 );
+        assertEquals( data.size(),
+                      2 );
+
+        c = data.get( 0 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+    }
+
+    @Test
+    public void testIndexing_HtmlCoordinates() {
+
+        Coordinate c;
+        c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        data.deleteRow( 1 );
+        assertEquals( data.size(),
+                      2 );
+
+        c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+    }
+
+    @Test
+    public void testIndexing_PhysicalCoordinates() {
+
+        Coordinate c;
+        c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 2 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        data.deleteRow( 1 );
+        assertEquals( data.size(),
+                      2 );
+
+        c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 0 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        c = data.get( 1 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 1 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+
+    }
+
+    @Test
+    public void testIndexing_RowSpans() {
+
+        CellValue<? extends Comparable<?>> cv;
+        cv = data.get( 0 ).get( 0 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 0 ).get( 1 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 0 ).get( 2 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+
+        cv = data.get( 1 ).get( 0 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 1 ).get( 1 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 1 ).get( 2 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+
+        cv = data.get( 2 ).get( 0 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 2 ).get( 1 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 2 ).get( 2 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+
+        data.deleteRow( 1 );
+        assertEquals( data.size(),
+                      2 );
+
+        cv = data.get( 0 ).get( 0 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 0 ).get( 1 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 0 ).get( 2 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+
+        cv = data.get( 1 ).get( 0 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 1 ).get( 1 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+        cv = data.get( 1 ).get( 2 );
+        assertEquals( cv.getRowSpan(),
+                      1 );
+
+    }
+
+}
