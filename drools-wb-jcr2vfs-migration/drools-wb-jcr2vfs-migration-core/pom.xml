@@ -134,12 +134,12 @@
       <artifactId>guvnor-datamodel-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-factmodel-editor-backend</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-factmodel-editor-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-guided-rule-editor-backend</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.guvnor</groupId>
@@ -158,8 +158,8 @@
       <artifactId>drools-guvnor-models-guided-dtable</artifactId>
     </dependency>     
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-drl-text-editor-backend</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-drl-text-editor-backend</artifactId>
     </dependency>         
     <dependency>
       <groupId>org.kie.commons</groupId>
