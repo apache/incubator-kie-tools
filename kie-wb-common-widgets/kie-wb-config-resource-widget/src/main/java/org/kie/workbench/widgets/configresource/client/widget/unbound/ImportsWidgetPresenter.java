@@ -19,8 +19,8 @@ package org.kie.workbench.widgets.configresource.client.widget.unbound;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.drools.guvnor.models.commons.shared.imports.Import;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.guvnor.commons.ui.client.popups.text.FormPopup;
 import org.kie.guvnor.commons.ui.client.popups.text.PopupSetFieldCommand;
 
