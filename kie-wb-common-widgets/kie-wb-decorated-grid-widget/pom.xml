@@ -11,8 +11,8 @@
   <artifactId>kie-wb-decorated-grid-widget</artifactId>
   <packaging>jar</packaging>
 
-  <name>Decorated Grid Widget</name>
-  <description>Decorated Grid Widget</description>
+  <name>Kie Workbench - Commons - Decorated Grid Widget</name>
+  <description>Kie Workbench - Commons - Decorated Grid Widget</description>
 
   <dependencies>
 

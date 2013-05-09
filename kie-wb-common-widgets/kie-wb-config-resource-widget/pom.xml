@@ -11,8 +11,8 @@
   <artifactId>kie-wb-config-resource-widget</artifactId>
   <packaging>jar</packaging>
 
-  <name>Config Resource Widget</name>
-  <description>Config Resource Widget</description>
+  <name>Kie Workbench - Commons - Config Resource Widget</name>
+  <description>Kie Workbench - Commons - Config Resource Widget</description>
 
   <dependencies>
 
