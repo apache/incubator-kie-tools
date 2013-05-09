@@ -17,6 +17,7 @@
 
   <modules>
     <module>drools-wb-webapp</module>
+    <module>drools-wb-jcr2vfs-migration</module>
   </modules>
 
   <profiles>
@@ -31,7 +32,6 @@
         <module>drools-wb-docs</module>
         <module>drools-wb-distribution-wars</module>
         <module>drools-wb-distribution</module>
-        <module>drools-wb-jcr2vfs-migration</module>
       </modules>
     </profile>
   </profiles>
