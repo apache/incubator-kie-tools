@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.guvnor.models.commons.shared.rule.ActionGlobalCollectionAdd;
+import org.drools.workbench.models.commons.shared.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.DirtyableFlexTable;

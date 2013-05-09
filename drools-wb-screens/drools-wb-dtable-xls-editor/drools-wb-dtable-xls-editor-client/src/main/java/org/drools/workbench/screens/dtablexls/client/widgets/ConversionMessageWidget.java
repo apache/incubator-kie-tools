@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 import org.kie.guvnor.commons.ui.client.resources.CommonImages;
 import org.kie.guvnor.commons.ui.client.widget.WidthCalculator;
 

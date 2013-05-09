@@ -18,7 +18,7 @@ package org.drools.workbench.screens.workitems.service;
 
 import java.util.Set;
 
-import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.jboss.errai.bus.server.annotations.Remote;

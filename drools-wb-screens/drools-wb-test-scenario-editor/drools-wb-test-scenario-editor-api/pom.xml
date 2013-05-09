@@ -24,12 +24,12 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-commons</artifactId>
+      <artifactId>drools-workbench-models-commons</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-test-scenarios</artifactId>
+      <artifactId>drools-workbench-models-test-scenarios</artifactId>
     </dependency>
 
     <dependency>

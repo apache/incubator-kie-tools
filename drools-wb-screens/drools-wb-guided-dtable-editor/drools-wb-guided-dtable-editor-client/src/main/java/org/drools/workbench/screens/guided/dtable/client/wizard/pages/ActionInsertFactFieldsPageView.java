@@ -18,9 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
 import java.util.List;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.uberfire.client.mvp.UberView;
 

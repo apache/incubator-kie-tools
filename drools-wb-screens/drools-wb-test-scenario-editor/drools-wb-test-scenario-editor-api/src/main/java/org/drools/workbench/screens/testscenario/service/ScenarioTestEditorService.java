@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.service;
 
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.services.file.SupportsCopy;

@@ -17,7 +17,7 @@ package org.drools.workbench.screens.dtablexls.backend.server.conversion.builder
 
 import java.util.List;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 
 /**
  * Something that can convert a String value into one or more DTCellValue52's

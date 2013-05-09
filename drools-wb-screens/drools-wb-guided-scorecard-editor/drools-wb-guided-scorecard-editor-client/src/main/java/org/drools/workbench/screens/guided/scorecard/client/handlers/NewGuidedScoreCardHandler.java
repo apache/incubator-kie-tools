@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.scorecard.client.resources.images.ImageResources;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;

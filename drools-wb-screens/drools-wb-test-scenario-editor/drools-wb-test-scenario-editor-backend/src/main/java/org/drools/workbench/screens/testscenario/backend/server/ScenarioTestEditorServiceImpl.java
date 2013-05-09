@@ -24,8 +24,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.models.testscenarios.backend.util.ScenarioXMLPersistence;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;

@@ -17,17 +17,17 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import org.kie.guvnor.datamodel.model.DateConverter;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 
 import java.math.BigDecimal;

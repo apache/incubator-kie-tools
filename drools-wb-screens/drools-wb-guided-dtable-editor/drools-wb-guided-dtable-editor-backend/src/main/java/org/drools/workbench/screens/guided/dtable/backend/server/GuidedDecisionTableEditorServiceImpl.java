@@ -23,9 +23,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.models.commons.shared.workitems.PortableWorkDefinition;
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;

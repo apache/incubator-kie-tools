@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.service;
 
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;

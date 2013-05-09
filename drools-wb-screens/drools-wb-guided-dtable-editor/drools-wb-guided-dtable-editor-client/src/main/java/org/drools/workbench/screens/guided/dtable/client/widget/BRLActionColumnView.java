@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 
 /**
  * Presenter and View interfaces for an editor of BRLActionColumn objects

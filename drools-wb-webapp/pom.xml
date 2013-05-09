@@ -65,27 +65,27 @@
     <!-- Models held within Drools -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-commons</artifactId>
+      <artifactId>drools-workbench-models-commons</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-guided-dtable</artifactId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-guided-scorecard</artifactId>
+      <artifactId>drools-workbench-models-guided-scorecard</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-guided-template</artifactId>
+      <artifactId>drools-workbench-models-guided-template</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-test-scenarios</artifactId>
+      <artifactId>drools-workbench-models-test-scenarios</artifactId>
     </dependency>
 
     <!-- Common -->
@@ -542,11 +542,11 @@
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <!-- Drools -->
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-dtable</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-scorecard</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-guided-template</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-guvnor-models-test-scenarios</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-dtable</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-scorecard</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-template</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-test-scenarios</compileSourcesArtifact>
 
             <!-- Guvnor -->
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>

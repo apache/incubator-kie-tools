@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 
 /**

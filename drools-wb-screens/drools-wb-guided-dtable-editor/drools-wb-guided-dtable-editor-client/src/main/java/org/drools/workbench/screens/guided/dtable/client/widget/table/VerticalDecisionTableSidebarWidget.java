@@ -16,8 +16,8 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.CopyPasteContextMenu;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;

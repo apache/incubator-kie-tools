@@ -22,8 +22,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.models.guided.template.backend.BRDRTXMLPersistence;
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.jboss.errai.bus.server.annotations.Service;

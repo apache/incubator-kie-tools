@@ -19,12 +19,12 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.Fixture;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
-import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
-import org.drools.guvnor.models.testscenarios.shared.VerifyField;
-import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.VerifyFact;
+import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;

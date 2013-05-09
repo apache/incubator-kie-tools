@@ -2,7 +2,7 @@ package org.drools.workbench.screens.testscenario.client.handler;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;

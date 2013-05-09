@@ -16,15 +16,15 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
-import org.drools.guvnor.models.testscenarios.shared.Fact;
-import org.drools.guvnor.models.testscenarios.shared.FactData;
-import org.drools.guvnor.models.testscenarios.shared.Field;
-import org.drools.guvnor.models.testscenarios.shared.FieldData;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
+import org.drools.workbench.models.testscenarios.shared.Fact;
+import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.Field;
+import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 
 import java.util.HashMap;
 import java.util.List;

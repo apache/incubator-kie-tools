@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.backend.vfs.Path;
 
 /**

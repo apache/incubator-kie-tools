@@ -16,10 +16,10 @@
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
 import org.drools.decisiontable.parser.ActionType;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.guvnor.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Builder for RuleflowGroup Attribute columns

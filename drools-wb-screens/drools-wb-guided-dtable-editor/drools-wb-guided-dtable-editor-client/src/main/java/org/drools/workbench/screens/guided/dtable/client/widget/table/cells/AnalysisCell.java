@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.cells;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
+import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 
 /**
  * A Cell that renders it's corresponding row index number only

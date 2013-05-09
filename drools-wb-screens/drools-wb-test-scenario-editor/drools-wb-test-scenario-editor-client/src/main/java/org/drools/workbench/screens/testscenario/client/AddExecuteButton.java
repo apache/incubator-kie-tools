@@ -19,8 +19,8 @@ package org.drools.workbench.screens.testscenario.client;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 
 public class AddExecuteButton extends Button {

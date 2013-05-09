@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.action;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 
 public abstract class ActionDetectorKey {
 

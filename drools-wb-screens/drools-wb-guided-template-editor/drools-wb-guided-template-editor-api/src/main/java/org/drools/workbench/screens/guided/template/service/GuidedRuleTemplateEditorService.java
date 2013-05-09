@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.template.service;
 
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;

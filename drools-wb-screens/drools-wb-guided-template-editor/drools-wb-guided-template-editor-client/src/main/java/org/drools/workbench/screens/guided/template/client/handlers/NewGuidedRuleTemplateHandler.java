@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.drools.workbench.screens.guided.template.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;

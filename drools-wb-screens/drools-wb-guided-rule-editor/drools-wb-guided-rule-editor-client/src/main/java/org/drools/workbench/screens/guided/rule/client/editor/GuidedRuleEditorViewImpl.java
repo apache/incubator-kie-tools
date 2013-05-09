@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;

@@ -23,10 +23,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
-import org.drools.guvnor.models.guided.scorecard.shared.Attribute;
-import org.drools.guvnor.models.guided.scorecard.shared.Characteristic;
-import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
+import org.drools.workbench.models.guided.scorecard.shared.Attribute;
+import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
+import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.jboss.errai.bus.server.annotations.Service;

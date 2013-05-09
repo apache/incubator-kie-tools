@@ -1,11 +1,11 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import org.drools.guvnor.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.testscenarios.shared.FieldPlaceHolder;
-import org.drools.guvnor.models.testscenarios.shared.Fixture;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
+import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
+import org.drools.workbench.models.testscenarios.shared.FixtureList;
 
 class AddFieldToFactDataClickHandler
         extends AddFieldClickHandler {

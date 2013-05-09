@@ -21,7 +21,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.TextBox;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.uberfire.client.common.IDirtyable;
 
 public class BoundTextBox extends TextBox

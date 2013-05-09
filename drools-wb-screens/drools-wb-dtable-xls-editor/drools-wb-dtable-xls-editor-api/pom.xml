@@ -29,7 +29,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-guided-dtable</artifactId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
     </dependency>
 
     <dependency>

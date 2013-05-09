@@ -22,7 +22,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <inherits name="org.drools.guvnor.models.guided.template.DroolsGuvnorModelsGuidedTemplate"/>
+  <inherits name="org.drools.workbench.models.guided.template.DroolsWorkbenchModelsGuidedTemplate"/>
 
   <inherits name='org.drools.workbench.screens.guided.rule.DroolsWorkbenchGuidedRuleEditorAPI'/>
   <inherits name="org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI"/>

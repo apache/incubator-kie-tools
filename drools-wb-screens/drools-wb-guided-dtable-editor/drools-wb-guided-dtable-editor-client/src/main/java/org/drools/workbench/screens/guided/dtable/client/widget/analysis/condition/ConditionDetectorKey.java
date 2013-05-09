@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 public class ConditionDetectorKey {
 

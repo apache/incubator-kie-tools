@@ -15,22 +15,22 @@
  */
 package org.drools.workbench.screens.guided.template.client.editor;
 
-import org.drools.guvnor.models.commons.shared.rule.FieldNatureType;
-import org.drools.guvnor.models.commons.shared.rule.IAction;
-import org.drools.guvnor.models.commons.shared.rule.IPattern;
-import org.drools.guvnor.models.commons.shared.rule.ActionFieldList;
-import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
-import org.drools.guvnor.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.guvnor.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.FactPattern;
-import org.drools.guvnor.models.commons.shared.rule.FieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
-import org.drools.guvnor.models.commons.shared.rule.FromCollectCompositeFactPattern;
-import org.drools.guvnor.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
-import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.commons.shared.rule.FieldNatureType;
+import org.drools.workbench.models.commons.shared.rule.IAction;
+import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.workbench.models.commons.shared.rule.ActionFieldList;
+import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
+import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
+import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.FactPattern;
+import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.commons.shared.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
 
 import java.util.ArrayList;
 import java.util.List;

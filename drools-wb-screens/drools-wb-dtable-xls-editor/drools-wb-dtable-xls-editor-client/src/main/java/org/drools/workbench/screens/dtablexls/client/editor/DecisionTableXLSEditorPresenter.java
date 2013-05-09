@@ -22,8 +22,8 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessage;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;

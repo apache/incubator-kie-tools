@@ -16,12 +16,12 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
-import org.drools.guvnor.models.commons.shared.rule.ExpressionCollection;
-import org.drools.guvnor.models.commons.shared.rule.ExpressionField;
-import org.drools.guvnor.models.commons.shared.rule.ExpressionGlobalVariable;
-import org.drools.guvnor.models.commons.shared.rule.ExpressionMethod;
-import org.drools.guvnor.models.commons.shared.rule.ExpressionPart;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.rule.ExpressionCollection;
+import org.drools.workbench.models.commons.shared.rule.ExpressionField;
+import org.drools.workbench.models.commons.shared.rule.ExpressionGlobalVariable;
+import org.drools.workbench.models.commons.shared.rule.ExpressionMethod;
+import org.drools.workbench.models.commons.shared.rule.ExpressionPart;
 import org.kie.guvnor.datamodel.model.MethodInfo;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 

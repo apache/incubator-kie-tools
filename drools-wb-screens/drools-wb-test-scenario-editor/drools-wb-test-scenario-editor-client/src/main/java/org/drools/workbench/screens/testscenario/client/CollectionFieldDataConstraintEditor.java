@@ -18,10 +18,10 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.Fact;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.Fact;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.DirtyableComposite;
 

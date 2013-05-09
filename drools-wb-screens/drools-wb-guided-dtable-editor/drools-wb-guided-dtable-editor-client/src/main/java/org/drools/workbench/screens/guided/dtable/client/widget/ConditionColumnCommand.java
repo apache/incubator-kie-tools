@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 /**
  * Interface defining commands relating to Condition Column operations

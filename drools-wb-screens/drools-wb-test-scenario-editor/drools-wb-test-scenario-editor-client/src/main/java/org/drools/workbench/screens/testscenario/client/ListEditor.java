@@ -4,8 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
-import org.drools.guvnor.models.testscenarios.shared.FieldData;
+import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
+import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
 

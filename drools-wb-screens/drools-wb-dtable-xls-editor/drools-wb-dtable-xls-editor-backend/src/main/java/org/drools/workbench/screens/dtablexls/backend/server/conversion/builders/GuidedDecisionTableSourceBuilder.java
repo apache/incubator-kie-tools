@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
 import org.drools.decisiontable.parser.SourceBuilder;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Interface for additional responsibilities for Guided Decision Table builders

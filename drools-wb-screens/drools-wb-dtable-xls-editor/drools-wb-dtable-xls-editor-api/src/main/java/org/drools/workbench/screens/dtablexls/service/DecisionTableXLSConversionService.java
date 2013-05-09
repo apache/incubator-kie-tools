@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.dtablexls.service;
 
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.uberfire.backend.vfs.Path;
 
 public interface DecisionTableXLSConversionService {

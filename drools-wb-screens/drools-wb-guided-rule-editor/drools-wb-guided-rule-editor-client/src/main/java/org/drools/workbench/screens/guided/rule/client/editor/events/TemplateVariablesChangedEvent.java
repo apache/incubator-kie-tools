@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.rule.client.editor.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.commons.shared.rule.RuleModel;
 
 /**
  * An event representing a change in Template variables

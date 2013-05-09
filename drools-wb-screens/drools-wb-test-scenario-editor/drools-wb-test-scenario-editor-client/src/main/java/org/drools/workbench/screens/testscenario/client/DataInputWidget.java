@@ -18,11 +18,11 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.FactData;
-import org.drools.guvnor.models.testscenarios.shared.Fixture;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
+import org.drools.workbench.models.testscenarios.shared.FixtureList;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;

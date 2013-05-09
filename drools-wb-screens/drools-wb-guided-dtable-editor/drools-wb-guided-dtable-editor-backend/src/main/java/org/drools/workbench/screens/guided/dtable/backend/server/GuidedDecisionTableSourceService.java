@@ -19,8 +19,8 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTDRLPersistence;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.backend.BaseSourceService;

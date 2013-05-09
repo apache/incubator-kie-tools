@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.parser.ActionType;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessageType;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Abstract builder for all Attribute columns

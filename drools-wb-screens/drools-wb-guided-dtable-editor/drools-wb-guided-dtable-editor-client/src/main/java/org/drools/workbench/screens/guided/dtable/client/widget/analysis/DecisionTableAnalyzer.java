@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.InsertFactActionDetectorKey;
@@ -38,16 +38,16 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.conditi
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericShortConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.UnrecognizedConditionDetector;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
-import org.drools.guvnor.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 
 import java.math.BigDecimal;

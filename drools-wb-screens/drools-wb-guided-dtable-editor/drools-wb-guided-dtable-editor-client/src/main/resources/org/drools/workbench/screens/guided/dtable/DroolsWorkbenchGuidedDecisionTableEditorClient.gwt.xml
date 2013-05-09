@@ -27,7 +27,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <inherits name="org.drools.guvnor.models.guided.dtable.DroolsGuvnorModelsGuidedDTable"/>
+  <inherits name="org.drools.workbench.models.guided.dtable.DroolsWorkbenchModelsGuidedDTable"/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>

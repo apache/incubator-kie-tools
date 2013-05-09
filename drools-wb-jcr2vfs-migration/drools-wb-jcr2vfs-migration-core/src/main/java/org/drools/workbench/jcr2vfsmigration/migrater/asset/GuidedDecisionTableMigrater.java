@@ -9,10 +9,10 @@ import javax.inject.Named;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.guvnor.models.guided.dtable.backend.GuidedDTXMLPersistence;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.commons.backend.imports.ImportsParser;
+import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.kie.commons.io.IOService;

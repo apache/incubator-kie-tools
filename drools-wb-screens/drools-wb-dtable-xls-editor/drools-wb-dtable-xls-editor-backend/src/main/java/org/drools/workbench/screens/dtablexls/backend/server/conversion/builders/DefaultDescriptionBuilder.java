@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.ActionType.Code;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Default description builder for when an explicit column has not been defined

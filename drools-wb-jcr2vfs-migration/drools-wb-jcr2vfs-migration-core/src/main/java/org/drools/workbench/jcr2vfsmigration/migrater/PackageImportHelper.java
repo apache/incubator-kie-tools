@@ -17,9 +17,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.drools.guvnor.models.commons.backend.imports.ImportsParser;
-import org.drools.guvnor.models.commons.shared.imports.Import;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.backend.imports.ImportsParser;
+import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.w3c.dom.Document;

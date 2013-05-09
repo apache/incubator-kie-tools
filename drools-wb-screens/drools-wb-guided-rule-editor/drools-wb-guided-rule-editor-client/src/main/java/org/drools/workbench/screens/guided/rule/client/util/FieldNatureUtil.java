@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.util;
 
-import org.drools.guvnor.models.commons.shared.rule.FieldNature;
+import org.drools.workbench.models.commons.shared.rule.FieldNature;
 
 import java.util.HashMap;
 import java.util.Map;

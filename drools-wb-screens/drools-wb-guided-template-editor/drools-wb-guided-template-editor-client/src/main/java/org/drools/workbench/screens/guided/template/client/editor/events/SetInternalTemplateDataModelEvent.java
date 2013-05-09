@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.template.client.editor.events;
 import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateDataColumn;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;

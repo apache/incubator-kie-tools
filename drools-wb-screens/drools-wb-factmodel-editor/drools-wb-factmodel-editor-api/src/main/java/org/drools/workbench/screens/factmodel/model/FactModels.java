@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.factmodel.model;
 
-import org.drools.guvnor.models.commons.shared.imports.HasImports;
-import org.drools.guvnor.models.commons.shared.imports.Imports;
-import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.commons.shared.imports.HasImports;
+import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;

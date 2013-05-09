@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.drools.guvnor.models.commons.shared.rule.ActionRetractFact;
+import org.drools.workbench.models.commons.shared.rule.ActionRetractFact;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
 import org.uberfire.client.common.SmallLabel;

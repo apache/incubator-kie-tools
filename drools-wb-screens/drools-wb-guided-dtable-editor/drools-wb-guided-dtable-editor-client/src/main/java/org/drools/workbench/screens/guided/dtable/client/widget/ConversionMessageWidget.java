@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.guvnor.commons.ui.client.widget.WidthCalculator;
 import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 
 /**
  * A widget to display a single conversion result message

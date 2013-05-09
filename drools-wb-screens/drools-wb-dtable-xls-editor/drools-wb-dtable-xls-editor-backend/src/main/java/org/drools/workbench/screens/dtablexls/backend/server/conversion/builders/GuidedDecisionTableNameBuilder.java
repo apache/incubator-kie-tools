@@ -16,8 +16,8 @@
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
 import org.drools.decisiontable.parser.ActionType;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Builder for Name Attribute columns

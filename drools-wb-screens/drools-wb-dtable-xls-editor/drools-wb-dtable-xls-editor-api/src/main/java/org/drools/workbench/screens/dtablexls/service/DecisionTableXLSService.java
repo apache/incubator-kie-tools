@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.dtablexls.service;
 
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.kie.guvnor.services.file.SupportsCopy;

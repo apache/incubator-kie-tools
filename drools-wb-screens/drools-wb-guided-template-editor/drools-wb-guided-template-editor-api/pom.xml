@@ -19,7 +19,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-guvnor-models-guided-template</artifactId>
+      <artifactId>drools-workbench-models-guided-template</artifactId>
     </dependency>
 
     <dependency>

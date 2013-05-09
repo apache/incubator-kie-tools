@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.uberfire.client.mvp.UberView;
 
 import java.util.List;

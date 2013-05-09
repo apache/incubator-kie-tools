@@ -16,15 +16,15 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.guvnor.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 import java.util.HashMap;
 import java.util.Map;

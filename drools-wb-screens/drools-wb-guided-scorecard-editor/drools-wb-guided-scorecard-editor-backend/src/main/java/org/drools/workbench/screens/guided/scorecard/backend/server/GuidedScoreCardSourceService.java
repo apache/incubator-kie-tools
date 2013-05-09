@@ -19,8 +19,8 @@ package org.drools.workbench.screens.guided.scorecard.backend.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
-import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
+import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.guvnor.commons.service.backend.BaseSourceService;

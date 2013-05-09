@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;

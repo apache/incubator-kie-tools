@@ -17,9 +17,9 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.FixtureList;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 import java.util.Map;

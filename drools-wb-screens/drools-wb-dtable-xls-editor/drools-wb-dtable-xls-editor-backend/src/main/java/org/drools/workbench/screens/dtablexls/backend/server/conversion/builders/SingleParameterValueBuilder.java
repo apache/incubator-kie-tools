@@ -18,7 +18,7 @@ package org.drools.workbench.screens.dtablexls.backend.server.conversion.builder
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 
 /**
  * A ValueBuilder for templates with a single parameter; $param

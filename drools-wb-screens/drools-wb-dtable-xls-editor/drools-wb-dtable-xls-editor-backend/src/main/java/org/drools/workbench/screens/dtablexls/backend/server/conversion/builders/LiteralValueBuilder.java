@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
-import org.drools.guvnor.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 
 /**
  * A ValueBuilder for literal values (i.e. no parameters)

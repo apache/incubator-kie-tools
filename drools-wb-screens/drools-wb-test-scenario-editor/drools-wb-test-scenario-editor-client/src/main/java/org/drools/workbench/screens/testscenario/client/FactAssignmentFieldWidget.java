@@ -18,12 +18,12 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.FactAssignmentField;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.kie.guvnor.commons.ui.client.resources.CommonsResources;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.drools.guvnor.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.FixtureList;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.uberfire.client.common.DirtyableFlexTable;
 
 

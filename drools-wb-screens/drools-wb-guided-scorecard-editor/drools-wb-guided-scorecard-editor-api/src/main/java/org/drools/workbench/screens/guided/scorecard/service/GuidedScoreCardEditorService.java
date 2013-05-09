@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.scorecard.service;
 
-import org.drools.guvnor.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.guvnor.commons.service.source.ViewSourceService;

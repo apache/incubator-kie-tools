@@ -16,18 +16,18 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.guvnor.models.testscenarios.shared.CallFixtureMap;
-import org.drools.guvnor.models.testscenarios.shared.ExecutionTrace;
-import org.drools.guvnor.models.testscenarios.shared.Field;
-import org.drools.guvnor.models.testscenarios.shared.Fixture;
-import org.drools.guvnor.models.testscenarios.shared.FixtureList;
-import org.drools.guvnor.models.testscenarios.shared.ActivateRuleFlowGroup;
-import org.drools.guvnor.models.testscenarios.shared.FixturesMap;
-import org.drools.guvnor.models.testscenarios.shared.CallMethod;
-import org.drools.guvnor.models.testscenarios.shared.FactData;
-import org.drools.guvnor.models.testscenarios.shared.RetractFact;
-import org.drools.guvnor.models.testscenarios.shared.VerifyFact;
-import org.drools.guvnor.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.Field;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
+import org.drools.workbench.models.testscenarios.shared.FixtureList;
+import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
+import org.drools.workbench.models.testscenarios.shared.FixturesMap;
+import org.drools.workbench.models.testscenarios.shared.CallMethod;
+import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.RetractFact;
+import org.drools.workbench.models.testscenarios.shared.VerifyFact;
+import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 
 import java.util.*;
 

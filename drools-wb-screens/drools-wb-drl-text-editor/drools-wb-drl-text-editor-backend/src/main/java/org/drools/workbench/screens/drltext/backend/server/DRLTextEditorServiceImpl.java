@@ -22,9 +22,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.models.commons.backend.packages.PackageNameParser;
-import org.drools.guvnor.models.commons.backend.packages.PackageNameWriter;
-import org.drools.guvnor.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
+import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.drools.workbench.models.commons.shared.packages.HasPackageName;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.jboss.errai.bus.server.annotations.Service;

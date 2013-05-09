@@ -20,7 +20,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionDetectorKey;
-import org.drools.guvnor.models.guided.dtable.shared.model.Analysis;
+import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 
 import java.util.LinkedHashMap;
 import java.util.List;

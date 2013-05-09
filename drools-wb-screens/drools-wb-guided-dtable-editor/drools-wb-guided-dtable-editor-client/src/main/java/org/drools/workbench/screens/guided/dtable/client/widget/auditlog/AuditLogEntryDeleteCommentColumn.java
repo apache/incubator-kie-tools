@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
-import org.drools.guvnor.models.commons.shared.auditlog.AuditLogEntry;
+import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 

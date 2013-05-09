@@ -20,8 +20,8 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Panel;
-import org.drools.guvnor.models.commons.shared.rule.InterpolationVariable;
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetTemplateDataEvent;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;

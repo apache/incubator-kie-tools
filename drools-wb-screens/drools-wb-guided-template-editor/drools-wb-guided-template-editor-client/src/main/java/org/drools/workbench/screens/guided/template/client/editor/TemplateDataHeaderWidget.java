@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;

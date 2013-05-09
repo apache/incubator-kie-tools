@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages.events;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 /**
  * An event representing the removal of a Pattern

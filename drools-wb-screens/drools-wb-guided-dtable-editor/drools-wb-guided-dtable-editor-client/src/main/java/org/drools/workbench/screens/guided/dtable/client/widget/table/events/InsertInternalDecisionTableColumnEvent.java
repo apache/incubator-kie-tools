@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.events;
 import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.guvnor.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.events.InsertInternalColumnEvent;

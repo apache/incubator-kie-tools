@@ -10,8 +10,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.models.testscenarios.shared.CollectionFieldData;
-import org.drools.guvnor.models.testscenarios.shared.FieldData;
+import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
+import org.drools.workbench.models.testscenarios.shared.FieldData;
 
 public class ListEditorRow extends Composite {
 

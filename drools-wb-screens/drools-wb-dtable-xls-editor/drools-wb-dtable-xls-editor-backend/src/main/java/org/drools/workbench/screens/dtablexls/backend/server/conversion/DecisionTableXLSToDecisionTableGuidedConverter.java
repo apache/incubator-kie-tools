@@ -26,9 +26,9 @@ import javax.inject.Named;
 
 import org.drools.core.util.DateUtils;
 import org.drools.decisiontable.parser.xls.ExcelParser;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionMessageType;
-import org.drools.guvnor.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.guvnor.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
@@ -310,7 +310,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
         List<String> existingImports = new ArrayList<String>();
-        for ( org.drools.guvnor.models.commons.shared.imports.Import item : packageConfiguration.getImports().getImports() ) {
+        for ( org.drools.workbench.models.commons.shared.imports.Import item : packageConfiguration.getImports().getImports() ) {
             existingImports.add( item.getType() );
         }
 
@@ -321,7 +321,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                 isModified = true;
                 result.addMessage( "Created Import for '" + item.getClassName() + "'.",
                                    ConversionMessageType.INFO );
-                packageConfiguration.getImports().addImport( new org.drools.guvnor.models.commons.shared.imports.Import( item.getClassName() ) );
+                packageConfiguration.getImports().addImport( new org.drools.workbench.models.commons.shared.imports.Import( item.getClassName() ) );
             }
         }
 
@@ -349,7 +349,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             //Add imports
             final GuidedDecisionTable52 dtable = dtables.get( iCounter );
             for ( Import item : imports ) {
-                dtable.getImports().addImport( new org.drools.guvnor.models.commons.shared.imports.Import( item.getClassName() ) );
+                dtable.getImports().addImport( new org.drools.workbench.models.commons.shared.imports.Import( item.getClassName() ) );
             }
 
             //Make new resource

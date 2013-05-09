@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
-import org.drools.guvnor.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 
 /**
  * Interface defining commands relating to Column operations
