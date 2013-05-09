@@ -1,0 +1,238 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@CHARSET "UTF-8";
+
+    /* CellTable body */
+@def rowHeight  24px ;
+@def rowHeaderHeight  24px ;
+@def rowHeaderSorterHeight  16px ;
+@def rowHeaderSplitterHeight  8px ;
+@def sidebarWidth  48px ;
+@def borderWidth  1px ;
+@def borderWidthThick  2px ;
+
+.cellTable {
+    cursor: default;
+    table-layout: fixed;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cellTableCell {
+    padding: 0px;
+    margin: 0px;
+    font-size: 8pt;
+    outline: none;
+    border-right: borderWidth dotted grey;
+}
+
+.cellTableCellSelected {
+    background-color: #b9b9b9;
+}
+
+.cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
+.cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
+.cellTableCell:HOVER {
+    padding: 0px;
+    margin: 0px;
+    font-size: 8pt;
+    outline: none;
+    background-color: #ffff99;
+}
+
+.cellTableCellDiv {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+.cellTableGroupDiv {
+    position: absolute;
+}
+
+.cellTableTextDiv {
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+}
+
+.cellTableEvenRow {
+    background: #f0f0f0;
+}
+
+.cellTableOddRow {
+    background: #fbfbfb;
+}
+
+    /* Header */
+.headerRowBottom {
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth dotted grey;
+}
+
+.headerRowIntermediate {
+    border-bottom: borderWidth solid grey;
+    border-right: borderWidth dotted grey;
+}
+
+.headerText {
+    font-size: 8pt;
+    text-align: center;
+    color: #4B4A4A;
+    text-shadow: 1px 1px 0 #DDDDFF;
+    border-right: borderWidth dotted grey;
+}
+
+.headerSplitter {
+    height: 8px;
+    background-color: #a0a0a0;
+    border-right: borderWidth dotted grey;
+}
+
+.headerResizer {
+    top: 0px;
+    left: 0px;
+    z-index: 100000;
+    width: 2px;
+    background-color: #a0a0a0;
+    visibility: hidden;
+    position: absolute;
+    cursor: col-resize;
+}
+
+.selectorSpacer {
+    width: sidebarWidth;
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth solid grey;
+}
+
+.selectorSpacerOuterDiv {
+    position: relative;
+}
+
+.selectorSpacerInnerDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.selectorCell {
+    width: sidebarWidth;
+    text-align: center;
+    border-right: borderWidth solid grey;
+}
+
+.cellTableEvenRow .cellTableCellSelected {
+    background-color: #b9b9b9;
+}
+
+.cellTableOddRow .cellTableCellSelected {
+    background-color: #b9b9b9;
+}
+
+.cellTableEvenRow .cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
+.cellTableOddRow .cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
+.cellTableEvenRow .cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
+.cellTableOddRow .cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
+.contextMenu {
+    border: 1px solid #707070;
+    background-color: white;
+    padding: 2px;
+    -webkit-box-shadow: 2px 2px 4px #bbb;
+    -moz-box-shadow: 2px 2px 4px #bbb;
+    box-shadow: 2px 2px 4px #bbb;
+}
+
+.contextMenuItem {
+    width: 64px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.contextMenuItem:HOVER {
+    width: 64px;
+    margin: 1px;
+    background-color: #d0d0d0;
+}
+
+.contextMenuItemEnabled {
+    color: black;
+}
+
+.contextMenuItemDisabled {
+    color: grey;
+}
+
+.metaColumn {
+}
+
+.conditionColumn {
+    background-color: #ADD8E6;
+}
+
+.cellTableEvenRow .conditionColumn {
+    background: #d2EFFF;
+}
+
+.cellTableOddRow .conditionColumn {
+    background: #f2FFFF
+}
+
+.cellTableEvenRow .conditionColumn:HOVER {
+    background-color: #ffff99;
+}
+
+.cellTableOddRow .conditionColumn:HOVER {
+    background: #ffff99;
+}
+
+.actionColumn {
+}
+
+.patternSectionHeader {
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 2px 2px;
+    background-color: #d0d0d0;
+    width: 400px;
+}
+
+.patternConditionSectionHeader {
+    margin-left: 16px;
+}
+
+.columnLabelHidden {
+    font-style: italic;
+    color: grey;
+}

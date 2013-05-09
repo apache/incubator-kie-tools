@@ -21,31 +21,29 @@
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
 
-  <!-- Models for Editors -->
+  <!-- Models for Screens -->
   <inherits name="org.drools.guvnor.models.commons.DroolsGuvnorModelsCommon"/>
 
-  <!-- Editors -->
-  <inherits name='org.kie.guvnor.categories.GuvnorCategoriesEditorClient'/>
-  <inherits name="org.kie.guvnor.drltext.GuvnorDRLTextEditorClient"/>
-  <inherits name="org.kie.guvnor.enums.GuvnorEnumEditorClient"/>
-  <inherits name="org.kie.guvnor.factmodel.GuvnorFactModelEditorClient"/>
-  <inherits name="org.kie.guvnor.guided.rule.GuvnorGuidedRuleEditorClient"/>
-  <inherits name="org.kie.guvnor.guided.template.GuvnorGuidedTemplateEditorClient"/>
-  <inherits name="org.kie.guvnor.guided.dtable.GuvnorGuidedDecisionTableEditorClient"/>
-  <inherits name="org.kie.guvnor.guided.scorecard.GuvnorGuidedScoreCardEditorClient"/>
-  <inherits name="org.kie.guvnor.dsltext.GuvnorDSLTextEditorClient"/>
-  <inherits name="org.kie.guvnor.globals.GuvnorGlobalsEditorClient"/>
-  <inherits name="org.kie.guvnor.defaulteditor.DefaultEditorClient"/>
-  <inherits name="org.kie.guvnor.workitems.WorkItemsEditorClient"/>
-
-  <inherits name="org.kie.guvnor.testscenario.GuvnorTestScenarioEditorClient"/>
+  <!-- Drools Workbench Screens -->
+  <inherits name='org.kie.guvnor.categories.DroolsWorkbenchCategoriesEditorClient'/>
+  <inherits name="org.kie.guvnor.drltext.DroolsWorkbenchDRLTextEditorClient"/>
+  <inherits name="org.kie.guvnor.enums.DroolsWorkbenchEnumEditorClient"/>
+  <inherits name="org.kie.guvnor.factmodel.DroolsWorkbenchFactModelEditorClient"/>
+  <inherits name="org.kie.guvnor.guided.rule.DroolsWorkbenchGuidedRuleEditorClient"/>
+  <inherits name="org.kie.guvnor.guided.template.DroolsWorkbenchGuidedTemplateEditorClient"/>
+  <inherits name="org.kie.guvnor.guided.dtable.DroolsWorkbenchGuidedDecisionTableEditorClient"/>
+  <inherits name="org.kie.guvnor.guided.scorecard.DroolsWorkbenchGuidedScoreCardEditorClient"/>
+  <inherits name="org.kie.guvnor.dsltext.DroolsWorkbenchDSLTextEditorClient"/>
+  <inherits name="org.kie.guvnor.globals.DroolsWorkbenchGlobalsEditorClient"/>
+  <inherits name="org.kie.guvnor.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
+  <inherits name="org.kie.guvnor.workitems.DroolsWorkbenchWorkItemsEditorClient"/>
+  <inherits name="org.kie.guvnor.dtablexls.DroolsWorkbenchDecisionTableXLSEditorClient"/>
+  <inherits name="org.kie.guvnor.scorecardxls.DroolsWorkbenchScoreCardXLSEditorClient"/>
+  <inherits name="org.kie.guvnor.testscenario.DroolsWorkbenchTestScenarioEditorClient"/>
 
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
-  <inherits name="org.kie.guvnor.dtablexls.GuvnorDecisionTableXLSEditorClient"/>
-  <inherits name="org.kie.guvnor.scorecardxls.GuvnorScoreCardXLSEditorClient"/>
-  
   <inherits name="org.kie.guvnor.query.GuvnorSearchScreenClient"/>
 
   <inherits name="org.kie.guvnor.explorer.GuvnorExplorerClient"/>

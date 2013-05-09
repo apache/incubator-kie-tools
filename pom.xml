@@ -16,6 +16,7 @@
   <description>Drools Workbench</description>
 
   <modules>
+    <module>drools-wb-screens</module>
     <module>drools-wb-webapp</module>
     <module>drools-wb-jcr2vfs-migration</module>
   </modules>

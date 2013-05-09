@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-wb-test-scenario-editor</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Drools Workbench - Test Scenario Editor - Backend</name>
+  <description>Drools Workbench - Test Scenario Editor - Backend</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-test-scenario-editor-api</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-core-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+    
+    <!-- Weld Modules. For tests only -->
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>

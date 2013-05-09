@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools-wb</artifactId>
+    <groupId>org.drools</groupId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-wb-screens</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools Workbench - Screens</name>
+  <description>Drools Workbench - Screens</description>
+
+  <modules>
+    <module>drools-wb-categories-editor</module>
+    <module>drools-wb-default-editor</module>
+    <module>drools-wb-drl-text-editor</module>
+    <module>drools-wb-dsl-text-editor</module>
+    <module>drools-wb-dtable-xls-editor</module>
+    <module>drools-wb-enum-editor</module>
+    <module>drools-wb-factmodel-editor</module>
+    <module>drools-wb-globals-editor</module>
+    <module>drools-wb-guided-dtable-editor</module>
+    <module>drools-wb-guided-rule-editor</module>
+    <module>drools-wb-guided-scorecard-editor</module>
+    <module>drools-wb-guided-template-editor</module>
+    <module>drools-wb-scorecard-xls-editor</module>
+    <module>drools-wb-test-scenario-editor</module>
+    <module>drools-wb-workitems-editor</module>
+  </modules>
+
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools-wb-guided-dtable-editor</artifactId>
+    <groupId>org.drools</groupId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-wb-guided-dtable-editor-backend</artifactId>
+
+  <name>Drools Workbench - Guided Decision Table Editor - Backend</name>
+  <description>Drools Workbench - Guided Decision Table Editor - Backend</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor-models-guided-dtable</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-dtable-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-template-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-workitems-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-core-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+  </dependencies>
+
+</project>
