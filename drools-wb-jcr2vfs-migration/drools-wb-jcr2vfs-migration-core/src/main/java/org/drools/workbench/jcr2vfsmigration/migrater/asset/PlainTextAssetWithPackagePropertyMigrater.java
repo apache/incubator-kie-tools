@@ -2,7 +2,6 @@ package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -11,12 +10,12 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
+import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.guvnor.drltext.service.DRLTextEditorService;
-import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
