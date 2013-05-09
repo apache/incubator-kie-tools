@@ -23,10 +23,13 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.workbench.io.FileSystemType;
-import org.kie.workbench.io.IOService;
-import org.kie.workbench.io.impl.IOServiceDotFileImpl;
-import org.kie.workbench.java.nio.file.FileSystem;
+//import org.kie.workbench.io.FileSystemType;
+//import org.kie.workbench.io.IOService;
+import org.kie.commons.io.FileSystemType;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
+import org.kie.commons.java.nio.file.FileSystem;
+//import org.kie.workbench.java.nio.file.FileSystem;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.DefaultSystemRepository;
 
@@ -37,7 +40,7 @@ public class IOServiceFactory {
 
     private final IOService ioService = new IOServiceDotFileImpl();
     private FileSystem fs;
-    
+
     public static String  DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
     public static enum Migration implements FileSystemType {
@@ -66,7 +69,7 @@ public class IOServiceFactory {
     public FileSystem migrationFS() {
         return fs;
     }
-    
+
     @Produces
     @Named("system")
     public Repository systemRepository() {

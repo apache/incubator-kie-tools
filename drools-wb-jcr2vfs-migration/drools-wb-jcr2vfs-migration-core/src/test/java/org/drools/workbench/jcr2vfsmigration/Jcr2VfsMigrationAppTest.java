@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory;
 import org.junit.Test;
-import org.kie.workbench.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
 

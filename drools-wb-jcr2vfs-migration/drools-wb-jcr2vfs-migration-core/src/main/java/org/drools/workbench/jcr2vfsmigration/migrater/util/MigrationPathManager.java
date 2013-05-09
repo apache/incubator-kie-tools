@@ -10,7 +10,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
-import org.kie.workbench.java.nio.file.FileSystem;
+import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -35,7 +35,7 @@ public class MigrationPathManager {
 
     public Path generateRootPath() {
 
-        final org.kie.workbench.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "project" ));
+        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "project" ));
 
         final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
 
@@ -43,7 +43,7 @@ public class MigrationPathManager {
     }
     
     public Path generatePathForModule( Module jcrModule ) {
-        final org.kie.workbench.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
 
         final Path path = PathFactory.newPath( paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
 
@@ -54,10 +54,10 @@ public class MigrationPathManager {
     public Path generatePathForAsset( Module jcrModule,
                                       Asset jcrAsset,
                                       boolean hasDSL) {
-        final org.kie.workbench.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
         
         //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
-        org.kie.workbench.java.nio.file.Path assetPath = null;
+        org.kie.commons.java.nio.file.Path assetPath = null;
         if(AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && !hasDSL) {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".gre.drl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && hasDSL) {
@@ -79,9 +79,9 @@ public class MigrationPathManager {
     } 
 
     public Path generatePathForAsset(Module jcrModule, AssetItem jcrAssetItem, boolean hasDSL) {
-        final org.kie.workbench.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry(jcrModule.getName()));
+        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry(jcrModule.getName()));
 
-        org.kie.workbench.java.nio.file.Path assetPath = null;
+        org.kie.commons.java.nio.file.Path assetPath = null;
         if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && !hasDSL) {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.drl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && hasDSL) {
@@ -102,7 +102,7 @@ public class MigrationPathManager {
         return generatePathForAsset(jcrModule, jcrAssetItem, false);
     }
     
-    private org.kie.workbench.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
+    private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
         return paths.convert(pathToPomXML).getParent();
     }
     

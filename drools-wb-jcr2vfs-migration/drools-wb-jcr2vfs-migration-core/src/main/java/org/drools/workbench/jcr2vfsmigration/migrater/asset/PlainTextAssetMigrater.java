@@ -10,10 +10,10 @@ import javax.inject.Named;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
-import org.kie.workbench.io.IOService;
-import org.kie.workbench.java.nio.base.options.CommentedOption;
-import org.kie.workbench.java.nio.file.NoSuchFileException;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -38,7 +38,7 @@ public class PlainTextAssetMigrater {
 
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {        
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);
-        final org.kie.workbench.java.nio.file.Path nioPath = paths.convert( path );
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
         try {

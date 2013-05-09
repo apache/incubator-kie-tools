@@ -12,9 +12,9 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.repository.AssetItem;
-import org.kie.workbench.io.IOService;
-import org.kie.workbench.java.nio.base.options.CommentedOption;
-import org.kie.workbench.java.nio.file.NoSuchFileException;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.guvnor.drltext.service.DRLTextEditorService;
 import org.kie.guvnor.factmodel.service.FactModelService;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
@@ -59,7 +59,7 @@ public class FactModelsMigrater {
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
         }
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);     
-        final org.kie.workbench.java.nio.file.Path nioPath = paths.convert( path );
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
 
         Map<String, Object> attrs;
         try {
