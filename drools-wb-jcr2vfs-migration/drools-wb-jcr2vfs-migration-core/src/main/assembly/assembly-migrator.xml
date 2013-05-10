@@ -16,7 +16,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>unix</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory>bin</outputDirectory>
+      <outputDirectory></outputDirectory>
       <includes>
         <include>**/*.sh</include>
       </includes>
@@ -26,7 +26,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>dos</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory>bin</outputDirectory>
+      <outputDirectory></outputDirectory>
       <includes>
         <include>**/*.bat</include>
       </includes>
@@ -40,7 +40,7 @@
         <include></include>
         <include>*:*</include>
       </includes>
-      <outputDirectory>migration/libs</outputDirectory>
+      <outputDirectory>libs</outputDirectory>
     </dependencySet>
   </dependencySets>
 

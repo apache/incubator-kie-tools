@@ -1,9 +1,7 @@
 @ECHO OFF
 
 setLocal EnableDelayedExpansion
-set mainClasspath=
-for %%i in (binaries\*.jar) do (set mainClasspath=!mainClasspath!;%%i)
-set mainClass=org.kie.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
+set mainClass=org.drools.workbench.jcr2vfsmigration.Jcr2VfsMigrationApp
 
 echo "Usage: runMigration.bat"
 echo "For example: runMigration.bat"
@@ -17,7 +15,7 @@ echo "Starting migration app..."
 
 rem You can use -Xmx128m or less too, but it might be slower
 if exist %JAVA_HOME%\bin\java.exe (
-    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp %mainClasspath% %mainClass%
+    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\*; %mainClass%
 ) else (
-    java -Xms256m -Xmx512m -cp %mainClasspath% %mainClass%
+    java -Xms256m -Xmx512m -cp ..\libs\*; %mainClass%
 )

@@ -1,11 +1,6 @@
 #!/bin/sh
 
-# Change directory to the directory of the script
-cd `dirname $0`
-
-mainClasspath=
-for i in binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
-mainClass=org.kie.guvnor.jcr2vfsmigration.Jcr2VfsMigrationApp
+mainClass=org.drools.workbench.jcr2vfsmigration.Jcr2VfsMigrationApp
 
 echo "Usage: ./runMigration.sh"
 echo "For example: ./runMigration.sh"
@@ -20,9 +15,9 @@ echo "Starting migration app..."
 
 # You can use -Xmx128m or less too, but it might be slower
 if [ -f $JAVA_HOME/bin/java ]; then
-    $JAVA_HOME/bin/java -Xms256m -Xmx1024m -server -cp ${mainClasspath} ${mainClass} $*
+    $JAVA_HOME/bin/java -Xms256m -Xmx1024m -server -cp ../libs/* ${mainClass} $*
 else
-    java -Xms256m -Xmx1024m -cp ${mainClasspath} ${mainClass} $*
+    java -Xms256m -Xmx1024m -cp ../libs/* ${mainClass} $*
 fi
 
 if [ $? != 0 ] ; then

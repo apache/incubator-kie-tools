@@ -19,25 +19,6 @@
       <outputDirectory/>
     </fileSet>
     <fileSet>
-      <directory>src/main/assembly/scripts</directory>
-      <lineEnding>unix</lineEnding>
-      <filtered>true</filtered>
-      <outputDirectory/>
-      <includes>
-        <include>**/*.sh</include>
-      </includes>
-      <fileMode>755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/assembly/scripts</directory>
-      <lineEnding>dos</lineEnding>
-      <filtered>true</filtered>
-      <outputDirectory/>
-      <includes>
-        <include>**/*.bat</include>
-      </includes>
-    </fileSet>
-    <fileSet>
       <directory>src/main/assembly/filtered-resources</directory>
       <filtered>true</filtered>
       <outputDirectory/>
@@ -94,7 +75,16 @@
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     -->
-
+    
+    <!-- Migration tool -->    
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-wb-jcr2vfs-migration-core:zip</include>
+      </includes>
+      <outputDirectory>migration</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    
     <!-- Reference manual -->
     <dependencySet>
       <includes>
