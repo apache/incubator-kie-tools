@@ -184,7 +184,7 @@
                         <goal>copy-dependencies</goal>
                     </goals>
                     <configuration>
-                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
                         <overWriteReleases>false</overWriteReleases>
                         <overWriteSnapshots>false</overWriteSnapshots>
                         <overWriteIfNewer>true</overWriteIfNewer>
@@ -192,20 +192,24 @@
                 </execution>
             </executions>
         </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>org.drools.workbench.jcr2vfsmigration.Jcr2VfsMigrationApp</mainClass>
-                    </manifest>
-                </archive>
-            </configuration>          
-        </plugin>
-      
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>single</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <descriptors>
+                  <descriptor>src/main/assembly/assembly-migrator.xml</descriptor><!-- Must be last -->
+                </descriptors>
+                <appendAssemblyId>false</appendAssemblyId>
+              </configuration>
+      </plugin>
   </plugins>
 
 </build>
