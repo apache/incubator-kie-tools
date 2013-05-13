@@ -59,17 +59,20 @@
     </dependency>
     
     <!-- Migration -->
-    <!--
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-migration-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-jcr2vfs-migration-core</artifactId>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-migration-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
-    -->
 
     <!-- Examples -->
     <!-- We don't have any examples at the moment

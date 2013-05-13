@@ -82,6 +82,7 @@
         <include>org.drools:drools-wb-jcr2vfs-migration-core:zip</include>
       </includes>
       <outputDirectory>migration</outputDirectory>
+      <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     
