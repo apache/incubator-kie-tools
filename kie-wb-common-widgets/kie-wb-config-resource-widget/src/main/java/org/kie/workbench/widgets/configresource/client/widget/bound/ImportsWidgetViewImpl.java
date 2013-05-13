@@ -27,8 +27,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.widgets.configresource.client.resources.Images;
 import org.kie.workbench.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.kie.guvnor.configresource.client.resources.Images;
-import org.kie.guvnor.configresource.client.resources.i18n.ImportConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ImageButton;
 
@@ -79,15 +77,15 @@ public class ImportsWidgetViewImpl
         //TODO -Rikkola-
     }
 
-    @Override
-    public void showBusyIndicator(String message) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
+//    @Override
+//    public void showBusyIndicator(String message) {
+//        BusyPopup.showMessage( message );
+//    }
+//
+//    @Override
+//    public void hideBusyIndicator() {
+//        BusyPopup.close();
+//    }
 
     @Override
     public void addImport( String type ) {
