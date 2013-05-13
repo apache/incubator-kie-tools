@@ -44,7 +44,7 @@ import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
-import org.kie.guvnor.project.model.PackageConfiguration;
+import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.guvnor.services.metadata.model.Metadata;
@@ -300,7 +300,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return;
         }
 
-        //Load existing PackageConfiguration
+        //Load existing PackageImports
         ProjectImports projectImports = new ProjectImports();
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
         final Path externalImportsPath = paths.convert( nioExternalImportsPath );
@@ -310,8 +310,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
         List<String> existingImports = new ArrayList<String>();
-        for ( org.drools.workbench.models.commons.shared.imports.Import item : packageConfiguration.getImports().getImports() ) {
-        for ( org.drools.guvnor.models.commons.shared.imports.Import item : projectImports.getImports().getImports() ) {
+        for ( org.drools.workbench.models.commons.shared.imports.Import item : projectImports.getImports().getImports() ) {
             existingImports.add( item.getType() );
         }
 
@@ -322,7 +321,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                 isModified = true;
                 result.addMessage( "Created Import for '" + item.getClassName() + "'.",
                                    ConversionMessageType.INFO );
-                projectImports.getImports().addImport( new org.drools.guvnor.models.commons.shared.imports.Import( item.getClassName() ) );
+                projectImports.getImports().addImport( new org.drools.workbench.models.commons.shared.imports.Import( item.getClassName() ) );
             }
         }
 
