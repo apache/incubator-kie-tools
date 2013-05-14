@@ -22,6 +22,7 @@
 
   <!--Common Screens -->
   <inherits name="org.kie.workbench.screens.explorer.KieWorkbenchProjectExplorerClient"/>
+  <inherits name="org.kie.workbench.screens.search.KieWorkbenchSearchScreenClient"/>
 
   <!-- Common Services -->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
@@ -48,8 +49,6 @@
 
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
-
-  <inherits name="org.kie.guvnor.query.GuvnorSearchScreenClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
