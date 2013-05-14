@@ -26,7 +26,7 @@
   <inherits name="com.google.gwt.user.User"/>
 
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
-  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
+  <inherits name="org.kie.workbench.widgets.common.KieWorkbenchWidgetsCommon"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name="org.kie.commons.KieCommonsValidation"/>

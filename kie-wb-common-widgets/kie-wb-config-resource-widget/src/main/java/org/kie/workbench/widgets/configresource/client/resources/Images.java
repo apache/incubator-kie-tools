@@ -17,7 +17,7 @@ package org.kie.workbench.widgets.configresource.client.resources;
 
 import com.google.gwt.user.client.ui.Image;
 import org.kie.workbench.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.workbench.widgets.common.client.resources.ItemImages;
 
 public class Images {
 

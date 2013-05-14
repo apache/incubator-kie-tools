@@ -20,8 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import org.kie.guvnor.commons.ui.client.resources.CollapseExpand;
-import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.workbench.widgets.common.client.resources.CollapseExpand;
+import org.kie.workbench.widgets.common.client.resources.ItemImages;
 
 /**
  * Resources for the Decision Table.

@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.DefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.workbench.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.kie.workbench.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.screens.explorer.model.ExplorerContent;
 import org.kie.workbench.screens.explorer.model.Item;

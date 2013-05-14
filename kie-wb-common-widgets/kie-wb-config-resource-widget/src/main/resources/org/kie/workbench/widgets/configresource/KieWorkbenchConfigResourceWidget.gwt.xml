@@ -28,7 +28,7 @@
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
 
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
-  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
+  <inherits name="org.kie.workbench.widgets.common.KieWorkbenchWidgetsCommon"/>
 
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
