@@ -1,0 +1,177 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:b2="urn:import:com.github.gwtbootstrap.datepicker.client.ui"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:qr="urn:import:org.kie.workbench.screens.search.client.widgets">
+
+  <ui:with field="i18n" type="org.kie.workbench.screens.search.client.resources.i18n.Constants"/>
+
+  <b:Accordion>
+    <b:AccordionGroup heading="{i18n.SearchForm}" defaultOpen="true" ui:field="formAccordion">
+      <b:Form type="HORIZONTAL">
+        <b:Fieldset>
+          <b:ControlGroup ui:field="form">
+            <b:ControlGroup>
+              <b:ControlLabel for="source">
+                <g:InlineHTML text="{i18n.Source}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.SourceTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="source" ui:field="sourceTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="createdBy">
+                <g:InlineHTML text="{i18n.CreatedBy}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.CreatedByTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="createdBy" ui:field="createdByTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="description">
+                <g:InlineHTML text="{i18n.Description}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.DescriptionTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="description" ui:field="descriptionByTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="format">
+                <g:InlineHTML text="{i18n.Format}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.FormatTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:Typeahead ui:field="formatTypeahead">
+                    <b:TextBox b:id="format" ui:field="formatTextBox"/>
+                  </b:Typeahead>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="status">
+                <g:InlineHTML text="{i18n.Status}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:RadioButton ui:field="statusAny" name="status" checked="true" text="{i18n.StatusAny}"/>
+                <b:RadioButton ui:field="statusEnabled" name="status" text="{i18n.StatusEnabled}"/>
+                <b:RadioButton ui:field="statusDisabled" name="status" text="{i18n.StatusDisabled}"/>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="subject">
+                <g:InlineHTML text="{i18n.Subject}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.SubjectTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="subject" ui:field="subjectTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="type">
+                <g:InlineHTML text="{i18n.Type}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.TypeTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="type" ui:field="typeTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="lastModifiedBy">
+                <g:InlineHTML text="{i18n.LastModifiedBy}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.LastModifiedByTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="createdBy" ui:field="lastModifiedByTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="externalLink">
+                <g:InlineHTML text="{i18n.ExternalLink}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.ExternalLinkTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="externalLink" ui:field="externalLinkTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="checkinComment">
+                <g:InlineHTML text="{i18n.CheckinComment}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b:Tooltip text="{i18n.CheckinCommentTip}" placement="RIGHT" trigger="FOCUS">
+                  <b:TextBox b:id="checkinComment" ui:field="checkinCommentTextBox"/>
+                </b:Tooltip>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="dateCreated">
+                <g:InlineHTML text="{i18n.DateCreated}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b2:DateBox ui:field="createdAfter" placeholder="{i18n.DateAfterPlaceholder}"/>
+                <b2:DateBox ui:field="createdBefore" placeholder="{i18n.DateBeforePlaceholder}"/>
+              </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+              <b:ControlLabel for="lastModified">
+                <g:InlineHTML text="{i18n.LastModified}"/>
+              </b:ControlLabel>
+              <b:Controls>
+                <b2:DateBox ui:field="lastModifiedAfter" placeholder="{i18n.DateAfterPlaceholder}"/>
+                <b2:DateBox ui:field="lastModifiedBefore" placeholder="{i18n.DateBeforePlaceholder}"/>
+              </b:Controls>
+            </b:ControlGroup>
+          </b:ControlGroup>
+        </b:Fieldset>
+        <g:SimplePanel ui:field="errorPanel"/>
+        <b:FormActions>
+          <b:Button icon="SEARCH" type="PRIMARY" ui:field="search" text="{i18n.Search}"/>
+        </b:FormActions>
+      </b:Form>
+    </b:AccordionGroup>
+    <b:AccordionGroup heading="{i18n.QueryResult}" ui:field="resultAccordion">
+      <g:SimplePanel ui:field="simplePanel">
+        <qr:SearchResultTable/>
+      </g:SimplePanel>
+    </b:AccordionGroup>
+  </b:Accordion>
+
+</ui:UiBinder>
