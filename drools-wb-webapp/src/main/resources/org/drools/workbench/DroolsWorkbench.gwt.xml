@@ -23,6 +23,7 @@
   <!--Common Screens -->
   <inherits name="org.kie.workbench.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.screens.search.KieWorkbenchSearchScreenClient"/>
+  <inherits name="org.kie.workbench.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
 
   <!-- Common Services -->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
