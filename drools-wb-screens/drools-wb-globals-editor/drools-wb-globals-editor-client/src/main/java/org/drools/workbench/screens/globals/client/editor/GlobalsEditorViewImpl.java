@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;

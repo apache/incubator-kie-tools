@@ -2,7 +2,7 @@ package org.drools.workbench.screens.guided.rule.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.workbench.widgets.common.client.resources.ItemImages;
 import org.drools.workbench.screens.guided.rule.client.resources.css.GuidedRuleEditorCss;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages;
 

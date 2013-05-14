@@ -60,7 +60,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
+import org.kie.workbench.widgets.common.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;

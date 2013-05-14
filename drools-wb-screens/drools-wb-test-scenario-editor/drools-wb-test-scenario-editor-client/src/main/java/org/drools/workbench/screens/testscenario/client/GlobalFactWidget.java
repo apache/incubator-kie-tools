@@ -22,7 +22,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
+import org.kie.workbench.widgets.common.client.popups.errors.ErrorPopup;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 

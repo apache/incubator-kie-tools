@@ -38,7 +38,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.HumanReadableConstants;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;

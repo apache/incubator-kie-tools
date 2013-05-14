@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.BusyPopup;
 

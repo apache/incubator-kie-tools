@@ -46,7 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultVal
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
-import org.kie.guvnor.commons.ui.client.widget.PopupDatePicker;
+import org.kie.workbench.widgets.common.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.services.config.ApplicationPreferences;

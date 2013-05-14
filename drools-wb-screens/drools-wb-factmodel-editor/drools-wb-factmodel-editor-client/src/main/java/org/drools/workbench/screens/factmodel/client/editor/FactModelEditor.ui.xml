@@ -19,8 +19,8 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
   <ui:with field='images' type='org.drools.workbench.screens.factmodel.client.resources.images.ImageResources'/>
-  <ui:with field='roundCornersResource' type='org.kie.guvnor.commons.ui.client.resources.RoundedCornersResource' />
-  <ui:with field='itemImages' type='org.kie.guvnor.commons.ui.client.resources.ItemImages' />
+  <ui:with field='roundCornersResource' type='org.kie.workbench.widgets.common.client.resources.RoundedCornersResource' />
+  <ui:with field='itemImages' type='org.kie.workbench.widgets.common.client.resources.ItemImages' />
 
   <gwt:HTMLPanel>
     <table style='width:100%; border-collapse:collapse;'>

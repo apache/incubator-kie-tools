@@ -63,8 +63,8 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupC
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
-import org.kie.guvnor.commons.ui.client.resources.i18n.HumanReadableConstants;
+import org.kie.workbench.widgets.common.client.resources.HumanReadable;
+import org.kie.workbench.widgets.common.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;

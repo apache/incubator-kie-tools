@@ -37,7 +37,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
+import org.kie.workbench.widgets.common.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.SmallLabel;
 

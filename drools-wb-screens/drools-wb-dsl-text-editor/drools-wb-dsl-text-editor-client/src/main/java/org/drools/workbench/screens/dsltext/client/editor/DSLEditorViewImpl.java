@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.drools.workbench.screens.dsltext.client.resources.Resources;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ResizableTextArea;
 

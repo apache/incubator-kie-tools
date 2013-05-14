@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEditor;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementSelectedListener;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 
 public class WorkItemsEditorViewImpl

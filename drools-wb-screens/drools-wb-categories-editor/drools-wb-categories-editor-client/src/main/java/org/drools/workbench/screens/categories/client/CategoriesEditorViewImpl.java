@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.screens.categories.client.resources.Images;
 import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.drools.workbench.screens.categories.client.widget.CategoryTreeEditorWidget;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.services.metadata.model.Categories;
 import org.kie.guvnor.services.metadata.model.CategoryItem;
 import org.uberfire.client.common.BusyPopup;

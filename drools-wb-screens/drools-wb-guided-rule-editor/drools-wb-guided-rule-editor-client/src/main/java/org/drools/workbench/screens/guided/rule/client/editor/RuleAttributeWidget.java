@@ -34,7 +34,7 @@ import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
 import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.ui.client.resources.ItemImages;
+import org.kie.workbench.widgets.common.client.resources.ItemImages;
 import org.uberfire.client.common.DirtyableHorizontalPane;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.InfoPopup;

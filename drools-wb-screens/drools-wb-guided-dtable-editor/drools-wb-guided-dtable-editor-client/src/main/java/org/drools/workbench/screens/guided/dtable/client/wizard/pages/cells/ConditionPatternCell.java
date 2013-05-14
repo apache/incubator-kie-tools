@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells;
 
-import org.kie.guvnor.commons.ui.client.resources.WizardResources;
+import org.kie.workbench.widgets.common.client.resources.WizardResources;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 

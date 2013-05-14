@@ -29,7 +29,7 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
-  <inherits name="org.kie.guvnor.commons.ui.GuvnorCommonsUI"/>
+  <inherits name="org.kie.workbench.widgets.common.KieWorkbenchWidgetsCommon"/>
   <inherits name="org.kie.workbench.widgets.errors.KieWorkbenchErrorMessagesWidget"/>
   <inherits name="org.kie.workbench.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.widgets.configresource.KieWorkbenchConfigResourceWidget"/>

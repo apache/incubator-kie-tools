@@ -32,10 +32,10 @@ import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWi
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;

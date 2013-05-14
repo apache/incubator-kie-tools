@@ -11,11 +11,11 @@ import org.drools.workbench.screens.factmodel.client.type.FactModelResourceType;
 import org.drools.workbench.screens.factmodel.model.FactModels;
 import org.drools.workbench.screens.factmodel.service.FactModelService;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.handlers.DefaultNewResourceHandler;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.handlers.DefaultNewResourceHandler;
+import org.kie.workbench.widgets.common.client.handlers.NewResourcePresenter;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 

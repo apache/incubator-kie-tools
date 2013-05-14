@@ -26,10 +26,10 @@ import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCard
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.commons.ui.client.widget.BusyIndicatorView;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.kie.guvnor.services.metadata.MetadataService;
 import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;

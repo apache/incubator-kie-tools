@@ -24,7 +24,7 @@ import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RequiresValidator;
-import org.kie.guvnor.commons.ui.client.resources.WizardResources;
+import org.kie.workbench.widgets.common.client.resources.WizardResources;
 
 /**
  * A cell to display Conditions

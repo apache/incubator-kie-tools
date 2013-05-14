@@ -31,11 +31,11 @@ import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorCo
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.events.ImportAddedEvent;
 import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;

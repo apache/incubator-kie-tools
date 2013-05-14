@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.commons.ui.client.resources.ItemAltedImages;
+import org.kie.workbench.widgets.common.client.resources.ItemAltedImages;
 
 public class ListEditor extends VerticalPanel {
 

@@ -29,11 +29,11 @@ import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorC
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.guvnor.commons.ui.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.guvnor.commons.ui.client.menu.FileMenuBuilder;
-import org.kie.guvnor.commons.ui.client.popups.file.CommandWithCommitMessage;
-import org.kie.guvnor.commons.ui.client.popups.file.SaveOperationService;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;

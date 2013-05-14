@@ -2,7 +2,7 @@ package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.List;
 
-import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
+import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.globals.model.Global;
 import org.uberfire.client.mvp.UberView;

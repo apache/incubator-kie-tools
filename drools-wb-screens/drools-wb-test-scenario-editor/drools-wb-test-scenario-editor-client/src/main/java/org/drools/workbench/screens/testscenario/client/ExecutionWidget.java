@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.guvnor.commons.ui.client.popups.errors.ErrorPopup;
+import org.kie.workbench.widgets.common.client.popups.errors.ErrorPopup;
 import org.uberfire.client.common.SmallLabel;
 
 public class ExecutionWidget extends Composite {

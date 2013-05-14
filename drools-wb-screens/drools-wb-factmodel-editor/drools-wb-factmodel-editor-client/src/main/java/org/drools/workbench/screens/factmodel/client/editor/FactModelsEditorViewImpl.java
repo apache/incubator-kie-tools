@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactModels;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CommonConstants;
+import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.AbstractLazyStackPanelHeader;
 import org.uberfire.client.common.AddButton;
 import org.uberfire.client.common.BusyPopup;

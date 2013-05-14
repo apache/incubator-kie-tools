@@ -21,9 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.client.resources.i18n.Constants;
 import org.guvnor.inbox.client.InboxPresenter;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourcePresenter;
-import org.kie.guvnor.commons.ui.client.handlers.NewResourcesMenu;
-import org.kie.guvnor.commons.ui.client.menu.ToolsMenu;
+import org.kie.workbench.widgets.common.client.handlers.NewResourcePresenter;
+import org.kie.workbench.widgets.common.client.handlers.NewResourcesMenu;
+import org.kie.workbench.widgets.common.client.menu.ToolsMenu;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;

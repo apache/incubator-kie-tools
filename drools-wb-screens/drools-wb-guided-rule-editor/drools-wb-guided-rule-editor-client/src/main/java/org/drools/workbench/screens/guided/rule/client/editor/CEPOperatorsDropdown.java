@@ -38,7 +38,7 @@ import org.drools.workbench.models.commons.backend.rule.SharedConstants;
 import org.drools.workbench.models.commons.shared.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.ui.client.resources.HumanReadable;
+import org.kie.workbench.widgets.common.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.oracle.CEPOracle;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 

@@ -34,8 +34,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
-import org.kie.guvnor.commons.ui.client.resources.CollapseExpand;
-import org.kie.guvnor.commons.ui.client.resources.i18n.CollapseExpandConstants;
+import org.kie.workbench.widgets.common.client.resources.CollapseExpand;
+import org.kie.workbench.widgets.common.client.resources.i18n.CollapseExpandConstants;
 import org.uberfire.client.common.AbstractLazyStackPanelHeader;
 
 public class FactModelEditor

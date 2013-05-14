@@ -3,7 +3,7 @@ package org.drools.workbench.screens.workitems.client.editor;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
+import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 
 public interface WorkItemsEditorView extends HasBusyIndicator,
                                              IsWidget {

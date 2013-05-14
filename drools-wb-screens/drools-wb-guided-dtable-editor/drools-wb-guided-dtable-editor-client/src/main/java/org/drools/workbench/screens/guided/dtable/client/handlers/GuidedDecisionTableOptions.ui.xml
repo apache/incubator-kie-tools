@@ -20,7 +20,7 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants" />
-  <ui:with field="resources" type="org.kie.guvnor.commons.ui.client.resources.CommonsResources" />
+  <ui:with field="resources" type="org.kie.workbench.widgets.common.client.resources.CommonsResources" />
 
   <gwt:VerticalPanel>
     <b:CheckBox text="{i18n.UseWizardToBuildAsset}" ui:field="chkUseWizard"></b:CheckBox>

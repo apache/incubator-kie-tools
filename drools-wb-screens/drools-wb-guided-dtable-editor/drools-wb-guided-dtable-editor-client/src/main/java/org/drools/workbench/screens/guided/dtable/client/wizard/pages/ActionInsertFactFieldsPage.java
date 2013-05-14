@@ -36,7 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constant
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.guvnor.commons.ui.client.widget.HumanReadableDataTypes;
+import org.kie.workbench.widgets.common.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
