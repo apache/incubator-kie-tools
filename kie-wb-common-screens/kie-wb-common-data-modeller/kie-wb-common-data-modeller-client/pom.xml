@@ -2,18 +2,112 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>org.kie.workbench.screens</groupId>
-    <artifactId>kie-wb-common-data-modeller</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-wb-common-data-modeller-client</artifactId>
-  <packaging>pom</packaging>
+    <parent>
+        <groupId>org.kie.workbench.screens</groupId>
+        <artifactId>kie-wb-common-data-modeller</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <name>Kie Workbench - Data modeller Client</name>
-  <description>Kie Workbench - Data modeller tool Client</description>
+    <artifactId>kie-wb-common-data-modeller-client</artifactId>
+
+    <name>Kie Workbench - Commom - Data modeller Client</name>
+    <description>Kie Workbench - Common - Data modeller Client</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-backend-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-widgets-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-workbench</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+
+        <!-- Errai Core -->
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-ioc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-bus</artifactId>
+        </dependency>
+
+
+        <!-- GWT and GWT Extensions -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+
+        <!-- Guvnor dependencies -->
+
+        <dependency>
+            <groupId>org.kie.workbench.widgets</groupId>
+            <artifactId>kie-wb-common-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.guvnor</groupId>
+            <artifactId>guvnor-project-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.guvnor</groupId>
+            <artifactId>guvnor-commons-data</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.guvnor</groupId>
+            <artifactId>guvnor-commons-services-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.guvnor</groupId>
+            <artifactId>guvnor-core-services-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.workbench.screens</groupId>
+            <artifactId>kie-wb-common-data-modeller-api</artifactId>
+            <!-- TODO WM Check why I need to put the version number -->
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
 
 
 </project>

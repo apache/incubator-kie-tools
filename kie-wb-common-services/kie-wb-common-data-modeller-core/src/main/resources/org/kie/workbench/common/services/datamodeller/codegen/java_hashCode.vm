@@ -1,0 +1,6 @@
+
+    @Override
+    public int hashCode() {
+        //TODO complete this implementation
+        return $className.hashCode();
+    }

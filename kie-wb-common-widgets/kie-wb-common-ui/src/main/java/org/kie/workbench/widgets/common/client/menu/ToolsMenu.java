@@ -35,10 +35,19 @@ public class ToolsMenu {
                 }
             }).endMenu().build().getItems().get(0);
 
+    private MenuItem dataModelerScreen = MenuFactory.newSimpleItem("Data Modeller").respondsWith(
+            new Command() {
+                @Override
+                public void execute() {
+                    placeManager.goTo("dataModelerScreen");
+                }
+            }).endMenu().build().getItems().get(0);
+
     public List<MenuItem> getMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
         menuItems.add(projectScreen);
+        menuItems.add(dataModelerScreen);
 
         return menuItems;
     }
@@ -48,6 +57,7 @@ public class ToolsMenu {
             @Override
             public void callback(Path path) {
                 projectScreen.setEnabled(path != null);
+                dataModelerScreen.setEnabled(path != null);
             }
         }).resolveProject(event.getPath());
     }

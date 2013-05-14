@@ -1,0 +1,9 @@
+#set( $varName = $nameTool.toJavaVar( $attr.name ))
+
+    public $nameTool.resolveAttributeType( $attr) $nameTool.toJavaGetter( $varName )() {
+        return this.$varName;
+    }
+
+    public void $nameTool.toJavaSetter( $varName )(  $nameTool.resolveAttributeType( $attr) $varName ) {
+        this.$varName = $varName;
+    }

@@ -2,17 +2,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-wb-common-data-modeller-core</artifactId>
-  <packaging>pom</packaging>
+    <parent>
+        <groupId>org.kie.workbench.services</groupId>
+        <artifactId>kie-wb-common-services</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <name>Kie Workbench - Data modeller core</name>
-  <description>Kie Workbench - Data modeller core</description>
+    <artifactId>kie-wb-common-data-modeller-core</artifactId>
+
+    <name>Kie Workbench - Common Services - Data modeller Core</name>
+    <description>Kie Workbench - Common Services - Data modeller Core</description>
+
+
+    <dependencies>
+
+        <!-- code generation dependencies -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <!--version>1.7</version-->
+            <!-- WM TODO check how to remove this version number that allready exists in droolsjbpm-parent pom -->
+            <version>1.6.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.commons</groupId>
+            <artifactId>kie-commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.guvnor</groupId>
+            <artifactId>guvnor-datamodel-api</artifactId>
+        </dependency>
+
+    </dependencies>
 
 </project>

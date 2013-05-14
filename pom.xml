@@ -19,6 +19,7 @@
   <modules>
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-common-screens</module>
+    <module>kie-wb-common-services</module>
   </modules>
 
 </project>

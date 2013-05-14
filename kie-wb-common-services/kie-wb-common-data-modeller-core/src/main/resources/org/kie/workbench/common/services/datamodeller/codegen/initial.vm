@@ -1,0 +1,30 @@
+##
+## POJOs generation main template.
+##
+
+## Iterate over the data model and generate the pojo for each data object
+
+## Injected context parameters by caller are:
+
+## engine    -> GenerationEngine
+## context   -> GenerationContext
+## dataModel -> DataModel
+## nameTool  -> GenerationTools
+
+Generating data model: $dataModel
+
+#set( $dataObjects = $dataModel.dataObjects )
+
+#foreach( $object in $dataObjects )
+
+    ## Set current data object
+    $context.setCurrentDataObject($object)
+
+    #set( $filePath = $nameTool.getFilePath($object.packageName, $object.name, "java") )
+
+    Generating file: $filePath
+    Class: $object.className
+    Package: $object.packageName
+
+    $engine.generateAsset($context, "java_class", $filePath)
+#end

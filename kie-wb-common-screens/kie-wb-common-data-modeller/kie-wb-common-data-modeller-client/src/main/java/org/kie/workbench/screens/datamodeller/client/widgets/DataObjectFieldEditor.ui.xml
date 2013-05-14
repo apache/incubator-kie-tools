@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+        >
+
+    <ui:with field="i18n" type="org.kie.workbench.screens.datamodeller.client.resources.i18n.Constants"/>
+
+    <gwt:HTMLPanel styleName="well container row-fluid "  height="310px">
+
+        <table class="row-fluid span12" style="padding: 4px;">
+
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="titleLabel" text="Name"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:TextBox ui:field="name" styleName="span10"></b:TextBox>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" style="padding: 3px;"></td>
+            </tr>
+
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="labelLabel" text="Label"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:TextBox ui:field="label" styleName="span10"></b:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="descriptionLabel" text="Description"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:TextArea ui:field="description" styleName="span10"></b:TextArea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="typeLabel" text="Type"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="equalsLabel" text="Equals"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:CheckBox ui:field="equalsSelector"></b:CheckBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="positionLabel" text="@Position"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:TextBox ui:field="positionText" styleName="span10"></b:TextBox>
+                </td>
+            </tr>
+
+        </table>
+
+    </gwt:HTMLPanel>
+
+</ui:UiBinder>
