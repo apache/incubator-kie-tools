@@ -9,19 +9,15 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie.workbench.widgets</groupId>
-  <artifactId>kie-wb-common-widgets</artifactId>
+  <groupId>org.kie.workbench.screens</groupId>
+  <artifactId>kie-wb-common-screens</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kie Workbench - Commons</name>
-  <description>Kie Workbench - Common UI components</description>
+  <name>Kie Workbench - Common Screens</name>
+  <description>Kie Workbench - Common Screens</description>
 
   <modules>
-    <module>kie-wb-config-resource-widget</module>
-    <module>kie-wb-decorated-grid-widget</module>
-    <module>kie-wb-error-messages-widget</module>
-    <module>kie-wb-metadata-widget</module>
-    <module>kie-wb-view-source-widget</module>
+    <module>kie-wb-common-project-explorer</module>
   </modules>
 
   <build>
