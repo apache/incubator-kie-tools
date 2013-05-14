@@ -14,14 +14,19 @@
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
 
-  <!-- Infrastructure -->
+  <!-- Common Widgets -->
   <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
   <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
+
+  <!--Common Screens -->
+  <inherits name="org.kie.workbench.screens.explorer.KieWorkbenchProjectExplorerClient"/>
+
+  <!-- Common Services -->
   <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
 
-  <!-- Models for Screens -->
+  <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
 
   <!-- Drools Workbench Screens -->
@@ -45,8 +50,6 @@
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
   <inherits name="org.kie.guvnor.query.GuvnorSearchScreenClient"/>
-
-  <inherits name="org.kie.guvnor.explorer.GuvnorExplorerClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
