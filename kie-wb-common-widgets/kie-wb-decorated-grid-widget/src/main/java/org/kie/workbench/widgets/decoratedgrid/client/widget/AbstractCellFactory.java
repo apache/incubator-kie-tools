@@ -33,7 +33,7 @@ import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupNumericF
 import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupNumericIntegerEditCell;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupNumericLongEditCell;
 import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
-import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.kie.workbench.services.shared.config.ApplicationPreferences;
 import org.uberfire.client.common.CheckboxCellImpl;
 
 /**

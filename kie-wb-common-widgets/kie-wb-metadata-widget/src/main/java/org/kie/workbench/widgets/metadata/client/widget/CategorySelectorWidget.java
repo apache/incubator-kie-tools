@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.widgets.metadata.client.resources.Images;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;

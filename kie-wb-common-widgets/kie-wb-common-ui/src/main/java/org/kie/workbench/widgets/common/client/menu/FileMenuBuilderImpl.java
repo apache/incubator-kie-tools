@@ -34,9 +34,9 @@ import org.kie.workbench.widgets.common.client.popups.file.FileNameAndCommitMess
 import org.kie.workbench.widgets.common.client.popups.file.RenamePopup;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
-import org.kie.guvnor.services.file.CopyService;
-import org.kie.guvnor.services.file.DeleteService;
-import org.kie.guvnor.services.file.RenameService;
+import org.kie.workbench.services.shared.file.CopyService;
+import org.kie.workbench.services.shared.file.DeleteService;
+import org.kie.workbench.services.shared.file.RenameService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;

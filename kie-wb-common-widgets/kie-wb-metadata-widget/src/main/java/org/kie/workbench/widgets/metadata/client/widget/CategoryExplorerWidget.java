@@ -35,9 +35,9 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.workbench.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.guvnor.services.metadata.CategoriesService;
-import org.kie.guvnor.services.metadata.model.Categories;
-import org.kie.guvnor.services.metadata.model.CategoryItem;
+import org.kie.workbench.services.shared.metadata.CategoriesService;
+import org.kie.workbench.services.shared.metadata.model.Categories;
+import org.kie.workbench.services.shared.metadata.model.CategoryItem;
 import org.uberfire.backend.vfs.Path;
 
 import static org.kie.commons.validation.PortablePreconditions.*;

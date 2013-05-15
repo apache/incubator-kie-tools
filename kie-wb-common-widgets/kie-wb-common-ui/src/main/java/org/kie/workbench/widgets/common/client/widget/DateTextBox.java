@@ -16,7 +16,7 @@
 package org.kie.workbench.widgets.common.client.widget;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.kie.workbench.services.shared.config.ApplicationPreferences;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 import java.util.Date;

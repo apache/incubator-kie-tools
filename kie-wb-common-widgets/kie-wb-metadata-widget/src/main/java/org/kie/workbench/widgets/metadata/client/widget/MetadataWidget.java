@@ -37,7 +37,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.FormStyleLayout;

@@ -20,7 +20,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.kie.workbench.services.shared.config.ApplicationPreferences;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.ValueChanged;
 

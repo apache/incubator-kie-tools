@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
-import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.kie.workbench.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.widgets.common.client.resources.CommonImages;
 
 import java.util.Date;

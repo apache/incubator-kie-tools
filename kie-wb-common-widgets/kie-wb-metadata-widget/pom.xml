@@ -15,9 +15,10 @@
   <description>Kie Workbench - Commons - Metadata Widget</description>
 
   <dependencies>
+
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-core-services-api</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
 
     <dependency>

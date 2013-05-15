@@ -10,8 +10,8 @@ import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
-import org.kie.guvnor.services.version.VersionService;
-import org.kie.guvnor.services.version.events.RestoreEvent;
+import org.kie.workbench.services.shared.version.VersionService;
+import org.kie.workbench.services.shared.version.events.RestoreEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 

@@ -21,10 +21,10 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import org.kie.workbench.services.shared.validation.model.BuilderResult;
+import org.kie.workbench.services.shared.validation.model.BuilderResultLine;
 import org.kie.workbench.widgets.errors.client.resources.ImageResources;
 import org.kie.workbench.widgets.errors.client.resources.i18n.Constants;
-import org.kie.guvnor.commons.service.validation.model.BuilderResult;
-import org.kie.guvnor.commons.service.validation.model.BuilderResultLine;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
 
