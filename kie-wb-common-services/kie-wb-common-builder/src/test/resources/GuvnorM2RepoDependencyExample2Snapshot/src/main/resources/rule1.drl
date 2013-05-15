@@ -1,0 +1,11 @@
+import org.kie.test.repodependencyexample1.Bean;
+
+rule Test
+
+when
+
+Bean()
+
+then
+
+end
