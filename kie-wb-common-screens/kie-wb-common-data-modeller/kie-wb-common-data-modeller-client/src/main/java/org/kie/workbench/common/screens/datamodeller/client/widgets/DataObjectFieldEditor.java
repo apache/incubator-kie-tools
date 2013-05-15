@@ -57,6 +57,8 @@ public class DataObjectFieldEditor extends Composite {
 
     };
 
+    public static final String NOT_SELECTED = "NOT_SELECTED";
+
     private static DataObjectFieldEditorUIBinder uiBinder = GWT.create(DataObjectFieldEditorUIBinder.class);
 
     @UiField
@@ -159,6 +161,15 @@ public class DataObjectFieldEditor extends Composite {
     private void onFieldSelected(@Observes DataObjectFieldSelectedEvent event) {
         if (event.isFrom(getDataModel())) {
             loadDataObjectField(event.getCurrentDataObject(), event.getCurrentField());
+        }
+    }
+
+    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
+        // When all attributes from the current object have been deleted clean
+        if (event.isFrom(getDataModel())) {
+            if (getDataObject().getProperties().size() == 0) {
+                clean();
+            }
         }
     }
 
@@ -343,6 +354,7 @@ public class DataObjectFieldEditor extends Composite {
 
     private void initTypeList() {
         typeSelector.clear();
+        typeSelector.addItem("", NOT_SELECTED);
 
         SortedSet<String> typeNames = new TreeSet<String>();
         if (getDataModel() != null) {
@@ -386,7 +398,7 @@ public class DataObjectFieldEditor extends Composite {
         name.setText(null);
         label.setText(null);
         description.setText(null);
-        typeSelector.setSelectedValue(null);
+        typeSelector.setSelectedValue(NOT_SELECTED);
         equalsSelector.setValue(Boolean.FALSE);
         positionLabel.setStyleName(null);
         positionText.setText(null);
