@@ -3,43 +3,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.workbench.widgets</groupId>
-    <artifactId>kie-wb-common-widgets</artifactId>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-services</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-wb-decorated-grid-widget</artifactId>
+  <artifactId>kie-wb-common-data</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Commons - Decorated Grid Widget</name>
-  <description>Kie Workbench - Commons - Decorated Grid Widget</description>
+  <name>Kie Workbench - Common Data Structures</name>
+  <description>Kie Workbench - Common Data Structures</description>
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-common-ui</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-datamodel-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-data</artifactId>
-    </dependency>
-
+         
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
+      <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
-    <!-- GWT and GWT Extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
     </dependency>
   </dependencies>
 
