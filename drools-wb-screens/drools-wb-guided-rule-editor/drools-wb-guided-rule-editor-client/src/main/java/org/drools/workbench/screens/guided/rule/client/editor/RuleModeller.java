@@ -37,11 +37,11 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.kie.guvnor.commons.security.UserCapabilities;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.workingset.client.WorkingSetManager;
+import org.kie.workbench.common.services.security.UserCapabilities;
+import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
+import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableComposite;

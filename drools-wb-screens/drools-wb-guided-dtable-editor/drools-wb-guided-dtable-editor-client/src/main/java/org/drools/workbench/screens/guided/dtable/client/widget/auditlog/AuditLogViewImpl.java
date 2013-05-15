@@ -43,9 +43,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.commons.shared.auditlog.AuditLog;
 import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
-import org.kie.guvnor.commons.security.AppRoles;
-import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.kie.workbench.common.services.security.AppRoles;
+import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.uberfire.client.tables.UberfireSimplePager;
 import org.uberfire.security.Identity;
 
