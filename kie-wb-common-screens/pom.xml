@@ -17,6 +17,8 @@
   <description>Kie Workbench - Common - Screens</description>
 
   <modules>
+    <module>kie-wb-project-imports-editor</module>
+    <module>kie-wb-project-editor</module>
     <module>kie-wb-common-project-explorer</module>
     <module>kie-wb-common-search-screen</module>
     <module>kie-wb-common-data-modeller</module>
