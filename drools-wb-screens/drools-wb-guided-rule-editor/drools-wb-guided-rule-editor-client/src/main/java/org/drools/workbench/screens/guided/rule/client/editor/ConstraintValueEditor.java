@@ -50,7 +50,7 @@ import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
+import org.kie.workbench.common.services.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.DropDownData;

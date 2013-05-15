@@ -58,8 +58,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-data</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-data</artifactId>
     </dependency>
 
     <!-- Models held within Drools -->
@@ -585,6 +585,7 @@
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-security</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data</compileSourcesArtifact>
 
             <!-- Kie Commons -->
             <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
@@ -629,8 +630,6 @@
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-workingset-client</compileSourcesArtifact>
-
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-commons-data</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>

@@ -43,7 +43,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.commons.data.factconstraints.customform.CustomFormConfiguration;
+import org.kie.workbench.common.services.data.factconstraints.customform.CustomFormConfiguration;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
