@@ -19,7 +19,7 @@ package org.drools.workbench.screens.factmodel.backend.server;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.factmodel.type.FactModelResourceTypeDefinition;
-import org.kie.guvnor.commons.service.backend.DRLBaseSourceService;
+import org.kie.workbench.services.backend.DRLBaseSourceService;
 
 public class FactModelSourceService
         extends DRLBaseSourceService {

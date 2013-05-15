@@ -18,7 +18,7 @@ package org.drools.workbench.screens.globals.backend.server;
 
 import javax.inject.Inject;
 
-import org.kie.guvnor.commons.service.backend.DRLBaseSourceService;
+import org.kie.workbench.services.backend.DRLBaseSourceService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 
 public class GlobalsSourceService

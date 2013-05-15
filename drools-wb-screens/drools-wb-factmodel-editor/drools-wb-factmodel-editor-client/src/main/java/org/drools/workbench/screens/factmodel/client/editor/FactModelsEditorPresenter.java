@@ -37,8 +37,8 @@ import org.kie.workbench.widgets.common.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.services.metadata.MetadataService;
-import org.kie.guvnor.services.version.events.RestoreEvent;
+import org.kie.workbench.services.shared.metadata.MetadataService;
+import org.kie.workbench.services.shared.version.events.RestoreEvent;
 import org.kie.workbench.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;

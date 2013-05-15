@@ -23,7 +23,7 @@ import org.drools.workbench.models.guided.template.backend.BRDRTPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.backend.BaseSourceService;
+import org.kie.workbench.services.backend.BaseSourceService;
 
 @ApplicationScoped
 public class GuidedRuleTemplateSourceService

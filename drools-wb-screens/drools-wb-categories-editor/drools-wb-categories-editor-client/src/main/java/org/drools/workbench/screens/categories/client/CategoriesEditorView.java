@@ -2,7 +2,7 @@ package org.drools.workbench.screens.categories.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.guvnor.services.metadata.model.Categories;
+import org.kie.workbench.services.shared.metadata.model.Categories;
 
 /**
  * Categories Editor View definition.

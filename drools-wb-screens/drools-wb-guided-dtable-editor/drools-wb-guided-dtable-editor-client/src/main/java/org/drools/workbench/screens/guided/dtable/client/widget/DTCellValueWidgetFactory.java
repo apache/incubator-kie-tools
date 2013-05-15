@@ -49,7 +49,7 @@ import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHel
 import org.kie.workbench.widgets.common.client.widget.PopupDatePicker;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.services.config.ApplicationPreferences;
+import org.kie.workbench.services.shared.config.ApplicationPreferences;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
 import org.uberfire.client.common.NumericBigIntegerTextBox;

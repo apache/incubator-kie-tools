@@ -33,7 +33,7 @@ import org.kie.workbench.widgets.common.client.popups.file.SaveOperationService;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
 import org.drools.workbench.screens.defaulteditor.service.DefaultEditorService;
-import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.workbench.services.shared.metadata.MetadataService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;

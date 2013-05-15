@@ -23,7 +23,7 @@ import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPe
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.commons.service.backend.BaseSourceService;
+import org.kie.workbench.services.backend.BaseSourceService;
 
 @ApplicationScoped
 public class GuidedScoreCardSourceService

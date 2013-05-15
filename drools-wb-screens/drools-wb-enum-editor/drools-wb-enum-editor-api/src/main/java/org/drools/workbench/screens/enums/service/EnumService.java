@@ -16,15 +16,15 @@
 
 package org.drools.workbench.screens.enums.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.commons.service.validation.ValidationService;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
-import org.kie.guvnor.services.file.SupportsCopy;
-import org.kie.guvnor.services.file.SupportsCreate;
-import org.kie.guvnor.services.file.SupportsDelete;
-import org.kie.guvnor.services.file.SupportsRead;
-import org.kie.guvnor.services.file.SupportsRename;
-import org.kie.guvnor.services.file.SupportsUpdate;
+import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.services.shared.file.SupportsCopy;
+import org.kie.workbench.services.shared.file.SupportsCreate;
+import org.kie.workbench.services.shared.file.SupportsDelete;
+import org.kie.workbench.services.shared.file.SupportsRead;
+import org.kie.workbench.services.shared.file.SupportsRename;
+import org.kie.workbench.services.shared.file.SupportsUpdate;
+import org.kie.workbench.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

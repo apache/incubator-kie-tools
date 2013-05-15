@@ -19,12 +19,12 @@ package org.drools.workbench.screens.testscenario.service;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.guvnor.services.file.SupportsCopy;
-import org.kie.guvnor.services.file.SupportsCreate;
-import org.kie.guvnor.services.file.SupportsDelete;
-import org.kie.guvnor.services.file.SupportsRead;
-import org.kie.guvnor.services.file.SupportsRename;
-import org.kie.guvnor.services.file.SupportsUpdate;
+import org.kie.workbench.services.shared.file.SupportsCopy;
+import org.kie.workbench.services.shared.file.SupportsCreate;
+import org.kie.workbench.services.shared.file.SupportsDelete;
+import org.kie.workbench.services.shared.file.SupportsRead;
+import org.kie.workbench.services.shared.file.SupportsRename;
+import org.kie.workbench.services.shared.file.SupportsUpdate;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -39,7 +39,6 @@ public interface ScenarioTestEditorService
         SupportsDelete,
         SupportsCopy,
         SupportsRename {
-
 
     TestScenarioModelContent loadContent(Path path);
 

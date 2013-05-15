@@ -30,7 +30,7 @@ import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
 import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
-import org.kie.guvnor.services.metadata.MetadataService;
+import org.kie.workbench.services.shared.metadata.MetadataService;
 import org.kie.workbench.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;

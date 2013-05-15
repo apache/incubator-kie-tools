@@ -16,14 +16,10 @@
   <description>Drools Workbench - Enum Editor - API</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-commons-services-api</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-core-services-api</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
 
     <dependency>

@@ -22,8 +22,8 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.categories.client.resources.ImageResources;
-import org.kie.guvnor.services.metadata.model.Categories;
-import org.kie.guvnor.services.metadata.model.CategoryItem;
+import org.kie.workbench.services.shared.metadata.model.Categories;
+import org.kie.workbench.services.shared.metadata.model.CategoryItem;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 

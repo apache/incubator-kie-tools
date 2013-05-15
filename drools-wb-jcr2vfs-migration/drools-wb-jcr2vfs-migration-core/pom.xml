@@ -142,8 +142,8 @@
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-core-services-backend</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
     </dependency> 
     <dependency>
       <groupId>org.kie.guvnor</groupId>

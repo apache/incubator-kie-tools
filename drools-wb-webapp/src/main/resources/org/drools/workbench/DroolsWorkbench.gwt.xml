@@ -26,7 +26,7 @@
   <inherits name="org.kie.workbench.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
 
   <!-- Common Services -->
-  <inherits name="org.kie.guvnor.services.GuvnorCoreServicesAPI"/>
+  <inherits name='org.kie.workbench.services.KieWorkbenchCommonServicesAPI'/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
