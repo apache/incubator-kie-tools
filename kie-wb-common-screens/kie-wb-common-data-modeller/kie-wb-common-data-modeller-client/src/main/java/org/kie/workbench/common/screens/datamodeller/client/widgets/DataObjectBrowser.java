@@ -72,6 +72,8 @@ public class DataObjectBrowser extends Composite {
 
     };
 
+    public static final String NOT_SELECTED = "NOT_SELECTED";
+
     private static DataObjectEditorUIBinder uiBinder = GWT.create(DataObjectEditorUIBinder.class);
 
     @UiField
@@ -264,6 +266,7 @@ public class DataObjectBrowser extends Composite {
 
     private void populateBaseTypes() {
         newPropertyType.clear();
+        newPropertyType.addItem("", NOT_SELECTED);
         for (PropertyTypeTO type : baseTypes) {
             newPropertyType.addItem(type.getName(), type.getClassName());
         }
@@ -271,6 +274,7 @@ public class DataObjectBrowser extends Composite {
 
     private void populateObjectTypes() {
         newPropertyType.clear();
+        newPropertyType.addItem("", NOT_SELECTED);
         SortedSet<String> typeNames = new TreeSet<String>();
         if (getDataModel() != null) {
             // Add all model types, ordered
@@ -317,6 +321,7 @@ public class DataObjectBrowser extends Composite {
                 });
             }
         });
+        resetInput();
     }
     
     private void setDataObject(DataObjectTO dataObject) {
@@ -442,6 +447,14 @@ public class DataObjectBrowser extends Composite {
         newPropertyIsMultiple.setVisible(false);
         newPropertyIsMultiple.setValue(false);
         populateBaseTypes();
+    }
+
+    private void resetInput() {
+        newPropertyName.setText(null);
+        newPropertyBasicType.setValue(Boolean.TRUE);
+        newPropertyIsMultiple.setValue(Boolean.FALSE);
+        populateBaseTypes();
+        newPropertyType.setSelectedValue(NOT_SELECTED);
     }
 
     //Event Observers
