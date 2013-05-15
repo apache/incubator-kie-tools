@@ -23,8 +23,9 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMember
 public class RoleAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public RoleAnnotationDefinition() {
-        super("@Role", Role.class.getName(), "Role", "Role annotation", true, true);
-        addMember(new AnnotationMemberDefinitionImpl("value", String.class.getName(), false, "", "value", "value"));
+
+        super("@Role", org.kie.api.definition.type.Role.class.getName(), "Role", "Role annotation", true, false);
+        addMember(new AnnotationMemberDefinitionImpl("value", org.kie.api.definition.type.Role.class.getName()+".Type", true, "FACT", "value", "value"));
     }
 
     public static RoleAnnotationDefinition getInstance() {

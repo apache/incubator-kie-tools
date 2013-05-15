@@ -39,7 +39,7 @@ public class AnnotationDefinitionTO {
 
     private boolean propertyAnnotation;
     
-    public static final String ROLE_ANNOTATION = "org.kie.workbench.common.services.datamodeller.annotations.Role";
+    public static final String ROLE_ANNOTATION = "org.kie.api.definition.type.Role";
     
     public static final String POSITION_ANNOTATON = "org.kie.api.definition.type.Position";
 
