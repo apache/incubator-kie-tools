@@ -2,7 +2,7 @@ package org.kie.workbench.widgets.configresource.client.widget.unbound;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.guvnor.commons.ui.client.widget.HasBusyIndicator;
+import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 
 public interface ImportsWidgetView
         extends IsWidget, HasBusyIndicator {
