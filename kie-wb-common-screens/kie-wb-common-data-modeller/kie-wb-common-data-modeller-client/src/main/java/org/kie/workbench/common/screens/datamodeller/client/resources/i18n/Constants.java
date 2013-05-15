@@ -63,6 +63,8 @@ public interface Constants extends Messages {
 
     public String modelEditor_discard_changes_message();
 
+    public String modelEditor_confirm_delete();
+
     public String modelBrowser_modelUnknown();
 
     public String modelBrowser_emptyTable();

@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.*;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -292,13 +293,15 @@ public class DataModelBrowser extends Composite {
 
             @Override
             public void onSuccess() {
-                getDataModel().removeDataObject(dataObjectTO);
+                if (Window.confirm(Constants.INSTANCE.modelEditor_confirm_delete())) {
+                    getDataModel().removeDataObject(dataObjectTO);
 
-                dataObjectsProvider.getList().remove(index);
-                dataObjectsProvider.flush();
-                dataObjectsProvider.refresh();
+                    dataObjectsProvider.getList().remove(index);
+                    dataObjectsProvider.flush();
+                    dataObjectsProvider.refresh();
 
-                notifyObjectDeleted(dataObjectTO);
+                    notifyObjectDeleted(dataObjectTO);
+                }
             }
         });
     }
