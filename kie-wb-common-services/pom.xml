@@ -20,6 +20,7 @@
     <module>kie-wb-common-services-api</module>
     <module>kie-wb-common-services-backend</module>
     <module>kie-wb-common-data-modeller-core</module>
+    <module>kie-wb-common-security</module>
   </modules>
 
 </project>
