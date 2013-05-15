@@ -22,7 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;

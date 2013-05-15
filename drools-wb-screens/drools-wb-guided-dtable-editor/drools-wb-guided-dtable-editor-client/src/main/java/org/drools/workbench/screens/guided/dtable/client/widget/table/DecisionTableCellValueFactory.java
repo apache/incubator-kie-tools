@@ -32,10 +32,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue.CellState;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue.CellState;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A Factory to create CellValues applicable to given columns.

@@ -46,8 +46,8 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.workbench.services.shared.metadata.MetadataService;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.metadata.MetadataService;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;

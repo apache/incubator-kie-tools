@@ -33,7 +33,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
-import org.kie.workbench.widgets.common.client.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
 
 @Dependent
 public class AddGlobalPopup extends Modal {

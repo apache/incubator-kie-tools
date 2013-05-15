@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.template.client.editor.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 
 /**
  * An event to set the underlying Template Data in the table

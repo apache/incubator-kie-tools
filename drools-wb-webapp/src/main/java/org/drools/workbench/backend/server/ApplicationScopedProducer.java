@@ -25,7 +25,7 @@ import org.kie.commons.io.IOSearchService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreView;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.guvnor.services.backend.metadata.attribute.OtherMetaView;
+import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.kie.kieora.backend.lucene.LuceneIndexEngine;
 import org.kie.kieora.backend.lucene.LuceneSearchIndex;
 import org.kie.kieora.backend.lucene.LuceneSetup;

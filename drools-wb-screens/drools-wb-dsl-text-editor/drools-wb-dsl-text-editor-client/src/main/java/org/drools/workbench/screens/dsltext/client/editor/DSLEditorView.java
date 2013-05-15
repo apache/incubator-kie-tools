@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.dsltext.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 public interface DSLEditorView extends HasBusyIndicator,
                                        IsWidget {

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
-import org.kie.workbench.widgets.common.client.popups.footers.ModalFooterOKButton;
+import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that can contain a list of items

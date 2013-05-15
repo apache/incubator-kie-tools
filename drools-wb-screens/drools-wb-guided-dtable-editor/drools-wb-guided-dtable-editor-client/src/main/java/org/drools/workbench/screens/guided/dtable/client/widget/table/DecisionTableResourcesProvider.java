@@ -19,7 +19,7 @@ import com.google.gwt.resources.client.ImageResource;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
 import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
 
 /**

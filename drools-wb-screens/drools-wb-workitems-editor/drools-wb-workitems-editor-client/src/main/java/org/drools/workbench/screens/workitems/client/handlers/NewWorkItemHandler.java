@@ -10,11 +10,11 @@ import org.drools.workbench.screens.workitems.client.resources.images.WorkItemsE
 import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.widgets.common.client.handlers.DefaultNewResourceHandler;
-import org.kie.workbench.widgets.common.client.handlers.NewResourcePresenter;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
-import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
+import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
+import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 

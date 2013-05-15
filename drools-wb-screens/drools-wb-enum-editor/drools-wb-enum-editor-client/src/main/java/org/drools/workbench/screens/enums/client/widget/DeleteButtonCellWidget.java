@@ -20,7 +20,7 @@ import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.kie.workbench.widgets.common.client.resources.ItemImages;
+import org.kie.workbench.common.widgets.client.resources.ItemImages;
 
 public class DeleteButtonCellWidget extends ButtonCell {
 

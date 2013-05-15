@@ -37,8 +37,8 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
-import org.kie.workbench.widgets.common.client.popups.errors.ErrorPopup;
-import org.kie.workbench.widgets.common.client.resources.HumanReadable;
+import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;

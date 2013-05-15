@@ -27,7 +27,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.widgets.common.client.resources.CommonAltedImages;
+import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.SmallLabel;
 

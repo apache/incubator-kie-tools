@@ -60,8 +60,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Acti
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
-import org.kie.workbench.widgets.common.client.resources.WizardCellListResources;
-import org.kie.workbench.widgets.common.client.resources.WizardResources;
+import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
+import org.kie.workbench.common.widgets.client.resources.WizardResources;
 
 /**
  * An implementation of the ActionInsertFactFields page

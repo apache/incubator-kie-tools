@@ -17,9 +17,9 @@ package org.drools.workbench.screens.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellFactory;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public class TemplateDataCellFactory

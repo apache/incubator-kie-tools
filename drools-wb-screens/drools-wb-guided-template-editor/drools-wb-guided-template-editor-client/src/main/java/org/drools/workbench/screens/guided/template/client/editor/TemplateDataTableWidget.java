@@ -27,16 +27,16 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetTemplateDataEvent;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.CopyRowsEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.PasteRowsEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.UpdateModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.CopyRowsEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.PasteRowsEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateModelEvent;
 
 /**
  * A table in which Template data can be edited

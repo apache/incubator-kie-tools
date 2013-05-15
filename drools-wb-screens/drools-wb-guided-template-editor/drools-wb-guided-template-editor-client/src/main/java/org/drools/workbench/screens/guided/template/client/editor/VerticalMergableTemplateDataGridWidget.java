@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractVerticalMergableGridWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractVerticalMergableGridWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
 
 /**
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,

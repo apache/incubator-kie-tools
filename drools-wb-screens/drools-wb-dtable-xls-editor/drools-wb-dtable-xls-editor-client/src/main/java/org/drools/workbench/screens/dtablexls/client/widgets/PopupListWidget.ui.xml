@@ -20,7 +20,7 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants"/>
-  <ui:with field="i18nCommon" type="org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
   <b:Well>
     <g:ScrollPanel width="100%" height="200px">

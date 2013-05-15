@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.factmodel.client.editor;
 
-import org.kie.workbench.widgets.common.client.widget.HumanReadableDataTypes;
+import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
 
 import java.util.HashMap;

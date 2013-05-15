@@ -5,9 +5,9 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public interface ScenarioEditorView

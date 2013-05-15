@@ -21,12 +21,12 @@
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
 
   <!--Common Screens -->
-  <inherits name="org.kie.workbench.screens.explorer.KieWorkbenchProjectExplorerClient"/>
-  <inherits name="org.kie.workbench.screens.search.KieWorkbenchSearchScreenClient"/>
-  <inherits name="org.kie.workbench.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
+  <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
+  <inherits name="org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenClient"/>
+  <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
 
   <!-- Common Services -->
-  <inherits name='org.kie.workbench.services.KieWorkbenchCommonServicesAPI'/>
+  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>

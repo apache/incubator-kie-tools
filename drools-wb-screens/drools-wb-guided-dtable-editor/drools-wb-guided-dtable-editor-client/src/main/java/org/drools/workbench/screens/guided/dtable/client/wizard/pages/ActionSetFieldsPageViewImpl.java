@@ -58,8 +58,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionSetFieldCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionSetFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
-import org.kie.workbench.widgets.common.client.resources.WizardCellListResources;
-import org.kie.workbench.widgets.common.client.resources.WizardResources;
+import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
+import org.kie.workbench.common.widgets.client.resources.WizardResources;
 
 /**
  * An implementation of the ActionSetFields page

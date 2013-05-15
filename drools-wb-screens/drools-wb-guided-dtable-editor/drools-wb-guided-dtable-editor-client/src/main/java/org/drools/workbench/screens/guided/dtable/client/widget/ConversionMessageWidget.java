@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.widgets.common.client.widget.WidthCalculator;
+import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
 import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 

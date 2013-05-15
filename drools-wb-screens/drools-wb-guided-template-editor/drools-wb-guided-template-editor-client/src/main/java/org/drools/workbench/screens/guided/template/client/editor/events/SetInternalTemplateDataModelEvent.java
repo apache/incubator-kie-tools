@@ -20,9 +20,9 @@ import java.util.List;
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateDataColumn;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 
 /**
  * An event to set the internal model for the Template Data grid

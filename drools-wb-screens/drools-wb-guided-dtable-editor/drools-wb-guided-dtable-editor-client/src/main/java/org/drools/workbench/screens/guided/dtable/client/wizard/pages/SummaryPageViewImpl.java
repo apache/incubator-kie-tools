@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
-import org.kie.workbench.widgets.common.client.resources.WizardResources;
+import org.kie.workbench.common.widgets.client.resources.WizardResources;
 import org.uberfire.backend.vfs.Path;
 
 /**

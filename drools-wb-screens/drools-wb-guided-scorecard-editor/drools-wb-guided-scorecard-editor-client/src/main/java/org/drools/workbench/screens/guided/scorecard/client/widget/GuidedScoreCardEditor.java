@@ -52,7 +52,7 @@ import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Constants;
-import org.kie.workbench.widgets.common.client.widget.TextBoxFactory;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.DecoratedDisclosurePanel;

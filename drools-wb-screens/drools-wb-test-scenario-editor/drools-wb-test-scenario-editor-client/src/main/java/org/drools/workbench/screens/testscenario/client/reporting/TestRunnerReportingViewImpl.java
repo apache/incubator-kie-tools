@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
 import org.drools.workbench.screens.testscenario.model.Failure;
-import org.kie.workbench.widgets.common.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 public class TestRunnerReportingViewImpl
         extends Composite

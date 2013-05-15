@@ -78,7 +78,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageR
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
-import org.kie.workbench.widgets.common.client.workitems.IBindingProvider;
+import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.AddButton;

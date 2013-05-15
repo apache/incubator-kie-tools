@@ -20,7 +20,7 @@ import java.util.List;
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.InsertColumnEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertColumnEvent;
 
 /**
  * An event to insert a Decision Table column

@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
-import org.kie.workbench.widgets.common.client.resources.CommonImages;
-import org.kie.workbench.widgets.common.client.widget.WidthCalculator;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
 
 /**
  * A widget to display a single conversion result message

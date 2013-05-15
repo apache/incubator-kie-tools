@@ -21,7 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.uberfire.backend.vfs.Path;

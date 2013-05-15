@@ -40,10 +40,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor.ValueHolder;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A utility class to get the values of all Constraints\Actions in the scope of

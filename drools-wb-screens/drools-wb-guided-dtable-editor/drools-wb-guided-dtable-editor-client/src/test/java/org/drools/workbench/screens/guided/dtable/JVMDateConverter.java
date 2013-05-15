@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable;
 
-import org.kie.workbench.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
 import org.kie.guvnor.datamodel.model.DateConverter;
 
 import java.text.ParseException;

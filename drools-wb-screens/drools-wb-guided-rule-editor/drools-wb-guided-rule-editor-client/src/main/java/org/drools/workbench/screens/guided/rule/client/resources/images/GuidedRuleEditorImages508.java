@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.rule.client.resources.images;
 
 import com.google.gwt.user.client.ui.Image;
-import org.kie.workbench.widgets.common.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 

@@ -21,7 +21,7 @@
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="images" type="org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources" />
-  <ui:with field="i18nCommon" type="org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
   <g:VerticalPanel width="100%">
       <b:ButtonToolbar>

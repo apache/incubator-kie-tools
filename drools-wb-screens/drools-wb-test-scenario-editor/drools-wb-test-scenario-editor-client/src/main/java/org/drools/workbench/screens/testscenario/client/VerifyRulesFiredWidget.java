@@ -38,8 +38,8 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.workbench.widgets.common.client.resources.CommonAltedImages;
-import org.kie.workbench.widgets.common.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 

@@ -42,8 +42,8 @@ import org.kie.guvnor.datamodel.model.ModelField;
 import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.services.shared.config.ApplicationPreferences;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static junit.framework.Assert.*;
 

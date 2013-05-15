@@ -18,11 +18,11 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CopyPasteContextMenu;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.RowMapper;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractVerticalDecoratedGridSidebarWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CopyPasteContextMenu;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.RowMapper;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 
 /**
  * A "sidebar" for a vertical Template Data editor

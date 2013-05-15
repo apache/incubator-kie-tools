@@ -32,8 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.workbench.widgets.common.client.resources.ItemAltedImages;
-import org.kie.workbench.widgets.metadata.client.resources.Images;
+import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
+import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.uberfire.client.common.FormStylePopup;
 
 public class ConfigWidget extends Composite {

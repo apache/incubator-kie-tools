@@ -14,10 +14,10 @@ import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourc
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.workbench.widgets.common.client.handlers.DefaultNewResourceHandler;
-import org.kie.workbench.widgets.common.client.handlers.NewResourcePresenter;
-import org.kie.workbench.widgets.common.client.widget.AttachmentFileWidget;
-import org.kie.workbench.widgets.common.client.widget.BusyIndicatorView;
+import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
+import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;

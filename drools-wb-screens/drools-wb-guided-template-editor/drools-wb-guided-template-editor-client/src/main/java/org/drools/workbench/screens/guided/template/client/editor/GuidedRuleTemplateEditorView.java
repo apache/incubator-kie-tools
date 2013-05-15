@@ -3,7 +3,7 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 

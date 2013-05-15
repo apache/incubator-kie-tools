@@ -41,12 +41,12 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.Popu
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractCellFactory;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.cells.RowNumberCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.RowNumberCell;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.

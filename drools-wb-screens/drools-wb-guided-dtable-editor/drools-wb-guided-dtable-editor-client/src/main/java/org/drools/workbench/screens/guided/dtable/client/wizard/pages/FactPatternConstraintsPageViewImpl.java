@@ -64,8 +64,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Cond
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.workbench.widgets.common.client.resources.WizardCellListResources;
-import org.kie.workbench.widgets.common.client.resources.WizardResources;
+import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
+import org.kie.workbench.common.widgets.client.resources.WizardResources;
 
 /**
  * An implementation of the Fact Patterns Constraints page

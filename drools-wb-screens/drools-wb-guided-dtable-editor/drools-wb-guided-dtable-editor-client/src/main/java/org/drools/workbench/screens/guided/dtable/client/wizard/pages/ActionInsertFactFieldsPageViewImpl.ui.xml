@@ -23,8 +23,8 @@
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants" />
   <ui:with field="ufImages" type="org.uberfire.client.resources.CommonImages" />
-  <ui:with field="images" type="org.kie.workbench.widgets.common.client.resources.CommonImages" />
-  <ui:with field="res" type="org.kie.workbench.widgets.common.client.resources.WizardResources" />
+  <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages" />
+  <ui:with field="res" type="org.kie.workbench.common.widgets.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">
     <gwt:HorizontalPanel ui:field="msgDuplicateBindings" styleName="{res.css.wizardDTableMessageContainer}" visible="false">

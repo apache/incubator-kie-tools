@@ -26,8 +26,8 @@ import javax.inject.Named;
 
 import org.drools.core.process.core.WorkDefinition;
 import org.kie.commons.io.IOService;
-import org.kie.guvnor.services.backend.file.FileDiscoveryService;
-import org.kie.guvnor.services.backend.file.FileExtensionFilter;
+import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
+import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

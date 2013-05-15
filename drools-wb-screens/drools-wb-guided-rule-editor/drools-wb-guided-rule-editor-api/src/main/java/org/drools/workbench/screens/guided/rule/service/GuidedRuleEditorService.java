@@ -19,14 +19,14 @@ package org.drools.workbench.screens.guided.rule.service;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.services.shared.file.SupportsCopy;
-import org.kie.workbench.services.shared.file.SupportsCreate;
-import org.kie.workbench.services.shared.file.SupportsDelete;
-import org.kie.workbench.services.shared.file.SupportsRead;
-import org.kie.workbench.services.shared.file.SupportsRename;
-import org.kie.workbench.services.shared.file.SupportsUpdate;
-import org.kie.workbench.services.shared.source.ViewSourceService;
-import org.kie.workbench.services.shared.validation.ValidationService;
+import org.kie.workbench.common.services.shared.file.SupportsCopy;
+import org.kie.workbench.common.services.shared.file.SupportsCreate;
+import org.kie.workbench.common.services.shared.file.SupportsDelete;
+import org.kie.workbench.common.services.shared.file.SupportsRead;
+import org.kie.workbench.common.services.shared.file.SupportsRename;
+import org.kie.workbench.common.services.shared.file.SupportsUpdate;
+import org.kie.workbench.common.services.shared.source.ViewSourceService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

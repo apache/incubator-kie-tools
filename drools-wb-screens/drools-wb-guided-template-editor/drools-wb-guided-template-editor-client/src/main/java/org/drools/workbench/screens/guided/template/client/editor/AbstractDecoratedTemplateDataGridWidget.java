@@ -24,15 +24,15 @@ import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetTemplateDataEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractMergableGridWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridSidebarWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractMergableGridWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 
 /**
  * A Decorated Grid for Template Data

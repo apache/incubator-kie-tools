@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.core.process.core.WorkDefinition;
-import org.kie.guvnor.services.backend.file.FileExtensionFilter;
+import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;

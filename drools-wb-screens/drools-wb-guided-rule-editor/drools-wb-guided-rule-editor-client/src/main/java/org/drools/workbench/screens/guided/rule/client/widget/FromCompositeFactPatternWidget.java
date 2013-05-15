@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
 import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.kie.workbench.widgets.common.client.resources.HumanReadable;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;

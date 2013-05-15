@@ -39,9 +39,9 @@ import org.drools.workbench.screens.testscenario.client.resources.images.AuditEv
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.workbench.widgets.errors.client.resources.ImageResources;
+import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.errors.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;

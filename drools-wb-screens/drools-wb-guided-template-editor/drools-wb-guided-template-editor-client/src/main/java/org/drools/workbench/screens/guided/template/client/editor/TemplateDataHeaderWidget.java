@@ -44,14 +44,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetInternalTemplateDataModelEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.SortConfiguration;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.SortDirection;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SortDataEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortConfiguration;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortDirection;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SortDataEvent;
 
 /**
  * Header for a Vertical Decision Table

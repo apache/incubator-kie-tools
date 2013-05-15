@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.drltext.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 
 public interface DRLEditorView extends HasBusyIndicator,

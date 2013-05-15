@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
-import org.kie.workbench.widgets.common.client.resources.CommonAltedImages;
+import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.drools.workbench.models.testscenarios.shared.Field;
 
 public class FieldSelectorWidget

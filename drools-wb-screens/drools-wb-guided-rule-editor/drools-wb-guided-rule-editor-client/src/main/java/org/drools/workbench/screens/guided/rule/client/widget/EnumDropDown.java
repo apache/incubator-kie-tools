@@ -29,7 +29,7 @@ import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.guvnor.commons.data.factconstraints.util.ConstraintValueEditorHelper;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.DropDownValueChanged;

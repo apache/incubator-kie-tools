@@ -19,9 +19,9 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:guvnor='urn:import:org.drools.workbench.screens.testscenario.client'>
 
-  <ui:with field="i18n" type="org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
-  <ui:with field='images' type='org.kie.workbench.widgets.common.client.resources.CommonImages'/>
+  <ui:with field='images' type='org.kie.workbench.common.widgets.client.resources.CommonImages'/>
 
   <gwt:HorizontalPanel>
     <guvnor:FieldDataConstraintEditor ui:field="fieldDataConstraintEditor"/>

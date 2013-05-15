@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.enums.client.resources.i18n.Constants;
 import org.drools.workbench.screens.enums.client.widget.DeleteButtonCellWidget;
-import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 
 public class EnumEditorViewImpl extends Composite implements EnumEditorView {

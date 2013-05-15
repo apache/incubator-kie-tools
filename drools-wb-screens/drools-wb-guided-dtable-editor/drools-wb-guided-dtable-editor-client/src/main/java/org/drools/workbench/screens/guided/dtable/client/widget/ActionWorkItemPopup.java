@@ -41,8 +41,8 @@ import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefiniti
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.workbench.widgets.common.client.workitems.IBindingProvider;
-import org.kie.workbench.widgets.common.client.workitems.WorkItemParametersWidget;
+import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
+import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;

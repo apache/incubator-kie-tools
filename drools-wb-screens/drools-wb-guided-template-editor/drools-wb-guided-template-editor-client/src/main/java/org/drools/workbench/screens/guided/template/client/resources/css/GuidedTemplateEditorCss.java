@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.template.client.resources.css;
 
-import org.kie.workbench.widgets.decoratedgrid.client.resources.GridResources;
+import org.kie.workbench.common.widgets.decoratedgrid.client.resources.GridResources;
 
 /**
  * CSS for Guided Template Editor

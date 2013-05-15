@@ -71,17 +71,17 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.DynamicColumn;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.SortConfiguration;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.events.SortDataEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortConfiguration;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SortDataEvent;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.kie.workbench.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
 
 /**
  * Header for a Vertical Decision Table

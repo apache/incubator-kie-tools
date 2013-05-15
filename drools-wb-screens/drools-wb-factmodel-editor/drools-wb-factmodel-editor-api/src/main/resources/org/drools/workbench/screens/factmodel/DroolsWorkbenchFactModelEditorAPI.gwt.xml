@@ -24,7 +24,7 @@
 
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
 
-  <inherits name='org.kie.workbench.services.KieWorkbenchCommonServicesAPI'/>
+  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
 
   <source path="model"/>
   <source path="service"/>

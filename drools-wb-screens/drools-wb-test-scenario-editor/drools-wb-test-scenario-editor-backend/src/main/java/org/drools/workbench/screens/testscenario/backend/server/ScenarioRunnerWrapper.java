@@ -8,7 +8,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieSession;
-import org.kie.workbench.services.shared.exceptions.GenericPortableException;
+import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
 
 public class ScenarioRunnerWrapper {
 

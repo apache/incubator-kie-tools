@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import org.drools.workbench.screens.guided.template.client.resources.GuidedTemplateEditorResources;
-import org.kie.workbench.widgets.decoratedgrid.client.widget.ResourcesProvider;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
 
 /**
  *
