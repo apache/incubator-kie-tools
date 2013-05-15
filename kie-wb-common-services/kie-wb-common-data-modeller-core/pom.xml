@@ -22,15 +22,11 @@
     <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
-      <!--version>1.7</version-->
-      <!-- WM TODO check how to remove this version number that allready exists in droolsjbpm-parent pom -->
-      <version>1.6.4</version>
     </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.4</version>
     </dependency>
 
     <dependency>
