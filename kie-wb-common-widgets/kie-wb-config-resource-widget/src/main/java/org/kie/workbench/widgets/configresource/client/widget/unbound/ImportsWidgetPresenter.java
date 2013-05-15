@@ -16,26 +16,26 @@
 
 package org.kie.workbench.widgets.configresource.client.widget.unbound;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
-import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
-import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.ProjectImports;
 import org.kie.guvnor.project.service.ProjectService;
-import org.kie.guvnor.services.metadata.model.Metadata;
-import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
+import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
+import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
-import javax.enterprise.event.Event;
-
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
