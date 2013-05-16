@@ -20,12 +20,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-project-editor</artifactId>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-project-editor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-project-editor-backend</artifactId>
+  <artifactId>kie-wb-project-editor-backend</artifactId>
   <packaging>jar</packaging>
 
   <name>Project Editor Backend</name>
@@ -39,8 +39,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-editor-api</artifactId>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-project-editor-api</artifactId>
     </dependency>
 
     <dependency>

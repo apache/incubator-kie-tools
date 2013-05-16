@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.guvnor</groupId>
-    <artifactId>guvnor-editors</artifactId>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>guvnor-project-editor</artifactId>
+  <artifactId>kie-wb-project-editor</artifactId>
   <packaging>pom</packaging>
 
   <modules>
-    <module>guvnor-project-editor-api</module>
-    <module>guvnor-project-editor-client</module>
-    <module>guvnor-project-editor-backend</module>
+    <module>kie-wb-project-editor-api</module>
+    <module>kie-wb-project-editor-client</module>
+    <module>kie-wb-project-editor-backend</module>
   </modules>
 
   <dependencies>

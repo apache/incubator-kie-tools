@@ -21,7 +21,7 @@ import java.util.Set;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.commons.service.builder.BuildService;
+import org.kie.workbench.services.shared.builder.BuildService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ResourceChange;
 

@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:editor='urn:import:org.kie.guvnor.projecteditor.client.forms'
+             xmlns:editor='urn:import:org.kie.workbench.projecteditor.client.forms'
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.kie.workbench.projecteditor.client.resources.i18n.ProjectEditorConstants"/>

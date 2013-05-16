@@ -9,7 +9,7 @@ import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWid
 import org.kie.workbench.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.workbench.widgets.common.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditorView;

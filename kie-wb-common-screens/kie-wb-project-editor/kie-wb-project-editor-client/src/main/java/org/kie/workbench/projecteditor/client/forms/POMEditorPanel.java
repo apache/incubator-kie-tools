@@ -27,7 +27,7 @@ import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefault
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.workbench.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 

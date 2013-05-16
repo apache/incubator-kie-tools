@@ -3,7 +3,7 @@ package org.kie.workbench.projectimportsscreen.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.guvnor.services.metadata.model.Metadata;
+import org.kie.workbench.services.shared.metadata.model.Metadata;
 
 public interface ProjectImportsScreenView extends HasBusyIndicator,
         IsWidget {

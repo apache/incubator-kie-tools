@@ -20,7 +20,6 @@
 <module>
 
   <source path="client"/>
-  <source path="service"/>
 
   <!-- Inherit the core Web Toolkit stuff. -->
   <inherits name="com.google.gwt.i18n.I18N"/>
@@ -32,9 +31,9 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
-  <inherits name='org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenAPI'/>
+  <inherits name='org.kie.workbench.projectimportsscreen.GuvnorProjectConfigScreenAPI'/>
   <inherits name='org.kie.guvnor.project.GuvnorProjectAPI'/>
-  <inherits name='org.kie.guvnor.commons.service.GuvnorCommonsServicesAPI'/>
+  <inherits name='org.kie.workbench.services.KieWorkbenchCommonServicesAPI'/>
 
   <inherits name="org.kie.workbench.widgets.common.KieWorkbenchWidgetsCommon"/>
   <inherits name="org.kie.guvnor.commons.data.GuvnorCommonsData"/>
