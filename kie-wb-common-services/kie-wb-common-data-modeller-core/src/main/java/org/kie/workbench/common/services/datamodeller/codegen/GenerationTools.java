@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.codegen;
 
+import org.apache.commons.lang.StringUtils;
 import org.kie.workbench.common.services.datamodeller.annotations.Equals;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class GenerationTools {
         return buf.toString();
     }
 
+/*
     public String toJavaClass(String name) {
 
         return toJavaName(name, true);
@@ -54,15 +56,16 @@ public class GenerationTools {
 
         return toJavaName(name, false);
     }
+*/
 
     public String toJavaGetter(String name) {
 
-        return "get" + toJavaName(name, true);
+        return "get" + StringUtils.capitalize(name);
     }
 
     public String toJavaSetter(String name) {
 
-        return "set" + toJavaName(name, true);
+        return "set" + StringUtils.capitalize(name);
     }
 
     private String toJavaName(String name, boolean firstLetterIsUpperCase) {
@@ -92,7 +95,7 @@ public class GenerationTools {
     }
 
     public String toJavaVar(String name) {
-        return toJavaName(name, false);
+        return name;
     }
 
     public String getFilePath(String packageName, String simpleClassName, String extension) {
