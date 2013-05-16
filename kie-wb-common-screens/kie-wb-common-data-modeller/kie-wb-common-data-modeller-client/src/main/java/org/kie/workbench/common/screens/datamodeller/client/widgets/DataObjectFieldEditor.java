@@ -44,6 +44,7 @@ import org.kie.workbench.common.screens.datamodeller.client.validation.Validator
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
