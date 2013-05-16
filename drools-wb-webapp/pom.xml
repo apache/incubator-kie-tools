@@ -140,23 +140,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-editor-client</artifactId>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-project-editor-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-editor-backend</artifactId>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-project-editor-backend</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-config-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-config-editor-backend</artifactId>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-project-imports-editor-client</artifactId>
     </dependency>
 
     <dependency>
@@ -591,6 +586,10 @@
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-imports-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
 
             <!-- Models for drools-wb -->
@@ -632,9 +631,8 @@
             <!-- To be refactored - Common\shared stuff -->
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
 
             <!-- Kie Commons -->
             <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
