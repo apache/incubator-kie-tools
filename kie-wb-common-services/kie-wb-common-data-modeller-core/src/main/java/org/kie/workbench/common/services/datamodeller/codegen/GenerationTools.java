@@ -31,6 +31,7 @@ public class GenerationTools {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerationTools.class);
     private static final String TAB = "    ";
+    private static final String EOL = System.getProperty("line.separator");
     
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
@@ -206,51 +207,83 @@ public class GenerationTools {
         return type.toString();
     }
 
-    public String resolveEquals(DataObject dataObject) {
-        StringBuilder sb = new StringBuilder();
+    public String resolveEquals(DataObject dataObject, String indent) {
+        
+        StringBuilder head = new StringBuilder();
+        head.append(EOL);
+        head.append(indent + "@Override" + EOL);
+        head.append(indent + "public boolean equals(Object o) {" + EOL);
+        head.append(indent + TAB + "if (this == o) return true;" + EOL);
+        head.append(indent + TAB + "if (o == null || getClass() != o.getClass()) return false;" + EOL);
+        head.append(indent + TAB + dataObject.getClassName() + " that = ("+ dataObject.getClassName() + ")o;" + EOL);
 
+        StringBuilder end = new StringBuilder();
+        end.append(indent + "}" + EOL);
+
+        StringBuilder sb = new StringBuilder();
         Map<String, ObjectProperty> props = dataObject.getProperties();
 
+        boolean hasTerms = false;
         if (props != null && props.size() > 0) {
-            sb.append("\n").append(TAB).append(TAB);
             for(String propName : props.keySet()) {
                 ObjectProperty prop = props.get(propName);
                 String _propName = toJavaVar(propName);
                 if (prop.getAnnotation(Equals.class.getName()) != null) {
                     // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
-                    sb.append("if (");
+                    sb.append(indent + TAB + "if (");
                     sb.append(_propName).append(" != null ? !").append(_propName).append(".equals(that.").append(_propName).append(")");
                     sb.append(" : that.").append(_propName).append(" != null").append(") return false;");
-                    sb.append("\n").append(TAB).append(TAB);
+                    sb.append(EOL);
+                    hasTerms = true;
                 }
             }
-            sb.append("\n").append(TAB).append(TAB).append("return true;");
-        } else {
-            sb.append(TAB).append(TAB).append("return super.equals(o)");
         }
-        return sb.toString();
+
+        if (hasTerms) {
+            sb.append(indent + TAB + "return true;" + EOL);
+            head.append(sb);
+            head.append(end);
+            return head.toString();
+        } else {
+            return EOL;
+        }
     }
 
-    public String resolveHashCode(DataObject dataObject) {
-        StringBuilder sb = new StringBuilder();
+    public String resolveHashCode(DataObject dataObject, String indent) {
 
+        StringBuilder head = new StringBuilder();
+        head.append(EOL);
+        head.append(indent + "@Override" + EOL);
+        head.append(indent + "public int hashCode() {" + EOL);
+        head.append(indent + TAB + "int result = 17;" + EOL);
+
+        StringBuilder end = new StringBuilder();
+        end.append(indent + "}" + EOL);
+
+        StringBuilder sb = new StringBuilder();
         Map<String, ObjectProperty> props = dataObject.getProperties();
 
+        boolean hasTerms = false;
         if (props != null && props.size() > 0) {
-            sb.append("\n").append(TAB).append(TAB);
             for(String propName : props.keySet()) {
                 ObjectProperty prop = props.get(propName);
                 String _propName = toJavaVar(propName);
                 if (prop.getAnnotation(Equals.class.getName()) != null) {
                     // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
-                    sb.append("result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
-                    sb.append("\n").append(TAB).append(TAB);
+                    sb.append(indent + TAB + "result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
+                    sb.append(EOL);
+                    hasTerms = true;
                 }
             }
-            sb.append("\n").append(TAB).append(TAB).append("return result;");
-        } else {
-            sb.append(TAB).append(TAB).append("return super.hashCode()");
         }
-        return sb.toString();
+
+        if (hasTerms) {
+            sb.append(indent + TAB + "return result;" + EOL);
+            head.append(sb);
+            head.append(end);
+            return head.toString();
+        } else {
+            return EOL;
+        }
     }
 }

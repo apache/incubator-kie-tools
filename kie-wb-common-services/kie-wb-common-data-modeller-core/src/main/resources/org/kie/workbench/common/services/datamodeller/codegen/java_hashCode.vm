@@ -1,6 +1,1 @@
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        $nameTool.resolveHashCode($context.currentDataObject)
-    }
+$nameTool.resolveHashCode($context.currentDataObject, "    ")
