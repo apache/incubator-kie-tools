@@ -116,8 +116,6 @@ public class DataModelerServiceImpl implements DataModelerService {
             //Objects read from persistent .java format are tagged as PERSISTENT objects
             DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To(dataModel, DataObjectTO.PERSISTENT);
 
-            //TODO remove this guarrada
-            dataModelTO.setExternalClasses(Arrays.asList("java.lang.ref.PhantomReference", "java.util.regex.Matcher"));
             return dataModelTO;
 
         } catch (Exception e) {
