@@ -23,8 +23,6 @@
 
   <inherits name='org.uberfire.UberfireBackend'/>
 
-  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
-
   <source path='shared'/>
 
 </module>
