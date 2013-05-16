@@ -23,6 +23,8 @@
     <module>kie-wb-common-security</module>
     <module>kie-wb-common-builder</module>
     <module>kie-wb-common-data</module>
+    <module>kie-wb-common-workingset-api</module>
+    <module>kie-wb-common-workingset-client</module>
   </modules>
 
 </project>
