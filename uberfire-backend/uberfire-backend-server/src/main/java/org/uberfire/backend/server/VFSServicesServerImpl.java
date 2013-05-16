@@ -154,13 +154,6 @@ public class VFSServicesServerImpl implements VFSService {
         return paths.convert( ioService.write( paths.convert( path ), content, attrs ) );
     }
 
-    @Override
-    public FileSystem newFileSystem( final String uri,
-                                     final Map<String, Object> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        final URI furi = URI.create( uri );
-        return paths.convert( ioService.newFileSystem( furi, env ) );
-    }
-
     private DirectoryStream<Path> newDirectoryStream( final Iterator<org.kie.commons.java.nio.file.Path> iterator ) {
         final List<Path> content = new LinkedList<Path>();
         while ( iterator.hasNext() ) {

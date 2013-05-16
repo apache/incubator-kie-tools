@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.VFSService;
@@ -98,15 +99,15 @@ public class RepositoriesPresenter {
         return view;
     }
 
-    public void newRootDirectory( @Observes final Repository repo ) {
+    public void newRepository( @Observes final NewRepositoryEvent event ) {
         vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback( Map response ) {
-                view.addRepository( repo.getAlias(),
-                                    repo.getUri(),
+                view.addRepository( event.getNewRepository().getAlias(),
+                                    event.getNewRepository().getUri(),
                                     "[empty]",
-                                    repo.getRoot().toURI() );
+                                    event.getNewRepository().getRoot().toURI() );
             }
-        } ).readAttributes( repo.getRoot() );
+        } ).readAttributes( event.getNewRepository().getRoot() );
     }
 }

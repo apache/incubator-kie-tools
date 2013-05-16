@@ -94,8 +94,4 @@ public interface VFSService {
                 final String content,
                 final Map<String, ?> attrs )
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
-
-    FileSystem newFileSystem( final String uri,
-                              final Map<String, Object> env )
-            throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
 }

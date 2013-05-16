@@ -8,15 +8,22 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.repositories.git.GitRepository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.backend.server.config.ConfigType.*;
 import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
@@ -24,6 +31,10 @@ import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
 @Service
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private ConfigurationService configurationService;
@@ -50,6 +61,16 @@ public class RepositoryServiceImpl implements RepositoryService {
                 configuredRepositoriesList.add( repository );
             }
         }
+
+        ioService.onNewFileSystem( new IOService.NewFileSystemListener() {
+            @Override
+            public void execute( final FileSystem newFileSystem,
+                                 final String scheme,
+                                 final String name,
+                                 final Map<String, ?> env ) {
+                createRepository( scheme, name, (Map<String, Object>) env );
+            }
+        } );
     }
 
     @Override
