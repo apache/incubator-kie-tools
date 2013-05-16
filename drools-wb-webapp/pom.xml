@@ -562,12 +562,6 @@
           <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
-            <!-- Drools -->
-            <compileSourcesArtifact>org.drools:drools-workbench-models-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-dtable</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-scorecard</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-template</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-workbench-models-test-scenarios</compileSourcesArtifact>
 
             <!-- Guvnor -->
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>
@@ -575,29 +569,33 @@
             <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
 
-            <!-- Kie Workbench Commons -->
+            <!-- Common dependencies -->
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-view-source-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-error-messages-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-security</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-client</compileSourcesArtifact>
 
-            <!-- Kie Commons -->
-            <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
+            <!-- Models for drools-wb -->
+            <compileSourcesArtifact>org.drools:drools-workbench-models-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-dtable</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-scorecard</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-guided-template</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-workbench-models-test-scenarios</compileSourcesArtifact>
 
-            <!-- Drools Workbench -->
+            <!-- drools-wb -->
             <compileSourcesArtifact>org.drools:drools-wb-categories-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-enum-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-enum-editor-client</compileSourcesArtifact>
@@ -634,6 +632,11 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
+
+            <!-- Kie Commons -->
+            <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
