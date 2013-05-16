@@ -41,14 +41,16 @@ public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
         IsWidget {
 
-    private final ImportsWidgetView view;
-    private final FormPopup addImportPopup;
-    private final Caller<ProjectService> projectService;
-    private final Event<NotificationEvent> notification;
+    private ImportsWidgetView view;
+    private FormPopup addImportPopup;
+    private Caller<ProjectService> projectService;
+    private Event<NotificationEvent> notification;
 
     private Imports resourceImports;
     private Path path;
     private ProjectImports projectImports;
+
+    public ImportsWidgetPresenter(){}
 
     @Inject
     public ImportsWidgetPresenter(final ImportsWidgetView view,

@@ -38,15 +38,18 @@ public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
                    IsWidget {
 
-    private final ImportsWidgetView view;
-    private final FormListPopup addImportPopup;
+    private ImportsWidgetView view;
+    private FormListPopup addImportPopup;
 
-    private final Event<ImportAddedEvent> importAddedEvent;
-    private final Event<ImportRemovedEvent> importRemovedEvent;
+    private Event<ImportAddedEvent> importAddedEvent;
+    private Event<ImportRemovedEvent> importRemovedEvent;
 
     private PackageDataModelOracle oracle;
     private Imports resourceImports;
     private List<Pair<String, String>> imports;
+    
+    public ImportsWidgetPresenter( ) {
+    } 
 
     @Inject
     public ImportsWidgetPresenter( final ImportsWidgetView view,
