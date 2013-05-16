@@ -45,6 +45,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import java.lang.String;
 
 public class DataObjectEditor extends Composite {
 
@@ -176,7 +177,8 @@ public class DataObjectEditor extends Composite {
 
             annotation = dataObject.getAnnotation(AnnotationDefinitionTO.ROLE_ANNOTATION);
             if (annotation != null) {
-                roleSelector.setSelectedValue(annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString());
+                String value = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM) != null ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : NOT_SELECTED;
+                roleSelector.setSelectedValue(value);
             }
         }
     }
