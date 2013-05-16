@@ -299,29 +299,33 @@ public class DataObjectBrowser extends Composite {
 
     private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyType, final boolean multiple, final boolean baseType) {
 
-        validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
-            }
+        if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
+            validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
+                @Override
+                public void onFailure() {
+                    ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
+                }
 
-            @Override
-            public void onSuccess() {
-                validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
-                    @Override
-                    public void onFailure() {
-                        ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
-                    }
+                @Override
+                public void onSuccess() {
+                    validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
+                        @Override
+                        public void onFailure() {
+                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
+                        }
 
-                    @Override
-                    public void onSuccess() {
-                        ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
-                        addDataObjectProperty(property);
-                    }
-                });
-            }
-        });
-        resetInput();
+                        @Override
+                        public void onSuccess() {
+                            ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
+                            addDataObjectProperty(property);
+                            resetInput();
+                        }
+                    });
+                }
+            });
+        } else {
+            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
+        }
     }
     
     private void setDataObject(DataObjectTO dataObject) {
@@ -433,7 +437,11 @@ public class DataObjectBrowser extends Composite {
 
     @UiHandler("newPropertyButton")
     void newPropertyClick(ClickEvent event) {
-        createNewProperty(dataObject, newPropertyName.getText(), newPropertyType.getValue(), newPropertyIsMultiple.getValue(), newPropertyBasicType.getValue());
+        createNewProperty(  dataObject,
+                            DataModelerUtils.getInstance().unCapitalize(newPropertyName.getText()),
+                            newPropertyType.getValue(),
+                            newPropertyIsMultiple.getValue(),
+                            newPropertyBasicType.getValue() );
     }
 
     @UiHandler("newPropertyDataObjectType")
@@ -477,6 +485,13 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
         if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+        // When all objects from current model have been deleted clean
+        if (getDataModel().getDataObjects().size() == 0) {
+            dataObjectPropertiesProvider.getList().clear();
+            dataObjectPropertiesProvider.flush();
+            dataObjectPropertiesProvider.refresh();
+            dataObjectPropertiesTable.redraw();
+        }
     }
 
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {

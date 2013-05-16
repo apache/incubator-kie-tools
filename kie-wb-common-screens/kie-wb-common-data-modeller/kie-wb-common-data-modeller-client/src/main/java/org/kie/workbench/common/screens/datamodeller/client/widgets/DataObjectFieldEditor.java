@@ -58,8 +58,6 @@ public class DataObjectFieldEditor extends Composite {
 
     };
 
-    public static final String NOT_SELECTED = "NOT_SELECTED";
-
     private static DataObjectFieldEditorUIBinder uiBinder = GWT.create(DataObjectFieldEditorUIBinder.class);
 
     @UiField
@@ -217,10 +215,11 @@ public class DataObjectFieldEditor extends Composite {
         ep.setValueWidget(name);
 
         final String oldValue = getObjectField().getName();
-        final String newValue = name.getValue();
+        final String newValue = DataModelerUtils.getInstance().unCapitalize(name.getValue());
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
-        if (oldValue.equalsIgnoreCase(newValue)) {
+        if (oldValue.equalsIgnoreCase(name.getValue())) {
+            name.setText(oldValue);
             titleLabel.setStyleName(null);
             return;
         }
@@ -355,7 +354,6 @@ public class DataObjectFieldEditor extends Composite {
 
     private void initTypeList() {
         typeSelector.clear();
-        typeSelector.addItem("", NOT_SELECTED);
 
         SortedSet<String> typeNames = new TreeSet<String>();
         if (getDataModel() != null) {
@@ -399,7 +397,7 @@ public class DataObjectFieldEditor extends Composite {
         name.setText(null);
         label.setText(null);
         description.setText(null);
-        typeSelector.setSelectedValue(NOT_SELECTED);
+        typeSelector.setSelectedValue(null);
         equalsSelector.setValue(Boolean.FALSE);
         positionLabel.setStyleName(null);
         positionText.setText(null);

@@ -115,6 +115,8 @@ public interface Constants extends Messages {
 
     public String modeler_callback_error(String localMessage, String excMessage);
 
+    public String validation_error_missing_object_attribute_type();
+
     public String validation_error_invalid_object_identifier(String name);
 
     public String validation_error_invalid_object_attribute_identifier(String attributeName);

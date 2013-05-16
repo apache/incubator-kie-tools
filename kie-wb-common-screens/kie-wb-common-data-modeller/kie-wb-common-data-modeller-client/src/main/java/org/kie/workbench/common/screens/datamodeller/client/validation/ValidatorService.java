@@ -80,8 +80,6 @@ public class ValidatorService {
         .evaluateIdentifiers(packageTerms);
     }
 
-
-    // Todo drop dependency on datamodel, all components (should) know which model is being treated
     public void isUniqueEntityName(String packageName, String name, DataModelTO model, ValidatorCallback callback) {
         Boolean b = Boolean.TRUE;
         String className = packageName != null ? packageName + "." + name : name;
