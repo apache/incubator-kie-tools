@@ -191,6 +191,11 @@
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-search-screen-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-search-screen-client</artifactId>
     </dependency>
 
