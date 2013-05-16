@@ -39,8 +39,7 @@ public class $className $nameTool.resolveSuperClassType($context.currentDataObje
     $engine.generateSetterGetter($context, $attr, "java_setter_getter")
 #end
 ## Generate equals
-    $engine.generateEquals($context, "java_equals")
+$engine.generateEquals($context, "java_equals")
 ## Generate hashCode
-    $engine.generateHashCode($context, "java_hashCode")
-
+$engine.generateHashCode($context, "java_hashCode")
 }

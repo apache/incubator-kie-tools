@@ -210,7 +210,7 @@ public class GenerationTools {
     public String resolveEquals(DataObject dataObject, String indent) {
         
         StringBuilder head = new StringBuilder();
-        head.append(EOL);
+        //head.append(EOL);
         head.append(indent + "@Override" + EOL);
         head.append(indent + "public boolean equals(Object o) {" + EOL);
         head.append(indent + TAB + "if (this == o) return true;" + EOL);
@@ -218,7 +218,7 @@ public class GenerationTools {
         head.append(indent + TAB + dataObject.getClassName() + " that = ("+ dataObject.getClassName() + ")o;" + EOL);
 
         StringBuilder end = new StringBuilder();
-        end.append(indent + "}" + EOL);
+        end.append(indent + "}");
 
         StringBuilder sb = new StringBuilder();
         Map<String, ObjectProperty> props = dataObject.getProperties();
@@ -245,20 +245,20 @@ public class GenerationTools {
             head.append(end);
             return head.toString();
         } else {
-            return EOL;
+            return "";
         }
     }
 
     public String resolveHashCode(DataObject dataObject, String indent) {
 
         StringBuilder head = new StringBuilder();
-        head.append(EOL);
+        //head.append(EOL);
         head.append(indent + "@Override" + EOL);
         head.append(indent + "public int hashCode() {" + EOL);
         head.append(indent + TAB + "int result = 17;" + EOL);
 
         StringBuilder end = new StringBuilder();
-        end.append(indent + "}" + EOL);
+        end.append(indent + "}");
 
         StringBuilder sb = new StringBuilder();
         Map<String, ObjectProperty> props = dataObject.getProperties();
@@ -283,7 +283,7 @@ public class GenerationTools {
             head.append(end);
             return head.toString();
         } else {
-            return EOL;
+            return "";
         }
     }
 }
