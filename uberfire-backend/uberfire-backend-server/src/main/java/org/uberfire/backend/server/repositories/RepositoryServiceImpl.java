@@ -88,7 +88,9 @@ public class RepositoryServiceImpl implements RepositoryService {
                                   final String alias,
                                   final Map<String, Object> env ) {
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
+        if ( !env.containsKey( SCHEME ) ) {
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
+        }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
             if ( entry.getKey().startsWith( "crypt:" ) ) {
                 repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(), entry.getValue().toString() ) );
