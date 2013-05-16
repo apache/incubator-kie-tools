@@ -646,7 +646,7 @@
           </compileSourcesArtifacts>
           <runTarget>org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</runTarget>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m</extraJvmArgs>
-shing           <!--<logLevel>DEBUG</logLevel>-->
+          <!--<logLevel>DEBUG</logLevel>-->
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
