@@ -24,10 +24,13 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.NewRepositoryEvent;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.AttrsUtil;
 import org.uberfire.backend.vfs.BasicFileAttributes;
 import org.uberfire.backend.vfs.DirectoryStream;
@@ -62,7 +65,7 @@ public class FileExplorerPresenter {
     private Caller<VFSService> vfsService;
 
     @Inject
-    private Caller<FileExplorerRootService> rootService;
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
     private Event<PathChangeEvent> pathChangedEvent;
@@ -78,9 +81,9 @@ public class FileExplorerPresenter {
 
         void reset();
 
-        void removeIfExists( final Root root );
+        void removeIfExists( final Repository repo );
 
-        void addNewRoot( final Root root );
+        void addNewRepository( final Repository repo );
     }
 
     public static interface FileExplorerItem {
@@ -101,15 +104,22 @@ public class FileExplorerPresenter {
 
         view.reset();
 
-        rootService.call( new RemoteCallback<Collection<Root>>() {
-            @Override
-            public void callback( Collection<Root> response ) {
-                for ( final Root root : response ) {
-                    view.removeIfExists( root );
-                    view.addNewRoot( root );
-                }
-            }
-        } ).listRoots();
+        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
+                                    @Override
+                                    public void callback( Collection<Repository> response ) {
+                                        for ( final Repository root : response ) {
+                                            view.removeIfExists( root );
+                                            view.addNewRepository( root );
+                                        }
+                                    }
+                                }, new ErrorCallback() {
+                                    @Override
+                                    public boolean error( Message message,
+                                                          Throwable throwable ) {
+                                        return false;
+                                    }
+                                }
+                              ).getRepositories();
     }
 
     public void loadDirectoryContent( final FileExplorerItem item,
@@ -177,14 +187,14 @@ public class FileExplorerPresenter {
         broadcastPathChange( null );
     }
 
-    public void redirect( Root root ) {
-        placeManager.goTo( root.getPlaceRequest() );
-        broadcastPathChange( root.getPath() );
+    public void redirect( final Repository repo ) {
+        placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", repo.getAlias() ) );
+        broadcastPathChange( repo.getRoot() );
     }
 
-    public void newRootDirectory( @Observes Root root ) {
-        view.removeIfExists( root );
-        view.addNewRoot( root );
+    public void newRootDirectory( @Observes NewRepositoryEvent event ) {
+        view.removeIfExists( event.getNewRepository() );
+        view.addNewRepository( event.getNewRepository() );
     }
 
     //Communicate change in context

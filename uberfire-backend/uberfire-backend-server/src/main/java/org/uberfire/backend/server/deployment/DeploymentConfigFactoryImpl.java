@@ -1,7 +1,6 @@
 package org.uberfire.backend.server.deployment;
 
 import org.uberfire.backend.deployment.DeploymentConfig;
-import org.uberfire.backend.deployment.DeploymentConfigFactory;
 import org.uberfire.backend.server.config.ConfigGroup;
 
 public class DeploymentConfigFactoryImpl implements DeploymentConfigFactory {

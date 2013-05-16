@@ -55,12 +55,10 @@ public class ActiveFileSystemsFactory {
             if ( repository.isValid() ) {
                 final Map<String, Object> env = new HashMap<String, Object>();
                 for ( Map.Entry<String, Object> e : repository.getEnvironment().entrySet() ) {
-                    env.put( e.getKey(),
-                             e.getValue() );
+                    env.put( e.getKey(), e.getValue() );
                 }
 
-                addFileSystem( repository,
-                               env );
+                addFileSystem( repository, env );
             }
         }
     }
@@ -73,16 +71,13 @@ public class ActiveFileSystemsFactory {
         final String alias = repository.getAlias();
 
         try {
-            fs = ioService.newFileSystem( fsURI,
-                                          env );
-
+            fs = ioService.newFileSystem( fsURI, env );
         } catch ( FileSystemAlreadyExistsException ex ) {
             fs = ioService.getFileSystem( fsURI );
         }
 
         fileSystems.addFileSystem( FileSystemFactory.newFS( new HashMap<String, String>() {{
-            put( scheme + "://" + alias,
-                 alias );
+            put( scheme + "://" + alias, alias );
         }}, fs.supportedFileAttributeViews() ) );
     }
 

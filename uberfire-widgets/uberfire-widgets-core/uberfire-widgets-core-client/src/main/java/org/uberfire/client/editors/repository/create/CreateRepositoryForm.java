@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -43,17 +42,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.bus.client.api.ErrorCallback;
+import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.vfs.FileSystem;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
-
-import static org.uberfire.backend.vfs.PathFactory.*;
 
 @Dependent
 public class CreateRepositoryForm
@@ -69,16 +63,7 @@ public class CreateRepositoryForm
     private static CreateRepositoryFormBinder uiBinder = GWT.create( CreateRepositoryFormBinder.class );
 
     @Inject
-    private Caller<VFSService> vfsService;
-
-    @Inject
-    private Caller<FileExplorerRootService> rootService;
-
-    @Inject
     private Caller<RepositoryService> repositoryService;
-
-    @Inject
-    private Event<Root> event;
 
     @UiField
     ControlGroup nameGroup;
@@ -138,39 +123,26 @@ public class CreateRepositoryForm
         final String password = passwordTextBox.getText();
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
         env.put( "username", username );
-        env.put( "password", password );
+        env.put( "crypt:password", password );
         env.put( "init", true );
-        final String uri = scheme + "://" + alias;
 
-        vfsService.call( new RemoteCallback<FileSystem>() {
-            @Override
-            public void callback( final FileSystem v ) {
-                Window.alert( "The repository is created successfully" );
-                hide();
+        repositoryService.call( new RemoteCallback<Repository>() {
+                                    @Override
+                                    public void callback( Repository o ) {
+                                        Window.alert( "The repository is created successfully" );
+                                        hide();
+                                    }
+                                },
+                                new ErrorCallback() {
+                                    @Override
+                                    public boolean error( final Message message,
+                                                          final Throwable throwable ) {
+                                        Window.alert( "Can't create repository, please check error message. \n" + message.toString() );
 
-                final Path rootPath = newPath( v, nameTextBox.getText(), uri );
-                final Root newRoot = new Root( rootPath, new PathPlaceRequest( rootPath, "RepositoryEditor" ) );
-
-                rootService.call( new RemoteCallback<Root>() {
-                    @Override
-                    public void callback( Root response ) {
-                        event.fire( newRoot );
-                    }
-                } ).addRoot( newRoot );
-
-                repositoryService.call( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void response ) {
-                        //Nothing to do
-                    }
-                } ).createRepository( scheme,
-                                      alias,
-                                      username,
-                                      password );
-
-            }
-        } ).newFileSystem( uri, env );
-
+                                        return false;
+                                    }
+                                }
+                              ).createRepository( scheme, alias, env );
     }
 
     @UiHandler("cancel")

@@ -2,6 +2,8 @@ package org.uberfire.backend.repositories;
 
 import java.util.Map;
 
+import org.uberfire.backend.vfs.Path;
+
 public interface Repository {
 
     String getAlias();
@@ -16,5 +18,7 @@ public interface Repository {
     boolean isValid();
 
     String getUri();
+
+    Path getRoot();
 
 }

@@ -24,16 +24,16 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Util;
 import org.uberfire.client.resources.CoreImages;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
-public class FileExplorerView extends Composite
-        implements
-        FileExplorerPresenter.View {
+public class FileExplorerView
+        extends Composite
+        implements FileExplorerPresenter.View {
 
     TreeItem rootTreeItem = null;
 
@@ -52,7 +52,7 @@ public class FileExplorerView extends Composite
         rootTreeItem = tree.addItem( Util.getHeaderSafeHtml( images.packageIcon(), "Repositories" ) );
         rootTreeItem.setState( true );
         initWidget( tree );
-        
+
         tree.addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
             public void onOpen( final OpenEvent<TreeItem> event ) {
@@ -69,8 +69,8 @@ public class FileExplorerView extends Composite
                 if ( userObject != null && userObject instanceof Path ) {
                     final Path path = (Path) userObject;
                     presenter.redirect( path );
-                } else if ( userObject != null && userObject instanceof Root ) {
-                    final Root root = (Root) userObject;
+                } else if ( userObject != null && userObject instanceof Repository ) {
+                    final Repository root = (Repository) userObject;
                     presenter.redirect( root );
                 } else if ( event.getSelectedItem().getUserObject() instanceof String &&
                         ( event.getSelectedItem().getUserObject() ).equals( REPOSITORY_ID ) ) {
@@ -95,17 +95,17 @@ public class FileExplorerView extends Composite
     }
 
     @Override
-    public void removeIfExists( final Root root ) {
+    public void removeIfExists( final Repository repo ) {
         //TODO {porcelli} implement!
     }
 
     @Override
-    public void addNewRoot( Root root ) {
-        final TreeItem repositoryRootItem = rootTreeItem.addItem( Util.getHeaderSafeHtml( images.packageIcon(), root.getPath().getFileName() ) );
+    public void addNewRepository( final Repository repo ) {
+        final TreeItem repositoryRootItem = rootTreeItem.addItem( Util.getHeaderSafeHtml( images.packageIcon(), repo.getAlias() ) );
         repositoryRootItem.setState( true );
-        repositoryRootItem.setUserObject( root );
+        repositoryRootItem.setUserObject( repo );
 
-        presenter.loadDirectoryContent( new FileExplorerItemImpl( repositoryRootItem ), root.getPath() );
+        presenter.loadDirectoryContent( new FileExplorerItemImpl( repositoryRootItem ), repo.getRoot() );
     }
 
     private boolean needsLoading( TreeItem item ) {

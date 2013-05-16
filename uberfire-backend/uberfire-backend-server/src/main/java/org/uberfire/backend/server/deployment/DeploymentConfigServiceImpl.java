@@ -10,7 +10,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.backend.deployment.DeploymentConfig;
-import org.uberfire.backend.deployment.DeploymentConfigFactory;
 import org.uberfire.backend.deployment.DeploymentConfigService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigType;

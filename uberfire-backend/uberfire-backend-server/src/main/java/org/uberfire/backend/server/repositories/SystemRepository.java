@@ -1,39 +1,29 @@
 package org.uberfire.backend.server.repositories;
 
-import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.git.GitRepository;
 
 /**
  * Definition of the bootstrap repository
  */
-public class DefaultSystemRepository implements Repository {
+public class SystemRepository extends GitRepository {
 
     private static final String ALIAS = "system";
 
-    public static final String SCHEME = "git";
+    public static final SystemRepository SYSTEM_REPO = new SystemRepository( ALIAS );
 
-    private Map<String, Object> environment = new HashMap<String, Object>() {{
-        put( "init",
-             Boolean.TRUE );
-    }};
+    private final Map<String, Object> environment = new HashMap<String, Object>();
 
-    @Override
-    public String getAlias() {
-        return ALIAS;
-    }
-
-    @Override
-    public String getScheme() {
-        return SCHEME;
+    private SystemRepository( final String alias ) {
+        super( alias );
+        environment.put( "init", Boolean.TRUE );
     }
 
     @Override
     public Map<String, Object> getEnvironment() {
-        return Collections.unmodifiableMap( environment );
+        return environment;
     }
 
     @Override

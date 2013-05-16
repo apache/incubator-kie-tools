@@ -23,30 +23,34 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.shared.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "RepositoryEditor")
+@WorkbenchScreen(identifier = "RepositoryEditor")
 public class RepositoryEditorPresenter {
 
     @Inject
-    Caller<VFSService> vfsService;
+    Caller<RepositoryService> repositoryService;
 
-    private Path path = null;
+    private String alias = null;
 
     public interface View
             extends
             IsWidget {
 
-        void addRepository(String repositoryName,
-                String gitURL,
-                String description,
-                String link);
+        void addRepository( String repositoryName,
+                            String gitURL,
+                            String description,
+                            String link );
 
         void clear();
     }
@@ -58,24 +62,25 @@ public class RepositoryEditorPresenter {
     }
 
     @OnStart
-    public void onStart(final Path path) {
-        this.path = path;
+    public void onStart( final PlaceRequest place ) {
+        this.alias = place.getParameters().get( "alias" );
 
-        vfsService.call(new RemoteCallback<Map>() {
+        repositoryService.call( new RemoteCallback<Repository>() {
             @Override
-            public void callback(Map response) {
+            public void callback( final Repository repo ) {
                 view.clear();
-                view.addRepository( path.getFileName(),
-                                    (String) response.get("giturl"),
-                                    (String) response.get("description"),
-                                    path.toURI() );
+                view.addRepository( repo.getAlias(),
+                                    repo.getUri(),
+                                    "[empty]",
+                                    repo.getRoot().toURI() );
+
             }
-        }).readAttributes(this.path);
+        } ).getRepository( alias );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "RepositoryEditor [" + path.getFileName() + "]";
+        return "RepositoryEditor [" + alias + "]";
     }
 
     @WorkbenchPartView

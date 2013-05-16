@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.uberfire.backend.group.Group;
-import org.uberfire.backend.group.GroupFactory;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;

@@ -1,5 +1,6 @@
 package org.uberfire.backend.server.impl;
 
+import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,11 +33,12 @@ public class AppSetup {
     public void assertPlayground() {
         final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
         if ( repository == null ) {
-            repositoryService.cloneRepository( PLAYGROUND_SCHEME,
-                                               PLAYGROUND_ALIAS,
-                                               PLAYGROUND_ORIGIN,
-                                               PLAYGROUND_UID,
-                                               PLAYGROUND_PWD );
+            repositoryService.createRepository( PLAYGROUND_SCHEME, PLAYGROUND_ALIAS,
+                                                new HashMap<String, Object>() {{
+                                                    put( "origin", PLAYGROUND_ORIGIN );
+                                                    put( "username", PLAYGROUND_UID );
+                                                    put( "crypt:password", PLAYGROUND_PWD );
+                                                }} );
         }
 
         //Ensure FileSystems are loaded

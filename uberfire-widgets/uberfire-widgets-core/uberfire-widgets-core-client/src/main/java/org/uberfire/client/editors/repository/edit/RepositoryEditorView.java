@@ -28,37 +28,38 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 public class RepositoryEditorView extends Composite
-    implements
-    RequiresResize,
-    RepositoryEditorPresenter.View {
+        implements
+        RequiresResize,
+        RepositoryEditorPresenter.View {
 
     interface RepositoryEditorViewBinder
-        extends
-        UiBinder<Widget, RepositoryEditorView> {
+            extends
+            UiBinder<Widget, RepositoryEditorView> {
+
     }
 
     private static RepositoryEditorViewBinder uiBinder = GWT.create( RepositoryEditorViewBinder.class );
 
     @UiField
-    public HTMLPanel                          panel;
+    public HTMLPanel panel;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void addRepository(String repositoryName,
-                              String gitURL,
-                              String description,
-                              String link) {
+    public void addRepository( String repositoryName,
+                               String gitURL,
+                               String description,
+                               String link ) {
         panel.add( new HTML( "<li>" +
-                               "<h3>" + repositoryName + "</h3>" +
-                               "<div>" +
-                                   "<p> Origin: <a href=\"" + gitURL + "\" target=\"_blank\">" + gitURL + "</a></p>" +
-                                   "<p> Description: " + description + "</p>" +
-                                   "<p >Last updated: </p>" +
-                             "</div>" +
-                             "</li>"
+                                     "<h3>" + repositoryName + "</h3>" +
+                                     "<div>" +
+                                     "<p> Origin: <a href=\"" + gitURL + "\" target=\"_blank\">" + gitURL + "</a></p>" +
+                                     "<p> Description: " + description + "</p>" +
+                                     "<p >Last updated: </p>" +
+                                     "</div>" +
+                                     "</li>"
 
         ) );
     }
@@ -72,8 +73,7 @@ public class RepositoryEditorView extends Composite
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        panel.setPixelSize( width,
-                            height );
+        panel.setPixelSize( width, height );
     }
 
 }

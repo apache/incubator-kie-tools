@@ -14,12 +14,12 @@ public interface ConfigurationFactory {
     ConfigItem<Boolean> newConfigItem( String name,
                                        boolean valueType );
 
-    ConfigItem<String> newSecuredConfigItem( String name,
-                                             String valueType );
+    SecureConfigItem newSecuredConfigItem( String name,
+                                           String valueType );
 
     ConfigItem<List> newConfigItem( String name,
                                     List valueType );
 
-    ConfigItem<Object> newConfigItem(String name,
-                                     Object valueType);
+    ConfigItem<Object> newConfigItem( String name,
+                                      Object valueType );
 }

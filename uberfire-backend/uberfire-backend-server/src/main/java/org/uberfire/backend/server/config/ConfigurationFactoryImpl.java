@@ -39,27 +39,33 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     }
 
     @Override
-    public ConfigItem<String> newSecuredConfigItem( final String name,
-                                                    final String valueType ) {
-        final ConfigItem<String> stringConfigItem = new ConfigItem<String>();
-        stringConfigItem.setName( name );
+    public SecureConfigItem newSecuredConfigItem( final String name,
+                                                  final String valueType ) {
+        final SecureConfigItem stringConfigItem = new SecureConfigItem();
+        if ( name.startsWith( "crypt:" ) ) {
+            stringConfigItem.setName( name.substring( "crypt:".length() ) );
+        } else {
+            stringConfigItem.setName( name );
+        }
         stringConfigItem.setValue( secureService.encrypt( valueType ) );
         return stringConfigItem;
     }
 
     @Override
-    public ConfigItem<List> newConfigItem(String name, List valueType) {
+    public ConfigItem<List> newConfigItem( String name,
+                                           List valueType ) {
         final ConfigItem<List> listConfigItem = new ConfigItem<List>();
-        listConfigItem.setName(name);
-        listConfigItem.setValue(valueType);
+        listConfigItem.setName( name );
+        listConfigItem.setValue( valueType );
         return listConfigItem;
     }
 
     @Override
-    public ConfigItem<Object> newConfigItem(String name, Object valueType) {
+    public ConfigItem<Object> newConfigItem( String name,
+                                             Object valueType ) {
         final ConfigItem<Object> listConfigItem = new ConfigItem<Object>();
-        listConfigItem.setName(name);
-        listConfigItem.setValue(valueType);
+        listConfigItem.setName( name );
+        listConfigItem.setValue( valueType );
         return listConfigItem;
     }
 }

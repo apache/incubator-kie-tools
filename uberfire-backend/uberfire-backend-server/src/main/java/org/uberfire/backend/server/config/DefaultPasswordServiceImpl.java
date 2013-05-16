@@ -12,10 +12,8 @@ public class DefaultPasswordServiceImpl implements PasswordService {
 
     private static final Logger log = LoggerFactory.getLogger( DefaultPasswordServiceImpl.class );
 
-    private static final String SECURE_STRING = System.getProperty( "org.kie.secure.key",
-                                                                    "org.kie.admin" );
-    private static final String SECURE_ALGORITHM = System.getProperty( "org.kie.secure.alg",
-                                                                       "PBEWithMD5AndDES" );
+    private static final String SECURE_STRING = System.getProperty( "org.kie.secure.key", "org.kie.admin" );
+    private static final String SECURE_ALGORITHM = System.getProperty( "org.kie.secure.alg", "PBEWithMD5AndDES" );
 
     @Override
     public String encrypt( final String plainText ) {
@@ -43,8 +41,7 @@ public class DefaultPasswordServiceImpl implements PasswordService {
         try {
             result = encryptor.decrypt( encryptedText );
         } catch ( EncryptionOperationNotPossibleException e ) {
-            log.error( "Unable to decrypt",
-                       e );
+            log.error( "Unable to decrypt", e );
         }
         return result;
     }

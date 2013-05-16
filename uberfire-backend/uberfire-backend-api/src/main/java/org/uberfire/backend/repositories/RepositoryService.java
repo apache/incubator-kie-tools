@@ -1,6 +1,7 @@
 package org.uberfire.backend.repositories;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -13,13 +14,5 @@ public interface RepositoryService {
 
     void createRepository( final String scheme,
                            final String alias,
-                           final String userName,
-                           final String password );
-
-    void cloneRepository( final String scheme,
-                          final String alias,
-                          final String origin,
-                          final String userName,
-                          final String password );
-
+                           final Map<String, Object> env );
 }

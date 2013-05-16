@@ -24,11 +24,9 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
 
     @Override
     public Repository newRepository( final ConfigGroup repoConfig ) {
-        checkNotNull( "repoConfig",
-                      repoConfig );
+        checkNotNull( "repoConfig", repoConfig );
         final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
-        checkNotNull( "schemeConfigItem",
-                      schemeConfigItem );
+        checkNotNull( "schemeConfigItem", schemeConfigItem );
 
         //Find a Helper that can create a repository
         Repository repository = null;

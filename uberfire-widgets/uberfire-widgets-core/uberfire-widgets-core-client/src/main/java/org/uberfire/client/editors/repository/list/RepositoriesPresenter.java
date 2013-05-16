@@ -18,51 +18,43 @@ package org.uberfire.client.editors.repository.list;
 
 import java.util.Collection;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.PopupPanel;
-
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
 public class RepositoriesPresenter {
 
     @Inject
-    private Caller<VFSService>              vfsService;
+    private Caller<VFSService> vfsService;
 
     @Inject
-    private Caller<FileExplorerRootService> rootService;
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
-    private IOCBeanManager                  iocManager;
+    private IOCBeanManager iocManager;
 
     public interface View
-        extends
-        IsWidget {
+            extends
+            IsWidget {
 
-        void addRepository(String repositoryName,
-                           String gitURL,
-                           String description,
-                           String link);
+        void addRepository( String repositoryName,
+                            String gitURL,
+                            String description,
+                            String link );
 
         void clear();
     }
@@ -78,22 +70,22 @@ public class RepositoriesPresenter {
 
         view.clear();
 
-        rootService.call( new RemoteCallback<Collection<Root>>() {
+        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
-            public void callback(Collection<Root> response) {
-                for ( final Root root : response ) {
+            public void callback( Collection<Repository> response ) {
+                for ( final Repository repo : response ) {
                     vfsService.call( new RemoteCallback<Map>() {
                         @Override
-                        public void callback(Map response) {
-                            view.addRepository( root.getPath().getFileName(),
-                                                (String) response.get( "giturl" ),
-                                                (String) response.get( "description" ),
-                                                root.getPath().toURI() );
+                        public void callback( Map response ) {
+                            view.addRepository( repo.getAlias(),
+                                                repo.getUri(),
+                                                "[empty]",
+                                                repo.getRoot().toURI() );
                         }
-                    } ).readAttributes( root.getPath() );
+                    } ).readAttributes( repo.getRoot() );
                 }
             }
-        } ).listRoots();
+        } ).getRepositories();
     }
 
     @WorkbenchPartTitle
@@ -106,15 +98,15 @@ public class RepositoriesPresenter {
         return view;
     }
 
-    public void newRootDirectory(@Observes final Root root) {
+    public void newRootDirectory( @Observes final Repository repo ) {
         vfsService.call( new RemoteCallback<Map>() {
             @Override
-            public void callback(Map response) {
-                view.addRepository( root.getPath().getFileName(),
-                                    (String) response.get( "giturl" ),
-                                    (String) response.get( "description" ),
-                                    root.getPath().toURI() );
+            public void callback( Map response ) {
+                view.addRepository( repo.getAlias(),
+                                    repo.getUri(),
+                                    "[empty]",
+                                    repo.getRoot().toURI() );
             }
-        } ).readAttributes( root.getPath() );
+        } ).readAttributes( repo.getRoot() );
     }
 }

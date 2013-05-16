@@ -14,15 +14,21 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.kie.commons.cluster.ClusterService;
+import org.kie.commons.cluster.ClusterServiceFactory;
 import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+import org.kie.commons.io.impl.cluster.IOServiceClusterImpl;
+import org.kie.commons.io.impl.cluster.helix.ClusterServiceHelix;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.java.nio.file.StandardOpenOption;
+import org.kie.commons.message.MessageHandlerResolver;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.security.Identity;
 
@@ -34,16 +40,27 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private Repository systemRepository;
 
     @Inject
+    @Named("clusterServiceFactory")
+    private ClusterServiceFactory clusterServiceFactory;
+
+    @Inject
     private ConfigGroupMarshaller marshaller;
 
     @Inject
     private Identity identity;
 
-    private IOService ioSystemService = new IOServiceNio2WrapperImpl();
-    private Map<ConfigType, List<ConfigGroup>> configuration = new HashMap<ConfigType, List<ConfigGroup>>();
+    private final Map<ConfigType, List<ConfigGroup>> configuration = new HashMap<ConfigType, List<ConfigGroup>>();
+    private IOService ioSystemService;
 
     @PostConstruct
     public void setup() {
+
+        if ( clusterServiceFactory == null ) {
+            ioSystemService = new IOServiceNio2WrapperImpl();
+        } else {
+            ioSystemService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl(), clusterServiceFactory );
+        }
+
         try {
             ioSystemService.newFileSystem( URI.create( systemRepository.getUri() ),
                                            systemRepository.getEnvironment(),
