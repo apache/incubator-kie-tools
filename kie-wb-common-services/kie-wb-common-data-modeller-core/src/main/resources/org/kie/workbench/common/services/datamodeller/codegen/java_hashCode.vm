@@ -1,6 +1,6 @@
 
     @Override
     public int hashCode() {
-        //TODO complete this implementation
-        return $className.hashCode();
+        int result = 17;
+        $nameTool.resolveHashCode($context.currentDataObject)
     }

@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.services.datamodeller.codegen;
 
+import org.kie.workbench.common.services.datamodeller.annotations.Equals;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Helper tools to generate names and other stuff easily from code generation engine.
@@ -26,6 +29,7 @@ import org.slf4j.LoggerFactory;
 public class GenerationTools {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerationTools.class);
+    private static final String TAB = "    ";
     
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
@@ -197,5 +201,53 @@ public class GenerationTools {
             type.append(dataObject.getSuperClassName());
         }
         return type.toString();
+    }
+
+    public String resolveEquals(DataObject dataObject) {
+        StringBuilder sb = new StringBuilder();
+
+        Map<String, ObjectProperty> props = dataObject.getProperties();
+
+        if (props != null && props.size() > 0) {
+            sb.append("\n").append(TAB).append(TAB);
+            for(String propName : props.keySet()) {
+                ObjectProperty prop = props.get(propName);
+                String _propName = toJavaVar(propName);
+                if (prop.getAnnotation(Equals.class.getName()) != null) {
+                    // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
+                    sb.append("if (");
+                    sb.append(_propName).append(" != null ? !").append(_propName).append(".equals(that.").append(_propName).append(")");
+                    sb.append(" : that.").append(_propName).append(" != null").append(") return false;");
+                    sb.append("\n").append(TAB).append(TAB);
+                }
+            }
+            sb.append("\n").append(TAB).append(TAB).append("return true;");
+        } else {
+            sb.append(TAB).append(TAB).append("return super.equals(o)");
+        }
+        return sb.toString();
+    }
+
+    public String resolveHashCode(DataObject dataObject) {
+        StringBuilder sb = new StringBuilder();
+
+        Map<String, ObjectProperty> props = dataObject.getProperties();
+
+        if (props != null && props.size() > 0) {
+            sb.append("\n").append(TAB).append(TAB);
+            for(String propName : props.keySet()) {
+                ObjectProperty prop = props.get(propName);
+                String _propName = toJavaVar(propName);
+                if (prop.getAnnotation(Equals.class.getName()) != null) {
+                    // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
+                    sb.append("result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
+                    sb.append("\n").append(TAB).append(TAB);
+                }
+            }
+            sb.append("\n").append(TAB).append(TAB).append("return result;");
+        } else {
+            sb.append(TAB).append(TAB).append("return super.hashCode()");
+        }
+        return sb.toString();
     }
 }

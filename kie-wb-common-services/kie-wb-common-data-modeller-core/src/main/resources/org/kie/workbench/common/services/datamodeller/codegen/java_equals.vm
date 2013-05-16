@@ -4,6 +4,6 @@
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        //TODO complete this implementation
-        return false;
+        $className that = ($className)o;
+        $nameTool.resolveEquals($context.currentDataObject)
     }
