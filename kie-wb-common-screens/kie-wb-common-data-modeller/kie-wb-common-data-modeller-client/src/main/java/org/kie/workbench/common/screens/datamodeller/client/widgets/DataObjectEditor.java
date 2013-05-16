@@ -119,7 +119,6 @@ public class DataObjectEditor extends Composite {
         });
         // TODO Change this when necessary (for now hardcoded here)
         roleSelector.addItem("", NOT_SELECTED);
-        //roleSelector.addItem("FACT", "FACT");
         roleSelector.addItem("EVENT", "EVENT");
         roleSelector.setSelectedValue(NOT_SELECTED);
 
