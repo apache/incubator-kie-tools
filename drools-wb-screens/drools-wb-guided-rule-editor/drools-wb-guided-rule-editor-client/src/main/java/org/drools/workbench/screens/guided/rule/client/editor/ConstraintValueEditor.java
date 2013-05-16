@@ -16,6 +16,12 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,32 +55,26 @@ import org.drools.workbench.models.commons.shared.rule.HasOperator;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.services.data.factconstraints.customform.CustomFormConfiguration;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
-import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.CEPOracle;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
-import org.kie.guvnor.workingset.client.WorkingSetManager;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.guvnor.datamodel.oracle.CEPOracle;
+import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.workingset.client.WorkingSetManager;
+import org.kie.workbench.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
+import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is an editor for constraint values. How this behaves depends on the

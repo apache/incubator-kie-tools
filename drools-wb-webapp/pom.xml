@@ -100,8 +100,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-workingset-client</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-workingset-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-workingset-client</artifactId>
     </dependency>
 
     <dependency>
@@ -629,7 +634,6 @@
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-config-editor-client</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-workingset-client</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
@@ -642,7 +646,7 @@
           </compileSourcesArtifacts>
           <runTarget>org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</runTarget>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m</extraJvmArgs>
-          <!--<logLevel>DEBUG</logLevel>-->
+shing           <!--<logLevel>DEBUG</logLevel>-->
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>

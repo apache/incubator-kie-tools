@@ -32,9 +32,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
-import org.kie.workbench.common.services.data.factconstraints.util.ConstraintValueEditorHelper;
 import org.kie.guvnor.datamodel.model.DropDownData;
 import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.data.util.ConstraintValueEditorHelper;
 
 /**
  * A utility class to expand Condition column definitions into rows. Action

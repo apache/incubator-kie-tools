@@ -17,7 +17,6 @@
   <!-- Common Widgets -->
   <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
   <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
-  <inherits name="org.kie.guvnor.workingset.GuvnorWorkingsetClientAPI"/>
 
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
@@ -27,6 +26,8 @@
   <!-- Common Services -->
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name="org.kie.workbench.common.services.data.KieWorkbenchCommonData"/>
+  <inherits name="org.kie.workbench.common.services.workingset.KieWorkbenchWorkingsetAPI"/>
+  <inherits name="org.kie.workbench.common.services.workingset.KieWorkbenchWorkingsetClient"/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
