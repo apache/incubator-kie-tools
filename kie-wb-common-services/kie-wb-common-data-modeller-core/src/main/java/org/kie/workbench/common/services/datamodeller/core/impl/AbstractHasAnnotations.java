@@ -16,10 +16,10 @@ public abstract class AbstractHasAnnotations implements HasAnnotations {
     }
 
     @Override
-    public Annotation getAnnotation(String annotationName) {
-        if (annotationName != null) {
+    public Annotation getAnnotation(String className) {
+        if (className != null) {
             for (Annotation annotation : annotations) {
-                if (annotationName.equals(annotation.getName())) return annotation;
+                if (className.equals(annotation.getClassName())) return annotation;
             }
         }
         return null;
@@ -31,11 +31,11 @@ public abstract class AbstractHasAnnotations implements HasAnnotations {
     }
 
     @Override
-    public Annotation removeAnnotation(String annotationName) {
+    public Annotation removeAnnotation(String className) {
         Annotation result = null;
-        if (annotationName != null) {
+        if (className != null) {
             for (Annotation annotation : annotations) {
-                if (annotationName.equals(annotation.getName())) {
+                if (className.equals(annotation.getClassName())) {
                     result = annotation;
                     annotations.remove(annotation);
                     break;
