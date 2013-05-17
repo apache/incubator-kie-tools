@@ -25,6 +25,7 @@ import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.impl.IdentityImpl;
 
 public class SecurityFactory {
 
@@ -32,39 +33,18 @@ public class SecurityFactory {
 
     static private AuthorizationManager authzManager = null;
 
-    public static void setSubject(final Subject subject) {
-        subjects.set(subject);
+    public static void setSubject( final Subject subject ) {
+        subjects.set( subject );
     }
 
-    public static void setAuthzManager(final AuthorizationManager authzManager) {
+    public static void setAuthzManager( final AuthorizationManager authzManager ) {
         SecurityFactory.authzManager = authzManager;
     }
-
-//    @Produces
-//    @RequestScoped
-//    public static Subject getSubject() {
-//        return subjects.get();
-//    }
 
     @Produces
     @RequestScoped
     public static Identity getIdentity() {
-        return new Identity() {
-            @Override
-            public List<Role> getRoles() {
-                return subjects.get().getRoles();
-            }
-
-            @Override
-            public boolean hasRole(final Role role) {
-                return subjects.get().hasRole(role);
-            }
-
-            @Override
-            public String getName() {
-                return subjects.get().getName();
-            }
-        };
+        return new IdentityImpl( subjects.get().getName(), subjects.get().getRoles() );
     }
 
     @Produces

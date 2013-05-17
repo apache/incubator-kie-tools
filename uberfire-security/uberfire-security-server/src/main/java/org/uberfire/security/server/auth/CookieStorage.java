@@ -23,6 +23,7 @@ import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.crypt.CryptProvider;
+import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.crypt.DefaultCryptProvider;
 
@@ -30,9 +31,9 @@ import static org.kie.commons.validation.Preconditions.*;
 
 public class CookieStorage implements AuthenticatedStorageProvider {
 
-    private static final int           DEFAULT_EXPIRE_48_HOURS = 60 * 60 * 48;
-    private static final String        EMPTY                   = "__empty__";
-    private static final CryptProvider CRYPT_PROVIDER          = new DefaultCryptProvider();
+    private static final int DEFAULT_EXPIRE_48_HOURS = 60 * 60 * 48;
+    private static final String EMPTY = "__empty__";
+    private static final CryptProvider CRYPT_PROVIDER = new DefaultCryptProvider();
 
     private final String cookieName;
 
@@ -78,12 +79,7 @@ public class CookieStorage implements AuthenticatedStorageProvider {
             return null;
         }
 
-        return new Principal() {
-            @Override
-            public String getName() {
-                return userId;
-            }
-        };
+        return new PrincipalImpl( userId );
     }
 
     private String getCookieValue( final String cookieName,

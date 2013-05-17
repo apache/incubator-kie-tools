@@ -5,6 +5,8 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
+  <distributable/>
+
   <filter>
     <filter-name>UberFire Security Filter</filter-name>
     <filter-class>
@@ -31,7 +33,7 @@
     <servlet-name>UberFireServlet</servlet-name>
     <url-pattern>/org.uberfire.UberfireShowcase/Uberfire.html</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>GoogleGadget</servlet-name>
     <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>

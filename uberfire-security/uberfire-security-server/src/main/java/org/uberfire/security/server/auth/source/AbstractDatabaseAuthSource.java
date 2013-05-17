@@ -31,13 +31,15 @@ import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
+import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
 import static org.kie.commons.validation.Preconditions.*;
 
-public abstract class AbstractDatabaseAuthSource implements AuthenticationSource, RoleProvider {
+public abstract class AbstractDatabaseAuthSource implements AuthenticationSource,
+                                                            RoleProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabaseAuthSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractDatabaseAuthSource.class );
 
     private boolean alreadyInit = false;
     private String userQuery;
@@ -45,50 +47,50 @@ public abstract class AbstractDatabaseAuthSource implements AuthenticationSource
 
     public abstract Connection getConnection();
 
-    public synchronized void initialize(final Map<String, ?> options) {
-        if (!alreadyInit) {
-            userQuery = "select 1 from " + options.get("userTable") + " where " + options.get("userField") + "=? and " + options.get("passwordField") + "=?";
+    public synchronized void initialize( final Map<String, ?> options ) {
+        if ( !alreadyInit ) {
+            userQuery = "select 1 from " + options.get( "userTable" ) + " where " + options.get( "userField" ) + "=? and " + options.get( "passwordField" ) + "=?";
 
-            if (options.containsKey("userQuery")) {
-                userQuery = (String) options.get("userQuery");
+            if ( options.containsKey( "userQuery" ) ) {
+                userQuery = (String) options.get( "userQuery" );
             }
 
-            LOG.debug("userQuery = " + userQuery);
+            LOG.debug( "userQuery = " + userQuery );
 
-            rolesQuery = "select " + options.get("userRoleRoleField") + " from " + options.get("userRoleTable") + " where " + options.get("userRoleUserField") + "=?";
+            rolesQuery = "select " + options.get( "userRoleRoleField" ) + " from " + options.get( "userRoleTable" ) + " where " + options.get( "userRoleUserField" ) + "=?";
 
-            if (options.containsKey("rolesQuery")) {
-                rolesQuery = (String) options.get("rolesQuery");
+            if ( options.containsKey( "rolesQuery" ) ) {
+                rolesQuery = (String) options.get( "rolesQuery" );
             }
 
-            LOG.debug("rolesQuery = " + rolesQuery);
+            LOG.debug( "rolesQuery = " + rolesQuery );
 
             alreadyInit = true;
         }
     }
 
     @Override
-    public boolean supportsCredential(final Credential credential) {
-        if (credential == null) {
+    public boolean supportsCredential( final Credential credential ) {
+        if ( credential == null ) {
             return false;
         }
         return credential instanceof UsernamePasswordCredential;
     }
 
     @Override
-    public boolean authenticate(final Credential credential) {
-        final UsernamePasswordCredential usernamePasswd = checkInstanceOf("credential", credential, UsernamePasswordCredential.class);
+    public boolean authenticate( final Credential credential ) {
+        final UsernamePasswordCredential usernamePasswd = checkInstanceOf( "credential", credential, UsernamePasswordCredential.class );
 
         Connection connection = null;
 
         try {
             connection = getConnection();
-            final PreparedStatement statement = connection.prepareStatement(userQuery);
-            statement.setString(1, usernamePasswd.getUserName());
-            statement.setObject(2, usernamePasswd.getPassword());
+            final PreparedStatement statement = connection.prepareStatement( userQuery );
+            statement.setString( 1, usernamePasswd.getUserName() );
+            statement.setObject( 2, usernamePasswd.getPassword() );
             final ResultSet queryResult = statement.executeQuery();
             final boolean result;
-            if (queryResult.next()) {
+            if ( queryResult.next() ) {
                 result = true;
             } else {
                 result = false;
@@ -97,50 +99,45 @@ public abstract class AbstractDatabaseAuthSource implements AuthenticationSource
             statement.close();
 
             return result;
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
+        } catch ( Exception ex ) {
+            throw new IllegalStateException( ex );
         } finally {
-            if (connection != null) {
+            if ( connection != null ) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
-                    throw new IllegalStateException(e);
+                } catch ( SQLException e ) {
+                    throw new IllegalStateException( e );
                 }
             }
         }
     }
 
     @Override
-    public List<Role> loadRoles(final Principal principal) {
+    public List<Role> loadRoles( final Principal principal ) {
         Connection connection = null;
         try {
             connection = getConnection();
-            final PreparedStatement statement = connection.prepareStatement(rolesQuery);
-            statement.setString(1, principal.getName());
+            final PreparedStatement statement = connection.prepareStatement( rolesQuery );
+            statement.setString( 1, principal.getName() );
             final ResultSet queryResult = statement.executeQuery();
             final List<Role> roles = new ArrayList<Role>();
-            while (queryResult.next()) {
-                final String roleName = queryResult.getString(1);
-                roles.add(new Role() {
-                    @Override
-                    public String getName() {
-                        return roleName;
-                    }
-                });
+            while ( queryResult.next() ) {
+                final String roleName = queryResult.getString( 1 );
+                roles.add( new RoleImpl( roleName ) );
             }
 
             queryResult.close();
             statement.close();
 
             return roles;
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
+        } catch ( Exception ex ) {
+            throw new IllegalStateException( ex );
         } finally {
-            if (connection != null) {
+            if ( connection != null ) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
-                    throw new IllegalStateException(e);
+                } catch ( SQLException e ) {
+                    throw new IllegalStateException( e );
                 }
             }
         }

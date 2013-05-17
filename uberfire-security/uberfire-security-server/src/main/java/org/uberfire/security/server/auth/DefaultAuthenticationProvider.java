@@ -27,6 +27,7 @@ import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.AuthenticationStatus;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
+import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
@@ -37,29 +38,29 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
 
     private final AuthenticationSource authenticationSource;
 
-    public DefaultAuthenticationProvider(final AuthenticationSource authSource) {
-        this.authenticationSource = checkNotNull("authSource", authSource);
+    public DefaultAuthenticationProvider( final AuthenticationSource authSource ) {
+        this.authenticationSource = checkNotNull( "authSource", authSource );
     }
 
     @Override
-    public void initialize(final Map<String, ?> options) {
-        authenticationSource.initialize(options);
+    public void initialize( final Map<String, ?> options ) {
+        authenticationSource.initialize( options );
     }
 
     @Override
-    public boolean supportsCredential(final Credential credential) {
-        return authenticationSource.supportsCredential(credential);
+    public boolean supportsCredential( final Credential credential ) {
+        return authenticationSource.supportsCredential( credential );
     }
 
     @Override
-    public AuthenticationResult authenticate(final Credential credential)
+    public AuthenticationResult authenticate( final Credential credential )
             throws AuthenticationException {
-        if (!supportsCredential(credential)) {
+        if ( !supportsCredential( credential ) ) {
             return new AuthenticationResult() {
                 @Override
                 public List<String> getMessages() {
-                    return new ArrayList<String>(1) {{
-                        add("Credential not supported by " + DefaultAuthenticationProvider.class.getName());
+                    return new ArrayList<String>( 1 ) {{
+                        add( "Credential not supported by " + DefaultAuthenticationProvider.class.getName() );
                     }};
                 }
 
@@ -75,14 +76,14 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
             };
         }
 
-        final UserNameCredential realCredential = UserNameCredential.class.cast(credential);
+        final UserNameCredential realCredential = UserNameCredential.class.cast( credential );
 
-        if (!authenticationSource.authenticate(realCredential)) {
+        if ( !authenticationSource.authenticate( realCredential ) ) {
             return new AuthenticationResult() {
                 @Override
                 public List<String> getMessages() {
-                    return new ArrayList<String>(1) {{
-                        add("Invalid credentials.");
+                    return new ArrayList<String>( 1 ) {{
+                        add( "Invalid credentials." );
                     }};
                 }
 
@@ -111,13 +112,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
 
             @Override
             public Principal getPrincipal() {
-                return new Principal() {
-
-                    @Override
-                    public String getName() {
-                        return realCredential.getUserName();
-                    }
-                };
+                return new PrincipalImpl( realCredential.getUserName() );
             }
         };
     }

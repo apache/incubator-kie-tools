@@ -17,8 +17,11 @@
 package org.uberfire.security.server.auth;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.RequestDispatcher;
@@ -37,15 +40,22 @@ import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
+import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.kie.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.security.Role.*;
 import static org.uberfire.security.auth.AuthenticationStatus.*;
 
 //TODO {porcelli} support for jaas!
-public class HttpAuthenticationManager implements AuthenticationManager {
+public class HttpAuthenticationManager implements AuthenticationManager,
+                                                  Serializable {
+
+    private static final long serialVersionUID = 4343210317731383536L;
 
     private final List<AuthenticationScheme> authSchemes;
     private final List<AuthenticationProvider> authProviders;
@@ -53,65 +63,67 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     private final List<AuthenticatedStorageProvider> authStorageProviders;
 
     private final ResourceManager resourceManager;
-    private final ConcurrentHashMap<String, String> requestCache = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> requestCache = new HashMap<String, String>();
 
     //if System.getProperty("java.security.auth.login.config") != null => create a JAASProvider
 
-    public HttpAuthenticationManager(final List<AuthenticationScheme> authScheme,
-            final List<AuthenticationProvider> authProviders, final List<RoleProvider> roleProviders,
-            final List<AuthenticatedStorageProvider> authStorageProviders, final ResourceManager resourceManager) {
-        this.authSchemes = checkNotEmpty("authScheme", authScheme);
-        this.authProviders = checkNotEmpty("authProviders", authProviders);
-        this.roleProviders = checkNotEmpty("roleProviders", roleProviders);
-        this.authStorageProviders = checkNotEmpty("authStorageProviders", authStorageProviders);
-        this.resourceManager = checkNotNull("resourceManager", resourceManager);
+    public HttpAuthenticationManager( final List<AuthenticationScheme> authScheme,
+                                      final List<AuthenticationProvider> authProviders,
+                                      final List<RoleProvider> roleProviders,
+                                      final List<AuthenticatedStorageProvider> authStorageProviders,
+                                      final ResourceManager resourceManager ) {
+        this.authSchemes = checkNotEmpty( "authScheme", authScheme );
+        this.authProviders = checkNotEmpty( "authProviders", authProviders );
+        this.roleProviders = checkNotEmpty( "roleProviders", roleProviders );
+        this.authStorageProviders = checkNotEmpty( "authStorageProviders", authStorageProviders );
+        this.resourceManager = checkNotNull( "resourceManager", resourceManager );
     }
 
     @Override
-    public Subject authenticate(final SecurityContext context) throws AuthenticationException {
-        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
+    public Subject authenticate( final SecurityContext context ) throws AuthenticationException {
+        final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
         Principal principal = null;
-        for (final AuthenticatedStorageProvider storeProvider : authStorageProviders) {
-            principal = storeProvider.load(httpContext);
-            if (principal != null) {
+        for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
+            principal = storeProvider.load( httpContext );
+            if ( principal != null ) {
                 break;
             }
         }
 
-        if (principal != null && principal instanceof Subject) {
+        if ( principal != null && principal instanceof Subject ) {
             return (Subject) principal;
         }
 
         boolean isRememberOp = principal != null;
 
-        final boolean requiresAuthentication = resourceManager.requiresAuthentication(httpContext.getResource());
+        final boolean requiresAuthentication = resourceManager.requiresAuthentication( httpContext.getResource() );
 
-        if (principal == null) {
-            for (final AuthenticationScheme authScheme : authSchemes) {
-                if (!authScheme.isAuthenticationRequest(httpContext) && requiresAuthentication) {
-                    requestCache.putIfAbsent(httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString());
-                    authScheme.challengeClient(httpContext);
+        if ( principal == null ) {
+            for ( final AuthenticationScheme authScheme : authSchemes ) {
+                if ( !authScheme.isAuthenticationRequest( httpContext ) && requiresAuthentication ) {
+                    requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                    authScheme.challengeClient( httpContext );
                 }
             }
 
-            if (!requiresAuthentication) {
+            if ( !requiresAuthentication ) {
                 return null;
             }
 
             all_auth:
-            for (final AuthenticationScheme authScheme : authSchemes) {
-                final Credential credential = authScheme.buildCredential(httpContext);
+            for ( final AuthenticationScheme authScheme : authSchemes ) {
+                final Credential credential = authScheme.buildCredential( httpContext );
 
-                if (credential == null) {
+                if ( credential == null ) {
                     continue;
                 }
 
-                for (final AuthenticationProvider authProvider : authProviders) {
-                    final AuthenticationResult result = authProvider.authenticate(credential);
-                    if (result.getStatus().equals(FAILED)) {
-                        throw new AuthenticationException("Invalid credentials.");
-                    } else if (result.getStatus().equals(SUCCESS)) {
+                for ( final AuthenticationProvider authProvider : authProviders ) {
+                    final AuthenticationResult result = authProvider.authenticate( credential );
+                    if ( result.getStatus().equals( FAILED ) ) {
+                        throw new AuthenticationException( "Invalid credentials." );
+                    } else if ( result.getStatus().equals( SUCCESS ) ) {
                         principal = result.getPrincipal();
                         break all_auth;
                     }
@@ -119,51 +131,24 @@ public class HttpAuthenticationManager implements AuthenticationManager {
             }
         }
 
-        if (principal == null) {
-            throw new AuthenticationException("Invalid credentials.");
+        if ( principal == null ) {
+            throw new AuthenticationException( "Invalid credentials." );
         }
 
         final List<Role> roles = new ArrayList<Role>();
-        if (isRememberOp) {
-            roles.add(new Role() {
-                @Override
-                public String getName() {
-                    return ROLE_REMEMBER_ME;
-                }
-            });
+        if ( isRememberOp ) {
+            roles.add( new RoleImpl( ROLE_REMEMBER_ME ) );
         }
 
-        for (final RoleProvider roleProvider : roleProviders) {
-            roles.addAll(roleProvider.loadRoles(principal));
+        for ( final RoleProvider roleProvider : roleProviders ) {
+            roles.addAll( roleProvider.loadRoles( principal ) );
         }
 
         final String name = principal.getName();
-        final Subject result = new Subject() {
+        final Subject result = new IdentityImpl( name, roles );
 
-            @Override
-            public List<Role> getRoles() {
-                return roles;
-            }
-
-            @Override
-            public boolean hasRole(final Role role) {
-                checkNotNull("role", role);
-                for (final Role activeRole : roles) {
-                    if (activeRole.getName().equals(role.getName())){
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-        };
-
-        for (final AuthenticatedStorageProvider storeProvider : authStorageProviders) {
-            storeProvider.store(httpContext, result);
+        for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
+            storeProvider.store( httpContext, result );
         }
 
         final String originalRequest = requestCache.remove(httpContext.getRequest().getSession().getId());
@@ -188,11 +173,11 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     }
 
     @Override
-    public void logout(final SecurityContext context) throws AuthenticationException {
-        for (final AuthenticatedStorageProvider storeProvider : authStorageProviders) {
-            storeProvider.cleanup(context);
+    public void logout( final SecurityContext context ) throws AuthenticationException {
+        for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
+            storeProvider.cleanup( context );
         }
-        final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
+        final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
         httpContext.getRequest().getSession().invalidate();
     }
 

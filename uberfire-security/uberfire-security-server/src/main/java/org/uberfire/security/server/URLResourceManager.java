@@ -28,6 +28,7 @@ import java.util.Set;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
+import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.util.AntPathMatcher;
 import org.yaml.snakeyaml.Yaml;
 
@@ -39,8 +40,8 @@ import static org.uberfire.security.server.SecurityConstants.*;
 public class URLResourceManager implements ResourceManager {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
-    private static final Collection<Class<? extends Resource>> SUPPORTED_TYPES = new ArrayList<Class<? extends Resource>>(1) {{
-        add(URLResource.class);
+    private static final Collection<Class<? extends Resource>> SUPPORTED_TYPES = new ArrayList<Class<? extends Resource>>( 1 ) {{
+        add( URLResource.class );
     }};
 
     private static final String DEFAULT_CONFIG = "exclude:\n" +
@@ -53,8 +54,8 @@ public class URLResourceManager implements ResourceManager {
     private final Resources resources;
     private final Set<String> excludeCache = new HashSet<String>();
 
-    public URLResourceManager(final String configFile) {
-        if (configFile != null && !configFile.isEmpty()) {
+    public URLResourceManager( final String configFile ) {
+        if ( configFile != null && !configFile.isEmpty() ) {
             this.configFile = configFile;
         }
         this.resources = loadConfigData();
@@ -62,43 +63,43 @@ public class URLResourceManager implements ResourceManager {
 
     private Resources loadConfigData() {
         final Yaml yaml = new Yaml();
-        final InputStream stream = URLResourceManager.class.getClassLoader().getResourceAsStream(this.configFile);
+        final InputStream stream = URLResourceManager.class.getClassLoader().getResourceAsStream( this.configFile );
         final Map result;
-        if (stream != null) {
-            result = yaml.loadAs(stream, Map.class);
+        if ( stream != null ) {
+            result = yaml.loadAs( stream, Map.class );
         } else {
-            result = yaml.loadAs(DEFAULT_CONFIG, Map.class);
+            result = yaml.loadAs( DEFAULT_CONFIG, Map.class );
         }
-        return new Resources(result);
+        return new Resources( result );
     }
 
     @Override
-    public boolean supports(final Resource resource) {
-        if (resource instanceof URLResource) {
+    public boolean supports( final Resource resource ) {
+        if ( resource instanceof URLResource ) {
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean requiresAuthentication(final Resource resource) {
+    public boolean requiresAuthentication( final Resource resource ) {
         final URLResource urlResource;
         try {
-            urlResource = checkInstanceOf("context", resource, URLResource.class);
-        } catch (IllegalArgumentException e) {
+            urlResource = checkInstanceOf( "context", resource, URLResource.class );
+        } catch ( IllegalArgumentException e ) {
             return false;
         }
 
-        if (!excludeCache.contains(urlResource.getURL())) {
+        if ( !excludeCache.contains( urlResource.getURL() ) ) {
             boolean isExcluded = false;
-            for (String excluded : resources.getExcludedResources()) {
-                if (ANT_PATH_MATCHER.match(excluded, urlResource.getURL())) {
+            for ( String excluded : resources.getExcludedResources() ) {
+                if ( ANT_PATH_MATCHER.match( excluded, urlResource.getURL() ) ) {
                     isExcluded = true;
-                    excludeCache.add(urlResource.getURL());
+                    excludeCache.add( urlResource.getURL() );
                     break;
                 }
             }
-            if (isExcluded) {
+            if ( isExcluded ) {
                 return false;
             }
         } else {
@@ -108,9 +109,9 @@ public class URLResourceManager implements ResourceManager {
         return true;
     }
 
-    public List<Role> getMandatoryRoles(final URLResource urlResource) {
-        for (Map.Entry<String, List<Role>> activeFilteredResource : resources.getMandatoryFilteredResources().entrySet()) {
-            if (ANT_PATH_MATCHER.match(activeFilteredResource.getKey(), urlResource.getURL())) {
+    public List<Role> getMandatoryRoles( final URLResource urlResource ) {
+        for ( Map.Entry<String, List<Role>> activeFilteredResource : resources.getMandatoryFilteredResources().entrySet() ) {
+            if ( ANT_PATH_MATCHER.match( activeFilteredResource.getKey(), urlResource.getURL() ) ) {
                 return activeFilteredResource.getValue();
             }
         }
@@ -123,46 +124,41 @@ public class URLResourceManager implements ResourceManager {
         private final Map<String, List<Role>> mandatoryFilteredResources;
         private final Set<String> excludedResources;
 
-        private Resources(final Map yaml) {
-            checkNotNull("yaml", yaml);
+        private Resources( final Map yaml ) {
+            checkNotNull( "yaml", yaml );
 
-            final Object ofilter = yaml.get("filter");
-            if (ofilter != null) {
-                final List<Map<String, String>> filter = checkInstanceOf("ofilter", ofilter, List.class);
+            final Object ofilter = yaml.get( "filter" );
+            if ( ofilter != null ) {
+                final List<Map<String, String>> filter = checkInstanceOf( "ofilter", ofilter, List.class );
 
-                this.filteredResources = new HashMap<String, List<Role>>(filter.size());
-                this.mandatoryFilteredResources = new HashMap<String, List<Role>>(filter.size());
-                for (final Map<String, String> activeFilter : filter) {
-                    final String pattern = activeFilter.get("pattern");
-                    final String access = activeFilter.get("access");
-                    checkNotNull("pattern", pattern);
+                this.filteredResources = new HashMap<String, List<Role>>( filter.size() );
+                this.mandatoryFilteredResources = new HashMap<String, List<Role>>( filter.size() );
+                for ( final Map<String, String> activeFilter : filter ) {
+                    final String pattern = activeFilter.get( "pattern" );
+                    final String access = activeFilter.get( "access" );
+                    checkNotNull( "pattern", pattern );
                     final List<Role> roles;
-                    if (access != null) {
-                        final String[] textRoles = access.split(",");
-                        roles = new ArrayList<Role>(textRoles.length);
-                        for (final String textRole : textRoles) {
-                            roles.add(new Role() {
-                                @Override
-                                public String getName() {
-                                    return textRole;
-                                }
-                            });
+                    if ( access != null ) {
+                        final String[] textRoles = access.split( "," );
+                        roles = new ArrayList<Role>( textRoles.length );
+                        for ( final String textRole : textRoles ) {
+                            roles.add( new RoleImpl( textRole ) );
                         }
-                        mandatoryFilteredResources.put(pattern, roles);
+                        mandatoryFilteredResources.put( pattern, roles );
                     } else {
                         roles = emptyList();
                     }
-                    filteredResources.put(pattern, roles);
+                    filteredResources.put( pattern, roles );
                 }
             } else {
                 this.filteredResources = emptyMap();
                 this.mandatoryFilteredResources = emptyMap();
             }
 
-            final Object oexclude = yaml.get("exclude");
-            final List exclude = checkInstanceOf("exclude", oexclude, List.class);
+            final Object oexclude = yaml.get( "exclude" );
+            final List exclude = checkInstanceOf( "exclude", oexclude, List.class );
 
-            this.excludedResources = new HashSet<String>(exclude);
+            this.excludedResources = new HashSet<String>( exclude );
         }
 
         public Map<String, List<Role>> getFilteredResources() {

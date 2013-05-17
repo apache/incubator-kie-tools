@@ -26,6 +26,7 @@ import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
 import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.impl.RoleImpl;
 
 import static java.util.Collections.*;
 
@@ -33,45 +34,45 @@ public class RuntimeResourceManager implements ResourceManager {
 
     final Map<String, RuntimeRestriction> restrictions = new HashMap<String, RuntimeRestriction>();
 
-    private RuntimeRestriction addResource(final RuntimeResource resource) {
+    private RuntimeRestriction addResource( final RuntimeResource resource ) {
 
-        if (restrictions.containsKey(resource.getSignatureId())) {
+        if ( restrictions.containsKey( resource.getSignatureId() ) ) {
             return null;
         }
 
-        final RuntimeRestriction runtimeRestriction = new RuntimeRestriction(resource.getRoles(), resource.getTraits());
-        restrictions.put(resource.getSignatureId(), runtimeRestriction);
+        final RuntimeRestriction runtimeRestriction = new RuntimeRestriction( resource.getRoles(), resource.getTraits() );
+        restrictions.put( resource.getSignatureId(), runtimeRestriction );
 
         return runtimeRestriction;
     }
 
-    public RuntimeRestriction getRestriction(final RuntimeResource resource) {
-        return restrictions.get(resource.getSignatureId());
+    public RuntimeRestriction getRestriction( final RuntimeResource resource ) {
+        return restrictions.get( resource.getSignatureId() );
     }
 
     @Override
-    public boolean supports(final Resource resource) {
-        if (resource instanceof RuntimeResource) {
+    public boolean supports( final Resource resource ) {
+        if ( resource instanceof RuntimeResource ) {
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean requiresAuthentication(final Resource resource) {
-        if (!(resource instanceof RuntimeResource)) {
-            throw new IllegalArgumentException("Parameter named 'resource' is not instance of clazz 'RuntimeResource'!");
+    public boolean requiresAuthentication( final Resource resource ) {
+        if ( !( resource instanceof RuntimeResource ) ) {
+            throw new IllegalArgumentException( "Parameter named 'resource' is not instance of clazz 'RuntimeResource'!" );
         }
 
         final RuntimeResource runtimeResource = (RuntimeResource) resource;
 
-        RuntimeRestriction restriction = restrictions.get(runtimeResource.getSignatureId());
+        RuntimeRestriction restriction = restrictions.get( runtimeResource.getSignatureId() );
 
-        if (restriction == null) {
-            restriction = addResource(runtimeResource);
+        if ( restriction == null ) {
+            restriction = addResource( runtimeResource );
         }
 
-        if (restriction == null || restriction.isEmpty()) {
+        if ( restriction == null || restriction.isEmpty() ) {
             return false;
         }
 
@@ -83,24 +84,20 @@ public class RuntimeResourceManager implements ResourceManager {
         final Collection<Role> roles;
         final Collection<String> traits;
 
-        public RuntimeRestriction(final Collection<String> roles, final Collection<String> traits) {
-            if (roles != null) {
-                final List<Role> tempRoles = new ArrayList<Role>(roles.size());
-                for (final String tempRole : roles) {
-                    tempRoles.add(new Role() {
-                        @Override
-                        public String getName() {
-                            return tempRole;
-                        }
-                    });
+        public RuntimeRestriction( final Collection<String> roles,
+                                   final Collection<String> traits ) {
+            if ( roles != null ) {
+                final List<Role> tempRoles = new ArrayList<Role>( roles.size() );
+                for ( final String tempRole : roles ) {
+                    tempRoles.add( new RoleImpl( tempRole ) );
                 }
 
-                this.roles = unmodifiableList(tempRoles);
+                this.roles = unmodifiableList( tempRoles );
             } else {
                 this.roles = emptyList();
             }
 
-            if (traits != null) {
+            if ( traits != null ) {
                 this.traits = traits;
             } else {
                 this.traits = emptyList();

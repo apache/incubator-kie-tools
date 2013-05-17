@@ -5,6 +5,8 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
+  <distributable/>
+
   <filter>
     <filter-name>UberFire Security Filter</filter-name>
     <filter-class>
