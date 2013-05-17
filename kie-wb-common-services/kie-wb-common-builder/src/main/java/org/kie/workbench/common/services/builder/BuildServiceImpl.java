@@ -30,6 +30,7 @@ import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
+import org.kie.workbench.common.services.shared.builder.model.DeployResult;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -47,6 +48,7 @@ public class BuildServiceImpl
     private ExtendedM2RepoService m2RepoService;
     private ProjectService projectService;
     private LRUBuilderCache cache;
+    private Event<DeployResult> deployResultEvent;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -59,7 +61,8 @@ public class BuildServiceImpl
                              final Event<BuildResults> buildResultsEvent,
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final ProjectService projectService,
-                             final LRUBuilderCache cache ) {
+                             final LRUBuilderCache cache,
+                             final Event<DeployResult> deployResultEvent) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
@@ -67,6 +70,7 @@ public class BuildServiceImpl
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
         this.projectService = projectService;
         this.cache = cache;
+        this.deployResultEvent = deployResultEvent;
     }
 
     @Override
@@ -89,6 +93,8 @@ public class BuildServiceImpl
             final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
             m2RepoService.deployJar( input,
                                      pom.getGav() );
+            deployResultEvent.fire(
+                    new DeployResult(pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion()));
         }
     }
 
