@@ -2,8 +2,8 @@ package org.kie.workbench.projectimportsscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
 public interface ProjectConfigScreenView extends HasBusyIndicator,
