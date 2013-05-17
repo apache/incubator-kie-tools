@@ -299,33 +299,33 @@ public class DataObjectBrowser extends Composite {
 
     private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyType, final boolean multiple, final boolean baseType) {
 
-        if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
-            validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
-                @Override
-                public void onFailure() {
-                    ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
-                }
+        validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
+            @Override
+            public void onFailure() {
+                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
+            }
 
-                @Override
-                public void onSuccess() {
-                    validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
-                        @Override
-                        public void onFailure() {
-                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
-                        }
+            @Override
+            public void onSuccess() {
+                validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
+                    @Override
+                    public void onFailure() {
+                        ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
+                    }
 
-                        @Override
-                        public void onSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
                             ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
                             addDataObjectProperty(property);
                             resetInput();
+                        } else {
+                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
                         }
-                    });
-                }
-            });
-        } else {
-            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
-        }
+                    }
+                });
+            }
+        });
     }
     
     private void setDataObject(DataObjectTO dataObject) {
