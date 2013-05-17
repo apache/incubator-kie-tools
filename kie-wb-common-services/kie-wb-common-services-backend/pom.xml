@@ -11,8 +11,8 @@
 
   <artifactId>kie-wb-common-services-backend</artifactId>
 
-  <name>Kie Workbench - Common Services Backend</name>
-  <description>Kie Workbench - Common Services Backend</description>
+  <name>Kie Workbench - Common - Services Backend</name>
+  <description>Kie Workbench - Common - Services Backend</description>
 
   <dependencies>
 

@@ -2,7 +2,7 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 public interface ImportsWidgetView
         extends IsWidget {

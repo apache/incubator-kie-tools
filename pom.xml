@@ -13,8 +13,8 @@
   <artifactId>kie-wb-common</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kie Workbench - Commons</name>
-  <description>Kie Workbench - Common UI components</description>
+  <name>Kie Workbench - Common</name>
+  <description>Kie Workbench - Common</description>
 
   <modules>
     <module>kie-wb-common-widgets</module>

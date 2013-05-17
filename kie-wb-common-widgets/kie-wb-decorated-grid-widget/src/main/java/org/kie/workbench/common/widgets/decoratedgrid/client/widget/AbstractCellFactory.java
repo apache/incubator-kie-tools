@@ -26,7 +26,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupN
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericFloatEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericIntegerEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericShortEditCell;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericBigIntegerEditCell;

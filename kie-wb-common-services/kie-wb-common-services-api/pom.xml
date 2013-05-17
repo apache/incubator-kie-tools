@@ -11,8 +11,8 @@
 
   <artifactId>kie-wb-common-services-api</artifactId>
 
-  <name>Kie Workbench - Common Services API</name>
-  <description>Kie Workbench - Common Services API</description>
+  <name>Kie Workbench - Common - Services API</name>
+  <description>Kie Workbench - Common - Services API</description>
 
   <dependencies>
 

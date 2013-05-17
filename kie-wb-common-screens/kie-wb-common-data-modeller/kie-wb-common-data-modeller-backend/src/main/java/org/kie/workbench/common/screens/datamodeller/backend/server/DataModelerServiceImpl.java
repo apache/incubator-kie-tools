@@ -35,9 +35,9 @@ import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.guvnor.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.kie.guvnor.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

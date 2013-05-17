@@ -33,9 +33,9 @@ import org.kie.workbench.common.services.datamodeller.driver.ModelDriverExceptio
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.guvnor.datamodel.model.Annotation;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.datamodel.model.Annotation;
+import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

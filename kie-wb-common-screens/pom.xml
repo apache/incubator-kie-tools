@@ -13,8 +13,8 @@
   <artifactId>kie-wb-common-screens</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kie Workbench - Common Screens</name>
-  <description>Kie Workbench - Common Screens</description>
+  <name>Kie Workbench - Common - Screens</name>
+  <description>Kie Workbench - Common - Screens</description>
 
   <modules>
     <module>kie-wb-common-project-explorer</module>

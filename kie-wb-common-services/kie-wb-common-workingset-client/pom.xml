@@ -28,8 +28,8 @@
   <artifactId>kie-wb-common-workingset-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common Workingset API</name>
-  <description>Kie Workbench - Common Workingset API</description>
+  <name>Kie Workbench - Common - Workingset API</name>
+  <description>Kie Workbench - Common - Workingset API</description>
 
   <dependencies>
 

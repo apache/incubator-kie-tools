@@ -12,8 +12,8 @@
 
   <artifactId>kie-wb-common-data-modeller-core</artifactId>
 
-  <name>Kie Workbench - Common Services - Data modeller Core</name>
-  <description>Kie Workbench - Common Services - Data modeller Core</description>
+  <name>Kie Workbench - Common - Data modeller Core</name>
+  <description>Kie Workbench - Common - Data modeller Core</description>
 
 
   <dependencies>
@@ -35,8 +35,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-datamodel-api</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-datamodel-api</artifactId>
     </dependency>
 
   </dependencies>

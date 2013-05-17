@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-workingset-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common Workingset API</name>
-  <description>Kie Workbench - Common Workingset API</description>
+  <name>Kie Workbench - Common - Workingset API</name>
+  <description>Kie Workbench - Common - Workingset API</description>
 
   <dependencies>
 

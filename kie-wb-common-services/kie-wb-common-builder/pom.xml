@@ -29,8 +29,8 @@
   <artifactId>kie-wb-common-builder</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Builder</name>
-  <description>Compiler for Kie Modules</description>
+  <name>Kie Workbench - Common - Builder</name>
+  <description>Kie Workbench - Common - Builder</description>
 
   <dependencies>
 

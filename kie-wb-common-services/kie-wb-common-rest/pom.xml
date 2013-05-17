@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-rest</artifactId>
   <packaging>war</packaging>
   
-  <name>Kie Workbench - REST Service</name>
-  <description>Kie Workbench - REST Service</description>
+  <name>Kie Workbench - Common - REST Service</name>
+  <description>Kie Workbench - Common - REST Service</description>
 
   <dependencies>
     <dependency>
@@ -144,8 +144,8 @@
       <scope>test</scope>
     </dependency>
      <dependency>
-      <groupId>guvnor-datamodel</groupId>
-      <artifactId>guvnor-datamodel-backend</artifactId>
+       <groupId>org.kie.workbench.services</groupId>
+       <artifactId>kie-wb-common-datamodel-backend</artifactId>
       <scope>test</scope>
     </dependency>   
  <!--    

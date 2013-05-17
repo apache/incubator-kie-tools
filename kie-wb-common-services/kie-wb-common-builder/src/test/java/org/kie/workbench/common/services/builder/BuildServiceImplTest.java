@@ -27,11 +27,13 @@ import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.builder.Message;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.guvnor.project.model.GAV;
 import org.kie.guvnor.project.service.ProjectService;
 import org.kie.workbench.common.services.builder.Builder;
+import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
@@ -88,6 +90,13 @@ public class BuildServiceImplTest {
 
         final BuildResults results = builder.build();
 
+        //Debug output
+        if ( !results.getMessages().isEmpty() ) {
+            for ( BuildMessage m : results.getMessages() ) {
+                System.out.println( m.getText() );
+            }
+        }
+
         assertTrue( results.getMessages().isEmpty() );
     }
 
@@ -102,16 +111,15 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder2 = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2-snapshot",
-                                             paths,
-                                             ioService,
-                                             projectService );
+                                              "guvnor-m2repo-dependency-example2-snapshot",
+                                              paths,
+                                              ioService,
+                                              projectService );
 
         final BuildResults results2 = builder2.build();
         assertTrue( results2.getMessages().isEmpty() );
     }
 
-    
     @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         Paths paths = getReference( Paths.class );
@@ -129,6 +137,14 @@ public class BuildServiceImplTest {
                                              projectService );
 
         final BuildResults results = builder.build();
+
+        //Debug output
+        if ( !results.getMessages().isEmpty() ) {
+            for ( BuildMessage m : results.getMessages() ) {
+                System.out.println( m.getText() );
+            }
+        }
+
         assertTrue( results.getMessages().isEmpty() );
 
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
@@ -192,7 +208,7 @@ public class BuildServiceImplTest {
                                                                                                 cc );
 
         String m2RepoURL = m2RepoService.getRepositoryURL( null );
-        
+
         //Deploy a 1.0 version of guvnor-m2repo-dependency-example1-snapshot kjar
         GAV gav = new GAV( "org.kie.example",
                            "guvnor-m2repo-dependency-example1", "1.0" );
@@ -200,10 +216,10 @@ public class BuildServiceImplTest {
         InputStream is = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
         m2RepoService.deployJar( is,
                                  gav );
-        
+
         //Deploy a SNAPSHOT version of guvnor-m2repo-dependency-example1-snapshot kjar
         GAV gav2 = new GAV( "org.kie.example",
-                "guvnor-m2repo-dependency-example1-snapshot", "1.0-SNAPSHOT" );
+                            "guvnor-m2repo-dependency-example1-snapshot", "1.0-SNAPSHOT" );
 
         InputStream is2 = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
         m2RepoService.deployJar( is2, gav2 );

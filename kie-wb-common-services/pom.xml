@@ -13,10 +13,11 @@
   <artifactId>kie-wb-common-services</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kie Workbench - Common Services</name>
-  <description>Kie Workbench - Common Services</description>
+  <name>Kie Workbench - Common - Services</name>
+  <description>Kie Workbench - Common - Services</description>
 
   <modules>
+    <module>kie-wb-common-datamodel</module>
     <module>kie-wb-common-services-api</module>
     <module>kie-wb-common-services-backend</module>
     <module>kie-wb-common-data-modeller-core</module>

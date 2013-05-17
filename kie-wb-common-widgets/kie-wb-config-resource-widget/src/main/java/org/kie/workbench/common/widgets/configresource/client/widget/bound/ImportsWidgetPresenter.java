@@ -24,9 +24,9 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.popups.list.FormListPopup;
 import org.kie.workbench.common.widgets.client.popups.list.PopupItemSelectedCommand;
-import org.kie.guvnor.datamodel.events.ImportAddedEvent;
-import org.kie.guvnor.datamodel.events.ImportRemovedEvent;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
+import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 import javax.enterprise.event.Event;
 import java.util.ArrayList;

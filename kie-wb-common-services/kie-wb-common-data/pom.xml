@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-data</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common Data Structures</name>
-  <description>Kie Workbench - Common Data Structures</description>
+  <name>Kie Workbench - Common - Data Structures</name>
+  <description>Kie Workbench - Common - Data Structures</description>
 
   <dependencies>
          

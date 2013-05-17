@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-security</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common Security</name>
-  <description>Kie Workbench - Common Security</description>
+  <name>Kie Workbench - Common - Security</name>
+  <description>Kie Workbench - Common - Security</description>
 
   <dependencies>
 

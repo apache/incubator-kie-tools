@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.guvnor.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.POMService;
 import org.kie.guvnor.project.service.ProjectService;
