@@ -18,7 +18,7 @@ public class AnnotationUtils {
         String value = null;
         if ( annotation != null ) {
             try {
-                value = (String) annotation.annotationType().getMethod( attributeName ).invoke( annotation );
+                value = annotation.annotationType().getMethod( attributeName ).invoke( annotation ).toString();
             } catch ( Exception ex ) {
                 //Swallow
             }

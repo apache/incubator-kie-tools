@@ -3,7 +3,6 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
@@ -50,7 +49,6 @@ public class DataModelFactFieldsAnnotationsTest {
     }
 
     @Test
-    @Ignore("manstis needs to fix")
     public void testCorrectPackageDMOAnnotationAttributes() throws Exception {
         //Build ProjectDMO
         final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
@@ -181,7 +179,6 @@ public class DataModelFactFieldsAnnotationsTest {
     }
 
     @Test
-    @Ignore("manstis needs to fix")
     public void testProjectDMOAnnotationAttributes() throws Exception {
         final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();

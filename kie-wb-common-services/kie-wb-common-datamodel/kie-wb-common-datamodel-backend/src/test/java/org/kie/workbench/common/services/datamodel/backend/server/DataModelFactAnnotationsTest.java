@@ -1,9 +1,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server;
 
-import java.lang.annotation.ElementType;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.Role;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
@@ -90,7 +88,6 @@ public class DataModelFactAnnotationsTest {
     }
 
     @Test
-    @Ignore("manstis needs to fix")
     public void testCorrectPackageDMOAnnotationAttributes2() throws Exception {
         //Build ProjectDMO
         final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
@@ -231,7 +228,6 @@ public class DataModelFactAnnotationsTest {
     }
 
     @Test
-    @Ignore("manstis needs to fix")
     public void testProjectDMOAnnotationAttributes2() throws Exception {
         final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
