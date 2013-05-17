@@ -41,7 +41,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;

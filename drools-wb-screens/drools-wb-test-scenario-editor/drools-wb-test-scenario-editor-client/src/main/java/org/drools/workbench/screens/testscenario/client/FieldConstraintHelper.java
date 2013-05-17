@@ -22,8 +22,8 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.model.DropDownData;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 
 import java.util.HashMap;

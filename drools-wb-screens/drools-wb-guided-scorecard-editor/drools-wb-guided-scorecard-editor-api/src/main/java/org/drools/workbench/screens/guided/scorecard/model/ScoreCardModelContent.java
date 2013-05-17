@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.scorecard.model;
 
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class ScoreCardModelContent {

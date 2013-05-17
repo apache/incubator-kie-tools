@@ -22,7 +22,7 @@ import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.DirtyableComposite;
 
 /**

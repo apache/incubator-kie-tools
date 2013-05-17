@@ -2,7 +2,7 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import org.drools.workbench.models.testscenarios.shared.FactData;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;

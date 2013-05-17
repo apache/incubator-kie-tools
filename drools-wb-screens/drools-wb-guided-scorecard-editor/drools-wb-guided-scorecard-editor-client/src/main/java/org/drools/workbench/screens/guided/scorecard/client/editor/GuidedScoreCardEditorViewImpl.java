@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Composite;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.BusyPopup;
 
 public class GuidedScoreCardEditorViewImpl

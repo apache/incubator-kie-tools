@@ -45,7 +45,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources508;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;

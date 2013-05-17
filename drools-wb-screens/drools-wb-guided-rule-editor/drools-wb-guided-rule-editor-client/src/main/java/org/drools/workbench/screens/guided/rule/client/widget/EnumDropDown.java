@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.data.util.ConstraintValueEditorHelper;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;

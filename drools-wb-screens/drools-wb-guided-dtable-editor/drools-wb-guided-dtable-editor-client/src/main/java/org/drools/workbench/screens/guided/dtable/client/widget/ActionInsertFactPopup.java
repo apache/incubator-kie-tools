@@ -50,8 +50,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageR
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;

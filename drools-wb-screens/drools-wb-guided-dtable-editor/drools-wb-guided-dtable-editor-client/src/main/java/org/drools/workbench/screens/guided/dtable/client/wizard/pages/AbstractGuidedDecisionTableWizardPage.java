@@ -23,7 +23,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValu
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.wizards.WizardPage;
 
 /**

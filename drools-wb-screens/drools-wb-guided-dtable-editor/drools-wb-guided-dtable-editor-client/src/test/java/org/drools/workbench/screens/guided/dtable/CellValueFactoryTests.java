@@ -35,13 +35,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValu
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.model.ModelField.FIELD_CLASS_TYPE;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.datamodel.model.ModelField.FIELD_CLASS_TYPE;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 

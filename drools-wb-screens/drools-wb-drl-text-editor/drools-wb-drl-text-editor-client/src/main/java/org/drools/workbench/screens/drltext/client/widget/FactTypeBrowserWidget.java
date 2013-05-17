@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.drltext.client.resources.Resources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.resources.images.ImageResources;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
 

@@ -44,7 +44,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.kie.guvnor.datamodel.model.DropDownData;
+import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.FormStylePopup;

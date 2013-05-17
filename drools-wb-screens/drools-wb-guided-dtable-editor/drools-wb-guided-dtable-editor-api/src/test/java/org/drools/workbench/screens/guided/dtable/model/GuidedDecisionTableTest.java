@@ -32,12 +32,12 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
-import org.kie.guvnor.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
-import org.kie.guvnor.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.guvnor.datamodel.model.ModelField;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
-import org.kie.guvnor.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
+import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 

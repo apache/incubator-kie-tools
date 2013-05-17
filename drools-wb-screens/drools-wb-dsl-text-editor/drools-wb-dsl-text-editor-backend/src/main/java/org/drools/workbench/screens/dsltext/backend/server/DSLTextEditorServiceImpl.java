@@ -26,7 +26,7 @@ import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.guvnor.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;

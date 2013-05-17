@@ -62,9 +62,9 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.guvnor.datamodel.model.DropDownData;
-import org.kie.guvnor.datamodel.oracle.CEPOracle;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.model.DropDownData;
+import org.kie.workbench.common.services.datamodel.oracle.CEPOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;

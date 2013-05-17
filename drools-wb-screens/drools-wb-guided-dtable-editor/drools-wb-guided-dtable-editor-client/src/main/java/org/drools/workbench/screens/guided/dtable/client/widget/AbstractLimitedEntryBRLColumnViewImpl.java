@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;

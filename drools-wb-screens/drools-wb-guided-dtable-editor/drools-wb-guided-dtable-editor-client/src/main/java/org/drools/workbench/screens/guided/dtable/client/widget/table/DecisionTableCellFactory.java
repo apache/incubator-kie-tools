@@ -40,7 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.Popu
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;

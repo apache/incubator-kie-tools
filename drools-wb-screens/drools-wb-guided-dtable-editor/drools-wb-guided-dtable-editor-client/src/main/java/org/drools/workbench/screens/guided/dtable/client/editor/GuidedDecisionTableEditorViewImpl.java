@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.dtable.client.widget.GuidedDecisionTableWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;

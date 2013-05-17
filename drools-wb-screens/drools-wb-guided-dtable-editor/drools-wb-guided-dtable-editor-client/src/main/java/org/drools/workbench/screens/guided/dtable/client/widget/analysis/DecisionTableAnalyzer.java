@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetectorKey;

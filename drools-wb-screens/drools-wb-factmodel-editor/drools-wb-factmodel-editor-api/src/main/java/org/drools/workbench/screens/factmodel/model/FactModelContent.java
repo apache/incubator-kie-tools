@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.factmodel.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 import java.util.ArrayList;
 import java.util.List;

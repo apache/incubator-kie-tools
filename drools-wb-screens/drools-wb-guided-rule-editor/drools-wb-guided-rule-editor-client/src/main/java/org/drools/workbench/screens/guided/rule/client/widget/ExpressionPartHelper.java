@@ -22,8 +22,8 @@ import org.drools.workbench.models.commons.shared.rule.ExpressionField;
 import org.drools.workbench.models.commons.shared.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.commons.shared.rule.ExpressionMethod;
 import org.drools.workbench.models.commons.shared.rule.ExpressionPart;
-import org.kie.guvnor.datamodel.model.MethodInfo;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.model.MethodInfo;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 public class ExpressionPartHelper {
 

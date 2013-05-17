@@ -19,7 +19,7 @@ package org.drools.workbench.screens.globals.backend.server.util;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.datamodel.backend.server.builder.util.GlobalsParser;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.drools.workbench.screens.globals.model.Global;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 

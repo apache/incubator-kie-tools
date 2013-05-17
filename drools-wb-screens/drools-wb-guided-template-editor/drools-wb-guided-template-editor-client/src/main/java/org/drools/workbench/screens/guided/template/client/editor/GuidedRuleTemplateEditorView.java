@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**

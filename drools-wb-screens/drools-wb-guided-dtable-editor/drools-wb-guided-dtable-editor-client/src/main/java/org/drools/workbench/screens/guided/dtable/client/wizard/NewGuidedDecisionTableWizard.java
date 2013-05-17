@@ -38,7 +38,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatter
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatternsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpander;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
-import org.kie.guvnor.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;

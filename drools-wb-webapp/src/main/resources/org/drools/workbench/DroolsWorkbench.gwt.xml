@@ -14,10 +14,6 @@
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
 
-  <!-- Common Widgets -->
-  <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
-  <inherits name='org.kie.guvnor.datamodel.GuvnorDataModelAPI'/>
-
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenClient"/>
@@ -28,6 +24,7 @@
   <inherits name="org.kie.workbench.common.services.data.KieWorkbenchCommonData"/>
   <inherits name="org.kie.workbench.common.services.workingset.KieWorkbenchWorkingsetAPI"/>
   <inherits name="org.kie.workbench.common.services.workingset.KieWorkbenchWorkingsetClient"/>
+  <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
@@ -49,6 +46,8 @@
   <inherits name="org.drools.workbench.screens.scorecardxls.DroolsWorkbenchScoreCardXLSEditorClient"/>
   <inherits name="org.drools.workbench.screens.testscenario.DroolsWorkbenchTestScenarioEditorClient"/>
 
+  <!-- To be refactored -->
+  <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
   <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
