@@ -18,11 +18,11 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.projecteditor.client.forms.KSessionForm;
 import org.kie.workbench.projecteditor.client.forms.KSessionsPanel;
 import org.kie.workbench.projecteditor.client.forms.KSessionsPanelView;
-import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
-import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.KSessionModel;
 import org.kie.workbench.projecteditor.client.widgets.ListFormComboPanelView;
 import org.mockito.ArgumentCaptor;

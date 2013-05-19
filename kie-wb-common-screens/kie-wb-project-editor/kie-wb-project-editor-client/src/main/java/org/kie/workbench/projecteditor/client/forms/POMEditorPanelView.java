@@ -19,9 +19,9 @@ package org.kie.workbench.projecteditor.client.forms;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
 import org.kie.guvnor.project.model.Dependency;
 import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 public interface POMEditorPanelView extends HasBusyIndicator,
                                             IsWidget {

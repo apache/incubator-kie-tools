@@ -2,7 +2,7 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.projecteditor.client.type.POMResourceType;
 import org.uberfire.backend.vfs.Path;

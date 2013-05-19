@@ -2,13 +2,13 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
 import org.kie.guvnor.project.model.KBaseModel;
 import org.kie.guvnor.project.model.KModuleModel;
 import org.kie.guvnor.project.service.KModuleService;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 

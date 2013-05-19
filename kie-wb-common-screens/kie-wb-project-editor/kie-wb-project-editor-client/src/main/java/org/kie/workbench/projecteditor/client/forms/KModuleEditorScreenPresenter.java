@@ -2,7 +2,7 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.workbench.widgets.common.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.projecteditor.client.type.KModuleResourceType;
 import org.kie.workbench.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
@@ -21,7 +21,7 @@ public class KModuleEditorScreenPresenter {
     private       Path               path;
     private final KModuleEditorPanel kModuleEditorPanel;
     private       Menus              menus;
-    private final FileMenuBuilder    menuBuilder;
+    private final FileMenuBuilder menuBuilder;
 
     @Inject
     public KModuleEditorScreenPresenter( KModuleEditorPanel kModuleEditorPanel,

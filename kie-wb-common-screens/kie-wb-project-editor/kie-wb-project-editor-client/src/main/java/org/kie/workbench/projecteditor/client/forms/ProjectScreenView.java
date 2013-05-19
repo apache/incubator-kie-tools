@@ -17,9 +17,9 @@
 package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.widgets.common.client.widget.HasBusyIndicator;
-import org.kie.workbench.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.workbench.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 
 public interface ProjectScreenView extends HasBusyIndicator,
                                                  IsWidget {

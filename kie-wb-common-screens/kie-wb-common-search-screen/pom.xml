@@ -3,23 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <parent>
-    <groupId>org.kie.workbench.screens</groupId>
-    <artifactId>kie-wb-common-screens</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+<parent>
+  <groupId>org.kie.workbench.screens</groupId>
+  <artifactId>kie-wb-common-screens</artifactId>
+  <version>6.0.0-SNAPSHOT</version>
+</parent>
+<modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-wb-common-search-screen</artifactId>
-  <packaging>pom</packaging>
+<artifactId>kie-wb-common-search-screen</artifactId>
+<packaging>pom</packaging>
 
-  <name>Kie Workbench - Common - Search Screen</name>
-  <description>Kie Workbench - Common - Search Screen</description>
+<name>Kie Workbench - Common - Search Screen</name>
+<description>Kie Workbench - Common - Search Screen</description>
 
-  <modules>
-    <module>kie-wb-common-search-screen-api</module>
-    <module>kie-wb-common-search-screen-client</module>
-    <module>kie-wb-common-search-screen-backend</module>
-  </modules>
+<modules>
+  <module>kie-wb-common-search-screen-api</module>
+  <module>kie-wb-common-search-screen-client</module>
+  <module>kie-wb-common-search-screen-backend</module>
+</modules>
 
 </project>

@@ -24,9 +24,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.workbench.services.shared.builder.model.BuildMessage;
-import org.kie.workbench.services.shared.builder.model.BuildResults;
-import org.kie.workbench.services.shared.builder.model.IncrementalBuildResults;
+import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
+import org.kie.workbench.common.services.shared.builder.model.BuildResults;
+import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 

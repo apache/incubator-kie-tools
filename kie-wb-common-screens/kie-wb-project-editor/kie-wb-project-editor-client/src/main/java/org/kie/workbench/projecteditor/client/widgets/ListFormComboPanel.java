@@ -18,9 +18,9 @@ package org.kie.workbench.projecteditor.client.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
-import org.kie.workbench.widgets.common.client.popups.text.PopupSetFieldCommand;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 
 import java.util.Map;
 

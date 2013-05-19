@@ -18,10 +18,10 @@ package org.kie.workbench.projecteditor.client.widgets;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.projecteditor.client.widgets.Form;
 import org.kie.workbench.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.workbench.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.workbench.widgets.common.client.popups.text.FormPopup;
 import org.kie.guvnor.project.model.HasListFormComboPanelProperties;
 
 import java.util.HashMap;
