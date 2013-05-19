@@ -140,17 +140,17 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-project-editor-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-project-editor-backend</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench</groupId>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-project-imports-editor-client</artifactId>
     </dependency>
 
@@ -575,6 +575,10 @@
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-view-source-widget</compileSourcesArtifact>
