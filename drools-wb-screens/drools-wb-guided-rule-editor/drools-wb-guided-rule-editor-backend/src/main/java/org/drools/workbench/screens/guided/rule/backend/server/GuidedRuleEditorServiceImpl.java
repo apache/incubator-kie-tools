@@ -38,7 +38,7 @@ import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;

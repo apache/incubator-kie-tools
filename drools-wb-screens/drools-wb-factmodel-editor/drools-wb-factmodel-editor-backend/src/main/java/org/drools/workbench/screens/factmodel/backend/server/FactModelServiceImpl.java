@@ -39,7 +39,7 @@ import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.kie.workbench.common.services.shared.file.CopyService;

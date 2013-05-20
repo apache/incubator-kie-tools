@@ -17,8 +17,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-project-api</artifactId>
     </dependency>
 
     <dependency>

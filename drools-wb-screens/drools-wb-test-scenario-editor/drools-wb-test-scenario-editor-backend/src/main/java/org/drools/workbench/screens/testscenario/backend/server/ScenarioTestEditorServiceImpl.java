@@ -37,7 +37,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedFilter;

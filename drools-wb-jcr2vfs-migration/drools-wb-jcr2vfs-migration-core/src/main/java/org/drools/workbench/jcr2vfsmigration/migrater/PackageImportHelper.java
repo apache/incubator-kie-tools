@@ -20,7 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

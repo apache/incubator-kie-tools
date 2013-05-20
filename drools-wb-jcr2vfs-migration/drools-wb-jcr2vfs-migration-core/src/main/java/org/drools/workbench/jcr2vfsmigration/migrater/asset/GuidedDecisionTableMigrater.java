@@ -22,7 +22,7 @@ import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageHeaderInfo;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;

@@ -53,7 +53,7 @@ import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.FileExtensionsFilter;
 import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;

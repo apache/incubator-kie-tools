@@ -27,7 +27,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.guvnor.project.model.Dependency;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 
