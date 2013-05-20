@@ -49,7 +49,7 @@ import javax.enterprise.inject.New;
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
-    private final ImportsWidgetPresenter importsWidgetPresenter;
+    private ImportsWidgetPresenter importsWidgetPresenter;
     private ProjectScreenView view;
     private POMEditorPanel pomPanel;
     private KModuleEditorPanel kModuleEditorPanel;
@@ -67,6 +67,8 @@ public class ProjectScreenPresenter
 
     private Menus menus;
     private Caller<ProjectService> projectService;
+
+    public ProjectScreenPresenter(){}
 
     @Inject
     public ProjectScreenPresenter(@New ProjectScreenView view,
