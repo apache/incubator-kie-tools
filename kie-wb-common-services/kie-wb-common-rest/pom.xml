@@ -10,7 +10,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-wb-common-rest</artifactId>
-  <packaging>war</packaging>
   
   <name>Kie Workbench - Common - REST Service</name>
   <description>Kie Workbench - Common - REST Service</description>
@@ -143,11 +142,12 @@
       <artifactId>kie-nio2-jgit</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
-       <groupId>org.kie.workbench.services</groupId>
-       <artifactId>kie-wb-common-datamodel-backend</artifactId>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-datamodel-backend</artifactId>
       <scope>test</scope>
     </dependency>   
+
  <!--    
         <dependency>
       <groupId>org.uberfire</groupId>

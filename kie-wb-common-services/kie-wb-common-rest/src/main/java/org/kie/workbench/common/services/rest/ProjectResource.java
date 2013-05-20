@@ -17,6 +17,8 @@
 
 package org.kie.workbench.common.services.rest;
 
+import java.util.Iterator;
+
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.workbench.common.services.rest.domain.BuildConfig;
 import org.kie.workbench.common.services.rest.domain.Entity;
@@ -24,6 +26,7 @@ import org.kie.workbench.common.services.rest.domain.Result;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 
 
+import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.guvnor.project.model.POM;
 import org.kie.guvnor.project.service.ProjectService;
@@ -64,8 +67,9 @@ public class ProjectResource {
     private Paths paths;
 
     @Inject
-    @Named("migrationFS")
-    private FileSystem fs;
+    @Named("ioSystemStrategy")
+    private IOService ioSystemService;
+
 
     @Context
     public void setHttpHeaders(HttpHeaders theHeaders) {
@@ -105,13 +109,18 @@ public class ProjectResource {
                 + repositoryName + ", project name:" + project.getName());
 
         POM pom = new POM();
-        org.uberfire.backend.vfs.Path modulePath = generateRootPath();
-        org.uberfire.backend.vfs.Path vfsPath = projectService.newProject(modulePath, project.getName(), pom, "/");
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);        
 
-        //TODO: handle errors, exceptions.
-        
-        //project.setPath(vfsPath.getFileName());
-        return project;
+        if (repositoryPath == null) {
+            //TODO: Return proper error message
+            return null;
+        } else {
+            org.uberfire.backend.vfs.Path vfsPath = projectService.newProject(paths.convert(repositoryPath.resolve("project"), false), project.getName(), pom, "/");
+            //TODO: handle errors, exceptions.
+            
+            //project.setPath(vfsPath.getFileName());
+            return project;
+        }
     }
 
     @DELETE
@@ -139,18 +148,26 @@ public class ProjectResource {
     public Result compileProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName, BuildConfig mavenConfig) {
-        System.out.println("-----compileProject--- , repositoryName:"
-                + repositoryName + ", project name:" + projectName);
+        System.out.println("-----compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
 
-        org.uberfire.backend.vfs.Path rootPath = generateRootPath();
-        org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(paths.convert( rootPath ).resolve( projectName ), false);
-        buildService.build(pathToPomXML);
-        
-        //TODO: get BuildResults
-       
-        Result result = new Result();
-        result.setStatus("SUCCESS");
-        return result;
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);        
+
+        if (repositoryPath == null) {
+            Result result = new Result();
+            result.setStatus("FAILURE");
+            result.setDetailedMessage("The repository " + repositoryName + " does not exist");
+            return result;
+        } else {
+            org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(
+                    repositoryPath.resolve(projectName), false);
+            buildService.build(pathToPomXML);
+
+            // TODO: get BuildResults
+
+            Result result = new Result();
+            result.setStatus("SUCCESS");
+            return result;
+        }
     }
 
     @GET
@@ -164,15 +181,23 @@ public class ProjectResource {
         System.out.println("-----installProject--- , repositoryName:"
                 + repositoryName + ", project name:" + projectName);
 
-        org.uberfire.backend.vfs.Path rootPath = generateRootPath();
-        org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(paths.convert( rootPath ).resolve( projectName ), false);
-        buildService.buildAndDeploy(pathToPomXML);
-        
-        //TODO: get BuildResults
-        
-        Result result = new Result();
-        result.setStatus("SUCCESS");
-        return result;
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);        
+
+        if (repositoryPath == null) {
+            Result result = new Result();
+            result.setStatus("FAILURE");
+            result.setDetailedMessage("The repository " + repositoryName + " does not exist");
+            return result;
+        } else {
+            org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(repositoryPath.resolve( projectName ), false);
+            buildService.buildAndDeploy(pathToPomXML);
+            
+            //TODO: get BuildResults
+            
+            Result result = new Result();
+            result.setStatus("SUCCESS");
+            return result;
+        }
     }
 
     @GET
@@ -186,17 +211,25 @@ public class ProjectResource {
         System.out.println("-----testProject--- , repositoryName:"
                 + repositoryName + ", project name:" + projectName);
 
-        org.uberfire.backend.vfs.Path rootPath = generateRootPath();
-        org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(paths.convert( rootPath ).resolve( projectName ), false);
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);        
 
-        //TODO: Get session from BuildConfig or create a default session for testing if no session is provided. 
-        scenarioTestEditorService.runAllScenarios(pathToPomXML, "someSession");
-        
-        //TODO: Get test result. We need an sync version of runAllScenarios (instead of listening for test result from event listeners).
-        
-        Result result = new Result();
-        result.setStatus("SUCCESS");
-        return result;
+        if (repositoryPath == null) {
+            Result result = new Result();
+            result.setStatus("FAILURE");
+            result.setDetailedMessage("The repository " + repositoryName + " does not exist");
+            return result;
+        } else {
+            org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(repositoryPath.resolve( projectName ), false);
+
+            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided. 
+            scenarioTestEditorService.runAllScenarios(pathToPomXML, "someSession");
+            
+            //TODO: Get test result. We need an sync version of runAllScenarios (instead of listening for test result from event listeners).
+            
+            Result result = new Result();
+            result.setStatus("SUCCESS");
+            return result;
+        }
     }
 
 
@@ -210,15 +243,23 @@ public class ProjectResource {
         System.out.println("-----deployProject--- , repositoryName:"
                 + repositoryName + ", project name:" + projectName);
 
-        org.uberfire.backend.vfs.Path rootPath = generateRootPath();
-        org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(paths.convert( rootPath ).resolve( projectName ), false);
-        buildService.buildAndDeploy(pathToPomXML);
-        
-        //TODO: get BuildResults
-        
-        Result result = new Result();
-        result.setStatus("SUCCESS");
-        return result;
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);        
+
+        if (repositoryPath == null) {
+            Result result = new Result();
+            result.setStatus("FAILURE");
+            result.setDetailedMessage("The repository " + repositoryName + " does not exist");
+            return result;
+        } else {
+            org.uberfire.backend.vfs.Path pathToPomXML = paths.convert(repositoryPath.resolve( projectName ), false);
+            buildService.buildAndDeploy(pathToPomXML);
+            
+            //TODO: get BuildResults
+            
+            Result result = new Result();
+            result.setStatus("SUCCESS");
+            return result;
+        }
     }
 
     @POST
@@ -248,20 +289,24 @@ public class ProjectResource {
         return result;
     }
 
-
-    public org.uberfire.backend.vfs.Path generateRootPath() {
-        final org.kie.commons.java.nio.file.Path projectRoot = fs.getPath( "/" + escapePathEntry( "project" ));
-
-        final org.uberfire.backend.vfs.Path path = PathFactory.newPath( paths.convert( projectRoot.getFileSystem() ), projectRoot.getFileName().toString(), projectRoot.toUri().toString() );
-
-        return path;
-    }
-
-    public String escapePathEntry( String pathEntry ) {
-        // VFS doesn't support /'s in the path entries
-        pathEntry = pathEntry.replaceAll( "/", " slash " );
-        // TODO Once porcelli has a list of all illegal and escaped characters in PathEntry, deal with them here
-        return pathEntry;
+    public org.kie.commons.java.nio.file.Path getRepositoryRootPath(String repositoryName) {
+        org.kie.commons.java.nio.file.Path repositoryPath = null;
+        
+        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems().iterator();
+        if ( fsIterator.hasNext() ) {
+            final FileSystem fileSystem = fsIterator.next();
+            System.out.println("-----FileSystem--- :" + fileSystem);
+          
+            final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = fileSystem.getRootDirectories().iterator();
+            if ( rootIterator.hasNext() ) {
+                org.kie.commons.java.nio.file.Path rootPath = rootIterator.next();
+                if (rootPath != null && rootPath.startsWith(repositoryName)) {
+                    repositoryPath = rootPath;
+                }
+            }
+        }   
+        
+        return repositoryPath;
     }
 }
 
