@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
@@ -569,16 +570,16 @@
             <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
 
             <!-- Common dependencies -->
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-decorated-grid-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-view-source-widget</compileSourcesArtifact>
@@ -590,10 +591,6 @@
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-imports-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench:kie-wb-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
 
             <!-- Models for drools-wb -->
@@ -634,9 +631,6 @@
 
             <!-- To be refactored - Common\shared stuff -->
             <compileSourcesArtifact>org.kie.guvnor:guvnor-project-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-project-editor-api</compileSourcesArtifact>
-
-            <compileSourcesArtifact>org.kie.guvnor:guvnor-datamodel-api</compileSourcesArtifact>
 
             <!-- Kie Commons -->
             <compileSourcesArtifact>org.kie.commons:kie-commons-data</compileSourcesArtifact>
