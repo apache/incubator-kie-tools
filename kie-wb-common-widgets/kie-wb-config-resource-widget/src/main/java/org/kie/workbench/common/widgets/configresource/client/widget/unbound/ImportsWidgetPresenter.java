@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.guvnor.project.model.ProjectImports;
@@ -39,54 +38,50 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
-        IsWidget {
+                   IsWidget {
 
     private ImportsWidgetView view;
     private FormPopup addImportPopup;
     private Caller<ProjectService> projectService;
     private Event<NotificationEvent> notification;
 
-    private Imports resourceImports;
     private Path path;
     private ProjectImports projectImports;
 
-    public ImportsWidgetPresenter(){}
+    public ImportsWidgetPresenter() {
+    }
 
     @Inject
-    public ImportsWidgetPresenter(final ImportsWidgetView view,
-                                  Caller<ProjectService> projectService,
-                                  Event<NotificationEvent> notification,
-                                  final FormPopup addImportPopup) {
+    public ImportsWidgetPresenter( final ImportsWidgetView view,
+                                   final Caller<ProjectService> projectService,
+                                   final Event<NotificationEvent> notification,
+                                   final FormPopup addImportPopup ) {
         this.view = view;
         this.projectService = projectService;
         this.notification = notification;
         this.addImportPopup = addImportPopup;
-        view.setPresenter(this);
+        view.setPresenter( this );
     }
 
-    public void init(Path path,
-                     final boolean isReadOnly) {
-        this.path = checkNotNull("resourceImports",
-                path);
+    public void init( final Path path,
+                      final boolean isReadOnly ) {
+        this.path = checkNotNull( "path",
+                                  path );
 
-        projectService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
-
-
-        view.setReadOnly(isReadOnly);
-
-        for (Import item : resourceImports.getImports()) {
-            view.addImport(item.getType());
-        }
+        view.setReadOnly( isReadOnly );
+        projectService.call( getModelSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private RemoteCallback<ProjectImports> getModelSuccessCallback() {
         return new RemoteCallback<ProjectImports>() {
 
             @Override
-            public void callback(final ProjectImports projectImports) {
+            public void callback( final ProjectImports projectImports ) {
                 ImportsWidgetPresenter.this.projectImports = projectImports;
-
+                for ( Import item : projectImports.getImports().getImports() ) {
+                    view.addImport( item.getType() );
+                }
                 view.hideBusyIndicator();
             }
         };
@@ -94,25 +89,25 @@ public class ImportsWidgetPresenter
 
     @Override
     public void onAddImport() {
-        addImportPopup.show(new PopupSetFieldCommand() {
+        addImportPopup.show( new PopupSetFieldCommand() {
             @Override
-            public void setName(String name) {
-                final Import item = new Import(name);
-                view.addImport(name);
-                resourceImports.getImports().add(item);
+            public void setName( String name ) {
+                final Import item = new Import( name );
+                view.addImport( name );
+                projectImports.getImports().getImports().add( item );
             }
-        });
+        } );
     }
 
     @Override
     public void onRemoveImport() {
         String selected = view.getSelected();
-        if (selected == null) {
+        if ( selected == null ) {
             view.showPleaseSelectAnImport();
         } else {
-            final Import item = new Import(selected);
-            view.removeImport(selected);
-            resourceImports.removeImport(item);
+            final Import item = new Import( selected );
+            view.removeImport( selected );
+            projectImports.getImports().removeImport( item );
         }
     }
 
@@ -130,25 +125,26 @@ public class ImportsWidgetPresenter
     }
 
     public boolean hasBeenInitialized() {
-        return resourceImports != null;
+        return projectImports != null;
     }
 
-    public void save(String comment, Metadata projectImportsMetadata) {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-        projectService.call(getSaveSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
-                projectImports,
-                projectImportsMetadata,
-                comment);
+    public void save( String comment,
+                      Metadata projectImportsMetadata ) {
+        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        projectService.call( getSaveSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                      projectImports,
+                                                                                      projectImportsMetadata,
+                                                                                      comment );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 view.hideBusyIndicator();
-                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         };
     }
