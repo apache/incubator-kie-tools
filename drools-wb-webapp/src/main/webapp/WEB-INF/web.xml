@@ -66,7 +66,6 @@
     <param-value>/asynch/jobs</param-value>
   </context-param>
 
-  <!-- Disabled until REST has been completed
   <listener>
     <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>
@@ -80,7 +79,6 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
-  -->
 
   <servlet>
     <servlet-name>UberFireServlet</servlet-name>
