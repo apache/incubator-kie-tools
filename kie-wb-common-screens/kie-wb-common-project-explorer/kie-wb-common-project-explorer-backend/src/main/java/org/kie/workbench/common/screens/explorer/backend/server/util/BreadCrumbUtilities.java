@@ -1,7 +1,7 @@
 package org.kie.workbench.common.screens.explorer.backend.server.util;
 
 import org.kie.workbench.common.screens.explorer.model.ItemNames;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

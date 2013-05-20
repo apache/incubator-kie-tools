@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.Dependency;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.projecteditor.client.resources.i18n.ProjectEditorConstants;
 

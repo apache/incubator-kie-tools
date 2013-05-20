@@ -19,8 +19,8 @@ package org.kie.workbench.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.POMService;
+import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 

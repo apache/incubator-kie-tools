@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;

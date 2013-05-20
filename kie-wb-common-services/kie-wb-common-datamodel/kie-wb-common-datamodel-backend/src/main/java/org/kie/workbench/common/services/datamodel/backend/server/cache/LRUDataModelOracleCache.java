@@ -17,7 +17,7 @@ import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCa
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.cache.LRUCache;
 import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.FileExtensionFilter;

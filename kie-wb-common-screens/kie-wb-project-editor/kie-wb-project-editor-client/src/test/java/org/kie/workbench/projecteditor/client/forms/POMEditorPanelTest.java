@@ -19,8 +19,8 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.project.model.GAV;
-import org.kie.guvnor.project.model.POM;
+import org.kie.workbench.common.services.project.service.model.GAV;
+import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;

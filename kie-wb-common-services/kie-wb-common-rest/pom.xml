@@ -56,8 +56,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.guvnor</groupId>
-      <artifactId>guvnor-project-backend</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-project-backend</artifactId>
     </dependency>  
 
 <!--     <dependency>

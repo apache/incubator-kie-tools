@@ -3,7 +3,7 @@ package org.kie.workbench.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

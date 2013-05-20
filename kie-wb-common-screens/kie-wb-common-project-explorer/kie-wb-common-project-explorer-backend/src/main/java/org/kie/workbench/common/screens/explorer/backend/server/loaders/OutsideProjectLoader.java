@@ -8,7 +8,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.model.ParentFolderItem;
 import org.kie.workbench.common.screens.explorer.model.ProjectItem;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

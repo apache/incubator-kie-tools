@@ -28,9 +28,9 @@ import org.kie.workbench.common.services.shared.builder.BuildService;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.guvnor.project.model.POM;
-import org.kie.guvnor.project.service.ProjectService;
-//import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.server.util.Paths;
 //import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.rest;
 
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -24,8 +23,11 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.workbench.common.services.rest.domain.Entity;
+import org.kie.commons.io.IOService;
+import org.kie.workbench.common.services.project.service.model.GAV;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.builder.model.BuildResults;
+import org.uberfire.backend.server.util.Paths;
 
 
 import static org.junit.Assert.*;

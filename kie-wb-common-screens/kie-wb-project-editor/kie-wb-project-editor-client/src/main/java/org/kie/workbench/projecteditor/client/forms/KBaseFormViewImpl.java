@@ -25,7 +25,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.workbench.common.services.project.service.model.KSessionModel;
 
 import javax.enterprise.inject.New;
 import javax.inject.Inject;

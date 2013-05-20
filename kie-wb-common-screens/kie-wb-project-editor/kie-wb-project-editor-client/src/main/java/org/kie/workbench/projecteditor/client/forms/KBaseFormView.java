@@ -17,7 +17,7 @@
 package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.workbench.common.services.project.service.model.KSessionModel;
 
 import java.util.Map;
 

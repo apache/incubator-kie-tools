@@ -16,7 +16,7 @@
 
 package org.kie.workbench.projecteditor.client.forms;
 
-import org.kie.guvnor.project.model.KSessionModel;
+import org.kie.workbench.common.services.project.service.model.KSessionModel;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.projecteditor.client.widgets.ListFormComboPanel;
 

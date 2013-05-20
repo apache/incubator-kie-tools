@@ -1,7 +1,7 @@
 package org.kie.workbench.projecteditor.client.wizard;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 import org.kie.workbench.projecteditor.client.forms.GAVEditor;
 import org.uberfire.client.wizards.WizardPage;
 

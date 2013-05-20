@@ -15,7 +15,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;

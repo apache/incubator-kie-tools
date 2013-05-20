@@ -28,7 +28,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.workingset.client.events.OnWorkingSetApplied;
 import org.kie.workbench.common.services.workingset.client.events.OnWorkingSetDisabled;
 import org.kie.workbench.common.services.workingset.client.factconstraints.ConstraintConfiguration;

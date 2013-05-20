@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 
 @Service

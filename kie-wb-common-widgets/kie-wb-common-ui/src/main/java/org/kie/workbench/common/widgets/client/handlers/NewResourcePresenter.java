@@ -28,7 +28,7 @@ import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;

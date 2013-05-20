@@ -26,7 +26,7 @@ import org.kie.workbench.common.screens.explorer.model.BreadCrumb;
 import org.kie.workbench.common.screens.explorer.model.ExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

@@ -1,6 +1,6 @@
 package org.kie.workbench.projecteditor.client.forms;
 
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 public interface GAVSelectionHandler {
 

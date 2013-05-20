@@ -18,8 +18,8 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.Dependency;
-import org.kie.guvnor.project.model.GAV;
+import org.kie.workbench.common.services.project.service.model.Dependency;
+import org.kie.workbench.common.services.project.service.model.GAV;
 
 import javax.inject.Inject;
 import java.util.List;

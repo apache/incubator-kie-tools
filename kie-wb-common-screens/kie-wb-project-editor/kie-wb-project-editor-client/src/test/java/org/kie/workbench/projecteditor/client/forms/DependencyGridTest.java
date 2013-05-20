@@ -18,10 +18,7 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.project.model.Dependency;
-import org.kie.workbench.projecteditor.client.forms.DependencyGrid;
-import org.kie.workbench.projecteditor.client.forms.DependencyGridView;
-import org.kie.workbench.projecteditor.client.forms.DependencySelectorPopup;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,9 +17,9 @@
 package org.kie.workbench.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.guvnor.project.model.AssertBehaviorOption;
-import org.kie.guvnor.project.model.EventProcessingOption;
-import org.kie.guvnor.project.model.KBaseModel;
+import org.kie.workbench.common.services.project.service.model.AssertBehaviorOption;
+import org.kie.workbench.common.services.project.service.model.EventProcessingOption;
+import org.kie.workbench.common.services.project.service.model.KBaseModel;
 import org.kie.workbench.projecteditor.client.widgets.Form;
 
 import javax.inject.Inject;

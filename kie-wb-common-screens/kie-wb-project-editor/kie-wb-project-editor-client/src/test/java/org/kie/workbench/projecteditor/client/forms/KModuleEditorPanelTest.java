@@ -18,8 +18,8 @@ package org.kie.workbench.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.guvnor.project.model.KBaseModel;
-import org.kie.guvnor.project.model.KModuleModel;
+import org.kie.workbench.common.services.project.service.model.KBaseModel;
+import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;

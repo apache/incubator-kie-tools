@@ -38,7 +38,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.guvnor.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
