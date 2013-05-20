@@ -16,7 +16,7 @@
 
   <filter-mapping>
     <filter-name>UberFire Security Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/*</url-pattern>
   </filter-mapping>
 
   <servlet>

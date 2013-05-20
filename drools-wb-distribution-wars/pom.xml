@@ -37,6 +37,13 @@
             <descriptor>src/main/assembly/assembly-drools-wb-jboss-as-7_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-drools-wb-tomcat-7_0.xml</descriptor>
           </descriptors>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <!-- See http://stackoverflow.com/questions/8286588/using-netty-inside-jboss-7-as -->
+            <manifestEntries>
+              <Dependencies>org.jboss.netty</Dependencies>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
 
