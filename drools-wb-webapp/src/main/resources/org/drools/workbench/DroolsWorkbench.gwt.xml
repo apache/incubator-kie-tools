@@ -48,10 +48,6 @@
 
   <inherits name="org.kie.workbench.projecteditor.GuvnorProjectEditorClient"/>
   <inherits name="org.kie.workbench.projectimportsscreen.GuvnorProjectConfigScreenClient"/>
-  <!-- To be refactored -->
-  <inherits name="org.kie.guvnor.project.GuvnorProjectAPI"/>
-  <inherits name="org.kie.guvnor.projecteditor.GuvnorProjectEditorClient"/>
-  <inherits name="org.kie.guvnor.projectconfigscreen.GuvnorProjectConfigScreenClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
