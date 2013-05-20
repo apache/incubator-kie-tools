@@ -60,10 +60,10 @@
       <artifactId>guvnor-project-backend</artifactId>
     </dependency>  
 
-    <dependency>
+<!--     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
-    </dependency>
+    </dependency> -->
     
     <!-- for test? -->
     <dependency>
@@ -142,11 +142,11 @@
       <artifactId>kie-nio2-jgit</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
+<!--     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-backend</artifactId>
       <scope>test</scope>
-    </dependency>   
+    </dependency>    -->
 
  <!--    
         <dependency>

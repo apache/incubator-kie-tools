@@ -24,6 +24,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.kie.workbench.common.services.rest.domain.Entity;
 
 
 import static org.junit.Assert.*;
@@ -31,16 +33,27 @@ import static org.junit.Assert.*;
 public class ProjectResourceTest {
 
     private BeanManager beanManager;
-
+    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
+    
     @Before
     public void setUp() throws Exception {
         StartMain startMain = new StartMain( new String[ 0 ] );
         beanManager = startMain.go().getBeanManager();
+        
+        //Ensure URLs use the default:// scheme
+        fs.forceAsDefault();
     }
 
-    @Test
+    //@Test
     public void testCompileProject() throws Exception {
-
+        final ProjectResource projectResourceService = getReference(ProjectResource.class);
+        
+        Entity project = new Entity();
+        project.setName("testproject");
+        Entity result = projectResourceService.createProject("testrepo", project);
+        
+        assertNotNull(result);
+        assertEquals("testproject", result.getName());
     }
     
     private <T> T getReference( Class<T> clazz ) {
