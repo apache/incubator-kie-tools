@@ -11,8 +11,8 @@
   <artifactId>kie-wb-common-ui</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Commons - UI</name>
-  <description>Kie Workbench - Commons - UI</description>
+  <name>Kie Workbench - Common - UI</name>
+  <description>Kie Workbench - Common - UI</description>
 
   <dependencies>
 

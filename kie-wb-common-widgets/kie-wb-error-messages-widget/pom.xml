@@ -11,8 +11,8 @@
   <artifactId>kie-wb-error-messages-widget</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Commons - Error Messages Widgets</name>
-  <description>Kie Workbench - Commons - Error Messages Widgets</description>
+  <name>Kie Workbench - Common - Error Messages Widgets</name>
+  <description>Kie Workbench - Common - Error Messages Widgets</description>
 
   <dependencies>
 

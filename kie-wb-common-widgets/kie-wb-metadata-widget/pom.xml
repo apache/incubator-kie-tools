@@ -11,8 +11,8 @@
   <artifactId>kie-wb-metadata-widget</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Commons - Metadata Widget</name>
-  <description>Kie Workbench - Commons - Metadata Widget</description>
+  <name>Kie Workbench - Common - Metadata Widget</name>
+  <description>Kie Workbench - Common - Metadata Widget</description>
 
   <dependencies>
 

@@ -11,8 +11,8 @@
   <artifactId>kie-wb-view-source-widget</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Commons - Display Sources Widgets</name>
-  <description>Kie Workbench - Commons - Display Sources Widgets</description>
+  <name>Kie Workbench - Common - Display Sources Widgets</name>
+  <description>Kie Workbench - Common - Display Sources Widgets</description>
 
   <dependencies>
     <dependency>
