@@ -142,17 +142,17 @@
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-project-editor-client</artifactId>
+      <artifactId>kie-wb-common-project-editor-client</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-project-editor-backend</artifactId>
+      <artifactId>kie-wb-common-project-editor-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-project-imports-editor-client</artifactId>
+      <artifactId>kie-wb-common-project-imports-editor-client</artifactId>
     </dependency>
 
     <dependency>
@@ -575,10 +575,10 @@
             <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
 
             <!-- Common dependencies -->
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-project-imports-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-imports-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>

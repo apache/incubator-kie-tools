@@ -147,7 +147,7 @@
     </dependency> 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-project-editor-backend</artifactId>
+      <artifactId>kie-wb-common-project-editor-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
