@@ -12,6 +12,9 @@
   <artifactId>kie-wb-project-imports-editor</artifactId>
   <packaging>pom</packaging>
 
+  <name>Kie Workbench - Common - Project Imports Editor</name>
+  <description>Kie Workbench - Common - Project Imports Editor</description>
+
   <modules>
     <module>kie-wb-project-imports-editor-api</module>
     <module>kie-wb-project-imports-editor-client</module>

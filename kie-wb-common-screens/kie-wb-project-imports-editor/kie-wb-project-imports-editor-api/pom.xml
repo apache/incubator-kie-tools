@@ -28,8 +28,8 @@
   <artifactId>kie-wb-project-imports-editor-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common - Project Config Editor API</name>
-  <description>Kie Workbench - Common - Project Config Editor API</description>
+  <name>Kie Workbench - Common - Project Imports Editor API</name>
+  <description>Kie Workbench - Common - Project Imports Editor API</description>
 
   <dependencies>
     <dependency>
