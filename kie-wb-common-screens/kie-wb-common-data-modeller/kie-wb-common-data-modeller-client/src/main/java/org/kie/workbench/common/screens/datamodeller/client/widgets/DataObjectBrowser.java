@@ -119,7 +119,7 @@ public class DataObjectBrowser extends Composite {
 
     private List<ObjectPropertyTO> dataObjectProperties = new ArrayList<ObjectPropertyTO>();
 
-    private List<PropertyTypeTO> baseTypes;
+//    private List<PropertyTypeTO> baseTypes;
 
     @Inject
     private ValidatorService validatorService;
@@ -267,7 +267,7 @@ public class DataObjectBrowser extends Composite {
     private void populateBaseTypes() {
         newPropertyType.clear();
         newPropertyType.addItem("", NOT_SELECTED);
-        for (PropertyTypeTO type : baseTypes) {
+        for (PropertyTypeTO type : getContext().getBaseTypes()) {
             newPropertyType.addItem(type.getName(), type.getClassName());
         }
     }
@@ -404,11 +404,6 @@ public class DataObjectBrowser extends Composite {
         notifyFieldDeleted(objectProperty);
     }
 
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
-        this.baseTypes = baseTypes;
-        populateBaseTypes();
-    }
-
     private String propertyTypeDisplay(ObjectPropertyTO propertyTO) {
         String className = propertyTO.getClassName();
         if (propertyTO.isMultiple()) {
@@ -471,6 +466,7 @@ public class DataObjectBrowser extends Composite {
         if (event.isFrom(getDataModel())) {            
             if (event.getCurrentDataObject() != null) {
                 setDataObject(event.getCurrentDataObject());
+                resetInput();
             } else {
                 //TODO clear the editor because any object is selected
                 //this is the case when we are deleting the objects

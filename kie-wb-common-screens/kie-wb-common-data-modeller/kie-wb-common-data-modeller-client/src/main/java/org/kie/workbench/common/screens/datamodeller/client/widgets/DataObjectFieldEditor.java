@@ -135,18 +135,15 @@ public class DataObjectFieldEditor extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
+        this.baseTypes = new ArrayList<String>(getContext().getBaseTypes().size());
+        for (PropertyTypeTO baseType : getContext().getBaseTypes()) {
+            this.baseTypes.add(baseType.getClassName());
+        }
         initTypeList();
     }
 
     private DataModelTO getDataModel() {
         return getContext().getDataModel();
-    }
-
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
-        this.baseTypes = new ArrayList<String>(baseTypes.size());
-        for (PropertyTypeTO baseType : baseTypes) {
-            this.baseTypes.add(baseType.getClassName());
-        }
     }
 
     // Event notifications

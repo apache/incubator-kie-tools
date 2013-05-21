@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 
+import java.util.List;
 import java.util.Map;
 
 public class DataModelerContext {
@@ -28,18 +30,14 @@ public class DataModelerContext {
 
     private DataModelHelper helper;
 
-    Map<String, AnnotationDefinitionTO> annotationDefinitions;
+    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+
+    private List<PropertyTypeTO> baseTypes;
 
     private boolean dirty = false;
 
-    public DataModelerContext(DataModelTO dataModel, Map<String, AnnotationDefinitionTO> annotationDefinitions) {
-        this(dataModel);
-        this.annotationDefinitions = annotationDefinitions;
-    }
-
-    public DataModelerContext(DataModelTO dataModel) {
-        this.dataModel = dataModel;
-        helper = new DataModelHelper(dataModel);
+    public DataModelerContext() {
+        helper = new DataModelHelper();
     }
 
     public DataModelTO getDataModel() {
@@ -48,6 +46,7 @@ public class DataModelerContext {
 
     public void setDataModel(DataModelTO dataModel) {
         this.dataModel = dataModel;
+        helper.setDataModel(dataModel);
     }
 
     public DataModelHelper getHelper() {
@@ -64,6 +63,14 @@ public class DataModelerContext {
 
     public void setAnnotationDefinitions(Map<String, AnnotationDefinitionTO> annotationDefinitions) {
         this.annotationDefinitions = annotationDefinitions;
+    }
+
+    public List<PropertyTypeTO> getBaseTypes() {
+        return baseTypes;
+    }
+
+    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
+        this.baseTypes = baseTypes;
     }
 
     public boolean isDirty() {

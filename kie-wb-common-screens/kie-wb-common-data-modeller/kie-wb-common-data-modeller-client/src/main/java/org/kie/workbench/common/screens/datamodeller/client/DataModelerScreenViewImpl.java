@@ -100,12 +100,6 @@ public class DataModelerScreenViewImpl extends Composite
     }
 
     @Override
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
-        dataObjectBrowser.setBaseTypes(baseTypes);
-        modelPropertiesEditor.setBaseTypes(baseTypes);
-    }
-
-    @Override
     public boolean confirmClose() {
         return Window.confirm( Constants.INSTANCE.modelEditor_discard_changes_message());
     }

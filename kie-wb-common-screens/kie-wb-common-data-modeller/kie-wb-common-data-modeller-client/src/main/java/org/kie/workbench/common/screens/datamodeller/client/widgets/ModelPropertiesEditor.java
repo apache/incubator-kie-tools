@@ -85,8 +85,4 @@ public class ModelPropertiesEditor extends Composite {
         objectProperties.setContext(context);
         fieldProperties.setContext(context);
     }
-
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
-        fieldProperties.setBaseTypes(baseTypes);
-    }
 }

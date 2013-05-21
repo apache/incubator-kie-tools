@@ -39,10 +39,6 @@ public class DataModelHelper {
     public DataModelHelper() {
     }
 
-    public DataModelHelper(DataModelTO dataModel) {
-        init(dataModel);
-    }
-
     public Boolean isDataObjectReferenced(String className) {
         Set<String> refs = referencedBy.get(className);
         if ( (refs != null && refs.size() > 0) || siblingsMap.containsKey(className)) return true;
@@ -91,7 +87,7 @@ public class DataModelHelper {
         return s != null && s.size() > 0;
     }
 
-    public void init(DataModelTO dataModel) {
+    public void setDataModel(DataModelTO dataModel) {
         this.dataModel = dataModel;
         reset();
     }

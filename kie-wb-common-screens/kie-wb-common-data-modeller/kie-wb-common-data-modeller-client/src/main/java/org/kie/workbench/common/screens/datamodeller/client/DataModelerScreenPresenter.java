@@ -61,8 +61,6 @@ public class DataModelerScreenPresenter {
 
         void setContext(DataModelerContext context);
 
-        void setBaseTypes(List<PropertyTypeTO> baseTypes);
-
         boolean confirmClose();
 
     }
@@ -156,11 +154,13 @@ public class DataModelerScreenPresenter {
 
         BusyPopup.showMessage(Constants.INSTANCE.modelEditor_loading());
 
+        context = new DataModelerContext();
+
         modelerService.call(
                 new RemoteCallback<List<PropertyTypeTO>>() {
                     @Override
                     public void callback(List<PropertyTypeTO> baseTypes) {
-                        view.setBaseTypes(baseTypes);
+                        context.setBaseTypes(baseTypes);
                     }
                 },
                 new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_propertyType_loading_error())
@@ -171,13 +171,15 @@ public class DataModelerScreenPresenter {
                     @Override
                     public void callback(final Map<String, AnnotationDefinitionTO> defs) {
 
+                        context.setAnnotationDefinitions(defs);
+
                         modelerService.call(
                                 new RemoteCallback<DataModelTO>() {
 
                                     @Override
                                     public void callback(DataModelTO dataModel) {
                                         BusyPopup.close();
-                                        setDataModel(dataModel, defs);
+                                        setDataModel(dataModel);
                                         notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_loaded(path.toString())));
                                     }
 
@@ -203,12 +205,12 @@ public class DataModelerScreenPresenter {
         return context;
     }
 
-    private void setDataModel(DataModelTO dataModel, Map<String, AnnotationDefinitionTO> annotationDefinitions) {
+    private void setDataModel(DataModelTO dataModel) {
         this.dataModel = dataModel;
 
         // Set data model helper before anything else
         if (dataModel != null) {
-            context = new DataModelerContext(dataModel, annotationDefinitions);
+            context.setDataModel(dataModel);
             view.setContext(context);
             if (dataModel.getDataObjects().size() > 0) {
                 dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataModel.getDataObjects().get(0)));
