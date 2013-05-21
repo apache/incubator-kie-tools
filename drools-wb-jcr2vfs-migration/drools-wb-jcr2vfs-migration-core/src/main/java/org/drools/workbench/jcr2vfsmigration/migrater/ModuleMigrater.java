@@ -40,7 +40,7 @@ public class ModuleMigrater {
         //Set up project structure:
         POM pom = new POM();
         Path modulePath = migrationPathManager.generateRootPath();  
-        projectService.newProject(modulePath, jcrModule.getName(), pom, "/");
+        projectService.newProject(modulePath, jcrModule.getName(), pom, "http://localhost");
     }
 
 }
