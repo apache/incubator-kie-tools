@@ -28,8 +28,8 @@
   <artifactId>kie-wb-project-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Project Editor Backend</name>
-  <description>Project Editor Backend</description>
+  <name>Kie Workbench - Common - Project Editor Backend</name>
+  <description>Kie Workbench - Common - Project Editor Backend</description>
 
   <dependencies>
 

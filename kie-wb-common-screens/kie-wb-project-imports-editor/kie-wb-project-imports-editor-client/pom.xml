@@ -27,8 +27,8 @@
 
   <artifactId>kie-wb-project-imports-editor-client</artifactId>
 
-  <name>Project Config Editor Client</name>
-  <description>Project Config Editor Client</description>
+  <name>Kie Workbench - Common - Project Config Editor Client</name>
+  <description>Kie Workbench - Common - Project Config Editor Client</description>
 
   <dependencies>
 

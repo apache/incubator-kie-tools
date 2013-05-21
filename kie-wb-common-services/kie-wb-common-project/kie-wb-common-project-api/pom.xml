@@ -28,8 +28,8 @@
   <artifactId>kie-wb-common-project-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>KIE Workbench Project API</name>
-  <description>KIE Workbench Project API</description>
+  <name>Kie Workbench - Common - Project API</name>
+  <description>Kie Workbench - Common - Project API</description>
 
   <dependencies>
 

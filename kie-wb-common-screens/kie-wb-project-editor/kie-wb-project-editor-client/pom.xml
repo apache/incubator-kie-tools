@@ -27,8 +27,8 @@
 
   <artifactId>kie-wb-project-editor-client</artifactId>
 
-  <name>Project Editor Client</name>
-  <description>Project Editor Client</description>
+  <name>Kie Workbench - Common - Project Editor Client</name>
+  <description>Kie Workbench - Common - Project Editor Client</description>
 
   <dependencies>
 
