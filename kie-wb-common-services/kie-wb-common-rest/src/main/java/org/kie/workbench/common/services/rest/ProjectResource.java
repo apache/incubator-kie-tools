@@ -20,17 +20,20 @@ package org.kie.workbench.common.services.rest;
 
 import java.util.Iterator;
 
+import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.rest.domain.BuildConfig;
 import org.kie.workbench.common.services.rest.domain.Entity;
+import org.kie.workbench.common.services.rest.domain.Group;
 import org.kie.workbench.common.services.rest.domain.Result;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.server.util.Paths;
 //import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -62,9 +65,9 @@ public class ProjectResource {
    @Inject
    protected BuildService buildService;
 
-/*   @Inject
+   @Inject
    protected ScenarioTestEditorService scenarioTestEditorService;
-*/
+
    @Inject
    private Paths paths;
 
@@ -72,6 +75,8 @@ public class ProjectResource {
    @Named("ioStrategy")
    private IOService ioSystemService;
 
+   @Inject
+   GroupService groupService;
 
    @Context
    public void setHttpHeaders(HttpHeaders theHeaders) {
@@ -184,8 +189,7 @@ public class ProjectResource {
    public Result installProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig mavenConfig) {
-       System.out.println("-----installProject--- , repositoryName:"
-               + repositoryName + ", project name:" + projectName);
+       System.out.println("-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
 
        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);
 
@@ -216,8 +220,7 @@ public class ProjectResource {
    public Result testProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig config) {
-       System.out.println("-----testProject--- , repositoryName:"
-               + repositoryName + ", project name:" + projectName);
+       System.out.println("-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
 
        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);
 
@@ -231,16 +234,15 @@ public class ProjectResource {
            }
 
            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-           //scenarioTestEditorService.runAllScenarios(pathToPomXML, "someSession");
+           scenarioTestEditorService.runAllScenarios(pathToPomXML, "someSession");
 
-           //TODO: Get test result. We need an sync version of runAllScenarios (instead of listening for test result from event listeners).
+           //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
 
            Result result = new Result();
            result.setStatus("SUCCESS");
            return result;
        }
    }
-
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -249,8 +251,7 @@ public class ProjectResource {
    public Result deployProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig config) {
-       System.out.println("-----deployProject--- , repositoryName:"
-               + repositoryName + ", project name:" + projectName);
+       System.out.println("-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
 
        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath(repositoryName);
 
@@ -277,9 +278,10 @@ public class ProjectResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    @Path("/groups")
-   public Entity createGroup(Entity group) {
+   public Group createGroup(Group group) {
        System.out.println("-----createGroup--- , Group name:" + group.getName());
 
+       groupService.createGroup(group.getName(), group.getOwner());
 /*        try {
            Thread.sleep(100000);
        } catch (InterruptedException e) {
@@ -295,6 +297,8 @@ public class ProjectResource {
    public Result deleteGroup(@PathParam("groupName") String groupName) {
        System.out.println("-----deleteGroup--- , Group name:" + groupName);
 
+       //TODO:GroupService does not have removeGroup method yet
+       //groupService.removeGroup(groupName);
        Result result = new Result();
        result.setStatus("SUCCESS");
        return result;

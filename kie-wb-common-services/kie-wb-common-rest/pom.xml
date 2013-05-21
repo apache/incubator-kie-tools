@@ -60,10 +60,10 @@
       <artifactId>kie-wb-common-project-backend</artifactId>
     </dependency>  
 
-<!--     <dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
-    </dependency> -->
+    </dependency>
     
     <!-- for test? -->
     <dependency>
