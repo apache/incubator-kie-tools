@@ -29,10 +29,12 @@
     <param-value>/rest</param-value>
   </context-param>
 
+<!--
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
   </context-param>
+-->
 
   <!-- enable the Asynchronous Job Service -->
   <context-param>
@@ -65,11 +67,11 @@
     <param-name>resteasy.async.job.service.base.path</param-name>
     <param-value>/asynch/jobs</param-value>
   </context-param>
-
+<!--
   <listener>
     <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>
-
+-->
   <servlet>
     <servlet-name>Resteasy</servlet-name>
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
