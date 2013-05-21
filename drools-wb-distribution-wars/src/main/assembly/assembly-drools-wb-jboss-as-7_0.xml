@@ -71,6 +71,7 @@
 
           <!-- Exclude RESTeasy as it's bundled with jboss as7 -->
           <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+          <exclude>WEB-INF/lib/jackson-*.jar</exclude>
           
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
