@@ -37,7 +37,12 @@ public class DataModelerContext {
     private boolean dirty = false;
 
     public DataModelerContext() {
+    }
+
+    public void init(List<PropertyTypeTO> baseTypes) {
+        this.baseTypes = baseTypes;
         helper = new DataModelHelper();
+        helper.setDataModelerContext(this);
     }
 
     public DataModelTO getDataModel() {
@@ -67,10 +72,6 @@ public class DataModelerContext {
 
     public List<PropertyTypeTO> getBaseTypes() {
         return baseTypes;
-    }
-
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
-        this.baseTypes = baseTypes;
     }
 
     public boolean isDirty() {

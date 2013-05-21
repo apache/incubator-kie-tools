@@ -119,8 +119,6 @@ public class DataObjectBrowser extends Composite {
 
     private List<ObjectPropertyTO> dataObjectProperties = new ArrayList<ObjectPropertyTO>();
 
-//    private List<PropertyTypeTO> baseTypes;
-
     @Inject
     private ValidatorService validatorService;
 
@@ -267,8 +265,8 @@ public class DataObjectBrowser extends Composite {
     private void populateBaseTypes() {
         newPropertyType.clear();
         newPropertyType.addItem("", NOT_SELECTED);
-        for (PropertyTypeTO type : getContext().getBaseTypes()) {
-            newPropertyType.addItem(type.getName(), type.getClassName());
+        for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
+            newPropertyType.addItem(baseType.getKey(), baseType.getValue());
         }
     }
 

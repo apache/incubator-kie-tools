@@ -107,6 +107,7 @@ public class DataModelerScreenPresenter {
     public void onStart() {
         makeMenuBar();
         makeToolBar();
+        initContext();
         processPathChange(workbenchContext.getActivePath());
     }
 
@@ -153,18 +154,6 @@ public class DataModelerScreenPresenter {
     private void loadProjectDataModel(final Path path) {
 
         BusyPopup.showMessage(Constants.INSTANCE.modelEditor_loading());
-
-        context = new DataModelerContext();
-
-        modelerService.call(
-                new RemoteCallback<List<PropertyTypeTO>>() {
-                    @Override
-                    public void callback(List<PropertyTypeTO> baseTypes) {
-                        context.setBaseTypes(baseTypes);
-                    }
-                },
-                new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_propertyType_loading_error())
-        ).getBasePropertyTypes();
 
         modelerService.call(
                 new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
@@ -324,5 +313,19 @@ public class DataModelerScreenPresenter {
         }
 
         return menuItems;
+    }
+
+    private void initContext() {
+        context = new DataModelerContext();
+
+        modelerService.call(
+                new RemoteCallback<List<PropertyTypeTO>>() {
+                    @Override
+                    public void callback(List<PropertyTypeTO> baseTypes) {
+                        context.init(baseTypes);
+                    }
+                },
+                new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_propertyType_loading_error())
+        ).getBasePropertyTypes();
     }
 }

@@ -19,11 +19,13 @@ package org.kie.workbench.common.screens.datamodeller.client;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 
 import java.util.*;
 
 public class DataModelHelper {
 
+    private DataModelerContext context;
     private DataModelTO dataModel;
     private DataObjectTO currentDataObject;
 
@@ -35,6 +37,7 @@ public class DataModelHelper {
     private Map<String, Set<String>> siblingsMap = new HashMap<String, Set<String>>(10);
     // List of all class names that coexist within a project
     private List<String> classNames = new ArrayList<String>(10);
+    Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
 
     public DataModelHelper() {
     }
@@ -47,6 +50,10 @@ public class DataModelHelper {
 
     public List<String> getClassList() {
         return Collections.unmodifiableList(classNames);
+    }
+
+    public Map <String, String> getOrderedBaseTypes() {
+        return orderedBaseTypes;
     }
 
     // TODO change from listener methods to event observers
@@ -90,6 +97,13 @@ public class DataModelHelper {
     public void setDataModel(DataModelTO dataModel) {
         this.dataModel = dataModel;
         reset();
+    }
+
+    public void setDataModelerContext(DataModelerContext context) {
+        this.context = context;
+        for (PropertyTypeTO type : context.getBaseTypes()) {
+            orderedBaseTypes.put(type.getName(), type.getClassName());
+        }
     }
 
     // Todo can be improved if required for performance reasons

@@ -355,19 +355,12 @@ public class DataObjectFieldEditor extends Composite {
         SortedSet<String> typeNames = new TreeSet<String>();
         if (getDataModel() != null) {
             // First add all base types, ordered
-            for (String baseType : baseTypes) {
-                typeNames.add(baseType);
-            }
-            DataModelerUtils dmu = DataModelerUtils.getInstance();
-            for (String typeName : typeNames) {
-                String _typeName = dmu.extractClassName(typeName);
-                typeSelector.addItem(_typeName, typeName);
-//                _typeName = _typeName + DataModelerUtils.MULTIPLE;
-//                typeSelector.addItem(_typeName, _typeName);
+            for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
+                typeSelector.addItem(baseType.getKey(), baseType.getValue());
+                // TODO add multiple types for base types?
             }
 
             // Second add all model types, ordered
-            typeNames.clear();
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
                 String className = dataObject.getClassName();
                 typeNames.add(className);
