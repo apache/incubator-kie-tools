@@ -29,6 +29,8 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.uberfire.backend.server.util.Paths;
 
+import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.kie.workbench.common.services.rest.domain.Entity;
 
 import static org.junit.Assert.*;
 
