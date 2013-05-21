@@ -88,40 +88,35 @@
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-fs</artifactId>
     </dependency>
+    
     <!-- REST dependencies -->
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <version>2.3.2.Final</version><!-- TODO move me to droolsjbpm-parent -->
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
       <version>2.3.2.Final</version><!-- TODO move me to droolsjbpm-parent -->
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
       <version>2.3.2.Final</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
       <version>2.3.2.Final</version>
-      <scope>provided</scope>
     </dependency>     
     
     <!-- Weld Modules. For tests only -->
