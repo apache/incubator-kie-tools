@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.services.project.backend.server;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -26,12 +28,13 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.guvnor.project.model.POM;
+import org.kie.guvnor.project.model.ProjectImports;
+import org.kie.guvnor.project.service.KModuleService;
+import org.kie.guvnor.project.service.POMService;
+import org.kie.guvnor.project.service.ProjectService;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.project.service.KModuleService;
-import org.kie.workbench.common.services.project.service.POMService;
-import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
@@ -156,7 +159,7 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path resolvePathToProjectImports(Path resource) {
+    public Path resolvePathToProjectImports( Path resource ) {
         final Path projectPath = resolveProject( resource );
         if ( projectPath == null ) {
             return null;
@@ -366,7 +369,7 @@ public class ProjectServiceImpl
     public Path newProject( final Path activePath,
                             final String projectName,
                             final POM pom,
-                            final String baseURL ) {
+                            final String url ) {
         //Projects are always created in the FS root
         final Path fsRoot = getFileSystemRoot( activePath );
         final Path projectRootPath = getProjectRootPath( fsRoot,
@@ -375,10 +378,11 @@ public class ProjectServiceImpl
         //Set-up project structure and KModule.xml
         kModuleService.setUpKModuleStructure( projectRootPath );
 
-
-
         //Create POM.xml
-        pomService.create( projectRootPath, baseURL, pom );
+        final String baseUrl = makeBaseUrl( url );
+        pomService.create( projectRootPath,
+                           baseUrl,
+                           pom );
 
         //Create Project configuration
         final Path projectConfigPath = paths.convert( paths.convert( projectRootPath ).resolve( "project.imports" ),
@@ -391,6 +395,19 @@ public class ProjectServiceImpl
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
         return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
+    }
+
+    private String makeBaseUrl( final String url ) {
+        try {
+            final URL contextUrl = new URL( url );
+            final String protocol = contextUrl.getProtocol();
+            final String host = contextUrl.getHost();
+            final int port = contextUrl.getPort();
+            final String baseUrl = new URL( protocol, host, port, "" ).toString();
+            return baseUrl;
+        } catch ( MalformedURLException e ) {
+            throw new GenericPortableException( e.getMessage() );
+        }
     }
 
     private Path getFileSystemRoot( final Path activePath ) {
@@ -444,7 +461,7 @@ public class ProjectServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         ioService.write( paths.convert( resource ),
-                         projectConfigurationContentHandler.toString(projectImports),
+                         projectConfigurationContentHandler.toString( projectImports ),
                          metadataService.setUpAttributes( resource,
                                                           metadata ),
                          makeCommentedOption( comment ) );

@@ -27,7 +27,6 @@ import java.util.List;
 public class NewProjectWizard
         implements Wizard<NewProjectWizardContext> {
 
-
     @Inject
     private PlaceManager placeManager;
 
@@ -53,7 +52,7 @@ public class NewProjectWizard
     @PostConstruct
     public void setupPages() {
         pom = new POM();
-        pages.add(gavWizardPage);
+        pages.add( gavWizardPage );
     }
 
     @Override
@@ -67,7 +66,7 @@ public class NewProjectWizard
     }
 
     @Override
-    public Widget getPageWidget(int pageNumber) {
+    public Widget getPageWidget( int pageNumber ) {
         return gavWizardPage.asWidget();
     }
 
@@ -83,8 +82,8 @@ public class NewProjectWizard
 
     @Override
     public boolean isComplete() {
-        for (WizardPage page : this.pages) {
-            if (!page.isComplete()) {
+        for ( WizardPage page : this.pages ) {
+            if ( !page.isComplete() ) {
                 return false;
             }
         }
@@ -95,31 +94,33 @@ public class NewProjectWizard
     public void complete() {
         presenter.hide();
 
-        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-        String url = GWT.getModuleBaseURL();
-//        String baseURL = url.substring(0, url.indexOf("org.drools.workbench.DroolsWorkbench"));
-        String baseURL ="";
-        projectServiceCaller.call(getSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).newProject(contextPath, projectName, pom, baseURL);
+        final String url = GWT.getModuleBaseURL();
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        projectServiceCaller.call( getSuccessCallback(),
+                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath,
+                                                                                                               projectName,
+                                                                                                               pom,
+                                                                                                               url );
     }
 
     private RemoteCallback<Path> getSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(Path pathToPom) {
+            public void callback( Path pathToPom ) {
                 busyIndicatorView.hideBusyIndicator();
-                notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully()));
+                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
 
-                placeManager.goTo(new ProjectEditorPlace(pathToPom));
+                placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
             }
         };
     }
 
-    public void setProjectName(String projectName, Path contextPath) {
-        pom.getGav().setArtifactId(projectName);
+    public void setProjectName( String projectName,
+                                Path contextPath ) {
+        pom.getGav().setArtifactId( projectName );
         this.projectName = projectName;
         this.contextPath = contextPath;
-        gavWizardPage.setGav(pom.getGav());
+        gavWizardPage.setGav( pom.getGav() );
     }
 }
