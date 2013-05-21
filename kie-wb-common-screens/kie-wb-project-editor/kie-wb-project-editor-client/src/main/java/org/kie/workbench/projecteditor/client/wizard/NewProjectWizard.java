@@ -95,12 +95,13 @@ public class NewProjectWizard
         presenter.hide();
 
         final String url = GWT.getModuleBaseURL();
+        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath,
                                                                                                                projectName,
                                                                                                                pom,
-                                                                                                               url );
+                                                                                                               baseUrl );
     }
 
     private RemoteCallback<Path> getSuccessCallback() {

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.services.project.backend.server;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -34,7 +32,6 @@ import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
@@ -369,7 +366,7 @@ public class ProjectServiceImpl
     public Path newProject( final Path activePath,
                             final String projectName,
                             final POM pom,
-                            final String url ) {
+                            final String baseUrl ) {
         //Projects are always created in the FS root
         final Path fsRoot = getFileSystemRoot( activePath );
         final Path projectRootPath = getProjectRootPath( fsRoot,
@@ -379,7 +376,6 @@ public class ProjectServiceImpl
         kModuleService.setUpKModuleStructure( projectRootPath );
 
         //Create POM.xml
-        final String baseUrl = makeBaseUrl( url );
         pomService.create( projectRootPath,
                            baseUrl,
                            pom );
@@ -395,19 +391,6 @@ public class ProjectServiceImpl
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
         return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
-    }
-
-    private String makeBaseUrl( final String url ) {
-        try {
-            final URL contextUrl = new URL( url );
-            final String protocol = contextUrl.getProtocol();
-            final String host = contextUrl.getHost();
-            final int port = contextUrl.getPort();
-            final String baseUrl = new URL( protocol, host, port, "" ).toString();
-            return baseUrl;
-        } catch ( MalformedURLException e ) {
-            throw new GenericPortableException( e.getMessage() );
-        }
     }
 
     private Path getFileSystemRoot( final Path activePath ) {
