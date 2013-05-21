@@ -145,17 +145,17 @@
     </dependency>   
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <artifactId>jackson-mapper-asl</artifactId>
       <version>1.9.2</version>
     </dependency>   
      <dependency>
       <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <artifactId>jackson-jaxrs</artifactId>
       <version>1.9.2</version>
     </dependency>   
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <artifactId>jackson-xc</artifactId>
       <version>1.9.2</version>
     </dependency>          
     
