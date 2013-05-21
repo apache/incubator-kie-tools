@@ -21,11 +21,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.workbench.screens</groupId>
-    <artifactId>kie-wb-project-imports-editor</artifactId>
+    <artifactId>kie-wb-common-project-imports-editor</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-wb-project-imports-editor-client</artifactId>
+  <artifactId>kie-wb-common-project-imports-editor-client</artifactId>
 
   <name>Kie Workbench - Common - Project Imports Editor Client</name>
   <description>Kie Workbench - Common - Project Imports Editor Client</description>
@@ -88,7 +88,7 @@
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-project-imports-editor-api</artifactId>
+      <artifactId>kie-wb-common-project-imports-editor-api</artifactId>
     </dependency>
 
     <dependency>
