@@ -29,6 +29,7 @@
     <param-value>/rest</param-value>
   </context-param>
 
+  <!-- Note, this configuration needs to be removed with AS7 deployement -->  
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
@@ -66,6 +67,7 @@
     <param-value>/asynch/jobs</param-value>
   </context-param>
 
+  <!-- Note, this configuration needs to be removed with AS7 deployement -->
   <listener>
     <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>

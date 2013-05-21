@@ -69,6 +69,9 @@
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
 
+          <!-- Exclude RESTeasy as it's bundled with jboss as7 -->
+          <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+          
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
           <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
