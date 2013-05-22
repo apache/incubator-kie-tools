@@ -173,6 +173,12 @@ public class DataObjectFieldEditor extends Composite {
         }
     }
 
+    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            initTypeList();
+        }
+    }
+
     private void loadDataObjectField(DataObjectTO dataObject, ObjectPropertyTO objectField) {
         clean();
         if (dataObject != null && objectField != null) {
