@@ -67,11 +67,6 @@
     <param-value>/asynch/jobs</param-value>
   </context-param>
 
-  <!-- Note, this configuration needs to be removed with AS7 deployement -->
-  <listener>
-    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
-  </listener>
-
   <servlet>
     <servlet-name>Resteasy</servlet-name>
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
