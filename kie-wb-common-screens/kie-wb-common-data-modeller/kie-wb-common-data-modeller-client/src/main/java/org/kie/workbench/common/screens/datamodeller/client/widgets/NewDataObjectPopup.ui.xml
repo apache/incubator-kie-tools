@@ -27,7 +27,7 @@
     <b:Well>
         <b:Fieldset>
             <b:ControlGroup ui:field="nameGroup">
-                <b:ControlLabel for="name"  ><gwt:Label ui:field="nameLabel" text="{i18n.new_dataobject_popup_name}"  /></b:ControlLabel>
+                <b:ControlLabel for="name"  ><gwt:Label ui:field="nameLabel" text="{i18n.new_dataobject_popup_identifier}"  /></b:ControlLabel>
 
                 <b:Controls>
                     <b:TextBox b:id="nameLabel" ui:field="name" placeholder="{i18n.java_id_placeholder}"/>

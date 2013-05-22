@@ -97,9 +97,13 @@ public interface Constants extends Messages {
 
     public String objectEditor_action_deleteProperty();
 
+    public String objectEditor_nameLabel();
+
+    public String objectFieldEditor_nameLabel();
+
     public String new_dataobject_popup_title();
     
-    public String new_dataobject_popup_name();
+    public String new_dataobject_popup_identifier();
 
     public String java_id_placeholder();
     

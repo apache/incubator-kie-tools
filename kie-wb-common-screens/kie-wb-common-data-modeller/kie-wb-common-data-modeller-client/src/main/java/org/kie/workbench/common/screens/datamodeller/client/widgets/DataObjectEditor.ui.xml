@@ -29,7 +29,7 @@
 
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="titleLabel" text="Name"/>
+                    <gwt:Label ui:field="titleLabel" text="{i18n.objectEditor_nameLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="name" styleName="span8"></b:TextBox>
