@@ -92,7 +92,7 @@ public class DataObjectBrowser extends Composite {
     CellTable<ObjectPropertyTO> dataObjectPropertiesTable = new CellTable<ObjectPropertyTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
 
     @UiField
-    TextBox newPropertyName;
+    com.github.gwtbootstrap.client.ui.TextBox newPropertyName;
 
     @UiField
     com.github.gwtbootstrap.client.ui.ListBox newPropertyType;

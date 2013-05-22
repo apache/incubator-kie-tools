@@ -30,7 +30,7 @@
                 <b:ControlLabel for="name"  ><gwt:Label ui:field="nameLabel" text="{i18n.new_dataobject_popup_name}"  /></b:ControlLabel>
 
                 <b:Controls>
-                    <b:TextBox b:id="nameLabel" ui:field="name" placeholder="{i18n.new_dataobject_placeholder}"/>
+                    <b:TextBox b:id="nameLabel" ui:field="name" placeholder="{i18n.java_id_placeholder}"/>
                 </b:Controls>
 
             </b:ControlGroup>

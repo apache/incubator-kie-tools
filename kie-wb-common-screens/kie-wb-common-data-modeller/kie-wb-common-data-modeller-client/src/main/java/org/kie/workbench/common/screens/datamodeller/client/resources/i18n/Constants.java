@@ -101,7 +101,7 @@ public interface Constants extends Messages {
     
     public String new_dataobject_popup_name();
 
-    public String new_dataobject_placeholder();
+    public String java_id_placeholder();
     
     public String new_dataobject_popup_new_package();
     

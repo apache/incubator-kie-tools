@@ -43,7 +43,7 @@
                             </h5>
 
                             <gwt:VerticalPanel styleName="row-fluid">
-                                <gwt:TextBox ui:field="newPropertyName" styleName="span6"></gwt:TextBox>
+                                <b:TextBox b:id="newPropertyName" ui:field="newPropertyName" placeholder="{i18n.java_id_placeholder}"/>
                                 <gwt:HTMLPanel>
                                     <div class="well span7">
                                         <table class="row-fluid span7">
