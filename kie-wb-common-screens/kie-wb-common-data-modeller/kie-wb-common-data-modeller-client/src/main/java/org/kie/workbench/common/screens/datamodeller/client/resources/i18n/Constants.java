@@ -87,6 +87,8 @@ public interface Constants extends Messages {
 
     public String objectEditor_columnName();
 
+    public String objectEditor_columnLabel();
+
     public String objectEditor_columnType();
 
     public String objectEditor_basicType();

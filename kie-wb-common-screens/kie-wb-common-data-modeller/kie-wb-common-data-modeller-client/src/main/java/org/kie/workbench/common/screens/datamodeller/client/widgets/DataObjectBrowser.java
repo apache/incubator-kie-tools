@@ -36,26 +36,19 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
+import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.uberfire.client.common.ErrorPopup;
 
 import javax.annotation.PostConstruct;
@@ -108,8 +101,6 @@ public class DataObjectBrowser extends Composite {
 
     @UiField
     com.github.gwtbootstrap.client.ui.CheckBox newPropertyIsMultiple;
-
-    final PropertyTypeCell typeCell = new PropertyTypeCell(true, this);
 
     private DataObjectTO dataObject;
 
@@ -202,14 +193,102 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesTable.addColumnSortHandler(propertyNameColHandler);
 
 
-        //Init property type column
-        final Column<ObjectPropertyTO, String> propertyTypeColumn = new Column<ObjectPropertyTO, String>(typeCell)  {
+        //Init property Label column
+
+        final TextColumn<ObjectPropertyTO> propertyLabelColumn = new TextColumn<ObjectPropertyTO>() {
 
             @Override
-            public String getValue(final ObjectPropertyTO objectProperty) {
-                return propertyTypeDisplay(objectProperty);
+            public void render(Cell.Context context, ObjectPropertyTO object, SafeHtmlBuilder sb) {
+                SafeHtml startDiv = new SafeHtml() {
+                    @Override
+                    public String asString() {
+                        return "<div style=\"cursor: pointer;\">";
+                    }
+                };
+                SafeHtml endDiv = new SafeHtml() {
+                    @Override
+                    public String asString() {
+                        return "</div>";
+                    }
+                };
+
+                sb.append(startDiv);
+                super.render(context, object, sb);
+                sb.append(endDiv);
             }
 
+            @Override
+            public String getValue( final ObjectPropertyTO objectProperty) {
+                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            }
+        };
+
+        propertyLabelColumn.setSortable(true);
+        dataObjectPropertiesTable.addColumn(propertyLabelColumn, Constants.INSTANCE.objectEditor_columnLabel());
+        //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
+
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyLabelColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
+        propertyNameColHandler.setComparator(propertyLabelColumn, new ObjectPropertyComparator("label"));
+        dataObjectPropertiesTable.addColumnSortHandler(propertyLabelColHandler);
+
+
+        //Init property type browsing column
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
+        final TooltipCellDecorator<ImageResource> typeImageDecorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
+        typeImageDecorator.setText("Go to data object definition");
+
+        final Column<ObjectPropertyTO, ImageResource> typeImageColumn = new Column<ObjectPropertyTO, ImageResource>(typeImageDecorator) {
+            @Override
+            public ImageResource getValue( final ObjectPropertyTO property ) {
+
+                if (!property.isBaseType()) {
+                    return ImagesResources.INSTANCE.BrowsObject();
+                } else {
+                    return null;
+                }
+            }
+        };
+
+        typeImageColumn.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
+            public void update( final int index,
+                                final ObjectPropertyTO property,
+                                final ImageResource value ) {
+
+                onTypeCellSelection(property);
+            }
+        } );
+
+        dataObjectPropertiesTable.addColumn(typeImageColumn);
+        dataObjectPropertiesTable.setColumnWidth(typeImageColumn, 20, Style.Unit.PX);
+
+
+        //Init property type column
+        final TextColumn<ObjectPropertyTO> propertyTypeColumn = new TextColumn<ObjectPropertyTO>() {
+
+            @Override
+            public void render(Cell.Context context, ObjectPropertyTO object, SafeHtmlBuilder sb) {
+                SafeHtml startDiv = new SafeHtml() {
+                    @Override
+                    public String asString() {
+                        return "<div style=\"cursor: pointer;\">";
+                    }
+                };
+                SafeHtml endDiv = new SafeHtml() {
+                    @Override
+                    public String asString() {
+                        return "</div>";
+                    }
+                };
+
+                sb.append(startDiv);
+                super.render(context, object, sb);
+                sb.append(endDiv);
+            }
+
+            @Override
+            public String getValue( final ObjectPropertyTO objectProperty) {
+                return propertyTypeDisplay(objectProperty);
+            }
         };
         propertyTypeColumn.setSortable(true);
         dataObjectPropertiesTable.addColumn(propertyTypeColumn, Constants.INSTANCE.objectEditor_columnType());
@@ -221,7 +300,7 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesTable.addColumnSortHandler(propertyTypeColHandler);
 
 
-        dataObjectPropertiesTable.getColumnSortList().push(propertyTypeColumn);
+        //dataObjectPropertiesTable.getColumnSortList().push(propertyTypeColumn);
         dataObjectPropertiesTable.getColumnSortList().push(propertyNameColumn);
 
         //Init the selection model
@@ -402,9 +481,11 @@ public class DataObjectBrowser extends Composite {
         notifyFieldDeleted(objectProperty);
     }
 
-    private String propertyTypeDisplay(ObjectPropertyTO propertyTO) {
-        String className = propertyTO.getClassName();
-        if (propertyTO.isMultiple()) {
+    private String propertyTypeDisplay(ObjectPropertyTO property) {
+        String className = property.getClassName();
+        if (property.isBaseType()) {
+            className = DataModelerUtils.getInstance().extractClassName(property.getClassName());
+        } else if (property.isMultiple()) {
             className += DataModelerUtils.MULTIPLE;
         }
         return className;

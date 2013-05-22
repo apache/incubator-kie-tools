@@ -24,10 +24,8 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 
-import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,14 +34,11 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 public class PropertyTypeCell extends TextCell {
 
     private boolean navigable = false;
-    
+
     DataObjectBrowser editor;
 
-    @Inject
-    private javax.enterprise.event.Event<DataModelerEvent> dataModelerEvent;
-
     public PropertyTypeCell(boolean navigable, DataObjectBrowser editor) {
-        super();        
+        super();
         this.navigable = navigable;
         this.editor = editor;
     }
@@ -62,7 +57,7 @@ public class PropertyTypeCell extends TextCell {
         if (DOM.eventGetType((Event) event) == Event.ONCLICK && !property.isBaseType()) {
             editor.onTypeCellSelection(property);
         } else {
-           super.onBrowserEvent(context, parent, value, event, stringValueUpdater);
+            super.onBrowserEvent(context, parent, value, event, stringValueUpdater);
         }
     }
 

@@ -30,4 +30,8 @@ public interface ImagesResources
     @Source("delete.gif")
     ImageResource Delete();
 
+    @Source("information.gif")
+    ImageResource BrowsObject();
+
+
 }

@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import java.util.Comparator;
 
 public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
-    
+
     String field;
 
     public ObjectPropertyComparator(String field) {
@@ -40,15 +41,22 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
         if ("className".equals(field)) {
             key1 = o1.getClassName();
             key2 = o2.getClassName();
-        } else {
+        } else if ("name".equals(field)){
             // By default compare by name
             key1 = o1.getName();
             key2 = o2.getName();
+        } else if ("label".equals(field)) {
+            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
         }
 
-        if (key1 != null) return key1.compareTo(key2);
-        if (key2 != null) return key2.compareTo(key1);
+        if (key1 == null && key2 == null) return 0;
+        if (key1 != null && key2 != null) return key1.compareTo(key2);
 
-        return 0;
+        if (key1 == null && key2 != null) return -1;
+
+        //if (key1 != null && key2 == null) return 1;
+        return 1;
+
     }
 }

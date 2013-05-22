@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
@@ -248,10 +249,12 @@ public class DataObjectFieldEditor extends Composite {
 
     @UiHandler("label")
     void labelChanged(final ValueChangeEvent<String> event) {
+        String oldValue = null;
         final String _label = label.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
 
         if (annotation != null) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
             if ( _label != null && !"".equals(_label) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _label);
             else getObjectField().removeAnnotation(annotation);
         } else {
@@ -259,6 +262,7 @@ public class DataObjectFieldEditor extends Composite {
                 getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _label );
             }
         }
+        notifyFieldChange("label", oldValue, _label);
     }
 
     @UiHandler("description")
@@ -288,8 +292,11 @@ public class DataObjectFieldEditor extends Composite {
         }
         getObjectField().setClassName(type);
 
-        // Un-reference former type reference and set the new one
-        if (!baseTypes.contains(type)) {
+        if (baseTypes.contains(type)) {
+            getObjectField().setBaseType(true);
+        } else {
+            // Un-reference former type reference and set the new one
+            getObjectField().setBaseType(false);
             getContext().getHelper().dataObjectUnReferenced(oldValue, getDataObject().getClassName());
             getContext().getHelper().dataObjectReferenced(type, getDataObject().getClassName());
         }

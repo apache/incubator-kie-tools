@@ -30,7 +30,8 @@
                     <!--datamodeler:DataObjectBreadcrums  divider=">" ui:field="dataObjectNavigation"/-->
 
                     <gwt:HTMLPanel>
-                        <div class="well" style="margin-top:20px;">
+                        <!--div class="well" style="margin-top:20px;"-->
+                        <div class="well">
                             <h4>
                                 <gwt:Label ui:field="objectName" ></gwt:Label>
                             </h4>
