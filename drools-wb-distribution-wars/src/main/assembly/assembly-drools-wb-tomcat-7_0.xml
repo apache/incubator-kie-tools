@@ -56,7 +56,8 @@
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
           <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
-          <exclude>WEB-INF/lib/mail-*.jar</exclude>
+          <!-- mail.jar is needed by tomcat-->
+          <!--exclude>WEB-INF/lib/mail-*.jar</exclude-->
           <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
           <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
         </excludes>
