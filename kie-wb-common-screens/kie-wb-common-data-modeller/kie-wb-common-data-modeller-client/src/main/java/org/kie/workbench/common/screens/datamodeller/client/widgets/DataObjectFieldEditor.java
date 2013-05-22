@@ -167,6 +167,14 @@ public class DataObjectFieldEditor extends Composite {
         }
     }
 
+    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
+        if (event.isFrom(getDataModel())) {
+            if ("name".equals(event.getPropertyName()) || "packageName".equals(event.getPropertyName())) {
+                initTypeList();
+            }
+        }
+    }
+
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         if (event.isFrom(getDataModel())) {
             initTypeList();
@@ -181,6 +189,7 @@ public class DataObjectFieldEditor extends Composite {
 
     private void loadDataObjectField(DataObjectTO dataObject, ObjectPropertyTO objectField) {
         clean();
+        initTypeList();
         if (dataObject != null && objectField != null) {
             setDataObject(dataObject);
             setObjectField(objectField);

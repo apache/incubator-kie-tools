@@ -574,6 +574,7 @@ public class DataObjectBrowser extends Composite {
         if (event.isFrom(getDataModel())) {
             if ("name".equals(event.getPropertyName()) || "packageName".equals(event.getPropertyName())) {
                 objectName.setText(getDataObjectFullName());
+                if (newPropertyDataObjectType.getValue()) populateObjectTypes();
             }
         }
     }
