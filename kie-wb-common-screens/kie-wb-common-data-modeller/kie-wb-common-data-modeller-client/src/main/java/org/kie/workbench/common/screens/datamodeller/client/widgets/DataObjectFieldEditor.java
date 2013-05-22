@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
@@ -42,10 +43,6 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Const
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -167,6 +164,12 @@ public class DataObjectFieldEditor extends Composite {
             if (getDataObject().getProperties().size() == 0) {
                 clean();
             }
+        }
+    }
+
+    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            initTypeList();
         }
     }
 
