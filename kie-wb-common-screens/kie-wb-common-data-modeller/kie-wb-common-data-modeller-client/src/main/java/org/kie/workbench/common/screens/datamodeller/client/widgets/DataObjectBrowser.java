@@ -535,6 +535,7 @@ public class DataObjectBrowser extends Composite {
         newPropertyName.setText(null);
         newPropertyBasicType.setValue(Boolean.TRUE);
         newPropertyIsMultiple.setValue(Boolean.FALSE);
+        newPropertyIsMultiple.setVisible(false);
         populateBaseTypes();
         newPropertyType.setSelectedValue(NOT_SELECTED);
     }
