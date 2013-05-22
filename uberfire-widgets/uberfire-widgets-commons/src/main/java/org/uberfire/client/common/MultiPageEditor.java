@@ -17,10 +17,10 @@
 package org.uberfire.client.common;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 @Dependent
 public class MultiPageEditor
