@@ -124,7 +124,6 @@ public class ProjectResource {
 
            //TODO: handle errors, exceptions.
 
-           //project.setPath(vfsPath.getFileName());
            return project;
        }
    }
@@ -142,8 +141,8 @@ public class ProjectResource {
        if (repositoryPath == null) {
            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity("Repository [" + repositoryName + "] does not exist").build());
        } else {
-           //TODO: Delete project
-           
+           //TODO: Delete project. ProjectService does not have a removeProject method yet.           
+
            Result result = new Result();
            result.setStatus("SUCCESS");
            return result;
@@ -279,15 +278,14 @@ public class ProjectResource {
    @Produces(MediaType.APPLICATION_JSON)
    @Path("/groups")
    public Group createGroup(Group group) {
-       System.out.println("-----createGroup--- , Group name:" + group.getName());
+       System.out.println("-----createGroup--- , Group name:" + group.getName() + ", Group owner:" + group.getOwner());
+
+       if (group.getName() == null || group.getOwner() == null) {
+           throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Group name and owner must be provided").build());
+       } 
 
        groupService.createGroup(group.getName(), group.getOwner());
-/*        try {
-           Thread.sleep(100000);
-       } catch (InterruptedException e) {
-           // TODO Auto-generated catch block
-           e.printStackTrace();
-       }*/
+
        return group;
    }
 
