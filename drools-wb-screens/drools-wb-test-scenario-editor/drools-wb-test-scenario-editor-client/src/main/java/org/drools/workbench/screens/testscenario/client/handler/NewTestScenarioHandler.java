@@ -43,26 +43,32 @@ public class NewTestScenarioHandler
     }
 
     @Override
-    public void create(Path context, String baseFileName, NewResourcePresenter presenter) {
-        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+    public void create( Path context,
+                        String baseFileName,
+                        NewResourcePresenter presenter ) {
+        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
         service.call(
-                getSuccessCallback(presenter),
-                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)
-        ).create(context,
-                buildFileName(resourceType, baseFileName),
-                new Scenario(),
-                "");
+                getSuccessCallback( presenter ),
+                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView )
+                    ).create( context,
+                              buildFileName( resourceType, baseFileName ),
+                              new Scenario(),
+                              "" );
     }
 
     @Override
-    public void acceptPath(final Path path,
-                           final Callback<Boolean, Void> callback) {
-        projectService.call(new RemoteCallback<Path>() {
-            @Override
-            public void callback(final Path path) {
-                callback.onSuccess(path != null);
-            }
-        }).resolveTestPackage(path);
+    public void acceptPath( final Path path,
+                            final Callback<Boolean, Void> callback ) {
+        if ( path == null ) {
+            callback.onSuccess( false );
+        } else {
+            projectService.call( new RemoteCallback<Path>() {
+                @Override
+                public void callback( final Path path ) {
+                    callback.onSuccess( path != null );
+                }
+            } ).resolveTestPackage( path );
+        }
     }
 }
