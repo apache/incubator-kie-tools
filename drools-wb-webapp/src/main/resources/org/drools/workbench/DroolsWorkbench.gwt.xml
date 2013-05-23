@@ -47,8 +47,8 @@
   <inherits name="org.drools.workbench.screens.scorecardxls.DroolsWorkbenchScoreCardXLSEditorClient"/>
   <inherits name="org.drools.workbench.screens.testscenario.DroolsWorkbenchTestScenarioEditorClient"/>
 
-  <inherits name="org.kie.workbench.projecteditor.GuvnorProjectEditorClient"/>
-  <inherits name="org.kie.workbench.projectimportsscreen.GuvnorProjectConfigScreenClient"/>
+  <inherits name="org.kie.workbench.common.projecteditor.KieProjectEditorClient"/>
+  <inherits name="org.kie.workbench.common.projectimportsscreen.KieProjectConfigScreenClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
