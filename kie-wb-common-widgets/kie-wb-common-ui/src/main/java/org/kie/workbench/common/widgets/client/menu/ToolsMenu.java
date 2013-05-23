@@ -35,7 +35,7 @@ public class ToolsMenu {
                 }
             }).endMenu().build().getItems().get(0);
 
-    private MenuItem dataModelerScreen = MenuFactory.newSimpleItem("Data Modeller").respondsWith(
+    private MenuItem dataModelerScreen = MenuFactory.newSimpleItem(ToolsMenuConstants.INSTANCE.DataModeller()).respondsWith(
             new Command() {
                 @Override
                 public void execute() {

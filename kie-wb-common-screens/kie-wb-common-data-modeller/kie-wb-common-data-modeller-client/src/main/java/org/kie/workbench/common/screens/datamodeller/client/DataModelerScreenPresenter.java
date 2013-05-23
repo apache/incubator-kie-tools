@@ -86,8 +86,11 @@ public class DataModelerScreenPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private WorkbenchContext workbenchContext;
+    private Event<PathChangeEvent> pathChange;
 
+    @Inject
+    private WorkbenchContext workbenchContext;
+    
     private Path currentProject;
     
     private DataModelTO dataModel;
@@ -131,11 +134,14 @@ public class DataModelerScreenPresenter {
     @OnClose
     public void OnClose() {
         open = false;
+        clearContext();
     }
 
     public void onSave(final Path newProjectPath) {
 
         BusyPopup.showMessage(Constants.INSTANCE.modelEditor_saving());
+        if (newProjectPath == null) pathChange.fire(new PathChangeEvent(currentProject));
+
         modelerService.call(new RemoteCallback<Object>() {
                 @Override
                 public void callback(Object response) {
@@ -245,9 +251,9 @@ public class DataModelerScreenPresenter {
                         if (projectPath != null) {
                             //the project has changed.
                             if (getContext() != null && getContext().isDirty()) {
-                                needsSave[0] = Window.confirm("Current project data model has been modified, do you want to save it prior to change from: \n\nproject: " + (currentProject != null ? currentProject.toURI() : null) + " \n\nto\n\nproject: " + projectPath.toURI());
+                                needsSave[0] = Window.confirm(Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change(currentProject != null ? currentProject.toURI() : null, projectPath.toURI()));
                             } else if (currentProject != null) {
-                                Window.alert("Current project will be changed from: \n\nproject: " + currentProject.toURI() + " \n\nto\n\nproject: " + projectPath.toURI());
+                                Window.alert(Constants.INSTANCE.modelEditor_notify_project_change(currentProject.toURI(), projectPath.toURI()));
                             }
                             if (needsSave[0]) {
                                 onSave(projectPath);
@@ -255,9 +261,7 @@ public class DataModelerScreenPresenter {
                                 loadProjectDataModel(projectPath);
                             }
                         } else {
-                            //TODO
-                            //check what will be the default policy when the user click in a place
-                            //that doesn't belong to a project.
+                            //By definition the data modeler will only load model from project paths
                         }
                     }
                 },
@@ -357,5 +361,9 @@ public class DataModelerScreenPresenter {
                 },
                 new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_propertyType_loading_error())
         ).getBasePropertyTypes();
+    }
+    
+    private void clearContext() {
+        context.clear();
     }
 }

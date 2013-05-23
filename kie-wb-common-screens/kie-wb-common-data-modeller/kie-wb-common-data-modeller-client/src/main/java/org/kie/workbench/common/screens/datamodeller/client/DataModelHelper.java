@@ -25,9 +25,7 @@ import java.util.*;
 
 public class DataModelHelper {
 
-    private DataModelerContext context;
     private DataModelTO dataModel;
-    private DataObjectTO currentDataObject;
 
     // Map linking Objects with the Objects they are being referenced by (e.g. x.y.A --> {u.v.B} means B holds a reference to A)
     private Map<String, Set<String>> referencedBy = new HashMap<String, Set<String>>(10);
@@ -99,10 +97,11 @@ public class DataModelHelper {
         reset();
     }
 
-    public void setDataModelerContext(DataModelerContext context) {
-        this.context = context;
-        for (PropertyTypeTO type : context.getBaseTypes()) {
-            orderedBaseTypes.put(type.getName(), type.getClassName());
+    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
+        if (baseTypes != null) {
+            for (PropertyTypeTO type : baseTypes) {
+                orderedBaseTypes.put(type.getName(), type.getClassName());
+            }
         }
     }
 
@@ -113,17 +112,19 @@ public class DataModelHelper {
         references.clear();
         classNames.clear();
         siblingsMap.clear();
-        classNames.addAll(dataModel.getExternalClasses());
-        for (DataObjectTO object : dataModel.getDataObjects()) {
-            String className = object.getClassName();
-            classNames.add(className);
+        if (dataModel != null) {
+            classNames.addAll(dataModel.getExternalClasses());
+            for (DataObjectTO object : dataModel.getDataObjects()) {
+                String className = object.getClassName();
+                classNames.add(className);
 
-            String superClassName = object.getSuperClassName();
-            if (superClassName != null &&  !"".equals(superClassName)) objectExtended(superClassName, className, true);
+                String superClassName = object.getSuperClassName();
+                if (superClassName != null &&  !"".equals(superClassName)) objectExtended(superClassName, className, true);
 
-            for (ObjectPropertyTO prop : object.getProperties()) {
-                if (!prop.isBaseType()) {
-                    objectReferenced(prop.getClassName(), object.getClassName());
+                for (ObjectPropertyTO prop : object.getProperties()) {
+                    if (!prop.isBaseType()) {
+                        objectReferenced(prop.getClassName(), object.getClassName());
+                    }
                 }
             }
         }

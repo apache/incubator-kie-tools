@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.events.ChangeType;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
 import org.uberfire.client.workbench.widgets.events.ResourceChange;
 
@@ -84,7 +85,6 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
-
 
     public DataModelerServiceImpl() {
     }
@@ -148,10 +148,8 @@ public class DataModelerServiceImpl implements DataModelerService {
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
             List<FileChangeDescriptor> driverChanges = driver.generateModel(dataModelDomain, ioService, javaPath);
 
-            //clean empty java directories
-            //cleanupEmptyDirs(javaPath);
-
             notifyFileChanges(localChanges, driverChanges);
+            cleanupEmptyDirs(javaPath);
 
         } catch (Exception e) {
             logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);

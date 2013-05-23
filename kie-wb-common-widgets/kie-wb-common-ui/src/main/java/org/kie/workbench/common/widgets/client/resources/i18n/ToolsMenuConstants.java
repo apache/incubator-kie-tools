@@ -26,4 +26,6 @@ public interface ToolsMenuConstants
     public static final ToolsMenuConstants INSTANCE = GWT.create( ToolsMenuConstants.class );
 
     String ProjectEditor();
+    
+    String DataModeller();
 }

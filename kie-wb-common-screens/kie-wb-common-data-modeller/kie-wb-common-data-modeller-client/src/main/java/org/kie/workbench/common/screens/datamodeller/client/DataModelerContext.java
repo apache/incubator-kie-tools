@@ -42,7 +42,7 @@ public class DataModelerContext {
     public void init(List<PropertyTypeTO> baseTypes) {
         this.baseTypes = baseTypes;
         helper = new DataModelHelper();
-        helper.setDataModelerContext(this);
+        helper.setBaseTypes(baseTypes);
     }
 
     public DataModelTO getDataModel() {
@@ -80,5 +80,12 @@ public class DataModelerContext {
 
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
+    }
+    
+    public void clear() {
+        if (annotationDefinitions != null) annotationDefinitions.clear();
+        if (baseTypes != null) baseTypes.clear();
+        dataModel = null;
+        helper = null;
     }
 }
