@@ -18,6 +18,7 @@ package org.uberfire.client;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.CoreResources;
+import org.uberfire.client.resources.WizardResources;
 
 /**
  * Bootstrap widgets-core
@@ -29,6 +30,7 @@ public class CoreEntryPoint {
     public void startApp() {
         //Ensure CSS has been loaded
         CoreResources.INSTANCE.CSS().ensureInjected();
+        WizardResources.INSTANCE.css().ensureInjected();
     }
 
 }
