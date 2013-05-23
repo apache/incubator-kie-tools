@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +40,6 @@ import org.kie.workbench.common.screens.explorer.model.ProjectItem;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -188,37 +188,33 @@ public class ExplorerServiceImplTest {
 
         //Check items count
         final List<Item> items = result.getItems();
-        assertEquals( 5,
+        assertEquals( 3,
                       items.size() );
 
         //Check items' type
-        assertContainsFileItem( items, 2 );
-        assertContainsFolderItem( items, 2 );
-        assertContainsParentFolderItem( items, 1 );
+        assertContainsFileItem( items,
+                                0 );
+        assertContainsFolderItem( items,
+                                  2 );
+        assertContainsParentFolderItem( items,
+                                        1 );
 
         //Check items' caption
-        assertEquals( "Project definition 'ExplorerBackendTestProjectStructureValid'",
-                      items.get( 0 ).getCaption() );
-        assertEquals( "External imports",
-                      items.get( 1 ).getCaption() );
+
         assertEquals( ItemNames.SOURCE_JAVA,
-                      items.get( 2 ).getCaption() );
+                      items.get( 0 ).getCaption() );
         assertEquals( ItemNames.SOURCE_RESOURCES,
-                      items.get( 3 ).getCaption() );
+                      items.get( 1 ).getCaption() );
         assertEquals( "..",
-                      items.get( 4 ).getCaption() );
+                      items.get( 2 ).getCaption() );
 
         //Check items' Paths
-        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/pom.xml" ),
-                      items.get( 0 ).getPath() );
-        assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/project.imports" ),
-                      items.get( 1 ).getPath() );
         assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/java" ),
-                      items.get( 2 ).getPath() );
+                      items.get( 0 ).getPath() );
         assertEquals( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources" ),
-                      items.get( 3 ).getPath() );
+                      items.get( 1 ).getPath() );
         assertEquals( makePath( "/" ),
-                      items.get( 4 ).getPath() );
+                      items.get( 2 ).getPath() );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();
@@ -258,19 +254,28 @@ public class ExplorerServiceImplTest {
                       items.size() );
 
         //Check items' type
-        assertContainsFileItem( items, 1 );
-        assertContainsPackageItem( items, 1 );
-        assertContainsParentPackageItem( items, 1 );
+        assertContainsFileItem( items,
+                                1 );
+        assertContainsPackageItem( items,
+                                   1 );
+        assertContainsParentPackageItem( items,
+                                         1 );
 
         //Check items' caption
-        assertContainsCaption( "rule1.drl", items );
-        assertContainsCaption( "org", items );
-        assertContainsCaption( "..", items );
+        assertContainsCaption( "rule1.drl",
+                               items );
+        assertContainsCaption( "org",
+                               items );
+        assertContainsCaption( "..",
+                               items );
 
         //Check items' Paths
-        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/rule1.drl" ), items );
-        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org" ), items );
-        assertContainsPathUri( makePath( "/ExplorerBackendTestProjectStructureValid/src/main" ).toURI(), items );
+        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/rule1.drl" ),
+                            items );
+        assertContainsPath( makePath( "/ExplorerBackendTestProjectStructureValid/src/main/resources/org" ),
+                            items );
+        assertContainsPathUri( makePath( "/ExplorerBackendTestProjectStructureValid/src/main" ).toURI(),
+                               items );
 
         //Check breadcrumbs
         List<BreadCrumb> breadCrumbs = result.getBreadCrumbs();

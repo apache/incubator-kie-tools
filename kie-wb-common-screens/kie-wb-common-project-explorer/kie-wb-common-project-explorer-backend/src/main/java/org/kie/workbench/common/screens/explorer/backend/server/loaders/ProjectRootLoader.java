@@ -8,14 +8,13 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.screens.explorer.model.FileItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.model.ItemNames;
 import org.kie.workbench.common.screens.explorer.model.ParentFolderItem;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
-import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.kie.workbench.common.services.backend.file.LinkedFilter;
+import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -57,21 +56,7 @@ public class ProjectRootLoader implements ItemsLoader {
             return items;
         }
 
-        //Add pom.xml file
         final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRoot );
-        final org.kie.commons.java.nio.file.Path pomPath = pRoot.resolve( POM_PATH );
-        final String projectName = pRoot.getFileName().toString();
-        if ( Files.exists( pomPath ) ) {
-            items.add( new FileItem( paths.convert( pomPath ),
-                                     "Project definition '" + projectName + "'" ) );
-        }
-
-        //Add Project Imports
-        final org.kie.commons.java.nio.file.Path projectImportsPath = pRoot.resolve( PROJECT_IMPORTS_PATH );
-        if ( Files.exists( projectImportsPath ) ) {
-            items.add( new FileItem( paths.convert( projectImportsPath ),
-                                     "External imports" ) );
-        }
 
         //Add Items within Project's Java Source Resources path
         final org.kie.commons.java.nio.file.Path srcJavaResourcesPath = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
