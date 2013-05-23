@@ -1,2 +1,0 @@
-org.kie.workbench.projecteditor.type.POMResourceTypeDefinition
-org.kie.workbench.projecteditor.type.KModuleResourceTypeDefinition
