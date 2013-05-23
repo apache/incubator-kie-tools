@@ -135,7 +135,7 @@ public class FileUtils {
 
     public boolean cleanEmptyDirectories(final IOService ioService, Path rootPath, boolean deleteRoot, List<String> deleteableFiles) throws IOException {
         DirDescriptor dirDescriptor;
-        if (rootPath != null && Files.isDirectory(rootPath)) {
+        if (rootPath != null && Files.exists(rootPath) && Files.isDirectory(rootPath)) {
 
             final DirectoryStream<Path> children = ioService.newDirectoryStream(rootPath);
             if (children != null) {
