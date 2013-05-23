@@ -85,7 +85,7 @@ public class DataModelerContext {
     public void clear() {
         if (annotationDefinitions != null) annotationDefinitions.clear();
         if (baseTypes != null) baseTypes.clear();
-        dataModel = null;
-        helper = null;
+        if (dataModel != null && dataModel.getDataObjects() != null) dataModel.getDataObjects().clear();
+        helper = new DataModelHelper();
     }
 }

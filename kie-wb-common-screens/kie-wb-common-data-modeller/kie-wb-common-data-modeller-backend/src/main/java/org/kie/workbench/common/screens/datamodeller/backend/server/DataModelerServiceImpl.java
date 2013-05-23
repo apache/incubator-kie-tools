@@ -137,7 +137,8 @@ public class DataModelerServiceImpl implements DataModelerService {
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath(paths.convert(projectPath));
 
             //clean the files that needs to be deleted prior to model generation.
-            List<ResourceChange> localChanges = cleanupFiles(dataModel, javaPath);
+            //List<ResourceChange> localChanges = cleanupFiles(dataModel, javaPath);
+            List<Path> deleteableFiles = calculateDeleteableFiles(dataModel, javaPath);
 
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain(dataModel);
@@ -148,8 +149,12 @@ public class DataModelerServiceImpl implements DataModelerService {
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
             List<FileChangeDescriptor> driverChanges = driver.generateModel(dataModelDomain, ioService, javaPath);
 
-            notifyFileChanges(localChanges, driverChanges);
+            notifyFileChanges(deleteableFiles, driverChanges);
+
+            cleanupFiles(deleteableFiles);
             cleanupEmptyDirs(javaPath);
+            //after file cleaning we must ensure again that the java path exists
+            javaPath = ensureProjectJavaPath(paths.convert(projectPath));
 
         } catch (Exception e) {
             logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);
@@ -233,14 +238,16 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         path = path.getParent();
-
         return paths.convert( path );
     }
 
-    private void notifyFileChanges(List<ResourceChange> localChanges, List<FileChangeDescriptor> driverChanges) {
+    private void notifyFileChanges(List<Path> deleteableFiles, List<FileChangeDescriptor> driverChanges) {
 
         Set<ResourceChange> batchChanges = new HashSet<ResourceChange>();
-        batchChanges.addAll(localChanges);
+
+        for (Path deleteableFile : deleteableFiles) {
+            batchChanges.add(new ResourceChange(ChangeType.DELETE, deleteableFile));
+        }
 
         for (FileChangeDescriptor driverChange : driverChanges) {
             switch (driverChange.getAction()) {
@@ -260,6 +267,58 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
         if (batchChanges.size() > 0) {
             resourceBatchChangesEvent.fire(new ResourceBatchChangesEvent(batchChanges));
+        }
+    }
+
+    private List<Path> calculateDeleteableFiles(DataModelTO dataModel, org.kie.commons.java.nio.file.Path javaPath) {
+
+        List<DataObjectTO> currentObjects = dataModel.getDataObjects();
+        List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
+        List<Path> deleteableFiles = new ArrayList<Path>();
+        org.kie.commons.java.nio.file.Path filePath;
+
+        //process deleted persistent objects.
+        for (DataObjectTO dataObject : deletedObjects) {
+            if (dataObject.isPersistent()) {
+                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
+                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+                    //TODO check if we need to have this level of control or instead we remove this file directly.
+                    //very particular case a persistent object was deleted in memory and a new one with the same name
+                    //was created. At the end we will have a file update instead of a delete.
+
+                    //do nothing, the file generator will notify that the file changed.
+                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
+                } else {
+                    deleteableFiles.add(paths.convert(filePath));
+                }
+            }
+        }
+
+        //process package or class name changes for persistent objects.
+        for (DataObjectTO dataObject : currentObjects) {
+            if (dataObject.isPersistent() && dataObject.classNameChanged()) {
+                //if the className changes the old file needs to be removed
+                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
+
+                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+                    //TODO check if we need to have this level of control or instead we remove this file directly.
+                    //very particular case of change, a persistent object changes the name to the name of another
+                    //object. A kind of name swapping...
+
+                    //do nothing, the file generator will notify that the file changed.
+                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
+                } else {
+                    deleteableFiles.add(paths.convert(filePath));
+                }
+            }
+        }
+
+        return  deleteableFiles;
+    }
+
+    private void cleanupFiles(List<Path> deleteableFiles) {
+        for (Path filePath : deleteableFiles) {
+            ioService.deleteIfExists(paths.convert(filePath));
         }
     }
 

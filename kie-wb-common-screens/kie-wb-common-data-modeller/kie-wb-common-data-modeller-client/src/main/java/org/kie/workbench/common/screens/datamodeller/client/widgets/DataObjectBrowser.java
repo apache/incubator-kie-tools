@@ -241,7 +241,7 @@ public class DataObjectBrowser extends Composite {
             @Override
             public ImageResource getValue( final ObjectPropertyTO property ) {
 
-                if (!property.isBaseType()) {
+                if (!property.isBaseType() && !getDataObject().getClassName().equals(property.getClassName())) {
                     return ImagesResources.INSTANCE.BrowsObject();
                 } else {
                     return null;
@@ -556,17 +556,21 @@ public class DataObjectBrowser extends Composite {
     }
 
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
-        if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+        if (event.isFrom(getDataModel())) {
+            if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+        }
     }
 
     private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
-        if (newPropertyDataObjectType.getValue()) populateObjectTypes();
-        // When all objects from current model have been deleted clean
-        if (getDataModel().getDataObjects().size() == 0) {
-            dataObjectPropertiesProvider.getList().clear();
-            dataObjectPropertiesProvider.flush();
-            dataObjectPropertiesProvider.refresh();
-            dataObjectPropertiesTable.redraw();
+        if (event.isFrom(getDataModel())) {
+            if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+            // When all objects from current model have been deleted clean
+            if (getDataModel().getDataObjects().size() == 0) {
+                dataObjectPropertiesProvider.getList().clear();
+                dataObjectPropertiesProvider.flush();
+                dataObjectPropertiesProvider.refresh();
+                dataObjectPropertiesTable.redraw();
+            }
         }
     }
 
