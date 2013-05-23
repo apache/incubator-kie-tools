@@ -1,0 +1,9 @@
+org.kie.workbench.projectimportsscreen.client.ProjectConfigScreenEntryPoint
+ProjectImportsScreenViewImpl
+org.kie.workbench.projectimportsscreen.client.type.ProjectImportsResourceType
+org.kie.workbench.projectimportsscreen.client.forms.ProjectImportsScreenPresenterActivity
+ProjectImportsScreenView
+ProjectConfigScreenConstants
+ProjectConfigScreenResources
+ProjectImportsScreenPresenter
+ProjectConfigScreenCss

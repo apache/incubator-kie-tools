@@ -1,0 +1,1 @@
+org.kie.workbench.projecteditor.backend.server.KModuleServiceImpl

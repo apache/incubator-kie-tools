@@ -1,0 +1,1 @@
+org.kie.workbench.projectimportsscreen.type.ProjectImportsResourceTypeDefinition
