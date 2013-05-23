@@ -35,6 +35,15 @@
 
             </b:ControlGroup>
 
+            <b:ControlGroup ui:field="labelGroup">
+                <b:ControlLabel for="label"  ><gwt:Label ui:field="labelLabel" text="{i18n.new_dataobject_popup_label}"  /></b:ControlLabel>
+
+                <b:Controls>
+                    <b:TextBox b:id="labelLabel" ui:field="label"/>
+                </b:Controls>
+
+            </b:ControlGroup>
+
             <b:ControlGroup ui:field="newPackageGroup">
 
                 <b:ControlLabel for="newPackage" ><gwt:Label ui:field="newPackageLabel" text="{i18n.new_dataobject_popup_new_package}"  /></b:ControlLabel>

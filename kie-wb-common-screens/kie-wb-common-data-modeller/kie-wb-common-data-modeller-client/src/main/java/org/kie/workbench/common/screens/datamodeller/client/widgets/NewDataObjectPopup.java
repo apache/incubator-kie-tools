@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Const
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
@@ -56,6 +57,9 @@ public class NewDataObjectPopup extends Modal {
 
     @UiField
     TextBox name;
+
+    @UiField
+    TextBox label;
 
     @UiField
     ControlGroup newPackageGroup;
@@ -147,10 +151,12 @@ public class NewDataObjectPopup extends Modal {
     private void onOk() {
 
         final String newName[] = new String[1];
+        final String newLabel[] = new String[1];
         final String newPackageName[] = new String[1];
         final String superClass[] = new String[1];
 
         newName[0] = name.getText() != null ? name.getText().trim() : "";
+        newLabel[0] = label.getText() != null ? label.getText().trim() : "";
         newPackageName[0] = newPackage.getText() != null && !"".equals(newPackage.getText().trim()) ?  newPackage.getText().trim() : null;
 
         superClass[0] = superclassSelector.getSuperclassList().getValue();
@@ -186,7 +192,7 @@ public class NewDataObjectPopup extends Modal {
 
                                 @Override
                                 public void onSuccess() {
-                                    createDataObject(newPackageName[0], newName[0], superClass[0]);
+                                    createDataObject(newPackageName[0], newName[0], newLabel[0], superClass[0]);
                                     clean();
                                     hide();
                                 }
@@ -203,7 +209,7 @@ public class NewDataObjectPopup extends Modal {
 
                         @Override
                         public void onSuccess() {
-                            createDataObject(newPackageName[0], newName[0], superClass[0]);
+                            createDataObject(newPackageName[0], newName[0], newLabel[0], superClass[0]);
                             clean();
                             hide();
                         }
@@ -214,14 +220,18 @@ public class NewDataObjectPopup extends Modal {
 
     }
 
-    private void createDataObject(String packageName, String name, String superClass) {
+    private void createDataObject(String packageName, String name, String label, String superClass) {
         DataObjectTO dataObject = new DataObjectTO(name, packageName, superClass);
+        if (label != null && !"".equals(label)) {
+            dataObject.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, label);
+        }
         getDataModel().getDataObjects().add(dataObject);
         notifyObjectCreated(dataObject);
     }
 
     private void clean() {
         name.setText("");
+        label.setText("");
         newPackage.setText("");
         cleanErrors();
     }
