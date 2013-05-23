@@ -1,2 +1,0 @@
-org.kie.guvnor.projecteditor.backend.server.KModuleServiceImplTest
-org.kie.guvnor.projecteditor.backend.server.KModuleContentHandlerTest
