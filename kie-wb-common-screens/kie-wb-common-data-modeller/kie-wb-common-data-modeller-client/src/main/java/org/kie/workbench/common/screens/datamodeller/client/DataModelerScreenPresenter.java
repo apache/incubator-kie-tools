@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -93,9 +94,11 @@ public class DataModelerScreenPresenter {
 
     private DataModelerContext context;
 
+    private boolean open = false;
+
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.modelEditor_screen_name() + " [" + (currentProject != null ? currentProject.getFileName() : "") + "]";
+        return Constants.INSTANCE.modelEditor_screen_name();
     }
 
     @WorkbenchPartView
@@ -108,6 +111,7 @@ public class DataModelerScreenPresenter {
         makeMenuBar();
         makeToolBar();
         initContext();
+        open = true;
         processPathChange(workbenchContext.getActivePath());
     }
 
@@ -124,8 +128,12 @@ public class DataModelerScreenPresenter {
         return true;
     }
 
-    @OnSave
-    public void onSave() {
+    @OnClose
+    public void OnClose() {
+        open = false;
+    }
+
+    public void onSave(final Path newProjectPath) {
 
         BusyPopup.showMessage(Constants.INSTANCE.modelEditor_saving());
         modelerService.call(new RemoteCallback<Object>() {
@@ -135,6 +143,9 @@ public class DataModelerScreenPresenter {
                     restoreModelStatus();
                     getContext().setDirty(false);
                     notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_saved()));
+                    if (newProjectPath != null) {
+                        loadProjectDataModel(newProjectPath);
+                    }
                 }
             },
             new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_saving_error())
@@ -169,7 +180,7 @@ public class DataModelerScreenPresenter {
                                     public void callback(DataModelTO dataModel) {
                                         BusyPopup.close();
                                         setDataModel(dataModel);
-                                        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_loaded(path.toString())));
+                                        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_loaded(path.toURI())));
                                     }
 
                                 },
@@ -216,32 +227,51 @@ public class DataModelerScreenPresenter {
         processPathChange(event.getPath());
     }
 
-    private void processPathChange(Path newPath) {
+    private boolean isOpen() {
+        return open;
+    }
 
-        if (newPath != null) {
+    private void processPathChange(final Path newPath) {
+
+        final boolean[] needsSave = new boolean[]{false};
+
+        if (newPath != null && isOpen() && currentProjectChanged(newPath)) {
 
             modelerService.call(
-                    new RemoteCallback<Path>() {
-                        @Override
-                        public void callback(Path projectPath) {
+                new RemoteCallback<Path>() {
+                    @Override
+                    public void callback(Path projectPath) {
 
-                            if (projectPath != null) {
-                                if (!projectPath.equals(currentProject)) {
-                                    loadProjectDataModel(projectPath);
-                                }
-                            } else {
-                                //TODO
-                                //check what will be the default policy when the user click in a place
-                                //that doesn't belong to a project.
+                        if (projectPath != null) {
+                            //the project has changed.
+                            if (getContext() != null && getContext().isDirty()) {
+                                needsSave[0] = Window.confirm("Current project data model has been modified, do you want to save it prior to change from: \n\nproject: " + (currentProject != null ? currentProject.toURI() : null) + " \n\nto\n\nproject: " + projectPath.toURI());
+                            } else if (currentProject != null) {
+                                Window.alert("Current project will be changed from: \n\nproject: " + currentProject.toURI() + " \n\nto\n\nproject: " + projectPath.toURI());
                             }
+                            if (needsSave[0]) {
+                                onSave(projectPath);
+                            } else {
+                                loadProjectDataModel(projectPath);
+                            }
+                        } else {
+                            //TODO
+                            //check what will be the default policy when the user click in a place
+                            //that doesn't belong to a project.
                         }
-                    },
-                    new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_projectPath_calc_error())
+                    }
+                },
+                new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_projectPath_calc_error())
             ).resolveProject(newPath);
 
         } else {
             //TODO check if this is possible. By definition we will always have a path.
         }
+    }
+
+    private boolean currentProjectChanged(Path newPath) {
+        if (currentProject == null) return true;
+        return !newPath.toURI().startsWith(currentProject.toURI());
     }
 
     private void restoreModelStatus() {
@@ -263,7 +293,7 @@ public class DataModelerScreenPresenter {
         org.uberfire.client.mvp.Command saveCommand = new org.uberfire.client.mvp.Command() {
             @Override
             public void execute() {
-                onSave();
+                onSave(null);
             }
         };
 
@@ -296,7 +326,7 @@ public class DataModelerScreenPresenter {
         org.uberfire.client.mvp.Command saveCommand = new org.uberfire.client.mvp.Command() {
             @Override
             public void execute() {
-                onSave();
+                onSave(null);
             }
         };
 

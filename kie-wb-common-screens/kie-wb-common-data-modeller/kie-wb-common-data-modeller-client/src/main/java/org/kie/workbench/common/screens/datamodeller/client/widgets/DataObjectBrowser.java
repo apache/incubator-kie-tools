@@ -581,7 +581,7 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) || "className".equals(event.getPropertyName())) {
+            if ("name".equals(event.getPropertyName()) || "className".equals(event.getPropertyName()) || "label".equals(event.getPropertyName())) {
                 List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
                 for (int i = 0; i < props.size(); i++) {
                     if (event.getCurrentField() == props.get(i)) {
