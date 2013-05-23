@@ -27,6 +27,7 @@ import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.rest.domain.BuildConfig;
 import org.kie.workbench.common.services.rest.domain.Entity;
 import org.kie.workbench.common.services.rest.domain.Group;
+import org.kie.workbench.common.services.rest.domain.Repository;
 import org.kie.workbench.common.services.rest.domain.Result;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 
@@ -34,6 +35,7 @@ import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 //import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -77,20 +79,45 @@ public class ProjectResource {
 
    @Inject
    GroupService groupService;
+   
+   @Inject
+   RepositoryService repositoryService;
 
    @Context
    public void setHttpHeaders(HttpHeaders theHeaders) {
        headers = theHeaders;
    }
 
-
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    @Path("repositories")
-   public Entity createRepository(Entity repository) {
-       System.out.println("-----createRepository--- , repository name:" + repository.getName());
+   public Repository createOrCloneRepository(Repository repository) {
+       System.out.println("-----createOrCloneRepository--- , repository name:" + repository.getName());
 
+       if (repository.getRequestType() == null 
+               || "".equals(repository.getRequestType()) 
+               || !("new".equals(repository.getRequestType()) || ("clone".equals(repository.getRequestType())))) {
+           throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository request type can only be new or clone.").build());
+       } 
+       
+       if("new".equals(repository.getRequestType())) {
+           if (repository.getName() == null || "".equals(repository.getName()) || repository.getScheme() == null || "".equals(repository.getScheme())) {
+               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name and scheme must be provided").build());
+           }        
+           
+           //String scheme = "git";
+           //String alias = "repository name";
+           //String uri = scheme + "://" + alias;
+           //username and password are optional
+           repositoryService.createRepository(repository.getScheme(), repository.getName(), repository.getUserName(), repository.getPassword());
+       } else if("clone".equals(repository.getRequestType())) {
+           if (repository.getName() == null || "".equals(repository.getName()) || repository.getGitURL() == null || "".equals(repository.getGitURL())) {
+               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name and GITURL must be provided").build());
+           }            
+           repositoryService.cloneRepository(repository.getScheme(), repository.getName(), repository.getGitURL(), repository.getUserName(), repository.getPassword());
+       }
+             
        return repository;
    }
 
