@@ -12,6 +12,7 @@ import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -71,9 +72,12 @@ public class DataModelDeclaredTypesTests {
         DataModelOracleTestUtils.assertContains( "t1p2.Bean2",
                                                  oracle.getExternalFactTypes() );
 
-        assertFalse( oracle.isDeclaredType( "Bean1" ) );
-        assertTrue( oracle.isDeclaredType( "DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "t1p2.Bean2" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getTypeSource( "Bean1" ) );
+        assertEquals( TypeSource.DECLARED,
+                      oracle.getTypeSource( "DRLBean" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getTypeSource( "t1p2.Bean2" ) );
     }
 
     @Test
@@ -101,9 +105,12 @@ public class DataModelDeclaredTypesTests {
         DataModelOracleTestUtils.assertContains( "t1p2.Bean2",
                                                  oracle.getFactTypes() );
 
-        assertFalse( oracle.isDeclaredType( "t1p1.Bean1" ) );
-        assertTrue( oracle.isDeclaredType( "t1p1.DRLBean" ) );
-        assertFalse( oracle.isDeclaredType( "t1p2.Bean2" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getTypeSource( "t1p1.Bean1" ) );
+        assertEquals( TypeSource.DECLARED,
+                      oracle.getTypeSource( "t1p1.DRLBean" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getTypeSource( "t1p2.Bean2" ) );
     }
 
 }

@@ -25,6 +25,7 @@ import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 public interface ProjectDataModelOracle {
 
@@ -37,7 +38,7 @@ public interface ProjectDataModelOracle {
 
     boolean isFactTypeAnEvent( final String factType );
 
-    boolean isDeclaredType( final String factType );
+    TypeSource getTypeSource( final String factType );
 
     String getSuperType( final String factType );
 

@@ -10,6 +10,7 @@ import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Base FactBuilder containing common code
@@ -23,17 +24,17 @@ public abstract class BaseFactBuilder implements FactBuilder {
 
     private final boolean isCollection;
     private final boolean isEvent;
-    private final boolean isDeclaredType;
+    private final TypeSource typeSource;
 
     public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final Class<?> clazz,
                             final boolean isEvent,
-                            final boolean isDeclaredType ) {
+                            final TypeSource typeSource ) {
         this.builder = builder;
         this.type = clazz.getName();
         this.isCollection = isCollection( clazz );
         this.isEvent = isEvent;
-        this.isDeclaredType = isDeclaredType;
+        this.typeSource = typeSource;
 
         addField( new ModelField( DataType.TYPE_THIS,
                                   type,
@@ -46,12 +47,12 @@ public abstract class BaseFactBuilder implements FactBuilder {
                             final String type,
                             final boolean isCollection,
                             final boolean isEvent,
-                            final boolean isDeclaredType ) {
+                            final TypeSource typeSource ) {
         this.builder = builder;
         this.type = type;
         this.isCollection = isCollection;
         this.isEvent = isEvent;
-        this.isDeclaredType = isDeclaredType;
+        this.typeSource = typeSource;
 
         addField( new ModelField( DataType.TYPE_THIS,
                                   type,
@@ -87,7 +88,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
         oracle.addFactsAndFields( buildFactsAndFields() );
         oracle.addCollectionTypes( buildCollectionTypes() );
         oracle.addEventTypes( buildEventTypes() );
-        oracle.addDeclaredTypes( buildDeclaredTypes() );
+        oracle.addTypeSources( buildTypeSources() );
     }
 
     public ProjectDataModelOracleBuilder getDataModelBuilder() {
@@ -117,11 +118,11 @@ public abstract class BaseFactBuilder implements FactBuilder {
         return loadableEventTypes;
     }
 
-    private Map<String, Boolean> buildDeclaredTypes() {
-        final Map<String, Boolean> loadableDeclaredTypes = new HashMap<String, Boolean>();
-        loadableDeclaredTypes.put( type,
-                                   isDeclaredType );
-        return loadableDeclaredTypes;
+    private Map<String, TypeSource> buildTypeSources() {
+        final Map<String, TypeSource> loadableTypeSources = new HashMap<String, TypeSource>();
+        loadableTypeSources.put( type,
+                                 typeSource );
+        return loadableTypeSources;
     }
 
 }

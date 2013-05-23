@@ -19,6 +19,7 @@ import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Default implementation of DataModelOracle
@@ -51,8 +52,8 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     // Filtered (current package and imports) Map {factType, isCollection} to determine which Fact Types are Collections.
     private Map<String, Boolean> filteredCollectionTypes = new HashMap<String, Boolean>();
 
-    // Filtered (current package and imports) Map {factType, isEvent} to determine which Fact Types were declared in DRL.
-    private Map<String, Boolean> filteredDeclaredTypes = new HashMap<String, Boolean>();
+    // Filtered (current package and imports) Map {factType, TypeSource} to determine where a Fact Type as defined.
+    private Map<String, TypeSource> filteredTypeSources = new HashMap<String, TypeSource>();
 
     // Filtered (current package and imports) Map {factType, superType} to determine the Super Type of a FactType.
     protected Map<String, String> filteredSuperTypes = new HashMap<String, String>();
@@ -175,16 +176,13 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     /**
-     * Check whether a given FactType was declared in DRL
+     * Return where a given FactType was defined
      * @param factType
      * @return
      */
     @Override
-    public boolean isDeclaredType( final String factType ) {
-        if ( !filteredDeclaredTypes.containsKey( factType ) ) {
-            return false;
-        }
-        return filteredDeclaredTypes.get( factType );
+    public TypeSource getTypeSource( final String factType ) {
+        return filteredTypeSources.get( factType );
     }
 
     /**
@@ -797,11 +795,11 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
                                                                                  imports,
                                                                                  projectEventTypes ) );
 
-        //Filter and rename Declared Types based on package name and imports
-        filteredDeclaredTypes = new HashMap<String, Boolean>();
-        filteredDeclaredTypes.putAll( PackageDataModelOracleUtils.filterDeclaredTypes( packageName,
-                                                                                       imports,
-                                                                                       projectDeclaredTypes ) );
+        //Filter and rename TypeSources based on package name and imports
+        filteredTypeSources = new HashMap<String, TypeSource>();
+        filteredTypeSources.putAll( PackageDataModelOracleUtils.filterTypeSources( packageName,
+                                                                                   imports,
+                                                                                   projectTypeSources ) );
 
         //Filter and rename Declared Types based on package name and imports
         filteredSuperTypes = new HashMap<String, String>();

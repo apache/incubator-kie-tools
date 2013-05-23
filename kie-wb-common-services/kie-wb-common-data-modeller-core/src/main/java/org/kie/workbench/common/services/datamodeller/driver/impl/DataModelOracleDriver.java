@@ -36,6 +36,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +226,7 @@ public class DataModelOracleDriver implements ModelDriver {
      * True if the given fact type is a DataObject.
      */
     private boolean isDataObject(ProjectDataModelOracle oracleDataModel, String factType) {
-        return !oracleDataModel.isDeclaredType(factType);
+        return oracleDataModel.getTypeSource(factType).equals( TypeSource.JAVA_PROJECT );
     }
 
     /**

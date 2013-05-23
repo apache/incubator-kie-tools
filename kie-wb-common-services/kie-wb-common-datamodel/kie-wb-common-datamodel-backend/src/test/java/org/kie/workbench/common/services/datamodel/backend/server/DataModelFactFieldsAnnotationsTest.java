@@ -12,6 +12,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.testclasses.an
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 import static org.junit.Assert.*;
 
@@ -29,7 +30,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
                                                           Product.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         //Build PackageDMO
@@ -57,7 +58,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
                                                           SmurfHouse.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         //Build PackageDMO
@@ -113,7 +114,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
                                                           Product.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         //Build PackageDMO. Defaults to defaultpkg
@@ -139,7 +140,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
                                                           SmurfHouse.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         //Build PackageDMO. Defaults to defaultpkg
@@ -164,7 +165,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( builder,
                                                           Product.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         assertEquals( 1,
@@ -186,7 +187,7 @@ public class DataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder( builder,
                                                           SmurfHouse.class,
                                                           false,
-                                                          false );
+                                                          TypeSource.JAVA_PROJECT );
         cb.build( oracle );
 
         assertEquals( 1,

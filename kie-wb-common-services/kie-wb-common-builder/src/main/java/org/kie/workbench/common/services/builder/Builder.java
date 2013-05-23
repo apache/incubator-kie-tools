@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,14 +39,17 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.file.DotFileFilter;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.backend.file.DotFileFilter;
+import org.kie.workbench.common.services.backend.file.JavaFileFilter;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.client.workbench.widgets.events.ChangeType;
 import org.uberfire.client.workbench.widgets.events.ResourceChange;
@@ -65,10 +69,12 @@ public class Builder {
     private final IOService ioService;
     private final ProjectService projectService;
     private final DirectoryStream.Filter<Path> filter;
+    private final DirectoryStream.Filter<Path> javaFilter = new JavaFileFilter();
 
     private final String projectPrefix;
 
     private Map<String, org.uberfire.backend.vfs.Path> handles = new HashMap<String, org.uberfire.backend.vfs.Path>();
+    private Set<String> projectJavaTypes = new HashSet<String>();
     private KieContainer kieContainer;
 
     public Builder( final Path moduleDirectory,
@@ -149,6 +155,7 @@ public class Builder {
         final BufferedInputStream bis = new BufferedInputStream( is );
         kieFileSystem.write( destinationPath,
                              KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+        addJavaClass( resource );
         handles.put( destinationPath,
                      paths.convert( resource ) );
 
@@ -178,6 +185,7 @@ public class Builder {
         //Delete resource
         final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
         kieFileSystem.delete( destinationPath );
+        removeJavaClass( resource );
 
         //Incremental build
         final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
@@ -226,12 +234,14 @@ public class Builder {
                     final BufferedInputStream bis = new BufferedInputStream( is );
                     kieFileSystem.write( destinationPath,
                                          KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                    addJavaClass( resource );
                     handles.put( destinationPath,
-                                 paths.convert( resource ) );
+                                 change.getPath() );
                     break;
                 case DELETE:
                     //Delete resource
                     kieFileSystem.delete( destinationPath );
+                    removeJavaClass( resource );
                     break;
             }
         }
@@ -282,6 +292,7 @@ public class Builder {
                 final BufferedInputStream bis = new BufferedInputStream( is );
                 kieFileSystem.write( destinationPath,
                                      KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
+                addJavaClass( path );
                 handles.put( destinationPath,
                              paths.convert( path ) );
             }
@@ -344,6 +355,56 @@ public class Builder {
         buildMessage.setLevel( BuildMessage.Level.ERROR );
         buildMessage.setText( prefix + ": " + e.getMessage() );
         return buildMessage;
+    }
+
+    private void addJavaClass( final Path path ) {
+        if ( !javaFilter.accept( path ) ) {
+            return;
+        }
+        final String fullyQualifiedClassName = getFullyQualifiedClassName( path );
+        if ( fullyQualifiedClassName != null ) {
+            projectJavaTypes.add( fullyQualifiedClassName );
+        }
+    }
+
+    private void removeJavaClass( final Path path ) {
+        if ( !javaFilter.accept( path ) ) {
+            return;
+        }
+        final String fullyQualifiedClassName = getFullyQualifiedClassName( path );
+        if ( fullyQualifiedClassName != null ) {
+            projectJavaTypes.remove( fullyQualifiedClassName );
+        }
+    }
+
+    private String getFullyQualifiedClassName( final Path path ) {
+        final String packageName = projectService.resolvePackageName( paths.convert( path ) );
+        if ( packageName == null ) {
+            return null;
+        }
+        final String className = path.getFileName().toString().replace( ".java",
+                                                                        "" );
+        return packageName + "." + className;
+    }
+
+    public TypeSource getClassSource( final KieModuleMetaData metaData,
+                                      final Class<?> clazz ) {
+        //Was the Type declared in DRL
+        if ( metaData.getTypeMetaInfo( clazz ).isDeclaredType() ) {
+            return TypeSource.DECLARED;
+        }
+
+        //Was the Type defined inside the project or within a dependency
+        String fullyQualifiedClassName = clazz.getName();
+        int innerClassIdentifierIndex = fullyQualifiedClassName.indexOf( "$" );
+        if ( innerClassIdentifierIndex > 0 ) {
+            fullyQualifiedClassName = fullyQualifiedClassName.substring( 0,
+                                                                         innerClassIdentifierIndex );
+        }
+        if ( projectJavaTypes.contains( fullyQualifiedClassName ) ) {
+            return TypeSource.JAVA_PROJECT;
+        }
+        return TypeSource.JAVA_DEPENDENCY;
     }
 
 }

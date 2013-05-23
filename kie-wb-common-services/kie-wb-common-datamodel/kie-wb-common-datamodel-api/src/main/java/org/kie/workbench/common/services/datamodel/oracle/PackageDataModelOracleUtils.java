@@ -11,6 +11,7 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Utilities for PackageDataModelOracle
@@ -95,23 +96,23 @@ public class PackageDataModelOracleUtils {
         return scopedEventTypes;
     }
 
-    //Filter and rename Declared Types based on package name and imports
-    public static Map<String, Boolean> filterDeclaredTypes( final String packageName,
-                                                            final Imports imports,
-                                                            final Map<String, Boolean> projectDeclaredTypes ) {
-        final Map<String, Boolean> scopedDeclaredTypes = new HashMap<String, Boolean>();
-        for ( Map.Entry<String, Boolean> e : projectDeclaredTypes.entrySet() ) {
+    //Filter and rename TypeSource based on package name and imports
+    public static Map<String, TypeSource> filterTypeSources( final String packageName,
+                                                             final Imports imports,
+                                                             final Map<String, TypeSource> projectTypeSources ) {
+        final Map<String, TypeSource> scopedTypeSources = new HashMap<String, TypeSource>();
+        for ( Map.Entry<String, TypeSource> e : projectTypeSources.entrySet() ) {
             final String typeQualifiedType = e.getKey();
             final String typePackageName = getPackageName( typeQualifiedType );
             final String typeTypeName = getTypeName( typeQualifiedType );
 
             if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
                                                                       imports ) ) {
-                scopedDeclaredTypes.put( typeTypeName,
-                                         e.getValue() );
+                scopedTypeSources.put( typeTypeName,
+                                       e.getValue() );
             }
         }
-        return scopedDeclaredTypes;
+        return scopedTypeSources;
     }
 
     //Filter and rename Super Types based on package name and imports

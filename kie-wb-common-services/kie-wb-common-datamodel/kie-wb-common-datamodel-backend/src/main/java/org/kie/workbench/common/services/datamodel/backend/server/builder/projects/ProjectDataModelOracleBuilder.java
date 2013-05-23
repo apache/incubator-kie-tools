@@ -9,6 +9,7 @@ import java.util.Map;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Builder for DataModelOracle
@@ -38,16 +39,16 @@ public final class ProjectDataModelOracleBuilder {
                                       final boolean isEvent ) {
         return addFact( factType,
                         isEvent,
-                        false );
+                        TypeSource.JAVA_PROJECT );
     }
 
     public SimpleFactBuilder addFact( final String factType,
                                       final boolean isEvent,
-                                      final boolean isDeclaredType ) {
+                                      final TypeSource typeSource ) {
         final SimpleFactBuilder builder = new SimpleFactBuilder( this,
                                                                  factType,
                                                                  isEvent,
-                                                                 isDeclaredType );
+                                                                 typeSource );
         factTypeBuilders.add( builder );
         return builder;
     }
@@ -61,16 +62,16 @@ public final class ProjectDataModelOracleBuilder {
                                                    final boolean isEvent ) throws IOException {
         return addClass( clazz,
                          isEvent,
-                         false );
+                         TypeSource.JAVA_PROJECT );
     }
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
                                                    final boolean isEvent,
-                                                   final boolean isDeclaredType ) throws IOException {
+                                                   final TypeSource typeSource ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
                                                           clazz,
                                                           isEvent,
-                                                          isDeclaredType );
+                                                          typeSource );
         factTypeBuilders.add( builder );
         return this;
     }

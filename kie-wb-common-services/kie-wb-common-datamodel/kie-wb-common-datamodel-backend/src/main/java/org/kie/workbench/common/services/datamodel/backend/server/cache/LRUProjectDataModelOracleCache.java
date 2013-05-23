@@ -13,18 +13,19 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
+import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.backend.cache.LRUCache;
 import org.kie.workbench.common.services.builder.Builder;
 import org.kie.workbench.common.services.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.cache.LRUCache;
+import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
-import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -96,10 +97,12 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataMo
                 final Class clazz = metaData.getClass( packageName,
                                                        className );
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
+                final TypeSource typeSource = builder.getClassSource( metaData,
+                                                                      clazz );
                 try {
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent(),
-                                        typeMetaInfo.isDeclaredType() );
+                                        typeSource );
                 } catch ( IOException ioe ) {
                     results.addBuildMessage( makeMessage( ERROR_IO,
                                                           ioe ) );

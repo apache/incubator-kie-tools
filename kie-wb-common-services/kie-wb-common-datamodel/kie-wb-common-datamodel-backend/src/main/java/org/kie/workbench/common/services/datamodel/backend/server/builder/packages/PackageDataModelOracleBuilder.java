@@ -171,12 +171,12 @@ public final class PackageDataModelOracleBuilder {
         packageOracle.addFieldParametersType( pd.getProjectFieldParametersType() );
         packageOracle.addEnumDefinitions( pd.getProjectJavaEnumLists() );
         packageOracle.addMethodInformation( pd.getProjectMethodInformation() );
-        packageOracle.addEventTypes( pd.getProjectEventTypes() );
         packageOracle.addCollectionTypes( pd.getProjectCollectionTypes() );
-        packageOracle.addDeclaredTypes( pd.getProjectDeclaredTypes() );
+        packageOracle.addEventTypes( pd.getProjectEventTypes() );
+        packageOracle.addTypeSources( pd.getProjectTypeSources() );
         packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
         packageOracle.addTypeAnnotations( pd.getTypeAnnotations() );
-        packageOracle.addTypeFieldsAnnotations( pd.getTypeFieldsAnnotations( ) );
+        packageOracle.addTypeFieldsAnnotations( pd.getTypeFieldsAnnotations() );
 
         //Add Package DMO specifics
         loadEnums();

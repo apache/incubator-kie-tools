@@ -23,6 +23,7 @@ import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutato
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Builder for Fact Types originating from a .class
@@ -41,11 +42,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
     public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz,
                              final boolean isEvent,
-                             final boolean isDeclaredType ) throws IOException {
+                             final TypeSource typeSource ) throws IOException {
         super( builder,
                clazz,
                isEvent,
-               isDeclaredType );
+               typeSource );
         this.superType = getSuperType( clazz );
         this.annotations.addAll( getAnnotations( clazz ) );
         this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );

@@ -17,6 +17,7 @@ import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Default implementation of DataModelOracle
@@ -37,8 +38,8 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     //Map {factType, isEvent} to determine which Fact Type can be treated as events.
     protected Map<String, Boolean> projectEventTypes = new HashMap<String, Boolean>();
 
-    //Map {factType, isDeclaredType} to determine which Fact Type were declared in DRL.
-    protected Map<String, Boolean> projectDeclaredTypes = new HashMap<String, Boolean>();
+    //Map {factType, TypeSource} to determine where a Fact Type as defined.
+    protected Map<String, TypeSource> projectTypeSources = new HashMap<String, TypeSource>();
 
     //Map {factType, superType} to determine the Super Type of a FactType.
     protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
@@ -127,16 +128,13 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     }
 
     /**
-     * Check whether a given FactType was declared in DRL
+     * Return where a given FactType was defined
      * @param factType
      * @return
      */
     @Override
-    public boolean isDeclaredType( final String factType ) {
-        if ( !projectDeclaredTypes.containsKey( factType ) ) {
-            return false;
-        }
-        return projectDeclaredTypes.get( factType );
+    public TypeSource getTypeSource( final String factType ) {
+        return projectTypeSources.get( factType );
     }
 
     /**
@@ -708,8 +706,8 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         this.projectEventTypes.putAll( eventTypes );
     }
 
-    public void addDeclaredTypes( final Map<String, Boolean> declaredTypes ) {
-        this.projectDeclaredTypes.putAll( declaredTypes );
+    public void addTypeSources( final Map<String, TypeSource> typeSources ) {
+        this.projectTypeSources.putAll( typeSources );
     }
 
     public void addSuperTypes( final Map<String, String> superTypes ) {
@@ -744,8 +742,8 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         return this.projectEventTypes;
     }
 
-    public Map<String, Boolean> getProjectDeclaredTypes() {
-        return this.projectDeclaredTypes;
+    public Map<String, TypeSource> getProjectTypeSources() {
+        return this.projectTypeSources;
     }
 
     public Map<String, String> getProjectSuperTypes() {
