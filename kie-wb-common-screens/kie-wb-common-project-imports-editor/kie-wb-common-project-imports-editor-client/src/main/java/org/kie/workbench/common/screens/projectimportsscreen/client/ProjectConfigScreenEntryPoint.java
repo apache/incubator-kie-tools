@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projectimportsscreen.client;
+package org.kie.workbench.common.screens.projectimportsscreen.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.kie.workbench.common.projectimportsscreen.client.resources.ProjectConfigScreenResources;
+import org.kie.workbench.common.screens.projectimportsscreen.client.resources.ProjectConfigScreenResources;
 
 @EntryPoint
 public class ProjectConfigScreenEntryPoint {

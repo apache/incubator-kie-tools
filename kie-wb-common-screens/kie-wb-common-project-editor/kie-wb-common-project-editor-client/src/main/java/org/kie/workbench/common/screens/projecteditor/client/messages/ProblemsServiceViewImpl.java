@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.messages;
+package org.kie.workbench.common.screens.projecteditor.client.messages;
 
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class ProblemsServiceViewImpl
         implements ProblemsServiceView {

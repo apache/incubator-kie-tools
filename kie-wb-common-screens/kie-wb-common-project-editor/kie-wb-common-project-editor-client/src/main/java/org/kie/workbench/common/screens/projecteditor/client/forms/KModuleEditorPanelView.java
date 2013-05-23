@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.workbench.common.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 
 public interface KModuleEditorPanelView extends HasBusyIndicator,
                                                 ListFormComboPanelView {

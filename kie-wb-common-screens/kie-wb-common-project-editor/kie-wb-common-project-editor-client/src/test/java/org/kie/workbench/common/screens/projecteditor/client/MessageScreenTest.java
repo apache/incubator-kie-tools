@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client;
+package org.kie.workbench.common.screens.projecteditor.client;
 
 public class MessageScreenTest {
 

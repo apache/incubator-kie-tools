@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;

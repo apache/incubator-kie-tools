@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.projecteditor.client.widgets.ListFormComboPanelViewImpl;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelViewImpl;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 

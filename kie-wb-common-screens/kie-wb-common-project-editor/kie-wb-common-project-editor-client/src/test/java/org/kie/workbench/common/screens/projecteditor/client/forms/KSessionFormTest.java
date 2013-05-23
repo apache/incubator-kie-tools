@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.projecteditor.client.forms.KSessionForm;
-import org.kie.workbench.common.projecteditor.client.forms.KSessionFormView;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionForm;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionFormView;
 import org.kie.workbench.common.services.project.service.model.ClockTypeOption;
 import org.kie.workbench.common.services.project.service.model.KSessionModel;
 

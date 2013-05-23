@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.wizard;
+package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;

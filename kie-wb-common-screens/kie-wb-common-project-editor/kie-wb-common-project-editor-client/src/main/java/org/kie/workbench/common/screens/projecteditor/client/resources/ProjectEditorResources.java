@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.resources;
+package org.kie.workbench.common.screens.projecteditor.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
-import org.kie.workbench.common.projecteditor.client.resources.css.ProjectEditorCss;
+import org.kie.workbench.common.screens.projecteditor.client.resources.css.ProjectEditorCss;
 
 public interface ProjectEditorResources
         extends

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.backend.server;
+package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import java.util.List;
 import javax.enterprise.event.Event;
@@ -25,7 +25,7 @@ import org.kie.commons.io.IOService;
 import org.kie.workbench.common.services.project.backend.server.KModuleContentHandler;
 import org.kie.workbench.common.services.project.backend.server.POMContentHandler;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.projecteditor.backend.server.KModuleServiceImpl;
+import org.kie.workbench.common.screens.projecteditor.backend.server.KModuleServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;

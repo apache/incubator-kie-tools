@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projectimportsscreen.client.resources.css;
+package org.kie.workbench.common.screens.projectimportsscreen.client.resources.css;
 
 import com.google.gwt.resources.client.CssResource;
 

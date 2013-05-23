@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.resources.css;
+package org.kie.workbench.common.screens.projecteditor.client.resources.css;
 
 import com.google.gwt.resources.client.CssResource;
 

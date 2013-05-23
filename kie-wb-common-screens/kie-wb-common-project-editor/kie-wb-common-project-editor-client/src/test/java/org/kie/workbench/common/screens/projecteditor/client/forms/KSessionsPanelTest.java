@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.projecteditor.client.forms.KSessionForm;
-import org.kie.workbench.common.projecteditor.client.forms.KSessionsPanel;
-import org.kie.workbench.common.projecteditor.client.forms.KSessionsPanelView;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionForm;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionsPanel;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionsPanelView;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.services.project.service.model.KSessionModel;
-import org.kie.workbench.common.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.mockito.ArgumentCaptor;
 
 import java.util.HashMap;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.projecteditor.client.forms.DependencyGrid;
-import org.kie.workbench.common.projecteditor.client.forms.DependencyGridView;
-import org.kie.workbench.common.projecteditor.client.forms.DependencySelectorPopup;
+import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
+import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGridView;
+import org.kie.workbench.common.screens.projecteditor.client.forms.DependencySelectorPopup;
 import org.kie.workbench.common.services.project.service.model.Dependency;
 
 import java.util.ArrayList;

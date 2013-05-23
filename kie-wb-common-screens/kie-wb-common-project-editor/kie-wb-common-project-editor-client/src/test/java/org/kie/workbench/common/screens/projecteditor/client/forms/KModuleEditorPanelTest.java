@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-import org.kie.workbench.common.projecteditor.client.widgets.ListFormComboPanelView;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;

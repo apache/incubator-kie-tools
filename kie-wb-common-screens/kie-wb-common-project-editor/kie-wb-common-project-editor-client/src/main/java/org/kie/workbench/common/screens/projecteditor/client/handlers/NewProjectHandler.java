@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.handlers;
+package org.kie.workbench.common.screens.projecteditor.client.handlers;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
@@ -9,9 +9,9 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.projecteditor.client.wizard.NewProjectWizard;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;

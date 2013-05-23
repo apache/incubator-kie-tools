@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projectimportsscreen.client.resources;
+package org.kie.workbench.common.screens.projectimportsscreen.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
-import org.kie.workbench.common.projectimportsscreen.client.resources.css.ProjectConfigScreenCss;
+import org.kie.workbench.common.screens.projectimportsscreen.client.resources.css.ProjectConfigScreenCss;
 
 public interface ProjectConfigScreenResources
         extends

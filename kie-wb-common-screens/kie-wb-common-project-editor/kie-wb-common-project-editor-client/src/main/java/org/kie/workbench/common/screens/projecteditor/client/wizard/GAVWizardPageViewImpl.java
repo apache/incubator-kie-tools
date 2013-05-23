@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.wizard;
+package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

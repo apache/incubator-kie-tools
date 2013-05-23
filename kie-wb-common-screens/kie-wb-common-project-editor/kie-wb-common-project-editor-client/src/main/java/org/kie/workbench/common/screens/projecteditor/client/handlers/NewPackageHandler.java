@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.handlers;
+package org.kie.workbench.common.screens.projecteditor.client.handlers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,8 +12,8 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 
 /**

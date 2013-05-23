@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.backend.server;
+package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import org.junit.Test;
 import org.kie.workbench.common.services.project.backend.server.KModuleContentHandler;

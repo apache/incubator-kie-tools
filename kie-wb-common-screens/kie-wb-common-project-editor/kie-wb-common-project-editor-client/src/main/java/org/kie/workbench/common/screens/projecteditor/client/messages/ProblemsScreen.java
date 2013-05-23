@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.messages;
+package org.kie.workbench.common.screens.projecteditor.client.messages;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;

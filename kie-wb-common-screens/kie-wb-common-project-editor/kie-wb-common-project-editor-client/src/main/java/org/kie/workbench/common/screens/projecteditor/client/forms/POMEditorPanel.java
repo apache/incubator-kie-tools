@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.data.observer.Observer;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Command;
 

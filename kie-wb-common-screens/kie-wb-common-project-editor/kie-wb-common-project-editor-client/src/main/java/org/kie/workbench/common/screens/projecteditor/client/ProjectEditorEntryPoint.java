@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client;
+package org.kie.workbench.common.screens.projecteditor.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 
 @EntryPoint
 public class ProjectEditorEntryPoint {

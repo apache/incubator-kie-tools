@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.messages;
+package org.kie.workbench.common.screens.projecteditor.client.messages;
 
 public interface ProblemsServiceView {
 

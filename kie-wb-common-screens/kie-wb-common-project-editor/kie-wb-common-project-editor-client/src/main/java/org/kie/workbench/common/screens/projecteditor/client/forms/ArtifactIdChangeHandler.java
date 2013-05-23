@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 public interface ArtifactIdChangeHandler {
 

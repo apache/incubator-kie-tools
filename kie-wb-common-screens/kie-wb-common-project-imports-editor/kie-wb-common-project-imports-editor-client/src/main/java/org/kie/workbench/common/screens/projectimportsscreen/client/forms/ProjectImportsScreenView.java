@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projectimportsscreen.client.forms;
+package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;

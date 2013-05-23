@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.List;
 import javax.enterprise.event.Event;
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.common.services.project.service.model.GAV;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.projecteditor.client.messages;
+package org.kie.workbench.common.screens.projecteditor.client.messages;
 
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -34,8 +34,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
-import org.kie.workbench.common.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.mvp.PlaceManager;
 
 import javax.inject.Inject;

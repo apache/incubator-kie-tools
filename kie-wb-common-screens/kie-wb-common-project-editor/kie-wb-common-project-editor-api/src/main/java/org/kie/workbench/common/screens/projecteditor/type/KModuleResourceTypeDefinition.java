@@ -1,4 +1,4 @@
-package org.kie.workbench.common.projecteditor.type;
+package org.kie.workbench.common.screens.projecteditor.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
