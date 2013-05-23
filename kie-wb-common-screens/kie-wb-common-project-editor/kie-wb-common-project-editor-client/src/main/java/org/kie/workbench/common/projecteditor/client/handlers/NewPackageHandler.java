@@ -3,6 +3,7 @@ package org.kie.workbench.common.projecteditor.client.handlers;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -53,6 +54,21 @@ public class NewPackageHandler
                 notifySuccess();
             }
         };
+    }
+
+    @Override
+    public void acceptPath( final Path path,
+                            final Callback<Boolean, Void> callback ) {
+        if ( path == null ) {
+            callback.onSuccess( false );
+        } else {
+            projectService.call( new RemoteCallback<Path>() {
+                @Override
+                public void callback( final Path path ) {
+                    callback.onSuccess( path != null );
+                }
+            } ).resolvePackage( path );
+        }
     }
 
 }

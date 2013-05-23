@@ -1,28 +1,28 @@
 package org.kie.workbench.common.projecteditor.client.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.kie.workbench.common.projecteditor.client.places.ProjectEditorPlace;
-import org.kie.workbench.common.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 
 public class NewProjectWizard
         implements Wizard<NewProjectWizardContext> {
@@ -32,6 +32,10 @@ public class NewProjectWizard
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
+
+    @Inject
+    private Event<PathChangeEvent> pathChangeEvent;
+
     @Inject
     private WizardPresenter presenter;
 
@@ -72,12 +76,12 @@ public class NewProjectWizard
 
     @Override
     public int getPreferredHeight() {
-        return 500;
+        return 300;
     }
 
     @Override
     public int getPreferredWidth() {
-        return 800;
+        return 500;
     }
 
     @Override
@@ -111,8 +115,8 @@ public class NewProjectWizard
             public void callback( Path pathToPom ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-
-                placeManager.goTo( new ProjectEditorPlace( pathToPom ) );
+                pathChangeEvent.fire( new PathChangeEvent( pathToPom ) );
+                placeManager.goTo( "projectScreen" );
             }
         };
     }

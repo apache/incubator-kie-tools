@@ -61,13 +61,14 @@ public class NewFolderHandler extends DefaultNewResourceHandler {
         //You can only create new Folders outside of packages
         if ( path == null ) {
             callback.onSuccess( false );
+        } else {
+            projectService.call( new RemoteCallback<Path>() {
+                @Override
+                public void callback( final Path path ) {
+                    callback.onSuccess( path == null );
+                }
+            } ).resolvePackage( path );
         }
-        projectService.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( final Path path ) {
-                callback.onSuccess( path == null );
-            }
-        } ).resolvePackage( path );
     }
 
 }

@@ -73,12 +73,16 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     @Override
     public void acceptPath( final Path path,
                             final Callback<Boolean, Void> callback ) {
-        projectService.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( final Path path ) {
-                callback.onSuccess( path != null );
-            }
-        } ).resolveSrcPackage( path );
+        if ( path == null ) {
+            callback.onSuccess( false );
+        } else {
+            projectService.call( new RemoteCallback<Path>() {
+                @Override
+                public void callback( final Path path ) {
+                    callback.onSuccess( path != null );
+                }
+            } ).resolveSrcPackage( path );
+        }
     }
 
     protected String buildFileName( final ClientResourceType resourceType,
@@ -94,26 +98,26 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
 
-    protected RemoteCallback<Path> getSuccessCallback(final NewResourcePresenter presenter) {
-        return getSuccessCallback(presenter, null);
+    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return getSuccessCallback( presenter, null );
     }
 
-    protected RemoteCallback<Path> getSuccessCallback(final NewResourcePresenter presenter,
-                                                      final Command postSaveCommand) {
+    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter,
+                                                       final Command postSaveCommand ) {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
                 executePostSaveCommand();
-                final PlaceRequest place = new PathPlaceRequest(path);
-                placeManager.goTo(place);
+                final PlaceRequest place = new PathPlaceRequest( path );
+                placeManager.goTo( place );
             }
 
             private void executePostSaveCommand() {
-                if (postSaveCommand != null) {
+                if ( postSaveCommand != null ) {
                     postSaveCommand.execute();
                 }
             }
