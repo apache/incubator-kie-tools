@@ -16,23 +16,23 @@
 
 package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.commons.data.Pair;
-import org.kie.workbench.common.widgets.client.popups.list.FormListPopup;
-import org.kie.workbench.common.widgets.client.popups.list.PopupItemSelectedCommand;
 import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
 import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.popups.list.FormListPopup;
+import org.kie.workbench.common.widgets.client.popups.list.PopupItemSelectedCommand;
 
-import javax.enterprise.event.Event;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,

@@ -1,7 +1,9 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
+
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;

@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.builder.BuildService;
@@ -30,7 +34,6 @@ import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -41,9 +44,6 @@ import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.client.workbench.widgets.menu.MenuFactory;
 import org.uberfire.client.workbench.widgets.menu.Menus;
-
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter

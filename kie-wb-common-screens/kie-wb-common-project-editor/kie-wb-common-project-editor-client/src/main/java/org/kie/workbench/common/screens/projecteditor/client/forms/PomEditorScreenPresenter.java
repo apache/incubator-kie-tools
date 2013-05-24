@@ -1,12 +1,17 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.type.POMResourceType;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.widgets.menu.Menus;
 import org.uberfire.shared.mvp.PlaceRequest;
 

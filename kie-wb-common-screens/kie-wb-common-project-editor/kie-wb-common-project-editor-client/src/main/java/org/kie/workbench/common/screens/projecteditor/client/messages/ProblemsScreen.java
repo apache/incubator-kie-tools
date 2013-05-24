@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.messages;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -25,8 +27,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Position;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.Problems")
