@@ -36,10 +36,44 @@
           <exclude>WEB-INF/jetty-env.xml</exclude>
           <exclude>WEB-INF/web.xml</exclude>
 
-          <!-- UF Client Related -->
+          <!-- UF client related -->
           <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
+
+          <!-- Guvnor client related -->
+          <exclude>WEB-INF/lib/guvnor-inbox-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/guvnor-m2repo-editor-client-*.jar</exclude>
+
+          <!-- Kie Workbench client related-->
+          <exclude>WEB-INF/lib/kie-wb-common-data-modeller-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-project-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-project-explorer-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-project-imports-editor-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-search-screen-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-workingset-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-config-resource-widget-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-decorated-grid-widget-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-error-messages-widget-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-metadata-widget-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-view-source-widget-*.jar</exclude>
+
+          <!-- Drools Workbench client related -->
+          <exclude>WEB-INF/lib/drools-wb-categories-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-default-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-drl-text-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-dsl-text-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-dtable-xls-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-enum-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-factmodel-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-globals-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-guided-dtable-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-guided-rule-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-guided-scorecard-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-guided-template-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-scorecard-xls-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-test-scenario-editor-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/drools-wb-workitems-editor-client-*.jar</exclude>
 
           <!-- GWT Client Related -->
           <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
