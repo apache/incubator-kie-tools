@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
@@ -29,12 +30,19 @@ public class DataModelHelper {
 
     // Map linking Objects with the Objects they are being referenced by (e.g. x.y.A --> {u.v.B} means B holds a reference to A)
     private Map<String, Set<String>> referencedBy = new HashMap<String, Set<String>>(10);
+
     // Map linking DataObjects with the Objects they are referencing by (e.g. u.v.B --> {x.y.A} means B references A)
     private Map<String, Set<String>> references = new HashMap<String, Set<String>>(10);
+
     // Map that keeps track of the siblings a parent class has.
     private Map<String, Set<String>> siblingsMap = new HashMap<String, Set<String>>(10);
+
     // List of all class names that coexist within a project
     private List<String> classNames = new ArrayList<String>(10);
+
+    // List of all labelled class names that coexist within a project
+    private Map<String, String> labelledClassNames = new TreeMap<String, String>();
+
     Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
 
     public DataModelHelper() {
@@ -48,6 +56,10 @@ public class DataModelHelper {
 
     public List<String> getClassList() {
         return Collections.unmodifiableList(classNames);
+    }
+
+    public Map<String, String> getLabelledClassMap() {
+        return Collections.unmodifiableMap(labelledClassNames);
     }
 
     public Map <String, String> getOrderedBaseTypes() {
@@ -111,12 +123,17 @@ public class DataModelHelper {
         referencedBy.clear();
         references.clear();
         classNames.clear();
+        labelledClassNames.clear();
         siblingsMap.clear();
         if (dataModel != null) {
             classNames.addAll(dataModel.getExternalClasses());
+            for (String extClassName : dataModel.getExternalClasses()) {
+                labelledClassNames.put(extClassName, extClassName);
+            }
             for (DataObjectTO object : dataModel.getDataObjects()) {
                 String className = object.getClassName();
                 classNames.add(className);
+                labelledClassNames.put(DataModelerUtils.getDataObjectFullLabel(object), className);
 
                 String superClassName = object.getSuperClassName();
                 if (superClassName != null &&  !"".equals(superClassName)) objectExtended(superClassName, className, true);

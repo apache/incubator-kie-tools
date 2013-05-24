@@ -40,6 +40,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
@@ -159,7 +160,7 @@ public class DataModelBrowser extends Composite {
 
             @Override
             public String getValue( final DataObjectTO dataObject) {
-                return dataObject.getName();
+                return DataModelerUtils.getDataObjectUILabel(dataObject);
             }
         };
         dataObjectColumn.setSortable(true);
@@ -288,7 +289,7 @@ public class DataModelBrowser extends Composite {
         validatorService.canDeleteDataObject(getContext().getHelper(), dataObjectTO, getDataModel(), new ValidatorCallback() {
             @Override
             public void onFailure() {
-                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_cannot_delete_object(dataObjectTO.getName()));
+                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_cannot_delete_object(DataModelerUtils.getDataObjectUILabel(dataObjectTO)));
             }
 
             @Override
@@ -317,7 +318,7 @@ public class DataModelBrowser extends Composite {
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
 
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName())) {
+            if ("name".equals(event.getPropertyName()) || "label".equals(event.getPropertyName())) {
                 //by now we only need to refresh the row if the name changed
                 int row = 0;
 
@@ -352,7 +353,7 @@ public class DataModelBrowser extends Composite {
     private void notifyObjectDeleted(DataObjectTO dataObject) {
         getContext().getHelper().dataObjectDeleted(dataObject.getClassName());
         dataModelerEvent.fire(new DataObjectDeletedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject));
-        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_deleted(dataObject.getName())));
+        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_deleted(DataModelerUtils.getDataObjectUILabel(dataObject))));
     }
 
 }

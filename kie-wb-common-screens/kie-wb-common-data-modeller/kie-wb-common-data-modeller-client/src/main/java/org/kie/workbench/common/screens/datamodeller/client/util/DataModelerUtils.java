@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+
 public class DataModelerUtils {
 
     public static final String EXTERNAL_PREFIX = "- ext - ";
@@ -23,6 +25,23 @@ public class DataModelerUtils {
 
     public static DataModelerUtils getInstance() {
         return new DataModelerUtils();
+    }
+
+    public static String getDataObjectUILabel(DataObjectTO dataObject) {
+        if (dataObject != null) {
+            String label = dataObject.getLabel();
+            if (label != null) return label;
+            else return dataObject.getName();
+        }
+        return "";
+    }
+
+    public static String getDataObjectFullLabel(DataObjectTO dataObject) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(dataObject.getClassName());
+        String objectLabel = dataObject.getLabel();
+        if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
+        return sb.toString();
     }
 
     public String extractClassName(String fullClassName) {

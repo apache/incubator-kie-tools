@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
@@ -157,7 +158,7 @@ public class DataObjectBreadcrums extends Breadcrumbs {
 
         public Widget getWidget() {
             //create the new widget
-            NavLink navLink = new NavLink(dataObject.getName());
+            NavLink navLink = new NavLink(DataModelerUtils.getDataObjectUILabel(dataObject));
             navLink.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -192,7 +193,8 @@ public class DataObjectBreadcrums extends Breadcrumbs {
 
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName())) {
+            if ("name".equals(event.getPropertyName()) ||
+                "label".equals(event.getPropertyName())) {
                 rebuild();
             }
         }

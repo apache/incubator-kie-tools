@@ -29,6 +29,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 public class SuperclassSelector extends Composite {
@@ -84,18 +85,13 @@ public class SuperclassSelector extends Composite {
     private void initList() {
         superclassList.clear();
 
-        List<String> classNames = new ArrayList<String>();
+        superclassList.addItem("", NOT_SELECTED);
         if (getDataModel() != null) {
-            for (String className : getContext().getHelper().getClassList()) {
-                if (dataObject != null && className.equalsIgnoreCase(dataObject.getClassName())) continue;
-                classNames.add(className);
+            for (Map.Entry<String, String> mapEntry : getContext().getHelper().getLabelledClassMap().entrySet()) {
+                if (dataObject != null && mapEntry.getValue().equalsIgnoreCase(dataObject.getClassName())) continue;
+                superclassList.addItem(mapEntry.getKey(), mapEntry.getValue());
             }
         }
-
-        Collections.sort(classNames);
-        superclassList.addItem("", NOT_SELECTED);
-        for (String className : classNames) {
-            superclassList.addItem(className, className);
-        }
     }
+
 }

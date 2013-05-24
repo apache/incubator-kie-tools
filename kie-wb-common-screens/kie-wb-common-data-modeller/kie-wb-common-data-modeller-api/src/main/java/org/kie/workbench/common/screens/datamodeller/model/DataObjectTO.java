@@ -147,6 +147,15 @@ public class DataObjectTO {
         return false;
     }
 
+    public String getLabel() {
+        AnnotationTO annotation = getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
+        if (annotation != null) {
+            String label = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString();
+            return (label != null && !"".equals(label)) ? label : getName();
+        }
+        return null;
+    }
+
     public List<AnnotationTO> getAnnotations() {
         return annotations;
     }

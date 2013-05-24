@@ -28,6 +28,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
@@ -257,7 +258,7 @@ public class NewDataObjectPopup extends Modal {
     private void notifyObjectCreated(DataObjectTO createdObjectTO) {
         getContext().getHelper().dataObjectCreated(createdObjectTO.getClassName());
         dataModelerEvent.fire(new DataObjectCreatedEvent(DataModelerEvent.NEW_DATA_OBJECT_POPUP, getDataModel(), createdObjectTO));
-        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_created(createdObjectTO.getName())));
+        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_created(DataModelerUtils.getDataObjectUILabel(createdObjectTO))));
     }
 
 }

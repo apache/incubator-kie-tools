@@ -30,6 +30,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
@@ -202,7 +203,7 @@ public class DataObjectEditor extends Composite {
     // Event notifications
     private void notifyObjectChange(String memberName, Object oldValue, Object newValue) {
         getContext().getHelper().dataModelChanged();
-        dataModelerEvent.fire(new DataObjectChangeEvent(DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, getDataObject().getName()));
+        dataModelerEvent.fire(new DataObjectChangeEvent(DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue));
     }
 
     // Event handlers
@@ -260,10 +261,12 @@ public class DataObjectEditor extends Composite {
 
     @UiHandler("label")
     void labelChanged(final ValueChangeEvent<String> event) {
+        String oldValue = null;
         String _label = label.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
 
         if (annotation != null) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
             if ( _label != null && !"".equals(_label) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _label);
             else getDataObject().removeAnnotation(annotation);
         } else {
@@ -271,6 +274,7 @@ public class DataObjectEditor extends Composite {
                 getDataObject().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _label );
             }
         }
+        notifyObjectChange("label", oldValue, _label);
     }
 
     @UiHandler("description")

@@ -352,23 +352,23 @@ public class DataObjectBrowser extends Composite {
     private void populateObjectTypes() {
         newPropertyType.clear();
         newPropertyType.addItem("", NOT_SELECTED);
-        SortedSet<String> typeNames = new TreeSet<String>();
+        SortedMap<String, String> typeNames = new TreeMap<String, String>();
         if (getDataModel() != null) {
             // Add all model types, ordered
             typeNames.clear();
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
-                typeNames.add(dataObject.getClassName());
+                typeNames.put(DataModelerUtils.getDataObjectFullLabel(dataObject), dataObject.getClassName());
             }
-            for (String typeName : typeNames) {
-                newPropertyType.addItem(typeName, typeName);
+            for (Map.Entry<String,String> entry : typeNames.entrySet()) {
+                newPropertyType.addItem(entry.getKey(), entry.getValue());
             }
 
             // Then add all external types, ordered
             typeNames.clear();
             for (String extClass : getDataModel().getExternalClasses()) {
-                typeNames.add(extClass);
+                typeNames.put(extClass, extClass);
             }
-            for (String typeName : typeNames) {
+            for (String typeName : typeNames.keySet()) {
                 newPropertyType.addItem(DataModelerUtils.EXTERNAL_PREFIX + typeName, typeName);
             }
         }
@@ -407,7 +407,7 @@ public class DataObjectBrowser extends Composite {
     
     private void setDataObject(DataObjectTO dataObject) {
         this.dataObject = dataObject;
-        objectName.setText(getDataObjectFullName());
+        objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
 
         //We create a new selection model due to a bug found in GWT when we change e.g. from one data object with 9 rows
         // to one with 3 rows and the table was sorted.
@@ -576,8 +576,11 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) || "packageName".equals(event.getPropertyName())) {
-                objectName.setText(getDataObjectFullName());
+            if ("name".equals(event.getPropertyName()) ||
+                "packageName".equals(event.getPropertyName()) ||
+                "label".equals(event.getPropertyName())) {
+
+                objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
                 if (newPropertyDataObjectType.getValue()) populateObjectTypes();
             }
         }
@@ -585,7 +588,10 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) || "className".equals(event.getPropertyName()) || "label".equals(event.getPropertyName())) {
+            if ("name".equals(event.getPropertyName()) ||
+                "className".equals(event.getPropertyName()) ||
+                "label".equals(event.getPropertyName())) {
+
                 List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
                 for (int i = 0; i < props.size(); i++) {
                     if (event.getCurrentField() == props.get(i)) {
@@ -612,11 +618,5 @@ public class DataObjectBrowser extends Composite {
 
     private void notifyObjectSelected(DataObjectTO dataObject) {
         dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
-    }
-
-    private String getDataObjectFullName() {
-        String objectName = dataObject.getName();
-        String packageName = dataObject.getPackageName();
-        return objectName + ( (packageName != null && !"".equals(packageName)) ? "::" + packageName : "" );
     }
 }

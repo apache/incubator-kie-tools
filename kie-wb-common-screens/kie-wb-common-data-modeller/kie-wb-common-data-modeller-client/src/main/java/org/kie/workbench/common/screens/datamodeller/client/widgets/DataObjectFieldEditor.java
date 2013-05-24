@@ -169,7 +169,10 @@ public class DataObjectFieldEditor extends Composite {
 
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) || "packageName".equals(event.getPropertyName())) {
+            if ("name".equals(event.getPropertyName()) ||
+                "packageName".equals(event.getPropertyName()) ||
+                "label".equals(event.getPropertyName())) {
+
                 initTypeList();
             }
         }
@@ -387,9 +390,9 @@ public class DataObjectFieldEditor extends Composite {
 
             // Second add all model types, ordered
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
-                String className = dataObject.getClassName();
-                typeNames.add(className);
-                typeNames.add(className + DataModelerUtils.MULTIPLE);
+                String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
+                typeNames.add(classLabel);
+                typeNames.add(classLabel + DataModelerUtils.MULTIPLE);
             }
             for (String typeName : typeNames) {
                 typeSelector.addItem(typeName, typeName);
