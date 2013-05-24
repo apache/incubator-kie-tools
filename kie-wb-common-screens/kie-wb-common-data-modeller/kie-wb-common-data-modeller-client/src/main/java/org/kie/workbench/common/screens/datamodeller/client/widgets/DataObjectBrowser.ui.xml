@@ -35,7 +35,7 @@
                             <h4>
                                 <gwt:Label ui:field="objectName" ></gwt:Label>
                             </h4>
-                            <gwt:ScrollPanel width="100%" height="350px">
+                            <gwt:ScrollPanel width="100%" height="338px">
                             <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
                             </gwt:ScrollPanel>
                             <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->

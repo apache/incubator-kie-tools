@@ -24,11 +24,11 @@
     <gwt:HTMLPanel>
         <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
             <gwt:HTMLPanel>
-                <div class="well"  style="height:450px;">
+                <div class="well"  style="height:660px;">
                 <h4>
                     <gwt:Label ui:field="modelName"></gwt:Label>
                 </h4>
-                <gwt:ScrollPanel width="100%" height="400px">
+                <gwt:ScrollPanel width="100%" height="599px">
 
                     <!--table table-bordered table-striped table-hover-->
                     <!--b:CellTable ui:field="dataObjectsTable" styleName="table table-condensed table-hover row-fluid"/-->
