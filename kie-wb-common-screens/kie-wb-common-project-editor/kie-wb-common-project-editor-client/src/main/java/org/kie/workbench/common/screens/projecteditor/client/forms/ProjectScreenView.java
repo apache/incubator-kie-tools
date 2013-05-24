@@ -17,12 +17,10 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 
 public interface ProjectScreenView extends HasBusyIndicator,
-                                                 IsWidget {
+                                           IsWidget {
 
     interface Presenter {
 
@@ -37,25 +35,5 @@ public interface ProjectScreenView extends HasBusyIndicator,
         void onImportsMetadataTabSelected();
 
     }
-    void selectMainTab();
 
-    void setPresenter( Presenter presenter );
-
-    String getEnableKieProjectMenuItemText();
-
-    void setPOMEditorPanel( POMEditorPanel gavPanel );
-
-    void setKModuleEditorPanel( KModuleEditorPanel kModuleEditorPanel );
-
-    void setImportsPage(ImportsWidgetPresenter importsWidgetPresenter);
-
-    String getSaveMenuItemText();
-
-    String getBuildMenuItemText();
-
-    void setPOMMetadata( Metadata metadata );
-
-    void setKModuleMetadata( Metadata metadata );
-
-    void setProjectImportsMetadata(Metadata metadata);
 }

@@ -20,7 +20,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -34,11 +34,14 @@ import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.common.Page;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.Command;
 import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
@@ -49,10 +52,21 @@ import org.uberfire.client.workbench.widgets.menu.Menus;
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
-    private ImportsWidgetPresenter importsWidgetPresenter;
     private ProjectScreenView view;
+    private MultiPageEditor multiPage;
+
+    private Metadata pomMetadata;
     private POMEditorPanel pomPanel;
+    private MetadataWidget pomMetaDataPanel;
+
+    private Metadata kmoduleMetadata;
     private KModuleEditorPanel kModuleEditorPanel;
+    private MetadataWidget kModuleMetaDataPanel;
+
+    private Metadata projectImportsMetadata;
+    private ImportsWidgetPresenter importsWidgetPresenter;
+    private MetadataWidget importsPageMetadata;
+
     private Caller<KModuleService> kModuleServiceCaller;
     private Caller<BuildService> buildServiceCaller;
 
@@ -60,60 +74,132 @@ public class ProjectScreenPresenter
     private Path pathToKModuleXML;
     private Path pathToProjectImports;
     private Caller<MetadataService> metadataService;
-    private Metadata kmoduleMetadata;
-    private Metadata projectImportsMetadata;
-    private Metadata pomMetadata;
     private SaveOperationService saveOperationService;
 
     private Menus menus;
     private Caller<ProjectService> projectService;
 
-    public ProjectScreenPresenter(){}
+    public ProjectScreenPresenter() {
+    }
 
     @Inject
-    public ProjectScreenPresenter(@New ProjectScreenView view,
-                                  @New POMEditorPanel pomPanel,
-                                  @New KModuleEditorPanel kModuleEditorPanel,
-                                  @New ImportsWidgetPresenter importsWidgetPresenter,
-                                  WorkbenchContext workbenchContext,
-                                  Caller<ProjectService> projectService,
-                                  Caller<KModuleService> kModuleServiceCaller,
-                                  Caller<BuildService> buildServiceCaller,
-                                  Caller<MetadataService> metadataService,
-                                  SaveOperationService saveOperationService) {
+    public ProjectScreenPresenter( @New ProjectScreenView view,
+                                   @New MultiPageEditor multiPage,
+                                   @New POMEditorPanel pomPanel,
+                                   @New MetadataWidget pomMetaDataPanel,
+                                   @New KModuleEditorPanel kModuleEditorPanel,
+                                   @New MetadataWidget kModuleMetaDataPanel,
+                                   @New ImportsWidgetPresenter importsWidgetPresenter,
+                                   @New MetadataWidget importsPageMetadata,
+                                   WorkbenchContext workbenchContext,
+                                   Caller<ProjectService> projectService,
+                                   Caller<KModuleService> kModuleServiceCaller,
+                                   Caller<BuildService> buildServiceCaller,
+                                   Caller<MetadataService> metadataService,
+                                   SaveOperationService saveOperationService ) {
         this.view = view;
+        this.multiPage = multiPage;
+
         this.pomPanel = pomPanel;
+        this.pomMetaDataPanel = pomMetaDataPanel;
+
         this.kModuleEditorPanel = kModuleEditorPanel;
+        this.kModuleMetaDataPanel = kModuleMetaDataPanel;
+
         this.importsWidgetPresenter = importsWidgetPresenter;
+        this.importsPageMetadata = importsPageMetadata;
+
         this.kModuleServiceCaller = kModuleServiceCaller;
         this.buildServiceCaller = buildServiceCaller;
         this.metadataService = metadataService;
         this.saveOperationService = saveOperationService;
         this.projectService = projectService;
 
-        view.setPresenter(this);
-        view.setPOMEditorPanel(pomPanel);
-        view.setKModuleEditorPanel(kModuleEditorPanel);
-        view.setImportsPage(importsWidgetPresenter);
+        //POM Panel and Metadata
+        multiPage.addPage( new Page( pomPanel,
+                                     ProjectEditorConstants.INSTANCE.PomDotXml() ) {
+            @Override
+            public void onFocus() {
+            }
 
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+        multiPage.addPage( new Page( pomMetaDataPanel,
+                                     ProjectEditorConstants.INSTANCE.PomDotXmlMetadata() ) {
+            @Override
+            public void onFocus() {
+                onPOMMetadataTabSelected();
+            }
 
-        showCurrentProjectInfoIfAny(workbenchContext.getActivePath());
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        //KModule Panel and Metadata
+        multiPage.addPage( new Page( kModuleEditorPanel,
+                                     ProjectEditorConstants.INSTANCE.KModuleDotXml() ) {
+            @Override
+            public void onFocus() {
+                onKModuleTabSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+        multiPage.addPage( new Page( kModuleMetaDataPanel,
+                                     ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata() ) {
+            @Override
+            public void onFocus() {
+                onKModuleMetadataTabSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        //Imports Panel and Metadata
+        multiPage.addPage( new Page( importsWidgetPresenter, ProjectEditorConstants.INSTANCE.ImportSuggestions() ) {
+            @Override
+            public void onFocus() {
+                onImportsPageSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+        multiPage.addPage( new Page( this.importsPageMetadata, ProjectEditorConstants.INSTANCE.ImportSuggestionsMetadata() ) {
+            @Override
+            public void onFocus() {
+                onImportsMetadataTabSelected();
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        showCurrentProjectInfoIfAny( workbenchContext.getActivePath() );
 
         makeMenuBar();
     }
 
-    public void selectedPathChanged(@Observes final PathChangeEvent event) {
-        showCurrentProjectInfoIfAny(event.getPath());
+    public void selectedPathChanged( @Observes final PathChangeEvent event ) {
+        showCurrentProjectInfoIfAny( event.getPath() );
     }
 
-    private void showCurrentProjectInfoIfAny(Path path) {
-        projectService.call(new RemoteCallback<Path>() {
+    private void showCurrentProjectInfoIfAny( Path path ) {
+        projectService.call( new RemoteCallback<Path>() {
             @Override
-            public void callback(Path pathToPomXML) {
+            public void callback( Path pathToPomXML ) {
 
                 // TODO: Check save if there are changes -Rikkola-
-                if (pathToPomXML != null && (ProjectScreenPresenter.this.pathToPomXML == null || !ProjectScreenPresenter.this.pathToPomXML.equals(pathToPomXML))) {
-
+                if ( pathToPomXML != null && ( ProjectScreenPresenter.this.pathToPomXML == null || !ProjectScreenPresenter.this.pathToPomXML.equals( pathToPomXML ) ) ) {
 
 //                    if (ProjectScreenPresenter.this.pathToPomXML != null
 //                            && pomPanel.isDirty()
@@ -122,19 +208,18 @@ public class ProjectScreenPresenter
 //                    } else {
                     ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
                     init();
-                    view.selectMainTab();
                     pomMetadata = null;
                     kmoduleMetadata = null;
 //                    }
                 }
             }
-        }).resolvePathToPom(path);
+        } ).resolvePathToPom( path );
     }
 
     private void init() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        pomPanel.init(pathToPomXML, false);
+        pomPanel.init( pathToPomXML, false );
 
         addKModuleEditor();
 
@@ -144,22 +229,22 @@ public class ProjectScreenPresenter
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu(CommonConstants.INSTANCE.File())
+                .newTopLevelMenu( CommonConstants.INSTANCE.File() )
                 .menus()
-                .menu(CommonConstants.INSTANCE.Save())
-                .respondsWith(getSaveCommand())
+                .menu( CommonConstants.INSTANCE.Save() )
+                .respondsWith( getSaveCommand() )
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu(view.getBuildMenuItemText())
-                .respondsWith(new Command() {
+                .newTopLevelMenu( ProjectEditorConstants.INSTANCE.Build() )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator(ProjectEditorConstants.INSTANCE.Building());
-                        buildServiceCaller.call(getBuildSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).buildAndDeploy(pathToPomXML);
+                        view.showBusyIndicator( ProjectEditorConstants.INSTANCE.Building() );
+                        buildServiceCaller.call( getBuildSuccessCallback(),
+                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( pathToPomXML );
                     }
-                })
+                } )
                 .endMenu().build();
 
 // For now every module is a kie project.
@@ -189,31 +274,31 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                saveOperationService.save(pathToPomXML,
-                        new CommandWithCommitMessage() {
-                            @Override
-                            public void execute(final String comment) {
-                                view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                                // We need to use callback here or jgit will break when we save two files at the same time.
-                                pomPanel.save(comment,
-                                        new Command() {
-                                            @Override
-                                            public void execute() {
-                                                if (kModuleEditorPanel.hasBeenInitialized()) {
-                                                    kModuleEditorPanel.save(comment,
-                                                            new Command() {
-                                                                @Override
-                                                                public void execute() {
-                                                                    importsWidgetPresenter.save(comment, projectImportsMetadata);
-                                                                }
-                                                            },
-                                                            kmoduleMetadata);
-                                                }
-                                                view.hideBusyIndicator();
-                                            }
-                                        }, pomMetadata);
-                            }
-                        });
+                saveOperationService.save( pathToPomXML,
+                                           new CommandWithCommitMessage() {
+                                               @Override
+                                               public void execute( final String comment ) {
+                                                   view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                   // We need to use callback here or jgit will break when we save two files at the same time.
+                                                   pomPanel.save( comment,
+                                                                  new Command() {
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                                                                              kModuleEditorPanel.save( comment,
+                                                                                                       new Command() {
+                                                                                                           @Override
+                                                                                                           public void execute() {
+                                                                                                               importsWidgetPresenter.save( comment, projectImportsMetadata );
+                                                                                                           }
+                                                                                                       },
+                                                                                                       kmoduleMetadata );
+                                                                          }
+                                                                          view.hideBusyIndicator();
+                                                                      }
+                                                                  }, pomMetadata );
+                                               }
+                                           } );
             }
         };
     }
@@ -221,25 +306,25 @@ public class ProjectScreenPresenter
     private RemoteCallback getBuildSuccessCallback() {
         return new RemoteCallback<Void>() {
             @Override
-            public void callback(final Void v) {
+            public void callback( final Void v ) {
                 view.hideBusyIndicator();
             }
         };
     }
 
     private void addKModuleEditor() {
-        kModuleServiceCaller.call(getResolveKModulePathSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).pathToRelatedKModuleFileIfAny(pathToPomXML);
+        kModuleServiceCaller.call( getResolveKModulePathSuccessCallback(),
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).pathToRelatedKModuleFileIfAny( pathToPomXML );
     }
 
     private RemoteCallback<Path> getResolveKModulePathSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path pathToKModuleXML) {
+            public void callback( final Path pathToKModuleXML ) {
                 ProjectScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                if (kModuleEditorPanel.hasBeenInitialized()) {
-                    kModuleEditorPanel.init(pathToKModuleXML, false);
+                if ( kModuleEditorPanel.hasBeenInitialized() ) {
+                    kModuleEditorPanel.init( pathToKModuleXML, false );
                 }
             }
         };
@@ -251,8 +336,8 @@ public class ProjectScreenPresenter
     }
 
     @WorkbenchPartView
-    public Widget asWidget() {
-        return view.asWidget();
+    public IsWidget asWidget() {
+        return multiPage;
     }
 
     @WorkbenchMenu
@@ -262,26 +347,26 @@ public class ProjectScreenPresenter
 
     @Override
     public void onPOMMetadataTabSelected() {
-        if (pomMetadata == null) {
-            view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-            metadataService.call(getPOMMetadataSuccessCallback(),
-                    new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(pathToPomXML);
+        if ( pomMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            metadataService.call( getPOMMetadataSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToPomXML );
         }
     }
 
     @Override
     public void onKModuleTabSelected() {
-        if (!kModuleEditorPanel.hasBeenInitialized()) {
-            kModuleEditorPanel.init(pathToKModuleXML, false);
+        if ( !kModuleEditorPanel.hasBeenInitialized() ) {
+            kModuleEditorPanel.init( pathToKModuleXML, false );
         }
     }
 
     @Override
     public void onKModuleMetadataTabSelected() {
-        if (kmoduleMetadata == null) {
-            view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-            metadataService.call(getKModuleMetadataSuccessCallback(),
-                    new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(pathToKModuleXML);
+        if ( kmoduleMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            metadataService.call( getKModuleMetadataSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToKModuleXML );
         }
     }
 
@@ -289,10 +374,11 @@ public class ProjectScreenPresenter
         return new RemoteCallback<Metadata>() {
 
             @Override
-            public void callback(final Metadata metadata) {
+            public void callback( final Metadata metadata ) {
                 pomMetadata = metadata;
                 view.hideBusyIndicator();
-                view.setPOMMetadata(metadata);
+                pomMetaDataPanel.setContent( metadata,
+                                             false );
             }
         };
     }
@@ -301,37 +387,38 @@ public class ProjectScreenPresenter
         return new RemoteCallback<Metadata>() {
 
             @Override
-            public void callback(final Metadata metadata) {
+            public void callback( final Metadata metadata ) {
                 kmoduleMetadata = metadata;
                 view.hideBusyIndicator();
-                view.setKModuleMetadata(metadata);
+                kModuleMetaDataPanel.setContent( metadata,
+                                                 false );
             }
         };
     }
 
     @Override
     public void onImportsPageSelected() {
-        if (!importsWidgetPresenter.hasBeenInitialized()) {
+        if ( !importsWidgetPresenter.hasBeenInitialized() ) {
 
-            projectService.call(new RemoteCallback<Path>() {
+            projectService.call( new RemoteCallback<Path>() {
                 @Override
-                public void callback(Path path) {
+                public void callback( Path path ) {
 
                     pathToProjectImports = path;
 
-                    importsWidgetPresenter.init(pathToProjectImports, false);
+                    importsWidgetPresenter.init( pathToProjectImports, false );
 
                 }
-            }).resolvePathToProjectImports(pathToPomXML);
+            } ).resolvePathToProjectImports( pathToPomXML );
         }
     }
 
     @Override
     public void onImportsMetadataTabSelected() {
-        if (projectImportsMetadata == null) {
-            view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-            metadataService.call(getProjectImportsMetadataSuccessCallback(),
-                    new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(pathToProjectImports);
+        if ( projectImportsMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            metadataService.call( getProjectImportsMetadataSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToProjectImports );
         }
     }
 
@@ -339,10 +426,11 @@ public class ProjectScreenPresenter
         return new RemoteCallback<Metadata>() {
 
             @Override
-            public void callback(final Metadata metadata) {
+            public void callback( final Metadata metadata ) {
                 projectImportsMetadata = metadata;
                 view.hideBusyIndicator();
-                view.setProjectImportsMetadata(metadata);
+                importsPageMetadata.setContent( metadata,
+                                                false );
             }
         };
     }
