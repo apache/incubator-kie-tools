@@ -18,9 +18,14 @@
 
 package org.kie.workbench.common.services.rest;
 
+import static org.uberfire.backend.vfs.PathFactory.newPath;
+
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
@@ -34,14 +39,19 @@ import org.kie.workbench.common.services.shared.builder.BuildService;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.backend.FileExplorerRootService;
+import org.uberfire.backend.Root;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 //import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.shared.mvp.impl.PathPlaceRequest;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Inject;
@@ -79,9 +89,18 @@ public class ProjectResource {
 
    @Inject
    GroupService groupService;
-   
+
    @Inject
    RepositoryService repositoryService;
+
+   @Inject
+   VFSService vfsService;
+
+   @Inject
+   private FileExplorerRootService rootService;
+
+   @Inject
+   Event<Root> event;
 
    @Context
    public void setHttpHeaders(HttpHeaders theHeaders) {
@@ -95,29 +114,57 @@ public class ProjectResource {
    public Repository createOrCloneRepository(Repository repository) {
        System.out.println("-----createOrCloneRepository--- , repository name:" + repository.getName());
 
-       if (repository.getRequestType() == null 
-               || "".equals(repository.getRequestType()) 
+       if (repository.getRequestType() == null
+               || "".equals(repository.getRequestType())
                || !("new".equals(repository.getRequestType()) || ("clone".equals(repository.getRequestType())))) {
            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository request type can only be new or clone.").build());
-       } 
-       
+       }
+
+       final String scheme = "git";
+
        if("new".equals(repository.getRequestType())) {
-           if (repository.getName() == null || "".equals(repository.getName()) || repository.getScheme() == null || "".equals(repository.getScheme())) {
-               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name and scheme must be provided").build());
-           }        
-           
-           //String scheme = "git";
-           //String alias = "repository name";
-           //String uri = scheme + "://" + alias;
+           if (repository.getName() == null || "".equals(repository.getName())) {
+               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name must be provided").build());
+           }
+
            //username and password are optional
-           repositoryService.createRepository(repository.getScheme(), repository.getName(), repository.getUserName(), repository.getPassword());
+           final String alias = repository.getName();
+           final Map<String, Object> env = new HashMap<String, Object>( 3 );
+           env.put( "username", repository.getUserName() );
+           env.put( "password", repository.getPassword() );
+           env.put( "init", true );
+           final String uri = scheme + "://" + alias;
+
+           org.uberfire.backend.vfs.FileSystem v = vfsService.newFileSystem( uri, env );
+           final org.uberfire.backend.vfs.Path rootPath = newPath( v, alias, uri );
+           final Root newRoot = new Root( rootPath, new PathPlaceRequest( rootPath, "RepositoryEditor" ) );
+           rootService.addRoot( newRoot );
+           event.fire( newRoot );
+
+           repositoryService.createRepository(scheme, repository.getName(), repository.getUserName(), repository.getPassword());
+
        } else if("clone".equals(repository.getRequestType())) {
            if (repository.getName() == null || "".equals(repository.getName()) || repository.getGitURL() == null || "".equals(repository.getGitURL())) {
-               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name and GITURL must be provided").build());
-           }            
-           repositoryService.cloneRepository(repository.getScheme(), repository.getName(), repository.getGitURL(), repository.getUserName(), repository.getPassword());
+               throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Repository name and GitURL must be provided").build());
+           }
+
+           final String alias = repository.getName();
+           final String origin = repository.getGitURL();
+           final Map<String, Object> env = new HashMap<String, Object>( 3 );
+           env.put( "username", repository.getUserName() );
+           env.put( "password", repository.getPassword() );
+           env.put( "origin", origin );
+           final String uri = scheme + "://" + alias;
+
+           org.uberfire.backend.vfs.FileSystem v = vfsService.newFileSystem( uri, env );
+           final org.uberfire.backend.vfs.Path rootPath = newPath( v, alias, uri );
+           final Root newRoot = new Root( rootPath, new PathPlaceRequest( rootPath, "RepositoryEditor" ) );
+           rootService.addRoot( newRoot );
+           event.fire( newRoot );
+
+           repositoryService.cloneRepository(scheme, repository.getName(), repository.getGitURL(), repository.getUserName(), repository.getPassword());
        }
-             
+
        return repository;
    }
 
@@ -168,7 +215,7 @@ public class ProjectResource {
        if (repositoryPath == null) {
            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity("Repository [" + repositoryName + "] does not exist").build());
        } else {
-           //TODO: Delete project. ProjectService does not have a removeProject method yet.           
+           //TODO: Delete project. ProjectService does not have a removeProject method yet.
 
            Result result = new Result();
            result.setStatus("SUCCESS");
@@ -180,7 +227,7 @@ public class ProjectResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("repositories/{repositoryName}/projects/{projectName}/maven/compile")
+@Path("repositories/{repositoryName}/projects/{projectName}/maven/compile")
    public Result compileProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig mavenConfig) {
@@ -211,7 +258,7 @@ public class ProjectResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("repositories/{repositoryName}/projects/{projectName}/maven/install")
+@Path("repositories/{repositoryName}/projects/{projectName}/maven/install")
    public Result installProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig mavenConfig) {
@@ -242,7 +289,7 @@ public class ProjectResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("repositories/{repositoryName}/projects/{projectName}/maven/test")
+@Path("repositories/{repositoryName}/projects/{projectName}/maven/test")
    public Result testProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig config) {
@@ -273,7 +320,7 @@ public class ProjectResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("repositories/{repositoryName}/projects/{projectName}/maven/deploy")
+@Path("repositories/{repositoryName}/projects/{projectName}/maven/deploy")
    public Result deployProject(
            @PathParam("repositoryName") String repositoryName,
            @PathParam("projectName") String projectName, BuildConfig config) {
@@ -309,7 +356,7 @@ public class ProjectResource {
 
        if (group.getName() == null || group.getOwner() == null) {
            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Group name and owner must be provided").build());
-       } 
+       }
 
        groupService.createGroup(group.getName(), group.getOwner());
 
@@ -333,23 +380,23 @@ public class ProjectResource {
        org.kie.commons.java.nio.file.Path repositoryRootPath = null;
 
        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems().iterator();
-       
+
        if ( fsIterator.hasNext() ) {
            final FileSystem fileSystem = fsIterator.next();
            System.out.println("-----FileSystem id--- :" + ((org.kie.commons.java.nio.base.FileSystemId) fileSystem).id());
-           
+
            if (repositoryName.equalsIgnoreCase(((org.kie.commons.java.nio.base.FileSystemId) fileSystem).id())) {
                 final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = fileSystem.getRootDirectories().iterator();
                 if (rootIterator.hasNext()) {
                     repositoryRootPath = rootIterator.next();
                     System.out.println("-----rootPath--- :" + repositoryRootPath);
 
-                    org.kie.commons.java.nio.file.DirectoryStream<org.kie.commons.java.nio.file.Path> paths = ioSystemService
+org.kie.commons.java.nio.file.DirectoryStream<org.kie.commons.java.nio.file.Path> paths = ioSystemService
                             .newDirectoryStream(repositoryRootPath);
                     for (final org.kie.commons.java.nio.file.Path child : paths) {
                         System.out.println("-----child--- :" + child);
                     }
-                    
+
                     return repositoryRootPath;
                 }
             }
@@ -358,6 +405,7 @@ public class ProjectResource {
        return repositoryRootPath;
    }
 }
+
 
 
 

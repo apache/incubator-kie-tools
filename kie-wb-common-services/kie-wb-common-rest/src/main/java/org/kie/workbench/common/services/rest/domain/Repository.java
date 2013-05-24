@@ -17,19 +17,12 @@
 package org.kie.workbench.common.services.rest.domain;
 
 public class Repository extends Entity {
-    
-    String scheme;
+
     String userName;
     String password;
     String requestType;
     String gitURL;
     
-    public String getScheme() {
-        return scheme;
-    }
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
     public String getUserName() {
         return userName;
     }
