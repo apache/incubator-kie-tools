@@ -210,6 +210,7 @@ public class ProjectScreenPresenter
                     init();
                     pomMetadata = null;
                     kmoduleMetadata = null;
+                    multiPage.selectPage( 0 );
 //                    }
                 }
             }
