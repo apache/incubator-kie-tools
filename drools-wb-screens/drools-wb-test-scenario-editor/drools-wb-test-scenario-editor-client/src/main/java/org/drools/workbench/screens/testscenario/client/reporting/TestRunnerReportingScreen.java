@@ -1,8 +1,10 @@
 package org.drools.workbench.screens.testscenario.client.reporting;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
 import org.drools.workbench.screens.testscenario.model.Failure;
 import org.drools.workbench.screens.testscenario.model.Success;
@@ -11,9 +13,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.Position;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults")
