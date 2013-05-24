@@ -51,7 +51,11 @@ public class DataModelerServiceHelper {
     public DataModelTO domain2To(DataModel dataModel, Integer status) {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
+        List<DataObject> externalDataObjects = new ArrayList<DataObject>();
+        List<String> externalClasses = new ArrayList<String>();
+
         dataObjects.addAll(dataModel.getDataObjects());
+        externalDataObjects.addAll(dataModel.getDataObjects(ObjectSource.DEPENDENCY));
 
         DataObjectTO dataObjectTO;
 
@@ -65,6 +69,14 @@ public class DataModelerServiceHelper {
                 dataModelTO.getDataObjects().add(dataObjectTO);
             }
         }
+
+        for (DataObject externalDataObject : externalDataObjects) {
+            if (!externalClasses.contains(externalDataObject.getClassName())) {
+                externalClasses.add(externalDataObject.getClassName());
+            }
+        }
+        dataModelTO.setExternalClasses(externalClasses);
+
         return dataModelTO;
     }
 

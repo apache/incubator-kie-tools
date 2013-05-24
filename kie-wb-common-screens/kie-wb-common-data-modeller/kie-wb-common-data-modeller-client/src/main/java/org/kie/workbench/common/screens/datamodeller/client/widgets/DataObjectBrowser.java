@@ -241,7 +241,7 @@ public class DataObjectBrowser extends Composite {
             @Override
             public ImageResource getValue( final ObjectPropertyTO property ) {
 
-                if (!property.isBaseType() && !getDataObject().getClassName().equals(property.getClassName())) {
+                if (!property.isBaseType() && !getDataObject().getClassName().equals(property.getClassName()) && !getDataModel().isExternal(property.getClassName())) {
                     return ImagesResources.INSTANCE.BrowsObject();
                 } else {
                     return null;

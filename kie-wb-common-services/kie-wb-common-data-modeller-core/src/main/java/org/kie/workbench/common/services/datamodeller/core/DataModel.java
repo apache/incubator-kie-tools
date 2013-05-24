@@ -21,6 +21,8 @@ import java.util.Set;
 public interface DataModel {
 
     Set<DataObject> getDataObjects();
+    
+    Set<DataObject> getDataObjects(ObjectSource source);
 
     /**
      * The created data object will have the class name "packageName.name"
@@ -38,5 +40,13 @@ public interface DataModel {
     DataObject getDataObject(String className);
     
     DataObject removeDataObject(String className);
+
+    DataObject addDataObject(String packageName, String name, ObjectSource source);
+
+    DataObject addDataObject(String className, ObjectSource source);
+
+    DataObject getDataObject(String className, ObjectSource source);
+
+    DataObject removeDataObject(String className, ObjectSource source);
 
 }

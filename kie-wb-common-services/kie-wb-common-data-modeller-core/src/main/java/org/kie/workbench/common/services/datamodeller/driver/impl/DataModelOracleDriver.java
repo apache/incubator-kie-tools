@@ -17,25 +17,22 @@
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
 
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.workbench.common.services.datamodel.model.Annotation;
+import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationListener;
-import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.workbench.common.services.datamodel.model.Annotation;
-import org.kie.workbench.common.services.datamodel.model.ModelField;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,12 +116,14 @@ public class DataModelOracleDriver implements ModelDriver {
         logger.debug("Adding oracleDataModel: " + oracleDataModel + " to dataModel: " + dataModel);
         
         String[] factTypes = oracleDataModel.getFactTypes();
-        
+        ObjectSource source = null;
+
         if (factTypes != null && factTypes.length > 0) {
             for (int i = 0; i < factTypes.length; i++) {
                 //skip .drl declared fact types.
-                if (isDataObject(oracleDataModel, factTypes[i])) {
-                    addFactType(dataModel, oracleDataModel, factTypes[i]);
+                source = factSource(oracleDataModel, factTypes[i]);
+                if (source != null && (ObjectSource.INTERNAL.equals(source) || ObjectSource.DEPENDENCY.equals(source))) {
+                    addFactType(dataModel, oracleDataModel, factTypes[i], source);
                 }
             }
         } else {
@@ -133,14 +132,14 @@ public class DataModelOracleDriver implements ModelDriver {
         return dataModel;
     }
 
-    private void addFactType(DataModel dataModel, ProjectDataModelOracle oracleDataModel, String factType) throws ModelDriverException {
+    private void addFactType(DataModel dataModel, ProjectDataModelOracle oracleDataModel, String factType, ObjectSource source) throws ModelDriverException {
 
         String packageName = NamingUtils.getInstance().extractPackageName(factType);
         String className = NamingUtils.getInstance().extractClassName(factType);
         String superClass = oracleDataModel.getSuperType(factType);
 
         logger.debug("Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel);
-        DataObject dataObject = dataModel.addDataObject(factType);
+        DataObject dataObject = dataModel.addDataObject(factType, source);
         dataObject.setSuperClassName(superClass);
 
         //process type annotations
@@ -225,9 +224,19 @@ public class DataModelOracleDriver implements ModelDriver {
     /**
      * True if the given fact type is a DataObject.
      */
-    private boolean isDataObject(ProjectDataModelOracle oracleDataModel, String factType) {
-        return oracleDataModel.getTypeSource(factType).equals( TypeSource.JAVA_PROJECT );
+    private ObjectSource factSource(ProjectDataModelOracle oracleDataModel, String factType) {
+        TypeSource oracleType = oracleDataModel.getTypeSource(factType);
+        //TODO for testing
+        if (factType.startsWith("test")) return ObjectSource.DEPENDENCY;
+
+        if (TypeSource.JAVA_PROJECT.equals(oracleType)) {
+            return ObjectSource.INTERNAL;
+        } else if (TypeSource.JAVA_DEPENDENCY.equals(oracleType)) {
+            return ObjectSource.DEPENDENCY;
+        }
+        return null;
     }
+
 
     /**
      * Indicates if this field should be loaded or not.

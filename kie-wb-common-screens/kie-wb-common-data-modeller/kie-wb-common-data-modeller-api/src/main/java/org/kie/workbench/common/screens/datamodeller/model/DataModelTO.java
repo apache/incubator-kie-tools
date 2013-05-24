@@ -107,6 +107,10 @@ public class DataModelTO {
     public void setExternalClasses(List<String> externalClasses) {
         this.externalClasses = externalClasses;
     }
+    
+    public boolean isExternal(String className) {
+        return externalClasses != null && externalClasses.contains(className);
+    }
 
     public int getId() {
         return id;

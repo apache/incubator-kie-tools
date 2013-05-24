@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
+import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -26,38 +27,97 @@ public class DataModelImpl implements DataModel {
 
     Map<String, DataObject> dataObjects = new HashMap<String, DataObject>();
 
+    Map<String, DataObject> dependencyDataObjects = new HashMap<String, DataObject>();
+
     public DataModelImpl() {
     }
 
     @Override
     public Set<DataObject> getDataObjects() {
-        HashSet<DataObject> set = new HashSet<DataObject>();
-        set.addAll(dataObjects.values());
-        return set;
+        return getDataObjects(ObjectSource.INTERNAL);
+    }
+
+    @Override
+    public Set<DataObject> getDataObjects(ObjectSource source) {
+        switch (source) {
+            case INTERNAL:
+                return getDataObjects(dataObjects);
+            case DEPENDENCY:
+                return getDataObjects(dependencyDataObjects);
+        }
+        return null;
     }
 
     @Override
     public DataObject getDataObject(String className) {
-        return dataObjects.get(className);
+        return getDataObject(className, ObjectSource.INTERNAL);
+    }
+
+    @Override
+    public DataObject getDataObject(String className, ObjectSource source) {
+        switch (source) {
+            case INTERNAL:
+                return dataObjects.get(className);
+            case DEPENDENCY:
+                return dependencyDataObjects.get(className);
+        }
+        return null;
     }
 
     @Override
     public DataObject removeDataObject(String className) {
-        return dataObjects.remove(className);
+        return removeDataObject(className, ObjectSource.INTERNAL);
+    }
+
+    @Override
+    public DataObject removeDataObject(String className, ObjectSource source) {
+        switch (source) {
+            case INTERNAL:
+                return dataObjects.remove(className);
+            case DEPENDENCY:
+                return dependencyDataObjects.remove(className);
+        }
+        return null;
     }
 
     @Override
     public DataObject addDataObject(String packageName, String name) {
-        DataObject dataObject = new DataObjectImpl(packageName, name);
-        dataObjects.put(dataObject.getClassName(), dataObject);
-        return dataObject;
+        return addDataObject(packageName, name, ObjectSource.INTERNAL);
+    }
+
+    @Override
+    public DataObject addDataObject(String packageName, String name, ObjectSource source) {
+        switch (source) {
+            case INTERNAL:
+                return addDataObject(packageName, name, dataObjects);
+            case DEPENDENCY:
+                return addDataObject(packageName, name, dependencyDataObjects);
+        }
+        return null;
     }
 
     @Override
     public DataObject addDataObject(String className) {
+        return addDataObject(className, ObjectSource.INTERNAL);
+    }
+
+    @Override
+    public DataObject addDataObject(String className, ObjectSource source) {
         String name = NamingUtils.getInstance().extractClassName(className);
         String packageName = NamingUtils.getInstance().extractPackageName(className);
-        return addDataObject(packageName, name);
+        return addDataObject(packageName, name, source);
+    }
+
+    private Set<DataObject> getDataObjects(Map<String, DataObject> objectsMap) {
+        HashSet<DataObject> set = new HashSet<DataObject>();
+        set.addAll(objectsMap.values());
+        return set;
+    }
+
+    private DataObject addDataObject(String packageName, String name, Map<String, DataObject> objectsMap) {
+        DataObject dataObject = new DataObjectImpl(packageName, name);
+        objectsMap.put(dataObject.getClassName(), dataObject);
+        return dataObject;
     }
 
 }
