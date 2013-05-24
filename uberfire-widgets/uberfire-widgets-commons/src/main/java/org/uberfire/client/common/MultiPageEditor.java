@@ -47,6 +47,10 @@ public class MultiPageEditor
         view.addPage( page );
     }
 
+    public void selectPage( final int index ) {
+        view.selectPage( index );
+    }
+
     @Override
     public Widget asWidget() {
         return view;
