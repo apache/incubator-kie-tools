@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceChange;
 
 @Remote
 public interface BuildService {

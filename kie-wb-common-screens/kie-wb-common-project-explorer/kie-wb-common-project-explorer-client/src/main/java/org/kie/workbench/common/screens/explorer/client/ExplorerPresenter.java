@@ -10,16 +10,16 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
-import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.screens.explorer.model.ExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.model.RepositoryItem;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -28,12 +28,12 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -42,7 +42,7 @@ import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
 public class ExplorerPresenter {
 
     @Inject
-    private Caller<FileExplorerRootService> rootService;
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
     private Caller<ExplorerService> explorerService;
@@ -95,8 +95,8 @@ public class ExplorerPresenter {
 
     private void loadItems( final Path path ) {
         if ( path == null ) {
-            rootService.call( new RootItemsSuccessCallback( path ),
-                              new DefaultErrorCallback() ).listRoots();
+            repositoryService.call( new RootItemsSuccessCallback( path ),
+                                    new DefaultErrorCallback() ).getRepositories();
         } else {
             if ( !path.equals( activePath ) ) {
                 explorerService.call( new ContentInScopeSuccessCallback( path ),
@@ -108,8 +108,8 @@ public class ExplorerPresenter {
     private void loadItemsWithBusyIndicator( final Path path ) {
         if ( path == null ) {
             busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-            rootService.call( new RootItemsSuccessCallbackWithBusyIndicator( path ),
-                              new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).listRoots();
+            repositoryService.call( new RootItemsSuccessCallbackWithBusyIndicator( path ),
+                                    new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).getRepositories();
         } else {
             if ( !path.equals( activePath ) ) {
                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -154,7 +154,7 @@ public class ExplorerPresenter {
         loadItems( context.getActivePath() );
     }
 
-    private class RootItemsSuccessCallback implements RemoteCallback<Collection<Root>> {
+    private class RootItemsSuccessCallback implements RemoteCallback<Collection<Repository>> {
 
         protected final Path path;
 
@@ -163,18 +163,18 @@ public class ExplorerPresenter {
         }
 
         @Override
-        public void callback( final Collection<Root> roots ) {
+        public void callback( final Collection<Repository> repositories ) {
             final List<Item> items = new ArrayList<Item>();
-            for ( final Root root : roots ) {
-                items.add( wrapRoot( root ) );
+            for ( final Repository repository : repositories ) {
+                items.add( wrapRepository( repository ) );
             }
             final ExplorerContent content = new ExplorerContent( items );
             activePath = path;
             view.setContent( content );
         }
 
-        private RepositoryItem wrapRoot( final Root root ) {
-            final RepositoryItem repositoryItem = new RepositoryItem( root.getPath() );
+        private RepositoryItem wrapRepository( final Repository repository ) {
+            final RepositoryItem repositoryItem = new RepositoryItem( repository.getRoot() );
             return repositoryItem;
         }
 
@@ -203,7 +203,7 @@ public class ExplorerPresenter {
         }
 
         @Override
-        public void callback( final Collection<Root> roots ) {
+        public void callback( final Collection<Repository> roots ) {
             super.callback( roots );
             busyIndicatorView.hideBusyIndicator();
         }

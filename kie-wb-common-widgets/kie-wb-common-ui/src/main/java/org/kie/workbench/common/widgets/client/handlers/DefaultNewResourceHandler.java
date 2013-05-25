@@ -20,9 +20,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new Items that require a Name and Path

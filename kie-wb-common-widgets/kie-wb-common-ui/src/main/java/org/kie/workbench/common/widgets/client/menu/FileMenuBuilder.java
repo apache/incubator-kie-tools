@@ -16,8 +16,8 @@
 package org.kie.workbench.common.widgets.client.menu;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.Menus;
 
 public interface FileMenuBuilder {
 

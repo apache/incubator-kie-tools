@@ -38,15 +38,15 @@ import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 /**
  *

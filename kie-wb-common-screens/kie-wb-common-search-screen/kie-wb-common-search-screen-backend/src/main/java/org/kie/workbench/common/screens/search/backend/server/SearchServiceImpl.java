@@ -1,6 +1,7 @@
 package org.kie.workbench.common.screens.search.backend.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,17 +20,17 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreView;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.file.Path;
+import org.kie.kieora.search.DateRange;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
 import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
-import org.kie.kieora.search.DateRange;
-import org.uberfire.backend.FileExplorerRootService;
-import org.uberfire.backend.Root;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.client.tables.PageResponse;
-import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Service
 
@@ -41,11 +42,11 @@ public class SearchServiceImpl implements SearchService {
     private IOSearchService ioSearchService;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    private RepositoryService repositoryService;
 
     @Inject
-    private FileExplorerRootService rootService;
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private Paths paths;
@@ -132,10 +133,11 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private Path[] roots() {
-        final Path[] roots = new Path[ rootService.listRoots().size() ];
+        final Collection<Repository> repos = repositoryService.getRepositories();
+        final Path[] roots = new Path[ repos.size() ];
         int i = 0;
-        for ( final Root root : rootService.listRoots() ) {
-            roots[ i ] = paths.convert( root.getPath() );
+        for ( final Repository repo : repos ) {
+            roots[ i ] = paths.convert( repo.getRoot() );
             i++;
         }
         return roots;

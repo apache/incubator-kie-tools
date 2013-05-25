@@ -16,43 +16,48 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.datamodeller.util.FileUtils;
-import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
-import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
-import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.IOException;
+import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
-import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
+import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.util.FileUtils;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
+import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ChangeType;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceChange;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
+import org.uberfire.workbench.events.ChangeType;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped

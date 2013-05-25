@@ -24,7 +24,7 @@ import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;

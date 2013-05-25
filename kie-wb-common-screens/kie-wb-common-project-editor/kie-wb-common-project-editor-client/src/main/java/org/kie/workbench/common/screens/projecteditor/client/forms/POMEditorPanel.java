@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 public class POMEditorPanel
         implements IsWidget {

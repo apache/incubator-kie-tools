@@ -12,8 +12,8 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.PlaceRequest;
 
 @WorkbenchEditor(identifier = "pomScreen", supportedTypes = {POMResourceType.class})
 public class PomEditorScreenPresenter {

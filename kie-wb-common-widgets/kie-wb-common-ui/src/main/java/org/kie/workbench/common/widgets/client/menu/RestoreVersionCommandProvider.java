@@ -13,7 +13,7 @@ import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.services.shared.version.VersionService;
 import org.kie.workbench.common.services.shared.version.events.RestoreEvent;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 public class RestoreVersionCommandProvider {
 

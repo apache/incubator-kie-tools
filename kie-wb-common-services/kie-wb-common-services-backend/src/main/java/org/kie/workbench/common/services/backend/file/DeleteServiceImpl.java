@@ -9,7 +9,7 @@ import org.kie.commons.io.IOService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.security.Identity;
 
 @Service

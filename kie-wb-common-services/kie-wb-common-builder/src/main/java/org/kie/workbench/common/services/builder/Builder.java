@@ -51,8 +51,8 @@ import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.client.workbench.widgets.events.ChangeType;
-import org.uberfire.client.workbench.widgets.events.ResourceChange;
+import org.uberfire.workbench.events.ChangeType;
+import org.uberfire.workbench.events.ResourceChange;
 
 public class Builder {
 

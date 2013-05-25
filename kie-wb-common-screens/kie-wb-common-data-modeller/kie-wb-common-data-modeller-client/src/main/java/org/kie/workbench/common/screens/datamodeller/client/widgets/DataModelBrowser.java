@@ -54,7 +54,7 @@ import org.kie.workbench.common.screens.datamodeller.client.validation.Validator
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.uberfire.client.common.ErrorPopup;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;

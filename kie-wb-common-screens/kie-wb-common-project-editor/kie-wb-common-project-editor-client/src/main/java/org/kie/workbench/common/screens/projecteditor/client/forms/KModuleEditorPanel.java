@@ -10,7 +10,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 import javax.inject.Inject;
 

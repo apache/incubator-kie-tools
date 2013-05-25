@@ -32,7 +32,7 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

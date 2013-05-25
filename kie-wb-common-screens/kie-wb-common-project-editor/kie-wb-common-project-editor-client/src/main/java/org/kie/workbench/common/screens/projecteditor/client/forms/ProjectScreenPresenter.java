@@ -43,10 +43,10 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.context.WorkbenchContext;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter

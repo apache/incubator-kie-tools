@@ -11,7 +11,7 @@ import org.kie.workbench.common.services.shared.file.CopyService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.security.Identity;
 
 @Service

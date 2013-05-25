@@ -20,7 +20,7 @@ import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service

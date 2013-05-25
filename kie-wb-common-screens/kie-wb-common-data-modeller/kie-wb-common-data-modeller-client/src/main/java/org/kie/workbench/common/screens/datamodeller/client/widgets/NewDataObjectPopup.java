@@ -38,7 +38,7 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

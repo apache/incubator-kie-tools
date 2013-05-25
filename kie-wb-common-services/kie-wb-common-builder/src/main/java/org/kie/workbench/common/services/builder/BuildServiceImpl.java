@@ -34,7 +34,7 @@ import org.kie.workbench.common.services.shared.builder.model.DeployResult;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped

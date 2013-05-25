@@ -32,7 +32,7 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.workbench.events.PathChangeEvent;
 
 @ApplicationScoped
 public class NewResourcePresenter {

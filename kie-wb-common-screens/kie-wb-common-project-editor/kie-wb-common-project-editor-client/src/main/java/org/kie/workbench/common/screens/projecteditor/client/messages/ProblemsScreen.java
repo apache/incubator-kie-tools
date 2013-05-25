@@ -26,7 +26,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.Position;
+import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.Problems")
@@ -38,14 +38,14 @@ public class ProblemsScreen
     private final ProblemsService problemsService;
 
     @Inject
-    public ProblemsScreen(ProblemsScreenView view,
-                          PlaceManager placeManager,
-                          ProblemsService problemsService) {
+    public ProblemsScreen( ProblemsScreenView view,
+                           PlaceManager placeManager,
+                           ProblemsService problemsService ) {
         this.view = view;
         this.placeManager = placeManager;
         this.problemsService = problemsService;
 
-        view.setPresenter(this);
+        view.setPresenter( this );
     }
 
     @DefaultPosition

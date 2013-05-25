@@ -32,16 +32,16 @@ import org.uberfire.client.annotations.*;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.IconType;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBarItem;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.IconType;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBarItem;
+import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
+import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.uberfire.client.workbench.widgets.menu.MenuFactory.newSimpleItem;
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -294,14 +294,14 @@ public class DataModelerScreenPresenter {
     private void makeToolBar() {
         toolBar = new DefaultToolBar( "dataModelerToolbar" );
 
-        org.uberfire.client.mvp.Command saveCommand = new org.uberfire.client.mvp.Command() {
+        org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
                 onSave(null);
             }
         };
 
-        org.uberfire.client.mvp.Command newDataObjectCommand = new org.uberfire.client.mvp.Command() {
+        org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
                 onNewDataObject();
@@ -320,14 +320,14 @@ public class DataModelerScreenPresenter {
 
         final List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-        org.uberfire.client.mvp.Command newDataObjectCommand = new org.uberfire.client.mvp.Command() {
+        org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
                 onNewDataObject();
             }
         };
 
-        org.uberfire.client.mvp.Command saveCommand = new org.uberfire.client.mvp.Command() {
+        org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
                 onSave(null);

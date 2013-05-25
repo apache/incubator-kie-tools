@@ -30,7 +30,7 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Const
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.uberfire.client.common.Popup;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 import javax.inject.Inject;
 

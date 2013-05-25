@@ -21,8 +21,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.PathChangeEvent;
 
 public class NewProjectWizard
         implements Wizard<NewProjectWizardContext> {

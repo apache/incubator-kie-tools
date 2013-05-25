@@ -2,7 +2,7 @@ package org.kie.workbench.common.services.shared.readonly;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import java.util.Map;
 

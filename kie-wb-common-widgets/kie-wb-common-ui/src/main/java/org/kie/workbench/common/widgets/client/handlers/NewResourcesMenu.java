@@ -4,10 +4,10 @@ import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

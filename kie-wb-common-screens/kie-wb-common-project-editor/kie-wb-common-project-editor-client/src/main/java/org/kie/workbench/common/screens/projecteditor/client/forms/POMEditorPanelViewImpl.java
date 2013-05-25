@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.common.services.project.service.model.GAV;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class POMEditorPanelViewImpl
         extends ResizeComposite

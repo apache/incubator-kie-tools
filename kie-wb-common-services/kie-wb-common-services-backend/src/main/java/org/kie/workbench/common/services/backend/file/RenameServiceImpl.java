@@ -11,7 +11,7 @@ import org.kie.workbench.common.services.shared.file.RenameService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.security.Identity;
 
 @Service

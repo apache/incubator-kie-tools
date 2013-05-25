@@ -26,7 +26,7 @@ import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;

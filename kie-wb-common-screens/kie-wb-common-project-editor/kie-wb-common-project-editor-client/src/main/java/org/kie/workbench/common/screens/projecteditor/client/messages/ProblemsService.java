@@ -28,7 +28,7 @@ import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.

@@ -10,8 +10,8 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchScreen(identifier = "FullTextSearchForm")

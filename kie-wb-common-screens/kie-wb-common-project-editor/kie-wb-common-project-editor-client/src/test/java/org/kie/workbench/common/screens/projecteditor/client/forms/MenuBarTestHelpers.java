@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.uberfire.client.workbench.widgets.menu.MenuItem;
-import org.uberfire.client.workbench.widgets.menu.MenuItemCommand;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
+import org.uberfire.workbench.model.menu.Menus;
 
 public class MenuBarTestHelpers {
 

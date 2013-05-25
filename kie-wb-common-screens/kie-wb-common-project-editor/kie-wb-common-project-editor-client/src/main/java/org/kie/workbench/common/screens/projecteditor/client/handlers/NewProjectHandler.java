@@ -16,8 +16,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
