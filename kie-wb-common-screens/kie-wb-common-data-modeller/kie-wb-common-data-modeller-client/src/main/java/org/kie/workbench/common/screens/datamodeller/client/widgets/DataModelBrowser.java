@@ -204,7 +204,7 @@ public class DataModelBrowser extends Composite {
     }
 
     private DataModelTO getDataModel() {
-        return context.getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     private void loadDataModel(DataModelTO dataModel) {

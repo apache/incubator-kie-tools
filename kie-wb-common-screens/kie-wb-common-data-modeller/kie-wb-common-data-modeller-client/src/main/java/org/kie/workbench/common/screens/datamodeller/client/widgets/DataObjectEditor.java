@@ -151,7 +151,7 @@ public class DataObjectEditor extends Composite {
     }
 
     private DataModelTO getDataModel() {
-        return getContext().getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     private void loadDataObject(DataObjectTO dataObject) {
@@ -196,6 +196,7 @@ public class DataObjectEditor extends Composite {
         if (event.isFrom(getDataModel())) {
             if (getDataModel().getDataObjects().size() == 0) {
                 clean();
+                setDataObject(null);
             }
         }
     }
@@ -210,6 +211,8 @@ public class DataObjectEditor extends Composite {
 
     @UiHandler("name")
     void nameChanged(final ValueChangeEvent<String> event) {
+        if (getDataObject() == null) return;
+
         // Set widgets to errorpopup for styling purposes etc.
         ep.setTitleWidget(titleLabel);
         ep.setValueWidget(name);
@@ -261,6 +264,8 @@ public class DataObjectEditor extends Composite {
 
     @UiHandler("label")
     void labelChanged(final ValueChangeEvent<String> event) {
+        if (getDataObject() == null) return;
+
         String oldValue = null;
         String _label = label.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
@@ -279,6 +284,8 @@ public class DataObjectEditor extends Composite {
 
     @UiHandler("description")
     void descriptionChanged(final ValueChangeEvent<String> event) {
+        if (getDataObject() == null) return;
+
         String _description = description.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
 
@@ -293,6 +300,8 @@ public class DataObjectEditor extends Composite {
     }
 
     private void packageChanged(ChangeEvent event) {
+        if (getDataObject() == null) return;
+
         // Set widgets to errorpopup for styling purposes etc.
         ep.setTitleWidget(packageNameLabel);
         ep.setValueWidget(packageSelector);
@@ -319,6 +328,8 @@ public class DataObjectEditor extends Composite {
     }
 
     private void superClassChanged(ChangeEvent event) {
+        if (getDataObject() == null) return;
+
         String newSuperClass = superclassSelector.getSuperclassList().getValue();
         String oldSuperClass = getDataObject().getSuperClassName();
 
@@ -337,6 +348,8 @@ public class DataObjectEditor extends Composite {
     }
 
     void roleChanged(final ChangeEvent event) {
+        if (getDataObject() == null) return;
+
         final String _role = roleSelector.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.ROLE_ANNOTATION);
 

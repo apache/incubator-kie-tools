@@ -25,11 +25,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.List;
 
 
 public class ModelPropertiesEditor extends Composite {
@@ -42,11 +43,17 @@ public class ModelPropertiesEditor extends Composite {
     private static ModelPropertiesEditorUIBinder uiBinder = GWT.create(ModelPropertiesEditorUIBinder.class);
 
     @UiField (provided = true)
-    public TabPanel tabPanel = new TabPanel(Bootstrap.Tabs.ABOVE);
+    TabPanel tabPanel = new TabPanel(Bootstrap.Tabs.ABOVE);
 
     private Tab objectTab = new Tab();
 
     private Tab fieldTab = new Tab();
+
+    private boolean fieldTabAdded;
+    
+    private static int ENTITY_TAB = 0;
+
+    private static int FIELD_TAB = 1;
 
     @Inject
     private DataObjectEditor objectProperties;
@@ -63,21 +70,25 @@ public class ModelPropertiesEditor extends Composite {
     @PostConstruct
     private void init() {
 
-        objectTab.setHeading("Entity");
+        objectTab.setHeading("Data object");
         objectTab.add(objectProperties);
 
         fieldTab.setHeading("Field");
         fieldTab.add(fieldProperties);
 
         tabPanel.add(objectTab);
-        tabPanel.add(fieldTab);
+        //tabPanel.add(fieldTab);
 
-
-        tabPanel.selectTab(0);
+        fieldTabAdded = false;
+        tabPanel.selectTab(ENTITY_TAB);
     }
 
     public DataModelerContext getContext() {
         return context;
+    }
+    
+    private DataModelTO getDataModel() {
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     public void setContext(DataModelerContext context) {
@@ -85,4 +96,73 @@ public class ModelPropertiesEditor extends Composite {
         objectProperties.setContext(context);
         fieldProperties.setContext(context);
     }
+
+    //event observers
+
+    private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            checkFieldTabStatus(event);
+            tabPanel.selectTab(ENTITY_TAB);
+        }
+    }
+
+    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            checkFieldTabStatus(event);
+            tabPanel.selectTab(ENTITY_TAB);
+        }
+    }
+
+    private void onDataObjectFieldChange(@Observes DataObjectFieldChangeEvent event) {
+        checkFieldTabStatus(event);
+    }
+
+    private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
+        checkFieldTabStatus(event);
+    }
+
+    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
+        checkFieldTabStatus(event);
+    }
+
+    private void onDataObjectFieldSelected(@Observes DataObjectFieldSelectedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            checkFieldTabStatus(event);
+        }
+    }
+
+    private void checkFieldTabStatus(DataModelerEvent event) {
+        if (event.isFrom(getDataModel())) {
+
+            if (getDataModel() != null && 
+                getDataModel().getDataObjects().size() > 0 &&
+                event.getCurrentDataObject() != null &&
+                event.getCurrentDataObject().getProperties() != null &&
+                event.getCurrentDataObject().getProperties().size() > 0) {
+                enableFieldTab(true);
+            } else {
+                enableFieldTab(false);
+            }
+        }
+    }
+
+    private void enableFieldTab(boolean enable) {
+        if (enable) {
+            if (!fieldTabAdded) {
+                tabPanel.add(fieldTab);
+                fieldTabAdded = true;
+            }
+            tabPanel.selectTab(FIELD_TAB);
+        } else {
+            if (fieldTabAdded) {
+                if (fieldTab.isActive()) {
+                    fieldTab.setActive(false);
+                    tabPanel.selectTab(ENTITY_TAB);
+                }
+                tabPanel.remove(fieldTab);
+                fieldTabAdded = false;
+            }
+        }
+    }
+
 }

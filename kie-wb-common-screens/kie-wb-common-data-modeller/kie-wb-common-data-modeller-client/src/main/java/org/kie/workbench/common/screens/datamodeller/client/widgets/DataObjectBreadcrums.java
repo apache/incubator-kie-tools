@@ -25,6 +25,7 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -171,7 +172,7 @@ public class DataObjectBreadcrums extends Breadcrumbs {
     }
 
     private DataModelTO getDataModel() {
-        return getContext().getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     // Event Observers
@@ -196,6 +197,14 @@ public class DataObjectBreadcrums extends Breadcrumbs {
             if ("name".equals(event.getPropertyName()) ||
                 "label".equals(event.getPropertyName())) {
                 rebuild();
+            }
+        }
+    }
+    
+    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            if (getDataModel() != null && getDataModel().getDataObjects().size() == 0) {
+                clear();
             }
         }
     }

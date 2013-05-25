@@ -85,6 +85,9 @@ public class DataObjectBrowser extends Composite {
     CellTable<ObjectPropertyTO> dataObjectPropertiesTable = new CellTable<ObjectPropertyTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
 
     @UiField
+    Label newPropertyLabel;
+
+    @UiField
     com.github.gwtbootstrap.client.ui.TextBox newPropertyName;
 
     @UiField
@@ -116,10 +119,14 @@ public class DataObjectBrowser extends Composite {
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
 
+    private boolean newPropertyActionEnabled = false;
+
     public DataObjectBrowser() {
         initWidget(uiBinder.createAndBindUi(this));
 
-        objectName.setText(Constants.INSTANCE.objectEditor_objectUnknown());
+        //objectName.setText(Constants.INSTANCE.objectEditor_objectUnknown());
+        objectName.setText("");
+
         dataObjectPropertiesProvider.setList(dataObjectProperties);
 
         //Init data objects table
@@ -324,6 +331,8 @@ public class DataObjectBrowser extends Composite {
         newPropertyIsMultiple.setValue(false);
         newPropertyBasicType.setValue(true);
         newPropertyButton.setIcon(IconType.PLUS_SIGN);
+
+        enableNewPropertyAction(false);
     }
     
     @PostConstruct
@@ -450,11 +459,6 @@ public class DataObjectBrowser extends Composite {
             dataObjectPropertiesTable.setKeyboardSelectedRow(0);
         }
 
-        if (dataObjectProperties.size() == 0) {
-            //there are no properties.
-            //fire an empty property seleccion event in order to notify the
-            notifyFieldSelected(null);
-        }
     }
 
     private void addDataObjectProperty(ObjectPropertyTO objectProperty) {
@@ -492,7 +496,7 @@ public class DataObjectBrowser extends Composite {
     }
 
     private DataModelTO getDataModel() {
-        return context.getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     public DataObjectTO getDataObject() {
@@ -505,6 +509,25 @@ public class DataObjectBrowser extends Composite {
         if (dataObject != null) {
             notifyObjectSelected(dataObject);
         }
+    }
+
+    private void enableNewPropertyAction(boolean enable) {
+        //newPropertyLabel....setEnabled(false);
+        newPropertyName.setEnabled(enable);
+        newPropertyType.setEnabled(enable);
+        newPropertyButton.setEnabled(enable);
+        newPropertyBasicType.setEnabled(enable);
+        newPropertyDataObjectType.setEnabled(enable);
+        newPropertyIsMultiple.setEnabled(enable);
+    }
+
+    private void resetInput() {
+        newPropertyName.setText(null);
+        newPropertyBasicType.setValue(Boolean.TRUE);
+        newPropertyIsMultiple.setValue(Boolean.FALSE);
+        newPropertyIsMultiple.setVisible(false);
+        populateBaseTypes();
+        newPropertyType.setSelectedValue(NOT_SELECTED);
     }
 
     //Event handlers
@@ -531,15 +554,6 @@ public class DataObjectBrowser extends Composite {
         populateBaseTypes();
     }
 
-    private void resetInput() {
-        newPropertyName.setText(null);
-        newPropertyBasicType.setValue(Boolean.TRUE);
-        newPropertyIsMultiple.setValue(Boolean.FALSE);
-        newPropertyIsMultiple.setVisible(false);
-        populateBaseTypes();
-        newPropertyType.setSelectedValue(NOT_SELECTED);
-    }
-
     //Event Observers
 
     private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
@@ -547,10 +561,7 @@ public class DataObjectBrowser extends Composite {
             if (event.getCurrentDataObject() != null) {
                 setDataObject(event.getCurrentDataObject());
                 resetInput();
-            } else {
-                //TODO clear the editor because any object is selected
-                //this is the case when we are deleting the objects
-                //and the las object is deleted
+                enableNewPropertyAction(true);
             }
         }
     }
@@ -558,6 +569,7 @@ public class DataObjectBrowser extends Composite {
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         if (event.isFrom(getDataModel())) {
             if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+            enableNewPropertyAction(true);
         }
     }
 
@@ -570,6 +582,9 @@ public class DataObjectBrowser extends Composite {
                 dataObjectPropertiesProvider.flush();
                 dataObjectPropertiesProvider.refresh();
                 dataObjectPropertiesTable.redraw();
+                objectName.setText(null);
+                resetInput();
+                enableNewPropertyAction(false);
             }
         }
     }

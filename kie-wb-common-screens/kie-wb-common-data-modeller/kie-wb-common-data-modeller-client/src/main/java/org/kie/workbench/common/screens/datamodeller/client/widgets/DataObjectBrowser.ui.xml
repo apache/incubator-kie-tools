@@ -40,7 +40,7 @@
                             </gwt:ScrollPanel>
                             <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
                             <h5>
-                                <gwt:Label text="{i18n.objectEditor_createProperty}"/>
+                                <gwt:Label ui:field="newPropertyLabel" text="{i18n.objectEditor_createProperty}"/>
                             </h5>
 
                             <gwt:VerticalPanel styleName="row-fluid">

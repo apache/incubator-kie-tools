@@ -141,7 +141,7 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     private DataModelTO getDataModel() {
-        return getContext().getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     // Event notifications
@@ -187,6 +187,19 @@ public class DataObjectFieldEditor extends Composite {
     private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
         if (event.isFrom(getDataModel())) {
             initTypeList();
+            if (getDataModel() != null && getDataModel().getDataObjects().size() == 0) {
+                clean();
+                setDataObject(null);
+                setObjectField(null);
+            }
+        }
+    }
+
+    private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
+        if (event.isFrom(getDataModel())) {
+            clean();
+            setDataObject(event.getCurrentDataObject());
+            setObjectField(null);
         }
     }
 
@@ -229,6 +242,7 @@ public class DataObjectFieldEditor extends Composite {
     // Event handlers
     @UiHandler("name")
     void nameChanged(ValueChangeEvent<String> event) {
+        if (getObjectField() == null) return;
         // Set widgets to errorpopup for styling purposes etc.
         ep.setTitleWidget(titleLabel);
         ep.setValueWidget(name);
@@ -270,6 +284,8 @@ public class DataObjectFieldEditor extends Composite {
 
     @UiHandler("label")
     void labelChanged(final ValueChangeEvent<String> event) {
+        if (getObjectField() == null) return;
+
         String oldValue = null;
         final String _label = label.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
@@ -288,6 +304,8 @@ public class DataObjectFieldEditor extends Composite {
 
     @UiHandler("description")
     void descriptionChanged(final ValueChangeEvent<String> event) {
+        if (getObjectField() == null) return;
+
         final String _description = description.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
 
@@ -302,6 +320,8 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     private void typeChanged(ChangeEvent event) {
+        if (getObjectField() == null) return;
+
         String oldValue = getObjectField().getClassName();
         String type = typeSelector.getValue();
         int i = type.lastIndexOf(DataModelerUtils.MULTIPLE);
@@ -326,6 +346,8 @@ public class DataObjectFieldEditor extends Composite {
 
     @UiHandler("equalsSelector")
     void equalsChanged(final ClickEvent event) {
+        if (getObjectField() == null) return;
+
         final Boolean setEquals = equalsSelector.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
 
@@ -335,6 +357,8 @@ public class DataObjectFieldEditor extends Composite {
 
     @UiHandler("positionText")
     void positionChanged(final ValueChangeEvent<String> event) {
+        if (getObjectField() == null) return;
+
         // Set widgets to errorpopup for styling purposes etc.
         ep.setTitleWidget(positionLabel);
         ep.setValueWidget(positionText);

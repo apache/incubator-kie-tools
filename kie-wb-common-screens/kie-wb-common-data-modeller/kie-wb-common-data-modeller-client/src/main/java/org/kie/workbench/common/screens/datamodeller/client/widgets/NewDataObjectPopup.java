@@ -146,7 +146,7 @@ public class NewDataObjectPopup extends Modal {
     }
 
     private DataModelTO getDataModel() {
-        return getContext().getDataModel();
+        return getContext() != null ? getContext().getDataModel() : null;
     }
 
     private void onOk() {
