@@ -7,7 +7,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.MyTestType;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "test9", supportedTypes = { MyTestType.class })
 public class WorkbenchEditorTest9 {

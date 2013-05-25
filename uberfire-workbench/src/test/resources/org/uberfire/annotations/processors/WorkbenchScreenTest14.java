@@ -4,7 +4,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

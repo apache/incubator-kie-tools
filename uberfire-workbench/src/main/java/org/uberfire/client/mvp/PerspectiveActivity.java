@@ -15,10 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Perspective Activity life-cycles

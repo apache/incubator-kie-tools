@@ -55,6 +55,11 @@
       <artifactId>kie-commons-io</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-api</artifactId>
+    </dependency>
+
     <!-- Workbench serialization -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

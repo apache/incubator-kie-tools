@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.animations.LinearFadeOutAnimation;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Manage the display and removal of Notification messages
@@ -34,22 +34,21 @@ import org.uberfire.client.workbench.widgets.events.NotificationEvent;
 public class NotificationPopupsManager {
 
     @Inject
-    private IOCBeanManager              iocManager;
+    private IOCBeanManager iocManager;
 
     //When true we are in the process of removing a notification message
-    private boolean                     removing              = false;
+    private boolean removing = false;
 
-    private final int                   SPACING               = 48;
+    private final int SPACING = 48;
 
-    private List<NotificationPopupView> activeNotifications   = new ArrayList<NotificationPopupView>();
+    private List<NotificationPopupView> activeNotifications = new ArrayList<NotificationPopupView>();
     private List<NotificationPopupView> deactiveNotifications = new ArrayList<NotificationPopupView>();
 
     /**
      * Display a Notification message
-     * 
      * @param event
      */
-    public void addNotification(@Observes final NotificationEvent event) {
+    public void addNotification( @Observes final NotificationEvent event ) {
 
         //Create a Notification pop-up. Because it is instantiated with CDI we need to manually destroy it when finished
         final NotificationPopupView view = iocManager.lookupBean( NotificationPopupView.class ).getInstance();
@@ -57,7 +56,7 @@ public class NotificationPopupsManager {
         view.setPopupPosition( getMargin(),
                                activeNotifications.size() * SPACING );
         view.setNotification( event.getNotification() );
-        view.setType(event.getType());
+        view.setType( event.getType() );
         view.setNotificationWidth( getWidth() + "px" );
         view.show( new Command() {
 
@@ -73,12 +72,12 @@ public class NotificationPopupsManager {
 
     //80% of screen width
     private int getWidth() {
-        return (int) (Window.getClientWidth() * 0.8);
+        return (int) ( Window.getClientWidth() * 0.8 );
     }
 
     //10% of screen width
     private int getMargin() {
-        return (int) ((Window.getClientWidth() - getWidth()) / 2);
+        return (int) ( ( Window.getClientWidth() - getWidth() ) / 2 );
     }
 
     //Remove a notification message. Recursive until all pending removals have been completed.
@@ -94,12 +93,12 @@ public class NotificationPopupsManager {
         final LinearFadeOutAnimation fadeOutAnimation = new LinearFadeOutAnimation( view ) {
 
             @Override
-            public void onUpdate(double progress) {
+            public void onUpdate( double progress ) {
                 super.onUpdate( progress );
                 for ( int i = 0; i < activeNotifications.size(); i++ ) {
                     NotificationPopupView v = activeNotifications.get( i );
                     final int left = v.getPopupLeft();
-                    final int top = (int) (((i + 1) * SPACING) - (progress * SPACING));
+                    final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) );
                     v.setPopupPosition( left,
                                         top );
                 }

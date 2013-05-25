@@ -15,17 +15,15 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter.View;
-import org.uberfire.client.workbench.model.PanelDefinition;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter.View;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * A mock Workbench Panel view.

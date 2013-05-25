@@ -15,18 +15,19 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.RuntimeResource;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Base Activity life-cycles
  */
 public interface Activity
-    extends
-    RuntimeResource {
+        extends
+        RuntimeResource {
 
-    public void launch(final PlaceRequest place,
-                       final Command callback);
+    public void launch( final PlaceRequest place,
+                        final Command callback );
 
     public void onReveal();
 

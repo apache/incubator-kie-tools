@@ -24,13 +24,13 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.events.DropPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.DropPlaceEvent;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * A Drop Controller covering the entire DecoratedWorkbenchPanel that renders a Compass

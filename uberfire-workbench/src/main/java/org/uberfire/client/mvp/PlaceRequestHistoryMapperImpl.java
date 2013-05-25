@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.http.client.URL;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 public class PlaceRequestHistoryMapperImpl
         implements

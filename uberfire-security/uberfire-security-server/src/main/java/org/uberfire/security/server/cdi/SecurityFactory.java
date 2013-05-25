@@ -16,13 +16,11 @@
 
 package org.uberfire.security.server.cdi;
 
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
 import org.uberfire.security.Identity;
-import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.IdentityImpl;

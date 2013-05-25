@@ -6,7 +6,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchScreen(identifier = "test9")
 public class WorkbenchScreenTest9 {

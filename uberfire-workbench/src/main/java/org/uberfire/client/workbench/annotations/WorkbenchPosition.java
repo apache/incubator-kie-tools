@@ -20,10 +20,9 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import javax.inject.Qualifier;
 
-import org.uberfire.client.workbench.Position;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Qualifier for injection of PanelHelpers.
@@ -31,7 +30,7 @@ import org.uberfire.client.workbench.Position;
 @Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface WorkbenchPosition {
 
     Position position();

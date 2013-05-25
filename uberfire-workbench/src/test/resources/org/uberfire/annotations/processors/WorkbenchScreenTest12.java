@@ -5,7 +5,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 @WorkbenchScreen(identifier = "test12")
 public class WorkbenchScreenTest12 {
@@ -21,7 +21,7 @@ public class WorkbenchScreenTest12 {
     }
 
     @OnStart
-    public void onStart(final PlaceRequest place) {
+    public void onStart( final PlaceRequest place ) {
     }
 
 }

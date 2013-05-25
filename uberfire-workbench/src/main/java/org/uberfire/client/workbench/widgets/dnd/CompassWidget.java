@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.Position;
+import org.uberfire.workbench.model.Position;
 
 /**
  * A pop-up "compass" widget that appears centralised on it's parent Drop Target
@@ -47,10 +47,10 @@ public class CompassWidget extends PopupPanel
 
     private static Element dropTargetHighlight;
 
-    private final Image northWidget  = new Image( WorkbenchResources.INSTANCE.images().compassNorth() );
-    private final Image southWidget  = new Image( WorkbenchResources.INSTANCE.images().compassSouth() );
-    private final Image eastWidget   = new Image( WorkbenchResources.INSTANCE.images().compassEast() );
-    private final Image westWidget   = new Image( WorkbenchResources.INSTANCE.images().compassWest() );
+    private final Image northWidget = new Image( WorkbenchResources.INSTANCE.images().compassNorth() );
+    private final Image southWidget = new Image( WorkbenchResources.INSTANCE.images().compassSouth() );
+    private final Image eastWidget = new Image( WorkbenchResources.INSTANCE.images().compassEast() );
+    private final Image westWidget = new Image( WorkbenchResources.INSTANCE.images().compassWest() );
     private final Image centreWidget = new Image( WorkbenchResources.INSTANCE.images().compassCentre() );
 
     private final FlexTable container = new FlexTable();

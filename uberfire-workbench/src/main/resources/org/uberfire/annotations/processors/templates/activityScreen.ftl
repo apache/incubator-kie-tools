@@ -34,17 +34,17 @@ import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 <#if getDefaultPositionMethodName??>
-import org.uberfire.client.workbench.Position;
+import org.uberfire.workbench.model.Position;
 
 </#if>
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.Menus;
 
 </#if>
 <#if getToolBarMethodName??>
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 </#if>
 import com.google.gwt.user.client.ui.IsWidget;

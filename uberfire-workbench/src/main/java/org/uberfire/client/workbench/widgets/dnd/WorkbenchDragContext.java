@@ -16,9 +16,9 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * The context of a drag and drop operation within the Workbench.

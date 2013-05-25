@@ -15,7 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Base class for Screen Activities

@@ -44,6 +44,7 @@
           <exclude>WEB-INF/web.xml</exclude>
 
           <!-- UF Client Related -->
+          <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>

@@ -17,9 +17,10 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 public interface PlaceManager {
 

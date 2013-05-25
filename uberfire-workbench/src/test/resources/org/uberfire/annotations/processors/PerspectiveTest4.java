@@ -2,7 +2,7 @@ package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.security.annotations.Roles;
 
 @WorkbenchPerspective(identifier = "PerspectiveTest4")

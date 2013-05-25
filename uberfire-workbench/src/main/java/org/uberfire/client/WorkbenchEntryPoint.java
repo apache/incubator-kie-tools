@@ -26,7 +26,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
+import org.uberfire.workbench.events.PathChangeEvent;
 
 @EntryPoint
 public class WorkbenchEntryPoint {

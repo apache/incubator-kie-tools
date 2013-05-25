@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Utilities for WorkbenchMenuBarPresenter to filter menu items

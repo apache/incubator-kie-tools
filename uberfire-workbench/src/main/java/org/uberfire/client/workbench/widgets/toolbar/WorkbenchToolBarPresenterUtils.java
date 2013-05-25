@@ -20,9 +20,11 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBarItem;
+import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 
 /**
  * Utilities for WorkbenchMenuBarPresenter to filter Tool Bar items

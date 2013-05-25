@@ -30,11 +30,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.client.workbench.widgets.events.NotificationEvent.NotificationType.*;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -113,7 +112,7 @@ public class MiscFeaturesView extends Composite
 
     @UiHandler("setNewTitleButton")
     public void onSetNewTitleButtonClick( final ClickEvent event ) {
-        presenter.setNewTitle("NewCoolTitle");
+        presenter.setNewTitle( "NewCoolTitle" );
     }
 
 }

@@ -6,7 +6,7 @@ import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.shared.workbench.type.TextResourceTypeDefinition;
+import org.uberfire.workbench.type.TextResourceTypeDefinition;
 
 @ApplicationScoped
 public class TextResourceType

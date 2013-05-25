@@ -26,8 +26,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 
 /**
  * Popup presenter for when an Activity cannot be found

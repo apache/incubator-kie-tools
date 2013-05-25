@@ -26,9 +26,6 @@ public class AppSetup {
     @Inject
     private RepositoryService repositoryService;
 
-    @Inject
-    private ActiveFileSystemsFactory activeFileSystemsFactory;
-
     @PostConstruct
     public void assertPlayground() {
         final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
@@ -40,9 +37,6 @@ public class AppSetup {
                                                     put( "crypt:password", PLAYGROUND_PWD );
                                                 }} );
         }
-
-        //Ensure FileSystems are loaded
-        activeFileSystemsFactory.fileSystems();
     }
 
 }

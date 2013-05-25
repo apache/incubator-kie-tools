@@ -23,10 +23,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.RestorePlaceEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ClosePlaceEvent;
+import org.uberfire.workbench.events.MinimizePlaceEvent;
+import org.uberfire.workbench.events.RestorePlaceEvent;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Presenter for WorkbenchStatusBar.

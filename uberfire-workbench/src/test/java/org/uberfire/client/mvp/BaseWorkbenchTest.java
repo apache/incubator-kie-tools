@@ -15,20 +15,20 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.mockito.Mockito.mock;
-
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
+import org.uberfire.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.workbench.events.SelectPlaceEvent;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Base class for tests requiring a dummy Workbench

@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 public interface PlaceRequestHistoryMapper {
 

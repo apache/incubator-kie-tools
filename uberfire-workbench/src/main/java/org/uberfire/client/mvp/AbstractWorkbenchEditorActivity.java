@@ -16,8 +16,9 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
  * Base class for Editor Activities

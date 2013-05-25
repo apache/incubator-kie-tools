@@ -15,10 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -26,12 +27,12 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Base Workbench Part Activity life-cycles
  */
 public interface WorkbenchActivity
-    extends
-    Activity {
+        extends
+        Activity {
 
-    public void launch(final AcceptItem acceptItem,
-                       final PlaceRequest place,
-                       final Command callback);
+    public void launch( final AcceptItem acceptItem,
+                        final PlaceRequest place,
+                        final Command callback );
 
     public boolean onMayClose();
 

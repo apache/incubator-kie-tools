@@ -68,7 +68,9 @@ public class RepositoryServiceImpl implements RepositoryService {
                                  final String scheme,
                                  final String name,
                                  final Map<String, ?> env ) {
-                createRepository( scheme, name, (Map<String, Object>) env );
+                if ( getRepository( name ) == null ) {
+                    createRepository( scheme, name, (Map<String, Object>) env );
+                }
             }
         } );
     }

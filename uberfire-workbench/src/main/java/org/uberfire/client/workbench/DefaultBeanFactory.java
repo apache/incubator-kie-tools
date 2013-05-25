@@ -22,8 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
@@ -31,6 +29,9 @@ import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans

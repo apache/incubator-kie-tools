@@ -20,60 +20,60 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.shared.security.AppRoles;
 import org.uberfire.shared.security.ShowcaseRoles;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "dashboardPerspective")
-@ShowcaseRoles(value = {AppRoles.DIRECTOR, AppRoles.MANAGER})
+@ShowcaseRoles(value = { AppRoles.DIRECTOR, AppRoles.MANAGER })
 public class DashboardPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
-        p.setName("Dashboard");
+        p.setName( "Dashboard" );
 
-        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Chart")));
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Chart" ) ) );
 
         final PanelDefinition south = new PanelDefinitionImpl();
-        south.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("StockQuotesGadget")));
-        south.setHeight(340);
-        south.setWidth(370);
+        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "StockQuotesGadget" ) ) );
+        south.setHeight( 340 );
+        south.setWidth( 370 );
 
         final PanelDefinition seast = new PanelDefinitionImpl();
-        seast.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("WeatherGadget")));
-        seast.setHeight(340);
-        seast.setWidth(570);
+        seast.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "WeatherGadget" ) ) );
+        seast.setHeight( 340 );
+        seast.setWidth( 570 );
 
         final PanelDefinition seast2 = new PanelDefinitionImpl();
-        seast2.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("SportsNewsGadget")));
-        seast2.setHeight(340);
-        seast2.setWidth(520);
+        seast2.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "SportsNewsGadget" ) ) );
+        seast2.setHeight( 340 );
+        seast2.setWidth( 520 );
 
-        seast.insertChild(Position.EAST, seast2);
-        south.insertChild(Position.EAST, seast);
+        seast.insertChild( Position.EAST, seast2 );
+        south.insertChild( Position.EAST, seast );
 
         final PanelDefinition east = new PanelDefinitionImpl();
-        east.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("TodoListScreen")));
-        east.setHeight(330);
-        east.setWidth(700);
+        east.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "TodoListScreen" ) ) );
+        east.setHeight( 330 );
+        east.setWidth( 700 );
 
         final PanelDefinition eeast = new PanelDefinitionImpl();
-        eeast.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("IPInfoGadget")));
-        eeast.setHeight(330);
-        eeast.setWidth(380);
+        eeast.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "IPInfoGadget" ) ) );
+        eeast.setHeight( 330 );
+        eeast.setWidth( 380 );
 
-        east.insertChild(Position.EAST, eeast);
+        east.insertChild( Position.EAST, eeast );
 
-        p.getRoot().insertChild(Position.SOUTH, south);
-        p.getRoot().insertChild(Position.EAST, east);
+        p.getRoot().insertChild( Position.SOUTH, south );
+        p.getRoot().insertChild( Position.EAST, east );
 
         return p;
     }

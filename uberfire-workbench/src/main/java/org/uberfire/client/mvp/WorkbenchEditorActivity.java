@@ -16,19 +16,19 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Workbench Editor Activity life-cycles
  */
 public interface WorkbenchEditorActivity
-    extends
-    WorkbenchActivity {
+        extends
+        WorkbenchActivity {
 
-    public void onStart(final Path path);
+    public void onStart( final Path path );
 
-    public void onStart(final Path path,
-                        final PlaceRequest place);
+    public void onStart( final Path path,
+                         final PlaceRequest place );
 
     public void onSave();
 

@@ -24,18 +24,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 <#if getMenuBarMethodName??>
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.Menus;
 
 </#if>
 <#if getToolBarMethodName??>
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 </#if>
 @Dependent

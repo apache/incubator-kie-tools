@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Workbench panel part.

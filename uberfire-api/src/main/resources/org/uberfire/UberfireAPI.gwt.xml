@@ -14,12 +14,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
+
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-    <source path='client'/>
-    <source path='shared'/>
-  
+  <source path='mvp'/>
+  <source path='workbench'/>
+
+  <super-source path="jre"/>
+
 </module>

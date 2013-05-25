@@ -54,7 +54,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
     <dependency>

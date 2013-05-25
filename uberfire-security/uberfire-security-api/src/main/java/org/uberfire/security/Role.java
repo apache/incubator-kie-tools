@@ -16,7 +16,9 @@
 
 package org.uberfire.security;
 
-public interface Role {
+import java.io.Serializable;
+
+public interface Role extends Serializable {
 
     public static String ROLE_REMEMBER_ME = "IS_REMEMBER_ME";
 

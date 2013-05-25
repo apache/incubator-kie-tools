@@ -24,7 +24,7 @@
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
   <!-- GuvnorNG API common interfaces -->
-  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
 

@@ -15,7 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Base class for Activities
@@ -28,15 +29,15 @@ public abstract class AbstractActivity
 
     protected PlaceRequest place;
 
-    protected Command      callback;
+    protected Command callback;
 
-    public AbstractActivity(final PlaceManager placeManager) {
+    public AbstractActivity( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
     }
 
     @Override
-    public void launch(final PlaceRequest place,
-                       final Command callback) {
+    public void launch( final PlaceRequest place,
+                        final Command callback ) {
         this.place = place;
         this.callback = callback;
     }

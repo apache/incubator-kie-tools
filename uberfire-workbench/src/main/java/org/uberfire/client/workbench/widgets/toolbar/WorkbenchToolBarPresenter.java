@@ -25,10 +25,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ClosePlaceEvent;
+import org.uberfire.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Presenter for WorkbenchToolBar that mediates changes to the Workbench ToolBar

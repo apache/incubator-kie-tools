@@ -18,15 +18,14 @@ package org.uberfire.client.workbench.widgets.panels;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.annotations.WorkbenchPosition;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Helper to add or remove WorkbenchPanels from the South of a

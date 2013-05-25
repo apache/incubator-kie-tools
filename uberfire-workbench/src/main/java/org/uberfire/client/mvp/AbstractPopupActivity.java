@@ -21,10 +21,11 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.workbench.events.ClosePlaceEvent;
 
 /**
  * Base class for Pop-up Activities

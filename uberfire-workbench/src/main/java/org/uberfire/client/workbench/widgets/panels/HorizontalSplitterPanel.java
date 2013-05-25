@@ -17,15 +17,14 @@ package org.uberfire.client.workbench.widgets.panels;
 
 import javax.enterprise.context.Dependent;
 
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * A split panel to contain WorkbenchPanels split horizontally.

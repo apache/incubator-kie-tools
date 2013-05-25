@@ -50,7 +50,7 @@
     <kie-commons.version>6.0.0-SNAPSHOT</kie-commons.version>
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.7</logback.version>
-    <errai.version>2.3.0.Final</errai.version>
+    <errai.version>2.3.1-SNAPSHOT</errai.version>
     <bootstrap.version>2.2.1.0</bootstrap.version>
     <gwt.version>2.5.0</gwt.version>
     <gwt.maven.version>2.5.0</gwt.maven.version>
@@ -294,6 +294,7 @@
     <module>uberfire-security</module>
     <module>uberfire-server</module>
     <module>uberfire-api</module>
+    <module>uberfire-client-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
@@ -357,11 +358,6 @@
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-widgets-core-client</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -400,6 +396,12 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -477,6 +479,12 @@
         <artifactId>kie-nio2-model</artifactId>
         <version>${kie-commons.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie.commons</groupId>
+        <artifactId>kie-nio2-api</artifactId>
+        <version>${kie-commons.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.kie.commons</groupId>
         <artifactId>kie-nio2-fs</artifactId>

@@ -31,7 +31,7 @@ import org.uberfire.client.animations.LinearFadeInAnimation;
 import org.uberfire.client.animations.Pause;
 import org.uberfire.client.animations.Sequencer;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * A notification message

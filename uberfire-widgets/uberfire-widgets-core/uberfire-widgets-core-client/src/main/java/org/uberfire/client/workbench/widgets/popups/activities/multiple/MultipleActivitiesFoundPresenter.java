@@ -31,9 +31,9 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.DefaultPlaceResolver;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 
 /**
  * Popup presenter for when there are multiple Activities for a Place

@@ -23,10 +23,10 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
@@ -59,7 +59,7 @@ public class MultiPagePresenter {
                 .newTopLevelMenu( "My Context" )
                     .menus()
                         .menu( "New Menu" )
-                            .respondsWith( new Command(){
+                            .respondsWith( new Command() {
                                 @Override
                                 public void execute() {
                                     Window.alert( "Ok!" );

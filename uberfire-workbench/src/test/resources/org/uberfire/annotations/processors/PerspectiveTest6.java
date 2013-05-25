@@ -5,7 +5,7 @@ import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 
 @WorkbenchPerspective(identifier = "PerspectiveTest6", isDefault = true)
 public class PerspectiveTest6 {

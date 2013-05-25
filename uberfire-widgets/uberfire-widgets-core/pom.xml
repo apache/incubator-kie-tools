@@ -17,7 +17,6 @@
 	<description>UberFire Widgets Core</description>
 
   <modules>
-    <module>uberfire-widgets-core-backend</module>
     <module>uberfire-widgets-core-client</module>
   </modules>
 

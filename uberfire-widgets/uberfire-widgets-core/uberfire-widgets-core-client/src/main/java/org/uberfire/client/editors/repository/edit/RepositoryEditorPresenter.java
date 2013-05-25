@@ -16,7 +16,6 @@
 
 package org.uberfire.client.editors.repository.edit;
 
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,14 +24,11 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoryEditor")

@@ -54,17 +54,6 @@
 			<artifactId>errai-javax-enterprise</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-common</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
 	
 	<build>

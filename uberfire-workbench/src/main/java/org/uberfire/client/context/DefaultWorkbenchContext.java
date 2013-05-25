@@ -19,8 +19,8 @@ package org.uberfire.client.context;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.events.PathChangeEvent;
 
 /**
  * Container for the context of the Workbench

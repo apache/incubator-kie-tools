@@ -22,7 +22,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
@@ -34,8 +33,8 @@ import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 public class UserServicesImpl {
 
     @Inject
-    @Named("ioSystemStrategy")
-    private IOService ioSystemService;
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     @SessionScoped
@@ -45,7 +44,7 @@ public class UserServicesImpl {
 
     @PostConstruct
     public void init() {
-        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
         if ( fsIterator.hasNext() ) {
             final FileSystem bootstrap = fsIterator.next();
             final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();

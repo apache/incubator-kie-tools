@@ -24,22 +24,22 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.widgets.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.DropPlaceEvent;
-import org.uberfire.client.workbench.widgets.events.MinimizePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.widgets.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.widgets.events.RestorePlaceEvent;
-import org.uberfire.client.workbench.widgets.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.workbench.events.ClosePlaceEvent;
+import org.uberfire.workbench.events.DropPlaceEvent;
+import org.uberfire.workbench.events.MinimizePlaceEvent;
+import org.uberfire.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.workbench.events.RestorePlaceEvent;
+import org.uberfire.workbench.events.SelectPlaceEvent;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Manager responsible for adding or removing WorkbenchParts to WorkbenchPanels;

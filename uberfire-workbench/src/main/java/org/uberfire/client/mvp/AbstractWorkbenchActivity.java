@@ -16,9 +16,9 @@
 package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Base class for Activities

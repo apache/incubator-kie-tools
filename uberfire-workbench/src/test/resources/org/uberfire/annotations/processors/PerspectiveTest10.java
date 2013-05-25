@@ -19,8 +19,8 @@ package org.uberfire.annotations.processors;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 @WorkbenchPerspective(identifier = "PerspectiveTest10")
 public class PerspectiveTest10 {

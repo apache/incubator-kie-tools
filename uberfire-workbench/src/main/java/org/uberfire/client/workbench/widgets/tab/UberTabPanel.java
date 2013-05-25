@@ -26,12 +26,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.Command;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PartDefinition;
 
 import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
 
@@ -46,16 +46,16 @@ public class UberTabPanel
 
     private final TabPanel tabPanel;
 
-    private WorkbenchPanelPresenter     presenter;
+    private WorkbenchPanelPresenter presenter;
     private WorkbenchDragAndDropManager dndManager;
 
-    private int     maxDropdownTabLinkWidth = 0;
-    private boolean alreadyScheduled        = false;
+    private int maxDropdownTabLinkWidth = 0;
+    private boolean alreadyScheduled = false;
 
-    private final Map<WorkbenchPartPresenter.View, TabLink> tabIndex         = new HashMap<WorkbenchPartPresenter.View, TabLink>();
+    private final Map<WorkbenchPartPresenter.View, TabLink> tabIndex = new HashMap<WorkbenchPartPresenter.View, TabLink>();
     private final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
-    private final Map<PartDefinition, TabLink>              partTabIndex     = new HashMap<PartDefinition, TabLink>();
-    private       boolean                                   hasFocus         = false;
+    private final Map<PartDefinition, TabLink> partTabIndex = new HashMap<PartDefinition, TabLink>();
+    private boolean hasFocus = false;
     private Command addOnFocusHandler;
 
     public void clear() {

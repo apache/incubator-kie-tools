@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * The Status Bar widget
@@ -31,7 +31,7 @@ public class WorkbenchStatusBarView extends Composite
         implements
         WorkbenchStatusBarPresenter.View {
 
-    private final HorizontalPanel statusBar          = new HorizontalPanel();
+    private final HorizontalPanel statusBar = new HorizontalPanel();
     private final HorizontalPanel statusBarContainer = new HorizontalPanel();
 
     //Map of PlaceRequests to GWT Widgets used to represent them

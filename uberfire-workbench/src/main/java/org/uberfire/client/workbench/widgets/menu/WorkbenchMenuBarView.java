@@ -33,6 +33,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.workbench.model.menu.BrandMenuItem;
+import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuGroup;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
+import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuSearchItem;
 
 /**
  * The Menu Bar widget
@@ -62,8 +69,8 @@ public class WorkbenchMenuBarView extends Composite
     public Nav menuBarRight;
 
     //Map of UberFire's AbstractMenuItems to GWT MenuItems
-    private final Map<MenuItem, Widget> leftMenuItemsMap   = new HashMap<MenuItem, Widget>();
-    private final Map<MenuItem, Widget> rightMenuItemsMap  = new HashMap<MenuItem, Widget>();
+    private final Map<MenuItem, Widget> leftMenuItemsMap = new HashMap<MenuItem, Widget>();
+    private final Map<MenuItem, Widget> rightMenuItemsMap = new HashMap<MenuItem, Widget>();
     private final Map<MenuItem, Widget> centerMenuItemsMap = new HashMap<MenuItem, Widget>();
 
     public WorkbenchMenuBarView() {

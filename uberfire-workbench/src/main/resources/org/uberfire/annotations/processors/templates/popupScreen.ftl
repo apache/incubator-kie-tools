@@ -32,7 +32,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.annotations.Identifier;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

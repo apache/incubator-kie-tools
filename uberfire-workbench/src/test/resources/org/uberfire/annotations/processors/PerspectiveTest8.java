@@ -19,8 +19,8 @@ package org.uberfire.annotations.processors;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchPerspective(identifier = "PerspectiveTest8")
 public class PerspectiveTest8 {

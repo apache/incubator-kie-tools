@@ -16,18 +16,18 @@
 package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Pop-up Activity life-cycles
  */
 public interface PopupActivity
-    extends
-    Activity {
+        extends
+        Activity {
 
     public void onStart();
 
-    public void onStart(final PlaceRequest place);
+    public void onStart( final PlaceRequest place );
 
     public String getTitle();
 

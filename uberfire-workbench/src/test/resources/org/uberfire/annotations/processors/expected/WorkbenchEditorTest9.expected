@@ -29,9 +29,9 @@ import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
 
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.workbench.model.menu.Menus;
 
 import org.uberfire.backend.vfs.Path;
 

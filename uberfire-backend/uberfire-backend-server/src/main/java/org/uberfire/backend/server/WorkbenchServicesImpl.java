@@ -26,8 +26,8 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.kie.commons.java.nio.file.Path;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.services.WorkbenchServices;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.services.WorkbenchServices;
 
 /**
  * Workbench services
@@ -39,8 +39,8 @@ public class WorkbenchServicesImpl
         WorkbenchServices {
 
     @Inject
-    @Named("ioSystemStrategy")
-    private IOService ioSystemService;
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private UserServicesImpl userServices;
@@ -52,16 +52,15 @@ public class WorkbenchServicesImpl
         final String xml = xs.toXML( perspective );
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspective.getName() + ".perspective" );
-        ioSystemService.write( perspectivePath,
-                               xml );
+        ioService.write( perspectivePath, xml );
     }
 
     @Override
     public PerspectiveDefinition load( final String perspectiveName ) {
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspectiveName + ".perspective" );
-        if ( ioSystemService.exists( perspectivePath ) ) {
-            final String xml = ioSystemService.readAllString( perspectivePath );
+        if ( ioService.exists( perspectivePath ) ) {
+            final String xml = ioService.readAllString( perspectivePath );
             return (PerspectiveDefinition) xs.fromXML( xml );
         }
 
@@ -73,8 +72,8 @@ public class WorkbenchServicesImpl
         final Map<String, String> map = new HashMap<String, String>();
         try {
             final Path path = getPathToDefaultEditors();
-            if ( ioSystemService.exists( path ) ) {
-                for ( String line : ioSystemService.readAllLines( path ) ) {
+            if ( ioService.exists( path ) ) {
+                for ( String line : ioService.readAllLines( path ) ) {
                     if ( !line.trim().startsWith( "#" ) ) {
                         String[] split = line.split( "=" );
                         map.put( split[ 0 ], split[ 1 ] );
@@ -96,8 +95,8 @@ public class WorkbenchServicesImpl
         for ( String key : properties.keySet() ) {
             text.append( String.format( "%s=%s", key, properties.get( key ) ) );
         }
-        ioSystemService.write( getPathToDefaultEditors(),
-                               text.toString() );
+        ioService.write( getPathToDefaultEditors(),
+                         text.toString() );
     }
 
     private Path getPathToDefaultEditors() {

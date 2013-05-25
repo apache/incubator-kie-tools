@@ -45,14 +45,14 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.widgets.events.PathChangeEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceBatchChangesEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceCopiedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceDeletedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceRenamedEvent;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.model.Position;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileExplorer")

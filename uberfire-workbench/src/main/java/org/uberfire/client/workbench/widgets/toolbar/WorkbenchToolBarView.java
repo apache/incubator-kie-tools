@@ -38,6 +38,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBarItem;
+import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
 
 /**
  * The Tool Bar widget

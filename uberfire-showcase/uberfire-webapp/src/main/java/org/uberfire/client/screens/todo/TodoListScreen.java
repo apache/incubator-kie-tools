@@ -19,7 +19,6 @@ package org.uberfire.client.screens.todo;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,7 +28,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.vfs.ActiveFileSystems;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -52,10 +50,6 @@ public class TodoListScreen
 
     @Inject
     private Caller<VFSService> vfsServices;
-
-    @Inject
-    @Named("fs")
-    private ActiveFileSystems activeFileSystems;
 
     @UiField
     protected Markdown markdown;

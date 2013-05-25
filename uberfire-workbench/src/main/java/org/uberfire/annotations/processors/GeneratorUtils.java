@@ -52,10 +52,10 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.client.workbench.Position;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Utilities for code generation
@@ -761,7 +761,7 @@ public class GeneratorUtils {
                                                 final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.widgets.menu.Menus" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.workbench.model.menu.Menus" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -806,7 +806,7 @@ public class GeneratorUtils {
                                                 final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.widgets.toolbar.ToolBar" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.workbench.model.toolbar.ToolBar" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -851,7 +851,7 @@ public class GeneratorUtils {
                                                     final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.workbench.model.PerspectiveDefinition" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.workbench.model.PerspectiveDefinition" ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -967,7 +967,7 @@ public class GeneratorUtils {
 
         sb.append( "@AssociatedResources" ).append( "({\n" );
         for ( final String resourceType : resourceTypes ) {
-            sb.append( "    ").append( resourceType ).append( ".class" ).append( ",\n" );
+            sb.append( "    " ).append( resourceType ).append( ".class" ).append( ",\n" );
         }
         sb.delete( sb.length() - 2,
                    sb.length() );
