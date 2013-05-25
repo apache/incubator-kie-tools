@@ -3,7 +3,7 @@ package org.drools.workbench.screens.globals.type;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class GlobalResourceTypeDefinition implements ResourceTypeDefinition {

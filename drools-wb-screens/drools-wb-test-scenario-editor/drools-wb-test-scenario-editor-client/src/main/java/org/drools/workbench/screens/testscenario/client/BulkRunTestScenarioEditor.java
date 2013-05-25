@@ -36,7 +36,7 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 
 public class BulkRunTestScenarioEditor
         implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {

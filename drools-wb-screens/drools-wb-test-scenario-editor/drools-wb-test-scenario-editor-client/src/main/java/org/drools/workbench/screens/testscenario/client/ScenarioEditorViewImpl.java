@@ -52,7 +52,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class ScenarioEditorViewImpl
         implements ScenarioEditorView,

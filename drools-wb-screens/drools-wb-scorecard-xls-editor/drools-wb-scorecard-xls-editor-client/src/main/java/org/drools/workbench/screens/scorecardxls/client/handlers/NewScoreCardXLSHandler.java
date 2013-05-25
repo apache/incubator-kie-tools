@@ -21,8 +21,8 @@ import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.shared.mvp.PlaceRequest;
-import org.uberfire.shared.mvp.impl.PathPlaceRequest;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
  * Handler for the creation of new DRL Text Rules

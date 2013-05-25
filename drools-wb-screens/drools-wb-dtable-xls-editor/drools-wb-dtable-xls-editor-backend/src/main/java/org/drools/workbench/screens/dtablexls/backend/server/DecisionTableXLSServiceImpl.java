@@ -42,9 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceOpenedEvent;
-import org.uberfire.client.workbench.widgets.events.ResourceUpdatedEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceOpenedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service

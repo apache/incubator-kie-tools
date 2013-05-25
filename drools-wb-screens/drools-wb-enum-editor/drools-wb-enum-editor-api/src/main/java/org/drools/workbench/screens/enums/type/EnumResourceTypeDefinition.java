@@ -4,7 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class EnumResourceTypeDefinition implements ResourceTypeDefinition {

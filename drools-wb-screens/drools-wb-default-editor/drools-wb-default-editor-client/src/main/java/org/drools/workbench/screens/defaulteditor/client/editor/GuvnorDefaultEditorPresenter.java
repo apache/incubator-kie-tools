@@ -47,11 +47,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 import org.uberfire.client.workbench.type.AnyResourceType;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * A text based editor for Domain Specific Language definitions

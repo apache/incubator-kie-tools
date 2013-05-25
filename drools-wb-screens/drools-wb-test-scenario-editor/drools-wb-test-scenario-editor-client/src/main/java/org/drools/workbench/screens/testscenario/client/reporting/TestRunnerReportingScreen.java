@@ -12,7 +12,7 @@ import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.Position;
+import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults")

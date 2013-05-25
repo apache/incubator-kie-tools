@@ -24,13 +24,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.metadata.CategoriesService;
+import org.kie.workbench.common.services.shared.metadata.model.Categories;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.services.shared.metadata.CategoriesService;
-import org.kie.workbench.common.services.shared.metadata.model.Categories;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
@@ -41,9 +41,9 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.menu.Menus;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  *

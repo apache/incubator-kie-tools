@@ -51,7 +51,7 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
-import org.uberfire.shared.workbench.type.ResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Converter from a XLS Decision Table to a Guided Decision Table

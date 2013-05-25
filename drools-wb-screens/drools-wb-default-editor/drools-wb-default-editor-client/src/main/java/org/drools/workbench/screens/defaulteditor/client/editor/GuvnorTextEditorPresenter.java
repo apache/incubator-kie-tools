@@ -32,10 +32,10 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.client.editors.texteditor.TextResourceType;
-import org.uberfire.client.mvp.Command;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.shared.mvp.PlaceRequest;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class }, priority = -1)

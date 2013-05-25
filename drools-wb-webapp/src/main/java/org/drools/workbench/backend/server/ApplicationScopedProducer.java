@@ -16,16 +16,19 @@
 
 package org.drools.workbench.backend.server;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.kie.commons.cluster.ClusterServiceFactory;
 import org.kie.commons.io.IOSearchService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.attribute.DublinCoreView;
+import org.kie.commons.io.impl.cluster.IOServiceClusterImpl;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.kie.kieora.backend.lucene.LuceneIndexEngine;
 import org.kie.kieora.backend.lucene.LuceneSearchIndex;
 import org.kie.kieora.backend.lucene.LuceneSetup;
@@ -37,30 +40,45 @@ import org.kie.kieora.engine.MetaModelStore;
 import org.kie.kieora.io.IOSearchIndex;
 import org.kie.kieora.io.IOServiceIndexedImpl;
 import org.kie.kieora.search.SearchIndex;
+import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.repositories.DefaultSystemRepository;
+
+import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
-    private final IOService ioService;
-    private final IOSearchService ioSearchService;
+    @Inject
+    @Named("clusterServiceFactory")
+    private ClusterServiceFactory clusterServiceFactory;
 
     private final LuceneSetup luceneSetup = new NIOLuceneSetup();
-    private final DefaultSystemRepository systemRepository = new DefaultSystemRepository();
 
-    public ApplicationScopedProducer() {
+    private IOService ioService;
+    private IOSearchService ioSearchService;
+
+    @PostConstruct
+    public void setup() {
         final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
         final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
                                                                    luceneSetup,
                                                                    new SimpleFieldFactory() );
+
         final SearchIndex searchIndex = new LuceneSearchIndex( luceneSetup );
-        this.ioService = new IOServiceIndexedImpl( indexEngine,
-                                                   DublinCoreView.class,
-                                                   VersionAttributeView.class,
-                                                   OtherMetaView.class );
-        this.ioSearchService = new IOSearchIndex( searchIndex,
-                                                  this.ioService );
+
+        final IOService service = new IOServiceIndexedImpl( indexEngine,
+                                                            DublinCoreView.class,
+                                                            VersionAttributeView.class,
+                                                            OtherMetaView.class );
+
+        if ( clusterServiceFactory == null ) {
+            ioService = service;
+        } else {
+            ioService = new IOServiceClusterImpl( service, clusterServiceFactory );
+        }
+
+        this.ioSearchService = new IOSearchIndex( searchIndex, ioService );
+
     }
 
     @PreDestroy
@@ -77,7 +95,7 @@ public class ApplicationScopedProducer {
     @Produces
     @Named("system")
     public Repository systemRepository() {
-        return systemRepository;
+        return SYSTEM_REPO;
     }
 
     @Produces

@@ -26,27 +26,27 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.editors.repository.clone.CloneRepositoryForm;
 import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
-import org.uberfire.client.mvp.Command;
+import org.uberfire.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.Position;
-import org.uberfire.client.workbench.model.PanelDefinition;
-import org.uberfire.client.workbench.model.PerspectiveDefinition;
-import org.uberfire.client.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.client.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.client.workbench.widgets.menu.MenuFactory;
-import org.uberfire.client.workbench.widgets.menu.Menus;
-import org.uberfire.client.workbench.widgets.toolbar.ToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBar;
-import org.uberfire.client.workbench.widgets.toolbar.impl.DefaultToolBarItem;
-import org.uberfire.shared.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
+import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import static org.uberfire.client.workbench.widgets.toolbar.IconType.DOWNLOAD_ALT;
-import static org.uberfire.client.workbench.widgets.toolbar.IconType.FOLDER_CLOSE_ALT;
+import static org.uberfire.workbench.model.toolbar.IconType.DOWNLOAD_ALT;
+import static org.uberfire.workbench.model.toolbar.IconType.FOLDER_CLOSE_ALT;
 
 /**
  * A Perspective for Administrators

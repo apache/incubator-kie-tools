@@ -38,7 +38,7 @@ import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCard
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.workbench.widgets.events.NotificationEvent;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class ScoreCardXLSEditorViewImpl
         extends Composite
