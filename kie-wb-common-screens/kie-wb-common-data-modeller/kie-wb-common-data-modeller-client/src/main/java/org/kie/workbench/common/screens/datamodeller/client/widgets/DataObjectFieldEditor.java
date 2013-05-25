@@ -404,7 +404,7 @@ public class DataObjectFieldEditor extends Composite {
     private void initTypeList() {
         typeSelector.clear();
 
-        SortedSet<String> typeNames = new TreeSet<String>();
+        SortedMap<String, String> typeNames = new TreeMap<String, String>();
         if (getDataModel() != null) {
             // First add all base types, ordered
             for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
@@ -415,21 +415,23 @@ public class DataObjectFieldEditor extends Composite {
             // Second add all model types, ordered
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
                 String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
-                typeNames.add(classLabel);
-                typeNames.add(classLabel + DataModelerUtils.MULTIPLE);
+                String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
+                typeNames.put(classLabel, classLabel);
+                typeNames.put(classLabel_m, classLabel_m);
             }
-            for (String typeName : typeNames) {
-                typeSelector.addItem(typeName, typeName);
+            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
+                typeSelector.addItem(typeName.getKey(), typeName.getValue());
             }
 
             // Then add all external types, ordered
             typeNames.clear();
             for (String extClass : getDataModel().getExternalClasses()) {
-                typeNames.add(DataModelerUtils.EXTERNAL_PREFIX + extClass);
-                typeNames.add(DataModelerUtils.EXTERNAL_PREFIX + extClass + DataModelerUtils.MULTIPLE);
+                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
+                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
+                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
             }
-            for (String typeName : typeNames) {
-                typeSelector.addItem(typeName, typeName);
+            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
+                typeSelector.addItem(typeName.getKey(), typeName.getValue());
             }
         }
     }
