@@ -27,6 +27,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
+  <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
