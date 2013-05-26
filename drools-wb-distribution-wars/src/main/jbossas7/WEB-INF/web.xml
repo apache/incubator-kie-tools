@@ -8,6 +8,8 @@
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 
+  <distributable/>
+
   <filter>
     <filter-name>UberFire Security Filter</filter-name>
     <filter-class>org.uberfire.security.server.UberFireSecurityFilter</filter-class>

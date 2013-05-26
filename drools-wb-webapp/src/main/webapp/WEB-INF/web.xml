@@ -5,6 +5,7 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
+  <distributable/>
 
   <listener>
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
