@@ -414,10 +414,12 @@ public class DataObjectFieldEditor extends Composite {
 
             // Second add all model types, ordered
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
+                String className = dataObject.getClassName();
+                String className_m = className + DataModelerUtils.MULTIPLE;
                 String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
                 String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
-                typeNames.put(classLabel, classLabel);
-                typeNames.put(classLabel_m, classLabel_m);
+                typeNames.put(classLabel, className);
+                typeNames.put(classLabel_m, className_m);
             }
             for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
                 typeSelector.addItem(typeName.getKey(), typeName.getValue());
