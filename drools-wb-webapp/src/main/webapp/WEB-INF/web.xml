@@ -5,10 +5,6 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-  <listener>
-    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
-  </listener>
-
   <filter>
     <filter-name>UberFire Security Filter</filter-name>
     <filter-class>org.uberfire.security.server.UberFireSecurityFilter</filter-class>
@@ -24,8 +20,8 @@
   </filter-mapping>
 
   <context-param>
-    <param-name>resteasy.scan</param-name>
-    <param-value>true</param-value>
+    <param-name>javax.ws.rs.core.Application</param-name>
+    <param-value>org.kie.workbench.common.services.rest.GuvnorRestApplication</param-value>
   </context-param>
 
   <context-param>
