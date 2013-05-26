@@ -226,8 +226,7 @@ public class DataModelOracleDriver implements ModelDriver {
      */
     private ObjectSource factSource(ProjectDataModelOracle oracleDataModel, String factType) {
         TypeSource oracleType = oracleDataModel.getTypeSource(factType);
-        //TODO for testing
-        if (factType.startsWith("test")) return ObjectSource.DEPENDENCY;
+        // for testing if (factType.startsWith("test")) return ObjectSource.DEPENDENCY;
 
         if (TypeSource.JAVA_PROJECT.equals(oracleType)) {
             return ObjectSource.INTERNAL;
