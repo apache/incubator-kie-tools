@@ -560,7 +560,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
-          <logLevel>TRACE</logLevel>
+          <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
 
             <!-- Guvnor -->
