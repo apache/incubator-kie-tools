@@ -174,7 +174,7 @@ public class ExplorerPresenter {
         }
 
         private RepositoryItem wrapRepository( final Repository repository ) {
-            final RepositoryItem repositoryItem = new RepositoryItem( repository.getRoot() );
+            final RepositoryItem repositoryItem = new RepositoryItem( repository.getRoot(), repository.getAlias() );
             return repositoryItem;
         }
 
