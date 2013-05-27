@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
@@ -35,6 +38,7 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.server.HttpSecurityContext;
+import org.uberfire.security.server.cdi.SecurityFactory;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 import static org.kie.commons.validation.Preconditions.*;
@@ -165,8 +169,17 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         final String originalRequest = requestCache.remove(httpContext.getRequest().getSession().getId());
         if (originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted()) {
             try {
-                httpContext.getResponse().sendRedirect(originalRequest);
-            } catch (IOException e) {
+                if (useRedirect(originalRequest)) {
+                    httpContext.getResponse().sendRedirect(originalRequest);
+                } else {
+                    // subject must be already set here since we forwarding
+                    SecurityFactory.setSubject(result);
+                    RequestDispatcher rd = httpContext.getRequest().getRequestDispatcher(originalRequest.replaceFirst(httpContext.getRequest().getContextPath(), ""));
+                    // forward instead of sendRedirect as sendRedirect will always use GET method which
+                    // means it can change http method if non GET was used for instance POST
+                    rd.forward(httpContext.getRequest(), httpContext.getResponse());
+                }
+            } catch (Exception e) {
                 throw new RuntimeException("Unable to redirect.");
             }
         }
@@ -181,5 +194,13 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
         final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
         httpContext.getRequest().getSession().invalidate();
+    }
+
+    private boolean useRedirect(String originalRequest) {
+        // hack for gwt hosted mode
+        if (originalRequest.indexOf("gwt.codesvr") != -1) {
+            return true;
+        }
+        return false;
     }
 }

@@ -129,6 +129,11 @@ public class UberfireServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
     private void loadApp(PrintWriter writer) {
         final Subject subject = SecurityFactory.getIdentity();
 
