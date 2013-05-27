@@ -1,4 +1,4 @@
-package org.uberfire.backend.server.impl;
+package org.uberfire.backend.server.cluster;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
