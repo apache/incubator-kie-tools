@@ -46,6 +46,7 @@
           <exclude>WEB-INF/lib/guvnor-m2repo-editor-client-*.jar</exclude>
 
           <!-- Kie Workbench client related-->
+          <exclude>WEB-INF/lib/kie-wb-common-ui-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-data-modeller-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-project-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-project-explorer-client-*.jar</exclude>
