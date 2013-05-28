@@ -279,6 +279,7 @@ public class DataObjectEditor extends Composite {
                 getDataObject().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _label );
             }
         }
+        // TODO replace 'label' literal with annotation definition constant
         notifyObjectChange("label", oldValue, _label);
     }
 
@@ -286,10 +287,12 @@ public class DataObjectEditor extends Composite {
     void descriptionChanged(final ValueChangeEvent<String> event) {
         if (getDataObject() == null) return;
 
+        String oldValue = null;
         String _description = description.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
 
         if (annotation != null) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
             if ( _description != null && !"".equals(_description) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _description);
             else getDataObject().removeAnnotation(annotation);
         } else {
@@ -297,6 +300,7 @@ public class DataObjectEditor extends Composite {
                 getDataObject().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _description );
             }
         }
+        notifyObjectChange(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description);
     }
 
     private void packageChanged(ChangeEvent event) {
@@ -345,6 +349,7 @@ public class DataObjectEditor extends Composite {
             getDataObject().setSuperClassName(null);
             getContext().getHelper().dataObjectExtended(oldSuperClass, getDataObject().getClassName(), false);
         }
+        notifyObjectChange("superClassName", oldSuperClass, newSuperClass);
     }
 
     void roleChanged(final ChangeEvent event) {
@@ -353,7 +358,9 @@ public class DataObjectEditor extends Composite {
         final String _role = roleSelector.getValue();
         AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.ROLE_ANNOTATION);
 
+        String oldValue = null;
         if (annotation != null) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
             if ( _role != null && !NOT_SELECTED.equals(_role) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _role);
             else getDataObject().removeAnnotation(annotation);
         } else {
@@ -361,6 +368,7 @@ public class DataObjectEditor extends Composite {
                 getDataObject().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.ROLE_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _role );
             }
         }
+        notifyObjectChange(AnnotationDefinitionTO.ROLE_ANNOTATION, oldValue, _role);
     }
 
     private void clean() {

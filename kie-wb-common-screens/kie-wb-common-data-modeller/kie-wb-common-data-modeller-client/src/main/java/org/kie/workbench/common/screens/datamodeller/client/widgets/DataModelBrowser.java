@@ -311,6 +311,12 @@ public class DataModelBrowser extends Composite {
     }
 
     // Event Observers
+    private void checkModelStatus(@Observes DataModelerEvent event) {
+        String name = context.getDataModel().getParentProjectName();
+        if (context.isDirty()) modelName.setText(name + "*");
+        else modelName.setText(name);
+
+    }
 
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         if (event.isFrom(getDataModel())) {

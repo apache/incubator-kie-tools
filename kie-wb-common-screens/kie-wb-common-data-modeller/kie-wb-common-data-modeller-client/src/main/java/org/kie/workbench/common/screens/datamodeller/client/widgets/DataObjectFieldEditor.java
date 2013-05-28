@@ -299,6 +299,7 @@ public class DataObjectFieldEditor extends Composite {
                 getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _label );
             }
         }
+        // TODO replace 'label' literal with annotation definition constant
         notifyFieldChange("label", oldValue, _label);
     }
 
@@ -306,10 +307,12 @@ public class DataObjectFieldEditor extends Composite {
     void descriptionChanged(final ValueChangeEvent<String> event) {
         if (getObjectField() == null) return;
 
+        String oldValue = null;
         final String _description = description.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
 
         if (annotation != null) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
             if ( _description != null && !"".equals(_description) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _description);
             else getObjectField().removeAnnotation(annotation);
         } else {
@@ -317,6 +320,7 @@ public class DataObjectFieldEditor extends Composite {
                 getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _description );
             }
         }
+        notifyFieldChange(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description);
     }
 
     private void typeChanged(ChangeEvent event) {
@@ -348,11 +352,13 @@ public class DataObjectFieldEditor extends Composite {
     void equalsChanged(final ClickEvent event) {
         if (getObjectField() == null) return;
 
-        final Boolean setEquals = equalsSelector.getValue();
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
+        final Boolean oldEquals = (annotation != null) ? (Boolean) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM) : false;
+        final Boolean setEquals = equalsSelector.getValue();
 
         if (annotation != null && !setEquals) getObjectField().removeAnnotation(annotation);
         else if (annotation == null && setEquals) getObjectField().addAnnotation(new AnnotationTO(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.EQUALS_ANNOTATION)));
+        notifyFieldChange(AnnotationDefinitionTO.EQUALS_ANNOTATION, oldEquals, setEquals);
     }
 
     @UiHandler("positionText")
@@ -363,12 +369,8 @@ public class DataObjectFieldEditor extends Composite {
         ep.setTitleWidget(positionLabel);
         ep.setValueWidget(positionText);
 
-
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
-        String oldPosition = "";
-        if (annotation != null) {
-            oldPosition = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString();
-        }
+        final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "";
         final String newPosition = positionText.getValue();
 
         // In case an invalid position (entered before), was corrected to the original value, don't do anything but reset the label style
@@ -395,10 +397,9 @@ public class DataObjectFieldEditor extends Composite {
                         getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATON), AnnotationDefinitionTO.VALUE_PARAM, newPosition );
                     }
                 }
+                notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATON, oldPosition, newPosition);
             }
         });
-
-
     }
 
     private void initTypeList() {

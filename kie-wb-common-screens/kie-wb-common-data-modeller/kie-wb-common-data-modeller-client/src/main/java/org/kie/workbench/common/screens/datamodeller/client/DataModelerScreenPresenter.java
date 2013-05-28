@@ -160,6 +160,7 @@ public class DataModelerScreenPresenter {
                     if (newProjectPath != null) {
                         loadProjectDataModel(newProjectPath);
                     }
+                    dataModelerEvent.fire(new DataModelerEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataModel.getDataObjects().get(0)));
                 }
             },
             new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_saving_error())
