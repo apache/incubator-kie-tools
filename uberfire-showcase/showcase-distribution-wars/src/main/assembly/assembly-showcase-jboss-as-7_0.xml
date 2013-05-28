@@ -46,10 +46,10 @@
           <!-- UF Client Related -->
           <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
 
           <!-- GWT Client Related -->
           <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
@@ -63,19 +63,21 @@
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
 
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
-          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
           <exclude>WEB-INF/lib/mail-*.jar</exclude>
           <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
           <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
-
           <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
           <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
           <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
           <exclude>WEB-INF/lib/javax*.jar</exclude>
-          <exclude>WEB-INF/lib/jboss-interceptors-api_1-*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-interceptors-api_*.jar</exclude>
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
