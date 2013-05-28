@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.uberfire.client.tables;
+package org.uberfire.paging;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -28,7 +28,7 @@ public class PageRequest {
     protected int startRowIndex = 0;
     protected Integer pageSize = null; // null returns all pages
 
-    // For GWT serialisation
+    // For serialisation
     public PageRequest() {
     }
 

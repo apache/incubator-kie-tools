@@ -44,6 +44,7 @@ import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.SelectionColumn;
 import org.uberfire.client.tables.SortableHeader;
 import org.uberfire.client.tables.SortableHeaderGroup;
+import org.uberfire.paging.AbstractPathPageRow;
 
 /**
  * Widget that shows rows of paged data where columns "uuid", "name" and

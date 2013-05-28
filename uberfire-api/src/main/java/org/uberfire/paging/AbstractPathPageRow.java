@@ -14,16 +14,33 @@
  * the License.
  */
 
-package org.uberfire.client.tables;
+package org.uberfire.paging;
+
+import org.uberfire.backend.vfs.Path;
 
 /**
  * A single row of a paged data
  */
-public abstract class AbstractPageRow
-        implements Comparable<AbstractPageRow> {
+public abstract class AbstractPathPageRow
+        extends AbstractPageRow {
 
-    public int compareTo( AbstractPageRow o ) {
-        return 0;
+    private Path path;
+
+    public AbstractPathPageRow() {
+        super();
+    }
+
+    public AbstractPathPageRow( final Path path ) {
+        super();
+        this.path = path;
+    }
+
+    public int compareTo( final AbstractPathPageRow other ) {
+        return path.compareTo( other.path );
+    }
+
+    public Path getPath() {
+        return path;
     }
 
 }

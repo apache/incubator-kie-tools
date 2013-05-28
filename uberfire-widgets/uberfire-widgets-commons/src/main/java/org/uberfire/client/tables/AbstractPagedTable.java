@@ -19,6 +19,7 @@ package org.uberfire.client.tables;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.uberfire.paging.AbstractPageRow;
 
 /**
  * Widget that shows rows of paged data.

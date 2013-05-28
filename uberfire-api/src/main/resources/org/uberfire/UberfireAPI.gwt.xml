@@ -20,6 +20,7 @@
 <module>
 
   <source path='mvp'/>
+  <source path='paging'/>
   <source path='workbench'/>
 
   <super-source path="jre"/>

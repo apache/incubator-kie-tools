@@ -30,6 +30,7 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.uberfire.paging.AbstractPageRow;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"

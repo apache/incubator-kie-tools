@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.uberfire.client.tables;
+package org.uberfire.paging;
 
 import java.util.List;
 
