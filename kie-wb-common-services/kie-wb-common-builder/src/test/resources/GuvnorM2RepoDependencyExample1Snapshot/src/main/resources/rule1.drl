@@ -1,4 +1,4 @@
-package org.kie.test.repodependencyexample1snapshot
+package org.kie.workbench.common.services.builder.tests.test1snapshot
 
 global java.util.List list
 

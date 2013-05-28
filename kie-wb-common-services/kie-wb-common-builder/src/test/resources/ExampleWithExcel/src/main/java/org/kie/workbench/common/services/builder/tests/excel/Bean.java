@@ -1,4 +1,4 @@
-package org.kie.test.repodependencyexample1snapshot;
+package org.kie.workbench.common.services.builder.tests.excel;
 
 public class Bean {
     private final int value;

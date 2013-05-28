@@ -1,4 +1,4 @@
-package org.kie.test.excel;
+package org.kie.workbench.common.services.builder.tests.test1snapshot;
 
 public class Bean {
     private final int value;

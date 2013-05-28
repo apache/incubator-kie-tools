@@ -1,4 +1,4 @@
-package org.kie.test.repodependencyexample1;
+package org.kie.workbench.common.services.builder.tests.test1;
 
 public class Bean {
     private final int value;

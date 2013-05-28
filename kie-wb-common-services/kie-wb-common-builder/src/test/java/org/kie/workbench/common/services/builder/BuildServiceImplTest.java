@@ -208,18 +208,21 @@ public class BuildServiceImplTest {
         String m2RepoURL = m2RepoService.getRepositoryURL( null );
 
         //Deploy a 1.0 version of guvnor-m2repo-dependency-example1-snapshot kjar
-        GAV gav = new GAV( "org.kie.example",
-                           "guvnor-m2repo-dependency-example1", "1.0" );
+        GAV gav = new GAV( "org.kie.workbench.common.services.builder.tests",
+                           "dependency-test1",
+                           "1.0" );
 
-        InputStream is = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
+        InputStream is = this.getClass().getResourceAsStream( "/dependency-test1-1.0.jar" );
         m2RepoService.deployJar( is,
                                  gav );
 
         //Deploy a SNAPSHOT version of guvnor-m2repo-dependency-example1-snapshot kjar
-        GAV gav2 = new GAV( "org.kie.example",
-                            "guvnor-m2repo-dependency-example1-snapshot", "1.0-SNAPSHOT" );
+        GAV gav2 = new GAV( "org.kie.workbench.common.services.builder.tests",
+                            "dependency-test1-snapshot",
+                            "1.0-SNAPSHOT" );
 
-        InputStream is2 = this.getClass().getResourceAsStream( "/guvnor-m2repo-dependency-example1-1.0.jar" );
-        m2RepoService.deployJar( is2, gav2 );
+        InputStream is2 = this.getClass().getResourceAsStream( "/dependency-test1-1.0.jar" );
+        m2RepoService.deployJar( is2,
+                                 gav2 );
     }
 }
