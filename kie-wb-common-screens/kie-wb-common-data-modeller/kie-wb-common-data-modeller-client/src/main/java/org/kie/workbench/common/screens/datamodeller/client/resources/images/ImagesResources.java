@@ -31,7 +31,7 @@ public interface ImagesResources
     ImageResource Delete();
 
     @Source("information.gif")
-    ImageResource BrowsObject();
+    ImageResource BrowseObject();
 
 
 }
