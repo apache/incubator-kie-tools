@@ -40,9 +40,9 @@
         <include>org.uberfire:uberfire-security-server</include>
         <include>org.uberfire:uberfire-server</include>
         <include>org.uberfire:uberfire-api</include>
+        <include>org.uberfire:uberfire-client-api</include>
         <include>org.uberfire:uberfire-backend-api</include>
         <include>org.uberfire:uberfire-workbench</include>
-        <include>org.uberfire:uberfire-backend-commons</include>
         <include>org.uberfire:uberfire-backend-server</include>
         <include>org.uberfire:uberfire-widgets-commons</include>
         <include>org.uberfire:uberfire-widgets-core-client</include>
