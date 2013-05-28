@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.enums.client.editor;
 
-import org.uberfire.client.tables.AbstractPageRow;
+import org.uberfire.paging.AbstractPageRow;
 
 public class EnumRow extends AbstractPageRow {
 
