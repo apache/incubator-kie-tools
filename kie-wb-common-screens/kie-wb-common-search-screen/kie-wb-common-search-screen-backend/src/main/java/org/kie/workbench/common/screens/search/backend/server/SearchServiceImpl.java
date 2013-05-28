@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaVie
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.client.tables.PageResponse;
+import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Service

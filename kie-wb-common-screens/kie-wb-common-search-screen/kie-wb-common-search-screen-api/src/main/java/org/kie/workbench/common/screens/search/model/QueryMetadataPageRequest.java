@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.client.tables.PageRequest;
+import org.uberfire.paging.PageRequest;
 
 /**
  * A Query request.
@@ -29,10 +29,10 @@ import org.uberfire.client.tables.PageRequest;
 public class QueryMetadataPageRequest extends PageRequest {
 
     private Map<String, Object> metadata;
-    private Date                createdAfter;
-    private Date                createdBefore;
-    private Date                lastModifiedAfter;
-    private Date                lastModifiedBefore;
+    private Date createdAfter;
+    private Date createdBefore;
+    private Date lastModifiedAfter;
+    private Date lastModifiedBefore;
 
     public QueryMetadataPageRequest() {
     }

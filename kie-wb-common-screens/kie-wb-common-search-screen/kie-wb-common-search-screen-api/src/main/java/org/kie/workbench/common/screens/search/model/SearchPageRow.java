@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.tables.AbstractPathPageRow;
+import org.uberfire.paging.AbstractPathPageRow;
 
 /**
  *
@@ -12,12 +12,12 @@ import org.uberfire.client.workbench.widgets.tables.AbstractPathPageRow;
 @Portable
 public class SearchPageRow extends AbstractPathPageRow {
 
-    private String  description;
-    private String  abbreviatedDescription;
-    private String  creator;
-    private Date    createdDate;
-    private String  lastContributor;
-    private Date    lastModified;
+    private String description;
+    private String abbreviatedDescription;
+    private String creator;
+    private Date createdDate;
+    private String lastContributor;
+    private Date lastModified;
     private boolean disabled;
 
     public SearchPageRow() {

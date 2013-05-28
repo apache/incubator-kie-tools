@@ -16,7 +16,7 @@
 package org.kie.workbench.common.screens.search.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.client.tables.PageRequest;
+import org.uberfire.paging.PageRequest;
 
 /**
  * A Query request.
