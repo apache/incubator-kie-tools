@@ -41,6 +41,8 @@
           <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
 
           <!-- Guvnor client related -->
           <exclude>WEB-INF/lib/guvnor-inbox-client-*.jar</exclude>
@@ -89,9 +91,13 @@
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
 
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
-          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+
           <!-- mail.jar is needed by tomcat-->
           <!--exclude>WEB-INF/lib/mail-*.jar</exclude-->
           <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
