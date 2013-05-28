@@ -79,7 +79,7 @@ public class DataModelBrowser extends Composite {
     VerticalPanel mainPanel;
 
     @UiField
-    Alert modelName;
+    Label modelName;
 
     @UiField(provided = true)
     CellTable<DataObjectTO> dataObjectsTable = new CellTable<DataObjectTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
@@ -110,9 +110,7 @@ public class DataModelBrowser extends Composite {
     public DataModelBrowser() {
         initWidget(uiBinder.createAndBindUi(this));
 
-        modelName.setType(AlertType.SUCCESS);
-        modelName.setClose(false);
-        modelName.setHeading(Constants.INSTANCE.modelBrowser_modelUnknown());
+        modelName.setText(Constants.INSTANCE.modelBrowser_modelUnknown());
 
         dataObjectsProvider.setList(dataObjects);
         dataObjectsTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.modelBrowser_emptyTable()));
@@ -201,7 +199,7 @@ public class DataModelBrowser extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        if (context.getDataModel() != null) modelName.setHeading(context.getDataModel().getParentProjectName());
+        if (context.getDataModel() != null) modelName.setText(context.getDataModel().getParentProjectName());
         loadDataModel(context.getDataModel());
     }
 
