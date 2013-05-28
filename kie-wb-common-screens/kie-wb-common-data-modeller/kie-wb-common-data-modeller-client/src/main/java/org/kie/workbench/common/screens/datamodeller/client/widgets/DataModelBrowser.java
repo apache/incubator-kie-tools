@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -75,8 +77,9 @@ public class DataModelBrowser extends Composite {
 
     @UiField
     VerticalPanel mainPanel;
-    
-    @UiField Label modelName;
+
+    @UiField
+    Alert modelName;
 
     @UiField(provided = true)
     CellTable<DataObjectTO> dataObjectsTable = new CellTable<DataObjectTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
@@ -107,7 +110,9 @@ public class DataModelBrowser extends Composite {
     public DataModelBrowser() {
         initWidget(uiBinder.createAndBindUi(this));
 
-        modelName.setText(Constants.INSTANCE.modelBrowser_modelUnknown());
+        modelName.setType(AlertType.SUCCESS);
+        modelName.setClose(false);
+        modelName.setHeading(Constants.INSTANCE.modelBrowser_modelUnknown());
 
         dataObjectsProvider.setList(dataObjects);
         dataObjectsTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.modelBrowser_emptyTable()));
@@ -196,6 +201,7 @@ public class DataModelBrowser extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
+        if (context.getDataModel() != null) modelName.setHeading(context.getDataModel().getParentProjectName());
         loadDataModel(context.getDataModel());
     }
 
@@ -209,7 +215,6 @@ public class DataModelBrowser extends Composite {
 
     private void loadDataModel(DataModelTO dataModel) {
         this.dataObjects = dataModel.getDataObjects();
-        modelName.setText(dataModel.getName());
 
         // We create a new selection model due to a bug found in GWT when we change e.g. from one data object with 9 rows
         // to one with 3 rows and the table was sorted.

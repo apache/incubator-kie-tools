@@ -25,7 +25,7 @@ import java.util.List;
 @Portable
 public class DataModelTO {
     
-    private String name;
+    private String parentProjectName;
 
     private List<DataObjectTO> dataObjects = new ArrayList<DataObjectTO>();
 
@@ -49,16 +49,12 @@ public class DataModelTO {
     public DataModelTO() {
     }
 
-    public DataModelTO(String name) {
-        this.name = name;
+    public String getParentProjectName() {
+        return parentProjectName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setParentProjectName(String parentProjectName) {
+        this.parentProjectName = parentProjectName;
     }
 
     public List<DataObjectTO> getDataObjects() {

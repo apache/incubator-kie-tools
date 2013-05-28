@@ -163,7 +163,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         } catch (Exception e) {
             logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);
-            throw new ServiceException("Data model: " + dataModel.getName() + ", couldn't be generated due to the following error. " + e);
+            throw new ServiceException("Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e);
         }
     }
 

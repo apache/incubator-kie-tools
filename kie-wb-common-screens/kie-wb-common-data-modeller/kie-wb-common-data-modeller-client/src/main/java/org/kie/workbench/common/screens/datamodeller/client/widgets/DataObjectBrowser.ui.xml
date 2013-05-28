@@ -32,9 +32,9 @@
                     <gwt:HTMLPanel>
                         <!--div class="well" style="margin-top:20px;"-->
                         <div class="well">
-                            <h4>
+                            <h5>
                                 <gwt:Label ui:field="objectName" ></gwt:Label>
-                            </h4>
+                            </h5>
                             <gwt:ScrollPanel width="100%" height="338px">
                             <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
                             </gwt:ScrollPanel>

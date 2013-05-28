@@ -193,6 +193,7 @@ public class DataModelerScreenPresenter {
                                     @Override
                                     public void callback(DataModelTO dataModel) {
                                         BusyPopup.close();
+                                        dataModel.setParentProjectName(path.getFileName());
                                         setDataModel(dataModel);
                                         notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_loaded(path.toURI())));
                                     }
