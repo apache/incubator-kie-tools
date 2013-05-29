@@ -21,6 +21,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 public class DataModelerUtils {
 
     public static final String EXTERNAL_PREFIX = "- ext - ";
+    public static final String CLIPPED_MARKER = "...";
     public static final String MULTIPLE = " [0..N]";
 
     public static DataModelerUtils getInstance() {
@@ -34,6 +35,10 @@ public class DataModelerUtils {
             else return dataObject.getName();
         }
         return "";
+    }
+
+    public static String getMaxLengthClippedString(String s, int maxLength) {
+        return s.length() > maxLength ? s.substring(0, maxLength) + CLIPPED_MARKER : s;
     }
 
     public static String getDataObjectFullLabel(DataObjectTO dataObject) {

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.CellTable;
+import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -74,6 +74,9 @@ public class DataModelBrowser extends Composite {
     };
 
     private static DataModelBrowserUIBinder uiBinder = GWT.create(DataModelBrowserUIBinder.class);
+
+    private static int BROWSER_MAX_LENGTH = 20;
+    private static String MODIFIED_MARKER = "*";
 
     @UiField
     VerticalPanel mainPanel;
@@ -163,6 +166,7 @@ public class DataModelBrowser extends Composite {
 
             @Override
             public String getValue( final DataObjectTO dataObject) {
+                // TODO return clipped AND tooltipped object UI label when relevant
                 return DataModelerUtils.getDataObjectUILabel(dataObject);
             }
         };
@@ -199,8 +203,28 @@ public class DataModelBrowser extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        if (context.getDataModel() != null) modelName.setText(context.getDataModel().getParentProjectName());
+        setModelName();
         loadDataModel(context.getDataModel());
+    }
+
+    private void setModelName() {
+        if (context.getDataModel() != null) {
+            String name = context.getDataModel().getParentProjectName();
+            if (name != null) {
+                if (name.length() > BROWSER_MAX_LENGTH) {
+                    setTooltip(modelName, name);
+                }
+                modelName.setText(DataModelerUtils.getMaxLengthClippedString(name, BROWSER_MAX_LENGTH));
+            }
+        }
+    }
+
+    private void setTooltip(Widget w, String message) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setWidget(w);
+        tooltip.setText(message);
+        tooltip.setPlacement(Placement.TOP);
+        tooltip.reconfigure();
     }
 
     public DataModelerContext getContext() {
@@ -312,8 +336,8 @@ public class DataModelBrowser extends Composite {
 
     // Event Observers
     private void checkModelStatus(@Observes DataModelerEvent event) {
-        String name = context.getDataModel().getParentProjectName();
-        if (context.isDirty()) modelName.setText(name + "*");
+        String name = modelName.getText();
+        if (context.isDirty() && !name.endsWith(MODIFIED_MARKER)) modelName.setText(name + MODIFIED_MARKER);
         else modelName.setText(name);
 
     }
