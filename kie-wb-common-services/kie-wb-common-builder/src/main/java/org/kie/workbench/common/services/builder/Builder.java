@@ -384,7 +384,7 @@ public class Builder {
         }
         final String className = path.getFileName().toString().replace( ".java",
                                                                         "" );
-        return packageName + "." + className;
+        return ( packageName.equals( "" ) ? className : packageName + "." + className );
     }
 
     public TypeSource getClassSource( final KieModuleMetaData metaData,

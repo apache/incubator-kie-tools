@@ -349,9 +349,6 @@ public class ProjectServiceImpl
         if ( packageName.startsWith( "/" ) ) {
             packageName = packageName.substring( 1 );
         }
-        if ( packageName.equals( "" ) ) {
-            return ProjectService.DEFAULT_PKG;
-        }
         return packageName.replaceAll( "/",
                                        "." );
     }

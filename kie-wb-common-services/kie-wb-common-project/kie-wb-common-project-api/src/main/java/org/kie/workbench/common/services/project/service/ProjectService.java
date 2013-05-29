@@ -31,8 +31,6 @@ import org.uberfire.backend.vfs.Path;
 public interface ProjectService extends SupportsRead<ProjectImports>,
                                         SupportsUpdate<ProjectImports> {
 
-    public static final String DEFAULT_PKG = "defaultpkg";
-
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
     /**

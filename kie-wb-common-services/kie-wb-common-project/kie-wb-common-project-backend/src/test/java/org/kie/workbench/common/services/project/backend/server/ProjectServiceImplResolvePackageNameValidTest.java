@@ -152,7 +152,7 @@ public class ProjectServiceImplResolvePackageNameValidTest {
 
         //Test /src/main/java resolves as the default package
         final String result = projectService.resolvePackageName( testPath );
-        assertEquals( ProjectService.DEFAULT_PKG,
+        assertEquals( "",
                       result );
     }
 
@@ -171,7 +171,7 @@ public class ProjectServiceImplResolvePackageNameValidTest {
 
         //Test /src/main/resources resolves as the default package
         final String result = projectService.resolvePackageName( testPath );
-        assertEquals( ProjectService.DEFAULT_PKG,
+        assertEquals( "",
                       result );
     }
 
@@ -190,7 +190,7 @@ public class ProjectServiceImplResolvePackageNameValidTest {
 
         //Test a Java file resolves to the containing package
         final String result = projectService.resolvePackageName( testPath );
-        assertEquals( ProjectService.DEFAULT_PKG,
+        assertEquals( "",
                       result );
     }
 
@@ -228,7 +228,7 @@ public class ProjectServiceImplResolvePackageNameValidTest {
 
         //Test a Resources file resolves to the containing package
         final String result = projectService.resolvePackageName( testPath );
-        assertEquals( ProjectService.DEFAULT_PKG,
+        assertEquals( "",
                       result );
     }
 
