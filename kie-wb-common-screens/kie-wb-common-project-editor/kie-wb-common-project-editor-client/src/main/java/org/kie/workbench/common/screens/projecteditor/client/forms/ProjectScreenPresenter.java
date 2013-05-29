@@ -219,13 +219,11 @@ public class ProjectScreenPresenter
 
     private void init() {
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
-        pomPanel.init( pathToPomXML, false );
-
+        pomPanel.init( pathToPomXML,
+                       false );
         addKModuleEditor();
-
+        addProjectConfigEditor();
         view.hideBusyIndicator();
-
     }
 
     private void makeMenuBar() {
@@ -290,7 +288,10 @@ public class ProjectScreenPresenter
                                                                                                        new Command() {
                                                                                                            @Override
                                                                                                            public void execute() {
-                                                                                                               importsWidgetPresenter.save( comment, projectImportsMetadata );
+                                                                                                               if ( importsWidgetPresenter.hasBeenInitialized() ) {
+                                                                                                                   importsWidgetPresenter.save( comment,
+                                                                                                                                                projectImportsMetadata );
+                                                                                                               }
                                                                                                            }
                                                                                                        },
                                                                                                        kmoduleMetadata );
@@ -324,8 +325,28 @@ public class ProjectScreenPresenter
             @Override
             public void callback( final Path pathToKModuleXML ) {
                 ProjectScreenPresenter.this.pathToKModuleXML = pathToKModuleXML;
-                if ( kModuleEditorPanel.hasBeenInitialized() ) {
-                    kModuleEditorPanel.init( pathToKModuleXML, false );
+                if ( !kModuleEditorPanel.hasBeenInitialized() ) {
+                    kModuleEditorPanel.init( pathToKModuleXML,
+                                             false );
+                }
+            }
+        };
+    }
+
+    private void addProjectConfigEditor() {
+        projectService.call( getResolveProjectImportsPathSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).resolvePathToProjectImports( pathToPomXML );
+    }
+
+    private RemoteCallback<Path> getResolveProjectImportsPathSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path pathToProjectImports ) {
+                ProjectScreenPresenter.this.pathToProjectImports = pathToProjectImports;
+                if ( !importsWidgetPresenter.hasBeenInitialized() ) {
+                    importsWidgetPresenter.init( pathToProjectImports,
+                                                 false );
                 }
             }
         };
@@ -355,22 +376,6 @@ public class ProjectScreenPresenter
         }
     }
 
-    @Override
-    public void onKModuleTabSelected() {
-        if ( !kModuleEditorPanel.hasBeenInitialized() ) {
-            kModuleEditorPanel.init( pathToKModuleXML, false );
-        }
-    }
-
-    @Override
-    public void onKModuleMetadataTabSelected() {
-        if ( kmoduleMetadata == null ) {
-            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-            metadataService.call( getKModuleMetadataSuccessCallback(),
-                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToKModuleXML );
-        }
-    }
-
     private RemoteCallback<Metadata> getPOMMetadataSuccessCallback() {
         return new RemoteCallback<Metadata>() {
 
@@ -382,6 +387,23 @@ public class ProjectScreenPresenter
                                              false );
             }
         };
+    }
+
+    @Override
+    public void onKModuleTabSelected() {
+        if ( !kModuleEditorPanel.hasBeenInitialized() ) {
+            kModuleEditorPanel.init( pathToKModuleXML,
+                                     false );
+        }
+    }
+
+    @Override
+    public void onKModuleMetadataTabSelected() {
+        if ( kmoduleMetadata == null ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            metadataService.call( getKModuleMetadataSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( pathToKModuleXML );
+        }
     }
 
     private RemoteCallback<Metadata> getKModuleMetadataSuccessCallback() {
@@ -400,17 +422,8 @@ public class ProjectScreenPresenter
     @Override
     public void onImportsPageSelected() {
         if ( !importsWidgetPresenter.hasBeenInitialized() ) {
-
-            projectService.call( new RemoteCallback<Path>() {
-                @Override
-                public void callback( Path path ) {
-
-                    pathToProjectImports = path;
-
-                    importsWidgetPresenter.init( pathToProjectImports, false );
-
-                }
-            } ).resolvePathToProjectImports( pathToPomXML );
+            importsWidgetPresenter.init( pathToProjectImports,
+                                         false );
         }
     }
 
