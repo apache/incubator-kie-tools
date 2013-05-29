@@ -160,7 +160,9 @@ public class DataModelerScreenPresenter {
                     if (newProjectPath != null) {
                         loadProjectDataModel(newProjectPath);
                     }
-                    dataModelerEvent.fire(new DataModelerEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataModel.getDataObjects().get(0)));
+                    dataModelerEvent.fire( new DataModelerEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                                                                 getDataModel(),
+                                                                 dataModel.getDataObjects().size() > 0 ? dataModel.getDataObjects().get(0) : null ) );
                 }
             },
             new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_saving_error())
@@ -230,6 +232,8 @@ public class DataModelerScreenPresenter {
             view.setContext(context);
             if (dataModel.getDataObjects().size() > 0) {
                 dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataModel.getDataObjects().get(0)));
+            } else {
+                dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null));
             }
         }
     }

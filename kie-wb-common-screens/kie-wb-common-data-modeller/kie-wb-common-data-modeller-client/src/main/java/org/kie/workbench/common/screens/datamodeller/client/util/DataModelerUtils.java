@@ -42,10 +42,12 @@ public class DataModelerUtils {
     }
 
     public static String getDataObjectFullLabel(DataObjectTO dataObject) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(dataObject.getClassName());
-        String objectLabel = dataObject.getLabel();
-        if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
+        StringBuilder sb = new StringBuilder("");
+        if (dataObject != null) {
+            sb.append(dataObject.getClassName());
+            String objectLabel = dataObject.getLabel();
+            if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
+        }
         return sb.toString();
     }
 

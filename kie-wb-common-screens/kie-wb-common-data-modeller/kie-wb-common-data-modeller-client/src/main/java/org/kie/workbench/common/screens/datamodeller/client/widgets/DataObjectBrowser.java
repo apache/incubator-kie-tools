@@ -384,34 +384,35 @@ public class DataObjectBrowser extends Composite {
     }
 
     private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyType, final boolean multiple, final boolean baseType) {
+        if (dataObject != null) {
+            validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
+                @Override
+                public void onFailure() {
+                    ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
+                }
 
-        validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
-            }
-
-            @Override
-            public void onSuccess() {
-                validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
-                    @Override
-                    public void onFailure() {
-                        ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
-                            ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
-                            addDataObjectProperty(property);
-                            resetInput();
-                        } else {
-                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
+                @Override
+                public void onSuccess() {
+                    validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
+                        @Override
+                        public void onFailure() {
+                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
                         }
-                    }
-                });
-            }
-        });
+
+                        @Override
+                        public void onSuccess() {
+                            if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
+                                ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
+                                addDataObjectProperty(property);
+                                resetInput();
+                            } else {
+                                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
     
     private void setDataObject(DataObjectTO dataObject) {
@@ -438,10 +439,10 @@ public class DataObjectBrowser extends Composite {
         });
 
         ArrayList<ObjectPropertyTO> sortBuffer = new ArrayList<ObjectPropertyTO>();
-        sortBuffer.addAll(dataObject.getProperties());
+        if (dataObject != null) sortBuffer.addAll(dataObject.getProperties());
         Collections.sort(sortBuffer, new ObjectPropertyComparator("name"));
 
-        dataObjectProperties = dataObject.getProperties();
+        dataObjectProperties = (dataObject != null) ? dataObject.getProperties() : Collections.<ObjectPropertyTO>emptyList();
         dataObjectPropertiesProvider.getList().clear();
         dataObjectPropertiesProvider.getList().addAll(sortBuffer);
         dataObjectPropertiesProvider.flush();
@@ -458,31 +459,33 @@ public class DataObjectBrowser extends Composite {
         if (dataObjectProperties.size() > 0) {
             dataObjectPropertiesTable.setKeyboardSelectedRow(0);
         }
-
     }
 
     private void addDataObjectProperty(ObjectPropertyTO objectProperty) {
-        dataObject.getProperties().add(objectProperty);
+        if (dataObject != null) {
+            dataObject.getProperties().add(objectProperty);
 
-        if (!objectProperty.isBaseType()) getContext().getHelper().dataObjectReferenced(objectProperty.getClassName(), dataObject.getClassName());
+            if (!objectProperty.isBaseType()) getContext().getHelper().dataObjectReferenced(objectProperty.getClassName(), dataObject.getClassName());
 
-        dataObjectPropertiesProvider.getList().add(objectProperty);
-        dataObjectPropertiesProvider.flush();
-        dataObjectPropertiesProvider.refresh();
-        dataObjectPropertiesTable.setKeyboardSelectedRow(dataObjectPropertiesProvider.getList().size() - 1);
-        notifyFieldCreated(objectProperty);
+            dataObjectPropertiesProvider.getList().add(objectProperty);
+            dataObjectPropertiesProvider.flush();
+            dataObjectPropertiesProvider.refresh();
+            dataObjectPropertiesTable.setKeyboardSelectedRow(dataObjectPropertiesProvider.getList().size() - 1);
+            notifyFieldCreated(objectProperty);
+        }
     }
 
     private void deleteDataObjectProperty(ObjectPropertyTO objectProperty, int index) {
-        
-        dataObject.getProperties().remove(objectProperty);
+        if (dataObject != null) {
+            dataObject.getProperties().remove(objectProperty);
 
-        getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(), dataObject.getClassName());
+            getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(), dataObject.getClassName());
 
-        dataObjectPropertiesProvider.getList().remove(index);
-        dataObjectPropertiesProvider.flush();
-        dataObjectPropertiesProvider.refresh();
-        notifyFieldDeleted(objectProperty);
+            dataObjectPropertiesProvider.getList().remove(index);
+            dataObjectPropertiesProvider.flush();
+            dataObjectPropertiesProvider.refresh();
+            notifyFieldDeleted(objectProperty);
+        }
     }
 
     private String propertyTypeDisplay(ObjectPropertyTO property) {
@@ -557,12 +560,11 @@ public class DataObjectBrowser extends Composite {
     //Event Observers
 
     private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
-        if (event.isFrom(getDataModel())) {            
-            if (event.getCurrentDataObject() != null) {
-                setDataObject(event.getCurrentDataObject());
-                resetInput();
-                enableNewPropertyAction(true);
-            }
+        if (event.isFrom(getDataModel())) {
+            DataObjectTO dataObject = event.getCurrentDataObject();
+            resetInput();
+            setDataObject(dataObject);
+            enableNewPropertyAction(dataObject != null);
         }
     }
 
