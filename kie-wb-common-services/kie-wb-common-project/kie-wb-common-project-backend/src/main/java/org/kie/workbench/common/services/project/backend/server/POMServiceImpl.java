@@ -13,9 +13,9 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.Repository;
-import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
@@ -63,9 +63,9 @@ public class POMServiceImpl
     }
 
     @Override
-    public Path create(final Path projectRoot,
-                       final String baseURL,
-                       final POM pomModel) {
+    public Path create( final Path projectRoot,
+                        final String baseURL,
+                        final POM pomModel ) {
         org.kie.commons.java.nio.file.Path pathToPOMXML = null;
         try {
             final Repository repository = new Repository();
@@ -124,6 +124,10 @@ public class POMServiceImpl
                                                                   metadata ),
                                  makeCommentedOption( comment ) );
             }
+
+            //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
+            //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+            //to avoid duplicating events (and re-construction of DMO).
 
             //Invalidate Project-level DMO cache as POM has changed.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );

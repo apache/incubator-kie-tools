@@ -26,7 +26,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
@@ -37,8 +36,7 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
+import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -67,8 +65,8 @@ public class ProjectServiceImpl
     private ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+//    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+//    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     private Identity identity;
 
@@ -84,8 +82,6 @@ public class ProjectServiceImpl
                                final MetadataService metadataService,
                                final ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
-                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
-                               final Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
@@ -94,8 +90,6 @@ public class ProjectServiceImpl
         this.metadataService = metadataService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
-        this.resourceUpdatedEvent = resourceUpdatedEvent;
-        this.invalidateDMOProjectCache = invalidateDMOProjectCache;
         this.identity = identity;
     }
 
@@ -449,11 +443,9 @@ public class ProjectServiceImpl
                                                           metadata ),
                          makeCommentedOption( comment ) );
 
-        //Invalidate Project-level DMO cache as project.imports has changed.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
-
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+        //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
+        //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+        //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
         return resource;
     }

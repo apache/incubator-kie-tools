@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -26,13 +25,13 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.project.backend.server.KModuleContentHandler;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.project.service.KModuleService;
+import org.kie.workbench.common.services.project.service.model.KBaseModel;
+import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
 
 @Service
@@ -44,7 +43,6 @@ public class KModuleServiceImpl
     private Paths paths;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
     private Identity identity;
 
     public KModuleServiceImpl() {
@@ -56,13 +54,11 @@ public class KModuleServiceImpl
                                final Paths paths,
                                final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
-                               final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
-        this.resourceUpdatedEvent = resourceUpdatedEvent;
         this.identity = identity;
     }
 
@@ -79,11 +75,19 @@ public class KModuleServiceImpl
         final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
         ioService.createFile( pathToKModuleXML );
         ioService.write( pathToKModuleXML,
-                         moduleContentHandler.toString( new KModuleModel() ) );
+                         moduleContentHandler.toString( makeDefaultKModule() ) );
 
         //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
         return paths.convert( pathToKModuleXML );
+    }
+
+    private KModuleModel makeDefaultKModule() {
+        final KModuleModel kmodule = new KModuleModel();
+        final KBaseModel kbase = new KBaseModel();
+        kbase.setName( "default" );
+        kmodule.add( kbase );
+        return kmodule;
     }
 
     @Override
@@ -113,8 +117,9 @@ public class KModuleServiceImpl
                     makeCommentedOption( comment ) );
         }
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( path ) );
+        //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
+        //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+        //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
         return path;
     }
