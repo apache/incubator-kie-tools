@@ -36,8 +36,8 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.events.ResourceAddedEvent;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.events.ResourceAddedEvent;
 
 @Service
 @ApplicationScoped
@@ -65,8 +65,6 @@ public class ProjectServiceImpl
     private ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
-//    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-//    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     private Identity identity;
 
