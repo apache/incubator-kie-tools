@@ -21,6 +21,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
+  <inherits name='org.uberfire.UberfireClientAPI'/>
   <inherits name='org.drools.workbench.screens.globals.DroolsWorkbenchGlobalsEditorAPI'/>
 
   <source path="client"/>
