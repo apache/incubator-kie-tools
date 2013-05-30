@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -28,7 +35,15 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.IsDirty;
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
@@ -43,14 +58,7 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
