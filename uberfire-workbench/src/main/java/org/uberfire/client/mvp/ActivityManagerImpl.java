@@ -69,6 +69,11 @@ public class ActivityManagerImpl
         return secure( beans );
     }
 
+    @Override
+    public void destroyActivity( final Activity activity ) {
+        iocManager.destroyBean( activity );
+    }
+
     public <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 

@@ -25,4 +25,6 @@ public interface ActivityManager {
 
     Set<Activity> getActivities( final PlaceRequest placeRequest );
 
+    void destroyActivity( final Activity activity );
+
 }

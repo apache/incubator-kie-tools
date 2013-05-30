@@ -395,7 +395,8 @@ public class PlaceManagerImpl
 
     private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
-        existingWorkbenchActivities.remove( place );
+        final Activity activity = existingWorkbenchActivities.remove( place );
+        activityManager.destroyActivity( activity );
         existingWorkbenchParts.remove( place );
     }
 
