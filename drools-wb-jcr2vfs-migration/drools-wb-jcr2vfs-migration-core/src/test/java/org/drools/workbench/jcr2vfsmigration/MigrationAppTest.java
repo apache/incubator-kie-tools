@@ -13,7 +13,6 @@ import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
 public class MigrationAppTest {
 
     @Test
-    @Ignore("Doesn't pass with move to clustered VFS")
     public void migrateExample() throws IOException {
         migrate("migrationExample");
     }
