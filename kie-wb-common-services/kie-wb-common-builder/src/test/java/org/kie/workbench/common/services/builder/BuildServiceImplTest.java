@@ -26,14 +26,15 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.workbench.common.services.project.service.model.GAV;
+import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.GAV;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
-import org.kie.scanner.KieModuleMetaData;
 import org.uberfire.backend.server.util.Paths;
 
 import static org.junit.Assert.*;
@@ -82,6 +83,35 @@ public class BuildServiceImplTest {
 
         final Builder builder = new Builder( path,
                                              "guvnor-m2repo-dependency-example2",
+                                             paths,
+                                             ioService,
+                                             projectService );
+
+        final BuildResults results = builder.build();
+
+        //Debug output
+        if ( !results.getMessages().isEmpty() ) {
+            for ( BuildMessage m : results.getMessages() ) {
+                System.out.println( m.getText() );
+            }
+        }
+
+        assertTrue( results.getMessages().isEmpty() );
+    }
+
+    @Test
+    @Ignore("This fails unless the parent project contains a KBase definition in the kmodule.xml")
+    public void testBuilderKProjectHasDependencyMissingKBaseDefinition() throws Exception {
+        Paths paths = getReference( Paths.class );
+        IOService ioService = getReference( IOService.class );
+        ProjectService projectService = getReference( ProjectService.class );
+
+        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2MissingKBase" );
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
+
+        final Builder builder = new Builder( path,
+                                             "guvnor-m2repo-dependency-example2-missing-kbase",
                                              paths,
                                              ioService,
                                              projectService );
