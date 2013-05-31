@@ -378,7 +378,8 @@ public class Builder {
     }
 
     private String getFullyQualifiedClassName( final Path path ) {
-        final String packageName = projectService.resolvePackageName( paths.convert( path ) );
+        final String packageName = projectService.resolvePackageName( paths.convert( path,
+                                                                                     false ) );
         if ( packageName == null ) {
             return null;
         }
