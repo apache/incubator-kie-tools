@@ -26,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -396,8 +397,15 @@ public class PlaceManagerImpl
     private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
         final Activity activity = existingWorkbenchActivities.remove( place );
-        activityManager.destroyActivity( activity );
         existingWorkbenchParts.remove( place );
+
+        Scheduler.get().scheduleFinally( new Scheduler.ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                activityManager.destroyActivity( activity );
+            }
+        } );
     }
 
     @SuppressWarnings("unused")

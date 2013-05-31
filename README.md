@@ -12,3 +12,4 @@ Working in IntelliJ Idea
 ========================
 Idea tends to pick up the test classes and resources from uberfire-workbench and break the uberfire-showcase build. These resources include Screens that are broken for testing purposes.
 The fix for this is to exclude the test resources manually. You can do this in File->Settings->Compiler->Ecludes.
+ 
