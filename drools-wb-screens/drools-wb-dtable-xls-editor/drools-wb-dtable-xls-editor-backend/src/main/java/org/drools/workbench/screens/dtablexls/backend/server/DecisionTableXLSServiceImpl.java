@@ -27,25 +27,26 @@ import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
+import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.StandardOpenOption;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
-import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
-import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -91,13 +92,18 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private Identity identity;
 
     public InputStream load( final Path path ) {
-        final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                  StandardOpenOption.READ );
+        try {
+            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                      StandardOpenOption.READ );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return inputStream;
+            return inputStream;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     public Path create( final Path resource,
@@ -123,8 +129,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
             return newPath;
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
@@ -157,8 +163,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
             return newPath;
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
@@ -172,31 +178,51 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public ConversionResult convert( final Path path ) {
-        return conversionService.convert( path );
+        try {
+            return conversionService.convert( path );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override

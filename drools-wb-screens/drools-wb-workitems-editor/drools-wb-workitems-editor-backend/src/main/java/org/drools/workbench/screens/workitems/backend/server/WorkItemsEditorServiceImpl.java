@@ -52,16 +52,16 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
-import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.FileExtensionsFilter;
-import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -70,10 +70,10 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -156,46 +156,61 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                         final String fileName,
                         final String content,
                         final String comment ) {
-        //Get the template for new Work Item Definitions, stored as a configuration item
-        String defaultDefinition = workItemDefinitionElements.getDefinitionElements().get( WORK_ITEMS_EDITOR_SETTINGS_DEFINITION );
-        if ( defaultDefinition == null ) {
-            defaultDefinition = "";
+        try {
+            //Get the template for new Work Item Definitions, stored as a configuration item
+            String defaultDefinition = workItemDefinitionElements.getDefinitionElements().get( WORK_ITEMS_EDITOR_SETTINGS_DEFINITION );
+            if ( defaultDefinition == null ) {
+                defaultDefinition = "";
+            }
+            defaultDefinition.replaceAll( "\\|",
+                                          "" );
+
+            //Write file to VFS
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final Path newPath = paths.convert( nioPath,
+                                                false );
+
+            ioService.createFile( nioPath );
+            ioService.write( nioPath,
+                             defaultDefinition,
+                             makeCommentedOption( comment ) );
+
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+
+            return newPath;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        defaultDefinition.replaceAll( "\\|",
-                                      "" );
-
-        //Write file to VFS
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-        final Path newPath = paths.convert( nioPath,
-                                            false );
-
-        ioService.createFile( nioPath );
-        ioService.write( nioPath,
-                         defaultDefinition,
-                         makeCommentedOption( comment ) );
-
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
-
-        return newPath;
     }
 
     @Override
     public String load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return content;
+            return content;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public WorkItemsModelContent loadContent( final Path path ) {
-        final String definition = load( path );
-        final List<String> workItemImages = loadWorkItemImages( path );
-        return new WorkItemsModelContent( definition,
-                                          workItemImages );
+        try {
+            final String definition = load( path );
+            final List<String> workItemImages = loadWorkItemImages( path );
+            return new WorkItemsModelContent( definition,
+                                              workItemImages );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private List<String> loadWorkItemImages( final Path resourcePath ) {
@@ -224,41 +239,61 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         content,
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             content,
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -278,37 +313,30 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     public Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path ) {
         final Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
 
-        //Load WorkItemDefinitions from VFS
         try {
+            //Load WorkItemDefinitions from VFS
             final Path projectRoot = projectService.resolveProject( path );
             workDefinitions.putAll( resourceWorkDefinitionsLoader.loadWorkDefinitions( projectRoot ) );
-        } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
-            throw new GenericPortableException( e.getMessage() );
-        }
 
-        //Load WorkItemDefinitions from ConfigurationService
-        try {
+            //Load WorkItemDefinitions from ConfigurationService
             workDefinitions.putAll( configWorkDefinitionsLoader.loadWorkDefinitions() );
-        } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
-            throw new GenericPortableException( e.getMessage() );
-        }
 
-        //Copy the Work Items into Structures suitable for GWT
-        final Set<PortableWorkDefinition> workItems = new HashSet<PortableWorkDefinition>();
-        for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
-            final PortableWorkDefinition wid = new PortableWorkDefinition();
-            final WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();
-            wid.setName( wd.getName() );
-            wid.setDisplayName( wd.getDisplayName() );
-            wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
-            wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
-            workItems.add( wid );
+            //Copy the Work Items into Structures suitable for GWT
+            final Set<PortableWorkDefinition> workItems = new HashSet<PortableWorkDefinition>();
+            for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
+                final PortableWorkDefinition wid = new PortableWorkDefinition();
+                final WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();
+                wid.setName( wd.getName() );
+                wid.setDisplayName( wd.getDisplayName() );
+                wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
+                wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
+                workItems.add( wid );
+            }
+            return workItems;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        return workItems;
     }
 
     private Set<PortableParameterDefinition> convertWorkItemParameters( final Set<ParameterDefinition> parameters ) {

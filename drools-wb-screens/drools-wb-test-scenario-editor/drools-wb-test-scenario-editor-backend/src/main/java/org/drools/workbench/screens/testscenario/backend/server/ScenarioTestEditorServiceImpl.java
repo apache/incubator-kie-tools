@@ -34,14 +34,15 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.services.backend.session.SessionService;
-import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
+import org.kie.workbench.common.services.backend.session.SessionService;
+import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
@@ -49,10 +50,10 @@ import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -110,29 +111,39 @@ public class ScenarioTestEditorServiceImpl
                         final String fileName,
                         final Scenario content,
                         final String comment ) {
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-        final Path newPath = paths.convert( nioPath,
-                                            false );
+        try {
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final Path newPath = paths.convert( nioPath,
+                                                false );
 
-        ioService.createFile( nioPath );
-        ioService.write( nioPath,
-                         ScenarioXMLPersistence.getInstance().marshal( content ),
-                         makeCommentedOption( comment ) );
+            ioService.createFile( nioPath );
+            ioService.write( nioPath,
+                             ScenarioXMLPersistence.getInstance().marshal( content ),
+                             makeCommentedOption( comment ) );
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-        return newPath;
+            return newPath;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Scenario load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return ScenarioXMLPersistence.getInstance().unmarshal( content );
+            return ScenarioXMLPersistence.getInstance().unmarshal( content );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -140,44 +151,64 @@ public class ScenarioTestEditorServiceImpl
                       final Scenario content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         ScenarioXMLPersistence.getInstance().marshal( content ),
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             ScenarioXMLPersistence.getInstance().marshal( content ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Invalidate Package-level DMO cache as Globals have changed.
-        invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+            //Invalidate Package-level DMO cache as Globals have changed.
+            invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
@@ -191,71 +222,94 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public TestScenarioModelContent loadContent( Path path ) {
-        return new TestScenarioModelContent(
-                load( path ),
-                dataModelService.getDataModel( path ),
-                projectService.resolvePackageName( path ) );
+        try {
+            return new TestScenarioModelContent(
+                    load( path ),
+                    dataModelService.getDataModel( path ),
+                    projectService.resolvePackageName( path ) );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
-    
+
     @Override
-    public void runScenario(Path path, Scenario scenario, String sessionName) {
+    public void runScenario( final Path path,
+                             final Scenario scenario,
+                             final String sessionName ) {
+        try {
 
-        Path pathToPom = projectService.resolvePathToPom(path);
+            final Path pathToPom = projectService.resolvePathToPom( path );
 
-        new ScenarioRunnerWrapper().run(scenario,
-                sessionService.newKieSession(pathToPom, sessionName),
-                testResultMessageEvent);
+            new ScenarioRunnerWrapper().run( scenario,
+                                             sessionService.newKieSession( pathToPom, sessionName ),
+                                             testResultMessageEvent );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
-    
+
     @Override
-    public void runAllScenarios(Path testResourcePath, String sessionName) {
-        Path pathToPom = projectService.resolvePathToPom(testResourcePath);
-        List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
-        List<Scenario> scenarios = new ArrayList<Scenario>();
-        for(Path path : scenarioPaths) {
-            Scenario s = load(path);
-            scenarios.add(s);
+    public void runAllScenarios( final Path testResourcePath,
+                                 final String sessionName ) {
+        try {
+            Path pathToPom = projectService.resolvePathToPom( testResourcePath );
+            List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
+            List<Scenario> scenarios = new ArrayList<Scenario>();
+            for ( Path path : scenarioPaths ) {
+                Scenario s = load( path );
+                scenarios.add( s );
+            }
+
+            new ScenarioRunnerWrapper().run( scenarios,
+                                             sessionService.newKieSession( pathToPom, sessionName ),
+                                             testResultMessageEvent );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        
-        new ScenarioRunnerWrapper().run(scenarios,
-                sessionService.newKieSession(pathToPom, sessionName),
-                testResultMessageEvent);
     }
-    
-    public List<Path> loadScenarioPaths(final Path path) {      
-        // Check Path exists
-        final List<Path> items = new ArrayList<Path>();
-        if (!Files.exists(paths.convert(path))) {
-            return items;
-        }
 
-        // Ensure Path represents a Folder
-        org.kie.commons.java.nio.file.Path pPath = paths.convert(path);
-        if (!Files.isDirectory(pPath)) {
-            pPath = pPath.getParent();
-        }
+    public List<Path> loadScenarioPaths( final Path path ) {
+        try {
+            // Check Path exists
+            final List<Path> items = new ArrayList<Path>();
+            if ( !Files.exists( paths.convert( path ) ) ) {
+                return items;
+            }
 
-        LinkedFilter filter =  new LinkedDotFileFilter();
-        LinkedFilter metaInfFolderFilter = new LinkedMetaInfFolderFilter();
-        filter.setNextFilter(metaInfFolderFilter);
-        FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(".scenario");     
+            // Ensure Path represents a Folder
+            org.kie.commons.java.nio.file.Path pPath = paths.convert( path );
+            if ( !Files.isDirectory( pPath ) ) {
+                pPath = pPath.getParent();
+            }
 
-        // Get list of immediate children
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath);
-        for (final org.kie.commons.java.nio.file.Path p : directoryStream) {          
-            if (filter.accept(p) && fileExtensionFilter.accept(p)) {
-                if (Files.isRegularFile(p)) {
-                    items.add(paths.convert(p));
-                } else if (Files.isDirectory(p)) {
-                    items.add(paths.convert(p));
+            LinkedFilter filter = new LinkedDotFileFilter();
+            LinkedFilter metaInfFolderFilter = new LinkedMetaInfFolderFilter();
+            filter.setNextFilter( metaInfFolderFilter );
+            FileExtensionFilter fileExtensionFilter = new FileExtensionFilter( ".scenario" );
+
+            // Get list of immediate children
+            final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( pPath );
+            for ( final org.kie.commons.java.nio.file.Path p : directoryStream ) {
+                if ( filter.accept( p ) && fileExtensionFilter.accept( p ) ) {
+                    if ( Files.isRegularFile( p ) ) {
+                        items.add( paths.convert( p ) );
+                    } else if ( Files.isDirectory( p ) ) {
+                        items.add( paths.convert( p ) );
+                    }
                 }
             }
+
+            // Add ability to move up one level in the hierarchy
+            //items.add(new ParentPackageItem(paths.convert(pPath.getParent()), ".."));
+
+            return items;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-
-        // Add ability to move up one level in the hierarchy
-        //items.add(new ParentPackageItem(paths.convert(pPath.getParent()), ".."));
-
-        return items;
     }
 
 }

@@ -26,14 +26,15 @@ import org.drools.workbench.screens.defaulteditor.service.DefaultEditorService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -63,16 +64,21 @@ public class DefaultEditorServiceImpl
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         content,
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             content,
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

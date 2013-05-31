@@ -30,8 +30,7 @@ import org.drools.workbench.screens.enums.service.EnumService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResultLine;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.workbench.common.services.shared.file.CopyService;
@@ -39,12 +38,14 @@ import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResultLine;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 /**
  *
@@ -94,34 +95,49 @@ public class EnumServiceImpl implements EnumService {
                         final String fileName,
                         final String content,
                         final String comment ) {
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-        final Path newPath = paths.convert( nioPath,
-                                            false );
+        try {
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final Path newPath = paths.convert( nioPath,
+                                                false );
 
-        ioService.createFile( nioPath );
-        ioService.write( nioPath,
-                         content,
-                         makeCommentedOption( comment ) );
+            ioService.createFile( nioPath );
+            ioService.write( nioPath,
+                             content,
+                             makeCommentedOption( comment ) );
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-        return newPath;
+            return newPath;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public String load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return content;
+            return content;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public EnumModelContent loadContent( final Path path ) {
-        return new EnumModelContent( new EnumModel( load( path ) ) );
+        try {
+            return new EnumModelContent( new EnumModel( load( path ) ) );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -129,65 +145,90 @@ public class EnumServiceImpl implements EnumService {
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        ioService.write( paths.convert( resource ),
-                         content,
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+        try {
+            ioService.write( paths.convert( resource ),
+                             content,
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Invalidate Package-level DMO cache as Enums have changed.
-        invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+            //Invalidate Package-level DMO cache as Enums have changed.
+            invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public BuilderResult validate( final Path path,
                                    final String content ) {
-        final DataEnumLoader loader = new DataEnumLoader( content );
-        if ( !loader.hasErrors() ) {
-            return new BuilderResult();
-        } else {
-            final List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-            final List<String> errs = loader.getErrors();
+        try {
+            final DataEnumLoader loader = new DataEnumLoader( content );
+            if ( !loader.hasErrors() ) {
+                return new BuilderResult();
+            } else {
+                final List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                final List<String> errs = loader.getErrors();
 
-            for ( final String message : errs ) {
-                final BuilderResultLine result = new BuilderResultLine().setResourceName( path.getFileName() ).setResourceFormat( FORMAT ).setResourceId( path.toURI() ).setMessage( message );
-                errors.add( result );
+                for ( final String message : errs ) {
+                    final BuilderResultLine result = new BuilderResultLine().setResourceName( path.getFileName() ).setResourceFormat( FORMAT ).setResourceId( path.toURI() ).setMessage( message );
+                    errors.add( result );
+                }
+
+                final BuilderResult result = new BuilderResult();
+                result.addLines( errors );
+
+                return result;
             }
 
-            final BuilderResult result = new BuilderResult();
-            result.addLines( errors );
-
-            return result;
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 

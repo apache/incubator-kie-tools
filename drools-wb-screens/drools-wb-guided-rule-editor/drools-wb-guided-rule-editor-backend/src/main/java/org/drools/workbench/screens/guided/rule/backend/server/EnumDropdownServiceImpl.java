@@ -16,15 +16,16 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
-import org.mvel2.MVEL;
-import org.mvel2.templates.TemplateRuntime;
-
-import javax.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
+import org.mvel2.MVEL;
+import org.mvel2.templates.TemplateRuntime;
 
 @Service
 @ApplicationScoped
@@ -32,36 +33,41 @@ public class EnumDropdownServiceImpl
         implements EnumDropdownService {
 
     @Override
-    public String[] loadDropDownExpression(final String[] valuePairs,
-                                           String expression) {
-        final Map<String, String> context = new HashMap<String, String>();
+    public String[] loadDropDownExpression( final String[] valuePairs,
+                                            String expression ) {
+        try {
+            final Map<String, String> context = new HashMap<String, String>();
 
-        for (final String valuePair : valuePairs) {
-            if (valuePair == null) {
-                return new String[0];
+            for ( final String valuePair : valuePairs ) {
+                if ( valuePair == null ) {
+                    return new String[ 0 ];
+                }
+                final String[] pair = valuePair.split( "=" );
+                context.put( pair[ 0 ],
+                             pair[ 1 ] );
             }
-            final String[] pair = valuePair.split("=");
-            context.put(pair[0],
-                    pair[1]);
-        }
-        // first interpolate the pairs
-        expression = (String) TemplateRuntime.eval(expression,
-                context);
+            // first interpolate the pairs
+            expression = (String) TemplateRuntime.eval( expression,
+                                                        context );
 
-        // now we can eval it for real...
-        Object result = MVEL.eval(expression);
-        if (result instanceof String[]) {
-            return (String[]) result;
-        } else if (result instanceof List) {
-            List l = (List) result;
-            String[] xs = new String[l.size()];
-            for (int i = 0; i < xs.length; i++) {
-                Object el = l.get(i);
-                xs[i] = el.toString();
+            // now we can eval it for real...
+            Object result = MVEL.eval( expression );
+            if ( result instanceof String[] ) {
+                return (String[]) result;
+            } else if ( result instanceof List ) {
+                List l = (List) result;
+                String[] xs = new String[ l.size() ];
+                for ( int i = 0; i < xs.length; i++ ) {
+                    Object el = l.get( i );
+                    xs[ i ] = el.toString();
+                }
+                return xs;
+            } else {
+                return null;
             }
-            return xs;
-        } else {
-            return null;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 

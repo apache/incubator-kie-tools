@@ -33,7 +33,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.SourceServices;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
@@ -43,12 +43,13 @@ import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -105,41 +106,56 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                         final String fileName,
                         final GuidedDecisionTable52 content,
                         final String comment ) {
-        content.setPackageName( projectService.resolvePackageName( context ) );
+        try {
+            content.setPackageName( projectService.resolvePackageName( context ) );
 
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-        final Path newPath = paths.convert( nioPath,
-                                            false );
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final Path newPath = paths.convert( nioPath,
+                                                false );
 
-        ioService.createFile( nioPath );
-        ioService.write( nioPath,
-                         GuidedDTXMLPersistence.getInstance().marshal( content ),
-                         makeCommentedOption( comment ) );
+            ioService.createFile( nioPath );
+            ioService.write( nioPath,
+                             GuidedDTXMLPersistence.getInstance().marshal( content ),
+                             makeCommentedOption( comment ) );
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-        return newPath;
+            return newPath;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public GuidedDecisionTable52 load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return GuidedDTXMLPersistence.getInstance().unmarshal( content );
+            return GuidedDTXMLPersistence.getInstance().unmarshal( content );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        final GuidedDecisionTable52 model = load( path );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-        final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
-        return new GuidedDecisionTableEditorContent( oracle,
-                                                     model,
-                                                     workItemDefinitions );
+        try {
+            final GuidedDecisionTable52 model = load( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
+            return new GuidedDecisionTableEditorContent( oracle,
+                                                         model,
+                                                         workItemDefinitions );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -147,50 +163,75 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                       final GuidedDecisionTable52 model,
                       final Metadata metadata,
                       final String comment ) {
-        model.setPackageName( projectService.resolvePackageName( resource ) );
+        try {
+            model.setPackageName( projectService.resolvePackageName( resource ) );
 
-        ioService.write( paths.convert( resource ),
-                         GuidedDTXMLPersistence.getInstance().marshal( model ),
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+            ioService.write( paths.convert( resource ),
+                             GuidedDTXMLPersistence.getInstance().marshal( model ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public String toSource( final Path path,
                             final GuidedDecisionTable52 model ) {
-        return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ),
-                                                                                model );
+        try {
+            return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ),
+                                                                                    model );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override

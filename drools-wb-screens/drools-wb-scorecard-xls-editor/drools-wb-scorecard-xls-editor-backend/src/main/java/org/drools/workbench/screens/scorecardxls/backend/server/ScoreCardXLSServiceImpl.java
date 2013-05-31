@@ -31,6 +31,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.StandardOpenOption;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
@@ -40,10 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -86,13 +87,18 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     private Identity identity;
 
     public InputStream load( final Path path ) {
-        final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
-                                                                  StandardOpenOption.READ );
+        try {
+            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                      StandardOpenOption.READ );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return inputStream;
+            return inputStream;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     public Path create( final Path resource,
@@ -118,8 +124,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
             return resource;
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
@@ -152,8 +158,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
             return resource;
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
@@ -167,26 +173,41 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override

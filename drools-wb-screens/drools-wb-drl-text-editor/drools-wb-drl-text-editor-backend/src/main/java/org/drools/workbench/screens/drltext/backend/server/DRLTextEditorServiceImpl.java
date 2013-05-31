@@ -30,7 +30,7 @@ import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
@@ -40,12 +40,13 @@ import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -96,41 +97,56 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                         final String fileName,
                         final String content,
                         final String comment ) {
-        final String drl = assertPackageName( content,
-                                              context );
+        try {
+            final String drl = assertPackageName( content,
+                                                  context );
 
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-        final Path newPath = paths.convert( nioPath,
-                                            false );
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final Path newPath = paths.convert( nioPath,
+                                                false );
 
-        ioService.createFile( nioPath );
-        ioService.write( nioPath,
-                         drl,
-                         makeCommentedOption( comment ) );
+            ioService.createFile( nioPath );
+            ioService.write( nioPath,
+                             drl,
+                             makeCommentedOption( comment ) );
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
+            //Signal creation to interested parties
+            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
-        return newPath;
+            return newPath;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public String load( final Path path ) {
-        final String content = ioService.readAllString( paths.convert( path ) );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
 
-        //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-        return content;
+            return content;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public DrlModelContent loadContent( final Path path ) {
-        final String drl = load( path );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+        try {
+            final String drl = load( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
 
-        return new DrlModelContent( drl,
-                                    oracle );
+            return new DrlModelContent( drl,
+                                        oracle );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -138,47 +154,67 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                       final String content,
                       final Metadata metadata,
                       final String comment ) {
-        final String drl = assertPackageName( content,
-                                              resource );
+        try {
+            final String drl = assertPackageName( content,
+                                                  resource );
 
-        ioService.write( paths.convert( resource ),
-                         drl,
-                         metadataService.setUpAttributes( resource,
-                                                          metadata ),
-                         makeCommentedOption( comment ) );
+            ioService.write( paths.convert( resource ),
+                             drl,
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             makeCommentedOption( comment ) );
 
-        //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-        invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+            //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
 
-        //Signal update to interested parties
-        resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            //Signal update to interested parties
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
 
-        return resource;
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        deleteService.delete( path,
-                              comment );
+        try {
+            deleteService.delete( path,
+                                  comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        return renameService.rename( path,
-                                     newName,
-                                     comment );
+        try {
+            return renameService.rename( path,
+                                         newName,
+                                         comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public Path copy( final Path path,
                       final String newName,
                       final String comment ) {
-        return copyService.copy( path,
-                                 newName,
-                                 comment );
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -198,29 +234,34 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     @Override
     public String assertPackageName( final String drl,
                                      final Path resource ) {
-        final String existingPackageName = PackageNameParser.parsePackageName( drl );
-        if ( !"".equals( existingPackageName ) ) {
-            return drl;
+        try {
+            final String existingPackageName = PackageNameParser.parsePackageName( drl );
+            if ( !"".equals( existingPackageName ) ) {
+                return drl;
+            }
+
+            final String requiredPackageName = projectService.resolvePackageName( resource );
+            final HasPackageName mockHasPackageName = new HasPackageName() {
+
+                @Override
+                public String getPackageName() {
+                    return requiredPackageName;
+                }
+
+                @Override
+                public void setPackageName( final String packageName ) {
+                    //Nothing to do here
+                }
+            };
+            final StringBuilder sb = new StringBuilder();
+            PackageNameWriter.write( sb,
+                                     mockHasPackageName );
+            sb.append( drl );
+            return sb.toString();
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-
-        final String requiredPackageName = projectService.resolvePackageName( resource );
-        final HasPackageName mockHasPackageName = new HasPackageName() {
-
-            @Override
-            public String getPackageName() {
-                return requiredPackageName;
-            }
-
-            @Override
-            public void setPackageName( final String packageName ) {
-                //Nothing to do here
-            }
-        };
-        final StringBuilder sb = new StringBuilder();
-        PackageNameWriter.write( sb,
-                                 mockHasPackageName );
-        sb.append( drl );
-        return sb.toString();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
