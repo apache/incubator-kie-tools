@@ -1,17 +1,16 @@
 package org.kie.workbench.common.services.project.backend.server;
 
-import java.io.IOException;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.model.POM;
@@ -20,8 +19,8 @@ import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -85,8 +84,8 @@ public class POMServiceImpl
 
             return paths.convert( pathToPOMXML );
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -98,12 +97,8 @@ public class POMServiceImpl
 
             return pomContentHandler.toModel( content );
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
-
-        } catch ( XmlPullParserException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
-
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -137,9 +132,8 @@ public class POMServiceImpl
 
             return path;
 
-        } catch ( IOException e ) {
-            throw new org.kie.commons.java.nio.IOException( e.getMessage() );
-
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 

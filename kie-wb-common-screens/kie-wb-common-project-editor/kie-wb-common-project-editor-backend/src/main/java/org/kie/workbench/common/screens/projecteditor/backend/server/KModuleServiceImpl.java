@@ -24,6 +24,7 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.backend.server.KModuleContentHandler;
 import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.model.KBaseModel;
@@ -64,22 +65,27 @@ public class KModuleServiceImpl
 
     @Override
     public Path setUpKModuleStructure( final Path projectRoot ) {
-        // Create project structure
-        final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
+        try {
+            // Create project structure
+            final org.kie.commons.java.nio.file.Path nioRoot = paths.convert( projectRoot );
 
-        ioService.createDirectory( nioRoot.resolve( "src/main/java" ) );
-        ioService.createDirectory( nioRoot.resolve( "src/main/resources" ) );
-        ioService.createDirectory( nioRoot.resolve( "src/test/java" ) );
-        ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
+            ioService.createDirectory( nioRoot.resolve( "src/main/java" ) );
+            ioService.createDirectory( nioRoot.resolve( "src/main/resources" ) );
+            ioService.createDirectory( nioRoot.resolve( "src/test/java" ) );
+            ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
 
-        final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
-        ioService.createFile( pathToKModuleXML );
-        ioService.write( pathToKModuleXML,
-                         moduleContentHandler.toString( makeDefaultKModule() ) );
+            final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            ioService.createFile( pathToKModuleXML );
+            ioService.write( pathToKModuleXML,
+                             moduleContentHandler.toString( makeDefaultKModule() ) );
 
-        //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
+            //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
-        return paths.convert( pathToKModuleXML );
+            return paths.convert( pathToKModuleXML );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private KModuleModel makeDefaultKModule() {
@@ -92,10 +98,15 @@ public class KModuleServiceImpl
 
     @Override
     public KModuleModel load( final Path path ) {
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-        final String content = ioService.readAllString( nioPath );
+        try {
+            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+            final String content = ioService.readAllString( nioPath );
 
-        return moduleContentHandler.toModel( content );
+            return moduleContentHandler.toModel( content );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
@@ -103,35 +114,45 @@ public class KModuleServiceImpl
                       final KModuleModel content,
                       final Metadata metadata,
                       final String comment ) {
-        if ( metadata == null ) {
-            ioService.write(
-                    paths.convert( path ),
-                    moduleContentHandler.toString( content ),
-                    makeCommentedOption( comment ) );
-        } else {
-            ioService.write(
-                    paths.convert( path ),
-                    moduleContentHandler.toString( content ),
-                    metadataService.setUpAttributes( path,
-                                                     metadata ),
-                    makeCommentedOption( comment ) );
+        try {
+            if ( metadata == null ) {
+                ioService.write(
+                        paths.convert( path ),
+                        moduleContentHandler.toString( content ),
+                        makeCommentedOption( comment ) );
+            } else {
+                ioService.write(
+                        paths.convert( path ),
+                        moduleContentHandler.toString( content ),
+                        metadataService.setUpAttributes( path,
+                                                         metadata ),
+                        makeCommentedOption( comment ) );
+            }
+
+            //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
+            //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+            //in POMService.save to avoid duplicating events (and re-construction of DMO).
+
+            return path;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-
-        //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
-        //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
-        //in POMService.save to avoid duplicating events (and re-construction of DMO).
-
-        return path;
     }
 
     @Override
     public Path pathToRelatedKModuleFileIfAny( final Path pathToPomXML ) {
-        final org.kie.commons.java.nio.file.Path directory = paths.convert( pathToPomXML ).getParent();
-        final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve( "src/main/resources/META-INF/kmodule.xml" );
-        if ( ioService.exists( pathToKModuleXML ) ) {
-            return paths.convert( pathToKModuleXML );
-        } else {
-            return null;
+        try {
+            final org.kie.commons.java.nio.file.Path directory = paths.convert( pathToPomXML ).getParent();
+            final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            if ( ioService.exists( pathToKModuleXML ) ) {
+                return paths.convert( pathToKModuleXML );
+            } else {
+                return null;
+            }
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 

@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
@@ -26,14 +31,10 @@ import org.kie.workbench.common.screens.explorer.model.BreadCrumb;
 import org.kie.workbench.common.screens.explorer.model.ExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
 
 @Service
 @ApplicationScoped
@@ -86,62 +87,67 @@ public class ExplorerServiceImpl
 
     @Override
     public ExplorerContent getContentInScope( final Path resource ) {
+        try {
 
-        final Path projectRootPath = projectService.resolveProject( resource );
+            final Path projectRootPath = projectService.resolveProject( resource );
 
-        //Null Path cannot be in a Project scope
-        if ( resource == null ) {
-            return makeOutsideProjectList( resource,
-                                           projectRootPath );
+            //Null Path cannot be in a Project scope
+            if ( resource == null ) {
+                return makeOutsideProjectList( resource,
+                                               projectRootPath );
+            }
+
+            //Check if Path is within a Project scope
+            if ( projectRootPath == null ) {
+                return makeOutsideProjectList( resource,
+                                               projectRootPath );
+            }
+
+            //Check if Path is Project root
+            final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRootPath );
+            final org.kie.commons.java.nio.file.Path pResource = paths.convert( resource );
+            final boolean isProjectRootPath = Files.isSameFile( pRoot,
+                                                                pResource );
+            if ( isProjectRootPath ) {
+                return makeProjectRootList( resource,
+                                            projectRootPath );
+            }
+
+            //Check if Path is within Projects Source Java resources
+            final org.kie.commons.java.nio.file.Path pSrcJavaResources = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
+            if ( pResource.startsWith( pSrcJavaResources ) ) {
+                return makeProjectPackageList( resource,
+                                               projectRootPath );
+            }
+
+            //Check if Path is within Projects Source resources
+            final org.kie.commons.java.nio.file.Path pSrcResources = pRoot.resolve( SOURCE_RESOURCES_PATH );
+            if ( pResource.startsWith( pSrcResources ) ) {
+                return makeProjectPackageList( resource,
+                                               projectRootPath );
+            }
+
+            //Check if Path is within Projects Test Java resources
+            final org.kie.commons.java.nio.file.Path pTestJavaResources = pRoot.resolve( TEST_JAVA_RESOURCES_PATH );
+            if ( pResource.startsWith( pTestJavaResources ) ) {
+                return makeProjectPackageList( resource,
+                                               projectRootPath );
+            }
+
+            //Check if Path is within Projects Test resources
+            final org.kie.commons.java.nio.file.Path pTestResources = pRoot.resolve( TEST_RESOURCES_PATH );
+            if ( pResource.startsWith( pTestResources ) ) {
+                return makeProjectPackageList( resource,
+                                               projectRootPath );
+            }
+
+            //Otherwise Path must be between Project root and Project resources
+            return makeProjectNonPackageList( resource,
+                                              projectRootPath );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-
-        //Check if Path is within a Project scope
-        if ( projectRootPath == null ) {
-            return makeOutsideProjectList( resource,
-                                           projectRootPath );
-        }
-
-        //Check if Path is Project root
-        final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRootPath );
-        final org.kie.commons.java.nio.file.Path pResource = paths.convert( resource );
-        final boolean isProjectRootPath = Files.isSameFile( pRoot,
-                                                            pResource );
-        if ( isProjectRootPath ) {
-            return makeProjectRootList( resource,
-                                        projectRootPath );
-        }
-
-        //Check if Path is within Projects Source Java resources
-        final org.kie.commons.java.nio.file.Path pSrcJavaResources = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
-        if ( pResource.startsWith( pSrcJavaResources ) ) {
-            return makeProjectPackageList( resource,
-                                           projectRootPath );
-        }
-
-        //Check if Path is within Projects Source resources
-        final org.kie.commons.java.nio.file.Path pSrcResources = pRoot.resolve( SOURCE_RESOURCES_PATH );
-        if ( pResource.startsWith( pSrcResources ) ) {
-            return makeProjectPackageList( resource,
-                                           projectRootPath );
-        }
-
-        //Check if Path is within Projects Test Java resources
-        final org.kie.commons.java.nio.file.Path pTestJavaResources = pRoot.resolve( TEST_JAVA_RESOURCES_PATH );
-        if ( pResource.startsWith( pTestJavaResources ) ) {
-            return makeProjectPackageList( resource,
-                                           projectRootPath );
-        }
-
-        //Check if Path is within Projects Test resources
-        final org.kie.commons.java.nio.file.Path pTestResources = pRoot.resolve( TEST_RESOURCES_PATH );
-        if ( pResource.startsWith( pTestResources ) ) {
-            return makeProjectPackageList( resource,
-                                           projectRootPath );
-        }
-
-        //Otherwise Path must be between Project root and Project resources
-        return makeProjectNonPackageList( resource,
-                                          projectRootPath );
     }
 
     private ExplorerContent makeOutsideProjectList( final Path path,

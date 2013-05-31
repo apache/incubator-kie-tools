@@ -25,6 +25,7 @@ import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
@@ -74,32 +75,41 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public PageResponse<SearchPageRow> fullTextSearch( final SearchTermPageRequest pageRequest ) {
-        final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(), roots() );
-        if ( hits > 0 ) {
-            final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(), pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
-            return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+        try {
+            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(), roots() );
+            if ( hits > 0 ) {
+                final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(), pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
+                return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+            }
+            return emptyResponse;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        return emptyResponse;
     }
 
     @Override
     public PageResponse<SearchPageRow> queryMetadata( final QueryMetadataPageRequest pageRequest ) {
+        try {
+            final Map<String, Object> attrs = new HashMap<String, Object>( pageRequest.getMetadata() );
 
-        final Map<String, Object> attrs = new HashMap<String, Object>( pageRequest.getMetadata() );
+            if ( pageRequest.getCreatedAfter() != null || pageRequest.getCreatedBefore() != null ) {
+                attrs.put( "creationTime", toDateRange( pageRequest.getCreatedBefore(), pageRequest.getCreatedAfter() ) );
+            }
+            if ( pageRequest.getLastModifiedAfter() != null || pageRequest.getLastModifiedBefore() != null ) {
+                attrs.put( "lastModifiedTime", toDateRange( pageRequest.getLastModifiedBefore(), pageRequest.getLastModifiedAfter() ) );
+            }
 
-        if ( pageRequest.getCreatedAfter() != null || pageRequest.getCreatedBefore() != null ) {
-            attrs.put( "creationTime", toDateRange( pageRequest.getCreatedBefore(), pageRequest.getCreatedAfter() ) );
-        }
-        if ( pageRequest.getLastModifiedAfter() != null || pageRequest.getLastModifiedBefore() != null ) {
-            attrs.put( "lastModifiedTime", toDateRange( pageRequest.getLastModifiedBefore(), pageRequest.getLastModifiedAfter() ) );
-        }
+            final int hits = ioSearchService.searchByAttrsHits( attrs, roots() );
+            if ( hits > 0 ) {
+                final List<Path> pathResult = ioSearchService.searchByAttrs( attrs, pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
+                return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+            }
+            return emptyResponse;
 
-        final int hits = ioSearchService.searchByAttrsHits( attrs, roots() );
-        if ( hits > 0 ) {
-            final List<Path> pathResult = ioSearchService.searchByAttrs( attrs, pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
-            return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        return emptyResponse;
     }
 
     private PageResponse<SearchPageRow> buildResponse( final List<Path> pathResult,

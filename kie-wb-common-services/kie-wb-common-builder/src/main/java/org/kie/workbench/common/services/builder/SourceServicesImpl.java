@@ -16,19 +16,20 @@
 
 package org.kie.workbench.common.services.builder;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.workbench.common.services.backend.SourceService;
-import org.kie.workbench.common.services.backend.SourceServices;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.workbench.common.services.backend.SourceService;
+import org.kie.workbench.common.services.backend.SourceServices;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 
 @Service
 @ApplicationScoped
@@ -50,17 +51,27 @@ public class SourceServicesImpl
 
     @Override
     public boolean hasServiceFor( final Path path ) {
-        final SourceService sourceService = getMatchingSourceService( path );
-        return sourceService != null;
+        try {
+            final SourceService sourceService = getMatchingSourceService( path );
+            return sourceService != null;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
     public SourceService getServiceFor( final Path path ) {
-        final SourceService sourceService = getMatchingSourceService( path );
-        if ( sourceService == null ) {
-            throw new IllegalArgumentException( "No SourceService found for '" + path + "'." );
+        try {
+            final SourceService sourceService = getMatchingSourceService( path );
+            if ( sourceService == null ) {
+                throw new IllegalArgumentException( "No SourceService found for '" + path + "'." );
+            }
+            return sourceService;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        return sourceService;
     }
 
     private SourceService getMatchingSourceService( final Path path ) {

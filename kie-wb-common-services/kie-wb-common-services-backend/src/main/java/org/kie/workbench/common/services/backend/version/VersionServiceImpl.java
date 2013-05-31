@@ -27,6 +27,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.base.version.VersionAttributeView;
 import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.shared.version.VersionService;
 import org.kie.workbench.common.services.shared.version.model.PortableVersionRecord;
 import org.uberfire.backend.server.util.Paths;
@@ -51,25 +52,34 @@ public class VersionServiceImpl implements VersionService {
 
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
+        try {
+            final List<VersionRecord> records = ioService.getFileAttributeView( paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
 
-        final List<VersionRecord> records = ioService.getFileAttributeView( paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
+            final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
 
-        final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
+            for ( final VersionRecord record : records ) {
+                result.add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
+            }
 
-        for ( final VersionRecord record : records ) {
-            result.add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
+            return result;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-
-        return result;
     }
 
     @Override
     public Path restore( final Path _path,
                          final String comment ) {
-        final org.kie.commons.java.nio.file.Path path = paths.convert( _path );
+        try {
+            final org.kie.commons.java.nio.file.Path path = paths.convert( _path );
 
-        final org.kie.commons.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
+            final org.kie.commons.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-        return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( identity.getName(), comment ) ) );
+            return paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( identity.getName(), comment ) ) );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 }

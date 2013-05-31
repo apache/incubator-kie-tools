@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.shared.config.AppConfigService;
 
 @Service
@@ -35,12 +36,16 @@ public class AppConfigServiceImpl implements AppConfigService {
 
     @Override
     public Map<String, String> loadPreferences() {
-        if ( preferences == null ) {
-            preferences = preferencesLoader.load();
-            ApplicationPreferencesInitializer.setSystemProperties( preferences );
-        }
-        return preferences;
+        try {
+            if ( preferences == null ) {
+                preferences = preferencesLoader.load();
+                ApplicationPreferencesInitializer.setSystemProperties( preferences );
+            }
+            return preferences;
 
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override

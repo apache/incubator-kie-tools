@@ -25,9 +25,10 @@ import javax.inject.Inject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.DeployResult;
@@ -62,7 +63,7 @@ public class BuildServiceImpl
                              final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                              final ProjectService projectService,
                              final LRUBuilderCache cache,
-                             final Event<DeployResult> deployResultEvent) {
+                             final Event<DeployResult> deployResultEvent ) {
         this.paths = paths;
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
@@ -75,27 +76,39 @@ public class BuildServiceImpl
 
     @Override
     public void build( final Path pathToPom ) {
-        final BuildResults results = doBuild( pathToPom );
-        buildResultsEvent.fire( results );
+        try {
+            final BuildResults results = doBuild( pathToPom );
+            buildResultsEvent.fire( results );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+
     }
 
     @Override
     public void buildAndDeploy( final Path pathToPom ) {
-        //Build
-        final BuildResults results = doBuild( pathToPom );
-        buildResultsEvent.fire( results );
+        try {
+            //Build
+            final BuildResults results = doBuild( pathToPom );
+            buildResultsEvent.fire( results );
 
-        //Deploy, if no errors
-        if ( results.getMessages().isEmpty() ) {
-            final POM pom = pomService.load( pathToPom );
-            final Builder builder = cache.assertBuilder( pathToPom );
-            final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
-            final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
-            m2RepoService.deployJar( input,
-                                     pom.getGav() );
-            deployResultEvent.fire(
-                    new DeployResult(pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion()));
+            //Deploy, if no errors
+            if ( results.getMessages().isEmpty() ) {
+                final POM pom = pomService.load( pathToPom );
+                final Builder builder = cache.assertBuilder( pathToPom );
+                final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+                final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
+                m2RepoService.deployJar( input,
+                                         pom.getGav() );
+                deployResultEvent.fire(
+                        new DeployResult( pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion() ) );
+            }
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
+
     }
 
     private BuildResults doBuild( final Path pathToPom ) {
@@ -106,70 +119,95 @@ public class BuildServiceImpl
 
     @Override
     public void addPackageResource( final Path resource ) {
-        final Path pathToPom = projectService.resolvePathToPom( resource );
-        if ( pathToPom == null ) {
-            return;
+        try {
+            final Path pathToPom = projectService.resolvePathToPom( resource );
+            if ( pathToPom == null ) {
+                return;
+            }
+            final Builder builder = cache.assertBuilder( pathToPom );
+            if ( !builder.isBuilt() ) {
+                build( pathToPom );
+            }
+            final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
+            incrementalBuildResultsEvent.fire( results );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        final Builder builder = cache.assertBuilder( pathToPom );
-        if ( !builder.isBuilt() ) {
-            build( pathToPom );
-        }
-        final IncrementalBuildResults results = builder.addResource( paths.convert( resource ) );
-        incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
     public void deletePackageResource( final Path resource ) {
-        final Path pathToPom = projectService.resolvePathToPom( resource );
-        if ( pathToPom == null ) {
-            return;
+        try {
+            final Path pathToPom = projectService.resolvePathToPom( resource );
+            if ( pathToPom == null ) {
+                return;
+            }
+            final Builder builder = cache.assertBuilder( pathToPom );
+            if ( !builder.isBuilt() ) {
+                build( pathToPom );
+            }
+            final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
+            incrementalBuildResultsEvent.fire( results );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        final Builder builder = cache.assertBuilder( pathToPom );
-        if ( !builder.isBuilt() ) {
-            build( pathToPom );
-        }
-        final IncrementalBuildResults results = builder.deleteResource( paths.convert( resource ) );
-        incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
     public void updatePackageResource( final Path resource ) {
-        final Path pathToPom = projectService.resolvePathToPom( resource );
-        if ( pathToPom == null ) {
-            return;
+        try {
+            final Path pathToPom = projectService.resolvePathToPom( resource );
+            if ( pathToPom == null ) {
+                return;
+            }
+            final Builder builder = cache.assertBuilder( pathToPom );
+            if ( !builder.isBuilt() ) {
+                build( pathToPom );
+            }
+            final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
+            incrementalBuildResultsEvent.fire( results );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        final Builder builder = cache.assertBuilder( pathToPom );
-        if ( !builder.isBuilt() ) {
-            build( pathToPom );
-        }
-        final IncrementalBuildResults results = builder.updateResource( paths.convert( resource ) );
-        incrementalBuildResultsEvent.fire( results );
     }
 
     @Override
     public void updateProjectResource( final Path resource ) {
-        final Path pathToPom = projectService.resolvePathToPom( resource );
-        if ( pathToPom == null ) {
-            return;
-        }
-        final Builder builder = cache.assertBuilder( pathToPom );
-        if ( !builder.isBuilt() ) {
-            build( pathToPom );
+        try {
+            final Path pathToPom = projectService.resolvePathToPom( resource );
+            if ( pathToPom == null ) {
+                return;
+            }
+            final Builder builder = cache.assertBuilder( pathToPom );
+            if ( !builder.isBuilt() ) {
+                build( pathToPom );
+            }
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
     public void applyBatchResourceChanges( final Path projectRoot,
                                            final Set<ResourceChange> changes ) {
-        final Path pathToPom = projectService.resolvePathToPom( projectRoot );
-        if ( pathToPom == null ) {
-            return;
+        try {
+            final Path pathToPom = projectService.resolvePathToPom( projectRoot );
+            if ( pathToPom == null ) {
+                return;
+            }
+            final Builder builder = cache.assertBuilder( pathToPom );
+            if ( !builder.isBuilt() ) {
+                build( pathToPom );
+            }
+            final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
+            incrementalBuildResultsEvent.fire( results );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        final Builder builder = cache.assertBuilder( pathToPom );
-        if ( !builder.isBuilt() ) {
-            build( pathToPom );
-        }
-        final IncrementalBuildResults results = builder.applyBatchResourceChanges( changes );
-        incrementalBuildResultsEvent.fire( results );
     }
 }
