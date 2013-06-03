@@ -1,0 +1,9 @@
+.sectionHeader {
+    font-weight: bold;
+    font-size: larger;
+    padding: 5px 25px 5px 5px;
+}
+
+.sectionBody {
+    padding: 5px 25px 5px 5px;
+}

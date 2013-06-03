@@ -22,6 +22,7 @@
     <module>kie-wb-common-project-explorer</module>
     <module>kie-wb-common-search-screen</module>
     <module>kie-wb-common-data-modeller</module>
+    <module>kie-wb-common-home</module>
   </modules>
 
   <build>
