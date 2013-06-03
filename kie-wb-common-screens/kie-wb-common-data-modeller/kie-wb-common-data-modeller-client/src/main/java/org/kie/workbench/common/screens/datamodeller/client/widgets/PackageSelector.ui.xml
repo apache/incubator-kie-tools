@@ -25,7 +25,7 @@
     <gwt:HTMLPanel>
         <gwt:HorizontalPanel>
             <b:ListBox ui:field="packageList"></b:ListBox>
-            <b:Button ui:field="newPackage" styleName="btn btn-primary" text="{i18n.objectEditor_create}"/>
+            <b:Button ui:field="newPackage" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
         </gwt:HorizontalPanel>
     </gwt:HTMLPanel>
 </ui:UiBinder>

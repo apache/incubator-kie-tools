@@ -98,8 +98,6 @@ public class DataObjectFieldEditor extends Composite {
 
     private DataModelerContext context;
 
-    private List<String> baseTypes;
-
     public DataObjectFieldEditor() {
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -133,10 +131,6 @@ public class DataObjectFieldEditor extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        this.baseTypes = new ArrayList<String>(getContext().getBaseTypes().size());
-        for (PropertyTypeTO baseType : getContext().getBaseTypes()) {
-            this.baseTypes.add(baseType.getClassName());
-        }
         initTypeList();
     }
 
@@ -328,16 +322,15 @@ public class DataObjectFieldEditor extends Composite {
 
         String oldValue = getObjectField().getClassName();
         String type = typeSelector.getValue();
-        int i = type.lastIndexOf(DataModelerUtils.MULTIPLE);
-        if (i >= 0) {
-            type = type.substring(0, i);
+        if (DataModelerUtils.isMultipleType(type)) {
+            type = DataModelerUtils.getCanonicalClassName(type);
             getObjectField().setMultiple(true);
         } else {
             getObjectField().setMultiple(false);
         }
         getObjectField().setClassName(type);
 
-        if (baseTypes.contains(type)) {
+        if (getContext().getHelper().isBaseType(type)) {
             getObjectField().setBaseType(true);
         } else {
             // Un-reference former type reference and set the new one
@@ -352,8 +345,12 @@ public class DataObjectFieldEditor extends Composite {
     void equalsChanged(final ClickEvent event) {
         if (getObjectField() == null) return;
 
+        Boolean oldEquals = null;
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
-        final Boolean oldEquals = (annotation != null) ? (Boolean) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM) : false;
+        if (annotation != null) {
+            Object annotationValue = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
+            oldEquals = annotationValue != null ? (Boolean) annotationValue : Boolean.FALSE;
+        }
         final Boolean setEquals = equalsSelector.getValue();
 
         if (annotation != null && !setEquals) getObjectField().removeAnnotation(annotation);

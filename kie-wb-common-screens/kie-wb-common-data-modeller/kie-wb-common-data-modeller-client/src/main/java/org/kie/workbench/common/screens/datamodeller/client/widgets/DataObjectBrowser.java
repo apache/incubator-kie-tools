@@ -85,25 +85,28 @@ public class DataObjectBrowser extends Composite {
     CellTable<ObjectPropertyTO> dataObjectPropertiesTable = new CellTable<ObjectPropertyTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
 
     @UiField
-    Label newPropertyLabel;
+    Label newPropertyHeader;
 
     @UiField
-    com.github.gwtbootstrap.client.ui.TextBox newPropertyName;
+    Label newPropertyIdLabel;
+
+    @UiField
+    com.github.gwtbootstrap.client.ui.TextBox newPropertyId;
+
+    @UiField
+    Label newPropertyLabelLabel;
+
+    @UiField
+    com.github.gwtbootstrap.client.ui.TextBox newPropertyLabel;
+
+    @UiField
+    Label newPropertyTypeLabel;
 
     @UiField
     com.github.gwtbootstrap.client.ui.ListBox newPropertyType;
 
     @UiField
     Button newPropertyButton;
-
-    @UiField
-    com.github.gwtbootstrap.client.ui.RadioButton newPropertyBasicType;
-
-    @UiField
-    com.github.gwtbootstrap.client.ui.RadioButton newPropertyDataObjectType;
-
-    @UiField
-    com.github.gwtbootstrap.client.ui.CheckBox newPropertyIsMultiple;
 
     private DataObjectTO dataObject;
 
@@ -124,19 +127,22 @@ public class DataObjectBrowser extends Composite {
     public DataObjectBrowser() {
         initWidget(uiBinder.createAndBindUi(this));
 
-        //objectName.setText(Constants.INSTANCE.objectEditor_objectUnknown());
+        newPropertyId.getElement().getStyle().setWidth(180, Style.Unit.PX);
+        newPropertyLabel.getElement().getStyle().setWidth(160, Style.Unit.PX);
+        newPropertyType.getElement().getStyle().setWidth(200, Style.Unit.PX);
+
         objectName.setText("");
 
         dataObjectPropertiesProvider.setList(dataObjectProperties);
 
         //Init data objects table
 
-        dataObjectPropertiesTable.setEmptyTableWidget(new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.objectEditor_emptyTable()));
+        dataObjectPropertiesTable.setEmptyTableWidget(new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.objectBrowser_emptyTable()));
 
         //Init delete column
         ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
         final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
-        decorator.setText(Constants.INSTANCE.objectEditor_action_deleteProperty());
+        decorator.setText(Constants.INSTANCE.objectBrowser_action_deleteProperty());
 
         final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>(decorator) {
             @Override
@@ -191,7 +197,7 @@ public class DataObjectBrowser extends Composite {
 
 
         propertyNameColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyNameColumn, Constants.INSTANCE.objectEditor_columnName());
+        dataObjectPropertiesTable.addColumn(propertyNameColumn, Constants.INSTANCE.objectBrowser_columnName());
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
 
 
@@ -231,7 +237,7 @@ public class DataObjectBrowser extends Composite {
         };
 
         propertyLabelColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyLabelColumn, Constants.INSTANCE.objectEditor_columnLabel());
+        dataObjectPropertiesTable.addColumn(propertyLabelColumn, Constants.INSTANCE.objectBrowser_columnLabel());
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyLabelColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
@@ -298,7 +304,7 @@ public class DataObjectBrowser extends Composite {
             }
         };
         propertyTypeColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyTypeColumn, Constants.INSTANCE.objectEditor_columnType());
+        dataObjectPropertiesTable.addColumn(propertyTypeColumn, Constants.INSTANCE.objectBrowser_columnType());
         //dataObjectPropertiesTable.setColumnWidth(propertyTypeColumn, 100, Style.Unit.PX);
 
 
@@ -327,9 +333,6 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesProvider.addDataDisplay(dataObjectPropertiesTable);
         dataObjectPropertiesProvider.refresh();
 
-        newPropertyIsMultiple.setVisible(false);
-        newPropertyIsMultiple.setValue(false);
-        newPropertyBasicType.setValue(true);
         newPropertyButton.setIcon(IconType.PLUS_SIGN);
 
         enableNewPropertyAction(false);
@@ -350,40 +353,45 @@ public class DataObjectBrowser extends Composite {
         dataObjectNavigation.setContext(context);
     }
 
-    private void populateBaseTypes() {
+    private void initTypeList() {
         newPropertyType.clear();
         newPropertyType.addItem("", NOT_SELECTED);
-        for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-            newPropertyType.addItem(baseType.getKey(), baseType.getValue());
-        }
-    }
 
-    private void populateObjectTypes() {
-        newPropertyType.clear();
-        newPropertyType.addItem("", NOT_SELECTED);
         SortedMap<String, String> typeNames = new TreeMap<String, String>();
         if (getDataModel() != null) {
-            // Add all model types, ordered
-            typeNames.clear();
-            for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
-                typeNames.put(DataModelerUtils.getDataObjectFullLabel(dataObject), dataObject.getClassName());
+            // First add all base types, ordered
+            for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
+                newPropertyType.addItem(baseType.getKey(), baseType.getValue());
+                // TODO add multiple types for base types?
             }
-            for (Map.Entry<String,String> entry : typeNames.entrySet()) {
-                newPropertyType.addItem(entry.getKey(), entry.getValue());
+
+            // Second add all model types, ordered
+            for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
+                String className = dataObject.getClassName();
+                String className_m = className + DataModelerUtils.MULTIPLE;
+                String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
+                String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
+                typeNames.put(classLabel, className);
+                typeNames.put(classLabel_m, className_m);
+            }
+            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
+                newPropertyType.addItem(typeName.getKey(), typeName.getValue());
             }
 
             // Then add all external types, ordered
             typeNames.clear();
             for (String extClass : getDataModel().getExternalClasses()) {
-                typeNames.put(extClass, extClass);
+                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
+                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
+                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
             }
-            for (String typeName : typeNames.keySet()) {
-                newPropertyType.addItem(DataModelerUtils.EXTERNAL_PREFIX + typeName, typeName);
+            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
+                newPropertyType.addItem(typeName.getKey(), typeName.getValue());
             }
         }
     }
 
-    private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyType, final boolean multiple, final boolean baseType) {
+    private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyLabel, final String propertyType) {
         if (dataObject != null) {
             validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
                 @Override
@@ -402,7 +410,15 @@ public class DataObjectBrowser extends Composite {
                         @Override
                         public void onSuccess() {
                             if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
-                                ObjectPropertyTO property = new ObjectPropertyTO(propertyName, propertyType, multiple, baseType);
+                                Boolean isMultiple = DataModelerUtils.isMultipleType(propertyType);
+                                String canonicalType = isMultiple ? DataModelerUtils.getCanonicalClassName(propertyType) : propertyType;
+                                ObjectPropertyTO property = new ObjectPropertyTO(propertyName,
+                                                                                 canonicalType,
+                                                                                 isMultiple,
+                                                                                 getContext().getHelper().isBaseType(canonicalType));
+                                if (propertyLabel != null && !"".equals(propertyLabel)) {
+                                    property.addAnnotation( getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
+                                }
                                 addDataObjectProperty(property);
                                 resetInput();
                             } else {
@@ -515,21 +531,16 @@ public class DataObjectBrowser extends Composite {
     }
 
     private void enableNewPropertyAction(boolean enable) {
-        //newPropertyLabel....setEnabled(false);
-        newPropertyName.setEnabled(enable);
+        newPropertyId.setEnabled(enable);
+        newPropertyLabel.setEnabled(enable);
         newPropertyType.setEnabled(enable);
         newPropertyButton.setEnabled(enable);
-        newPropertyBasicType.setEnabled(enable);
-        newPropertyDataObjectType.setEnabled(enable);
-        newPropertyIsMultiple.setEnabled(enable);
     }
 
     private void resetInput() {
-        newPropertyName.setText(null);
-        newPropertyBasicType.setValue(Boolean.TRUE);
-        newPropertyIsMultiple.setValue(Boolean.FALSE);
-        newPropertyIsMultiple.setVisible(false);
-        populateBaseTypes();
+        newPropertyId.setText(null);
+        newPropertyLabel.setText(null);
+        initTypeList();
         newPropertyType.setSelectedValue(NOT_SELECTED);
     }
 
@@ -538,23 +549,9 @@ public class DataObjectBrowser extends Composite {
     @UiHandler("newPropertyButton")
     void newPropertyClick(ClickEvent event) {
         createNewProperty(  dataObject,
-                            DataModelerUtils.getInstance().unCapitalize(newPropertyName.getText()),
-                            newPropertyType.getValue(),
-                            newPropertyIsMultiple.getValue(),
-                            newPropertyBasicType.getValue() );
-    }
-
-    @UiHandler("newPropertyDataObjectType")
-    void dataObjectTypeSelected(ClickEvent event) {
-        newPropertyIsMultiple.setVisible(true);
-        populateObjectTypes();
-    }
-
-    @UiHandler("newPropertyBasicType")
-    void basicTypeSelected(ClickEvent event) {
-        newPropertyIsMultiple.setVisible(false);
-        newPropertyIsMultiple.setValue(false);
-        populateBaseTypes();
+                            DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
+                            newPropertyLabel.getText(),
+                            newPropertyType.getValue() );
     }
 
     //Event Observers
@@ -570,14 +567,14 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         if (event.isFrom(getDataModel())) {
-            if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+            initTypeList();
             enableNewPropertyAction(true);
         }
     }
 
     private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
         if (event.isFrom(getDataModel())) {
-            if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+            initTypeList();
             // When all objects from current model have been deleted clean
             if (getDataModel().getDataObjects().size() == 0) {
                 dataObjectPropertiesProvider.getList().clear();
@@ -598,7 +595,7 @@ public class DataObjectBrowser extends Composite {
                 "label".equals(event.getPropertyName())) {
 
                 objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
-                if (newPropertyDataObjectType.getValue()) populateObjectTypes();
+                initTypeList();
             }
         }
     }

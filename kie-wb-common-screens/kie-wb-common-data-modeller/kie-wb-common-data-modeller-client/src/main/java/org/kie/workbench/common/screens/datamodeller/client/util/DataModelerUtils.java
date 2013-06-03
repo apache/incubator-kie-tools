@@ -28,6 +28,21 @@ public class DataModelerUtils {
         return new DataModelerUtils();
     }
 
+    public static Boolean isMultipleType(String type) {
+        return type.lastIndexOf(DataModelerUtils.MULTIPLE) >= 0;
+    }
+
+    // Returns the object's type without the multiple ('[0..N]') extension, in case of a multiple type
+    public static String getCanonicalClassName(String type) {
+        if (type != null && !"".equals(type)) {
+            if (isMultipleType(type)) {
+                int i = type.lastIndexOf(DataModelerUtils.MULTIPLE);
+                return type.substring(0, i);
+            }
+        }
+        return type;
+    }
+
     public static String getDataObjectUILabel(DataObjectTO dataObject) {
         if (dataObject != null) {
             String label = dataObject.getLabel();

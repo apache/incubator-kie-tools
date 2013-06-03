@@ -35,48 +35,44 @@
                             <h5>
                                 <gwt:Label ui:field="objectName" ></gwt:Label>
                             </h5>
-                            <gwt:ScrollPanel width="100%" height="338px">
-                            <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
+                            <gwt:ScrollPanel width="100%" height="457px">
+                                <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
                             </gwt:ScrollPanel>
                             <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
                             <h5>
-                                <gwt:Label ui:field="newPropertyLabel" text="{i18n.objectEditor_createProperty}"/>
+                                <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
                             </h5>
 
-                            <gwt:VerticalPanel styleName="row-fluid">
-                                <b:TextBox b:id="newPropertyName" ui:field="newPropertyName" placeholder="{i18n.java_id_placeholder}"/>
-                                <gwt:HTMLPanel>
-                                    <div class="well span6">
-                                        <table class="row-fluid span6">
-                                            <tr>
-                                                <td class="span3" style="white-space: nowrap;">
-                                                    <b:RadioButton ui:field="newPropertyBasicType" name="typeMode" text="{i18n.objectEditor_basicType}" />
-                                                </td>
-                                                <td class="span3" style="white-space: nowrap;">
-                                                    <b:RadioButton ui:field="newPropertyDataObjectType" name="typeMode" text="{i18n.objectEditor_dataObjectType}"/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <table class="row-fluid">
-                                            <tr>
-                                                <td style="padding: 0 4px;">
-                                                    <b:ListBox ui:field="newPropertyType"></b:ListBox>
-                                                </td>
-                                                <td>
-                                                    <b:CheckBox ui:field="newPropertyIsMultiple" text="{i18n.objectEditor_multiple}"/>
-                                                </td>
-                                            </tr>
-
-                                        </table>
-                                    </div>
-                                </gwt:HTMLPanel>
-                            </gwt:VerticalPanel>
-                            <b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectEditor_create}"/>
-
+                            <table>
+                                <tr>
+                                    <td style="white-space: nowrap; vertical-align: top;">
+                                        <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
+                                    </td>
+                                    <td style="padding-left: 4px;">
+                                        <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
+                                    </td>
+                                    <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
+                                        <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
+                                    </td>
+                                    <td align="right" style="padding-left: 4px;">
+                                        <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="white-space: nowrap; vertical-align: top;">
+                                        <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
+                                    </td>
+                                    <td style="padding-left: 4px;">
+                                        <b:ListBox ui:field="newPropertyType"></b:ListBox>
+                                    </td>
+                                    <td colspan="2" align="right" style="padding-left: 4px;">
+                                        <b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
+                                    </td>
+                                </tr>
+                            </table>
 
                         </div>
                     </gwt:HTMLPanel>
-
 
                 </gwt:VerticalPanel>
             </b:Column>

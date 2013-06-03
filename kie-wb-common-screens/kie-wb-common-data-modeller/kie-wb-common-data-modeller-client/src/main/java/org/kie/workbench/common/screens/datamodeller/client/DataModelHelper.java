@@ -99,6 +99,10 @@ public class DataModelHelper {
     public void dataObjectUnSelected(String objectClassName) {
     }
 
+    public Boolean isBaseType(String type) {
+        return orderedBaseTypes.containsValue(type);
+    }
+
     public Boolean isBeingExtended(String parentClassName) {
         Set s = siblingsMap.get(parentClassName);
         return s != null && s.size() > 0;

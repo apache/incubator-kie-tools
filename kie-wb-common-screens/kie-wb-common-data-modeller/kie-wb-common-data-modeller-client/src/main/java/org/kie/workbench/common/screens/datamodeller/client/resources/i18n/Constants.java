@@ -81,27 +81,27 @@ public interface Constants extends Messages {
 
     public String modelBrowser_columnName();
 
-    public String objectEditor_objectUnknown();
-    
-    public String objectEditor_createProperty();
+    public String objectBrowser_createProperty();
 
-    public String objectEditor_create();
+    public String objectBrowser_create();
 
-    public String objectEditor_emptyTable();
+    public String objectBrowser_emptyTable();
 
-    public String objectEditor_columnName();
+    public String objectBrowser_columnName();
 
-    public String objectEditor_columnLabel();
+    public String objectBrowser_columnLabel();
 
-    public String objectEditor_columnType();
+    public String objectBrowser_columnType();
 
-    public String objectEditor_basicType();
-    
-    public String objectEditor_dataObjectType();
-    
-    public String objectEditor_multiple();
+    public String objectBrowser_action_deleteProperty();
 
-    public String objectEditor_action_deleteProperty();
+    public String objectBrowser_idLabel();
+
+    public String objectBrowser_labelLabel();
+
+    public String objectBrowser_typeLabel();
+
+    public String objectBrowser_labelPlaceholder();
 
     public String objectEditor_nameLabel();
 
