@@ -28,7 +28,7 @@
       margin: 0;
       pading: 0;
       color: #fff;
-      background: url('<%=request.getContextPath()%>/org.drools.workbench.DroolsWorkbench/images/bg-login.png') repeat #1b1b1b;
+      background: url('<%=request.getContextPath()%>/images/bg-login.png') repeat #1b1b1b;
       font-size: 14px;
       text-shadow: #050505 0 -1px 0;
       font-weight: bold;
@@ -45,7 +45,7 @@
       border-bottom: solid 3px #777973;
       height: 250px;
       width: 100%;
-      background: url('<%=request.getContextPath()%>/org.drools.workbench.DroolsWorkbench/images/bg-login-top.png') repeat #fff;
+      background: url('<%=request.getContextPath()%>/images/bg-login-top.png') repeat #fff;
       z-index: 1;
     }
 
@@ -142,7 +142,7 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="<%=request.getContextPath()%>/org.drools.workbench.DroolsWorkbench/images/uf_logo.png" alt="Logo" title="Powered By Uberfire"/>
+    <img src="<%=request.getContextPath()%>/images/uf_logo.png" alt="Logo" title="Powered By Uberfire"/>
   </div>
 
   <div id="login-content">

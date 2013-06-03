@@ -49,7 +49,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
  * A Perspective for Rule authors
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.kie.guvnor.client.perspectives.authoring", isDefault = true)
+@WorkbenchPerspective(identifier = "org.drools.workbench.client.perspectives.AuthoringPerspective")
 public class AuthoringPerspective {
 
     @Inject

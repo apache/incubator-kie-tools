@@ -52,7 +52,7 @@ import static org.uberfire.workbench.model.toolbar.IconType.FOLDER_CLOSE_ALT;
  * A Perspective for Administrators
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.kie.guvnor.client.perspectives.administration")
+@WorkbenchPerspective(identifier = "org.drools.workbench.client.perspectives.AdministrationPerspective")
 public class AdministrationPerspective {
 
     private static String[] PERMISSIONS_ADMIN = new String[]{ "ADMIN" };
