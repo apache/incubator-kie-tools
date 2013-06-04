@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -57,7 +59,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     // monitor capabilities
     @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
-    private Thread monitorThread;
+    private ExecutorService executorService;
 
     @PostConstruct
     public void setup() {
@@ -70,15 +72,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         // enable monitor by default
         if (System.getProperty(MONITOR_DISABLED) == null) {
-            this.monitorThread = new Thread(new CheckConfigurationUpdates());
-            this.monitorThread.start();
+            executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(new CheckConfigurationUpdates());
         }
     }
 
     @PreDestroy
     public void shutdown() {
-        if (this.monitorThread != null) {
-            this.monitorThread.interrupt();
+        if (this.executorService != null) {
+            this.executorService.shutdownNow();
         }
     }
 
