@@ -25,6 +25,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -41,12 +43,15 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
 @WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
 public class ProjectImportsScreenPresenter
         implements ProjectImportsScreenView.Presenter {
 
     private ProjectImportsScreenView view;
 
+    private Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
 
     private Event<NotificationEvent> notification;
@@ -64,11 +69,13 @@ public class ProjectImportsScreenPresenter
     public ProjectImportsScreenPresenter(@New ProjectImportsScreenView view,
                                          @New FileMenuBuilder menuBuilder,
                                          @New ImportsWidgetPresenter importsWidget,
+                                         Caller<ProjectService> projectService,
                                          Caller<MetadataService> metadataService,
                                          Event<NotificationEvent> notification) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.importsWidget = importsWidget;
+        this.projectService = projectService;
         this.metadataService = metadataService;
         this.notification = notification;
         view.setPresenter(this);
@@ -76,17 +83,25 @@ public class ProjectImportsScreenPresenter
 
     @OnStart
     public void init(final Path path) {
-        this.path = path;
+        this.path = checkNotNull("path",
+                path);
 
         makeMenuBar();
 
         view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-        loadContent();
+        projectService.call(getModelSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
     }
 
-    private void loadContent() {
-        importsWidget.init(path, true);
+    private RemoteCallback<ProjectImports> getModelSuccessCallback() {
+        return new RemoteCallback<ProjectImports>() {
+
+            @Override
+            public void callback(final ProjectImports projectImports) {
+               importsWidget.setData(projectImports, false);
+            }
+        };
     }
 
     private void makeMenuBar() {

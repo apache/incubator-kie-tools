@@ -16,107 +16,57 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.project.service.POMService;
-import org.kie.workbench.common.services.data.observer.Observer;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
+import org.kie.workbench.common.services.data.observer.Observer;
+import org.kie.workbench.common.services.project.service.model.POM;
+
+import javax.inject.Inject;
 
 public class POMEditorPanel
         implements IsWidget {
 
     private final POMEditorPanelView view;
-    private Path path;
     private POM model;
-    private final Caller<POMService> pomServiceCaller;
     private Observer<POM> observer;
 
     @Inject
-    public POMEditorPanel( final Caller<POMService> pomServiceCaller,
-                           final POMEditorPanelView view ) {
-        this.pomServiceCaller = pomServiceCaller;
+    public POMEditorPanel(final POMEditorPanelView view) {
         this.view = view;
 
     }
 
-    public void init( final Path path,
-                      final boolean isReadOnly ) {
-        this.path = path;
-        if ( isReadOnly ) {
+    public void setPOM(POM model, boolean isReadOnly) {
+        if (isReadOnly) {
             view.setReadOnly();
         }
-        //Busy popup is handled by ProjectEditorScreen
-        pomServiceCaller.call( getModelSuccessCallback(),
-                               new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
-    }
 
-    private RemoteCallback<POM> getModelSuccessCallback() {
-        return new RemoteCallback<POM>() {
+        this.model = model;
+        observer = new Observer(model);
 
+        view.setGAV(model.getGav());
+        view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
             @Override
-            public void callback( final POM model ) {
-                POMEditorPanel.this.model = model;
-                observer = new Observer(model);
-
-                view.setGAV( model.getGav() );
-                view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
-                    @Override
-                    public void onChange( String newArtifactId ) {
-                        setTitle( newArtifactId );
-                    }
-                } );
-                setTitle( model.getGav().getArtifactId() );
-                view.setDependencies( POMEditorPanel.this.model.getDependencies() );
+            public void onChange(String newArtifactId) {
+                setTitle(newArtifactId);
             }
-        };
+        });
+        setTitle(model.getGav().getArtifactId());
+        view.setDependencies(POMEditorPanel.this.model.getDependencies());
     }
 
-    private void setTitle( final String titleText ) {
-        if ( titleText == null || titleText.isEmpty() ) {
-            view.setTitleText( ProjectEditorConstants.INSTANCE.ProjectModel() );
+    private void setTitle(final String titleText) {
+        if (titleText == null || titleText.isEmpty()) {
+            view.setTitleText(ProjectEditorConstants.INSTANCE.ProjectModel());
         } else {
-            view.setTitleText( titleText );
+            view.setTitleText(titleText);
         }
-    }
-
-    public void save( final String commitMessage,
-                      final Command callback,
-                      final Metadata metadata ) {
-        //Busy popup is handled by ProjectEditorScreen
-        pomServiceCaller.call( getSaveSuccessCallback( callback ),
-                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                        model,
-                                                                                        metadata,
-                                                                                        commitMessage );
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback( final Command callback ) {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                callback.execute();
-                view.showSaveSuccessful( "pom.xml" );
-            }
-        };
     }
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
-    }
-
-    public String getTitle() {
-        return view.getTitleWidget();
     }
 
     public boolean isDirty() {

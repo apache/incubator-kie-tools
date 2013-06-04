@@ -34,9 +34,7 @@ import static org.mockito.Mockito.*;
 
 public class KModuleEditorPanelTest {
 
-    private Path path;
     private KModuleEditorPanelView view;
-    private MockProjectEditorServiceCaller projectEditorServiceCaller;
     private KModuleEditorPanel screenK;
     private ListFormComboPanelView.Presenter presenter;
     private FormPopup nameNamePopup;
@@ -44,20 +42,16 @@ public class KModuleEditorPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        path = mock(Path.class);
         view = mock(KModuleEditorPanelView.class);
-        projectEditorServiceCaller = new MockProjectEditorServiceCaller();
 
         nameNamePopup = mock(FormPopup.class);
         form = mock(KBaseForm.class);
-        screenK = new KModuleEditorPanel(projectEditorServiceCaller, form, nameNamePopup, view);
+        screenK = new KModuleEditorPanel( form, nameNamePopup, view);
         presenter = screenK;
     }
 
     @Test
     public void testShowEmptyModel() throws Exception {
-        projectEditorServiceCaller.setUpModelForLoading(new KModuleModel());
-
         verify(view, never()).addItem(anyString());
     }
 
@@ -68,8 +62,7 @@ public class KModuleEditorPanelTest {
         kModuleModel.add(createKBaseConfiguration("First"));
         kModuleModel.add(createKBaseConfiguration("Second"));
         kModuleModel.add(createKBaseConfiguration("Third"));
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         verify(view).addItem("First");
         verify(view).addItem("Second");
@@ -83,8 +76,7 @@ public class KModuleEditorPanelTest {
         KModuleModel kModuleModel = new KModuleModel();
         KBaseModel theOne = createKBaseConfiguration("TheOne");
         kModuleModel.add(theOne);
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         presenter.onSelect("TheOne");
 
@@ -95,8 +87,7 @@ public class KModuleEditorPanelTest {
     public void testAddKBase() throws Exception {
 
         KModuleModel kModuleModel = new KModuleModel();
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         presenter.onAdd();
 
@@ -116,8 +107,7 @@ public class KModuleEditorPanelTest {
 
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("RemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         presenter.onSelect("RemoveMe");
 
@@ -132,8 +122,7 @@ public class KModuleEditorPanelTest {
 
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("RenameMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         presenter.onSelect("RenameMe");
 
@@ -153,8 +142,7 @@ public class KModuleEditorPanelTest {
 
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         presenter.onRemove();
 
@@ -170,8 +158,7 @@ public class KModuleEditorPanelTest {
         KModuleModel kModuleModel = new KModuleModel();
         kModuleModel.add(createKBaseConfiguration("RemoveMe"));
         kModuleModel.add(createKBaseConfiguration("CantRemoveMe"));
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
+        screenK.setData(kModuleModel, false);
 
         // Select one and remove.
         presenter.onSelect("RemoveMe");
@@ -184,24 +171,6 @@ public class KModuleEditorPanelTest {
 
         assertNotNull(kModuleModel.get("CantRemoveMe"));
         verify(view, never()).remove("CantRemoveMe");
-    }
-
-    @Test
-    public void testSave() throws Exception {
-        KModuleModel kModuleModel = new KModuleModel();
-        projectEditorServiceCaller.setUpModelForLoading(kModuleModel);
-        screenK.init(path, false);
-
-        Metadata metadata = mock(Metadata.class);
-        screenK.save("my commit message", new Command() {
-            @Override
-            public void execute() {
-
-            }
-        }, metadata);
-
-        assertEquals(kModuleModel, projectEditorServiceCaller.getSavedModel());
-        verify(view).showSaveSuccessful("kmodule.xml");
     }
 
     private KBaseModel createKBaseConfiguration(String name) {

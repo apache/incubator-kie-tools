@@ -33,65 +33,21 @@ public class POMEditorPanelTest {
 
     private POMEditorPanelView view;
     private POMEditorPanel panel;
-    private MockPomServiceCaller pomServiceCaller;
 
     @Before
     public void setUp() throws Exception {
         view = mock(POMEditorPanelView.class);
-        pomServiceCaller = new MockPomServiceCaller();
-        panel = new POMEditorPanel(pomServiceCaller, view);
+        panel = new POMEditorPanel(view);
     }
 
     @Test
     public void testLoad() throws Exception {
         POM gavModel = createTestModel("group", "artifact", "1.1.1");
-        pomServiceCaller.setGav(gavModel);
-        Path path = mock(Path.class);
-        panel.init(path, false);
+        panel.setPOM(gavModel, false);
 
         verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("artifact");
         verify(view).setDependencies(gavModel.getDependencies());
-    }
-
-    @Test
-    public void testSave() throws Exception {
-        POM gavModel = createTestModel("my.group", "my.artifact", "1.0-SNAPSHOT");
-        pomServiceCaller.setGav(gavModel);
-        Path path = mock(Path.class);
-        panel.init(path, false);
-
-        verify(view).setGAV(gavModel.getGav());
-        verify(view).setTitleText("my.artifact");
-
-        gavModel.getGav().setGroupId("group2");
-        gavModel.getGav().setArtifactId("artifact2");
-
-        ArgumentCaptor<ArtifactIdChangeHandler> captor = ArgumentCaptor.forClass(ArtifactIdChangeHandler.class);
-        verify(view).addArtifactIdChangeHandler(captor.capture());
-        gavModel.getGav().setVersion("2.2.2");
-        captor.getValue().onChange("2.2.2");
-
-        verify(view).setTitleText("2.2.2");
-
-        Metadata metadata = mock(Metadata.class);
-        panel.save(
-                "Commit message",
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //TODO -Rikkola-
-                    }
-                },
-                metadata);
-
-        POM savedGav = pomServiceCaller.getSavedPOM();
-        assertNotNull(savedGav);
-        assertEquals("group2", savedGav.getGav().getGroupId());
-        assertEquals("artifact2", savedGav.getGav().getArtifactId());
-        assertEquals("2.2.2", savedGav.getGav().getVersion());
-
-        verify(view).showSaveSuccessful("pom.xml");
     }
 
     private POM createTestModel(String group, String artifact, String version) {
