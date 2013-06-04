@@ -11,8 +11,18 @@ import org.kie.commons.validation.PortablePreconditions;
  */
 public class HomeModel {
 
+    private final String title;
     private final List<CarouselEntry> carouselEntries = new ArrayList<CarouselEntry>();
-    private List<Section> sections = new ArrayList<Section>();
+    private final List<Section> sections = new ArrayList<Section>();
+
+    public HomeModel( final String title ) {
+        this.title = PortablePreconditions.checkNotNull( "title",
+                                                         title );
+    }
+
+    public String getTitle() {
+        return title;
+    }
 
     public void addCarouselEntry( final CarouselEntry entry ) {
         carouselEntries.add( PortablePreconditions.checkNotNull( "entry",

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.home.client;
+package org.kie.workbench.common.screens.home.client.widgets.home;
 
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -68,7 +69,10 @@ public class HomeViewImpl extends Composite
     CarouselWidget carousel;
 
     @UiField
-    HorizontalPanel columnsContainer;
+    HeadingElement title;
+
+    @UiField
+    HorizontalPanel columns;
 
     public HomeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -93,6 +97,9 @@ public class HomeViewImpl extends Composite
                                                           ( index == 0 ) ) );
         }
 
+        //Title
+        title.setInnerText( SafeHtmlUtils.htmlEscape( model.getTitle() ) );
+
         //Add Sections
         for ( Section section : model.getSections() ) {
             if ( authzManager.authorize( section,
@@ -103,7 +110,7 @@ public class HomeViewImpl extends Composite
                     vs.add( makeSectionEntry( sectionEntry.getCaption(),
                                               sectionEntry.getOnClickCommand() ) );
                 }
-                this.columnsContainer.add( vs );
+                this.columns.add( vs );
             }
         }
     }
