@@ -3,13 +3,13 @@ package org.kie.workbench.common.screens.home.client.sections;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * A Section laying it's children vertically
+ * A Section positioning it's children vertically
  */
-public class VerticalSection extends VerticalPanel {
+public class VerticalSectionWidget extends VerticalPanel {
 
-    private Header header = new Header();
+    private HeaderWidget header = new HeaderWidget();
 
-    public VerticalSection() {
+    public VerticalSectionWidget() {
         add( header );
     }
 

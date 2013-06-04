@@ -6,9 +6,9 @@ import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 /**
  * A Section header
  */
-public class Header extends Label {
+public class HeaderWidget extends Label {
 
-    public Header() {
+    public HeaderWidget() {
         setStyleName( HomeResources.INSTANCE.CSS().sectionHeader());
     }
 

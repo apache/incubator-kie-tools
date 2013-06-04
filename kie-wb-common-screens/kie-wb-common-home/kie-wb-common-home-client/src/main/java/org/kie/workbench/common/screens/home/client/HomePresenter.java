@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.home.client.model.HomeModel;
 import org.kie.workbench.common.screens.home.client.resources.i18n.HomeConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -33,13 +34,19 @@ public class HomePresenter {
             extends
             UberView<HomePresenter> {
 
+        void setModel( final HomeModel model );
+
     }
 
     @Inject
     private HomeView view;
 
+    @Inject
+    private HomeModel model;
+
     @PostConstruct
     public void init() {
+        view.setModel( model );
     }
 
     @WorkbenchPartTitle

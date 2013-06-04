@@ -23,7 +23,7 @@
 
   <g:HTMLPanel>
     <div class="container">
-      <c:Carousel ui:field="carousel"/>
+      <c:CarouselWidget ui:field="carousel"/>
       <g:HorizontalPanel ui:field="columnsContainer"/>
     </div>
   </g:HTMLPanel>

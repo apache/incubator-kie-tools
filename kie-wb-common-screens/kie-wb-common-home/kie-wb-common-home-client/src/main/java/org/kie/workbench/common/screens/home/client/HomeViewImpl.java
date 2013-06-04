@@ -28,13 +28,16 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.home.client.carousel.Carousel;
-import org.kie.workbench.common.screens.home.client.carousel.CarouselEntry;
+import org.kie.workbench.common.screens.home.client.carousel.CarouselEntryWidget;
+import org.kie.workbench.common.screens.home.client.carousel.CarouselWidget;
+import org.kie.workbench.common.screens.home.client.model.CarouselEntry;
+import org.kie.workbench.common.screens.home.client.model.HomeModel;
+import org.kie.workbench.common.screens.home.client.model.Section;
+import org.kie.workbench.common.screens.home.client.model.SectionEntry;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
-import org.kie.workbench.common.screens.home.client.sections.VerticalSection;
+import org.kie.workbench.common.screens.home.client.sections.VerticalSectionWidget;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.Command;
 
 public class HomeViewImpl extends Composite
         implements
@@ -54,7 +57,7 @@ public class HomeViewImpl extends Composite
     private PlaceManager placeManager;
 
     @UiField
-    Carousel carousel;
+    CarouselWidget carousel;
 
     @UiField
     HorizontalPanel columnsContainer;
@@ -66,35 +69,39 @@ public class HomeViewImpl extends Composite
     @Override
     public void init( final HomePresenter presenter ) {
         this.presenter = presenter;
-        carousel.addCarouselEntry( makeCarouselEntry( "Author",
-                                                      "Formalize your Business Knowledge",
-                                                      "/images/flowers.jpg",
-                                                      true ) );
-        carousel.addCarouselEntry( makeCarouselEntry( "Deploy",
-                                                      "Learn how to configure your environment",
-                                                      "/images/flowers.jpg",
-                                                      false ) );
-
-        final VerticalSection vs1 = new VerticalSection();
-        vs1.setHeaderText( "Discover and Author:" );
-        vs1.add( makeSectionEntry( "Author",
-                                   new DefaultPlaceRequest( "org.drools.workbench.client.perspectives.AuthoringPerspective" ) ) );
-        this.columnsContainer.add( vs1 );
-
-        final VerticalSection vs2 = new VerticalSection();
-        vs2.setHeaderText( "Deploy:" );
-        vs2.add( makeSectionEntry( "Manage and Deploy Your Assets",
-                                   new DefaultPlaceRequest( "org.drools.workbench.client.perspectives.AdministrationPerspective" ) ) );
-        vs2.add( makeSectionEntry( "Assets Repository",
-                                   new DefaultPlaceRequest( "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective" ) ) );
-        this.columnsContainer.add( vs2 );
     }
 
-    private CarouselEntry makeCarouselEntry( final String heading,
-                                             final String subHeading,
-                                             final String imageUri,
-                                             final boolean active ) {
-        final CarouselEntry item = new CarouselEntry();
+    @Override
+    public void setModel( final HomeModel model ) {
+        if ( model == null ) {
+            return;
+        }
+        //Add Carousel entries
+        for ( int index = 0; index < model.getCarouselEntries().size(); index++ ) {
+            final CarouselEntry entry = model.getCarouselEntries().get( index );
+            carousel.addCarouselEntry( makeCarouselEntry( entry.getHeading(),
+                                                          entry.getSubHeading(),
+                                                          entry.getImageUrl(),
+                                                          ( index == 0 ) ) );
+        }
+
+        //Add Sections
+        for ( Section section : model.getSections() ) {
+            final VerticalSectionWidget vs = new VerticalSectionWidget();
+            vs.setHeaderText( section.getHeading() );
+            for ( SectionEntry sectionEntry : section.getEntries() ) {
+                vs.add( makeSectionEntry( sectionEntry.getCaption(),
+                                          sectionEntry.getOnClickCommand() ) );
+            }
+            this.columnsContainer.add( vs );
+        }
+    }
+
+    private CarouselEntryWidget makeCarouselEntry( final String heading,
+                                                   final String subHeading,
+                                                   final String imageUri,
+                                                   final boolean active ) {
+        final CarouselEntryWidget item = new CarouselEntryWidget();
         item.setHeading( SafeHtmlUtils.fromString( heading ) );
         item.setSubHeading( SafeHtmlUtils.fromString( subHeading ) );
         item.setImageUri( UriUtils.fromString( imageUri ) );
@@ -103,14 +110,14 @@ public class HomeViewImpl extends Composite
     }
 
     private Widget makeSectionEntry( final String caption,
-                                     final PlaceRequest place ) {
+                                     final Command command ) {
         final Anchor anchor = new Anchor( caption );
         anchor.setStyleName( HomeResources.INSTANCE.CSS().sectionBody() );
         anchor.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( final ClickEvent event ) {
-                placeManager.goTo( place );
+                command.execute();
             }
 
         } );

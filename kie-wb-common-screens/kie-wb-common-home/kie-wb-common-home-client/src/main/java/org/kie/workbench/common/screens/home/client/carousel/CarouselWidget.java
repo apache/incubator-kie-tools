@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A Carousel
  */
-public class Carousel extends Widget {
+public class CarouselWidget extends Widget {
 
     interface CarouselBinder
             extends
-            UiBinder<DivElement, Carousel> {
+            UiBinder<DivElement, CarouselWidget> {
 
     }
 
@@ -22,11 +22,11 @@ public class Carousel extends Widget {
     @UiField
     DivElement itemsElement;
 
-    public Carousel() {
+    public CarouselWidget() {
         setElement( uiBinder.createAndBindUi( this ) );
     }
 
-    public void addCarouselEntry( final CarouselEntry entry ) {
+    public void addCarouselEntry( final CarouselEntryWidget entry ) {
         itemsElement.appendChild( entry.getElement() );
     }
 

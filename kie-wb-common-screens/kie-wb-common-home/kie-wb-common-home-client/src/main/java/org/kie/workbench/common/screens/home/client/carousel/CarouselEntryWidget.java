@@ -14,11 +14,11 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A Carousel image
  */
-public class CarouselEntry extends Widget {
+public class CarouselEntryWidget extends Widget {
 
     interface CarouselItemBinder
             extends
-            UiBinder<DivElement, CarouselEntry> {
+            UiBinder<DivElement, CarouselEntryWidget> {
 
     }
 
@@ -33,7 +33,7 @@ public class CarouselEntry extends Widget {
     @UiField
     ParagraphElement subHeadingElement;
 
-    public CarouselEntry() {
+    public CarouselEntryWidget() {
         setElement( uiBinder.createAndBindUi( this ) );
     }
 
