@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <title>Guvnor NG</title>
-    <link rel="shortcut icon" href="/images/drools.gif" type="image/gif"/>
-    <link rel="icon" href="/images/drools.gif" type="image/gif"/>
+    <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
+    <link rel="icon" href="images/drools.gif" type="image/gif"/>
     <link rel="stylesheet" href="css/drools-workbench.css">
 
 </head>
@@ -17,7 +17,7 @@
 <!--add loading indicator while the app is being loaded-->
 <div id="loading">
     <div class="loading-indicator">
-        <img src="/images/loading-icon.gif" width="32" height="32" style="margin-right: 8px; float: left; vertical-align: top;"/>
+        <img src="images/loading-icon.gif" width="32" height="32" style="margin-right: 8px; float: left; vertical-align: top;"/>
         Please wait<br/><span id="loading-msg">Loading application...</span>
     </div>
 </div>
