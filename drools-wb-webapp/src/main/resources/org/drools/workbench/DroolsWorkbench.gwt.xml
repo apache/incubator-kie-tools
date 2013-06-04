@@ -4,7 +4,6 @@
 <module>
   <!-- Errai -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
-  <inherits name="org.jboss.errai.ui.UI" />
 
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireWorkbench"/>
