@@ -37,10 +37,10 @@ public class DataModelHelper {
     // Map that keeps track of the siblings a parent class has.
     private Map<String, Set<String>> siblingsMap = new HashMap<String, Set<String>>(10);
 
-    // List of all class names that coexist within a project
-    private List<String> classNames = new ArrayList<String>(10);
+    // Map of all class names and their corresponding labels (if any) that coexist within a project
+    private Map<String, String> classNames = new HashMap<String, String>(10);
 
-    // List of all labelled class names that coexist within a project
+    // Map of all labelled class names that coexist within a project
     private Map<String, String> labelledClassNames = new TreeMap<String, String>();
 
     Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
@@ -54,8 +54,14 @@ public class DataModelHelper {
         return false;
     }
 
+    public String getObjectLabelByClassName(String className) {
+        return classNames.get(className);
+    }
+
     public List<String> getClassList() {
-        return Collections.unmodifiableList(classNames);
+        List<String> l = new ArrayList<String>(classNames.size());
+        l.addAll(classNames.keySet());
+        return Collections.unmodifiableList(l);
     }
 
     public Map<String, String> getLabelledClassMap() {
@@ -130,13 +136,13 @@ public class DataModelHelper {
         labelledClassNames.clear();
         siblingsMap.clear();
         if (dataModel != null) {
-            classNames.addAll(dataModel.getExternalClasses());
             for (String extClassName : dataModel.getExternalClasses()) {
+                classNames.put(extClassName, null);
                 labelledClassNames.put(extClassName, extClassName);
             }
             for (DataObjectTO object : dataModel.getDataObjects()) {
                 String className = object.getClassName();
-                classNames.add(className);
+                classNames.put(className, object.getLabel());
                 labelledClassNames.put(DataModelerUtils.getDataObjectFullLabel(object), className);
 
                 String superClassName = object.getSuperClassName();

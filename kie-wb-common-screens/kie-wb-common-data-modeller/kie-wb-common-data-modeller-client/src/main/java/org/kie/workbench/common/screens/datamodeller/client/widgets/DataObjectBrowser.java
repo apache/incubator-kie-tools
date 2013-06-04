@@ -505,13 +505,14 @@ public class DataObjectBrowser extends Composite {
     }
 
     private String propertyTypeDisplay(ObjectPropertyTO property) {
-        String className = property.getClassName();
-        if (property.isBaseType()) {
-            className = DataModelerUtils.getInstance().extractClassName(property.getClassName());
-        } else if (property.isMultiple()) {
-            className += DataModelerUtils.MULTIPLE;
+        String displayName = property.getClassName();
+        if (property.isBaseType()) return DataModelerUtils.getInstance().extractClassName(displayName);
+        String label = getContext().getHelper().getObjectLabelByClassName(displayName);
+        if (label != null && !"".equals(label)) displayName = label;
+        if (property.isMultiple()) {
+            displayName += DataModelerUtils.MULTIPLE;
         }
-        return className;
+        return displayName;
     }
 
     private DataModelTO getDataModel() {

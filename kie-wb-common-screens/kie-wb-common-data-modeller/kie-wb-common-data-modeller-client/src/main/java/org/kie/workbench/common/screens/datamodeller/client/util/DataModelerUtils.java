@@ -32,7 +32,7 @@ public class DataModelerUtils {
         return type.lastIndexOf(DataModelerUtils.MULTIPLE) >= 0;
     }
 
-    // Returns the object's type without the multiple ('[0..N]') extension, in case of a multiple type
+    // Returns the object's type without the multiple ('[0..N]') extension, in case of a multiple type.
     public static String getCanonicalClassName(String type) {
         if (type != null && !"".equals(type)) {
             if (isMultipleType(type)) {
@@ -43,6 +43,9 @@ public class DataModelerUtils {
         return type;
     }
 
+    /*
+     * Returns the data-object's class name or the label, in case the object has one.
+     */
     public static String getDataObjectUILabel(DataObjectTO dataObject) {
         if (dataObject != null) {
             String label = dataObject.getLabel();
@@ -56,6 +59,10 @@ public class DataModelerUtils {
         return s.length() > maxLength ? s.substring(0, maxLength) + CLIPPED_MARKER : s;
     }
 
+    /*
+     * Returns the data-object's class name or, in case the object has a label, the label followed by the
+     * class name between brackets.
+     */
     public static String getDataObjectFullLabel(DataObjectTO dataObject) {
         StringBuilder sb = new StringBuilder("");
         if (dataObject != null) {
