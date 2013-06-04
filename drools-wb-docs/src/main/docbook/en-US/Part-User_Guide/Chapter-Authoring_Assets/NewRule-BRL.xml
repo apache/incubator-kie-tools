@@ -9,7 +9,7 @@
   <para>Business Rules authored with the Guided Editor are more commonly known as "BRL Rules".</para>
 
   <para>These rules use the guided GUI which controls and prompts user input based on knowledge of the object
-  model.</para>
+    org.kie.workbench.common.screens.projecteditor.model.</para>
 
   <para>This can also be augmented with DSL sentences.</para>
 
@@ -198,9 +198,10 @@
         </listitem>
       </itemizedlist><note>
         <para>Complex Event Processing operators are also available when the Fact has been declared as an event. Refer
-        to the "Fact Model" chapter of this user-guide for details on how to add annotations to your Fact model. Events
-        have access to the full range of CEP operators; Date field-types are restricted to "after", "before" and
-        "coincides".</para>
+          to the "Fact Model" chapter of this user-guide for details on how to add annotations to your Fact
+          org.kie.workbench.common.screens.projecteditor.model. Events
+          have access to the full range of CEP operators; Date field-types are restricted to "after", "before" and
+          "coincides".</para>
       </note><note>
         <para>Facts annotated as Events can also have CEP sliding windows defined.</para>
       </note></para>

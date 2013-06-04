@@ -30,12 +30,13 @@
   </figure>
 
   <para>The figure above shows the window used to create or modify Working
-  Sets. In this window you will find 2 lists. The list on the left side
-  contains the possible Fact Types that can be added to the Working Set. These
-  facts are those defined/imported in the package's model. The list on the
-  right side contains the allowed Fact Types of this Working Set. When this
-  Working Sets is active, only those Fact Types could be used while authoring
-  rules using the Guided BRL Editor</para>
+    Sets. In this window you will find 2 lists. The list on the left side
+    contains the possible Fact Types that can be added to the Working Set. These
+    facts are those defined/imported in the package's org.kie.workbench.common.screens.projecteditor.model. The list on
+    the
+    right side contains the allowed Fact Types of this Working Set. When this
+    Working Sets is active, only those Fact Types could be used while authoring
+    rules using the Guided BRL Editor</para>
 
   <figure>
     <title>Defining Field Constraints inside a Working Set</title>

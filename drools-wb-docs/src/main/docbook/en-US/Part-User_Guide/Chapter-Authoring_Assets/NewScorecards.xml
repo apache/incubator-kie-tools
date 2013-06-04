@@ -62,7 +62,7 @@
       <listitem>
         <para>
           Resultant Score Field: Shows a list of fields from the selected fact. Only fields of type 'double' are shown.
-          If this dropdown is empty double check your fact model.
+          If this dropdown is empty double check your fact org.kie.workbench.common.screens.projecteditor.model.
           The final calculated score will be stored in this field.
         </para>
       </listitem>
