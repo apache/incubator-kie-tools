@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:c="urn:import:org.kie.workbench.common.screens.home.client.carousel">
+    xmlns:c="urn:import:org.kie.workbench.common.screens.home.client.widgets.carousel">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.home.client.resources.HomeResources"/>
 

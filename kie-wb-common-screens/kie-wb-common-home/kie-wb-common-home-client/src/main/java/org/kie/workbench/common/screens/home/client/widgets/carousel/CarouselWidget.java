@@ -1,4 +1,4 @@
-package org.kie.workbench.common.screens.home.client.carousel;
+package org.kie.workbench.common.screens.home.client.widgets.carousel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;

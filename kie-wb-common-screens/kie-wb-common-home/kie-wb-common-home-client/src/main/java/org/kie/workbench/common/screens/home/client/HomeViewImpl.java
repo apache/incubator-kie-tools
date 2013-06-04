@@ -28,16 +28,18 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.home.client.carousel.CarouselEntryWidget;
-import org.kie.workbench.common.screens.home.client.carousel.CarouselWidget;
 import org.kie.workbench.common.screens.home.client.model.CarouselEntry;
 import org.kie.workbench.common.screens.home.client.model.HomeModel;
 import org.kie.workbench.common.screens.home.client.model.Section;
 import org.kie.workbench.common.screens.home.client.model.SectionEntry;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
-import org.kie.workbench.common.screens.home.client.sections.VerticalSectionWidget;
+import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselEntryWidget;
+import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselWidget;
+import org.kie.workbench.common.screens.home.client.widgets.sections.VerticalSectionWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 public class HomeViewImpl extends Composite
         implements
@@ -55,6 +57,12 @@ public class HomeViewImpl extends Composite
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private RuntimeAuthorizationManager authzManager;
+
+    @Inject
+    private Identity identity;
 
     @UiField
     CarouselWidget carousel;
@@ -87,13 +95,16 @@ public class HomeViewImpl extends Composite
 
         //Add Sections
         for ( Section section : model.getSections() ) {
-            final VerticalSectionWidget vs = new VerticalSectionWidget();
-            vs.setHeaderText( section.getHeading() );
-            for ( SectionEntry sectionEntry : section.getEntries() ) {
-                vs.add( makeSectionEntry( sectionEntry.getCaption(),
-                                          sectionEntry.getOnClickCommand() ) );
+            if ( authzManager.authorize( section,
+                                         identity ) ) {
+                final VerticalSectionWidget vs = new VerticalSectionWidget();
+                vs.setHeaderText( section.getHeading() );
+                for ( SectionEntry sectionEntry : section.getEntries() ) {
+                    vs.add( makeSectionEntry( sectionEntry.getCaption(),
+                                              sectionEntry.getOnClickCommand() ) );
+                }
+                this.columnsContainer.add( vs );
             }
-            this.columnsContainer.add( vs );
         }
     }
 
