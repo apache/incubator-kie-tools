@@ -53,7 +53,8 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( !( repoConfigs == null || repoConfigs.isEmpty() ) ) {
             for ( final ConfigGroup config : repoConfigs ) {
                 final Repository repository = repositoryFactory.newRepository( config );
-                configuredRepositories.put( repository.getAlias(), repository );
+                configuredRepositories.put( repository.getAlias(),
+                                            repository );
                 configuredRepositoriesList.add( repository );
             }
         }
@@ -82,31 +83,41 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public void createRepository( final String scheme,
-                                  final String alias,
-                                  final Map<String, Object> env ) {
-        final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
+    public Repository createRepository( final String scheme,
+                                        final String alias,
+                                        final Map<String, Object> env ) {
+        final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY,
+                                                                                  alias,
+                                                                                  "" );
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                            new ArrayList<String>() ) );
         if ( !env.containsKey( SCHEME ) ) {
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME,
+                                                                                scheme ) );
         }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
             if ( entry.getKey().startsWith( "crypt:" ) ) {
-                repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(), entry.getValue().toString() ) );
+                repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(),
+                                                                                           entry.getValue().toString() ) );
             } else {
-                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(), entry.getValue() ) );
+                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(),
+                                                                                    entry.getValue() ) );
             }
         }
 
         final Repository repo = createRepository( repositoryConfig );
 
         event.fire( new NewRepositoryEvent( repo ) );
+
+        return repo;
     }
 
     //Save the definition
     private Repository createRepository( final ConfigGroup repositoryConfig ) {
         final Repository repository = repositoryFactory.newRepository( repositoryConfig );
         configurationService.addConfiguration( repositoryConfig );
-        configuredRepositories.put( repository.getAlias(), repository );
+        configuredRepositories.put( repository.getAlias(),
+                                    repository );
         configuredRepositoriesList.add( repository );
         return repository;
     }

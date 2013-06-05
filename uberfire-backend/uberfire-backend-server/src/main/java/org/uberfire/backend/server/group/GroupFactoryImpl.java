@@ -24,6 +24,8 @@ public class GroupFactoryImpl implements GroupFactory {
                 group.getRepositories().add( repositoryService.getRepository( alias ) );
             }
         }
+
+        //Copy in Security Roles required to access this resource
         ConfigItem<List<String>> roles = groupConfig.getConfigItem( "security:roles" );
         if ( roles != null ) {
             for ( String role : roles.getValue() ) {

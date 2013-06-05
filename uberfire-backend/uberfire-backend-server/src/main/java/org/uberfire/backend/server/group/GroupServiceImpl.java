@@ -39,13 +39,14 @@ public class GroupServiceImpl implements GroupService {
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
                 Group group = groupFactory.newGroup( groupConfig );
-                registeredGroups.put( group.getName(), group );
+                registeredGroups.put( group.getName(),
+                                      group );
             }
         }
     }
 
     @Override
-    public Group getGroup( String name ) {
+    public Group getGroup( final String name ) {
         return registeredGroups.get( name );
     }
 
@@ -55,35 +56,50 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group createGroup( String name,
-                              String owner ) {
-        ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.GROUP, name, "" );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner", owner ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
+    public Group createGroup( final String name,
+                              final String owner ) {
+        final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.GROUP,
+                                                                             name,
+                                                                             "" );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                       owner ) );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
+                                                                       new ArrayList<String>() ) );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                       new ArrayList<String>() ) );
         configurationService.addConfiguration( groupConfig );
         return groupFactory.newGroup( groupConfig );
     }
 
     @Override
-    public Group createGroup( String name,
-                              String owner,
-                              Collection<Repository> repositories ) {
-        ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.GROUP, name, "" );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner", owner ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
-        List<String> repositoryList = new ArrayList<String>();
+    public Group createGroup( final String name,
+                              final String owner,
+                              final Collection<Repository> repositories ) {
+        final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.GROUP,
+                                                                             name,
+                                                                             "" );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                       owner ) );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
+                                                                       getRepositoryAliases( repositories ) ) );
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                       new ArrayList<String>() ) );
+        configurationService.addConfiguration( groupConfig );
+        return groupFactory.newGroup( groupConfig );
+    }
+
+    private List<String> getRepositoryAliases( final Collection<Repository> repositories ) {
+        final List<String> repositoryList = new ArrayList<String>();
         for ( Repository repo : repositories ) {
             repositoryList.add( repo.getAlias() );
         }
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories", repositoryList ) );
-        configurationService.addConfiguration( groupConfig );
-        return groupFactory.newGroup( groupConfig );
+        return repositoryList;
     }
 
     @Override
-    public void addRepository( Group group,
-                               Repository repository ) {
-        ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
+    public void addRepository( final Group group,
+                               final Repository repository ) {
+        final ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
 
         if ( thisGroupConfig != null ) {
             ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
@@ -91,70 +107,74 @@ public class GroupServiceImpl implements GroupService {
 
             configurationService.addConfiguration( thisGroupConfig );
 
-            Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
-            registeredGroups.put( updatedGroup.getName(), updatedGroup );
+            final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
+            registeredGroups.put( updatedGroup.getName(),
+                                  updatedGroup );
         } else {
             throw new IllegalArgumentException( "Group " + group.getName() + " not found" );
         }
     }
 
     @Override
-    public void removeRepository( Group group,
-                                  Repository repository ) {
-        ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
+    public void removeRepository( final Group group,
+                                  final Repository repository ) {
+        final ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
 
         if ( thisGroupConfig != null ) {
-            ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
+            final ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
             repositories.getValue().remove( repository.getAlias() );
 
             configurationService.addConfiguration( thisGroupConfig );
 
-            Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
-            registeredGroups.put( updatedGroup.getName(), updatedGroup );
+            final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
+            registeredGroups.put( updatedGroup.getName(),
+                                  updatedGroup );
         } else {
             throw new IllegalArgumentException( "Group " + group.getName() + " not found" );
         }
     }
 
     @Override
-    public void addRole( Group group,
-                         String role ) {
-        ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
+    public void addRole( final Group group,
+                         final String role ) {
+        final ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
 
         if ( thisGroupConfig != null ) {
-            ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
+            final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
             roles.getValue().add( role );
 
             configurationService.addConfiguration( thisGroupConfig );
 
-            Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
-            registeredGroups.put( updatedGroup.getName(), updatedGroup );
+            final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
+            registeredGroups.put( updatedGroup.getName(),
+                                  updatedGroup );
         } else {
             throw new IllegalArgumentException( "Group " + group.getName() + " not found" );
         }
     }
 
     @Override
-    public void removeRole( Group group,
-                            String role ) {
-        ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
+    public void removeRole( final Group group,
+                            final String role ) {
+        final ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
 
         if ( thisGroupConfig != null ) {
-            ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
+            final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
             roles.getValue().remove( role );
 
             configurationService.addConfiguration( thisGroupConfig );
 
-            Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
-            registeredGroups.put( updatedGroup.getName(), updatedGroup );
+            final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
+            registeredGroups.put( updatedGroup.getName(),
+                                  updatedGroup );
         } else {
             throw new IllegalArgumentException( "Group " + group.getName() + " not found" );
         }
     }
 
-    protected ConfigGroup findGroupConfig( String name ) {
+    protected ConfigGroup findGroupConfig( final String name ) {
 
-        Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.GROUP );
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.GROUP );
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
                 if ( groupConfig.getName().equals( name ) ) {
