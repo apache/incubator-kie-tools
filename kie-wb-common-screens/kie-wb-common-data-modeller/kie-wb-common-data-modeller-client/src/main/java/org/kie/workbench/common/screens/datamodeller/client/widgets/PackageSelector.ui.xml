@@ -23,9 +23,19 @@
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
     <gwt:HTMLPanel>
-        <gwt:HorizontalPanel>
-            <b:ListBox ui:field="packageList"></b:ListBox>
-            <b:Button ui:field="newPackage" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
-        </gwt:HorizontalPanel>
+        <table>
+            <tr>
+                <td>
+                    <b:ListBox ui:field="packageList"></b:ListBox>
+                </td>
+                <td style="padding-left: 4px; vertical-align: middle;">
+                    <div style="cursor: pointer;">
+                        <b:Tooltip placement="LEFT" hideDelay="1500" text="{i18n.new_dataobject_popup_new_package}">
+                            <b:Icon type="PLUS_SIGN" ui:field="newPackage"></b:Icon>
+                        </b:Tooltip>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </gwt:HTMLPanel>
 </ui:UiBinder>

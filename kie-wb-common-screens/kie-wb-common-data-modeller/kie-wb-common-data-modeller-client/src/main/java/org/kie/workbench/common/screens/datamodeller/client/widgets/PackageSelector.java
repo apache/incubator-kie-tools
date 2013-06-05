@@ -16,15 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -51,7 +52,7 @@ public class PackageSelector extends Composite {
     ListBox packageList;
 
     @UiField
-    Button newPackage;
+    Icon newPackage;
 
     @Inject
     ValidatorService validatorService;
@@ -70,7 +71,13 @@ public class PackageSelector extends Composite {
 
     public PackageSelector() {
         initWidget(uiBinder.createAndBindUi(this));
-        
+        newPackage.sinkEvents(Event.ONCLICK);
+        newPackage.addHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                newPackagePopup.show();
+            }
+        }, ClickEvent.getType());
         packageList.addItem("", NOT_SELECTED);
         packageList.addItem(DEFAULT_PACKAGE, DEFAULT_PACKAGE);
     }
@@ -105,11 +112,6 @@ public class PackageSelector extends Composite {
                 DomEvent.fireNativeEvent(Document.get().createChangeEvent(), packageList);
             }
         }
-    }
-
-    @UiHandler("newPackage")
-    void createNewPackage(ClickEvent event) {
-        newPackagePopup.show();
     }
 
     public void enableCreatePackage(boolean enable) {
