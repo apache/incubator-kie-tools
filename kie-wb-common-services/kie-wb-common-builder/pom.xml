@@ -54,6 +54,13 @@
       <artifactId>kie-api</artifactId>
     </dependency>
 
+    <!-- Needed by kie-api if KieModules are to be built -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-commons-io</artifactId>
