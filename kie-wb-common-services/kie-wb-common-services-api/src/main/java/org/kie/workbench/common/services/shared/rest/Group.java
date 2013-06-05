@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.rest.domain;
+package org.kie.workbench.common.services.shared.rest;
 
-public class Entity {
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
+public class Group extends Entity {
     
-    String name;
-    String description;
+    String owner;
 
-    public String getName() {
-        return name;
+    public String getOwner() {
+        return owner;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
  

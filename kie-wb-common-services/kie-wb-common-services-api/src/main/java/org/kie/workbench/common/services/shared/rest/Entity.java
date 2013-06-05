@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.rest.domain;
+package org.kie.workbench.common.services.shared.rest;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public class Result {
+@Portable
+public class Entity {
+    
+    String name;
+    String description;
 
-    String status;
-    String detailedMessage;
-
-    public String getStatus() {
-        return status;
+    public String getName() {
+        return name;
     }
-    public void setStatus(String status) {
-        this.status = status;
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getDetailedMessage() {
-        return detailedMessage;
+    public String getDescription() {
+        return description;
     }
-    public void setDetailedMessage(String detailedMessage) {
-        this.detailedMessage = detailedMessage;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-
+ 
 }

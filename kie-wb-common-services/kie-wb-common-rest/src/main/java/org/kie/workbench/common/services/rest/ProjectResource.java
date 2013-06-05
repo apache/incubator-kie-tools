@@ -17,10 +17,19 @@
 
 package org.kie.workbench.common.services.rest;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -43,21 +52,29 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.rest.domain.BuildConfig;
-import org.kie.workbench.common.services.rest.domain.Entity;
-import org.kie.workbench.common.services.rest.domain.Group;
-import org.kie.workbench.common.services.rest.domain.Repository;
-import org.kie.workbench.common.services.rest.domain.Result;
+
+import org.kie.workbench.common.services.shared.rest.BuildConfig;
+import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
+import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
+import org.kie.workbench.common.services.shared.rest.CreateGroupRequest;
+import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
+import org.kie.workbench.common.services.shared.rest.DeployProjectRequest;
+import org.kie.workbench.common.services.shared.rest.Entity;
+import org.kie.workbench.common.services.shared.rest.Group;
+import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
+import org.kie.workbench.common.services.shared.rest.JobRequest;
+import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.Repository;
+import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 
 @Path("/")
-@RequestScoped
 @Named
 @GZIP
-//@ApplicationScoped
+@ApplicationScoped
 public class ProjectResource {
 
     private HttpHeaders headers;
@@ -87,109 +104,186 @@ public class ProjectResource {
     @Inject
     RepositoryService repositoryService;
 
+	private static class Cache extends LinkedHashMap<String, JobRequest> {
+		private int maxSize = 1000;
+
+		public Cache(int maxSize) {
+			this.maxSize = maxSize;
+		}
+
+		@Override
+		protected boolean removeEldestEntry(Map.Entry<String, JobRequest> stringFutureEntry) {
+			return size() > maxSize;
+		}
+
+		public void setMaxSize(int maxSize) {
+			this.maxSize = maxSize;
+		}
+	}
+    private Cache cache;
+	private Map<String, JobRequest> jobs;
+    private AtomicLong counter = new AtomicLong(0);
+   
+    private int maxCacheSize = 10000;
+    
+    @Inject
+    private Event<CloneRepositoryRequest> cloneJobRequestEvent;     
+    @Inject
+    private Event<CreateProjectRequest> createProjectRequestEvent; 
+    @Inject
+    private Event<CompileProjectRequest> compileProjectRequestEvent; 
+    @Inject
+    private Event<InstallProjectRequest> installProjectRequestEvent; 
+    @Inject
+    private Event<TestProjectRequest> testProjectRequestEvent; 
+    @Inject
+    private Event<DeployProjectRequest> deployProjectRequestEvent; 
+    @Inject
+    private Event<CreateGroupRequest> createGroupRequestEvent; 
+    
+    @PostConstruct
+    public void start() {
+    	cache = new Cache(maxCacheSize);
+    	jobs = Collections.synchronizedMap(cache);
+    }
+    
     @Context
     public void setHttpHeaders( HttpHeaders theHeaders ) {
         headers = theHeaders;
     }
+    
+    public void onUpateJobStatus( final @Observes JobResult jobResult ) {
+    	JobRequest job = jobs.get(jobResult.getJodId());
 
+        if (job == null) {
+            //the job has gone probably because its done and has been removed.
+        	return;
+        }
+
+        job.setStatus(jobResult.getStatus());
+        job.setResult(jobResult.getResult());
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/jobs/{jobId}")
+    public JobRequest getJobStatus( @PathParam("jobId") String jobId ) {
+        System.out.println( "-----getJobStatus--- , jobId:" + jobId );
+        
+    	JobRequest job = jobs.get(jobId);
+
+        if (job == null) {
+            //the job has gone probably because its done and has been removed.
+        	job = new JobRequest();
+        	job.setStatus(JobRequest.Status.GONE);
+        	return job;
+        }
+
+        return job;
+    }
+    
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/jobs/{jobId}")
+    public JobRequest removeJob( @PathParam("jobId") String jobId ) {
+        System.out.println( "-----queryJobStatus--- , jobId:" + jobId );
+        
+    	JobRequest job = jobs.get(jobId);
+
+        if (job == null) {
+            //the job has gone probably because its done and has been removed.
+        	job = new JobRequest();
+        	job.setStatus(JobRequest.Status.GONE);
+        	return job;
+        }
+
+        jobs.remove(jobId);
+        job.setStatus(JobRequest.Status.GONE);
+        return job;
+    }
+    
+    //TODO: Stop or cancel a job
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories")
-    public Repository createOrCloneRepository( Repository repository ) {
+    public JobRequest createOrCloneRepository( Repository repository ) {
         System.out.println( "-----createOrCloneRepository--- , repository name:" + repository.getName() );
 
-        if ( repository.getRequestType() == null
-                || "".equals( repository.getRequestType() )
-                || !( "new".equals( repository.getRequestType() ) || ( "clone".equals( repository.getRequestType() ) ) ) ) {
-            throw new WebApplicationException( Response.status( Response.Status.BAD_REQUEST ).entity( "Repository request type can only be new or clone." ).build() );
-        }
-
-        final String scheme = "git";
-
-        if ( "new".equals( repository.getRequestType() ) ) {
-            if ( repository.getName() == null || "".equals( repository.getName() ) ) {
-                throw new WebApplicationException( Response.status( Response.Status.BAD_REQUEST ).entity( "Repository name must be provided" ).build() );
-            }
-
-            //username and password are optional
-            final Map<String, Object> env = new HashMap<String, Object>( 3 );
-            env.put( "username", repository.getUserName() );
-            env.put( "crypt:password", repository.getPassword() );
-            env.put( "init", true );
-
-            repositoryService.createRepository( scheme, repository.getName(), env );
-
-        } else if ( "clone".equals( repository.getRequestType() ) ) {
-            if ( repository.getName() == null || "".equals( repository.getName() ) || repository.getGitURL() == null || "".equals( repository.getGitURL() ) ) {
-                throw new WebApplicationException( Response.status( Response.Status.BAD_REQUEST ).entity( "Repository name and GitURL must be provided" ).build() );
-            }
-
-            final Map<String, Object> env = new HashMap<String, Object>( 3 );
-            env.put( "username", repository.getUserName() );
-            env.put( "crypt:password", repository.getPassword() );
-            env.put( "origin", repository.getGitURL() );
-
-            repositoryService.createRepository( scheme, repository.getName(), env );
-        }
-
-        return repository;
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CloneRepositoryRequest jobRequest = new CloneRepositoryRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepository(repository);
+        jobs.put(id, jobRequest);
+        
+        cloneJobRequestEvent.fire(jobRequest);
+        
+        return jobRequest;   
     }
-
+    
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}")
-    public Result deleteRepository(
+    public JobRequest deleteRepository(
             @PathParam("repositoryName") String repositoryName ) {
         System.out.println( "-----deleteRepository--- , repositoryName:" + repositoryName );
 
-        Result result = new Result();
-        result.setStatus( "SUCCESS" );
-        return result;
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        
+        //TODO:
+        CreateProjectRequest jobRequest = new CreateProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobs.put(id, jobRequest);
+        return jobRequest;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects")
-    public Entity createProject(
+    public JobRequest createProject(
             @PathParam("repositoryName") String repositoryName,
             Entity project ) {
         System.out.println( "-----createProject--- , repositoryName:" + repositoryName + ", project name:" + project.getName() );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            POM pom = new POM();
-            org.uberfire.backend.vfs.Path vfsPath = projectService.newProject( paths.convert( repositoryPath, false ), project.getName(), pom, "/" );
-
-            //TODO: handle errors, exceptions.
-
-            return project;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CreateProjectRequest jobRequest = new CreateProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(project.getName());
+        jobRequest.setDescription(project.getDescription());
+        jobs.put(id, jobRequest);
+        
+        createProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}")
-    public Result deleteProject(
+    public JobRequest deleteProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         System.out.println( "-----deleteProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            //TODO: Delete project. ProjectService does not have a removeProject method yet.
-
-            Result result = new Result();
-            result.setStatus( "SUCCESS" );
-            return result;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CreateProjectRequest jobRequest = new CreateProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(projectName);
+        jobs.put(id, jobRequest);
+        
+        //TODO: Delete project. ProjectService does not have a removeProject method yet.
+        //createProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @GET
@@ -197,31 +291,23 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}/maven/compile")
-    public Result compileProject(
+    public JobRequest compileProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
         System.out.println( "-----compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
-
-            if ( pathToPomXML == null ) {
-                throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Project [" + projectName + "] does not exist" ).build() );
-            }
-
-            buildService.build( pathToPomXML );
-
-            // TODO: get BuildResults
-
-            Result result = new Result();
-            result.setStatus( "SUCCESS" );
-            return result;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CompileProjectRequest jobRequest = new CompileProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setBuildConfig(mavenConfig);
+        jobs.put(id, jobRequest);
+        
+        compileProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @GET
@@ -229,31 +315,23 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}/maven/install")
-    public Result installProject(
+    public JobRequest installProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
         System.out.println( "-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
-
-            if ( pathToPomXML == null ) {
-                throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Project [" + projectName + "] does not exist" ).build() );
-            }
-
-            buildService.buildAndDeploy( pathToPomXML );
-
-            //TODO: get BuildResults
-
-            Result result = new Result();
-            result.setStatus( "SUCCESS" );
-            return result;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        InstallProjectRequest jobRequest = new InstallProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setBuildConfig(mavenConfig);
+        jobs.put(id, jobRequest);
+        
+        installProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @GET
@@ -261,92 +339,90 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}/maven/test")
-    public Result testProject(
+    public JobRequest testProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
-            BuildConfig config ) {
+            BuildConfig mavenConfig ) {
         System.out.println( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
-
-            if ( pathToPomXML == null ) {
-                throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Project [" + projectName + "] does not exist" ).build() );
-            }
-
-            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            scenarioTestEditorService.runAllScenarios( pathToPomXML, "someSession" );
-
-            //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
-
-            Result result = new Result();
-            result.setStatus( "SUCCESS" );
-            return result;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        TestProjectRequest jobRequest = new TestProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setBuildConfig(mavenConfig);
+        jobs.put(id, jobRequest);
+        
+        testProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}/maven/deploy")
-    public Result deployProject(
+    public JobRequest deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
-            BuildConfig config ) {
+            BuildConfig mavenConfig ) {
+        
         System.out.println( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Repository [" + repositoryName + "] does not exist" ).build() );
-        } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
-
-            if ( pathToPomXML == null ) {
-                throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( "Project [" + projectName + "] does not exist" ).build() );
-            }
-
-            buildService.buildAndDeploy( pathToPomXML );
-
-            //TODO: get BuildResults
-
-            Result result = new Result();
-            result.setStatus( "SUCCESS" );
-            return result;
-        }
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        DeployProjectRequest jobRequest = new DeployProjectRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setBuildConfig(mavenConfig);
+        jobs.put(id, jobRequest);
+        
+        deployProjectRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/groups")
-    public Group createGroup( Group group ) {
+    public JobRequest createGroup( Group group ) {
         System.out.println( "-----createGroup--- , Group name:" + group.getName() + ", Group owner:" + group.getOwner() );
 
-        if ( group.getName() == null || group.getOwner() == null ) {
-            throw new WebApplicationException( Response.status( Response.Status.BAD_REQUEST ).entity( "Group name and owner must be provided" ).build() );
-        }
-
-        groupService.createGroup( group.getName(), group.getOwner() );
-
-        return group;
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CreateGroupRequest jobRequest = new CreateGroupRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setGroupName(group.getName());
+        jobRequest.setOwnder(group.getOwner());
+        jobs.put(id, jobRequest);
+        
+        createGroupRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/groups/{groupName}")
-    public Result deleteGroup( @PathParam("groupName") String groupName ) {
+    public JobRequest deleteGroup( @PathParam("groupName") String groupName ) {
         System.out.println( "-----deleteGroup--- , Group name:" + groupName );
 
         //TODO:GroupService does not have removeGroup method yet
         //groupService.removeGroup(groupName);
-        Result result = new Result();
-        result.setStatus( "SUCCESS" );
-        return result;
+        
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        CreateGroupRequest jobRequest = new CreateGroupRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setGroupName(groupName);
+        jobs.put(id, jobRequest);
+        
+        //TODO:GroupService does not have removeGroup method yet
+        //groupService.removeGroup(groupName);
+        //createGroupRequestEvent.fire(jobRequest);
+        
+        return jobRequest;
     }
 
     public org.kie.commons.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {

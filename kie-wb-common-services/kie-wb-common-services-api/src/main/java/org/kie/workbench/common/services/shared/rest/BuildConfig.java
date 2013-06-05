@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.rest.domain;
+package org.kie.workbench.common.services.shared.rest;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 
+@Portable
 public class BuildConfig {
 
     String name;

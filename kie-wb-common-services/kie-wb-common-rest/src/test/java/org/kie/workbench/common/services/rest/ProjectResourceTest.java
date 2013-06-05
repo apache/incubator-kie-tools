@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.uberfire.backend.server.util.Paths;
 
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
-import org.kie.workbench.common.services.rest.domain.Entity;
+
 
 import static org.junit.Assert.*;
 
@@ -50,14 +50,14 @@ public class ProjectResourceTest {
 
     //@Test
     public void testCompileProject() throws Exception {
-        final ProjectResource projectResourceService = getReference(ProjectResource.class);
+/*        final ProjectResource projectResourceService = getReference(ProjectResource.class);
         
         Entity project = new Entity();
         project.setName("testproject");
         Entity result = projectResourceService.createProject("testrepo", project);
         
         assertNotNull(result);
-        assertEquals("testproject", result.getName());
+        assertEquals("testproject", result.getName());*/
     }
     
     private <T> T getReference( Class<T> clazz ) {
