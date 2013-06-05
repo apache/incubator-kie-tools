@@ -25,6 +25,8 @@ import javax.inject.Inject;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.commons.services.cdi.StartupType;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -38,6 +40,10 @@ import org.uberfire.backend.server.config.ConfigurationService;
 @Startup(StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class AppSetup {
+
+    // default groups
+    private static final String DROOLS_WB_GROUP1 = "Group1";
+    private static final String DROOLS_WB_GROUP2 = "Group2";
 
     // default repository section - start
     private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
@@ -53,6 +59,9 @@ public class AppSetup {
     private RepositoryService repositoryService;
 
     @Inject
+    private GroupService groupService;
+
+    @Inject
     private ConfigurationService configurationService;
 
     @Inject
@@ -60,6 +69,22 @@ public class AppSetup {
 
     @PostConstruct
     public void assertPlayground() {
+        // TODO in case groups are not defined
+        Group group1 = groupService.getGroup( DROOLS_WB_GROUP1 );
+        if ( group1 == null ) {
+            group1 = groupService.createGroup( DROOLS_WB_GROUP1,
+                                               "" );
+            groupService.addRole( group1,
+                                  "ADMIN" );
+        }
+        Group group2 = groupService.getGroup( DROOLS_WB_GROUP2 );
+        if ( group2 == null ) {
+            group2 = groupService.createGroup( DROOLS_WB_GROUP2,
+                                               "" );
+            groupService.addRole( group2,
+                                  "NON_EXISTENT_ROLE" );
+        }
+
         // TODO in case repo is not defined in system repository so we add default
         final Repository repository = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
         if ( repository == null ) {
