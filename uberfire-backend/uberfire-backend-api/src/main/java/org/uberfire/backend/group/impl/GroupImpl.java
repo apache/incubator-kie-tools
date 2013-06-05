@@ -1,19 +1,27 @@
-package org.uberfire.backend.server.group;
+package org.uberfire.backend.group.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
+@Portable
 public class GroupImpl implements Group {
 
     private String name;
     private String owner;
 
     private Collection<Repository> repositories = new ArrayList<Repository>();
+    private Collection<String> roles = new ArrayList<String>();
 
-    public GroupImpl(String name, String owner) {
+    public GroupImpl() {
+    }
+
+    public GroupImpl( String name,
+                      String owner ) {
         this.name = name;
         this.owner = owner;
     }
@@ -33,7 +41,19 @@ public class GroupImpl implements Group {
         return repositories;
     }
 
-    public void addRepository(Repository repository) {
-        this.repositories.add(repository);
+    @Override
+    public String getSignatureId() {
+        return getClass().getName() + "#" + getName();
     }
+
+    @Override
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return Collections.emptySet();
+    }
+
 }

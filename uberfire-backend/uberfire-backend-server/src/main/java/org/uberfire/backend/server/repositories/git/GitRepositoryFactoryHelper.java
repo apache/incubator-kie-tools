@@ -10,7 +10,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.repositories.git.GitRepository;
+import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.PasswordService;
@@ -20,7 +20,7 @@ import org.uberfire.backend.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.backend.server.util.Paths;
 
 import static org.kie.commons.validation.Preconditions.*;
-import static org.uberfire.backend.repositories.git.GitRepository.SCHEME;
+import static org.uberfire.backend.repositories.impl.git.GitRepository.SCHEME;
 
 @ApplicationScoped
 public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {

@@ -3,7 +3,7 @@ package org.uberfire.backend.server.repositories;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.uberfire.backend.repositories.git.GitRepository;
+import org.uberfire.backend.repositories.impl.git.GitRepository;
 
 /**
  * Definition of the bootstrap repository

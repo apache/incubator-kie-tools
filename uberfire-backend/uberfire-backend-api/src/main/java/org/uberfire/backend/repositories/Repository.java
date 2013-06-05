@@ -3,8 +3,9 @@ package org.uberfire.backend.repositories;
 import java.util.Map;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.authz.RuntimeResource;
 
-public interface Repository {
+public interface Repository extends RuntimeResource {
 
     String getAlias();
 

@@ -45,6 +45,10 @@ public class ConfigGroup {
         if ( this.items.containsKey( configItem.getName() ) ) {
             throw new IllegalArgumentException( "ConfigItem with name " + configItem.getName() + " already exists" );
         }
+        setConfigItem( configItem );
+    }
+
+    public void setConfigItem( final ConfigItem configItem ) {
         this.items.put( configItem.getName(), configItem );
     }
 

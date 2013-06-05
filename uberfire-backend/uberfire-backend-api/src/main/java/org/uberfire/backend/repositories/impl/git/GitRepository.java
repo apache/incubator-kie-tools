@@ -1,5 +1,8 @@
-package org.uberfire.backend.repositories.git;
+package org.uberfire.backend.repositories.impl.git;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +21,9 @@ public class GitRepository implements Repository {
     private final Map<String, Object> environment = new HashMap<String, Object>();
     private Path root;
 
-    public GitRepository() {
+    private Collection<String> roles = new ArrayList<String>();
 
+    public GitRepository() {
     }
 
     public GitRepository( final String alias ) {
@@ -69,4 +73,24 @@ public class GitRepository implements Repository {
     public String getUri() {
         return getScheme() + "://" + getAlias();
     }
+
+    @Override
+    public String getSignatureId() {
+        return getClass().getName() + "#" + getUri();
+    }
+
+    @Override
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles( Collection<String> roles ) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return Collections.emptySet();
+    }
+
 }

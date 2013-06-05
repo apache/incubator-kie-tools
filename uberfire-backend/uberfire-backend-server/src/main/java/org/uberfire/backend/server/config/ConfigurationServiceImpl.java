@@ -38,6 +38,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Inject
     private Identity identity;
 
+    //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new HashMap<ConfigType, List<ConfigGroup>>();
 
     @Inject
@@ -98,6 +99,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             outputStream.write( xml.getBytes( "UTF-8" ) );
             outputStream.close();
 
+            //Invalidate cache if a new item has been created; otherwise cached value is stale
+            configuration.remove( configGroup.getType() );
+
             return true;
 
         } catch ( java.io.IOException e ) {
@@ -107,6 +111,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public boolean removeConfiguration( final ConfigGroup configGroup ) {
+        //Invalidate cache if an item has been removed; otherwise cached value is stale
+        configuration.remove( configGroup.getType() );
+
         return ioService.deleteIfExists( ioService.get( systemRepository.getUri() ).resolve( configGroup.getName() + configGroup.getType().getExt() ) );
     }
 
