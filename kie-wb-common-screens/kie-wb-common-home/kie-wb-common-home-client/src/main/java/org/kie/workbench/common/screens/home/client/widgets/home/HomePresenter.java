@@ -15,12 +15,18 @@
  */
 package org.kie.workbench.common.screens.home.client.widgets.home;
 
+import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.home.client.model.HomeModel;
 import org.kie.workbench.common.screens.home.client.resources.i18n.HomeConstants;
+import org.kie.workbench.common.screens.home.service.HomeService;
+import org.uberfire.backend.group.Group;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -36,6 +42,8 @@ public class HomePresenter {
 
         void setModel( final HomeModel model );
 
+        void setGroups( final Collection<Group> groups );
+
     }
 
     @Inject
@@ -44,9 +52,19 @@ public class HomePresenter {
     @Inject
     private HomeModel model;
 
+    @Inject
+    private Caller<HomeService> homeService;
+
     @PostConstruct
     public void init() {
         view.setModel( model );
+
+        homeService.call( new RemoteCallback<Collection<Group>>() {
+            @Override
+            public void callback( final Collection<Group> groups ) {
+                view.setGroups( groups );
+            }
+        }, new DefaultErrorCallback() ).getGroups();
     }
 
     @WorkbenchPartTitle
