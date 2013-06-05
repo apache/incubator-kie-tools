@@ -27,6 +27,7 @@ import org.kie.workbench.common.screens.home.client.model.HomeModel;
 import org.kie.workbench.common.screens.home.client.resources.i18n.HomeConstants;
 import org.kie.workbench.common.screens.home.service.HomeService;
 import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -43,6 +44,8 @@ public class HomePresenter {
         void setModel( final HomeModel model );
 
         void setGroups( final Collection<Group> groups );
+
+        void setRepositories( final Collection<Repository> repositories );
 
     }
 
@@ -75,6 +78,10 @@ public class HomePresenter {
     @WorkbenchPartView
     public UberView<HomePresenter> getView() {
         return view;
+    }
+
+    public void selectGroup( final Group group ) {
+        view.setRepositories( group.getRepositories() );
     }
 
 }

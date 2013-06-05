@@ -39,6 +39,7 @@ import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselEnt
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselWidget;
 import org.kie.workbench.common.screens.home.client.widgets.sections.VerticalSectionWidget;
 import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
@@ -76,8 +77,16 @@ public class HomeViewImpl extends Composite
     @UiField
     HorizontalPanel columns;
 
+    private final VerticalSectionWidget groupsSection = new VerticalSectionWidget();
+    private final VerticalSectionWidget repositoriesSection = new VerticalSectionWidget();
+
     public HomeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        groupsSection.setHeaderText( "Groups:" );
+        repositoriesSection.setHeaderText( "Repositories:" );
+        columns.add( groupsSection );
+        columns.add( repositoriesSection );
     }
 
     @Override
@@ -119,15 +128,24 @@ public class HomeViewImpl extends Composite
 
     @Override
     public void setGroups( final Collection<Group> groups ) {
-        final VerticalSectionWidget vs = new VerticalSectionWidget();
-        vs.setHeaderText( "Groups:" );
+        groupsSection.clear();
         for ( Group group : groups ) {
             if ( authzManager.authorize( group,
                                          identity ) ) {
-                vs.add( makeSectionEntry( group.getName() ) );
+                groupsSection.add( makeGroupEntry( group ) );
             }
         }
-        this.columns.add( vs );
+    }
+
+    @Override
+    public void setRepositories( final Collection<Repository> repositories ) {
+        repositoriesSection.clear();
+        for ( Repository repo : repositories ) {
+            if ( authzManager.authorize( repo,
+                                         identity ) ) {
+                repositoriesSection.add( makeRepositoryEntry( repo ) );
+            }
+        }
     }
 
     private CarouselEntryWidget makeCarouselEntry( final String heading,
@@ -140,16 +158,6 @@ public class HomeViewImpl extends Composite
         item.setImageUri( UriUtils.fromString( imageUri ) );
         item.setActive( active );
         return item;
-    }
-
-    private Widget makeSectionEntry( final String caption ) {
-        return makeSectionEntry( caption, new Command() {
-
-            @Override
-            public void execute() {
-            }
-
-        } );
     }
 
     private Widget makeSectionEntry( final String caption,
@@ -165,6 +173,29 @@ public class HomeViewImpl extends Composite
 
         } );
         return anchor;
+    }
+
+    private Widget makeGroupEntry( final Group group ) {
+        return makeSectionEntry( group.getName(),
+                                 new Command() {
+
+                                     @Override
+                                     public void execute() {
+                                         presenter.selectGroup( group );
+                                     }
+
+                                 } );
+    }
+
+    private Widget makeRepositoryEntry( final Repository repo ) {
+        return makeSectionEntry( repo.getAlias(),
+                                 new Command() {
+
+                                     @Override
+                                     public void execute() {
+                                     }
+
+                                 } );
     }
 
 }
