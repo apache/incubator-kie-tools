@@ -44,6 +44,7 @@ public class AppSetup {
     // default groups
     private static final String DROOLS_WB_GROUP1 = "Group1";
     private static final String DROOLS_WB_GROUP2 = "Group2";
+    private static final String DROOLS_WB_GROUP3 = "Group3";
 
     // default repository section - start
     private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
@@ -82,19 +83,30 @@ public class AppSetup {
             group2 = groupService.createGroup( DROOLS_WB_GROUP2,
                                                "" );
             groupService.addRole( group2,
+                                  "ADMIN" );
+        }
+        Group group3 = groupService.getGroup( DROOLS_WB_GROUP3 );
+        if ( group3 == null ) {
+            group3 = groupService.createGroup( DROOLS_WB_GROUP3,
+                                               "" );
+            groupService.addRole( group3,
                                   "NON_EXISTENT_ROLE" );
         }
 
         // TODO in case repo is not defined in system repository so we add default
-        final Repository repository = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
-        if ( repository == null ) {
-            repositoryService.createRepository( DROOLS_WB_PLAYGROUND_SCHEME, DROOLS_WB_PLAYGROUND_ALIAS,
-                                                new HashMap<String, Object>() {{
-                                                    put( "origin", DROOLS_WB_PLAYGROUND_ORIGIN );
-                                                    put( "username", DROOLS_WB_PLAYGROUND_UID );
-                                                    put( "crypt:password", DROOLS_WB_PLAYGROUND_PWD );
-                                                }} );
+        Repository repository1 = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
+        if ( repository1 == null ) {
+            repository1 = repositoryService.createRepository( DROOLS_WB_PLAYGROUND_SCHEME, DROOLS_WB_PLAYGROUND_ALIAS,
+                                                              new HashMap<String, Object>() {{
+                                                                  put( "origin", DROOLS_WB_PLAYGROUND_ORIGIN );
+                                                                  put( "username", DROOLS_WB_PLAYGROUND_UID );
+                                                                  put( "crypt:password", DROOLS_WB_PLAYGROUND_PWD );
+                                                              }} );
         }
+
+        // TODO associate default repository with groups
+        groupService.addRepository( group1,
+                                    repository1 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
