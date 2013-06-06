@@ -26,7 +26,6 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
@@ -100,18 +99,17 @@ public class BuildServiceImplTest {
     }
 
     @Test
-    @Ignore("This fails unless the parent project contains a KBase definition in the kmodule.xml")
-    public void testBuilderKProjectHasDependencyMissingKBaseDefinition() throws Exception {
+    public void testBuilderKProjectHasSnapshotDependency() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
 
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2MissingKBase" );
+        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2-missing-kbase",
+                                             "guvnor-m2repo-dependency-example2-snapshot",
                                              paths,
                                              ioService,
                                              projectService );
@@ -129,26 +127,6 @@ public class BuildServiceImplTest {
     }
 
     @Test
-    public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-        Paths paths = getReference( Paths.class );
-        IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
-
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
-
-        final Builder builder2 = new Builder( path,
-                                              "guvnor-m2repo-dependency-example2-snapshot",
-                                              paths,
-                                              ioService,
-                                              projectService );
-
-        final BuildResults results2 = builder2.build();
-        assertTrue( results2.getMessages().isEmpty() );
-    }
-
-    @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         Paths paths = getReference( Paths.class );
         IOService ioService = getReference( IOService.class );
@@ -159,7 +137,7 @@ public class BuildServiceImplTest {
         org.kie.commons.java.nio.file.Path path = p.getPath( url.toURI() );
 
         final Builder builder = new Builder( path,
-                                             "guvnor-m2repo-dependency-example2",
+                                             "guvnor-m2repo-dependency-example2-metadata",
                                              paths,
                                              ioService,
                                              projectService );
@@ -181,7 +159,7 @@ public class BuildServiceImplTest {
         assertEquals( 1,
                       metaData.getPackages().size() );
         final String packageName = metaData.getPackages().iterator().next();
-        assertEquals( "org.kie.test.repodependencyexample1",
+        assertEquals( "org.kie.workbench.common.services.builder.tests.test1",
                       packageName );
 
         //Check classes
@@ -217,6 +195,13 @@ public class BuildServiceImplTest {
 
         final BuildResults results = builder.build();
 
+        //Debug output
+        if ( !results.getMessages().isEmpty() ) {
+            for ( BuildMessage m : results.getMessages() ) {
+                System.out.println( m.getText() );
+            }
+        }
+
         assertTrue( results.getMessages().isEmpty() );
     }
 
@@ -251,7 +236,7 @@ public class BuildServiceImplTest {
                             "dependency-test1-snapshot",
                             "1.0-SNAPSHOT" );
 
-        InputStream is2 = this.getClass().getResourceAsStream( "/dependency-test1-1.0.jar" );
+        InputStream is2 = this.getClass().getResourceAsStream( "/dependency-test1-snapshot-1.0-SNAPSHOT.jar" );
         m2RepoService.deployJar( is2,
                                  gav2 );
     }
