@@ -27,7 +27,6 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.backend.server.KModuleContentHandler;
 import org.kie.workbench.common.services.project.service.KModuleService;
-import org.kie.workbench.common.services.project.service.model.KBaseModel;
 import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
@@ -77,7 +76,7 @@ public class KModuleServiceImpl
             final org.kie.commons.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
             ioService.createFile( pathToKModuleXML );
             ioService.write( pathToKModuleXML,
-                             moduleContentHandler.toString( makeDefaultKModule() ) );
+                             moduleContentHandler.toString( new KModuleModel() ) );
 
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
@@ -86,14 +85,6 @@ public class KModuleServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private KModuleModel makeDefaultKModule() {
-        final KModuleModel kmodule = new KModuleModel();
-        final KBaseModel kbase = new KBaseModel();
-        kbase.setName( "default" );
-        kmodule.add( kbase );
-        return kmodule;
     }
 
     @Override
