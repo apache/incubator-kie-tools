@@ -207,6 +207,12 @@ public class GenerationTools {
         return type.toString();
     }
 
+    public String resolveImplementedInterfacesType(DataObject dataObject) {
+        StringBuffer type = new StringBuffer("");
+        type.append("implements java.io.Serializable");
+        return type.toString();
+    }
+
     public String resolveEquals(DataObject dataObject, String indent) {
         
         StringBuilder head = new StringBuilder();

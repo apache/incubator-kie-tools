@@ -18,10 +18,12 @@ package $packageName;
 #foreach($typeAnnotation in $typeAnnotations)
 $engine.generateTypeAnnotation($context, $typeAnnotation, "java_type_annotation")
 #end
-public class $className $nameTool.resolveSuperClassType($context.currentDataObject) {
+public class $className $nameTool.resolveSuperClassType($context.currentDataObject) $nameTool.resolveImplementedInterfacesType($context.currentDataObject) {
 ##
 ## Generate attributes
 ##
+
+static final long serialVersionUID = 1L;
 #foreach( $attr in $attributes)
     $engine.generateAttribute($context, $attr, "java_attribute")
 #end
