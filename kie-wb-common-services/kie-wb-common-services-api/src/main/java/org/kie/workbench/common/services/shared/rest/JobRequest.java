@@ -12,7 +12,8 @@ public class JobRequest {
         DUPLICATE_RESOURCE,
         SERVER_ERROR,
         SUCCESS,
-        FAIL
+        FAIL,
+        DENIED
     }
     private String jodId;
 
