@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2010 JBoss Inc
+  Copyright 2012 JBoss Inc
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@
 
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="labelLabel" text="Label"/>
+                    <gwt:Label ui:field="labelLabel" text="{i18n.objectFieldEditor_labelLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="label" styleName="span10"></b:TextBox>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="descriptionLabel" text="Description"/>
+                    <gwt:Label ui:field="descriptionLabel" text="{i18n.objectFieldEditor_descriptionLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextArea ui:field="description" styleName="span10"></b:TextArea>
@@ -63,7 +63,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="typeLabel" text="Type"/>
+                    <gwt:Label ui:field="typeLabel" text="{i18n.objectFieldEditor_typeLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
@@ -74,7 +74,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="equalsLabel" text="Equals"/>
+                    <gwt:Label ui:field="equalsLabel" text="{i18n.objectFieldEditor_equalsLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:CheckBox ui:field="equalsSelector"></b:CheckBox>
@@ -85,10 +85,13 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="positionLabel" text="@Position"/>
+                    <gwt:Label ui:field="positionLabel" text="{i18n.objectFieldEditor_positionLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="positionText" styleName="span10"></b:TextBox>
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectFieldEditor_positionLabel}" text="{i18n.objectFieldEditor_positionHelp}">
+                        <b:Icon ui:field="positionHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
                 </td>
             </tr>
 

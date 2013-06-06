@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,6 +32,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -38,7 +41,6 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
@@ -80,6 +82,9 @@ public class DataObjectFieldEditor extends Composite {
     Label positionLabel;
 
     @UiField
+    Icon positionHelpIcon;
+
+    @UiField
     TextBox positionText;
 
     @Inject
@@ -107,6 +112,9 @@ public class DataObjectFieldEditor extends Composite {
                 typeChanged(event);
             }
         });
+
+        positionHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
+        positionHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
     }
 
     public DataObjectTO getDataObject() {

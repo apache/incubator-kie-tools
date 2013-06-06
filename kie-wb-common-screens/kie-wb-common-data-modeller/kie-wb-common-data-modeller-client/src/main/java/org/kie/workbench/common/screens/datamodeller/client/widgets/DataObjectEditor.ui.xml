@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2010 JBoss Inc
+  Copyright 2012 JBoss Inc
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="labelLabel" text="Label"/>
+                    <gwt:Label ui:field="labelLabel" text="{i18n.objectEditor_labelLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="label" styleName="span8"></b:TextBox>
@@ -51,7 +51,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="descriptionLabel" text="Description"/>
+                    <gwt:Label ui:field="descriptionLabel" text="{i18n.objectEditor_descriptionLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextArea ui:field="description" styleName="span8"></b:TextArea>
@@ -62,7 +62,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="packageNameLabel" text="Package"/>
+                    <gwt:Label ui:field="packageNameLabel" text="{i18n.objectEditor_packageLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <gwt:SimplePanel ui:field="packageSelectorPanel"  styleName="span6">
@@ -75,7 +75,7 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="superclassLabel" text="Superclass"/>
+                    <gwt:Label ui:field="superclassLabel" text="{i18n.objectEditor_superclassLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <datamodeler:SuperclassSelector ui:field="superclassSelector"  styleName="span8"></datamodeler:SuperclassSelector>
@@ -86,10 +86,13 @@
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="roleLabel" text="Role"/>
+                    <gwt:Label ui:field="roleLabel" text="{i18n.objectEditor_roleLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:ListBox ui:field="roleSelector" styleName="span8"></b:ListBox>
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}">
+                        <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
                 </td>
             </tr>
 

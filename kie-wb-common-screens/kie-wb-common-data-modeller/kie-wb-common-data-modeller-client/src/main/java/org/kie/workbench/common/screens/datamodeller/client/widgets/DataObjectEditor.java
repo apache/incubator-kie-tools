@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -84,6 +86,9 @@ public class DataObjectEditor extends Composite {
     @UiField
     ListBox roleSelector;
 
+    @UiField
+    Icon roleHelpIcon;
+
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
 
@@ -100,6 +105,9 @@ public class DataObjectEditor extends Composite {
 
     public DataObjectEditor() {
         initWidget(uiBinder.createAndBindUi(this));
+
+        roleHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
+        roleHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
     }
 
     @PostConstruct

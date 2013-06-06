@@ -105,7 +105,31 @@ public interface Constants extends Messages {
 
     public String objectEditor_nameLabel();
 
+    public String objectEditor_labelLabel();
+
+    public String objectEditor_descriptionLabel();
+
+    public String objectEditor_packageLabel();
+
+    public String objectEditor_superclassLabel();
+
+    public String objectEditor_roleLabel();
+
+    public String objectEditor_roleHelp();
+
     public String objectFieldEditor_nameLabel();
+
+    public String objectFieldEditor_labelLabel();
+
+    public String objectFieldEditor_descriptionLabel();
+
+    public String objectFieldEditor_typeLabel();
+
+    public String objectFieldEditor_equalsLabel();
+
+    public String objectFieldEditor_positionLabel();
+
+    public String objectFieldEditor_positionHelp();
 
     public String new_dataobject_popup_title();
     

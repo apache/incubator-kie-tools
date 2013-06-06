@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2010 JBoss Inc
+  Copyright 2012 JBoss Inc
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
                 </td>
                 <td style="padding-left: 4px; vertical-align: middle;">
                     <div style="cursor: pointer;">
-                        <b:Tooltip placement="LEFT" hideDelay="1500" text="{i18n.new_dataobject_popup_new_package}">
+                        <b:Tooltip placement="LEFT" trigger="HOVER" text="{i18n.new_dataobject_popup_new_package}">
                             <b:Icon type="PLUS_SIGN" ui:field="newPackage"></b:Icon>
                         </b:Tooltip>
                     </div>
