@@ -20,7 +20,7 @@ public class DefaultGuvnorApprover {
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
 
-        KieModule kModule = kr.addKieModule(ks.getResources().newFileSystemResource(getKJar("/DefaultGuvnorApprover-0.9.jar")));
+        KieModule kModule = kr.addKieModule(ks.getResources().newClassPathResource("kie-wb-common-defaultapprover-0.9.jar"));
 
         KieContainer kContainer = ks.newKieContainer(kModule.getReleaseId());
 

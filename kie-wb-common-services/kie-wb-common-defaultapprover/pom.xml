@@ -10,25 +10,20 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-wb-common-defaultapprover</artifactId>
+  <version>0.9</version>
+  <packaging>kjar</packaging>
 
-    <packaging>kjar</packaging>
+  <dependencies>
+  </dependencies>
 
-    <dependencies>
-      <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java</artifactId>
-        <optional>true</optional>
-      </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <extensions>true</extensions>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-maven-plugin</artifactId>
+            <version>${drools.version}</version>
+            <extensions>true</extensions>
+        </plugin>
+    </plugins>
+  </build>
 </project>

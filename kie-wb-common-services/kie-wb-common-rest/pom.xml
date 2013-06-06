@@ -17,6 +17,11 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-defaultapprover</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
 
