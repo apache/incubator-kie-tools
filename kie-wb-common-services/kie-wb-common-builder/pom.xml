@@ -123,6 +123,7 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>.niogit/**</include>
+                <include>repository/**</include>
               </includes>
             </fileset>
           </filesets>
