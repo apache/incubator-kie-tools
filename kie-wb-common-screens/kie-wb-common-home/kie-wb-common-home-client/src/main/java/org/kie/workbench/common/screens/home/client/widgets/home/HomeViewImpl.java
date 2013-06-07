@@ -74,16 +74,8 @@ public class HomeViewImpl extends Composite
     @UiField
     HorizontalPanel columns;
 
-    private final VerticalSectionWidget groupsSection = new VerticalSectionWidget();
-    private final VerticalSectionWidget repositoriesSection = new VerticalSectionWidget();
-
     public HomeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
-
-        groupsSection.setHeaderText( "Groups:" );
-        repositoriesSection.setHeaderText( "Repositories:" );
-        columns.add( groupsSection );
-        columns.add( repositoriesSection );
     }
 
     @Override
