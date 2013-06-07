@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -67,6 +68,12 @@ public class NewDataObjectPopup extends Modal {
 
     @UiField
     TextBox newPackage;
+
+    @UiField
+    Popover newPackageHelpPopover;
+
+    @UiField
+    Icon newPackageHelpIcon;
 
     @UiField
     PackageSelector packageSelector;
@@ -133,6 +140,13 @@ public class NewDataObjectPopup extends Modal {
                 }
             }
         });
+
+        newPackage.setPlaceholder(Constants.INSTANCE.package_id_placeholder());
+
+        newPackageHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
+        newPackageHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+
+        newPackageHelpPopover.setText(Constants.INSTANCE.validPackageHelp(""));
     }
 
     public DataModelerContext getContext() {

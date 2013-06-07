@@ -138,7 +138,11 @@ public interface Constants extends Messages {
     public String new_dataobject_popup_label();
 
     public String java_id_placeholder();
-    
+
+    public String package_id_placeholder();
+
+    public String validPackageHelp(String line_break);
+
     public String new_dataobject_popup_new_package();
     
     public String new_dataobject_popup_existing_package();

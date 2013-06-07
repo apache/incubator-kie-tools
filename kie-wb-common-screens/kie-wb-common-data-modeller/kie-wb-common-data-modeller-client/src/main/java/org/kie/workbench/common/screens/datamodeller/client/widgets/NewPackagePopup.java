@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.base.HtmlWidget;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,6 +44,8 @@ public class NewPackagePopup extends Popup {
 
     private String packageName;
 
+    private HtmlWidget newPackageHelpHtml = new HtmlWidget("P", Constants.INSTANCE.validPackageHelp("<br>"));
+
     private HelpInline errorMessages = new HelpInline();
 
     private ControlGroup newPackageControlGroup = new ControlGroup();
@@ -61,11 +64,13 @@ public class NewPackagePopup extends Popup {
     public NewPackagePopup() {
         setModal(true);
 
+        newPackageName.setPlaceholder(Constants.INSTANCE.package_id_placeholder());
         newPackageControlGroup.add(newPackageName);
         errorMessagesGroup.add(errorMessages);
         dataPanel.add(newPackageControlGroup);
         dataPanel.add(newPackageButton);
         mainPanel.add(dataPanel);
+        mainPanel.add(newPackageHelpHtml);
         mainPanel.add(errorMessagesGroup);
 
         newPackageButton.addClickHandler(new ClickHandler() {

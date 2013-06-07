@@ -49,7 +49,10 @@
                 <b:ControlLabel for="newPackage" ><gwt:Label ui:field="newPackageLabel" text="{i18n.new_dataobject_popup_new_package}"  /></b:ControlLabel>
 
                 <b:Controls>
-                    <b:TextBox b:id="newPackage" ui:field="newPackage"></b:TextBox>
+                    <b:TextBox b:id="newPackage" ui:field="newPackage" placeholder="{i18n.package_id_placeholder}"></b:TextBox>
+                    <b:Popover ui:field="newPackageHelpPopover" placement="LEFT" trigger="HOVER" heading="{i18n.new_dataobject_popup_new_package}">
+                        <b:Icon ui:field="newPackageHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
                 </b:Controls>
             </b:ControlGroup>
 
