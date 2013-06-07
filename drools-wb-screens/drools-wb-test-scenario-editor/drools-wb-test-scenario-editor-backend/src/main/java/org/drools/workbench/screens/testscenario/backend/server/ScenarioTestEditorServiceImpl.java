@@ -139,7 +139,9 @@ public class ScenarioTestEditorServiceImpl
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
 
-            return ScenarioXMLPersistence.getInstance().unmarshal( content );
+            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(content);
+            scenario.setName(path.getFileName());
+            return scenario;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

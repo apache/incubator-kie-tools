@@ -48,6 +48,7 @@ public class TestRunnerReportingScreen
 
     public void onSuccess(@Observes Success success){
         view.showSuccess();
+        view.setExplanation("");
     }
 
     @Override

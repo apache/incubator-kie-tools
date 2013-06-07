@@ -37,4 +37,14 @@ public class TestResultMessage {
     public List<Failure> getFailures() {
         return failures;
     }
+
+    @Override
+    public String toString() {
+        return "TestResultMessage{" +
+                "wasSuccessful=" + wasSuccessful +
+                ", runCount=" + runCount +
+                ", failureCount=" + failureCount +
+                ", failures=" + failures +
+                '}';
+    }
 }

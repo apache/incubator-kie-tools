@@ -64,24 +64,26 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
         run.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                final FormStylePopup pop = new FormStylePopup();
-                final TextBox sessionNameTextBox = new TextBox();        
-                pop.addAttribute(TestScenarioConstants.INSTANCE.SessionName() + ":", sessionNameTextBox);
+//                final FormStylePopup pop = new FormStylePopup();
+//                final TextBox sessionNameTextBox = new TextBox();
+//                pop.addAttribute(TestScenarioConstants.INSTANCE.SessionName() + ":", sessionNameTextBox);
 
-                Button ok = new Button("OK");
-                ok.addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
-                            Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
-                            return;
-                        }
-                        
-                        BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+//                Button ok = new Button("OK");
+//                ok.addClickHandler(new ClickHandler() {
+//                    public void onClick(ClickEvent event) {
+//                        if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
+//                            Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
+//                            return;
+//                        }
+//
+//                        BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+
+
 
                         testScenarioEditorService.call(new RemoteCallback<Void>() {
                             @Override
                             public void callback(Void v) {
-                                pop.hide();
+//                                 pop.hide();
                                 BusyPopup.close();
                                 layout.clear();
                                 layout.add(actions);
@@ -90,11 +92,11 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
                             }
                         },
                                 new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)
-                        ).runScenario(path, scenario, sessionNameTextBox.getText());                        
-                    }
-                });
-                pop.addAttribute( "", ok);
-                pop.show();                
+                        ).runScenario(path, scenario, "");
+//                    }
+//                });
+//                pop.addAttribute( "", ok);
+//                pop.show();
              }
         });
 

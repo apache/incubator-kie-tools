@@ -11,6 +11,10 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 
+import javax.enterprise.event.Event;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomJUnitRunNotifier
         extends RunNotifier {
 
@@ -22,15 +26,21 @@ public class CustomJUnitRunNotifier
 
         addListener(new RunListener() {
 
+            private boolean hasFailure = false;
+
             public void testFinished(Description description) throws Exception {
-                reportTestSuccess();
+                if (!hasFailure) {
+                    reportTestSuccess();
+                }
             }
 
             public void testFailure(Failure failure) throws Exception {
+                hasFailure = true;
                 reportTestFailure(failure);
             }
 
             public void testAssumptionFailure(Failure failure) {
+                hasFailure = true;
                 reportTestFailure(failure);
             }
 
@@ -41,7 +51,7 @@ public class CustomJUnitRunNotifier
     }
 
     private void reportTestRunResult(Result result) {
-        testResultMessageEvent.fire(new TestResultMessage(
+        fireMessageEvent(new TestResultMessage(
                 result.wasSuccessful(),
                 result.getRunCount(),
                 result.getFailureCount(),
@@ -49,7 +59,7 @@ public class CustomJUnitRunNotifier
     }
 
     private void reportTestSuccess() {
-        testResultMessageEvent.fire(new TestResultMessage(
+        fireMessageEvent(new TestResultMessage(
                 true,
                 1,
                 1,
@@ -60,11 +70,15 @@ public class CustomJUnitRunNotifier
         ArrayList<org.drools.workbench.screens.testscenario.model.Failure> failures = new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>();
         failures.add(failureToFailure(failure));
 
-        testResultMessageEvent.fire(new TestResultMessage(
+        fireMessageEvent(new TestResultMessage(
                 false,
                 1,
                 1,
                 failures));
+    }
+
+    private void fireMessageEvent(TestResultMessage testResultMessage) {
+        testResultMessageEvent.fire(testResultMessage);
     }
 
     private List<org.drools.workbench.screens.testscenario.model.Failure> getFailures(List<Failure> failures) {
@@ -79,7 +93,11 @@ public class CustomJUnitRunNotifier
 
     private org.drools.workbench.screens.testscenario.model.Failure failureToFailure(Failure failure) {
         return new org.drools.workbench.screens.testscenario.model.Failure(
-                failure.getDescription().getDisplayName(),
+                getScenarioName(failure),
                 failure.getMessage());
+    }
+
+    private String getScenarioName(Failure failure) {
+        return failure.getDescription().getDisplayName().substring(0, failure.getDescription().getDisplayName().indexOf(".scenario"));
     }
 }

@@ -24,4 +24,12 @@ public class Failure {
     public String getDisplayName() {
         return displayName;
     }
+
+    @Override
+    public String toString() {
+        return "Failure{" +
+                "message='" + message + '\'' +
+                ", displayName='" + displayName + '\'' +
+                '}';
+    }
 }
