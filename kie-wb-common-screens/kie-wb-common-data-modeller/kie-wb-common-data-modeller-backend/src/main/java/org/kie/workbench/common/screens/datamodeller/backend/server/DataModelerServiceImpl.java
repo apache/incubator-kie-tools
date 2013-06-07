@@ -106,6 +106,8 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         if (logger.isDebugEnabled()) logger.debug("Loading data model from path: " + path);
 
+        Long startTime = System.currentTimeMillis();
+
         DataModel dataModel = null;
         Path projectPath = null;
 
@@ -121,6 +123,9 @@ public class DataModelerServiceImpl implements DataModelerService {
             //Objects read from persistent .java format are tagged as PERSISTENT objects
             DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To(dataModel, DataObjectTO.PERSISTENT);
 
+            Long endTime = System.currentTimeMillis();
+            if (logger.isDebugEnabled()) logger.debug("Time elapsed when loading " + path.getFileName() + ": " + (endTime - startTime) + " ms");
+
             return dataModelTO;
 
         } catch (Exception e) {
@@ -133,6 +138,8 @@ public class DataModelerServiceImpl implements DataModelerService {
     public void saveModel(DataModelTO dataModel, final Path path) {
         
         try {
+
+            Long startTime = System.currentTimeMillis();
 
             //get the path to project root directory (the main pom.xml directory) and calculate
             //the java sources path
@@ -160,6 +167,9 @@ public class DataModelerServiceImpl implements DataModelerService {
             cleanupEmptyDirs(javaPath);
             //after file cleaning we must ensure again that the java path exists
             javaPath = ensureProjectJavaPath(paths.convert(projectPath));
+
+            Long endTime = System.currentTimeMillis();
+            if (logger.isDebugEnabled()) logger.debug("Time elapsed when saving " + path.getFileName() + ": " + (endTime - startTime) + " ms");
 
         } catch (Exception e) {
             logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);
