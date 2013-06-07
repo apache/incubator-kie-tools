@@ -14,6 +14,10 @@
   <packaging>kjar</packaging>
 
   <dependencies>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
