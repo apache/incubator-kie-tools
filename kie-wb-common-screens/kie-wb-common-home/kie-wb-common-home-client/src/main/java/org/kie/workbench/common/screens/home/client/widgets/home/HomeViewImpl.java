@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.home.client.widgets.home;
 
-import java.util.Collection;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -30,16 +29,14 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.home.client.model.CarouselEntry;
-import org.kie.workbench.common.screens.home.client.model.HomeModel;
-import org.kie.workbench.common.screens.home.client.model.Section;
-import org.kie.workbench.common.screens.home.client.model.SectionEntry;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselEntryWidget;
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselWidget;
 import org.kie.workbench.common.screens.home.client.widgets.sections.VerticalSectionWidget;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
+import org.kie.workbench.common.screens.home.model.CarouselEntry;
+import org.kie.workbench.common.screens.home.model.HomeModel;
+import org.kie.workbench.common.screens.home.model.Section;
+import org.kie.workbench.common.screens.home.model.SectionEntry;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
@@ -126,28 +123,6 @@ public class HomeViewImpl extends Composite
         }
     }
 
-    @Override
-    public void setGroups( final Collection<Group> groups ) {
-        groupsSection.clear();
-        for ( Group group : groups ) {
-            if ( authzManager.authorize( group,
-                                         identity ) ) {
-                groupsSection.add( makeGroupEntry( group ) );
-            }
-        }
-    }
-
-    @Override
-    public void setRepositories( final Collection<Repository> repositories ) {
-        repositoriesSection.clear();
-        for ( Repository repo : repositories ) {
-            if ( authzManager.authorize( repo,
-                                         identity ) ) {
-                repositoriesSection.add( makeRepositoryEntry( repo ) );
-            }
-        }
-    }
-
     private CarouselEntryWidget makeCarouselEntry( final String heading,
                                                    final String subHeading,
                                                    final String imageUri,
@@ -173,29 +148,6 @@ public class HomeViewImpl extends Composite
 
         } );
         return anchor;
-    }
-
-    private Widget makeGroupEntry( final Group group ) {
-        return makeSectionEntry( group.getName(),
-                                 new Command() {
-
-                                     @Override
-                                     public void execute() {
-                                         presenter.selectGroup( group );
-                                     }
-
-                                 } );
-    }
-
-    private Widget makeRepositoryEntry( final Repository repo ) {
-        return makeSectionEntry( repo.getAlias(),
-                                 new Command() {
-
-                                     @Override
-                                     public void execute() {
-                                     }
-
-                                 } );
     }
 
 }

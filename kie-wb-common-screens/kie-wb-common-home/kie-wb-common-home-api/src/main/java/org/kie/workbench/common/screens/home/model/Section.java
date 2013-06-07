@@ -1,4 +1,4 @@
-package org.kie.workbench.common.screens.home.client.model;
+package org.kie.workbench.common.screens.home.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

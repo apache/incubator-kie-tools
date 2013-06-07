@@ -18,7 +18,6 @@
 
   <modules>
     <module>kie-wb-common-home-api</module>
-    <module>kie-wb-common-home-backend</module>
     <module>kie-wb-common-home-client</module>
   </modules>
 
