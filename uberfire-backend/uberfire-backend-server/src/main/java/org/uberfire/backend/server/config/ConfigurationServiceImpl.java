@@ -32,10 +32,11 @@ import org.uberfire.security.Identity;
 
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
-
     private static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
     private static final String MONITOR_DISABLED = "org.kie.sys.repo.monitor.disabled";
     private static final String MONITOR_CHECK_INTERVAL = "org.kie.sys.repo.monitor.interval";
+    // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
+    private static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
 
     @Inject
     @Named("system")
@@ -117,11 +118,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public boolean addConfiguration( final ConfigGroup configGroup ) {
         try {
-            final Path filePath = ioService.get( systemRepository.getUri() ).resolve( configGroup.getName() + configGroup.getType().getExt() );
+            String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS, "_");
+
+            final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
             // avoid duplicated writes to not cause cyclic cluster sync
             if (ioService.exists(filePath)) {
                 return true;
             }
+
             final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                          "Created config " + filePath.getFileName() );
             final OutputStream outputStream = ioService.newOutputStream( filePath,
@@ -148,7 +152,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         //Invalidate cache if an item has been removed; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
-        final Path filePath = ioService.get( systemRepository.getUri() ).resolve( configGroup.getName() + configGroup.getType().getExt() );
+        String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS, "_");
+        final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
+
         // avoid duplicated writes to not cause cyclic cluster sync
         if (!ioService.exists(filePath)) {
             return true;
