@@ -16,15 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationMemberDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.*;
 
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class DataModelerServiceHelper {
         return dataModel;
     }
 
-    public DataModelTO domain2To(DataModel dataModel, Integer status) {
+    public DataModelTO domain2To(DataModel dataModel, Integer initialStatus, boolean calculateFingerprints) throws Exception {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
         List<DataObject> externalDataObjects = new ArrayList<DataObject>();
@@ -62,11 +61,14 @@ public class DataModelerServiceHelper {
         if (dataObjects != null) {
             for (DataObject dataObject  : dataObjects) {
                 dataObjectTO = new DataObjectTO(dataObject.getName(), dataObject.getPackageName(), dataObject.getSuperClassName());
-                if (status != null) {
-                    dataObjectTO.setStatus(status);
+                if (initialStatus != null) {
+                    dataObjectTO.setStatus(initialStatus);
                 }
                 domain2To(dataObject, dataObjectTO);
                 dataModelTO.getDataObjects().add(dataObjectTO);
+                if (calculateFingerprints) {
+                    dataObjectTO.setFingerPrint(calculateFingerPrint(dataObjectTO));
+                }
             }
         }
 
@@ -188,5 +190,27 @@ public class DataModelerServiceHelper {
         };
 
         return annotationDefinitionTO;
+    }
+
+    public String calculateFingerPrint(Object obj) throws Exception {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.close();
+        byte[] fingerPrint = DigestUtils.sha(byteArrayOutputStream.toByteArray());
+        return Base64.encodeBase64String(fingerPrint);
+    }
+    
+    public static void main(String args[]) {
+        try {
+        DataObjectTO objectTO = new DataObjectTO();
+        objectTO.getProperties().add(new ObjectPropertyTO());
+        System.out.println("fingerPrint: " + DataModelerServiceHelper.getInstance().calculateFingerPrint(objectTO));
+        objectTO.setName("COCO");
+        System.out.println("fingerPrint: " + DataModelerServiceHelper.getInstance().calculateFingerPrint(objectTO));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

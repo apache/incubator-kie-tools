@@ -18,11 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Portable
-public class AnnotationTO {
+public class AnnotationTO implements Serializable {
 
     private String className;
 

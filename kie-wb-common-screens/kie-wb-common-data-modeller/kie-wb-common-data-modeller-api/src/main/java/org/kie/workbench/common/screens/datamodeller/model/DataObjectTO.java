@@ -18,11 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Portable
-public class DataObjectTO {
+public class DataObjectTO implements Serializable {
 
     /*
      * Data objects that was read form persistent status, .java files.
@@ -51,6 +52,8 @@ public class DataObjectTO {
     private List<ObjectPropertyTO> properties = new ArrayList<ObjectPropertyTO>();
 
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
+
+    private String fingerPrint;
 
     public DataObjectTO() {
     }
@@ -118,6 +121,14 @@ public class DataObjectTO {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getFingerPrint() {
+        return fingerPrint;
+    }
+
+    public void setFingerPrint(String fingerPrint) {
+        this.fingerPrint = fingerPrint;
     }
 
     public boolean isVolatile() {

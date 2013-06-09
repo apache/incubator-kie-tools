@@ -16,18 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
@@ -58,6 +46,12 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
 
 @Service
 @ApplicationScoped
@@ -121,7 +115,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             dataModel = driver.loadModel(projectDataModelOracle);
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
-            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To(dataModel, DataObjectTO.PERSISTENT);
+            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To(dataModel, DataObjectTO.PERSISTENT, true);
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) logger.debug("Time elapsed when loading " + path.getFileName() + ": " + (endTime - startTime) + " ms");
@@ -148,22 +142,26 @@ public class DataModelerServiceImpl implements DataModelerService {
             //ensure java sources directory exists.
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath(paths.convert(projectPath));
 
+            //convert to domain model
+            DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain(dataModel);
+
+            //test fingerprint calculation
+            processFingerPrints(dataModel);
+
             //clean the files that needs to be deleted prior to model generation.
             //List<ResourceChange> localChanges = cleanupFiles(dataModel, javaPath);
             List<Path> deleteableFiles = calculateDeleteableFiles(dataModel, javaPath);
-
-            //convert to domain model
-            DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain(dataModel);
+            cleanupFiles(deleteableFiles);
 
             //invalidate ProjectDataModelOracle for this project.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
             
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
+            javaPath = ensureProjectJavaPath(paths.convert(projectPath));
             List<FileChangeDescriptor> driverChanges = driver.generateModel(dataModelDomain, ioService, javaPath);
 
             notifyFileChanges(deleteableFiles, driverChanges);
 
-            cleanupFiles(deleteableFiles);
             cleanupEmptyDirs(javaPath);
             //after file cleaning we must ensure again that the java path exists
             javaPath = ensureProjectJavaPath(paths.convert(projectPath));
@@ -329,6 +327,18 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         return  deleteableFiles;
+    }
+    
+    private void processFingerPrints(DataModelTO modelT0) throws Exception {
+        for (DataObjectTO dataObject : modelT0.getDataObjects()) {
+            String previousFingerPrint = dataObject.getFingerPrint();
+            dataObject.setFingerPrint(null);
+            String newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint(dataObject);
+            if (!newFingerPrint.equals(previousFingerPrint)) {
+                System.out.println("XXXXXXXXXXXXXXXXXXX the class changed: " + dataObject.getClassName());
+            }
+        }
+                
     }
 
     private void cleanupFiles(List<Path> deleteableFiles) {
