@@ -27,7 +27,7 @@
     <module>kie-wb-common-data</module>
     <module>kie-wb-common-workingset-api</module>
     <module>kie-wb-common-workingset-client</module>
-    <module>kie-wb-common-defaultapprover</module>
+    <!--module>kie-wb-common-defaultapprover</module-->
     <module>kie-wb-common-rest</module>
   </modules>
 
