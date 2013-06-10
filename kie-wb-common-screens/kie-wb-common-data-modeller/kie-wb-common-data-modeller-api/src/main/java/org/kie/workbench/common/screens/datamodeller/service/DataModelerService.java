@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.uberfire.backend.vfs.Path;
 
@@ -34,7 +35,7 @@ public interface DataModelerService {
 
     DataModelTO loadModel(final Path path);
     
-    void saveModel(DataModelTO dataModel, final Path path);
+    GenerationResult saveModel(DataModelTO dataModel, final Path path);
 
     /**
      * Indicates if given path related to a project is inside project resources path. (src/main/resources or src/test/resources)

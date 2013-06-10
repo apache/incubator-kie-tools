@@ -18,12 +18,11 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Portable
-public class DataObjectTO implements Serializable {
+public class DataObjectTO {
 
     /*
      * Data objects that was read form persistent status, .java files.
@@ -207,5 +206,18 @@ public class DataObjectTO implements Serializable {
             if (annotationClassName.equals(_annotation.getClassName())) return i;
         }
         return -1;
+    }
+    
+    public String getStringId() {
+        StringBuilder strId = new StringBuilder();
+        strId.append(getClassName());
+        strId.append(getSuperClassName());
+        for (AnnotationTO annotationTO : getAnnotations()) {
+            strId.append(annotationTO.getStringId());
+        }
+        for (ObjectPropertyTO property : getProperties()) {
+            strId.append(property.getStringId());
+        }
+        return strId.toString();
     }
 }

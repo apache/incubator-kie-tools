@@ -18,12 +18,11 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Portable
-public class ObjectPropertyTO implements Serializable {
+public class ObjectPropertyTO {
 
     private String className;
 
@@ -131,6 +130,18 @@ public class ObjectPropertyTO implements Serializable {
             int index = _getAnnotation(annotation.getClassName());
             if (index >= 0) annotations.remove(index);
         }
+    }
+    
+    public String getStringId() {
+        StringBuilder strId = new StringBuilder();
+        strId.append(getName());
+        strId.append(getClassName());
+        strId.append(isMultiple());
+        strId.append(getBag());
+        for (AnnotationTO annotationTO : annotations) {
+            strId.append(annotationTO.getStringId());
+        }
+        return strId.toString();
     }
 
     private Integer _getAnnotation(String annotationClassName) {

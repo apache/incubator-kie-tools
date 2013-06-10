@@ -59,7 +59,7 @@ public interface Constants extends Messages {
 
     public String modelEditor_notification_dataModel_loaded(String name);
 
-    public String modelEditor_notification_dataModel_saved();
+    public String modelEditor_notification_dataModel_saved(String seconds);
 
     public String modelEditor_discard_changes_message();
 

@@ -16,13 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -32,18 +25,11 @@ import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.annotations.WorkbenchToolBar;
+import org.uberfire.client.annotations.*;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
@@ -58,7 +44,14 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -150,13 +143,13 @@ public class DataModelerScreenPresenter {
         BusyPopup.showMessage(Constants.INSTANCE.modelEditor_saving());
         if (newProjectPath == null) pathChange.fire(new PathChangeEvent(currentProject));
 
-        modelerService.call(new RemoteCallback<Object>() {
+        modelerService.call(new RemoteCallback<GenerationResult>() {
                 @Override
-                public void callback(Object response) {
+                public void callback(GenerationResult result) {
                     BusyPopup.close();
-                    restoreModelStatus();
+                    restoreModelStatus(result);
                     getContext().setDirty(false);
-                    notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_saved()));
+                    notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataModel_saved(result.getGenerationTimeSeconds()+"")));
                     if (newProjectPath != null) {
                         loadProjectDataModel(newProjectPath);
                     }
@@ -292,10 +285,11 @@ public class DataModelerScreenPresenter {
         return !newPath.toURI().startsWith(currentProject.toURI());
     }
 
-    private void restoreModelStatus() {
+    private void restoreModelStatus(GenerationResult result) {
         //when the model is saved without errors
         //clean the deleted dataobjects status, mark all dataobjects as persisted, etc.
         getDataModel().setPersistedStatus();
+        getDataModel().updateFingerPrints(result.getObjectFingerPrints());
     }
 
     private void makeMenuBar() {

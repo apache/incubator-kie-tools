@@ -20,6 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Portable
@@ -93,6 +94,12 @@ public class DataModelTO {
         for (DataObjectTO dataObjectTO : dataObjects) {
             dataObjectTO.setOriginalClassName(dataObjectTO.getClassName());
             dataObjectTO.setStatus(DataObjectTO.PERSISTENT);
+        }
+    }
+
+    public void updateFingerPrints(Map<String, String> fingerPrints) {
+        for (DataObjectTO dataObject : getDataObjects()) {
+            dataObject.setFingerPrint(fingerPrints.get(dataObject.getClassName()));
         }
     }
 

@@ -18,12 +18,10 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Portable
-public class AnnotationTO implements Serializable {
+public class AnnotationTO {
 
     private String className;
 
@@ -76,5 +74,19 @@ public class AnnotationTO implements Serializable {
 
     public void setAnnotationDefinition(AnnotationDefinitionTO annotationDefinition) {
         this.annotationDefinition = annotationDefinition;
+    }
+    
+    public String getStringId() {
+        StringBuilder strId = new StringBuilder();
+        strId.append(getAnnotationDefinition().getClassName());
+        SortedMap<String, Object> sortedValues = new TreeMap<String, Object>();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            sortedValues.put(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, Object> sortedEntry : sortedValues.entrySet()) {
+            strId.append(sortedEntry.getKey());
+            strId.append(sortedEntry.getValue() != null ? sortedEntry.getValue().toString() : "");
+        }
+        return strId.toString();
     }
 }

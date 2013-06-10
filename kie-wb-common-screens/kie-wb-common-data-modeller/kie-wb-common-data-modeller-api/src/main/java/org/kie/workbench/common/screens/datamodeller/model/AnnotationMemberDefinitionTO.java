@@ -18,10 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.io.Serializable;
-
 @Portable
-public class AnnotationMemberDefinitionTO implements Serializable {
+public class AnnotationMemberDefinitionTO {
 
     private String name;
     

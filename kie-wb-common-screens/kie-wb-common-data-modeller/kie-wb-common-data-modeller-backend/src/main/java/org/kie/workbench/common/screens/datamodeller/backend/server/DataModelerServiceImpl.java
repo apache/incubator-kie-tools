@@ -20,10 +20,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -129,7 +126,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public void saveModel(DataModelTO dataModel, final Path path) {
+    public GenerationResult saveModel(DataModelTO dataModel, final Path path) {
         
         try {
 
@@ -144,12 +141,10 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain(dataModel);
-
-            //test fingerprint calculation
-            processFingerPrints(dataModel);
+            //optimization remove unmodified data objects from the model in order to skip generation for unmodified objects.
+            removeUnmodifiedObjects(dataModelDomain, dataModel);
 
             //clean the files that needs to be deleted prior to model generation.
-            //List<ResourceChange> localChanges = cleanupFiles(dataModel, javaPath);
             List<Path> deleteableFiles = calculateDeleteableFiles(dataModel, javaPath);
             cleanupFiles(deleteableFiles);
 
@@ -168,6 +163,11 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) logger.debug("Time elapsed when saving " + path.getFileName() + ": " + (endTime - startTime) + " ms");
+
+            GenerationResult result = new GenerationResult();
+            result.setGenerationTime(endTime-startTime);
+            result.setObjectFingerPrints(DataModelerServiceHelper.getInstance().claculateFingerPrints(dataModel));
+            return result;
 
         } catch (Exception e) {
             logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);
@@ -329,16 +329,15 @@ public class DataModelerServiceImpl implements DataModelerService {
         return  deleteableFiles;
     }
     
-    private void processFingerPrints(DataModelTO modelT0) throws Exception {
-        for (DataObjectTO dataObject : modelT0.getDataObjects()) {
-            String previousFingerPrint = dataObject.getFingerPrint();
-            dataObject.setFingerPrint(null);
-            String newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint(dataObject);
-            if (!newFingerPrint.equals(previousFingerPrint)) {
-                System.out.println("XXXXXXXXXXXXXXXXXXX the class changed: " + dataObject.getClassName());
+    private void removeUnmodifiedObjects(DataModel dataModelDomain, DataModelTO dataModelTO) throws Exception {
+        String newFingerPrint;
+        for (DataObjectTO dataObject : dataModelTO.getDataObjects()) {
+            newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint(dataObject.getStringId());
+            if (newFingerPrint.equals(dataObject.getFingerPrint())) {
+                System.out.println("XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified");
+                dataModelDomain.removeDataObject(dataObject.getClassName());
             }
         }
-                
     }
 
     private void cleanupFiles(List<Path> deleteableFiles) {

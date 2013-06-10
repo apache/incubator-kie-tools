@@ -25,7 +25,9 @@ import org.kie.workbench.common.services.datamodeller.core.impl.*;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataModelerServiceHelper {
 
@@ -67,7 +69,7 @@ public class DataModelerServiceHelper {
                 domain2To(dataObject, dataObjectTO);
                 dataModelTO.getDataObjects().add(dataObjectTO);
                 if (calculateFingerprints) {
-                    dataObjectTO.setFingerPrint(calculateFingerPrint(dataObjectTO));
+                    dataObjectTO.setFingerPrint(calculateFingerPrint(dataObjectTO.getStringId()));
                 }
             }
         }
@@ -192,6 +194,10 @@ public class DataModelerServiceHelper {
         return annotationDefinitionTO;
     }
 
+    public String calculateFingerPrint(String str) {
+        return Base64.encodeBase64String(DigestUtils.sha(str));
+    }
+
     public String calculateFingerPrint(Object obj) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -200,17 +206,13 @@ public class DataModelerServiceHelper {
         byte[] fingerPrint = DigestUtils.sha(byteArrayOutputStream.toByteArray());
         return Base64.encodeBase64String(fingerPrint);
     }
-    
-    public static void main(String args[]) {
-        try {
-        DataObjectTO objectTO = new DataObjectTO();
-        objectTO.getProperties().add(new ObjectPropertyTO());
-        System.out.println("fingerPrint: " + DataModelerServiceHelper.getInstance().calculateFingerPrint(objectTO));
-        objectTO.setName("COCO");
-        System.out.println("fingerPrint: " + DataModelerServiceHelper.getInstance().calculateFingerPrint(objectTO));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    public Map<String, String> claculateFingerPrints(DataModelTO dataModelTO) {
+        Map<String, String> fingerPrints = new HashMap<String, String>();
+        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+            fingerPrints.put(dataObjectTO.getClassName(), calculateFingerPrint(dataObjectTO.getStringId()));
         }
+        return fingerPrints;
     }
+
 }

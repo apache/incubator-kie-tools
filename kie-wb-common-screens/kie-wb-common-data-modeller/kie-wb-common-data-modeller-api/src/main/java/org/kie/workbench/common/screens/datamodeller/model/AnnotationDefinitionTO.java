@@ -19,12 +19,11 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Portable
-public class AnnotationDefinitionTO implements Serializable {
+public class AnnotationDefinitionTO {
 
     private String className;
 

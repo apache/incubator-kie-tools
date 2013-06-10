@@ -39,7 +39,7 @@
                 <b:ControlLabel for="label"  ><gwt:Label ui:field="labelLabel" text="{i18n.new_dataobject_popup_label}"  /></b:ControlLabel>
 
                 <b:Controls>
-                    <b:TextBox b:id="labelLabel" ui:field="label"/>
+                    <b:TextBox b:id="labelLabel" ui:field="label"  placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
                 </b:Controls>
 
             </b:ControlGroup>
