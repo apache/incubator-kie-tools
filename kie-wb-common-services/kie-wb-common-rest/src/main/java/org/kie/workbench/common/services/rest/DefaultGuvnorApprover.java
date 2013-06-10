@@ -1,6 +1,7 @@
 package org.kie.workbench.common.services.rest;
 
 
+import org.apache.commons.io.IOUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -10,6 +11,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,8 +23,9 @@ public class DefaultGuvnorApprover {
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
 
-        KieModule kModule = kr.addKieModule(ks.getResources().newClassPathResource("kie-wb-common-defaultapprover-0.9.jar"));
-
+        byte[] kjarBytes = getKarAS7AsByteArray("kie-wb-common-defaultapprover-0.9.jar");        
+        KieModule kModule = kr.addKieModule(ks.getResources().newByteArrayResource(kjarBytes));
+        
         KieContainer kContainer = ks.newKieContainer(kModule.getReleaseId());
 
         KieSession kSession = kContainer.newKieSession();
@@ -34,33 +38,53 @@ public class DefaultGuvnorApprover {
         return true;
     }
     
-    public File getKJar(String kjarName) {
-        if (!kjarName.endsWith(".jar")) {
-            throw new RuntimeException("The kjar name is invalid");
-        }
-        
-        URL u = this.getClass().getResource(kjarName);
-        File kjarFile = new File(u.getFile());
-        if (!kjarFile.exists()) {
-            throw new RuntimeException("The kjar [" + kjarName + "] does not exist");
-        }
-        
-        return kjarFile;
+    //NOTE, this assumes that the kjar is located within kie-wb-common-rest-6.0.0-SNAPSHOT.jar
+    public InputStream getKarAS7(String kjarName) {
+        System.out.println("********************************************************************");
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("kie-wb-common-defaultapprover-0.9.jar");
+        System.out.println("**************kjar is******************* " + is);
+        System.out.println("********************************************************************");
+        return is;
     }
     
-/*    public static File getKJar(String kjarName) {
-        if (!kjarName.endsWith(".jar")) {
-            throw new RuntimeException("The kjar name is invalid");
+    //NOTE, this assumes that the kjar is located within kie-wb-common-rest-6.0.0-SNAPSHOT.jar
+    public byte[] getKarAS7AsByteArray(String kjarName) {
+        System.out.println("********************************************************************");
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("kie-wb-common-defaultapprover-0.9.jar");
+        System.out.println("**************kjar is******************* " + is);
+        System.out.println("********************************************************************");
+        try {
+            return IOUtils.toByteArray(is);
+        } catch (IOException e) {
+            //Ignore
         }
+        return null;
+    }
         
-        File kjarFile = new File(kjarName);
-        if (!kjarFile.exists()) {
-            throw new RuntimeException("The kjar [" + kjarName + "] does not exist");
+    //NOTE, this does not work. The kjar url returned is sth like "/content/drools.war/WEB-INF/lib/kie-wb-common-defaultapprover-0.9.jar",
+    //which does not exist on file system
+    //See https://community.jboss.org/thread/175076,  https://community.jboss.org/message/638605
+    public File getKarAS72(String kjarName) {
+        System.out.println("********************************************************************");
+        // mydummy.properties is file located within kie-wb-common-defaultapprover-0.9.jar
+        URL url = Thread.currentThread().getContextClassLoader().getResource("mydummy.properties");
+        System.out.println("**************mydummy.properties******************* " + url);
+        if (url != null) {
+            String path = url.getPath();
+            String kjarPath = path.substring(0, path.indexOf("/lib/")) + "/lib/kie-wb-common-defaultapprover-0.9.jar";
+            System.out.println("**************kie-wb-common-defaultapprover-0.9.jar******************* " + kjarPath);
+
+            File kjarFile = new File(kjarPath);
+            System.out.println("**************kie-wb-common-defaultapprover-0.9.jar exist******************* " + kjarFile.exists());
+
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(kjarPath);
+            System.out.println("**************kie-wb-common-defaultapprover-0.9.jar InputStream ******************* " + is);
+
+            return kjarFile;
         }
-        
-        return kjarFile;
-    }*/
-    
+        return null;
+    }
+
     public static void main(String[] args) {
     	DefaultGuvnorApprover a = new DefaultGuvnorApprover();
     	JobRequest request = new JobRequest();
