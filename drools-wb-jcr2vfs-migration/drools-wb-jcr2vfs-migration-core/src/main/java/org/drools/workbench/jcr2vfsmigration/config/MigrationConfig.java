@@ -98,7 +98,7 @@ public class MigrationConfig {
 
     private boolean parseArgOutputVfsRepository(CommandLine commandLine, HelpFormatter formatter, Options options) {
         outputVfsRepository = new File(commandLine.getOptionValue("o", "outputVfs"));
-        forceOverwriteOutputVfsRepository = Boolean.parseBoolean(commandLine.getOptionValue("f", "false"));
+        forceOverwriteOutputVfsRepository = commandLine.hasOption("f");
         if (outputVfsRepository.exists()) {
             if (forceOverwriteOutputVfsRepository) {
                 try {
