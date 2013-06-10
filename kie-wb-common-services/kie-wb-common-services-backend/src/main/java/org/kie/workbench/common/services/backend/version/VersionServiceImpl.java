@@ -58,7 +58,7 @@ public class VersionServiceImpl implements VersionService {
             final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
 
             for ( final VersionRecord record : records ) {
-                result.add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
+                result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
             }
 
             return result;

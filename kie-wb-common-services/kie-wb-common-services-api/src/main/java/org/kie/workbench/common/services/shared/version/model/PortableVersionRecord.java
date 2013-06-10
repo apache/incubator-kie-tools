@@ -29,8 +29,9 @@ public class PortableVersionRecord implements VersionRecord {
 
     private String id;
     private String author;
+    private String email;
     private String comment;
-    private Date   date;
+    private Date date;
     private String uri;
 
     public PortableVersionRecord() {
@@ -39,11 +40,13 @@ public class PortableVersionRecord implements VersionRecord {
 
     public PortableVersionRecord( final String id,
                                   final String author,
+                                  final String email,
                                   final String comment,
                                   final Date date,
                                   final String uri ) {
         this.id = id;
         this.author = author;
+        this.email = email;
         this.comment = comment;
         this.date = date;
         this.uri = uri;
@@ -57,6 +60,11 @@ public class PortableVersionRecord implements VersionRecord {
     @Override
     public String author() {
         return author;
+    }
+
+    @Override
+    public String email() {
+        return null;
     }
 
     @Override

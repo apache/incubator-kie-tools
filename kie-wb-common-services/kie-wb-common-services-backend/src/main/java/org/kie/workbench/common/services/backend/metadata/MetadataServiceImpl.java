@@ -89,7 +89,7 @@ public class MetadataServiceImpl implements MetadataService {
                     .withDiscussion( discussView.readAttributes().discussion() )
                     .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
                         for ( final VersionRecord record : versionAttributeView.readAttributes().history().records() ) {
-                            add( new PortableVersionRecord( record.id(), record.author(), record.comment(), record.date(), record.uri() ) );
+                            add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
                         }
                     }} )
                     .build();
