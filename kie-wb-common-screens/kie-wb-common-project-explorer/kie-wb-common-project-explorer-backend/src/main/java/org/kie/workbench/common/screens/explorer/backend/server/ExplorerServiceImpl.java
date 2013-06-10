@@ -16,179 +16,142 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.screens.explorer.backend.server.loaders.ItemsLoader;
-import org.kie.workbench.common.screens.explorer.backend.server.util.BreadCrumbFactory;
-import org.kie.workbench.common.screens.explorer.backend.server.util.BreadCrumbUtilities;
-import org.kie.workbench.common.screens.explorer.model.BreadCrumb;
-import org.kie.workbench.common.screens.explorer.model.ExplorerContent;
-import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.Identity;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @Service
 @ApplicationScoped
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final String SOURCE_JAVA_RESOURCES_PATH = "src/main/java";
-    private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_JAVA_RESOURCES_PATH = "src/test/java";
-    private static final String TEST_RESOURCES_PATH = "src/test/resources";
+    private static String[] sourcePaths = { "src/main/java", "src/main/resources", "src/test/java", "src/test/resources" };
 
+    @Inject
+    @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GroupService groupService;
+
+    @Inject
+    private AuthorizationManager authorizationManager;
+
+    @Inject
+    @SessionScoped
+    private Identity identity;
+
+    @Inject
     private Paths paths;
-
-    @Inject
-    @Named("outsideProjectList")
-    private ItemsLoader outsideProjectListLoader;
-
-    @Inject
-    @Named("projectRootList")
-    private ItemsLoader projectRootListLoader;
-
-    @Inject
-    @Named("projectPackageList")
-    private ItemsLoader projectPackageListLoader;
-
-    @Inject
-    @Named("projectNonPackageList")
-    private ItemsLoader projectNonPackageListLoader;
-
-    @Inject
-    private BreadCrumbFactory breadCrumbFactory;
-
-    @Inject
-    private BreadCrumbUtilities breadCrumbUtilities;
 
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
 
-    @Inject
-    public ExplorerServiceImpl( final @Named("ioStrategy") IOService ioService,
+    public ExplorerServiceImpl( final IOService ioService,
+                                final AuthorizationManager authorizationManager,
                                 final ProjectService projectService,
+                                final GroupService groupService,
+                                final Identity identity,
                                 final Paths paths ) {
         this.ioService = ioService;
+        this.authorizationManager = authorizationManager;
         this.projectService = projectService;
+        this.groupService = groupService;
+        this.identity = identity;
         this.paths = paths;
     }
 
     @Override
-    public ExplorerContent getContentInScope( final Path resource ) {
-        try {
-
-            final Path projectRootPath = projectService.resolveProject( resource );
-
-            //Null Path cannot be in a Project scope
-            if ( resource == null ) {
-                return makeOutsideProjectList( resource,
-                                               projectRootPath );
+    public Collection<Group> getGroups() {
+        final Collection<Group> groups = groupService.getGroups();
+        final Collection<Group> authorizedGroups = new ArrayList<Group>();
+        for ( Group group : groups ) {
+            if ( authorizationManager.authorize( group,
+                                                 identity ) ) {
+                authorizedGroups.add( group );
             }
-
-            //Check if Path is within a Project scope
-            if ( projectRootPath == null ) {
-                return makeOutsideProjectList( resource,
-                                               projectRootPath );
-            }
-
-            //Check if Path is Project root
-            final org.kie.commons.java.nio.file.Path pRoot = paths.convert( projectRootPath );
-            final org.kie.commons.java.nio.file.Path pResource = paths.convert( resource );
-            final boolean isProjectRootPath = Files.isSameFile( pRoot,
-                                                                pResource );
-            if ( isProjectRootPath ) {
-                return makeProjectRootList( resource,
-                                            projectRootPath );
-            }
-
-            //Check if Path is within Projects Source Java resources
-            final org.kie.commons.java.nio.file.Path pSrcJavaResources = pRoot.resolve( SOURCE_JAVA_RESOURCES_PATH );
-            if ( pResource.startsWith( pSrcJavaResources ) ) {
-                return makeProjectPackageList( resource,
-                                               projectRootPath );
-            }
-
-            //Check if Path is within Projects Source resources
-            final org.kie.commons.java.nio.file.Path pSrcResources = pRoot.resolve( SOURCE_RESOURCES_PATH );
-            if ( pResource.startsWith( pSrcResources ) ) {
-                return makeProjectPackageList( resource,
-                                               projectRootPath );
-            }
-
-            //Check if Path is within Projects Test Java resources
-            final org.kie.commons.java.nio.file.Path pTestJavaResources = pRoot.resolve( TEST_JAVA_RESOURCES_PATH );
-            if ( pResource.startsWith( pTestJavaResources ) ) {
-                return makeProjectPackageList( resource,
-                                               projectRootPath );
-            }
-
-            //Check if Path is within Projects Test resources
-            final org.kie.commons.java.nio.file.Path pTestResources = pRoot.resolve( TEST_RESOURCES_PATH );
-            if ( pResource.startsWith( pTestResources ) ) {
-                return makeProjectPackageList( resource,
-                                               projectRootPath );
-            }
-
-            //Otherwise Path must be between Project root and Project resources
-            return makeProjectNonPackageList( resource,
-                                              projectRootPath );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
         }
+        return authorizedGroups;
     }
 
-    private ExplorerContent makeOutsideProjectList( final Path path,
-                                                    final Path projectRoot ) {
-        final List<Item> items = outsideProjectListLoader.load( path,
-                                                                projectRoot );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
-        return new ExplorerContent( items,
-                                    breadCrumbs );
+    @Override
+    public Collection<Repository> getRepositories( final Group group ) {
+        final Collection<Repository> authorizedRepositories = new ArrayList<Repository>();
+        for ( Repository repository : group.getRepositories() ) {
+            if ( authorizationManager.authorize( repository,
+                                                 identity ) ) {
+                authorizedRepositories.add( repository );
+            }
+        }
+        return authorizedRepositories;
     }
 
-    private ExplorerContent makeProjectRootList( final Path path,
-                                                 final Path projectRoot ) {
-        final List<Item> items = projectRootListLoader.load( path,
-                                                             projectRoot );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
-        return new ExplorerContent( items,
-                                    breadCrumbs );
+    @Override
+    public Collection<Project> getProjects( final Repository repository ) {
+        final Collection<Project> authorizedProjects = new ArrayList<Project>();
+        final Path repositoryRoot = repository.getRoot();
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( paths.convert( repositoryRoot ) );
+        for ( org.kie.commons.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
+            if ( Files.isDirectory( nioRepositoryPath ) ) {
+                final org.uberfire.backend.vfs.Path projectPath = paths.convert( nioRepositoryPath );
+                if ( projectService.resolveProject( projectPath ) != null ) {
+                    final Project project = new Project( projectPath,
+                                                         projectPath.getFileName() );
+                    authorizedProjects.add( project );
+                }
+            }
+        }
+        return authorizedProjects;
     }
 
-    private ExplorerContent makeProjectPackageList( final Path path,
-                                                    final Path projectRoot ) {
-        final List<Item> items = projectPackageListLoader.load( path,
-                                                                projectRoot );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ),
-                                                                                breadCrumbUtilities.makeBreadCrumbCaptionSubstitutionsForDefaultPackage( path ) );
-        return new ExplorerContent( items,
-                                    breadCrumbs );
+    @Override
+    public Collection<Package> getPackages( final Project project ) {
+        final Collection<Package> packages = new HashSet<Package>();
+        final Path projectRoot = project.getPath();
+        for ( String src : sourcePaths ) {
+            final org.kie.commons.java.nio.file.Path nioProjectSrcPath = paths.convert( projectRoot ).resolve( src );
+            packages.addAll( getPackages( nioProjectSrcPath ) );
+        }
+        return packages;
     }
 
-    private ExplorerContent makeProjectNonPackageList( final Path path,
-                                                       final Path projectRoot ) {
-        final List<Item> items = projectNonPackageListLoader.load( path,
-                                                                   projectRoot );
-        final List<BreadCrumb> breadCrumbs = breadCrumbFactory.makeBreadCrumbs( path,
-                                                                                breadCrumbUtilities.makeBreadCrumbExclusions( path ) );
-        return new ExplorerContent( items,
-                                    breadCrumbs );
+    private Collection<Package> getPackages( final org.kie.commons.java.nio.file.Path path ) {
+        final Collection<Package> packages = new HashSet<Package>();
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioProjectSrcPaths = ioService.newDirectoryStream( path );
+        for ( org.kie.commons.java.nio.file.Path nioPackageSrcPath : nioProjectSrcPaths ) {
+            if ( Files.isDirectory( nioPackageSrcPath ) ) {
+                packages.addAll( getPackages( nioPackageSrcPath ) );
+                final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
+                final Package pkg = new Package( packageSrcPath,
+                                                 projectService.resolvePackageName( packageSrcPath ) );
+                packages.add( pkg );
+            }
+        }
+        return packages;
     }
 
 }

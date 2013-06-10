@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.screens.explorer.service;
 
+import java.util.Collection;
+
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.explorer.model.ExplorerContent;
-import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 
 /**
  * Service definition for Explorer editor
@@ -26,15 +30,12 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ExplorerService {
 
-    /**
-     * Return a list of items for the specified Path. The Path can be either:-
-     * - A Project Root (i.e. folder containing pom.xml and parent of folder containing kmodule.xml)
-     * - Within a Project Package (i.e. folder within Project Root and src/main/resources)
-     * - Within a Project but outside of a Package (i.e. between pom.xml and src/main/resources)
-     * - Other
-     * @param path
-     * @return
-     */
-    ExplorerContent getContentInScope( final Path path );
+    Collection<Group> getGroups();
+
+    Collection<Repository> getRepositories( final Group group );
+
+    Collection<Project> getProjects( final Repository repository );
+
+    Collection<Package> getPackages( final Project project );
 
 }

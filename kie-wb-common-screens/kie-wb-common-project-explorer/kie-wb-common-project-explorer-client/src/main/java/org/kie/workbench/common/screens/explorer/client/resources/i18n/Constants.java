@@ -30,4 +30,6 @@ public interface Constants
 
     public String explorerTitle();
 
+    public String nullEntry();
+
 }

@@ -23,6 +23,7 @@
 
   <inherits name='org.uberfire.UberfireClientAPI'/>
   <inherits name='org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerAPI'/>
+  <inherits name='com.github.gwtbootstrap.Bootstrap'/>
 
   <source path="client"/>
 
