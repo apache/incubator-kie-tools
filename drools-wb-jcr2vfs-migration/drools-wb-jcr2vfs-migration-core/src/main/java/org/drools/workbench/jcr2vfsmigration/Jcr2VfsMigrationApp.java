@@ -32,8 +32,9 @@ public class Jcr2VfsMigrationApp {
         WeldContainer weldContainer = weld.initialize();
 
         Jcr2VfsMigrater migrater = weldContainer.instance().select(Jcr2VfsMigrater.class).get();
-        migrater.parseArgs(args);
-        migrater.migrateAll();
+        if(migrater.parseArgs(args)) {
+            migrater.migrateAll();
+        }
 
         weld.shutdown();
     }

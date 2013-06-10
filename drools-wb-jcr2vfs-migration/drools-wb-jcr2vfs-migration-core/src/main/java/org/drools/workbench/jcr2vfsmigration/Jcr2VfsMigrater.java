@@ -60,8 +60,8 @@ public class Jcr2VfsMigrater {
     protected BoundRequestContext requestContext;
     protected Map<String, Object> requestDataStore;
 
-    public void parseArgs(String[] args) {
-        migrationConfig.parseArgs(args);
+    public boolean parseArgs(String[] args) {
+        return migrationConfig.parseArgs(args);
     }
 
     public void migrateAll() {

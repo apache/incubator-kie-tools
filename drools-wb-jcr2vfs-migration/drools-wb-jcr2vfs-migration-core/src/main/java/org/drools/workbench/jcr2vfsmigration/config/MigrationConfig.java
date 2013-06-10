@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -35,6 +36,8 @@ public class MigrationConfig {
 
     protected static final Logger logger = LoggerFactory.getLogger(MigrationConfig.class);
 
+	public static String formatstr = "runMigration  [options...]";
+	
     private File inputJcrRepository;
     private File outputVfsRepository;
 
@@ -52,40 +55,48 @@ public class MigrationConfig {
     // Configuration methods
     // ************************************************************************
 
-    public void parseArgs(String[] args) {
+    public boolean parseArgs(String[] args) {   	
         Options options = new Options();
+        options.addOption("h", "help",  false, "help for the command.");
         options.addOption("i", "inputJcrRepository", true, "The Guvnor 5 JCR repository");
         options.addOption("o", "outputVfsRepository", true, "The Guvnor 6 VFS repository");
-        options.addOption("f", "forceOverwriteOutputVfsRepository", true,
-                "Force overwriting the Guvnor 6 VFS repository");
+        options.addOption("f", "forceOverwriteOutputVfsRepository", true, "Force overwriting the Guvnor 6 VFS repository");
+        
         CommandLine commandLine;
+        HelpFormatter formatter = new HelpFormatter();
         try {
             commandLine = new BasicParser().parse(options, args);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("The arguments (" + Arrays.toString(args) + ") could not be parsed.", e);
+        	formatter.printHelp( formatstr, options ); 
+        	return false;
         }
-        if (!commandLine.getArgList().isEmpty()) {
-            throw new IllegalArgumentException("The arguments (" + Arrays.toString(args)
-                    + ") have unsupported arguments (" + commandLine.getArgList() + ").");
+
+        if (commandLine.hasOption("h")) {
+        	formatter.printHelp(formatstr, options);
+            return false;
         }
-        parseArgInputJcrRepository(commandLine);
-        parseArgOutputVfsRepository(commandLine);
+                
+        return (parseArgInputJcrRepository(commandLine, formatter, options) && parseArgOutputVfsRepository(commandLine, formatter, options));
     }
 
-    private void parseArgInputJcrRepository(CommandLine commandLine) {
+    private boolean parseArgInputJcrRepository(CommandLine commandLine, HelpFormatter formatter, Options options) {
         inputJcrRepository = new File(commandLine.getOptionValue("i", "inputJcr"));
         if (!inputJcrRepository.exists()) {
-            throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository.getAbsolutePath()
-                    + ") does not exist.");
+        	 System.out.println("The inputJcrRepository (" + inputJcrRepository.getAbsolutePath()
+                     + ") does not exist.");
+        	 return false;
         }
+        
         try {
             inputJcrRepository = inputJcrRepository.getCanonicalFile();
         } catch (IOException e) {
             throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository + ") has issues.", e);
         }
+        
+        return true;
     }
 
-    private void parseArgOutputVfsRepository(CommandLine commandLine) {
+    private boolean parseArgOutputVfsRepository(CommandLine commandLine, HelpFormatter formatter, Options options) {
         outputVfsRepository = new File(commandLine.getOptionValue("o", "outputVfs"));
         forceOverwriteOutputVfsRepository = Boolean.parseBoolean(commandLine.getOptionValue("f", "false"));
         if (outputVfsRepository.exists()) {
@@ -97,8 +108,9 @@ public class MigrationConfig {
                             + outputVfsRepository.getAbsolutePath() + ") failed.", e);
                 }
             } else {
-                throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository.getAbsolutePath()
+            	System.out.println("The outputVfsRepository (" + outputVfsRepository.getAbsolutePath()
                         + ") already exists.");
+            	return false;
             }
         }
         try {
@@ -107,6 +119,8 @@ public class MigrationConfig {
             throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository + ") has issues.", e);
         }
         outputVfsRepository.mkdirs();
+        
+        return true;
     }
 
 }
