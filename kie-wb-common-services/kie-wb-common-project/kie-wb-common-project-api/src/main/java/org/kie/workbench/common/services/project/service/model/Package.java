@@ -10,27 +10,54 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class Package {
 
-    private Path path;
+    private Path relativePath;
     private String title;
 
     public Package() {
         //For Errai-marshalling
     }
 
-    public Package( final Path path,
+    public Package( final Path relativePath,
                     final String title ) {
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
+        this.relativePath = PortablePreconditions.checkNotNull( "relativePath",
+                                                                relativePath );
         this.title = PortablePreconditions.checkNotNull( "title",
                                                          title );
     }
 
-    public Path getPath() {
-        return this.path;
+    public Path getRelativePath() {
+        return this.relativePath;
     }
 
     public String getTitle() {
         return this.title;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Package ) ) {
+            return false;
+        }
+
+        Package aPackage = (Package) o;
+
+        if ( !relativePath.equals( aPackage.relativePath ) ) {
+            return false;
+        }
+        if ( !title.equals( aPackage.title ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = relativePath.hashCode();
+        result = 31 * result + title.hashCode();
+        return result;
+    }
 }

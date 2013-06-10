@@ -133,25 +133,47 @@ public class ExplorerServiceImpl
         final Collection<Package> packages = new HashSet<Package>();
         final Path projectRoot = project.getPath();
         for ( String src : sourcePaths ) {
-            final org.kie.commons.java.nio.file.Path nioProjectSrcPath = paths.convert( projectRoot ).resolve( src );
-            packages.addAll( getPackages( nioProjectSrcPath ) );
+            final org.kie.commons.java.nio.file.Path nioSrcRootPath = paths.convert( projectRoot ).resolve( src );
+            packages.addAll( getPackages( nioSrcRootPath,
+                                          nioSrcRootPath ) );
         }
         return packages;
     }
 
-    private Collection<Package> getPackages( final org.kie.commons.java.nio.file.Path path ) {
+    private Collection<Package> getPackages( final org.kie.commons.java.nio.file.Path nioSrcRootPath,
+                                             final org.kie.commons.java.nio.file.Path nioSrcPath ) {
         final Collection<Package> packages = new HashSet<Package>();
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioProjectSrcPaths = ioService.newDirectoryStream( path );
+        if ( !Files.exists( nioSrcPath ) ) {
+            return packages;
+        }
+        packages.add( makePackage( nioSrcRootPath,
+                                   nioSrcPath ) );
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioProjectSrcPaths = ioService.newDirectoryStream( nioSrcPath );
         for ( org.kie.commons.java.nio.file.Path nioPackageSrcPath : nioProjectSrcPaths ) {
             if ( Files.isDirectory( nioPackageSrcPath ) ) {
-                packages.addAll( getPackages( nioPackageSrcPath ) );
-                final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
-                final Package pkg = new Package( packageSrcPath,
-                                                 projectService.resolvePackageName( packageSrcPath ) );
-                packages.add( pkg );
+                packages.addAll( getPackages( nioSrcRootPath,
+                                              nioPackageSrcPath ) );
+                packages.add( makePackage( nioSrcRootPath,
+                                           nioPackageSrcPath ) );
             }
         }
         return packages;
+    }
+
+    private Package makePackage( final org.kie.commons.java.nio.file.Path nioSrcRootPath,
+                                 final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
+        final org.kie.commons.java.nio.file.Path nioRelativePath = nioSrcRootPath.relativize( nioPackageSrcPath );
+        final org.uberfire.backend.vfs.Path relativePath = paths.convert( nioRelativePath,
+                                                                          false );
+        final Package pkg = new Package( relativePath,
+                                         getPackageDisplayName( nioPackageSrcPath ) );
+        return pkg;
+    }
+
+    private String getPackageDisplayName( final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
+        final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
+        final String packageName = projectService.resolvePackageName( packageSrcPath );
+        return packageName.isEmpty() ? "<default>" : packageName;
     }
 
 }

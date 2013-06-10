@@ -1,6 +1,9 @@
 package org.kie.workbench.common.screens.explorer.client;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.SplitDropdownButton;
@@ -15,6 +18,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.services.project.service.model.Package;
 import org.kie.workbench.common.services.project.service.model.Project;
 import org.uberfire.backend.group.Group;
@@ -64,8 +68,11 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void setGroups( final Collection<Group> groups ) {
         ddGroups.clear();
         if ( !groups.isEmpty() ) {
-            final Group selectedGroup = groups.iterator().next();
-            for ( Group group : groups ) {
+            final List<Group> sortedGroups = new ArrayList<Group>( groups );
+            Collections.sort( sortedGroups,
+                              Sorters.GROUP_SORTER );
+            final Group selectedGroup = sortedGroups.iterator().next();
+            for ( Group group : sortedGroups ) {
                 ddGroups.add( makeGroupNavLink( group ) );
             }
             ddGroups.setText( selectedGroup.getName() );
@@ -100,8 +107,11 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void setRepositories( final Collection<Repository> repositories ) {
         ddRepositories.clear();
         if ( !repositories.isEmpty() ) {
-            final Repository selectedRepository = repositories.iterator().next();
-            for ( Repository repository : repositories ) {
+            final List<Repository> sortedRepositories = new ArrayList<Repository>( repositories );
+            Collections.sort( sortedRepositories,
+                              Sorters.REPOSITORY_SORTER );
+            final Repository selectedRepository = sortedRepositories.iterator().next();
+            for ( Repository repository : sortedRepositories ) {
                 ddRepositories.add( makeRepositoryNavLink( repository ) );
             }
             ddRepositories.setText( selectedRepository.getAlias() );
@@ -134,8 +144,11 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void setProjects( final Collection<Project> projects ) {
         ddProjects.clear();
         if ( !projects.isEmpty() ) {
-            final Project selectedProject = projects.iterator().next();
-            for ( Project project : projects ) {
+            final List<Project> sortedProjects = new ArrayList<Project>( projects );
+            Collections.sort( sortedProjects,
+                              Sorters.PROJECT_SORTER );
+            final Project selectedProject = sortedProjects.iterator().next();
+            for ( Project project : sortedProjects ) {
                 ddProjects.add( makeProjectNavLink( project ) );
             }
             ddProjects.setText( selectedProject.getTitle() );
@@ -166,16 +179,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void setPackages( final Collection<Package> packages ) {
         ddPackages.clear();
         if ( !packages.isEmpty() ) {
-            final Package selectedPackage = packages.iterator().next();
-            for ( Package pkg : packages ) {
+            final List<Package> sortedPackages = new ArrayList<Package>( packages );
+            Collections.sort( sortedPackages,
+                              Sorters.PACKAGE_SORTER );
+            final Package selectedPackage = sortedPackages.iterator().next();
+            for ( Package pkg : sortedPackages ) {
                 ddPackages.add( makePackageNavLink( pkg ) );
             }
             ddPackages.setText( selectedPackage.getTitle() );
             ddPackages.getTriggerWidget().setEnabled( true );
             presenter.packageSelected( selectedPackage );
         } else {
-            ddProjects.setText( Constants.INSTANCE.nullEntry() );
-            ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
         }
