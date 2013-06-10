@@ -15,7 +15,7 @@ rem echo "Starting migration app..."
 
 rem You can use -Xmx128m or less too, but it might be slower
 if exist %JAVA_HOME%\bin\java.exe (
-    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\*; %mainClass%
+    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\*; %mainClass% %CMD_LINE_ARGS%
 ) else (
-    java -Xms256m -Xmx512m -cp ..\libs\*; %mainClass%
+    java -Xms256m -Xmx512m -cp ..\libs\*; %mainClass% %CMD_LINE_ARGS%
 )
