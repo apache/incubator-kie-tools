@@ -60,7 +60,7 @@ public class MigrationConfig {
         options.addOption("h", "help",  false, "help for the command.");
         options.addOption("i", "inputJcrRepository", true, "The Guvnor 5 JCR repository");
         options.addOption("o", "outputVfsRepository", true, "The Guvnor 6 VFS repository");
-        options.addOption("f", "forceOverwriteOutputVfsRepository", true, "Force overwriting the Guvnor 6 VFS repository");
+        options.addOption("f", "forceOverwriteOutputVfsRepository", false, "Force overwriting the Guvnor 6 VFS repository");
         
         CommandLine commandLine;
         HelpFormatter formatter = new HelpFormatter();

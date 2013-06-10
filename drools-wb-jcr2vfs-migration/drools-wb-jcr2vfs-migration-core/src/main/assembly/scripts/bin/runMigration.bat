@@ -13,6 +13,15 @@ rem echo "  For example: set JAVA_HOME="C:\Program Files\Java\jdk1.6.0"
 rem echo
 rem echo "Starting migration app..."
 
+
+set CMD_LINE_ARGS=
+:setArgs
+if ""%1""=="""" goto doneSetArgs
+set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
+shift
+goto setArgs
+:doneSetArgs
+
 rem You can use -Xmx128m or less too, but it might be slower
 if exist %JAVA_HOME%\bin\java.exe (
     %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\*; %mainClass% %CMD_LINE_ARGS%
