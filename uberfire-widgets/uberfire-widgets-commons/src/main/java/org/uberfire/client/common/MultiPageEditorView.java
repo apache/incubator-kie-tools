@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-@Dependent
 public class MultiPageEditorView
         extends Composite
         implements RequiresResize {
@@ -47,8 +46,12 @@ public class MultiPageEditorView
     private boolean alreadyScheduled        = false;
 
     public MultiPageEditorView() {
+        this(MultiPageEditor.TabPosition.ABOVE);
+    }
+
+    public MultiPageEditorView(final MultiPageEditor.TabPosition tabPosition) {
         tabPanel = new TabPanel() {{
-            setTabPosition( "below" );
+            setTabPosition( tabPosition.getPosition() );
 
             addShownHandler( new TabPanel.ShownEvent.Handler() {
                 @Override
@@ -70,7 +73,7 @@ public class MultiPageEditorView
             } );
         }};
 
-        initWidget( tabPanel );
+        initWidget(tabPanel);
     }
 
     protected void scheduleResize( final Widget widget ) {

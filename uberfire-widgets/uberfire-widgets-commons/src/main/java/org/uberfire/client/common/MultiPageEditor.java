@@ -16,22 +16,46 @@
 
 package org.uberfire.client.common;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 public class MultiPageEditor
         implements IsWidget {
 
-    @Inject
+    public enum TabPosition {
+
+        ABOVE(""), BELOW("below"), LEFT("left"), RIGHT("right");
+
+        private String position;
+
+        TabPosition(String position) {
+            this.position = position;
+        }
+
+        String getPosition() {
+            return position;
+        }
+    }
+
     private MultiPageEditorView view;
 
-    public void addWidget( final IsWidget widget,
-                           final String label ) {
-        view.addPage( new Page( widget, label ) {
+    @Inject
+    public MultiPageEditor() {
+        view = new MultiPageEditorView();
+    }
+
+    public MultiPageEditor(TabPosition tabPosition) {
+        view = new MultiPageEditorView(tabPosition);
+    }
+
+
+    public void addWidget(final IsWidget widget,
+                          final String label) {
+        view.addPage(new Page(widget, label) {
 
             @Override
             public void onFocus() {
@@ -40,15 +64,15 @@ public class MultiPageEditor
             @Override
             public void onLostFocus() {
             }
-        } );
+        });
     }
 
-    public void addPage( final Page page ) {
-        view.addPage( page );
+    public void addPage(final Page page) {
+        view.addPage(page);
     }
 
-    public void selectPage( final int index ) {
-        view.selectPage( index );
+    public void selectPage(final int index) {
+        view.selectPage(index);
     }
 
     @Override
