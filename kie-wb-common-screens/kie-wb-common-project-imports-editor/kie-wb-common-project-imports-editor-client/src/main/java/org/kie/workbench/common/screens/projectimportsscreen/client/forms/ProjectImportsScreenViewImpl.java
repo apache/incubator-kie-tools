@@ -23,6 +23,7 @@ public class ProjectImportsScreenViewImpl
 
     @Inject
     public ProjectImportsScreenViewImpl(final MetadataWidget metadataWidget) {
+        super();
         this.metadataWidget = metadataWidget;
 
     }

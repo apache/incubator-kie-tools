@@ -78,7 +78,6 @@ public class ProjectScreenPresenter
 
     @Inject
     public ProjectScreenPresenter(@New ProjectScreenView view,
-                                  @New MultiPageEditor multiPage,
                                   @New POMEditorPanel pomPanel,
                                   @New MetadataWidget pomMetaDataPanel,
                                   @New KModuleEditorPanel kModuleEditorPanel,
@@ -91,7 +90,7 @@ public class ProjectScreenPresenter
                                   Caller<BuildService> buildServiceCaller,
                                   SaveOperationService saveOperationService) {
         this.view = view;
-        this.multiPage = multiPage;
+        this.multiPage = new MultiPageEditor(MultiPageEditor.TabPosition.LEFT);
 
         this.pomPanel = pomPanel;
         this.pomMetaDataPanel = pomMetaDataPanel;
@@ -122,7 +121,6 @@ public class ProjectScreenPresenter
                 ProjectEditorConstants.INSTANCE.PomDotXmlMetadata()) {
             @Override
             public void onFocus() {
-                onPOMMetadataTabSelected();
             }
 
             @Override
@@ -135,7 +133,6 @@ public class ProjectScreenPresenter
                 ProjectEditorConstants.INSTANCE.KModuleDotXml()) {
             @Override
             public void onFocus() {
-                onKModuleTabSelected();
             }
 
             @Override
@@ -146,7 +143,6 @@ public class ProjectScreenPresenter
                 ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata()) {
             @Override
             public void onFocus() {
-                onKModuleMetadataTabSelected();
             }
 
             @Override
@@ -158,7 +154,6 @@ public class ProjectScreenPresenter
         multiPage.addPage(new Page(importsWidgetPresenter, ProjectEditorConstants.INSTANCE.ImportSuggestions()) {
             @Override
             public void onFocus() {
-                onImportsPageSelected();
             }
 
             @Override
@@ -168,7 +163,6 @@ public class ProjectScreenPresenter
         multiPage.addPage(new Page(this.importsPageMetadata, ProjectEditorConstants.INSTANCE.ImportSuggestionsMetadata()) {
             @Override
             public void onFocus() {
-                onImportsMetadataTabSelected();
             }
 
             @Override
@@ -294,34 +288,5 @@ public class ProjectScreenPresenter
     public Menus getMenus() {
         return menus;
     }
-
-    @Override
-    public void onPOMMetadataTabSelected() {
-
-    }
-
-
-    @Override
-    public void onKModuleTabSelected() {
-        if (!kModuleEditorPanel.hasBeenInitialized()) {
-            kModuleEditorPanel.setData(model.getKModule(), false);
-        }
-    }
-
-    @Override
-    public void onKModuleMetadataTabSelected() {
-    }
-
-    @Override
-    public void onImportsPageSelected() {
-        if (!importsWidgetPresenter.hasBeenInitialized()) {
-            importsWidgetPresenter.setData(model.getProjectImports(), false);
-        }
-    }
-
-    @Override
-    public void onImportsMetadataTabSelected() {
-    }
-
 
 }

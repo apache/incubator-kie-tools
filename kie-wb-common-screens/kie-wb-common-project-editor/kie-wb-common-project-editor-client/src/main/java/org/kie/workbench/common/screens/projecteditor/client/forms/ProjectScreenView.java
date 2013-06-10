@@ -19,20 +19,11 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
-public interface ProjectScreenView extends HasBusyIndicator,
-                                           IsWidget {
+public interface ProjectScreenView
+        extends HasBusyIndicator,
+        IsWidget {
 
     interface Presenter {
-
-        void onPOMMetadataTabSelected();
-
-        void onKModuleTabSelected();
-
-        void onKModuleMetadataTabSelected();
-
-        void onImportsPageSelected();
-
-        void onImportsMetadataTabSelected();
 
     }
 
