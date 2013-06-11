@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Accordion;
+import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.SplitDropdownButton;
 import com.github.gwtbootstrap.client.ui.Well;
@@ -19,8 +22,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.Package;
+import org.kie.workbench.common.screens.explorer.model.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -39,6 +43,9 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     @UiField
     Well breadCrumbs;
+
+    @UiField
+    Accordion itemsContainer;
 
     private final SplitDropdownButton ddGroups = new SplitDropdownButton();
     private final SplitDropdownButton ddRepositories = new SplitDropdownButton();
@@ -186,7 +193,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             for ( Package pkg : sortedPackages ) {
                 ddPackages.add( makePackageNavLink( pkg ) );
             }
-            ddPackages.setText( selectedPackage.getTitle() );
+            ddPackages.setText( selectedPackage.getCaption() );
             ddPackages.getTriggerWidget().setEnabled( true );
             presenter.packageSelected( selectedPackage );
         } else {
@@ -196,16 +203,45 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     private IsWidget makePackageNavLink( final Package pkg ) {
-        final NavLink navLink = new NavLink( pkg.getTitle() );
+        final NavLink navLink = new NavLink( pkg.getCaption() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                ddPackages.setText( pkg.getTitle() );
+                ddPackages.setText( pkg.getCaption() );
                 presenter.packageSelected( pkg );
             }
         } );
         return navLink;
     }
 
+    @Override
+    public void setItems( final Collection<Item> items ) {
+        itemsContainer.clear();
+        if ( !items.isEmpty() ) {
+            final List<Item> sortedItems = new ArrayList<Item>( items );
+            Collections.sort( sortedItems,
+                              Sorters.ITEM_SORTER );
+            final AccordionGroup group = new AccordionGroup();
+            group.setHeading( "Items" );
+            for ( Item item : sortedItems ) {
+                group.add( makeItemNavLink( item ) );
+            }
+            itemsContainer.add( group );
+        } else {
+            itemsContainer.add( new Label( Constants.INSTANCE.nullEntry() ) );
+        }
+    }
+
+    private IsWidget makeItemNavLink( final Item item ) {
+        final NavLink navLink = new NavLink( item.getFileName() );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.itemSelected( item );
+            }
+        } );
+        return navLink;
+    }
 }

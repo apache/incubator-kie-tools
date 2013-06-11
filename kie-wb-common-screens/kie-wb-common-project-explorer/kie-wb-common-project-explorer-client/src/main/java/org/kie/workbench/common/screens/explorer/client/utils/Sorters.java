@@ -2,8 +2,9 @@ package org.kie.workbench.common.screens.explorer.client.utils;
 
 import java.util.Comparator;
 
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.Package;
+import org.kie.workbench.common.screens.explorer.model.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -40,7 +41,15 @@ public class Sorters {
         @Override
         public int compare( final Package o1,
                             final Package o2 ) {
-            return o1.getTitle().compareTo( o2.getTitle() );
+            return o1.getCaption().compareTo( o2.getCaption() );
+        }
+    };
+
+    public static Comparator<Item> ITEM_SORTER = new Comparator<Item>() {
+        @Override
+        public int compare( final Item o1,
+                            final Item o2 ) {
+            return o1.getFileName().compareTo( o2.getFileName() );
         }
     };
 

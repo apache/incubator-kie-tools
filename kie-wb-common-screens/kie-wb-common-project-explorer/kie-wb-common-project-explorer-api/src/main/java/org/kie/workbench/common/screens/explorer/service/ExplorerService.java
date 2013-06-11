@@ -19,8 +19,9 @@ package org.kie.workbench.common.screens.explorer.service;
 import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.Package;
+import org.kie.workbench.common.screens.explorer.model.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -37,5 +38,7 @@ public interface ExplorerService {
     Collection<Project> getProjects( final Repository repository );
 
     Collection<Package> getPackages( final Project project );
+
+    Collection<Item> getItems( final Package pkg );
 
 }

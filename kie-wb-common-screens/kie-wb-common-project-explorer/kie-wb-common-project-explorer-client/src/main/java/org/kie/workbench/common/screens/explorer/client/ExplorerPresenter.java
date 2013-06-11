@@ -8,9 +8,10 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.Package;
+import org.kie.workbench.common.screens.explorer.model.Project;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
@@ -107,11 +108,16 @@ public class ExplorerPresenter {
     }
 
     public void packageSelected( final Package pkg ) {
-        //TODO Show content of package
+        explorerService.call( new RemoteCallback<Collection<Item>>() {
+            @Override
+            public void callback( final Collection<Item> items ) {
+                view.setItems( items );
+            }
+        } ).getItems( pkg );
     }
 
-    public void openResource( final Path path ) {
-        placeManager.goTo( path );
+    public void itemSelected( final Item item ) {
+        placeManager.goTo( item.getPath() );
     }
 
     public void pathChangeHandler( @Observes PathChangeEvent event ) {

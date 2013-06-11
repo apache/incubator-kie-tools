@@ -1,4 +1,4 @@
-package org.kie.workbench.common.services.project.service.model;
+package org.kie.workbench.common.screens.explorer.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
@@ -33,4 +33,31 @@ public class Project {
         return this.title;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Project ) ) {
+            return false;
+        }
+
+        Project project = (Project) o;
+
+        if ( !path.equals( project.path ) ) {
+            return false;
+        }
+        if ( !title.equals( project.title ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path.hashCode();
+        result = 31 * result + title.hashCode();
+        return result;
+    }
 }

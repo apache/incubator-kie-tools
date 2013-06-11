@@ -24,25 +24,14 @@
   <g:HTMLPanel>
     <div style="padding: 5px">
 
-    <b:ButtonGroup toggle="radio">
-      <b:Button>Business</b:Button>
-      <b:Button enabled="false">Technical</b:Button>
-    </b:ButtonGroup>
+      <b:ButtonGroup toggle="radio">
+        <b:Button>Business</b:Button>
+        <b:Button enabled="false">Technical</b:Button>
+      </b:ButtonGroup>
 
-    <b:Well ui:field="breadCrumbs" />
+      <b:Well ui:field="breadCrumbs"/>
 
-    <b:Accordion>
-      <b:AccordionGroup heading="One">
-        <b:Paragraph>one</b:Paragraph>
-        <b:Paragraph>two</b:Paragraph>
-      </b:AccordionGroup>
-      <b:AccordionGroup heading="Two">
-        <b:Paragraph>The default opened Accordion</b:Paragraph>
-      </b:AccordionGroup>
-      <b:AccordionGroup heading="Three">
-        <b:Paragraph>Icon style</b:Paragraph>
-      </b:AccordionGroup>
-    </b:Accordion>
+      <b:Accordion ui:field="itemsContainer"/>
 
     </div>
   </g:HTMLPanel>
