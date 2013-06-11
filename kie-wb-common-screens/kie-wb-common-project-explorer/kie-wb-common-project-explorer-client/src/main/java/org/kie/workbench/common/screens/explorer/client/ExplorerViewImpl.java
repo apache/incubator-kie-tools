@@ -72,13 +72,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void setGroups( final Collection<Group> groups ) {
+    public void setGroups( final Collection<Group> groups,
+                           final Group activeGroup ) {
         ddGroups.clear();
         if ( !groups.isEmpty() ) {
             final List<Group> sortedGroups = new ArrayList<Group>( groups );
             Collections.sort( sortedGroups,
                               Sorters.GROUP_SORTER );
-            final Group selectedGroup = sortedGroups.iterator().next();
+
+            final Group selectedGroup = getSelectedGroup( sortedGroups,
+                                                          activeGroup );
+
             for ( Group group : sortedGroups ) {
                 ddGroups.add( makeGroupNavLink( group ) );
             }
@@ -94,7 +98,19 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            setItems( Collections.EMPTY_LIST );
         }
+    }
+
+    private Group getSelectedGroup( final List<Group> groups,
+                                    final Group activeGroup ) {
+        if ( groups.isEmpty() ) {
+            return null;
+        }
+        if ( activeGroup != null && groups.contains( activeGroup ) ) {
+            return activeGroup;
+        }
+        return groups.get( 0 );
     }
 
     private IsWidget makeGroupNavLink( final Group group ) {
@@ -111,13 +127,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void setRepositories( final Collection<Repository> repositories ) {
+    public void setRepositories( final Collection<Repository> repositories,
+                                 final Repository activeRepository ) {
         ddRepositories.clear();
         if ( !repositories.isEmpty() ) {
             final List<Repository> sortedRepositories = new ArrayList<Repository>( repositories );
             Collections.sort( sortedRepositories,
                               Sorters.REPOSITORY_SORTER );
-            final Repository selectedRepository = sortedRepositories.iterator().next();
+
+            final Repository selectedRepository = getSelectedRepository( sortedRepositories,
+                                                                         activeRepository );
+
             for ( Repository repository : sortedRepositories ) {
                 ddRepositories.add( makeRepositoryNavLink( repository ) );
             }
@@ -131,7 +151,19 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            setItems( Collections.EMPTY_LIST );
         }
+    }
+
+    private Repository getSelectedRepository( final List<Repository> repositories,
+                                              final Repository activeRepository ) {
+        if ( repositories.isEmpty() ) {
+            return null;
+        }
+        if ( activeRepository != null && repositories.contains( activeRepository ) ) {
+            return activeRepository;
+        }
+        return repositories.get( 0 );
     }
 
     private IsWidget makeRepositoryNavLink( final Repository repository ) {
@@ -148,13 +180,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void setProjects( final Collection<Project> projects ) {
+    public void setProjects( final Collection<Project> projects,
+                             final Project activeProject ) {
         ddProjects.clear();
         if ( !projects.isEmpty() ) {
             final List<Project> sortedProjects = new ArrayList<Project>( projects );
             Collections.sort( sortedProjects,
                               Sorters.PROJECT_SORTER );
-            final Project selectedProject = sortedProjects.iterator().next();
+
+            final Project selectedProject = getSelectedProject( sortedProjects,
+                                                                activeProject );
+
             for ( Project project : sortedProjects ) {
                 ddProjects.add( makeProjectNavLink( project ) );
             }
@@ -166,7 +202,19 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            setItems( Collections.EMPTY_LIST );
         }
+    }
+
+    private Project getSelectedProject( final List<Project> projects,
+                                        final Project activeProject ) {
+        if ( projects.isEmpty() ) {
+            return null;
+        }
+        if ( activeProject != null && projects.contains( activeProject ) ) {
+            return activeProject;
+        }
+        return projects.get( 0 );
     }
 
     private IsWidget makeProjectNavLink( final Project project ) {
@@ -183,13 +231,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void setPackages( final Collection<Package> packages ) {
+    public void setPackages( final Collection<Package> packages,
+                             final Package activePackage ) {
         ddPackages.clear();
         if ( !packages.isEmpty() ) {
             final List<Package> sortedPackages = new ArrayList<Package>( packages );
             Collections.sort( sortedPackages,
                               Sorters.PACKAGE_SORTER );
-            final Package selectedPackage = sortedPackages.iterator().next();
+
+            final Package selectedPackage = getSelectedPackage( sortedPackages,
+                                                                activePackage );
+
             for ( Package pkg : sortedPackages ) {
                 ddPackages.add( makePackageNavLink( pkg ) );
             }
@@ -199,7 +251,19 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         } else {
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            setItems( Collections.EMPTY_LIST );
         }
+    }
+
+    private Package getSelectedPackage( final List<Package> packages,
+                                        final Package activePackage ) {
+        if ( packages.isEmpty() ) {
+            return null;
+        }
+        if ( activePackage != null && packages.contains( activePackage ) ) {
+            return activePackage;
+        }
+        return packages.get( 0 );
     }
 
     private IsWidget makePackageNavLink( final Package pkg ) {

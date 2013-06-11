@@ -31,6 +31,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.model.Package;
 import org.kie.workbench.common.screens.explorer.model.Project;
+import org.kie.workbench.common.screens.explorer.model.ProjectPackage;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
@@ -172,15 +173,15 @@ public class ExplorerServiceImpl
                                  final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
         final org.uberfire.backend.vfs.Path projectRootPath = paths.convert( nioProjectRootPath,
                                                                              false );
-        final String packageName = getPackageName( nioPackageSrcPath );
+        final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
+        final String packageName = getPackageName( packageSrcPath );
         final Package pkg = new Package( projectRootPath,
                                          packageName,
                                          getPackageDisplayName( packageName ) );
         return pkg;
     }
 
-    private String getPackageName( final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
-        final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
+    private String getPackageName( final Path packageSrcPath ) {
         final String packageName = projectService.resolvePackageName( packageSrcPath );
         return packageName;
     }
@@ -220,4 +221,24 @@ public class ExplorerServiceImpl
                                        "/" );
     }
 
+    @Override
+    public ProjectPackage resolveProjectPackage( final Path path ) {
+        if ( path == null ) {
+            return new ProjectPackage();
+        }
+        Project project = null;
+        Package pkg = null;
+        if ( projectService.resolveProject( path ) != null ) {
+            project = new Project( path,
+                                   path.getFileName() );
+        }
+        final String packageName = getPackageName( path );
+        if ( packageName != null ) {
+            pkg = new Package( path,
+                               packageName,
+                               getPackageDisplayName( packageName ) );
+        }
+        return new ProjectPackage( project,
+                                   pkg );
+    }
 }

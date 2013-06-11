@@ -15,13 +15,17 @@ import org.uberfire.client.mvp.UberView;
 public interface ExplorerView extends
                               UberView<ExplorerPresenter> {
 
-    void setGroups( final Collection<Group> groups );
+    void setGroups( final Collection<Group> groups,
+                    final Group activeGroup );
 
-    void setRepositories( final Collection<Repository> repositories );
+    void setRepositories( final Collection<Repository> repositories,
+                          final Repository activeRepository );
 
-    void setProjects( final Collection<Project> projects );
+    void setProjects( final Collection<Project> projects,
+                      final Project activeProject );
 
-    void setPackages( final Collection<Package> packages );
+    void setPackages( final Collection<Package> packages,
+                      final Package activePackage );
 
     void setItems( final Collection<Item> items );
 
