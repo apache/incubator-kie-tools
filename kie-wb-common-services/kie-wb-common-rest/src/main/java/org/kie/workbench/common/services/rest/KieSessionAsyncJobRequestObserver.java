@@ -60,7 +60,8 @@ public class KieSessionAsyncJobRequestObserver {
         projectResourceDispatcher.testProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
     }  
     
-    public boolean approveRequest(JobRequest jobRequest) {
+    //Commented out for the time being, due to kssion problem.
+/*    public boolean approveRequest(JobRequest jobRequest) {
         if(!defaultGuvnorApprover.requestApproval(jobRequest)) {
             JobResult result = new JobResult();
             result.setJodId(jobRequest.getJodId());
@@ -71,6 +72,11 @@ public class KieSessionAsyncJobRequestObserver {
         }
         
         return true;
-    }
+    }*/
 
+    
+    public boolean approveRequest(JobRequest jobRequest) {
+        return true;
+    }
+    
 }
