@@ -46,7 +46,7 @@ public class MultiPageEditorView
     private boolean alreadyScheduled        = false;
 
     public MultiPageEditorView() {
-        this(MultiPageEditor.TabPosition.ABOVE);
+        this(MultiPageEditor.TabPosition.BELOW);
     }
 
     public MultiPageEditorView(final MultiPageEditor.TabPosition tabPosition) {
