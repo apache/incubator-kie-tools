@@ -65,25 +65,24 @@ public class Jcr2VfsMigrater {
     }
 
     public void migrateAll() {
-        logger.info("Migration started: Reading from inputJcrRepository ({}).",
+    	System.out.format("Migration started: Reading from inputJcrRepository ({%s}).",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
         setupDirectories();
         startContexts();
-//    //TO-DO-LIST:
-//    //1. How to migrate the globalArea (moduleServiceJCR.listModules() wont return globalArea)
-//    //2. This is also globalArea related: How to handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
-//    //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
-//    //4. Do we want to migrate package snapshot? probably not...As long as we migrate package history correctly, users can always build a package
-//    //with the specified version by themselves.
-      //5. Migrate categories
-      //6. migratePackagePermissions.   migrateRolesAndPermissionsMetaData
+      //TO-DO-LIST:
+      //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
+      //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
+      //2. Migrate categories
+      //3. Migrate state
+      //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
+      //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
         // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
         endContexts();
-        logger.info("Migration ended: Written into outputVfsRepository ({}).",
+        System.out.format("Migration ended: Written into outputVfsRepository ({%s}).",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 

@@ -83,7 +83,7 @@ public class AssetMigrater {
     }
     
     public void migrateAll() {
-        logger.info("  Asset migration started");
+        System.out.println("  Asset migration started");
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
         for (Module jcrModule : jcrModules) {
             
@@ -133,7 +133,7 @@ public class AssetMigrater {
                         //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.    
                         AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
                         migrate(jcrModule, assetItemJCR);
-                        logger.debug("    Asset ({}) with format ({}) migrated.",
+                        System.out.format("    Asset ({%s}) with format ({%s}) migrated.\n",
                                 assetItemJCR.getName(), assetItemJCR.getFormat());
 
                         //Migrate asset discussions
@@ -149,7 +149,7 @@ public class AssetMigrater {
                 }
             }
         }
-        logger.info("  Asset migration ended");
+        System.out.println("  Asset migration ended");
     }
 
     private void migrate(Module jcrModule, AssetItem jcrAssetItem) {
@@ -186,7 +186,7 @@ public class AssetMigrater {
             attachementAssetMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             // TODO return error message
-            logger.info("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
+        	System.out.println("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
             guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
@@ -195,7 +195,7 @@ public class AssetMigrater {
             //Ignore
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
-            logger.debug("      TODO migrate asset ({}) with format({}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+        	System.out.format("      TODO migrate asset ({%s}) with format({%s}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }
@@ -244,62 +244,4 @@ public class AssetMigrater {
         metadataService.setUpAttributes(path, metadata);
     }
 
-    // TODO delete code below once we have all of its functionality
-//
-//    @Inject
-//    private RulesRepositoryVFS rulesRepositoryVFS;
-//
-//    public void migrateAssets() {
-//        Module[] modules = jcrRepositoryModuleService.listModules();
-//
-//        for(Module module : modules) {
-//            //TODO: Migrate package. Should already be done by ModuleMigrator
-//
-//            //TODO: Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
-//            //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
-//
-//            AssetPageRequest request = new AssetPageRequest( module.getUuid(),
-//                                                             null, //get assets with all formats when format=null
-//                                                             null,
-//                                                             0,
-//                                                             0);// return all assets in 1 page if pageSize=0
-//            try {
-//                PageResponse<AssetPageRow> response = jcrRepositoryAssetService.findAssetPage(request);
-//                for (AssetPageRow row : response.getPageRowList()) {
-//
-//                    //Migrate asset history first
-//                    migrateAssetHistory(row.getUuid());
-//
-//
-//                    Asset assetJCR = jcrRepositoryAssetService.loadRuleAsset(row.getUuid());
-//                    Asset assetVFS = assetJCR;
-//                    //migrate asset binary content. The binary content of assets from previous Guvnor version can not be reused by VFS directly.
-//                    //Make sure we deserialize/serialize the binary content of assets
-//                    PortableObject binaryContent = assetJCR.getContent();
-//                    assetVFS.setContent(binaryContent);
-//
-//                    //migrate discussions:
-//                    migrateAssetDiscussions(assetJCR, assetVFS, row.getUuid());
-//
-//                    //migrate state:
-//                    migrateAssetState(assetJCR, assetVFS, row.getUuid());
-//
-//                    rulesRepositoryVFS.checkinVersion(assetJCR);
-//                }
-//            } catch (SerializationException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-
-//
-//    public void migrateAssetState(Asset assetJCR, Asset assetVFS, String assetUUID) {
-//        String stateName = assetJCR.getState();
-//        //If we need to convert old state to new state:
-//        //assetVFS.setState(stateName);
-//    }
-//
- 
 }

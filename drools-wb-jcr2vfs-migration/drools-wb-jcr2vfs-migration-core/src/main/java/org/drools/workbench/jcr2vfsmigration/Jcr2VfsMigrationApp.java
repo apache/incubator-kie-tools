@@ -37,6 +37,8 @@ public class Jcr2VfsMigrationApp {
         }
 
         weld.shutdown();
+        System.out.println("Migration ended");
+        System.exit(0);
     }
 
 }

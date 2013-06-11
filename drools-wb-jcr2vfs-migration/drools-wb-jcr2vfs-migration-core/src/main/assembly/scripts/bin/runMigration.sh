@@ -14,10 +14,11 @@ rem echo
 rem echo "Starting migration app..."
 
 # You can use -Xmx128m or less too, but it might be slower
+# Change guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-20130606.153149-125-jars-as-uberjar.jar to a release version
 if [ -f $JAVA_HOME/bin/java ]; then
-    $JAVA_HOME/bin/java -Xms256m -Xmx1024m -server -cp ../libs/* ${mainClass} $*
+    $JAVA_HOME/bin/java -Xms256m -Xmx1024m -server -cp ../libs/guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-20130606.153149-125-jars-as-uberjar.jar:../libs/* ${mainClass} $*
 else
-    java -Xms256m -Xmx1024m -cp ../libs/* ${mainClass} $*
+    java -Xms256m -Xmx1024m -cp ../libs/guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-20130606.153149-125-jars-as-uberjar.jar:../libs/* ${mainClass} $*
 fi
 
 if [ $? != 0 ] ; then
