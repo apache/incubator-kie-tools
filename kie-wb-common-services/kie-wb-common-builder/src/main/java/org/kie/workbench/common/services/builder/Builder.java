@@ -45,6 +45,7 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.file.DotFileFilter;
 import org.kie.workbench.common.services.backend.file.JavaFileFilter;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Package;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
@@ -378,8 +379,9 @@ public class Builder {
     }
 
     private String getFullyQualifiedClassName( final Path path ) {
-        final String packageName = projectService.resolvePackageName( paths.convert( path,
-                                                                                     false ) );
+        final Package pkg = projectService.resolvePackage( paths.convert( path,
+                                                                          false ) );
+        final String packageName = pkg.getPackageName();
         if ( packageName == null ) {
             return null;
         }

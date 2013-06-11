@@ -31,6 +31,8 @@ import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.vfs.Path;
 
 @Service
@@ -54,17 +56,17 @@ public class DataModelServiceImpl
         try {
             PortablePreconditions.checkNotNull( "resourcePath",
                                                 resourcePath );
-            final Path projectPath = resolveProjectPath( resourcePath );
-            final Path packagePath = resolvePackagePath( resourcePath );
+            final Project project = resolveProject( resourcePath );
+            final Package pkg = resolvePackage( resourcePath );
 
             //Resource was not within a Project structure
-            if ( projectPath == null ) {
+            if ( project == null ) {
                 return new PackageDataModelOracleImpl();
             }
 
             //Retrieve (or build) oracle
-            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( projectPath,
-                                                                                              packagePath );
+            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( project,
+                                                                                              pkg );
             return oracle;
 
         } catch ( Exception e ) {
@@ -77,15 +79,15 @@ public class DataModelServiceImpl
         try {
             PortablePreconditions.checkNotNull( "resourcePath",
                                                 resourcePath );
-            final Path projectPath = resolveProjectPath( resourcePath );
+            final Project project = resolveProject( resourcePath );
 
             //Resource was not within a Project structure
-            if ( projectPath == null ) {
+            if ( project == null ) {
                 return new ProjectDataModelOracleImpl();
             }
 
             //Retrieve (or build) oracle
-            final ProjectDataModelOracle oracle = cacheProjects.assertProjectDataModelOracle( projectPath );
+            final ProjectDataModelOracle oracle = cacheProjects.assertProjectDataModelOracle( project );
             return oracle;
 
         } catch ( Exception e ) {
@@ -93,11 +95,11 @@ public class DataModelServiceImpl
         }
     }
 
-    private Path resolveProjectPath( final Path resourcePath ) {
+    private Project resolveProject( final Path resourcePath ) {
         return projectService.resolveProject( resourcePath );
     }
 
-    private Path resolvePackagePath( final Path resourcePath ) {
+    private Package resolvePackage( final Path resourcePath ) {
         return projectService.resolvePackage( resourcePath );
     }
 

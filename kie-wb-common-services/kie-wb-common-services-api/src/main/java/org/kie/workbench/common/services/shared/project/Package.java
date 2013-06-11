@@ -1,4 +1,4 @@
-package org.kie.workbench.common.services.project.service.model;
+package org.kie.workbench.common.services.shared.project;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
@@ -12,8 +12,8 @@ public class Package {
 
     private Path projectRootPath;
     private Path packageMainSrcPath;
-    private Path packageMainResourcesPath;
     private Path packageTestSrcPath;
+    private Path packageMainResourcesPath;
     private Path packageTestResourcesPath;
     private String packageName;
     private String caption;
@@ -24,24 +24,20 @@ public class Package {
 
     public Package( final Path projectRootPath,
                     final Path packageMainSrcPath,
-                    final Path packageMainResourcesPath,
                     final Path packageTestSrcPath,
+                    final Path packageMainResourcesPath,
                     final Path packageTestResourcesPath,
                     final String packageName,
                     final String caption ) {
         this.projectRootPath = PortablePreconditions.checkNotNull( "projectRootPath",
                                                                    projectRootPath );
-        this.packageMainSrcPath = PortablePreconditions.checkNotNull( "packageMainSrcPath",
-                                                                      packageMainSrcPath );
-        this.packageMainResourcesPath = PortablePreconditions.checkNotNull( "packageMainResourcesPath",
-                                                                            packageMainResourcesPath );
-        this.packageTestSrcPath = PortablePreconditions.checkNotNull( "packageTestSrcPath",
-                                                                      packageTestSrcPath );
-        this.packageTestResourcesPath = PortablePreconditions.checkNotNull( "packageTestResourcesPath",
-                                                                            packageTestResourcesPath );
+        this.packageMainSrcPath = packageMainSrcPath;
+        this.packageTestSrcPath = packageTestSrcPath;
+        this.packageMainResourcesPath = packageMainResourcesPath;
+        this.packageTestResourcesPath = packageTestResourcesPath;
         this.packageName = PortablePreconditions.checkNotNull( "packageName",
                                                                packageName );
-        this.caption = PortablePreconditions.checkNotNull( "title",
+        this.caption = PortablePreconditions.checkNotNull( "caption",
                                                            caption );
     }
 
@@ -53,12 +49,12 @@ public class Package {
         return packageMainSrcPath;
     }
 
-    public Path getPackageMainResourcesPath() {
-        return packageMainResourcesPath;
-    }
-
     public Path getPackageTestSrcPath() {
         return packageTestSrcPath;
+    }
+
+    public Path getPackageMainResourcesPath() {
+        return packageMainResourcesPath;
     }
 
     public Path getPackageTestResourcesPath() {
@@ -87,22 +83,22 @@ public class Package {
         if ( !caption.equals( aPackage.caption ) ) {
             return false;
         }
-        if ( !packageMainResourcesPath.equals( aPackage.packageMainResourcesPath ) ) {
-            return false;
-        }
-        if ( !packageMainSrcPath.equals( aPackage.packageMainSrcPath ) ) {
-            return false;
-        }
         if ( !packageName.equals( aPackage.packageName ) ) {
             return false;
         }
-        if ( !packageTestResourcesPath.equals( aPackage.packageTestResourcesPath ) ) {
-            return false;
-        }
-        if ( !packageTestSrcPath.equals( aPackage.packageTestSrcPath ) ) {
-            return false;
-        }
         if ( !projectRootPath.equals( aPackage.projectRootPath ) ) {
+            return false;
+        }
+        if ( packageMainSrcPath != null ? !packageMainSrcPath.equals( aPackage.packageMainSrcPath ) : aPackage.packageMainSrcPath != null ) {
+            return false;
+        }
+        if ( packageTestSrcPath != null ? !packageTestSrcPath.equals( aPackage.packageTestSrcPath ) : aPackage.packageTestSrcPath != null ) {
+            return false;
+        }
+        if ( packageMainResourcesPath != null ? !packageMainResourcesPath.equals( aPackage.packageMainResourcesPath ) : aPackage.packageMainResourcesPath != null ) {
+            return false;
+        }
+        if ( packageTestResourcesPath != null ? !packageTestResourcesPath.equals( aPackage.packageTestResourcesPath ) : aPackage.packageTestResourcesPath != null ) {
             return false;
         }
 
@@ -112,10 +108,10 @@ public class Package {
     @Override
     public int hashCode() {
         int result = projectRootPath.hashCode();
-        result = 31 * result + packageMainSrcPath.hashCode();
-        result = 31 * result + packageMainResourcesPath.hashCode();
-        result = 31 * result + packageTestSrcPath.hashCode();
-        result = 31 * result + packageTestResourcesPath.hashCode();
+        result = 31 * result + ( packageMainSrcPath != null ? packageMainSrcPath.hashCode() : 0 );
+        result = 31 * result + ( packageTestSrcPath != null ? packageTestSrcPath.hashCode() : 0 );
+        result = 31 * result + ( packageMainResourcesPath != null ? packageMainResourcesPath.hashCode() : 0 );
+        result = 31 * result + ( packageTestResourcesPath != null ? packageTestResourcesPath.hashCode() : 0 );
         result = 31 * result + packageName.hashCode();
         result = 31 * result + caption.hashCode();
         return result;

@@ -30,6 +30,8 @@ import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
@@ -50,10 +52,9 @@ public class ProjectServiceImpl
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
 
-    private static final String SOURCE_JAVA_PATH = "src/main/java";
-    private static final String SOURCE_RESOURCES_PATH = "src/main/resources";
-
-    private static final String TEST_JAVA_PATH = "src/test/java";
+    private static final String MAIN_SRC_PATH = "src/main/java";
+    private static final String TEST_SRC_PATH = "src/test/java";
+    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
     private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private IOService ioService;
@@ -98,7 +99,7 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path resolveProject( final Path resource ) {
+    public Project resolveProject( final Path resource ) {
 
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {
@@ -113,7 +114,7 @@ public class ProjectServiceImpl
             path = path.getParent();
         }
         if ( hasPom( path ) && hasKModule( path ) ) {
-            return paths.convert( path );
+            return makeProject( path );
         }
         while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
             path = path.getParent();
@@ -131,16 +132,22 @@ public class ProjectServiceImpl
         if ( !hasKModule( path ) ) {
             return null;
         }
-        return paths.convert( path );
+        return makeProject( path );
+    }
+
+    private Project makeProject( final org.kie.commons.java.nio.file.Path nioProjectRootPath ) {
+        final Path projectRootPath = paths.convert( nioProjectRootPath );
+        return new Project( projectRootPath,
+                            projectRootPath.getFileName() );
     }
 
     @Override
     public Path resolvePathToPom( final Path resource ) {
-        final Path projectPath = resolveProject( resource );
-        if ( projectPath == null ) {
+        final Project project = resolveProject( resource );
+        if ( project == null ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path pom = paths.convert( projectPath ).resolve( POM_PATH );
+        final org.kie.commons.java.nio.file.Path pom = paths.convert( project.getPath() ).resolve( POM_PATH );
         if ( pom == null ) {
             return null;
         }
@@ -149,11 +156,11 @@ public class ProjectServiceImpl
 
     @Override
     public Path resolvePathToProjectImports( Path resource ) {
-        final Path projectPath = resolveProject( resource );
-        if ( projectPath == null ) {
+        final Project project = resolveProject( resource );
+        if ( project == null ) {
             return null;
         }
-        final org.kie.commons.java.nio.file.Path imports = paths.convert( projectPath ).resolve( PROJECT_IMPORTS_PATH );
+        final org.kie.commons.java.nio.file.Path imports = paths.convert( project.getPath() ).resolve( PROJECT_IMPORTS_PATH );
         if ( imports == null ) {
             return null;
         }
@@ -161,65 +168,117 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path resolvePackage( final Path resource ) {
+    public Package resolvePackage( final Path resource ) {
         //Null resource paths cannot resolve to a Project
         if ( resource == null ) {
             return null;
         }
 
         //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = resolveProject( resource );
-        if ( projectRoot == null ) {
+        final Project project = resolveProject( resource );
+        if ( project == null ) {
             return null;
         }
 
-        //Check whether path is a Src package or a Test package
-        Path packagePath = doResolveSrcPackage( resource,
-                                                projectRoot );
-        if ( packagePath == null ) {
-            packagePath = doResolveTestPackage( resource,
-                                                projectRoot );
-        }
-        return packagePath;
+        return makePackage( project,
+                            resource );
     }
 
-    @Override
-    public Path resolveSrcPackage( final Path resource ) {
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
+    private Package makePackage( final Project project,
+                                 final Path resource ) {
+        final Path mainSrcPath = resolveMainSrcPath( project,
+                                                     resource );
+        final Path testSrcPath = resolveTestSrcPath( project,
+                                                     resource );
+        final Path mainResourcesPath = resolveMainResourcesPath( project,
+                                                                 resource );
+        final Path testResourcesPath = resolveTestResourcesPath( project,
+                                                                 resource );
+        if ( mainSrcPath == null && testSrcPath == null && mainResourcesPath == null && testResourcesPath == null ) {
             return null;
         }
 
-        //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = resolveProject( resource );
-        if ( projectRoot == null ) {
-            return null;
-        }
-
-        return doResolveSrcPackage( resource,
-                                    projectRoot );
+        final String packageName = getPackageName( project,
+                                                   mainSrcPath,
+                                                   testSrcPath,
+                                                   mainResourcesPath,
+                                                   testResourcesPath );
+        final Package pkg = new Package( project.getPath(),
+                                         mainSrcPath,
+                                         testSrcPath,
+                                         mainResourcesPath,
+                                         testResourcesPath,
+                                         packageName,
+                                         getPackageDisplayName( packageName ) );
+        return pkg;
     }
 
-    private Path doResolveSrcPackage( final Path resource,
-                                      final Path projectRoot ) {
+    private String getPackageName( final Project project,
+                                   final Path mainSrcPath,
+                                   final Path testSrcPath,
+                                   final Path mainResourcesPath,
+                                   final Path testResourcesPath ) {
+        String packageName = null;
+        if ( packageName == null && mainSrcPath != null ) {
+            packageName = tryPath( project,
+                                   mainSrcPath,
+                                   MAIN_SRC_PATH );
+        }
+        if ( packageName == null && testSrcPath != null ) {
+            packageName = tryPath( project,
+                                   testSrcPath,
+                                   TEST_SRC_PATH );
+        }
+        if ( packageName == null && mainResourcesPath != null ) {
+            packageName = tryPath( project,
+                                   mainResourcesPath,
+                                   MAIN_RESOURCES_PATH );
+        }
+        if ( packageName == null && testResourcesPath != null ) {
+            packageName = tryPath( project,
+                                   testResourcesPath,
+                                   TEST_RESOURCES_PATH );
+        }
+        return packageName;
+    }
+
+    private String tryPath( final Project project,
+                            final Path resource,
+                            final String prefix ) {
+        //Use the relative path between Project root and Package path to build the package name
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( project.getPath() );
+        final org.kie.commons.java.nio.file.Path nioResourcePath = paths.convert( resource );
+        final org.kie.commons.java.nio.file.Path nioResourceDelta = nioProjectPath.relativize( nioResourcePath );
+
+        //Build package name
+        String packageName = nioResourceDelta.toString();
+        if ( packageName.startsWith( prefix ) ) {
+            packageName = packageName.replace( prefix,
+                                               "" );
+            if ( packageName.startsWith( "/" ) ) {
+                packageName = packageName.substring( 1 );
+            }
+            return packageName.replaceAll( "/",
+                                           "." );
+        }
+        return null;
+    }
+
+    private String getPackageDisplayName( final String packageName ) {
+        return packageName.isEmpty() ? "<default>" : packageName;
+    }
+
+    private Path resolveMainSrcPath( final Project project,
+                                     final Path resource ) {
         //The pom.xml and kmodule.xml files are not within a package
         if ( isPom( resource ) || isKModule( resource ) ) {
             return null;
         }
 
-        //The Path must be within a Project's src/main/java or src/main/resources path
-        boolean resolved = false;
+        //The Path must be within a Project's src/main/java
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path srcJavaPath = paths.convert( projectRoot ).resolve( SOURCE_JAVA_PATH );
-        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( SOURCE_RESOURCES_PATH );
-
-        //Check if path resides within a Java or Resources path
-        if ( path.startsWith( srcJavaPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( srcResourcesPath ) ) {
-            resolved = true;
-        }
-        if ( !resolved ) {
+        final org.kie.commons.java.nio.file.Path mainSrcPath = paths.convert( project.getPath() ).resolve( MAIN_SRC_PATH );
+        if ( !path.startsWith( mainSrcPath ) ) {
             return null;
         }
 
@@ -233,43 +292,65 @@ public class ProjectServiceImpl
         return paths.convert( path );
     }
 
-    @Override
-    public Path resolveTestPackage( final Path resource ) {
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return null;
-        }
-
-        //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = resolveProject( resource );
-        if ( projectRoot == null ) {
-            return null;
-        }
-
-        return doResolveTestPackage( resource,
-                                     projectRoot );
-    }
-
-    private Path doResolveTestPackage( final Path resource,
-                                       final Path projectRoot ) {
+    private Path resolveTestSrcPath( final Project project,
+                                     final Path resource ) {
         //The pom.xml and kmodule.xml files are not within a package
         if ( isPom( resource ) || isKModule( resource ) ) {
             return null;
         }
 
-        //The Path must be within a Project's src/test/java or src/test/resources path
-        boolean resolved = false;
+        //The Path must be within a Project's test/main/java
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path testJavaPath = paths.convert( projectRoot ).resolve( TEST_JAVA_PATH );
-        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
-
-        //Check if path resides within a Java or Resources path
-        if ( path.startsWith( testJavaPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( testResourcesPath ) ) {
-            resolved = true;
+        final org.kie.commons.java.nio.file.Path testSrcPath = paths.convert( project.getPath() ).resolve( TEST_SRC_PATH );
+        if ( !path.startsWith( testSrcPath ) ) {
+            return null;
         }
-        if ( !resolved ) {
+
+        //If the Path is already a folder simply return it
+        if ( Files.isDirectory( path ) ) {
+            return resource;
+        }
+
+        path = path.getParent();
+
+        return paths.convert( path );
+    }
+
+    private Path resolveMainResourcesPath( final Project project,
+                                           final Path resource ) {
+        //The pom.xml and kmodule.xml files are not within a package
+        if ( isPom( resource ) || isKModule( resource ) ) {
+            return null;
+        }
+
+        //The Path must be within a Project's src/main/resources
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path mainResourcesPath = paths.convert( project.getPath() ).resolve( MAIN_RESOURCES_PATH );
+        if ( !path.startsWith( mainResourcesPath ) ) {
+            return null;
+        }
+
+        //If the Path is already a folder simply return it
+        if ( Files.isDirectory( path ) ) {
+            return resource;
+        }
+
+        path = path.getParent();
+
+        return paths.convert( path );
+    }
+
+    private Path resolveTestResourcesPath( final Project project,
+                                           final Path resource ) {
+        //The pom.xml and kmodule.xml files are not within a package
+        if ( isPom( resource ) || isKModule( resource ) ) {
+            return null;
+        }
+
+        //The Path must be within a Project's test/main/resources
+        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
+        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( project.getPath() ).resolve( TEST_RESOURCES_PATH );
+        if ( !path.startsWith( testResourcesPath ) ) {
             return null;
         }
 
@@ -291,9 +372,9 @@ public class ProjectServiceImpl
         }
 
         //Check if path equals pom.xml
-        final Path projectRoot = resolveProject( resource );
+        final Project project = resolveProject( resource );
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( projectRoot ).resolve( POM_PATH );
+        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( project.getPath() ).resolve( POM_PATH );
         return path.startsWith( pomFilePath );
     }
 
@@ -305,50 +386,10 @@ public class ProjectServiceImpl
         }
 
         //Check if path equals kmodule.xml
-        final Path projectRoot = resolveProject( resource );
+        final Project project = resolveProject( resource );
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( projectRoot ).resolve( KMODULE_PATH );
+        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( project.getPath() ).resolve( KMODULE_PATH );
         return path.startsWith( kmoduleFilePath );
-    }
-
-    @Override
-    public String resolvePackageName( final Path path ) {
-
-        //Check path is actually within a Package within a Project
-        final Path packagePath = resolvePackage( path );
-        if ( packagePath == null ) {
-            return null;
-        }
-        final Path projectPath = resolveProject( packagePath );
-        if ( projectPath == null ) {
-            return null;
-        }
-
-        //Use the relative path between Project root and Package path to build the package name
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectPath );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
-        final org.kie.commons.java.nio.file.Path nioDelta = nioProjectPath.relativize( nioPackagePath );
-
-        //Build package name
-        String packageName = nioDelta.toString();
-        if ( packageName.startsWith( SOURCE_JAVA_PATH ) ) {
-            packageName = packageName.replace( SOURCE_JAVA_PATH,
-                                               "" );
-        } else if ( packageName.startsWith( SOURCE_RESOURCES_PATH ) ) {
-            packageName = packageName.replace( SOURCE_RESOURCES_PATH,
-                                               "" );
-        } else if ( packageName.startsWith( TEST_JAVA_PATH ) ) {
-            packageName = packageName.replace( TEST_JAVA_PATH,
-                                               "" );
-        } else if ( packageName.startsWith( TEST_RESOURCES_PATH ) ) {
-            packageName = packageName.replace( TEST_RESOURCES_PATH,
-                                               "" );
-        }
-        if ( packageName.startsWith( "/" ) ) {
-            packageName = packageName.substring( 1 );
-        }
-        return packageName.replaceAll( "/",
-                                       "." );
     }
 
     @Override

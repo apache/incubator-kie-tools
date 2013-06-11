@@ -16,18 +16,19 @@
 
 package org.kie.workbench.common.services.project.backend.server;
 
+import java.net.URL;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -79,7 +80,7 @@ public class ProjectServiceImplResolveProjectValidTest {
         final Path testPath = paths.convert( testNioPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertNull( result );
     }
 
@@ -92,14 +93,14 @@ public class ProjectServiceImplResolveProjectValidTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid");
+        final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
         //Test a root resolves to the Project's root
-        final Path result = projectService.resolveProject( rootPath );
+        final Project result = projectService.resolveProject( rootPath );
         assertEquals( rootPath.toURI(),
-                      result.toURI() );
+                      result.getPath().toURI() );
     }
 
     @Test
@@ -111,18 +112,18 @@ public class ProjectServiceImplResolveProjectValidTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid");
+        final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
-        final URL testUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid/src");
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src" );
         final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a child folder resolves to the Project's root
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.toURI() );
+                      result.getPath().toURI() );
     }
 
     @Test
@@ -134,18 +135,18 @@ public class ProjectServiceImplResolveProjectValidTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid");
+        final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
-        final URL testUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid/src/main/java/org/kie/test/Bean.java");
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/java/org/kie/test/Bean.java" );
         final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a child folder resolves to the Project's root
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.toURI());
+                      result.getPath().toURI() );
     }
 
     @Test
@@ -157,18 +158,18 @@ public class ProjectServiceImplResolveProjectValidTest {
                                                                                          ProjectService.class,
                                                                                          cc );
 
-        final URL rootUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid");
+        final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.kie.commons.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
         final Path rootPath = paths.convert( nioRootPath );
 
-        final URL testUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid/src/main/resources/rule1.drl");
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/rule1.drl" );
         final org.kie.commons.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a child folder resolves to the Project's root
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.toURI());
+                      result.getPath().toURI() );
     }
 
 }

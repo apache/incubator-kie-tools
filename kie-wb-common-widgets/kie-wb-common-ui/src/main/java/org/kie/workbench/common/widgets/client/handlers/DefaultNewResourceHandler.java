@@ -13,16 +13,17 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Package;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.kie.workbench.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Handler for the creation of new Items that require a Name and Path
@@ -76,12 +77,12 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         if ( path == null ) {
             callback.onSuccess( false );
         } else {
-            projectService.call( new RemoteCallback<Path>() {
+            projectService.call( new RemoteCallback<Package>() {
                 @Override
-                public void callback( final Path path ) {
-                    callback.onSuccess( path != null );
+                public void callback( final Package pkg ) {
+                    callback.onSuccess( pkg.getPackageMainResourcesPath() != null );
                 }
-            } ).resolveSrcPackage( path );
+            } ).resolvePackage( path );
         }
     }
 

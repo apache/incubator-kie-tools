@@ -22,6 +22,7 @@ import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCa
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
@@ -34,7 +35,7 @@ import org.uberfire.backend.vfs.Path;
  */
 @ApplicationScoped
 @Named("ProjectDataModelOracleCache")
-public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataModelOracle> {
+public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDataModelOracle> {
 
     private static final String ERROR_CLASS_NOT_FOUND = "Class not found";
 
@@ -63,28 +64,28 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataMo
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
-        final Path projectPath = projectService.resolveProject( resourcePath );
+        final Project project = projectService.resolveProject( resourcePath );
 
         //If resource was not within a Project there's nothing to invalidate
-        if ( projectPath != null ) {
-            invalidateCache( projectPath );
+        if ( project != null ) {
+            invalidateCache( project );
         }
     }
 
     //Check the ProjectOracle for the Project has been created, otherwise create one!
-    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final Path projectPath ) {
-        ProjectDataModelOracle projectOracle = getEntry( projectPath );
+    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final Project project ) {
+        ProjectDataModelOracle projectOracle = getEntry( project );
         if ( projectOracle == null ) {
-            projectOracle = makeProjectOracle( projectPath );
-            setEntry( projectPath,
+            projectOracle = makeProjectOracle( project );
+            setEntry( project,
                       projectOracle );
         }
         return projectOracle;
     }
 
-    private ProjectDataModelOracle makeProjectOracle( final Path projectPath ) {
+    private ProjectDataModelOracle makeProjectOracle( final Project project ) {
         //Get a Builder for the project
-        final Builder builder = cache.assertBuilder( projectPath );
+        final Builder builder = cache.assertBuilder( project );
 
         //Create the ProjectOracle...
         final BuildResults results = builder.build();
@@ -111,7 +112,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Path, ProjectDataMo
         }
 
         //Add external imports. The availability of these classes is checked in Builder and failed fast. Here we load them into the DMO
-        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( projectPath ).resolve( "project.imports" );
+        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getPath() ).resolve( "project.imports" );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );

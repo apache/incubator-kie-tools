@@ -18,6 +18,8 @@ package org.kie.workbench.common.services.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.file.SupportsRead;
 import org.kie.workbench.common.services.shared.file.SupportsUpdate;
@@ -38,7 +40,7 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @param resource
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
-    Path resolveProject( final Path resource );
+    Project resolveProject( final Path resource );
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
@@ -47,32 +49,7 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @param resource
      * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
-    Path resolvePackage( final Path resource );
-
-    /**
-     * Given a Resource path resolve it to the containing Source Package Path. A Source Package path is the folder
-     * containing the resource. The folder must be within a valid Project structure and at least reference
-     * /src/main/java or /src/main/resources (or deeper).
-     * @param resource
-     * @return Path to the Source folder containing the resource file or null if the resource is not in a Source package.
-     */
-    Path resolveSrcPackage( final Path resource );
-
-    /**
-     * Given a Resource path resolve it to the containing Test Package Path. A Test Package path is the folder
-     * containing the resource. The folder must be within a valid Project structure and at least reference
-     * /src/test/java or /src/test/resources (or deeper).
-     * @param resource
-     * @return Path to the Test folder containing the resource file or null if the resource is not in a Test package.
-     */
-    Path resolveTestPackage( final Path resource );
-
-    /**
-     * Given a Package path resolve it to a package name.
-     * @param packagePath
-     * @return Name of the package.
-     */
-    String resolvePackageName( final Path packagePath );
+    Package resolvePackage( final Path resource );
 
     /**
      * Path for the project pom.xml that the given resource belongs to.

@@ -16,11 +16,27 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.workbench.common.screens.datamodeller.model.*;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
@@ -43,12 +59,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
 
 @Service
 @ApplicationScoped
@@ -103,7 +113,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         Path projectPath = null;
 
         try {
-            projectPath = projectService.resolveProject(path);
+            projectPath = projectService.resolveProject(path).getPath();
             if (logger.isDebugEnabled()) logger.debug("Current project path is: " + projectPath);
 
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
@@ -134,7 +144,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //get the path to project root directory (the main pom.xml directory) and calculate
             //the java sources path
-            Path projectPath = projectService.resolveProject(path);
+            Path projectPath = projectService.resolveProject(path).getPath();
 
             //ensure java sources directory exists.
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath(paths.convert(projectPath));
@@ -187,7 +197,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public Path resolveProject(Path path) {
-        return projectService.resolveProject(path);
+        return projectService.resolveProject(path).getPath();
     }
 
     @Override
@@ -225,7 +235,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = projectService.resolveProject(resource);
+        final Path projectRoot = projectService.resolveProject(resource).getPath();
         if ( projectRoot == null ) {
             return null;
         }
@@ -458,7 +468,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         FileUtils fileUtils = FileUtils.getInstance();
 
-        Path projectHome = projectService.resolveProject(path);
+        Path projectHome = projectService.resolveProject(path).getPath();
         org.kie.commons.java.nio.file.Path javaPath = existsProjectJavaPath(paths.convert(projectHome));
         if (javaPath != null) {
             scanResults = fileUtils.scanDirectories(ioService, javaPath, false, true);

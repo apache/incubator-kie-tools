@@ -234,8 +234,9 @@ public class ProjectScreenPresenter
                     @Override
                     public void execute() {
                         view.showBusyIndicator(ProjectEditorConstants.INSTANCE.Building());
-                        buildServiceCaller.call(getBuildSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).buildAndDeploy(pathToPomXML);
+                        //TODO {manstis}
+//                        buildServiceCaller.call(getBuildSuccessCallback(),
+//                                new HasBusyIndicatorDefaultErrorCallback(view)).buildAndDeploy(pathToPomXML);
                     }
                 })
                 .endMenu().build();

@@ -34,8 +34,8 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
@@ -50,8 +50,8 @@ public class ExplorerServiceImpl
         implements ExplorerService {
 
     private static final String MAIN_SRC_PATH = "src/main/java";
-    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
     private static final String TEST_SRC_PATH = "src/test/java";
+    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
     private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private static String[] sourcePaths = { MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH };
@@ -174,7 +174,7 @@ public class ExplorerServiceImpl
         return packages;
     }
 
-    private org.kie.workbench.common.services.project.service.model.Package makePackage( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
+    private Package makePackage( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
                                                                                          final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
         final org.uberfire.backend.vfs.Path projectRootPath = paths.convert( nioProjectRootPath,
                                                                              false );
@@ -190,8 +190,8 @@ public class ExplorerServiceImpl
         final String packageName = getPackageName( packageSrcPath );
         final Package pkg = new Package( projectRootPath,
                                          mainSrcPath,
-                                         mainResourcesPath,
                                          testSrcPath,
+                                         mainResourcesPath,
                                          testResourcesPath,
                                          packageName,
                                          getPackageDisplayName( packageName ) );
@@ -199,8 +199,8 @@ public class ExplorerServiceImpl
     }
 
     private String getPackageName( final Path packageSrcPath ) {
-        final String packageName = projectService.resolvePackageName( packageSrcPath );
-        return packageName;
+        final Package pkg = projectService.resolvePackage( packageSrcPath );
+        return pkg.getPackageName();
     }
 
     private String getPackageDisplayName( final String packageName ) {
@@ -243,21 +243,10 @@ public class ExplorerServiceImpl
         if ( path == null ) {
             return new ProjectPackage();
         }
-        Project project = null;
-        Package pkg = null;
-        final Path projectRootPath = projectService.resolveProject( path );
-        if ( projectRootPath != null ) {
-            project = new Project( path,
-                                   path.getFileName() );
-        }
-        final Path packageSrcPath = projectService.resolvePackage( path );
-        if ( packageSrcPath != null ) {
-            final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRootPath );
-            final org.kie.commons.java.nio.file.Path nioPackageSrcPath = paths.convert( packageSrcPath );
-            pkg = makePackage( nioProjectRootPath,
-                               nioPackageSrcPath );
-        }
+        final Project project = projectService.resolveProject( path );
+        final Package pkg = projectService.resolvePackage( path );
         return new ProjectPackage( project,
                                    pkg );
     }
+
 }

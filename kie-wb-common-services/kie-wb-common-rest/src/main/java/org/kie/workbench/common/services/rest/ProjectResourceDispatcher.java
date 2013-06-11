@@ -14,6 +14,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.Group;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
@@ -144,16 +145,16 @@ public class ProjectResourceDispatcher {
             result.setResult("Repository [" + repositoryName + "] does not exist");  
             jobResultEvent.fire(result);
          } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
 
-            if ( pathToPomXML == null ) {
+            if ( project == null ) {
                 result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
                 result.setResult("Project [" + projectName + "] does not exist" );  
                 jobResultEvent.fire(result);
                 return;
              }
 
-            buildService.build( pathToPomXML );
+            buildService.build( project );
 
             // TODO: get BuildResults
 
@@ -175,16 +176,16 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire(result);
             return;
         } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
 
-            if ( pathToPomXML == null ) {
+            if ( project == null ) {
                 result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
                 result.setResult("Project [" + projectName + "] does not exist" );  
                 jobResultEvent.fire(result);
                 return;
             }
 
-            buildService.buildAndDeploy( pathToPomXML );
+            buildService.buildAndDeploy( project );
 
             //TODO: get BuildResults
 
@@ -238,16 +239,16 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire(result);
             return;
         } else {
-            org.uberfire.backend.vfs.Path pathToPomXML = projectService.resolvePathToPom( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
 
-            if ( pathToPomXML == null ) {
+            if ( project == null ) {
                 result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
                 result.setResult("Project [" + projectName + "] does not exist" );  
                 jobResultEvent.fire(result);
                 return;
             }
 
-            buildService.buildAndDeploy( pathToPomXML );
+            buildService.buildAndDeploy( project );
 
             //TODO: get BuildResults
 

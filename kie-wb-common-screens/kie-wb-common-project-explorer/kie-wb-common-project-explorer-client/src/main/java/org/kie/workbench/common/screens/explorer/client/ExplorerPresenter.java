@@ -9,12 +9,12 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.services.project.service.model.Package;
-import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.screens.explorer.model.ProjectPackage;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.project.service.model.*;
-import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.shared.project.Package;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
@@ -166,7 +166,7 @@ public class ExplorerPresenter {
         pathChangeEvent.fire( new PathChangeEvent( project.getPath() ) );
         explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
-            public void callback( final Collection<org.kie.workbench.common.services.project.service.model.Package> packages ) {
+            public void callback( final Collection<Package> packages ) {
                 view.setPackages( packages,
                                   activePackage );
             }

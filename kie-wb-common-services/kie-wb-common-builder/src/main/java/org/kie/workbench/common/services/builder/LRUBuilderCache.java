@@ -7,11 +7,12 @@ import javax.inject.Named;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.backend.cache.LRUCache;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
-import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.cache.LRUCache;
+import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -19,7 +20,7 @@ import org.uberfire.backend.vfs.Path;
  * A simple LRU cache for Builders
  */
 @ApplicationScoped
-public class LRUBuilderCache extends LRUCache<Path, Builder> {
+public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     @Inject
     private Paths paths;
@@ -38,26 +39,25 @@ public class LRUBuilderCache extends LRUCache<Path, Builder> {
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
-        final Path pathToPom = projectService.resolvePathToPom( resourcePath );
+        final Project project = projectService.resolveProject( resourcePath );
 
         //If resource was not within a Project there's nothing to invalidate
-        if ( pathToPom != null ) {
-            invalidateCache( pathToPom );
+        if ( project != null ) {
+            invalidateCache( project );
         }
     }
 
-    public synchronized Builder assertBuilder( final Path resourcePath ) {
-        final Path pathToPom = projectService.resolvePathToPom( resourcePath );
-        Builder builder = getEntry( pathToPom );
+    public synchronized Builder assertBuilder( final Project project ) {
+        final Path pathToPom = projectService.resolvePathToPom( project.getPath() );
+        Builder builder = getEntry( project );
         if ( builder == null ) {
             final POM gav = pomService.load( pathToPom );
-            final Path projectPath = projectService.resolveProject( pathToPom );
-            builder = new Builder( paths.convert( projectPath ),
+            builder = new Builder( paths.convert( project.getPath() ),
                                    gav.getGav().getArtifactId(),
                                    paths,
                                    ioService,
                                    projectService );
-            setEntry( pathToPom,
+            setEntry( project,
                       builder );
         }
         return builder;

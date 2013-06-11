@@ -36,7 +36,6 @@ public class ProjectScreenServiceImpl
         model.setPOM(pomService.load(pathToPom));
         model.setPOMMetaData(metadataService.getMetadata(pathToPom));
 
-
         Path pathToKModule = kModuleService.pathToRelatedKModuleFileIfAny(pathToPom);
         model.setKModule(kModuleService.load(pathToKModule));
         model.setKModuleMetaData(metadataService.getMetadata(pathToKModule));

@@ -6,8 +6,8 @@ import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.session.SessionService;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
-import org.uberfire.backend.vfs.Path;
 
 public class SessionServiceImpl
         implements SessionService {
@@ -21,16 +21,16 @@ public class SessionServiceImpl
 
     @Inject
     public SessionServiceImpl( final LRUBuilderCache cache,
-                               M2RepoService m2RepoService ) {
+                               final M2RepoService m2RepoService ) {
         this.cache = cache;
         this.m2RepoService = m2RepoService;
     }
 
     @Override
-    public KieSession newKieSession( Path pathToPom,
-                                     String sessionName ) {
+    public KieSession newKieSession( final Project project,
+                                     final String sessionName ) {
 
-        final Builder builder = cache.assertBuilder( pathToPom );
+        final Builder builder = cache.assertBuilder( project );
 
         KieContainer kieContainer = null;
 

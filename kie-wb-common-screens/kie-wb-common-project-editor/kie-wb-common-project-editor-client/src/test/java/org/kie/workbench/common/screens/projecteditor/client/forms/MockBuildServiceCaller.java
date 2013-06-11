@@ -22,6 +22,7 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.services.shared.builder.BuildService;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -36,13 +37,13 @@ public class MockBuildServiceCaller
         service = new BuildService() {
 
             @Override
-            public void build( Path pathToPom ) {
+            public void build( Project project ) {
                 callback.callback( null );
                 buildWasCalled = true;
             }
 
             @Override
-            public void buildAndDeploy( Path pathToPom ) {
+            public void buildAndDeploy( Project project ) {
                 callback.callback( null );
                 buildWasCalled = true;
             }
@@ -64,7 +65,7 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public void applyBatchResourceChanges( Path projectRoot,
+            public void applyBatchResourceChanges( Project project,
                                                    Set<ResourceChange> changes ) {
             }
         };

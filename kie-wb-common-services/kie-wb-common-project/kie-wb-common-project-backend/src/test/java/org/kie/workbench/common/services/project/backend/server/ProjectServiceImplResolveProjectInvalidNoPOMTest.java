@@ -16,21 +16,21 @@
 
 package org.kie.workbench.common.services.project.backend.server;
 
+import java.net.URL;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import java.net.URL;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
 
@@ -80,7 +80,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( testNioPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertNull( result );
     }
 
@@ -98,7 +98,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path rootPath = paths.convert( nioRootPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( rootPath );
+        final Project result = projectService.resolveProject( rootPath );
         assertNull( result );
     }
 
@@ -120,7 +120,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertNull( result );
     }
 
@@ -142,7 +142,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertNull( result );
     }
 
@@ -164,7 +164,7 @@ public class ProjectServiceImplResolveProjectInvalidNoPOMTest {
         final Path testPath = paths.convert( nioTestPath );
 
         //Test a non-Project Path resolves to null
-        final Path result = projectService.resolveProject( testPath );
+        final Project result = projectService.resolveProject( testPath );
         assertNull( result );
     }
 

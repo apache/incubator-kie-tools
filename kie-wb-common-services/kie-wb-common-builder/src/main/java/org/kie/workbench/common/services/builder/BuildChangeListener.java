@@ -14,6 +14,8 @@ import javax.inject.Inject;
 
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.kie.workbench.common.services.shared.config.AppConfigService;
 import org.slf4j.Logger;
@@ -95,8 +97,8 @@ public class BuildChangeListener {
         final Path resource = resourceAddedEvent.getPath();
 
         //If resource is not within a Package it cannot be used for an incremental build
-        final Path packagePath = projectService.resolvePackage( resource );
-        if ( packagePath == null ) {
+        final Package pkg = projectService.resolvePackage( resource );
+        if ( pkg == null ) {
             return;
         }
 
@@ -127,8 +129,8 @@ public class BuildChangeListener {
         final Path resource = resourceDeletedEvent.getPath();
 
         //If resource is not within a Package it cannot be used for an incremental build
-        final Path packagePath = projectService.resolvePackage( resource );
-        if ( packagePath == null ) {
+        final Package pkg = projectService.resolvePackage( resource );
+        if ( pkg == null ) {
             return;
         }
 
@@ -159,8 +161,8 @@ public class BuildChangeListener {
         final Path resource = resourceUpdatedEvent.getPath();
 
         //If resource is not within a Project it cannot be used for an incremental build
-        final Path projectPath = projectService.resolveProject( resource );
-        if ( projectPath == null ) {
+        final Project project = projectService.resolveProject( resource );
+        if ( project == null ) {
             return;
         }
 
@@ -218,27 +220,27 @@ public class BuildChangeListener {
 
         //Block changes together with their respective project as Builder operates at the Project level
         final Set<ResourceChange> batch = resourceBatchChangesEvent.getBatch();
-        final Map<Path, Set<ResourceChange>> projectBatchChanges = new HashMap<Path, Set<ResourceChange>>();
+        final Map<Project, Set<ResourceChange>> projectBatchChanges = new HashMap<Project, Set<ResourceChange>>();
         for ( ResourceChange change : batch ) {
             PortablePreconditions.checkNotNull( "path",
                                                 change.getPath() );
             final Path resource = change.getPath();
 
             //If resource is not within a Package it cannot be used for an incremental build
-            final Path projectPath = projectService.resolveProject( resource );
-            final Path packagePath = projectService.resolvePackage( resource );
-            if ( projectPath != null && packagePath != null ) {
-                if ( !projectBatchChanges.containsKey( projectPath ) ) {
-                    projectBatchChanges.put( projectPath,
+            final Project project = projectService.resolveProject( resource );
+            final Package pkg = projectService.resolvePackage( resource );
+            if ( project != null && pkg != null ) {
+                if ( !projectBatchChanges.containsKey( project ) ) {
+                    projectBatchChanges.put( project,
                                              new HashSet<ResourceChange>() );
                 }
-                final Set<ResourceChange> projectChanges = projectBatchChanges.get( projectPath );
+                final Set<ResourceChange> projectChanges = projectBatchChanges.get( project );
                 projectChanges.add( change );
             }
         }
 
         //Schedule an incremental build for each Project
-        for ( final Map.Entry<Path, Set<ResourceChange>> e : projectBatchChanges.entrySet() ) {
+        for ( final Map.Entry<Project, Set<ResourceChange>> e : projectBatchChanges.entrySet() ) {
             executor.execute( new Runnable() {
 
                 @Override

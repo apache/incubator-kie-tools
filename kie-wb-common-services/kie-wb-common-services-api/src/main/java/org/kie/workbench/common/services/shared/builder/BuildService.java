@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.shared.builder;
 import java.util.Set;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -27,15 +28,15 @@ public interface BuildService {
 
     /**
      * Full build without deployment
-     * @param pathToPom
+     * @param project
      */
-    void build( final Path pathToPom );
+    void build( final Project project );
 
     /**
      * Full build with deployment
-     * @param pathToPom
+     * @param project
      */
-    void buildAndDeploy( final Path pathToPom );
+    void buildAndDeploy( final Project project );
 
     /**
      * Add a Package resource to the build.
@@ -63,10 +64,10 @@ public interface BuildService {
 
     /**
      * Process a batch of changes to a Project's resources.
-     * @param projectRoot
+     * @param project
      * @param changes
      */
-    void applyBatchResourceChanges( final Path projectRoot,
+    void applyBatchResourceChanges( final Project project,
                                     final Set<ResourceChange> changes );
 
 }

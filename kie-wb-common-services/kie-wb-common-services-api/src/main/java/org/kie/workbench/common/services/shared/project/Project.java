@@ -1,4 +1,4 @@
-package org.kie.workbench.common.services.project.service.model;
+package org.kie.workbench.common.services.shared.project;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
