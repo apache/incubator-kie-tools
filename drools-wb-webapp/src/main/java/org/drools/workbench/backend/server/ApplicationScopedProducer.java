@@ -42,6 +42,8 @@ import org.kie.kieora.io.IOServiceIndexedImpl;
 import org.kie.kieora.search.SearchIndex;
 import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.server.cdi.SecurityFactory;
 
 import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
@@ -59,6 +61,8 @@ public class ApplicationScopedProducer {
 
     @PostConstruct
     public void setup() {
+        SecurityFactory.setAuthzManager( new RuntimeAuthorizationManager() );
+
         final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
         final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
                                                                    luceneSetup,
