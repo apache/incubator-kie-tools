@@ -114,7 +114,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                         final RuleModel content,
                         final String comment ) {
         try {
-            content.setPackageName( projectService.resolvePackageName( context ) );
+            content.setPackageName( projectService.resolvePackage( context ).getPackageName() );
 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
@@ -170,7 +170,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     private String[] loadDslsForPackage( final Path path ) {
         final List<String> dsls = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path );
+        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                             FILTER_DSLS );
@@ -184,7 +184,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     private List<String> loadGlobalsForPackage( final Path path ) {
         final List<String> globals = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path );
+        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.kie.commons.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                                FILTER_GLOBALS );
@@ -201,7 +201,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
-            model.setPackageName( projectService.resolvePackageName( resource ) );
+            model.setPackageName( projectService.resolvePackage( resource ).getPackageName() );
 
             ioService.write( paths.convert( resource ),
                              toSource( resource,

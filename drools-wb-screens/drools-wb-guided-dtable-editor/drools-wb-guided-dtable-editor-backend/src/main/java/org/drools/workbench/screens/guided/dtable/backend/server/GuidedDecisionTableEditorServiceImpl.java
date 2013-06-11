@@ -107,7 +107,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                         final GuidedDecisionTable52 content,
                         final String comment ) {
         try {
-            content.setPackageName( projectService.resolvePackageName( context ) );
+            content.setPackageName( projectService.resolvePackage( context ).getPackageName() );
 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
@@ -164,7 +164,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                       final Metadata metadata,
                       final String comment ) {
         try {
-            model.setPackageName( projectService.resolvePackageName( resource ) );
+            model.setPackageName( projectService.resolvePackage( resource ).getPackageName() );
 
             ioService.write( paths.convert( resource ),
                              GuidedDTXMLPersistence.getInstance().marshal( model ),

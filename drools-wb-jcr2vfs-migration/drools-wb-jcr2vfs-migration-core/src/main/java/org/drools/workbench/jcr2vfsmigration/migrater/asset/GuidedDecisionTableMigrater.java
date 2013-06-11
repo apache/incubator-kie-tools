@@ -77,7 +77,7 @@ public class GuidedDecisionTableMigrater {
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( jcrAssetItem.getContent() );
         
         //Add package
-        final String requiredPackageName = projectService.resolvePackageName( path );        
+        final String requiredPackageName = projectService.resolvePackage( path ).getPackageName();
         if(requiredPackageName != null && !"".equals(requiredPackageName)) {
             model.setPackageName(requiredPackageName);
         }

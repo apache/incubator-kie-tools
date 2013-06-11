@@ -36,7 +36,7 @@ public class PackageImportHelper {
     //Check if the xml contains a Package declaration, appending one if it does not exist
     public String assertPackageNameXML( final String xml,
                                         final Path resource) {
-        final String requiredPackageName = projectService.resolvePackageName( resource );
+        final String requiredPackageName = projectService.resolvePackage( resource ).getPackageName();
         
         if(requiredPackageName == null && "".equals(requiredPackageName)) {
             return xml;

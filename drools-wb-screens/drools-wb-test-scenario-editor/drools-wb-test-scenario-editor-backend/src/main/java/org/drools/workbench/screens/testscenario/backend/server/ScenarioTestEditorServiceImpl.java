@@ -48,6 +48,7 @@ import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.project.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -228,7 +229,7 @@ public class ScenarioTestEditorServiceImpl
             return new TestScenarioModelContent(
                     load( path ),
                     dataModelService.getDataModel( path ),
-                    projectService.resolvePackageName( path ) );
+                    projectService.resolvePackage( path ).getPackageName() );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -241,10 +242,11 @@ public class ScenarioTestEditorServiceImpl
                              final String sessionName ) {
         try {
 
-            final Path pathToPom = projectService.resolvePathToPom( path );
+            final Project project = projectService.resolveProject( path );
 
             new ScenarioRunnerWrapper().run( scenario,
-                                             sessionService.newKieSession( pathToPom, sessionName ),
+                                             sessionService.newKieSession( project,
+                                                                           sessionName ),
                                              testResultMessageEvent );
 
         } catch ( Exception e ) {
@@ -256,7 +258,7 @@ public class ScenarioTestEditorServiceImpl
     public void runAllScenarios( final Path testResourcePath,
                                  final String sessionName ) {
         try {
-            Path pathToPom = projectService.resolvePathToPom( testResourcePath );
+            final Project project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
             List<Scenario> scenarios = new ArrayList<Scenario>();
             for ( Path path : scenarioPaths ) {
@@ -265,7 +267,8 @@ public class ScenarioTestEditorServiceImpl
             }
 
             new ScenarioRunnerWrapper().run( scenarios,
-                                             sessionService.newKieSession( pathToPom, sessionName ),
+                                             sessionService.newKieSession( project,
+                                                                           sessionName ),
                                              testResultMessageEvent );
 
         } catch ( Exception e ) {

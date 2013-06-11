@@ -15,6 +15,7 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.common.services.shared.project.Package;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -63,12 +64,12 @@ public class NewTestScenarioHandler
         if ( path == null ) {
             callback.onSuccess( false );
         } else {
-            projectService.call( new RemoteCallback<Path>() {
+            projectService.call( new RemoteCallback<Package>() {
                 @Override
-                public void callback( final Path path ) {
-                    callback.onSuccess( path != null );
+                public void callback( final Package pkg ) {
+                    callback.onSuccess( pkg.getPackageTestResourcesPath() != null );
                 }
-            } ).resolveTestPackage( path );
+            } ).resolvePackage( path );
         }
     }
 }

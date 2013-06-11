@@ -240,7 +240,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                 return drl;
             }
 
-            final String requiredPackageName = projectService.resolvePackageName( resource );
+            final String requiredPackageName = projectService.resolvePackage( resource ).getPackageName();
             final HasPackageName mockHasPackageName = new HasPackageName() {
 
                 @Override

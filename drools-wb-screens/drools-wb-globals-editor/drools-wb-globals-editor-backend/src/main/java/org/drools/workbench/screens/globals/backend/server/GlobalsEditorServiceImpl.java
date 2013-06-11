@@ -101,7 +101,7 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                         final GlobalsModel content,
                         final String comment ) {
         try {
-            content.setPackageName( projectService.resolvePackageName( context ) );
+            content.setPackageName( projectService.resolvePackage( context ).getPackageName() );
 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
@@ -158,7 +158,7 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
-            content.setPackageName( projectService.resolvePackageName( resource ) );
+            content.setPackageName( projectService.resolvePackage( resource ).getPackageName() );
 
             ioService.write( paths.convert( resource ),
                              GlobalsPersistence.getInstance().marshal( content ),
