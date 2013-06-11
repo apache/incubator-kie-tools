@@ -65,7 +65,7 @@ public class Jcr2VfsMigrater {
     }
 
     public void migrateAll() {
-    	System.out.format("Migration started: Reading from inputJcrRepository ({%s}).",
+    	System.out.format("Migration started: Reading from inputJcrRepository ({%s}).\n",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
         setupDirectories();
         startContexts();
@@ -82,7 +82,7 @@ public class Jcr2VfsMigrater {
         categoryMigrater.migrateAll();
         // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
         endContexts();
-        System.out.format("Migration ended: Written into outputVfsRepository ({%s}).",
+        System.out.format("Migration ended: Written into outputVfsRepository ({%s}).\n",
                 migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 

@@ -186,7 +186,7 @@ public class AssetMigrater {
             attachementAssetMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             // TODO return error message
-        	System.out.println("      POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
+        	System.out.println("    POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
             guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
@@ -195,7 +195,7 @@ public class AssetMigrater {
             //Ignore
         } else {
             // TODO REPLACE ME WITH ACTUAL CODE
-        	System.out.format("      TODO migrate asset ({%s}) with format({%s}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+        	System.out.format("    TODO migrate asset ({%s}) with format({%s}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }
