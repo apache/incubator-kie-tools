@@ -3,8 +3,9 @@ package org.kie.workbench.common.screens.explorer.client;
 import java.util.Collection;
 
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.screens.explorer.model.Package;
-import org.kie.workbench.common.screens.explorer.model.Project;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.services.project.service.model.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.mvp.UberView;

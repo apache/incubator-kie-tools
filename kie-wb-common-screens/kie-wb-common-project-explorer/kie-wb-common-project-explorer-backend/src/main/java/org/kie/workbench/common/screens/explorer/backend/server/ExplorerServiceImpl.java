@@ -29,13 +29,13 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.screens.explorer.model.Package;
-import org.kie.workbench.common.screens.explorer.model.Project;
 import org.kie.workbench.common.screens.explorer.model.ProjectPackage;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
@@ -49,7 +49,12 @@ import org.uberfire.security.authz.AuthorizationManager;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static String[] sourcePaths = { "src/main/java", "src/main/resources", "src/test/java", "src/test/resources" };
+    private static final String MAIN_SRC_PATH = "src/main/java";
+    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
+    private static final String TEST_SRC_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
+
+    private static String[] sourcePaths = { MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH };
 
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
     private LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
@@ -169,13 +174,25 @@ public class ExplorerServiceImpl
         return packages;
     }
 
-    private Package makePackage( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
-                                 final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
+    private org.kie.workbench.common.services.project.service.model.Package makePackage( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
+                                                                                         final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
         final org.uberfire.backend.vfs.Path projectRootPath = paths.convert( nioProjectRootPath,
                                                                              false );
+        final org.uberfire.backend.vfs.Path mainSrcPath = paths.convert( nioProjectRootPath.resolve( MAIN_SRC_PATH ),
+                                                                         false );
+        final org.uberfire.backend.vfs.Path testSrcPath = paths.convert( nioProjectRootPath.resolve( TEST_SRC_PATH ),
+                                                                         false );
+        final org.uberfire.backend.vfs.Path mainResourcesPath = paths.convert( nioProjectRootPath.resolve( MAIN_RESOURCES_PATH ),
+                                                                               false );
+        final org.uberfire.backend.vfs.Path testResourcesPath = paths.convert( nioProjectRootPath.resolve( TEST_RESOURCES_PATH ),
+                                                                               false );
         final org.uberfire.backend.vfs.Path packageSrcPath = paths.convert( nioPackageSrcPath );
         final String packageName = getPackageName( packageSrcPath );
         final Package pkg = new Package( projectRootPath,
+                                         mainSrcPath,
+                                         mainResourcesPath,
+                                         testSrcPath,
+                                         testResourcesPath,
                                          packageName,
                                          getPackageDisplayName( packageName ) );
         return pkg;
@@ -228,15 +245,17 @@ public class ExplorerServiceImpl
         }
         Project project = null;
         Package pkg = null;
-        if ( projectService.resolveProject( path ) != null ) {
+        final Path projectRootPath = projectService.resolveProject( path );
+        if ( projectRootPath != null ) {
             project = new Project( path,
                                    path.getFileName() );
         }
-        final String packageName = getPackageName( path );
-        if ( packageName != null ) {
-            pkg = new Package( path,
-                               packageName,
-                               getPackageDisplayName( packageName ) );
+        final Path packageSrcPath = projectService.resolvePackage( path );
+        if ( packageSrcPath != null ) {
+            final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRootPath );
+            final org.kie.commons.java.nio.file.Path nioPackageSrcPath = paths.convert( packageSrcPath );
+            pkg = makePackage( nioProjectRootPath,
+                               nioPackageSrcPath );
         }
         return new ProjectPackage( project,
                                    pkg );

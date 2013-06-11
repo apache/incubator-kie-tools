@@ -23,8 +23,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.screens.explorer.model.Package;
-import org.kie.workbench.common.screens.explorer.model.Project;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.*;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -232,7 +232,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     @Override
     public void setPackages( final Collection<Package> packages,
-                             final Package activePackage ) {
+                             final org.kie.workbench.common.services.project.service.model.Package activePackage ) {
         ddPackages.clear();
         if ( !packages.isEmpty() ) {
             final List<Package> sortedPackages = new ArrayList<Package>( packages );

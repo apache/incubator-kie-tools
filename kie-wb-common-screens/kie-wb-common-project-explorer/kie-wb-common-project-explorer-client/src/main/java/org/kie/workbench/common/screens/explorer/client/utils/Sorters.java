@@ -3,8 +3,10 @@ package org.kie.workbench.common.screens.explorer.client.utils;
 import java.util.Comparator;
 
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.screens.explorer.model.Package;
-import org.kie.workbench.common.screens.explorer.model.Project;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
+import org.kie.workbench.common.services.project.service.model.*;
+import org.kie.workbench.common.services.project.service.model.Package;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -37,7 +39,7 @@ public class Sorters {
         }
     };
 
-    public static Comparator<Package> PACKAGE_SORTER = new Comparator<Package>() {
+    public static Comparator<Package> PACKAGE_SORTER = new Comparator<org.kie.workbench.common.services.project.service.model.Package>() {
         @Override
         public int compare( final Package o1,
                             final Package o2 ) {

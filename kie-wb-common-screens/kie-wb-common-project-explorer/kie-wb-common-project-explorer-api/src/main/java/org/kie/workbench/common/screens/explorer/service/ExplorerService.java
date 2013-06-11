@@ -20,9 +20,10 @@ import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.screens.explorer.model.Package;
-import org.kie.workbench.common.screens.explorer.model.Project;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
 import org.kie.workbench.common.screens.explorer.model.ProjectPackage;
+import org.kie.workbench.common.services.project.service.model.*;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
@@ -41,7 +42,7 @@ public interface ExplorerService {
 
     Collection<Package> getPackages( final Project project );
 
-    Collection<Item> getItems( final Package pkg );
+    Collection<Item> getItems( final org.kie.workbench.common.services.project.service.model.Package pkg );
 
     ProjectPackage resolveProjectPackage( final Path path );
 

@@ -1,6 +1,8 @@
 package org.kie.workbench.common.screens.explorer.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.project.service.model.Package;
+import org.kie.workbench.common.services.project.service.model.Project;
 
 /**
  * Container to return resolved Project and Package
