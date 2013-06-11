@@ -56,4 +56,31 @@ public class GroupImpl implements Group {
         return Collections.emptySet();
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof GroupImpl ) ) {
+            return false;
+        }
+
+        GroupImpl group = (GroupImpl) o;
+
+        if ( name != null ? !name.equals( group.name ) : group.name != null ) {
+            return false;
+        }
+        if ( owner != null ? !owner.equals( group.owner ) : group.owner != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
+        return result;
+    }
 }

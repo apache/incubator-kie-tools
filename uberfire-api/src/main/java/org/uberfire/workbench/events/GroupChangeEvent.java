@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.uberfire.client.context;
+package org.uberfire.workbench.events;
 
 import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
 
 /**
- * Container for the context of the Workbench
+ * An event raised when the Group in File Explorer (or any equivalent widget) changes
  */
-public interface WorkbenchContext {
+public class GroupChangeEvent {
 
-    void setActiveGroup( final Group activeGroup );
+    private final Group group;
 
-    Group getActiveGroup();
+    public GroupChangeEvent( final Group group ) {
+        this.group = group;
+    }
 
-    void setActiveRepository( final Repository activeRepository );
-
-    Repository getActiveRepository();
-
-    void setActivePath( final Path activePath );
-
-    Path getActivePath();
+    public Group getGroup() {
+        return group;
+    }
 
 }

@@ -47,6 +47,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -66,6 +67,9 @@ public class FileExplorerPresenter {
 
     @Inject
     private Caller<RepositoryService> repositoryService;
+
+    @Inject
+    private Event<RepositoryChangeEvent> repositoryChangedEvent;
 
     @Inject
     private Event<PathChangeEvent> pathChangedEvent;
@@ -189,12 +193,17 @@ public class FileExplorerPresenter {
 
     public void redirect( final Repository repo ) {
         placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", repo.getAlias() ) );
-        broadcastPathChange( repo.getRoot() );
+        broadcastRepositoryChange( repo );
     }
 
     public void newRootDirectory( @Observes NewRepositoryEvent event ) {
         view.removeIfExists( event.getNewRepository() );
         view.addNewRepository( event.getNewRepository() );
+    }
+
+    //Communicate change in context
+    private void broadcastRepositoryChange( final Repository repository ) {
+        repositoryChangedEvent.fire( new RepositoryChangeEvent( repository ) );
     }
 
     //Communicate change in context

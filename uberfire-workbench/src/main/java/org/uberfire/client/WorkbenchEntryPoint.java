@@ -26,7 +26,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
-import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.GroupChangeEvent;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -35,7 +35,7 @@ public class WorkbenchEntryPoint {
     private Workbench workbench;
 
     @Inject
-    private Event<PathChangeEvent> pathChangedEvent;
+    private Event<GroupChangeEvent> groupChangedEvent;
 
     private final SimplePanel appWidget = new SimplePanel();
 
@@ -50,7 +50,7 @@ public class WorkbenchEntryPoint {
         RootLayoutPanel.get().add( appWidget );
 
         //No context by default.. Ensure dependent widgets know about it.
-        pathChangedEvent.fire( new PathChangeEvent( null ) );
+        groupChangedEvent.fire( new GroupChangeEvent( null ) );
     }
 
     private void loadStyles() {

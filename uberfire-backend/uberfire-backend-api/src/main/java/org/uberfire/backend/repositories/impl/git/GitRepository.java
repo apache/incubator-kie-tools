@@ -93,4 +93,32 @@ public class GitRepository implements Repository {
         return Collections.emptySet();
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof GitRepository ) ) {
+            return false;
+        }
+
+        GitRepository that = (GitRepository) o;
+
+        if ( alias != null ? !alias.equals( that.alias ) : that.alias != null ) {
+            return false;
+        }
+        if ( environment != null ? !environment.equals( that.environment ) : that.environment != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = alias != null ? alias.hashCode() : 0;
+        result = 31 * result + ( environment != null ? environment.hashCode() : 0 );
+        return result;
+    }
+
 }
