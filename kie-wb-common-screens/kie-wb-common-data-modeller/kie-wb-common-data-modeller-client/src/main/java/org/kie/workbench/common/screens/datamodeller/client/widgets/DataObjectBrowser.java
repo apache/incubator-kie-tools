@@ -595,6 +595,12 @@ public class DataObjectBrowser extends Composite {
                 "packageName".equals(event.getPropertyName()) ||
                 "label".equals(event.getPropertyName())) {
 
+                // For self references: in case name or package changes redraw properties table
+                if (dataObject.getClassName().equalsIgnoreCase( event.getCurrentDataObject().getClassName() )) {
+                    dataObjectPropertiesProvider.refresh();
+                    dataObjectPropertiesTable.redraw();
+                }
+
                 objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
                 initTypeList();
             }

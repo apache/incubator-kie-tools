@@ -17,6 +17,8 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerPropertyChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
@@ -75,8 +77,42 @@ public class DataModelHelper {
     // TODO change from listener methods to event observers
     // DataModelHelper methods
 
-    public void dataModelChanged() {
-        reset();
+    public void dataModelChanged(DataModelerPropertyChangeEvent changeEvent) {
+        if (changeEvent.isFrom(dataModel)) {
+            if (DataModelerEvent.DATA_OBJECT_EDITOR.equalsIgnoreCase(changeEvent.getSource())) {
+                // If any object referenced the object whose name or package just changed, we need to adjust those internally
+                if ("name".equals(changeEvent.getPropertyName())) nameChanged( changeEvent.getCurrentDataObject(),
+                                                                               (String) changeEvent.getOldValue(),
+                                                                               (String) changeEvent.getNewValue());
+                else if ("packageName".equals(changeEvent.getPropertyName())) packageChanged( changeEvent.getCurrentDataObject(),
+                                                                                              (String) changeEvent.getOldValue(),
+                                                                                              (String) changeEvent.getNewValue());
+            }
+            reset();
+        }
+    }
+
+    private void nameChanged(DataObjectTO object, String oldName, String newName) {
+        adjustPropertyClassNames(object.getPackageName() + "." + oldName, object.getPackageName() + "." + newName);
+    }
+
+    private void packageChanged(DataObjectTO object, String oldPackage, String newPackage) {
+        adjustPropertyClassNames(oldPackage + "." + object.getName(), newPackage + "." + object.getName());
+    }
+
+    private void adjustPropertyClassNames(String oldClassName, String newClassname) {
+        if ( referencedBy.get(oldClassName) != null && referencedBy.get(oldClassName).size() != 0 ) {
+            // Get the object referencing the modified object
+            for (String refHolderClassName : referencedBy.get(oldClassName)) {
+                // Go get the referencing object (in case of a 'self' reference, find it through the new name!)
+                DataObjectTO refHolder = dataModel.getDataObjectByClassName(oldClassName.equalsIgnoreCase(refHolderClassName) ? newClassname : refHolderClassName);
+                for (ObjectPropertyTO prop : refHolder.getProperties()) {
+                    if (oldClassName.equalsIgnoreCase(prop.getClassName())) {
+                        prop.setClassName(newClassname);
+                    }
+                }
+            }
+        }
     }
 
     public void dataObjectReferenced(String objectClassName, String subjectClassName) {

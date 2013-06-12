@@ -211,8 +211,10 @@ public class DataObjectEditor extends Composite {
 
     // Event notifications
     private void notifyObjectChange(String memberName, Object oldValue, Object newValue) {
-        getContext().getHelper().dataModelChanged();
-        dataModelerEvent.fire(new DataObjectChangeEvent(DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue));
+        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent(DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue);
+        // Notify helper directly
+        getContext().getHelper().dataModelChanged(changeEvent);
+        dataModelerEvent.fire(changeEvent);
     }
 
     // Event handlers
@@ -235,35 +237,25 @@ public class DataObjectEditor extends Composite {
             return;
         }
         // Otherwise validate
-        validatorService.canChangeObjectName(getContext().getHelper(), getDataObject(), getDataModel(), new ValidatorCallback() {
+        validatorService.isValidIdentifier(newValue, new ValidatorCallback() {
             @Override
             public void onFailure() {
-                ep.showMessage(Constants.INSTANCE.validation_error_cannot_change_object_name());
+                ep.showMessage(Constants.INSTANCE.validation_error_invalid_object_identifier(newValue));
             }
 
             @Override
             public void onSuccess() {
-                validatorService.isValidIdentifier(newValue, new ValidatorCallback() {
+                validatorService.isUniqueEntityName(packageName, newValue, getDataModel(), new ValidatorCallback() {
                     @Override
                     public void onFailure() {
-                        ep.showMessage(Constants.INSTANCE.validation_error_invalid_object_identifier(newValue));
+                        ep.showMessage(Constants.INSTANCE.validation_error_object_already_exists(newValue, packageName));
                     }
 
                     @Override
                     public void onSuccess() {
-                        validatorService.isUniqueEntityName(packageName, newValue, getDataModel(), new ValidatorCallback() {
-                            @Override
-                            public void onFailure() {
-                                ep.showMessage(Constants.INSTANCE.validation_error_object_already_exists(newValue, packageName));
-                            }
-
-                            @Override
-                            public void onSuccess() {
-                                titleLabel.setStyleName(null);
-                                dataObject.setName(newValue);
-                                notifyObjectChange("name", oldValue, newValue);
-                            }
-                        });
+                        titleLabel.setStyleName(null);
+                        dataObject.setName(newValue);
+                        notifyObjectChange("name", oldValue, newValue);
                     }
                 });
             }
@@ -314,29 +306,12 @@ public class DataObjectEditor extends Composite {
     private void packageChanged(ChangeEvent event) {
         if (getDataObject() == null) return;
 
-        // Set widgets to errorpopup for styling purposes etc.
-        ep.setTitleWidget(packageNameLabel);
-        ep.setValueWidget(packageSelector);
-
         final String oldPackageName = getDataObject().getPackageName();
         final String newPackageName = packageSelector.getPackageList().getValue();
-        validatorService.canChangeObjectPackage(getContext().getHelper(), getDataObject(), getDataModel(), new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                // Reset previous value
-                packageSelector.getPackageList().setSelectedValue(getDataObject().getPackageName());
-                ep.showAsError(false);
-                ep.showMessage(Constants.INSTANCE.validation_error_cannot_change_object_package());
-            }
-
-            @Override
-            public void onSuccess() {
-                if (newPackageName != null && !"".equals(newPackageName) && !PackageSelector.NOT_SELECTED.equals(newPackageName))
-                    getDataObject().setPackageName(newPackageName);
-                else getDataObject().setPackageName(null);
-                notifyObjectChange("packageName", oldPackageName, newPackageName);
-            }
-        });
+        if (newPackageName != null && !"".equals(newPackageName) && !PackageSelector.NOT_SELECTED.equals(newPackageName))
+            getDataObject().setPackageName(newPackageName);
+        else getDataObject().setPackageName(null);
+        notifyObjectChange("packageName", oldPackageName, newPackageName);
     }
 
     private void superClassChanged(ChangeEvent event) {

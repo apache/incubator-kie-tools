@@ -119,14 +119,4 @@ public class ValidatorService {
         if (!helper.isDataObjectReferenced(object.getClassName())) callback.onSuccess();
         else callback.onFailure();
     }
-
-    public void canChangeObjectName(DataModelHelper helper, DataObjectTO object, DataModelTO model, ValidatorCallback callback) {
-        if (!helper.isDataObjectReferenced(object.getClassName())) callback.onSuccess();
-        else callback.onFailure();
-    }
-
-    public void canChangeObjectPackage(DataModelHelper helper, DataObjectTO object, DataModelTO model, ValidatorCallback callback) {
-        if (!helper.isDataObjectReferenced(object.getClassName())) callback.onSuccess();
-        else callback.onFailure();
-    }
 }
