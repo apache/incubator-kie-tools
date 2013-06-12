@@ -11,12 +11,12 @@ import org.drools.workbench.screens.factmodel.client.type.FactModelResourceType;
 import org.drools.workbench.screens.factmodel.model.FactModels;
 import org.drools.workbench.screens.factmodel.service.FactModelService;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 
 /**
@@ -48,13 +48,13 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final FactModels factModel = new FactModels();
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         factModelService.call( getSuccessCallback( presenter ),
-                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                                        buildFileName( resourceType,
                                                                                                                       baseFileName ),
                                                                                                        factModel,

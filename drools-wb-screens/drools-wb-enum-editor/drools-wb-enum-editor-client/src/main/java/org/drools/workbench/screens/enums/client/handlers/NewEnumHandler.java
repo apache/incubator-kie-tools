@@ -10,12 +10,12 @@ import org.drools.workbench.screens.enums.client.resources.images.ImageResources
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 
 /**
@@ -47,12 +47,12 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         enumService.call( getSuccessCallback( presenter ),
-                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                                   buildFileName( resourceType,
                                                                                                                  baseFileName ),
                                                                                                   "",

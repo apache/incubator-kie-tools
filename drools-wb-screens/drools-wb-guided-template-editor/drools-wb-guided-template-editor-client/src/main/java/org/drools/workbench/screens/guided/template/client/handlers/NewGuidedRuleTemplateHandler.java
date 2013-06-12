@@ -11,12 +11,12 @@ import org.drools.workbench.screens.guided.template.client.resources.i18n.Consta
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 
 /**
@@ -48,14 +48,14 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final TemplateModel templateModel = new TemplateModel();
         templateModel.name = baseFileName;
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( presenter ),
-                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                               buildFileName( resourceType,
                                                                                                              baseFileName ),
                                                                                               templateModel,

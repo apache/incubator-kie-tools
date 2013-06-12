@@ -14,6 +14,7 @@ import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourc
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
@@ -62,18 +63,19 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
 
+        final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( resourceType,
                                                baseFileName );
-        final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+        final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
-                                                  contextPath.toURI() + "/" + fileName );
+                                                  path.toURI() + "/" + fileName );
 
-        uploadWidget.submit( contextPath,
+        uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),
                              new Command() {

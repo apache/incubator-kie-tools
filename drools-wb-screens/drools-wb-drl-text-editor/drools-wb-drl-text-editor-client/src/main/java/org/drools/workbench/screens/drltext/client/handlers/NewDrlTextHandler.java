@@ -10,12 +10,12 @@ import org.drools.workbench.screens.drltext.client.resources.images.ImageResourc
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 
 /**
@@ -47,12 +47,12 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         drlTextService.call( getSuccessCallback( presenter ),
-                             new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                             new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                                      buildFileName( resourceType,
                                                                                                                     baseFileName ),
                                                                                                      "",

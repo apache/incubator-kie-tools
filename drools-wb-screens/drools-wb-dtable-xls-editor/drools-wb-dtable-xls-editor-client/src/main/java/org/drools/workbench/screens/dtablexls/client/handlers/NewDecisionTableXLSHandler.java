@@ -7,17 +7,18 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.drools.workbench.screens.dtablexls.client.editor.URLHelper;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.client.resources.images.ImageResources;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
+import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
@@ -62,18 +63,19 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
 
+        final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( resourceType,
                                                baseFileName );
-        final Path newPath = PathFactory.newPath( contextPath.getFileSystem(),
+        final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
-                                                  contextPath.toURI() + "/" + fileName );
+                                                  path.toURI() + "/" + fileName );
 
-        uploadWidget.submit( contextPath,
+        uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),
                              new Command() {

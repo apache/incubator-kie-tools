@@ -10,12 +10,12 @@ import org.drools.workbench.screens.workitems.client.resources.images.WorkItemsE
 import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 
 /**
@@ -47,12 +47,12 @@ public class NewWorkItemHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         workItemsEditorService.call( getSuccessCallback( presenter ),
-                                     new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                                     new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                                              buildFileName( resourceType,
                                                                                                                             baseFileName ),
                                                                                                              "",

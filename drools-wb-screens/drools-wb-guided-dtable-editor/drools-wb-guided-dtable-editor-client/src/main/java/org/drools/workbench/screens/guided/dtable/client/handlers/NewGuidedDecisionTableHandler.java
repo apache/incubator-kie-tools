@@ -17,13 +17,14 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
@@ -77,17 +78,17 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         this.newResourcePresenter = presenter;
         if ( !options.isUsingWizard() ) {
             createEmptyDecisionTable( baseFileName,
-                                      contextPath,
+                                      pkg.getPackageMainResourcesPath(),
                                       options.getTableFormat() );
         } else {
             createDecisionTableWithWizard( baseFileName,
-                                           contextPath,
+                                           pkg.getPackageMainResourcesPath(),
                                            options.getTableFormat() );
         }
     }

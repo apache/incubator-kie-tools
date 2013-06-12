@@ -15,12 +15,12 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResour
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -64,7 +64,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final RuleModel ruleModel = new RuleModel();
@@ -74,7 +74,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( presenter ),
-                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
+                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
                                                                                               buildFileName( resourceType,
                                                                                                              baseFileName ),
                                                                                               ruleModel,

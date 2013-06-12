@@ -19,6 +19,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.common.services.shared.context.Package;
 
 @ApplicationScoped
 public class NewTestScenarioHandler
@@ -44,18 +45,18 @@ public class NewTestScenarioHandler
     }
 
     @Override
-    public void create( Path context,
-                        String baseFileName,
-                        NewResourcePresenter presenter ) {
+    public void create( final Package pkg,
+                        final String baseFileName,
+                        final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
         service.call(
                 getSuccessCallback( presenter ),
-                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView )
-                    ).create( context,
-                              buildFileName( resourceType, baseFileName ),
-                              new Scenario(),
-                              "" );
+                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageTestResourcesPath(),
+                                                                                        buildFileName( resourceType,
+                                                                                                       baseFileName ),
+                                                                                        new Scenario(),
+                                                                                        "" );
     }
 
     @Override
