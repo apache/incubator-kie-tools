@@ -22,6 +22,7 @@
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
   <inherits name='org.uberfire.UberfireBackend'/>
+  <inherits name='org.uberfire.UberfireClientAPI'/>
 
   <source path='shared'/>
 

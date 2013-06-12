@@ -22,7 +22,7 @@ import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCa
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
@@ -112,7 +112,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         }
 
         //Add external imports. The availability of these classes is checked in Builder and failed fast. Here we load them into the DMO
-        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getPath() ).resolve( "project.imports" );
+        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getImportsPath() );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );

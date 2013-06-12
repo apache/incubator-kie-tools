@@ -28,6 +28,4 @@ public interface KModuleService extends SupportsRead<KModuleModel>,
 
     public Path setUpKModuleStructure( Path projectRoot );
 
-    public Path pathToRelatedKModuleFileIfAny( Path pathToPomXML );
-
 }

@@ -19,7 +19,7 @@ package org.kie.workbench.common.services.shared.builder;
 import java.util.Set;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 

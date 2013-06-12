@@ -45,7 +45,7 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.file.DotFileFilter;
 import org.kie.workbench.common.services.backend.file.JavaFileFilter;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;

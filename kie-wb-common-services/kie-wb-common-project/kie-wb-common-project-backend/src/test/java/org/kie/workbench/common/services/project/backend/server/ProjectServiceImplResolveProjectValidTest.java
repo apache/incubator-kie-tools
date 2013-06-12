@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -100,7 +100,7 @@ public class ProjectServiceImplResolveProjectValidTest {
         //Test a root resolves to the Project's root
         final Project result = projectService.resolveProject( rootPath );
         assertEquals( rootPath.toURI(),
-                      result.getPath().toURI() );
+                      result.getRootPath().toURI() );
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ProjectServiceImplResolveProjectValidTest {
         //Test a child folder resolves to the Project's root
         final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.getPath().toURI() );
+                      result.getRootPath().toURI() );
     }
 
     @Test
@@ -146,7 +146,7 @@ public class ProjectServiceImplResolveProjectValidTest {
         //Test a child folder resolves to the Project's root
         final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.getPath().toURI() );
+                      result.getRootPath().toURI() );
     }
 
     @Test
@@ -169,7 +169,7 @@ public class ProjectServiceImplResolveProjectValidTest {
         //Test a child folder resolves to the Project's root
         final Project result = projectService.resolveProject( testPath );
         assertEquals( rootPath.toURI(),
-                      result.getPath().toURI() );
+                      result.getRootPath().toURI() );
     }
 
 }

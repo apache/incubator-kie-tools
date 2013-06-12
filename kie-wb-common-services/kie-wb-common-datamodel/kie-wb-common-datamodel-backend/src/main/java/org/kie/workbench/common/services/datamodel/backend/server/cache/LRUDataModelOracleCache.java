@@ -12,20 +12,19 @@ import javax.inject.Named;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.backend.cache.LRUCache;
+import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
+import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
 import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.cache.LRUCache;
-import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
-import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
-import org.kie.workbench.common.services.project.service.model.*;
-import org.kie.workbench.common.services.shared.project.Package;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -85,14 +84,22 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
             return;
         }
 
-        final String projectUri = project.getPath().toURI();
+        final String projectUri = project.getRootPath().toURI();
         final List<Package> cacheEntriesToInvalidate = new ArrayList<Package>();
         for ( final Package pkg : getKeys() ) {
-            //TODO {manstis}
-            //final String packageUri = packagePath.toURI();
-            //if ( packageUri.startsWith( projectUri ) ) {
-            //    cacheEntriesToInvalidate.add( pkg );
-            //}
+            final Path packageMainSrcPath = pkg.getPackageMainSrcPath();
+            final Path packageTestSrcPath = pkg.getPackageTestSrcPath();
+            final Path packageMainResourcesPath = pkg.getPackageMainResourcesPath();
+            final Path packageTestResourcesPath = pkg.getPackageTestResourcesPath();
+            if ( packageMainSrcPath != null && packageMainSrcPath.toURI().startsWith( projectUri ) ) {
+                cacheEntriesToInvalidate.add( pkg );
+            } else if ( packageTestSrcPath != null && packageTestSrcPath.toURI().startsWith( projectUri ) ) {
+                cacheEntriesToInvalidate.add( pkg );
+            } else if ( packageMainResourcesPath != null && packageMainResourcesPath.toURI().startsWith( projectUri ) ) {
+                cacheEntriesToInvalidate.add( pkg );
+            } else if ( packageTestResourcesPath != null && packageTestResourcesPath.toURI().startsWith( projectUri ) ) {
+                cacheEntriesToInvalidate.add( pkg );
+            }
         }
         for ( final Package pkg : cacheEntriesToInvalidate ) {
             invalidateCache( pkg );

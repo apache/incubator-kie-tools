@@ -6,7 +6,7 @@ import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.session.SessionService;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.shared.exceptions.GenericPortableException;
 
 public class SessionServiceImpl

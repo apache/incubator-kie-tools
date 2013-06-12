@@ -29,11 +29,11 @@ import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.DeployResult;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
@@ -96,9 +96,8 @@ public class BuildServiceImpl
 
             //Deploy, if no errors
             if ( results.getMessages().isEmpty() ) {
-                final Path pathToPom = projectService.resolvePathToPom( project.getPath() );
-                final POM pom = pomService.load( pathToPom );
                 final Builder builder = cache.assertBuilder( project );
+                final POM pom = pomService.load( project.getPomXMLPath() );
                 final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,

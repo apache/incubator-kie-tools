@@ -29,9 +29,10 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.PathChangeEvent;
 
 @ApplicationScoped
@@ -129,7 +130,7 @@ public class NewResourcePresenter {
     public void makeItem() {
         if ( activeHandler != null ) {
             if ( activeHandler.validate() ) {
-                activeHandler.create( context.getActivePath(),
+                activeHandler.create( ( (KieWorkbenchContext) context ).getActivePackage().getPackageMainResourcesPath(),
                                       view.getFileName(),
                                       NewResourcePresenter.this );
             }

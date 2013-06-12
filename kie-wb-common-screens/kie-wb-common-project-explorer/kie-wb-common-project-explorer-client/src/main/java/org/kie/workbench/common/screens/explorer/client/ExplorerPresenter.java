@@ -9,12 +9,12 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.services.shared.project.Package;
-import org.kie.workbench.common.services.shared.project.Project;
-import org.kie.workbench.common.screens.explorer.model.ProjectPackage;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.workbench.common.services.project.service.model.*;
-import org.kie.workbench.common.services.shared.project.Package;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
+import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
@@ -23,9 +23,9 @@ import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
@@ -54,6 +54,12 @@ public class ExplorerPresenter {
     private Event<RepositoryChangeEvent> repositoryChangeEvent;
 
     @Inject
+    private Event<ProjectChangeEvent> projectChangeEvent;
+
+    @Inject
+    private Event<PackageChangeEvent> packageChangeEvent;
+
+    @Inject
     private Event<PathChangeEvent> pathChangeEvent;
 
     @Inject
@@ -74,14 +80,9 @@ public class ExplorerPresenter {
     public void onStart() {
         activeGroup = context.getActiveGroup();
         activeRepository = context.getActiveRepository();
-        explorerService.call( new RemoteCallback<ProjectPackage>() {
-            @Override
-            public void callback( final ProjectPackage projectPackage ) {
-                activeProject = projectPackage.getProject();
-                activePackage = projectPackage.getPackage();
-                load();
-            }
-        } ).resolveProjectPackage( context.getActivePath() );
+        activeProject = ( (KieWorkbenchContext) context ).getActiveProject();
+        activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
+        load();
     }
 
     @WorkbenchPartView
@@ -162,21 +163,50 @@ public class ExplorerPresenter {
     }
 
     public void projectSelected( final Project project ) {
+        if ( !project.equals( activeProject ) ) {
+            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        } else {
+            projectChangeHandler( project );
+        }
+    }
+
+    public void projectChangeHandler( final @Observes ProjectChangeEvent event ) {
+        final Project project = event.getProject();
         activeProject = project;
-        pathChangeEvent.fire( new PathChangeEvent( project.getPath() ) );
+        projectChangeHandler( project );
+    }
+
+    private void projectChangeHandler( final Project project ) {
+        if ( project == null ) {
+            return;
+        }
         explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
             public void callback( final Collection<Package> packages ) {
                 view.setPackages( packages,
                                   activePackage );
             }
-
         } ).getPackages( project );
     }
 
     public void packageSelected( final Package pkg ) {
+        if ( !pkg.equals( activePackage ) ) {
+            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+        } else {
+            packageChangeHandler( pkg );
+        }
+    }
+
+    public void packageChangeHandler( final @Observes PackageChangeEvent event ) {
+        final Package pkg = event.getPackage();
         activePackage = pkg;
-        pathChangeEvent.fire( new PathChangeEvent( pkg.getPackageMainSrcPath() ) );
+        packageChangeHandler( pkg );
+    }
+
+    private void packageChangeHandler( final Package pkg ) {
+        if ( pkg == null ) {
+            return;
+        }
         explorerService.call( new RemoteCallback<Collection<Item>>() {
             @Override
             public void callback( final Collection<Item> items ) {

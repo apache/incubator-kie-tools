@@ -31,8 +31,8 @@ import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.Package;
-import org.kie.workbench.common.services.shared.project.Project;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
 
 @Service

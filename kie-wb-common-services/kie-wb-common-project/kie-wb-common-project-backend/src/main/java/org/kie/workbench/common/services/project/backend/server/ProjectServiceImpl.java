@@ -30,11 +30,11 @@ import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.project.Package;
-import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -137,34 +137,17 @@ public class ProjectServiceImpl
 
     private Project makeProject( final org.kie.commons.java.nio.file.Path nioProjectRootPath ) {
         final Path projectRootPath = paths.convert( nioProjectRootPath );
+        final Path pomXMLPath = paths.convert( nioProjectRootPath.resolve( POM_PATH ),
+                                               false);
+        final Path kmoduleXMLPath = paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ),
+                                                   false);
+        final Path importsXMLPath = paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ),
+                                                   false);
         return new Project( projectRootPath,
+                            pomXMLPath,
+                            kmoduleXMLPath,
+                            importsXMLPath,
                             projectRootPath.getFileName() );
-    }
-
-    @Override
-    public Path resolvePathToPom( final Path resource ) {
-        final Project project = resolveProject( resource );
-        if ( project == null ) {
-            return null;
-        }
-        final org.kie.commons.java.nio.file.Path pom = paths.convert( project.getPath() ).resolve( POM_PATH );
-        if ( pom == null ) {
-            return null;
-        }
-        return paths.convert( pom );
-    }
-
-    @Override
-    public Path resolvePathToProjectImports( Path resource ) {
-        final Project project = resolveProject( resource );
-        if ( project == null ) {
-            return null;
-        }
-        final org.kie.commons.java.nio.file.Path imports = paths.convert( project.getPath() ).resolve( PROJECT_IMPORTS_PATH );
-        if ( imports == null ) {
-            return null;
-        }
-        return paths.convert( imports );
     }
 
     @Override
@@ -203,7 +186,7 @@ public class ProjectServiceImpl
                                                    testSrcPath,
                                                    mainResourcesPath,
                                                    testResourcesPath );
-        final Package pkg = new Package( project.getPath(),
+        final Package pkg = new Package( project.getRootPath(),
                                          mainSrcPath,
                                          testSrcPath,
                                          mainResourcesPath,
@@ -246,7 +229,7 @@ public class ProjectServiceImpl
                             final Path resource,
                             final String prefix ) {
         //Use the relative path between Project root and Package path to build the package name
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( project.getPath() );
+        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( project.getRootPath() );
         final org.kie.commons.java.nio.file.Path nioResourcePath = paths.convert( resource );
         final org.kie.commons.java.nio.file.Path nioResourceDelta = nioProjectPath.relativize( nioResourcePath );
 
@@ -277,7 +260,7 @@ public class ProjectServiceImpl
 
         //The Path must be within a Project's src/main/java
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path mainSrcPath = paths.convert( project.getPath() ).resolve( MAIN_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path mainSrcPath = paths.convert( project.getRootPath() ).resolve( MAIN_SRC_PATH );
         if ( !path.startsWith( mainSrcPath ) ) {
             return null;
         }
@@ -301,7 +284,7 @@ public class ProjectServiceImpl
 
         //The Path must be within a Project's test/main/java
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path testSrcPath = paths.convert( project.getPath() ).resolve( TEST_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path testSrcPath = paths.convert( project.getRootPath() ).resolve( TEST_SRC_PATH );
         if ( !path.startsWith( testSrcPath ) ) {
             return null;
         }
@@ -325,7 +308,7 @@ public class ProjectServiceImpl
 
         //The Path must be within a Project's src/main/resources
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path mainResourcesPath = paths.convert( project.getPath() ).resolve( MAIN_RESOURCES_PATH );
+        final org.kie.commons.java.nio.file.Path mainResourcesPath = paths.convert( project.getRootPath() ).resolve( MAIN_RESOURCES_PATH );
         if ( !path.startsWith( mainResourcesPath ) ) {
             return null;
         }
@@ -349,7 +332,7 @@ public class ProjectServiceImpl
 
         //The Path must be within a Project's test/main/resources
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( project.getPath() ).resolve( TEST_RESOURCES_PATH );
+        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( project.getRootPath() ).resolve( TEST_RESOURCES_PATH );
         if ( !path.startsWith( testResourcesPath ) ) {
             return null;
         }
@@ -374,7 +357,7 @@ public class ProjectServiceImpl
         //Check if path equals pom.xml
         final Project project = resolveProject( resource );
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( project.getPath() ).resolve( POM_PATH );
+        final org.kie.commons.java.nio.file.Path pomFilePath = paths.convert( project.getPomXMLPath() );
         return path.startsWith( pomFilePath );
     }
 
@@ -388,7 +371,7 @@ public class ProjectServiceImpl
         //Check if path equals kmodule.xml
         final Project project = resolveProject( resource );
         final org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( project.getPath() ).resolve( KMODULE_PATH );
+        final org.kie.commons.java.nio.file.Path kmoduleFilePath = paths.convert( project.getKModuleXMLPath() );
         return path.startsWith( kmoduleFilePath );
     }
 
@@ -437,14 +420,7 @@ public class ProjectServiceImpl
     @Override
     public Path newPackage( final Path contextPath,
                             final String packageName ) {
-        return newDirectory( contextPath,
-                             packageName );
-    }
-
-    @Override
-    public Path newDirectory( final Path contextPath,
-                              final String dirName ) {
-        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( dirName ) ) );
+        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( packageName ) ) );
 
         //Signal creation to interested parties
         resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );

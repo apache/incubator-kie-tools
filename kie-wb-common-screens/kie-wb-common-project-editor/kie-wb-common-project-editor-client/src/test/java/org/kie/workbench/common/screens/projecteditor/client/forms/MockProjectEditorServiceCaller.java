@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.project.service.KModuleService;
+import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -59,12 +59,6 @@ public class MockProjectEditorServiceCaller
             public KModuleModel load( Path path ) {
                 callback.callback( modelForLoading );
                 return modelForLoading;
-            }
-
-            @Override
-            public Path pathToRelatedKModuleFileIfAny( Path pathToPomXML ) {
-                callback.callback( pathToRelatedKModuleFileIfAny );
-                return pathToRelatedKModuleFileIfAny;
             }
 
         };

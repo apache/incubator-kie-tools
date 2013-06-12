@@ -113,7 +113,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         Path projectPath = null;
 
         try {
-            projectPath = projectService.resolveProject(path).getPath();
+            projectPath = projectService.resolveProject(path).getRootPath();
             if (logger.isDebugEnabled()) logger.debug("Current project path is: " + projectPath);
 
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
@@ -144,7 +144,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //get the path to project root directory (the main pom.xml directory) and calculate
             //the java sources path
-            Path projectPath = projectService.resolveProject(path).getPath();
+            Path projectPath = projectService.resolveProject(path).getRootPath();
 
             //ensure java sources directory exists.
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath(paths.convert(projectPath));
@@ -197,7 +197,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public Path resolveProject(Path path) {
-        return projectService.resolveProject(path).getPath();
+        return projectService.resolveProject(path).getRootPath();
     }
 
     @Override
@@ -235,7 +235,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = projectService.resolveProject(resource).getPath();
+        final Path projectRoot = projectService.resolveProject(resource).getRootPath();
         if ( projectRoot == null ) {
             return null;
         }
@@ -468,7 +468,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         FileUtils fileUtils = FileUtils.getInstance();
 
-        Path projectHome = projectService.resolveProject(path).getPath();
+        Path projectHome = projectService.resolveProject(path).getRootPath();
         org.kie.commons.java.nio.file.Path javaPath = existsProjectJavaPath(paths.convert(projectHome));
         if (javaPath != null) {
             scanResults = fileUtils.scanDirectories(ioService, javaPath, false, true);

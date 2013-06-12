@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -28,11 +35,20 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.IsDirty;
+import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
+import org.uberfire.client.annotations.OnStart;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -44,14 +60,7 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -116,7 +125,7 @@ public class DataModelerScreenPresenter {
         makeToolBar();
         initContext();
         open = true;
-        processPathChange(workbenchContext.getActivePath());
+        processPathChange( workbenchContext.getActivePath() );
     }
 
     @IsDirty
@@ -237,7 +246,7 @@ public class DataModelerScreenPresenter {
     }
 
     private void onPathChange(@Observes final PathChangeEvent event) {
-        processPathChange(event.getPath());
+        processPathChange( event.getPath() );
     }
 
     private boolean isOpen() {
@@ -251,9 +260,10 @@ public class DataModelerScreenPresenter {
         if (newPath != null && isOpen() && currentProjectChanged(newPath)) {
 
             modelerService.call(
-                new RemoteCallback<Path>() {
+                new RemoteCallback<Project>() {
                     @Override
-                    public void callback(Path projectPath) {
+                    public void callback(Project project) {
+                        Path projectPath = project.getRootPath();
 
                         if (projectPath != null) {
                             //the project has changed.
@@ -282,7 +292,7 @@ public class DataModelerScreenPresenter {
 
     private boolean currentProjectChanged(Path newPath) {
         if (currentProject == null) return true;
-        return !newPath.toURI().startsWith(currentProject.toURI());
+        return !newPath.toURI().startsWith( currentProject.toURI() );
     }
 
     private void restoreModelStatus(GenerationResult result) {

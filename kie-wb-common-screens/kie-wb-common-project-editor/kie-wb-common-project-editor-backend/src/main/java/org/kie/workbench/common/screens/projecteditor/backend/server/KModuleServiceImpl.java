@@ -131,22 +131,6 @@ public class KModuleServiceImpl
         }
     }
 
-    @Override
-    public Path pathToRelatedKModuleFileIfAny( final Path pathToPomXML ) {
-        try {
-            final org.kie.commons.java.nio.file.Path directory = paths.convert( pathToPomXML ).getParent();
-            final org.kie.commons.java.nio.file.Path pathToKModuleXML = directory.resolve( "src/main/resources/META-INF/kmodule.xml" );
-            if ( ioService.exists( pathToKModuleXML ) ) {
-                return paths.convert( pathToKModuleXML );
-            } else {
-                return null;
-            }
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
-    }
-
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();

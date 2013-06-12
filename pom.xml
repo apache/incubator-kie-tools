@@ -40,4 +40,25 @@
     </repository>
   </repositories>
 
+  <build>
+
+    <!-- Tests that use a M2 Repository create their files in different places depending on how they are ran - IDE or CLI -->
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>repository/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
 </project>

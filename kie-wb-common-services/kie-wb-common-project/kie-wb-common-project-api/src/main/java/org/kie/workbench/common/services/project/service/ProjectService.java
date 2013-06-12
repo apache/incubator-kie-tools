@@ -18,11 +18,11 @@ package org.kie.workbench.common.services.project.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.project.Package;
-import org.kie.workbench.common.services.shared.project.Project;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.file.SupportsRead;
 import org.kie.workbench.common.services.shared.file.SupportsUpdate;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
 import org.uberfire.backend.vfs.Path;
 
@@ -50,20 +50,6 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
     Package resolvePackage( final Path resource );
-
-    /**
-     * Path for the project pom.xml that the given resource belongs to.
-     * @param resource to resource
-     * @return Path to pom.xml for the given resource
-     */
-    Path resolvePathToPom( Path resource );
-
-    /**
-     * Path for the project project.imports that the given resource belongs to.
-     * @param resource to resource
-     * @return path to project.imports for the given resource
-     */
-    Path resolvePathToProjectImports( Path resource );
 
     /**
      * Return true if the file is the Project's pom.xml file
@@ -94,8 +80,5 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
 
     Path newPackage( final Path contextPath,
                      final String packageName );
-
-    Path newDirectory( final Path contextPath,
-                       final String dirName );
 
 }
