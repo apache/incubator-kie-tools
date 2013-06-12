@@ -6,16 +6,17 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.POM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 public class ModuleMigrater {
 
-    protected static final Logger logger = LoggerFactory.getLogger(ModuleMigrater.class);
+    protected static final Logger logger = LoggerFactory.getLogger( ModuleMigrater.class );
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
@@ -27,20 +28,33 @@ public class ModuleMigrater {
     protected ProjectService projectService;
 
     public void migrateAll() {
-        logger.info("  Module migration started");
+        logger.info( "  Module migration started" );
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
-        for (Module jcrModule : jcrModules) {
-            migrate(jcrModule);
-            logger.debug("    Module ({}) migrated.", jcrModule.getName());
+        for ( Module jcrModule : jcrModules ) {
+            migrate( jcrModule );
+            logger.debug( "    Module ({}) migrated.", jcrModule.getName() );
         }
-        logger.info("  Module migration ended");
+        logger.info( "  Module migration ended" );
     }
 
-    private void migrate(Module jcrModule) {
+    private void migrate( Module jcrModule ) {
         //Set up project structure:
         POM pom = new POM();
-        Path modulePath = migrationPathManager.generateRootPath();  
-        projectService.newProject(modulePath, jcrModule.getName(), pom, "http://localhost");
+        Path modulePath = migrationPathManager.generateRootPath();
+        projectService.newProject( makeRepository( modulePath ),
+                                   jcrModule.getName(),
+                                   pom,
+                                   "http://localhost" );
+    }
+
+    private org.uberfire.backend.repositories.Repository makeRepository( final Path repositoryRoot ) {
+        return new GitRepository() {
+
+            @Override
+            public Path getRoot() {
+                return repositoryRoot;
+            }
+        };
     }
 
 }
