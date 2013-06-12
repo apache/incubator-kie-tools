@@ -68,7 +68,11 @@ public class GroupServiceImpl implements GroupService {
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
                                                                        new ArrayList<String>() ) );
         configurationService.addConfiguration( groupConfig );
-        return groupFactory.newGroup( groupConfig );
+
+        final Group newGroup = groupFactory.newGroup( groupConfig );
+        registeredGroups.put( newGroup.getName(),
+                              newGroup );
+        return newGroup;
     }
 
     @Override
@@ -85,7 +89,11 @@ public class GroupServiceImpl implements GroupService {
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
                                                                        new ArrayList<String>() ) );
         configurationService.addConfiguration( groupConfig );
-        return groupFactory.newGroup( groupConfig );
+
+        final Group newGroup = groupFactory.newGroup( groupConfig );
+        registeredGroups.put( newGroup.getName(),
+                              newGroup );
+        return newGroup;
     }
 
     private List<String> getRepositoryAliases( final Collection<Repository> repositories ) {
@@ -173,7 +181,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     protected ConfigGroup findGroupConfig( final String name ) {
-
         final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.GROUP );
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
