@@ -21,6 +21,7 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface DataModelerService {
 
     Path createModel(Path context, String fileName);
 
-    Path resolveProject(Path path);
+    Project resolveProject(Path path);
 
     DataModelTO loadModel(final Path path);
     

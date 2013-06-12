@@ -30,10 +30,11 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.context.WorkbenchContext;
-import org.uberfire.workbench.events.PathChangeEvent;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -84,12 +85,13 @@ public class NewResourcePresenter {
         view.setHandlers( handlers );
     }
 
-    public void selectedPathChanged( @Observes final PathChangeEvent event ) {
-        final Path path = event.getPath();
-        enableNewResourceHandlers( path );
+    public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
+        final Package pkg = event.getPackage();
+        enableNewResourceHandlers( pkg );
     }
 
-    private void enableNewResourceHandlers( final Path path ) {
+    private void enableNewResourceHandlers( final Package pkg ) {
+        final Path path = pkg.getPackageMainResourcesPath();
         for ( final NewResourceHandler handler : this.handlers ) {
             handler.acceptPath( path,
                                 new Callback<Boolean, Void>() {
@@ -130,7 +132,7 @@ public class NewResourcePresenter {
     public void makeItem() {
         if ( activeHandler != null ) {
             if ( activeHandler.validate() ) {
-                activeHandler.create( ( (KieWorkbenchContext) context ).getActivePackage().getPackageMainResourcesPath(),
+                activeHandler.create( ( (KieWorkbenchContext) context ).getActivePackage(),
                                       view.getFileName(),
                                       NewResourcePresenter.this );
             }

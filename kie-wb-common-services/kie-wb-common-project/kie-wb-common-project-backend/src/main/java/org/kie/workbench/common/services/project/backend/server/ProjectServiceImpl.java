@@ -31,11 +31,12 @@ import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.metadata.MetadataService;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -138,11 +139,11 @@ public class ProjectServiceImpl
     private Project makeProject( final org.kie.commons.java.nio.file.Path nioProjectRootPath ) {
         final Path projectRootPath = paths.convert( nioProjectRootPath );
         final Path pomXMLPath = paths.convert( nioProjectRootPath.resolve( POM_PATH ),
-                                               false);
+                                               false );
         final Path kmoduleXMLPath = paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ),
-                                                   false);
+                                                   false );
         final Path importsXMLPath = paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ),
-                                                   false);
+                                                   false );
         return new Project( projectRootPath,
                             pomXMLPath,
                             kmoduleXMLPath,
@@ -163,29 +164,68 @@ public class ProjectServiceImpl
             return null;
         }
 
+        //pom.xml and kmodule.xml are not inside packages
+        if ( isPom( resource ) || isKModule( resource ) ) {
+            return null;
+        }
+
         return makePackage( project,
                             resource );
     }
 
     private Package makePackage( final Project project,
                                  final Path resource ) {
-        final Path mainSrcPath = resolveMainSrcPath( project,
-                                                     resource );
-        final Path testSrcPath = resolveTestSrcPath( project,
-                                                     resource );
-        final Path mainResourcesPath = resolveMainResourcesPath( project,
-                                                                 resource );
-        final Path testResourcesPath = resolveTestResourcesPath( project,
-                                                                 resource );
-        if ( mainSrcPath == null && testSrcPath == null && mainResourcesPath == null && testResourcesPath == null ) {
+        final Path projectRoot = project.getRootPath();
+        final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
+        final org.kie.commons.java.nio.file.Path nioMainSrcPath = nioProjectRoot.resolve( MAIN_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path nioTestSrcPath = nioProjectRoot.resolve( TEST_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path nioMainResourcesPath = nioProjectRoot.resolve( MAIN_RESOURCES_PATH );
+        final org.kie.commons.java.nio.file.Path nioTestResourcesPath = nioProjectRoot.resolve( TEST_RESOURCES_PATH );
+
+        org.kie.commons.java.nio.file.Path nioResource = paths.convert( resource );
+
+        if ( Files.isRegularFile( nioResource ) ) {
+            nioResource = nioResource.getParent();
+        }
+
+        String packageName = null;
+        org.kie.commons.java.nio.file.Path packagePath = null;
+        if ( nioResource.startsWith( nioMainSrcPath ) ) {
+            packagePath = nioMainSrcPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioTestSrcPath ) ) {
+            packagePath = nioTestSrcPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioMainResourcesPath ) ) {
+            packagePath = nioMainResourcesPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioTestResourcesPath ) ) {
+            packagePath = nioTestResourcesPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        }
+
+        //Resource was not inside a package
+        if ( packageName == null ) {
             return null;
         }
 
-        final String packageName = getPackageName( project,
-                                                   mainSrcPath,
-                                                   testSrcPath,
-                                                   mainResourcesPath,
-                                                   testResourcesPath );
+        boolean includeAttributes = Files.exists( nioMainSrcPath.resolve( packagePath ) );
+        final Path mainSrcPath = paths.convert( nioMainSrcPath.resolve( packagePath ),
+                                                includeAttributes );
+        includeAttributes = Files.exists( nioTestSrcPath.resolve( packagePath ) );
+        final Path testSrcPath = paths.convert( nioTestSrcPath.resolve( packagePath ),
+                                                includeAttributes );
+        includeAttributes = Files.exists( nioMainResourcesPath.resolve( packagePath ) );
+        final Path mainResourcesPath = paths.convert( nioMainResourcesPath.resolve( packagePath ),
+                                                      includeAttributes );
+        includeAttributes = Files.exists( nioTestResourcesPath.resolve( packagePath ) );
+        final Path testResourcesPath = paths.convert( nioTestResourcesPath.resolve( packagePath ),
+                                                      includeAttributes );
+
         final Package pkg = new Package( project.getRootPath(),
                                          mainSrcPath,
                                          testSrcPath,
@@ -196,155 +236,8 @@ public class ProjectServiceImpl
         return pkg;
     }
 
-    private String getPackageName( final Project project,
-                                   final Path mainSrcPath,
-                                   final Path testSrcPath,
-                                   final Path mainResourcesPath,
-                                   final Path testResourcesPath ) {
-        String packageName = null;
-        if ( packageName == null && mainSrcPath != null ) {
-            packageName = tryPath( project,
-                                   mainSrcPath,
-                                   MAIN_SRC_PATH );
-        }
-        if ( packageName == null && testSrcPath != null ) {
-            packageName = tryPath( project,
-                                   testSrcPath,
-                                   TEST_SRC_PATH );
-        }
-        if ( packageName == null && mainResourcesPath != null ) {
-            packageName = tryPath( project,
-                                   mainResourcesPath,
-                                   MAIN_RESOURCES_PATH );
-        }
-        if ( packageName == null && testResourcesPath != null ) {
-            packageName = tryPath( project,
-                                   testResourcesPath,
-                                   TEST_RESOURCES_PATH );
-        }
-        return packageName;
-    }
-
-    private String tryPath( final Project project,
-                            final Path resource,
-                            final String prefix ) {
-        //Use the relative path between Project root and Package path to build the package name
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( project.getRootPath() );
-        final org.kie.commons.java.nio.file.Path nioResourcePath = paths.convert( resource );
-        final org.kie.commons.java.nio.file.Path nioResourceDelta = nioProjectPath.relativize( nioResourcePath );
-
-        //Build package name
-        String packageName = nioResourceDelta.toString();
-        if ( packageName.startsWith( prefix ) ) {
-            packageName = packageName.replace( prefix,
-                                               "" );
-            if ( packageName.startsWith( "/" ) ) {
-                packageName = packageName.substring( 1 );
-            }
-            return packageName.replaceAll( "/",
-                                           "." );
-        }
-        return null;
-    }
-
     private String getPackageDisplayName( final String packageName ) {
         return packageName.isEmpty() ? "<default>" : packageName;
-    }
-
-    private Path resolveMainSrcPath( final Project project,
-                                     final Path resource ) {
-        //The pom.xml and kmodule.xml files are not within a package
-        if ( isPom( resource ) || isKModule( resource ) ) {
-            return null;
-        }
-
-        //The Path must be within a Project's src/main/java
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path mainSrcPath = paths.convert( project.getRootPath() ).resolve( MAIN_SRC_PATH );
-        if ( !path.startsWith( mainSrcPath ) ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-
-        return paths.convert( path );
-    }
-
-    private Path resolveTestSrcPath( final Project project,
-                                     final Path resource ) {
-        //The pom.xml and kmodule.xml files are not within a package
-        if ( isPom( resource ) || isKModule( resource ) ) {
-            return null;
-        }
-
-        //The Path must be within a Project's test/main/java
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path testSrcPath = paths.convert( project.getRootPath() ).resolve( TEST_SRC_PATH );
-        if ( !path.startsWith( testSrcPath ) ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-
-        return paths.convert( path );
-    }
-
-    private Path resolveMainResourcesPath( final Project project,
-                                           final Path resource ) {
-        //The pom.xml and kmodule.xml files are not within a package
-        if ( isPom( resource ) || isKModule( resource ) ) {
-            return null;
-        }
-
-        //The Path must be within a Project's src/main/resources
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path mainResourcesPath = paths.convert( project.getRootPath() ).resolve( MAIN_RESOURCES_PATH );
-        if ( !path.startsWith( mainResourcesPath ) ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-
-        return paths.convert( path );
-    }
-
-    private Path resolveTestResourcesPath( final Project project,
-                                           final Path resource ) {
-        //The pom.xml and kmodule.xml files are not within a package
-        if ( isPom( resource ) || isKModule( resource ) ) {
-            return null;
-        }
-
-        //The Path must be within a Project's test/main/resources
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( project.getRootPath() ).resolve( TEST_RESOURCES_PATH );
-        if ( !path.startsWith( testResourcesPath ) ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-
-        return paths.convert( path );
     }
 
     @Override
@@ -376,14 +269,14 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public Path newProject( final Path activePath,
-                            final String projectName,
-                            final POM pom,
-                            final String baseUrl ) {
+    public Project newProject( final Repository repository,
+                               final String projectName,
+                               final POM pom,
+                               final String baseUrl ) {
         //Projects are always created in the FS root
-        final Path fsRoot = getFileSystemRoot( activePath );
-        final Path projectRootPath = getProjectRootPath( fsRoot,
-                                                         projectName );
+        final Path fsRoot = repository.getRoot();
+        final Path projectRootPath = paths.convert( paths.convert( fsRoot ).resolve( projectName ),
+                                                    false );
 
         //Set-up project structure and KModule.xml
         kModuleService.setUpKModuleStructure( projectRootPath );
@@ -403,29 +296,37 @@ public class ProjectServiceImpl
         //Signal creation to interested parties
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
-        return paths.convert( paths.convert( projectRootPath ).resolve( "pom.xml" ) );
-    }
-
-    private Path getFileSystemRoot( final Path activePath ) {
-        return paths.convert( paths.convert( activePath ).getRoot(),
-                              false );
-    }
-
-    private Path getProjectRootPath( final Path fsRoot,
-                                     final String projectName ) {
-        return paths.convert( paths.convert( fsRoot ).resolve( projectName ),
-                              false );
+        return resolveProject( projectRootPath );
     }
 
     @Override
-    public Path newPackage( final Path contextPath,
+    public void newPackage( final Package parentPackage,
                             final String packageName ) {
-        final Path directoryPath = paths.convert( ioService.createDirectory( paths.convert( contextPath ).resolve( packageName ) ) );
+        final Path mainSrcPath = parentPackage.getPackageMainSrcPath();
+        final Path testSrcPath = parentPackage.getPackageTestSrcPath();
+        final Path mainResourcesPath = parentPackage.getPackageMainResourcesPath();
+        final Path testResourcesPath = parentPackage.getPackageTestResourcesPath();
 
-        //Signal creation to interested parties
-        resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
-
-        return directoryPath;
+        final org.kie.commons.java.nio.file.Path nioMainSrcPackagePath = paths.convert( mainSrcPath ).resolve( packageName );
+        if ( !Files.exists( nioMainSrcPackagePath ) ) {
+            final Path directoryPath = paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
+            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+        }
+        final org.kie.commons.java.nio.file.Path nioTestSrcPackagePath = paths.convert( testSrcPath ).resolve( packageName );
+        if ( !Files.exists( nioTestSrcPackagePath ) ) {
+            final Path directoryPath = paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
+            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+        }
+        final org.kie.commons.java.nio.file.Path nioMainResourcesPackagePath = paths.convert( mainResourcesPath ).resolve( packageName );
+        if ( !Files.exists( nioMainResourcesPackagePath ) ) {
+            final Path directoryPath = paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
+            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+        }
+        final org.kie.commons.java.nio.file.Path nioTestResourcesPackagePath = paths.convert( testResourcesPath ).resolve( packageName );
+        if ( !Files.exists( nioTestResourcesPackagePath ) ) {
+            final Path directoryPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
+            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+        }
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {

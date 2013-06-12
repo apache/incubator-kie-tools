@@ -19,11 +19,12 @@ package org.kie.workbench.common.services.project.service;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.shared.file.SupportsRead;
-import org.kie.workbench.common.services.shared.file.SupportsUpdate;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.file.SupportsRead;
+import org.kie.workbench.common.services.shared.file.SupportsUpdate;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -67,18 +68,18 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
 
     /**
      * Creates a new project to the given path.
-     * @param activePath
+     * @param repository
      * @param name
      * @param pom
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
-    Path newProject( final Path activePath,
+    Project newProject( final Repository repository,
                      final String name,
                      final POM pom,
                      final String baseURL );
 
-    Path newPackage( final Path contextPath,
+    void newPackage( final Package pkg,
                      final String packageName );
 
 }

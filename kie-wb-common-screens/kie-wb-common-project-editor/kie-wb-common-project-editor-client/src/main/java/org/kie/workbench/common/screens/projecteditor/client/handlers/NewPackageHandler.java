@@ -10,6 +10,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -36,11 +37,11 @@ public class NewPackageHandler
     }
 
     @Override
-    public void create( final Path contextPath,
+    public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         projectService.call( getSuccessCallback( presenter ),
-                             new DefaultErrorCallback() ).newPackage( contextPath,
+                             new DefaultErrorCallback() ).newPackage( pkg,
                                                                       baseFileName );
     }
 

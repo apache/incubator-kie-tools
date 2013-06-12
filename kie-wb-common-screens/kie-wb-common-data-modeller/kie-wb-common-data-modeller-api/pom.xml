@@ -27,6 +27,11 @@
       <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -52,6 +52,7 @@ import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -64,12 +65,12 @@ import org.uberfire.workbench.events.ResourceChange;
 @ApplicationScoped
 public class DataModelerServiceImpl implements DataModelerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataModelerServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger( DataModelerServiceImpl.class );
 
     private static final String MAIN_JAVA_PATH = "src/main/java";
     private static final String MAIN_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_JAVA_PATH        = "src/test/java";
-    private static final String TEST_RESOURCES_PATH   = "src/test/resources";
+    private static final String TEST_JAVA_PATH = "src/test/java";
+    private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
     private static final String DEFAULT_GUVNOR_PKG = "defaultpkg";
 
@@ -96,16 +97,19 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public Path createModel(Path context, String fileName) {
+    public Path createModel( Path context,
+                             String fileName ) {
 
         //TODO remove this method if the model file is no longer created
         return context;
     }
 
     @Override
-    public DataModelTO loadModel(Path path) {
+    public DataModelTO loadModel( Path path ) {
 
-        if (logger.isDebugEnabled()) logger.debug("Loading data model from path: " + path);
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "Loading data model from path: " + path );
+        }
 
         Long startTime = System.currentTimeMillis();
 
@@ -113,75 +117,82 @@ public class DataModelerServiceImpl implements DataModelerService {
         Path projectPath = null;
 
         try {
-            projectPath = projectService.resolveProject(path).getRootPath();
-            if (logger.isDebugEnabled()) logger.debug("Current project path is: " + projectPath);
+            projectPath = projectService.resolveProject( path ).getRootPath();
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Current project path is: " + projectPath );
+            }
 
-            ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
+            ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
 
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            dataModel = driver.loadModel(projectDataModelOracle);
+            dataModel = driver.loadModel( projectDataModelOracle );
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
-            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To(dataModel, DataObjectTO.PERSISTENT, true);
+            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To( dataModel, DataObjectTO.PERSISTENT, true );
 
             Long endTime = System.currentTimeMillis();
-            if (logger.isDebugEnabled()) logger.debug("Time elapsed when loading " + path.getFileName() + ": " + (endTime - startTime) + " ms");
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Time elapsed when loading " + path.getFileName() + ": " + ( endTime - startTime ) + " ms" );
+            }
 
             return dataModelTO;
 
-        } catch (Exception e) {
-            logger.error("Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e);
-            throw new ServiceException("Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e);
+        } catch ( Exception e ) {
+            logger.error( "Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e );
+            throw new ServiceException( "Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e );
         }
     }
 
     @Override
-    public GenerationResult saveModel(DataModelTO dataModel, final Path path) {
-        
+    public GenerationResult saveModel( DataModelTO dataModel,
+                                       final Path path ) {
+
         try {
 
             Long startTime = System.currentTimeMillis();
 
             //get the path to project root directory (the main pom.xml directory) and calculate
             //the java sources path
-            Path projectPath = projectService.resolveProject(path).getRootPath();
+            Path projectPath = projectService.resolveProject( path ).getRootPath();
 
             //ensure java sources directory exists.
-            org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath(paths.convert(projectPath));
+            org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
             //convert to domain model
-            DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain(dataModel);
+            DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain( dataModel );
             //optimization remove unmodified data objects from the model in order to skip generation for unmodified objects.
-            removeUnmodifiedObjects(dataModelDomain, dataModel);
+            removeUnmodifiedObjects( dataModelDomain, dataModel );
 
             //clean the files that needs to be deleted prior to model generation.
-            List<Path> deleteableFiles = calculateDeleteableFiles(dataModel, javaPath);
-            cleanupFiles(deleteableFiles);
+            List<Path> deleteableFiles = calculateDeleteableFiles( dataModel, javaPath );
+            cleanupFiles( deleteableFiles );
 
             //invalidate ProjectDataModelOracle for this project.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
-            
+
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            javaPath = ensureProjectJavaPath(paths.convert(projectPath));
-            List<FileChangeDescriptor> driverChanges = driver.generateModel(dataModelDomain, ioService, javaPath);
+            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
+            List<FileChangeDescriptor> driverChanges = driver.generateModel( dataModelDomain, ioService, javaPath );
 
-            notifyFileChanges(deleteableFiles, driverChanges);
+            notifyFileChanges( deleteableFiles, driverChanges );
 
-            cleanupEmptyDirs(javaPath);
+            cleanupEmptyDirs( javaPath );
             //after file cleaning we must ensure again that the java path exists
-            javaPath = ensureProjectJavaPath(paths.convert(projectPath));
+            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
             Long endTime = System.currentTimeMillis();
-            if (logger.isDebugEnabled()) logger.debug("Time elapsed when saving " + path.getFileName() + ": " + (endTime - startTime) + " ms");
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Time elapsed when saving " + path.getFileName() + ": " + ( endTime - startTime ) + " ms" );
+            }
 
             GenerationResult result = new GenerationResult();
-            result.setGenerationTime(endTime-startTime);
-            result.setObjectFingerPrints(DataModelerServiceHelper.getInstance().claculateFingerPrints(dataModel));
+            result.setGenerationTime( endTime - startTime );
+            result.setObjectFingerPrints( DataModelerServiceHelper.getInstance().claculateFingerPrints( dataModel ) );
             return result;
 
-        } catch (Exception e) {
-            logger.error("An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e);
-            throw new ServiceException("Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e);
+        } catch ( Exception e ) {
+            logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e );
+            throw new ServiceException( "Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e );
         }
     }
 
@@ -189,23 +200,23 @@ public class DataModelerServiceImpl implements DataModelerService {
     public List<PropertyTypeTO> getBasePropertyTypes() {
         List<PropertyTypeTO> types = new ArrayList<PropertyTypeTO>();
 
-        for (PropertyType baseType : PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes()) {
-            types.add(new PropertyTypeTO(baseType.getName(), baseType.getClassName()));
+        for ( PropertyType baseType : PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes() ) {
+            types.add( new PropertyTypeTO( baseType.getName(), baseType.getClassName() ) );
         }
         return types;
     }
 
     @Override
-    public Path resolveProject(Path path) {
-        return projectService.resolveProject(path).getRootPath();
+    public Project resolveProject( Path path ) {
+        return projectService.resolveProject( path );
     }
 
     @Override
-    public Map<String, Boolean> evaluateIdentifiers(String[] identifiers) {
-        Map<String, Boolean> result = new HashMap<String, Boolean>(identifiers.length);
-        if (identifiers != null && identifiers.length > 0) {
-            for (String s : identifiers) {
-                result.put(s, ValidationUtils.isJavaIdentifier(s));
+    public Map<String, Boolean> evaluateIdentifiers( String[] identifiers ) {
+        Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
+        if ( identifiers != null && identifiers.length > 0 ) {
+            for ( String s : identifiers ) {
+                result.put( s, ValidationUtils.isJavaIdentifier( s ) );
             }
         }
         return result;
@@ -218,15 +229,15 @@ public class DataModelerServiceImpl implements DataModelerService {
         AnnotationDefinitionTO annotationDefinitionTO;
         DataModelerServiceHelper serviceHelper = DataModelerServiceHelper.getInstance();
 
-        for (AnnotationDefinition annotationDefinition : annotationDefinitions) {
-            annotationDefinitionTO = serviceHelper.domain2To(annotationDefinition);
-            annotations.put(annotationDefinitionTO.getClassName(), annotationDefinitionTO);
+        for ( AnnotationDefinition annotationDefinition : annotationDefinitions ) {
+            annotationDefinitionTO = serviceHelper.domain2To( annotationDefinition );
+            annotations.put( annotationDefinitionTO.getClassName(), annotationDefinitionTO );
         }
         return annotations;
     }
 
     @Override
-    public Path resolveResourcePackage(final Path resource) {
+    public Path resolveResourcePackage( final Path resource ) {
 
         //TODO this method should be moved to the ProjectService class
         //Null resource paths cannot resolve to a Project
@@ -235,7 +246,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = projectService.resolveProject(resource).getRootPath();
+        final Path projectRoot = projectService.resolveProject( resource ).getRootPath();
         if ( projectRoot == null ) {
             return null;
         }
@@ -243,7 +254,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         //The Path must be within a Project's src/main/resources or src/test/resources path
         boolean resolved = false;
         org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve(MAIN_RESOURCES_PATH);
+        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( MAIN_RESOURCES_PATH );
         final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
 
         if ( path.startsWith( srcResourcesPath ) ) {
@@ -256,7 +267,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         //If the Path is already a folder simply return it
-        if ( Files.isDirectory(path) ) {
+        if ( Files.isDirectory( path ) ) {
             return resource;
         }
 
@@ -264,36 +275,38 @@ public class DataModelerServiceImpl implements DataModelerService {
         return paths.convert( path );
     }
 
-    private void notifyFileChanges(List<Path> deleteableFiles, List<FileChangeDescriptor> driverChanges) {
+    private void notifyFileChanges( List<Path> deleteableFiles,
+                                    List<FileChangeDescriptor> driverChanges ) {
 
         Set<ResourceChange> batchChanges = new HashSet<ResourceChange>();
 
-        for (Path deleteableFile : deleteableFiles) {
-            batchChanges.add(new ResourceChange(ChangeType.DELETE, deleteableFile));
+        for ( Path deleteableFile : deleteableFiles ) {
+            batchChanges.add( new ResourceChange( ChangeType.DELETE, deleteableFile ) );
         }
 
-        for (FileChangeDescriptor driverChange : driverChanges) {
-            switch (driverChange.getAction()) {
+        for ( FileChangeDescriptor driverChange : driverChanges ) {
+            switch ( driverChange.getAction() ) {
                 case FileChangeDescriptor.ADD:
-                    logger.debug("Notifying file created: " + driverChange.getPath());
-                    batchChanges.add(new ResourceChange(ChangeType.ADD, paths.convert(driverChange.getPath())));
+                    logger.debug( "Notifying file created: " + driverChange.getPath() );
+                    batchChanges.add( new ResourceChange( ChangeType.ADD, paths.convert( driverChange.getPath() ) ) );
                     break;
                 case FileChangeDescriptor.DELETE:
-                    logger.debug("Notifying file deleted: " + driverChange.getPath());
-                    batchChanges.add(new ResourceChange(ChangeType.DELETE, paths.convert(driverChange.getPath())));
+                    logger.debug( "Notifying file deleted: " + driverChange.getPath() );
+                    batchChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( driverChange.getPath() ) ) );
                     break;
                 case FileChangeDescriptor.UPDATE:
-                    logger.debug("Notifying file updated: " + driverChange.getPath());
-                    batchChanges.add(new ResourceChange(ChangeType.UPDATE, paths.convert(driverChange.getPath())));
+                    logger.debug( "Notifying file updated: " + driverChange.getPath() );
+                    batchChanges.add( new ResourceChange( ChangeType.UPDATE, paths.convert( driverChange.getPath() ) ) );
                     break;
             }
         }
-        if (batchChanges.size() > 0) {
-            resourceBatchChangesEvent.fire(new ResourceBatchChangesEvent(batchChanges));
+        if ( batchChanges.size() > 0 ) {
+            resourceBatchChangesEvent.fire( new ResourceBatchChangesEvent( batchChanges ) );
         }
     }
 
-    private List<Path> calculateDeleteableFiles(DataModelTO dataModel, org.kie.commons.java.nio.file.Path javaPath) {
+    private List<Path> calculateDeleteableFiles( DataModelTO dataModel,
+                                                 org.kie.commons.java.nio.file.Path javaPath ) {
 
         List<DataObjectTO> currentObjects = dataModel.getDataObjects();
         List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
@@ -301,10 +314,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         org.kie.commons.java.nio.file.Path filePath;
 
         //process deleted persistent objects.
-        for (DataObjectTO dataObject : deletedObjects) {
-            if (dataObject.isPersistent()) {
-                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
-                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+        for ( DataObjectTO dataObject : deletedObjects ) {
+            if ( dataObject.isPersistent() ) {
+                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
+                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
                     //TODO check if we need to have this level of control or instead we remove this file directly.
                     //very particular case a persistent object was deleted in memory and a new one with the same name
                     //was created. At the end we will have a file update instead of a delete.
@@ -312,18 +325,18 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    deleteableFiles.add(paths.convert(filePath));
+                    deleteableFiles.add( paths.convert( filePath ) );
                 }
             }
         }
 
         //process package or class name changes for persistent objects.
-        for (DataObjectTO dataObject : currentObjects) {
-            if (dataObject.isPersistent() && dataObject.classNameChanged()) {
+        for ( DataObjectTO dataObject : currentObjects ) {
+            if ( dataObject.isPersistent() && dataObject.classNameChanged() ) {
                 //if the className changes the old file needs to be removed
-                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
+                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
 
-                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
                     //TODO check if we need to have this level of control or instead we remove this file directly.
                     //very particular case of change, a persistent object changes the name to the name of another
                     //object. A kind of name swapping...
@@ -331,36 +344,37 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    deleteableFiles.add(paths.convert(filePath));
+                    deleteableFiles.add( paths.convert( filePath ) );
                 }
             }
         }
 
-        return  deleteableFiles;
+        return deleteableFiles;
     }
-    
-    private void removeUnmodifiedObjects(DataModel dataModelDomain, DataModelTO dataModelTO) throws Exception {
+
+    private void removeUnmodifiedObjects( DataModel dataModelDomain,
+                                          DataModelTO dataModelTO ) throws Exception {
         String newFingerPrint;
-        for (DataObjectTO dataObject : dataModelTO.getDataObjects()) {
-            newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint(dataObject.getStringId());
-            if (newFingerPrint.equals(dataObject.getFingerPrint())) {
-                System.out.println("XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified");
-                dataModelDomain.removeDataObject(dataObject.getClassName());
+        for ( DataObjectTO dataObject : dataModelTO.getDataObjects() ) {
+            newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint( dataObject.getStringId() );
+            if ( newFingerPrint.equals( dataObject.getFingerPrint() ) ) {
+                System.out.println( "XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified" );
+                dataModelDomain.removeDataObject( dataObject.getClassName() );
             }
         }
     }
 
-    private void cleanupFiles(List<Path> deleteableFiles) {
-        for (Path filePath : deleteableFiles) {
-            ioService.deleteIfExists(paths.convert(filePath));
+    private void cleanupFiles( List<Path> deleteableFiles ) {
+        for ( Path filePath : deleteableFiles ) {
+            ioService.deleteIfExists( paths.convert( filePath ) );
         }
     }
 
     /**
      * This auxiliary method deletes the files that belongs to data objects that was removed in memory.
-     *
      */
-    private List<ResourceChange> cleanupFiles(DataModelTO dataModel, org.kie.commons.java.nio.file.Path javaPath) {
+    private List<ResourceChange> cleanupFiles( DataModelTO dataModel,
+                                               org.kie.commons.java.nio.file.Path javaPath ) {
 
         List<DataObjectTO> currentObjects = dataModel.getDataObjects();
         List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
@@ -368,10 +382,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         org.kie.commons.java.nio.file.Path filePath;
 
         //process deleted persistent objects.
-        for (DataObjectTO dataObject : deletedObjects) {
-            if (dataObject.isPersistent()) {
-                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
-                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+        for ( DataObjectTO dataObject : deletedObjects ) {
+            if ( dataObject.isPersistent() ) {
+                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
+                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
                     //TODO check if we need to have this level of control or instead we remove this file directly.
                     //very particular case a persistent object was deleted in memory and a new one with the same name
                     //was created. At the end we will have a file update instead of a delete.
@@ -379,19 +393,19 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    fileChanges.add(new ResourceChange(ChangeType.DELETE, paths.convert(filePath)));
-                    ioService.delete(filePath);
+                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ) ) );
+                    ioService.delete( filePath );
                 }
             }
         }
 
         //process package or class name changes for persistent objects.
-        for (DataObjectTO dataObject : currentObjects) {
-            if (dataObject.isPersistent() && dataObject.classNameChanged()) {
+        for ( DataObjectTO dataObject : currentObjects ) {
+            if ( dataObject.isPersistent() && dataObject.classNameChanged() ) {
                 //if the className changes the old file needs to be removed
-                filePath = calculateFilePath(dataObject.getOriginalClassName(), javaPath);
+                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
 
-                if (dataModel.getDataObjectByClassName(dataObject.getOriginalClassName()) != null) {
+                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
                     //TODO check if we need to have this level of control or instead we remove this file directly.
                     //very particular case of change, a persistent object changes the name to the name of another
                     //object. A kind of name swapping...
@@ -399,42 +413,42 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    fileChanges.add(new ResourceChange(ChangeType.DELETE, paths.convert(filePath)));
-                    ioService.delete(filePath);
+                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ) ) );
+                    ioService.delete( filePath );
                 }
             }
         }
 
-        return  fileChanges;
+        return fileChanges;
     }
 
-    private void cleanupEmptyDirs(org.kie.commons.java.nio.file.Path pojectPath) {
+    private void cleanupEmptyDirs( org.kie.commons.java.nio.file.Path pojectPath ) {
         FileUtils fileUtils = FileUtils.getInstance();
         List<String> deleteableFiles = new ArrayList<String>();
-        deleteableFiles.add(".gitignore");
-        fileUtils.cleanEmptyDirectories(ioService, pojectPath, false, deleteableFiles);
+        deleteableFiles.add( ".gitignore" );
+        fileUtils.cleanEmptyDirectories( ioService, pojectPath, false, deleteableFiles );
     }
 
-    private org.kie.commons.java.nio.file.Path existsProjectJavaPath(org.kie.commons.java.nio.file.Path projectPath) {
-        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve("src").resolve("main").resolve("java");
-        if (ioService.exists(javaPath)) {
+    private org.kie.commons.java.nio.file.Path existsProjectJavaPath( org.kie.commons.java.nio.file.Path projectPath ) {
+        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve( "java" );
+        if ( ioService.exists( javaPath ) ) {
             return javaPath;
         }
         return null;
     }
 
-    private org.kie.commons.java.nio.file.Path ensureProjectJavaPath(org.kie.commons.java.nio.file.Path projectPath) {
-        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve("src");
-        if (!ioService.exists(javaPath)) {
-            javaPath = ioService.createDirectory(javaPath);
+    private org.kie.commons.java.nio.file.Path ensureProjectJavaPath( org.kie.commons.java.nio.file.Path projectPath ) {
+        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve( "src" );
+        if ( !ioService.exists( javaPath ) ) {
+            javaPath = ioService.createDirectory( javaPath );
         }
-        javaPath = javaPath.resolve("main");
-        if (!ioService.exists(javaPath)) {
-            javaPath = ioService.createDirectory(javaPath);
+        javaPath = javaPath.resolve( "main" );
+        if ( !ioService.exists( javaPath ) ) {
+            javaPath = ioService.createDirectory( javaPath );
         }
-        javaPath = javaPath.resolve("java");
-        if (!ioService.exists(javaPath)) {
-            javaPath = ioService.createDirectory(javaPath);
+        javaPath = javaPath.resolve( "java" );
+        if ( !ioService.exists( javaPath ) ) {
+            javaPath = ioService.createDirectory( javaPath );
         }
 
         return javaPath;
@@ -442,38 +456,39 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     /**
      * Given a className calculates the path to the java file allocating the corresponding pojo.
-     *
      */
-    private org.kie.commons.java.nio.file.Path calculateFilePath(String className, org.kie.commons.java.nio.file.Path javaPath) {
+    private org.kie.commons.java.nio.file.Path calculateFilePath( String className,
+                                                                  org.kie.commons.java.nio.file.Path javaPath ) {
 
-        String name = NamingUtils.getInstance().extractClassName(className);
-        String packageName = NamingUtils.getInstance().extractPackageName(className);
+        String name = NamingUtils.getInstance().extractClassName( className );
+        String packageName = NamingUtils.getInstance().extractPackageName( className );
         org.kie.commons.java.nio.file.Path filePath = javaPath;
 
-        if (packageName != null) {
-            List<String> packageNameTokens = NamingUtils.getInstance().tokenizePackageName(packageName);
-            for (String token : packageNameTokens) {
-                filePath = filePath.resolve(token);
+        if ( packageName != null ) {
+            List<String> packageNameTokens = NamingUtils.getInstance().tokenizePackageName( packageName );
+            for ( String token : packageNameTokens ) {
+                filePath = filePath.resolve( token );
             }
         }
 
-        filePath = filePath.resolve(name + ".java");
+        filePath = filePath.resolve( name + ".java" );
         return filePath;
     }
 
-    private List<Path> calculateProjectPackages(IOService ioService, Path path) throws IOException {
-            
+    private List<Path> calculateProjectPackages( IOService ioService,
+                                                 Path path ) throws IOException {
+
         Collection<FileUtils.ScanResult> scanResults;
         List<Path> results = new ArrayList<Path>();
 
         FileUtils fileUtils = FileUtils.getInstance();
 
-        Path projectHome = projectService.resolveProject(path).getRootPath();
-        org.kie.commons.java.nio.file.Path javaPath = existsProjectJavaPath(paths.convert(projectHome));
-        if (javaPath != null) {
-            scanResults = fileUtils.scanDirectories(ioService, javaPath, false, true);
-            for (FileUtils.ScanResult scanResult : scanResults) {
-                results.add(paths.convert(scanResult.getFile()));
+        Path projectHome = projectService.resolveProject( path ).getRootPath();
+        org.kie.commons.java.nio.file.Path javaPath = existsProjectJavaPath( paths.convert( projectHome ) );
+        if ( javaPath != null ) {
+            scanResults = fileUtils.scanDirectories( ioService, javaPath, false, true );
+            for ( FileUtils.ScanResult scanResult : scanResults ) {
+                results.add( paths.convert( scanResult.getFile() ) );
             }
 
         }

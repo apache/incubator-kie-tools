@@ -1,18 +1,5 @@
 package org.kie.workbench.common.widgets.client.handlers;
 
-import com.google.gwt.core.client.Callback;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +7,20 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import com.google.gwt.core.client.Callback;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
  * A menu to create New Resources
@@ -33,7 +34,7 @@ public class NewResourcesMenu {
     @Inject
     private NewResourcePresenter newResourcePresenter;
 
-    private final List<MenuItem>                    items               = new ArrayList<MenuItem>();
+    private final List<MenuItem> items = new ArrayList<MenuItem>();
     private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<NewResourceHandler, MenuItem>();
 
     @PostConstruct
@@ -58,12 +59,12 @@ public class NewResourcesMenu {
         //Sort MenuItems by caption
         Collections.sort( items,
                           new Comparator<MenuItem>() {
-            @Override
-            public int compare( final MenuItem o1,
-                                final MenuItem o2 ) {
-                return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
-            }
-        } );
+                              @Override
+                              public int compare( final MenuItem o1,
+                                                  final MenuItem o2 ) {
+                                  return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
+                              }
+                          } );
 
     }
 
@@ -71,11 +72,13 @@ public class NewResourcesMenu {
         return items;
     }
 
-    public void selectedPathChanged( @Observes final PathChangeEvent event ) {
-        enableNewResourceHandlers( event.getPath() );
+    public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
+        final org.kie.workbench.common.services.shared.context.Package pkg = event.getPackage();
+        enableNewResourceHandlers( pkg );
     }
 
-    private void enableNewResourceHandlers( final Path path ) {
+    private void enableNewResourceHandlers( final Package pkg ) {
+        final Path path = pkg.getPackageMainResourcesPath();
         for ( Map.Entry<NewResourceHandler, MenuItem> e : this.newResourceHandlers.entrySet() ) {
             final NewResourceHandler handler = e.getKey();
             final MenuItem menuItem = e.getValue();

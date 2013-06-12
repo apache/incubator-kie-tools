@@ -78,13 +78,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         if ( path == null ) {
             callback.onSuccess( false );
         } else {
-            projectService.call( new RemoteCallback<Package>() {
-                @Override
-                public void callback( final Package pkg ) {
-                    boolean accept = ( pkg == null ? false : pkg.getPackageMainResourcesPath() != null );
-                    callback.onSuccess( accept );
-                }
-            } ).resolvePackage( path );
+            final Package pkg = ( (KieWorkbenchContext) context ).getActivePackage();
+            boolean accept = ( pkg == null ? false : pkg.getPackageMainResourcesPath() != null );
+            callback.onSuccess( accept );
         }
     }
 

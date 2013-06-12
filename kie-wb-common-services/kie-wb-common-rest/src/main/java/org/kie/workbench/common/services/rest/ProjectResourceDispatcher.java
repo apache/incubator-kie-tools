@@ -23,22 +23,26 @@ import org.kie.workbench.common.services.shared.rest.Repository;
 import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
-
+import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 public class ProjectResourceDispatcher {
 
     @Inject
     RepositoryService repositoryService;
+
     @Inject
     protected ProjectService projectService;
+
     @Inject
     private Paths paths;
 
     @Inject
     @Named("ioStrategy")
     private IOService ioSystemService;
+
     @Inject
     protected BuildService buildService;
 
@@ -118,7 +122,11 @@ public class ProjectResourceDispatcher {
             POM pom = new POM();
             
             try {
-                org.uberfire.backend.vfs.Path vfsPath = projectService.newProject( paths.convert( repositoryPath, false ), projectName, pom, "/" );
+                Project project = projectService.newProject( makeRepository( paths.convert( repositoryPath,
+                                                                                            false)),
+                                                             projectName,
+                                                             pom,
+                                                             "/" );
             } catch (org.kie.commons.java.nio.file.FileAlreadyExistsException e) {
                 result.setStatus(JobRequest.Status.DUPLICATE_RESOURCE);
                 result.setResult("Project [" + projectName + "] already exists");  
@@ -131,6 +139,16 @@ public class ProjectResourceDispatcher {
             result.setStatus(JobRequest.Status.SUCCESS);
             jobResultEvent.fire(result);
         }
+    }
+
+    private org.uberfire.backend.repositories.Repository makeRepository(final Path repositoryRoot) {
+        return new GitRepository(){
+
+            @Override
+            public Path getRoot() {
+                return repositoryRoot;
+            }
+        };
     }
     
     public void compileProject(String jobId, String repositoryName, String projectName, BuildConfig mavenConfig ) {

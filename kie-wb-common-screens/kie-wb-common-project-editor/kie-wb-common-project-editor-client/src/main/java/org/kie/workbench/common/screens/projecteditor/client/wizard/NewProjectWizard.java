@@ -13,16 +13,17 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.events.PathChangeEvent;
 
 public class NewProjectWizard
         implements Wizard<NewProjectWizardContext> {
@@ -34,7 +35,7 @@ public class NewProjectWizard
     private Event<NotificationEvent> notificationEvent;
 
     @Inject
-    private Event<PathChangeEvent> pathChangeEvent;
+    private Event<ProjectChangeEvent> projectChangeEvent;
 
     @Inject
     private WizardPresenter presenter;
@@ -48,10 +49,12 @@ public class NewProjectWizard
     @Inject
     private Caller<ProjectService> projectServiceCaller;
 
+    @Inject
+    private WorkbenchContext context;
+
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private POM pom;
     private String projectName;
-    private Path contextPath;
 
     @PostConstruct
     public void setupPages() {
@@ -97,35 +100,32 @@ public class NewProjectWizard
     @Override
     public void complete() {
         presenter.hide();
-
         final String url = GWT.getModuleBaseURL();
         final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( contextPath,
+                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( context.getActiveRepository(),
                                                                                                                projectName,
                                                                                                                pom,
                                                                                                                baseUrl );
     }
 
-    private RemoteCallback<Path> getSuccessCallback() {
-        return new RemoteCallback<Path>() {
+    private RemoteCallback<Project> getSuccessCallback() {
+        return new RemoteCallback<Project>() {
 
             @Override
-            public void callback( Path pathToPom ) {
+            public void callback( final Project project ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                pathChangeEvent.fire( new PathChangeEvent( pathToPom ) );
+                projectChangeEvent.fire( new ProjectChangeEvent( project ) );
                 placeManager.goTo( "projectScreen" );
             }
         };
     }
 
-    public void setProjectName( String projectName,
-                                Path contextPath ) {
-        pom.getGav().setArtifactId( projectName );
+    public void setProjectName( final String projectName ) {
         this.projectName = projectName;
-        this.contextPath = contextPath;
+        pom.getGav().setArtifactId( projectName );
         gavWizardPage.setGav( pom.getGav() );
     }
 }
