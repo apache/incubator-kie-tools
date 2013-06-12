@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.context;
+package org.uberfire.client.workbench.context;
 
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
