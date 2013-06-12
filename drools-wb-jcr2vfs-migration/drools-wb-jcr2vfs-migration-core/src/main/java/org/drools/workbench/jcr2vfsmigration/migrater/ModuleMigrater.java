@@ -11,6 +11,7 @@ import org.kie.workbench.common.services.project.service.model.POM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
@@ -26,7 +27,7 @@ public class ModuleMigrater {
 
     @Inject
     protected ProjectService projectService;
-
+    
     public void migrateAll() {
         logger.info( "  Module migration started" );
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
@@ -40,6 +41,7 @@ public class ModuleMigrater {
     private void migrate( Module jcrModule ) {
         //Set up project structure:
         POM pom = new POM();
+
         Path modulePath = migrationPathManager.generateRootPath();
         projectService.newProject( makeRepository( modulePath ),
                                    jcrModule.getName(),
@@ -47,8 +49,8 @@ public class ModuleMigrater {
                                    "http://localhost" );
     }
 
-    private org.uberfire.backend.repositories.Repository makeRepository( final Path repositoryRoot ) {
-        return new GitRepository() {
+    private org.uberfire.backend.repositories.Repository makeRepository(final Path repositoryRoot) {
+        return new GitRepository(){
 
             @Override
             public Path getRoot() {
