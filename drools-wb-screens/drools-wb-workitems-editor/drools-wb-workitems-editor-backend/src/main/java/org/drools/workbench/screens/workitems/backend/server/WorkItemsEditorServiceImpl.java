@@ -214,7 +214,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     }
 
     private List<String> loadWorkItemImages( final Path resourcePath ) {
-        final Path projectRoot = projectService.resolveProject( resourcePath ).getPath();
+        final Path projectRoot = projectService.resolveProject( resourcePath ).getRootPath();
         final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
 
@@ -315,7 +315,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
         try {
             //Load WorkItemDefinitions from VFS
-            final Path projectRoot = projectService.resolveProject( path ).getPath();
+            final Path projectRoot = projectService.resolveProject( path ).getRootPath();
             workDefinitions.putAll( resourceWorkDefinitionsLoader.loadWorkDefinitions( projectRoot ) );
 
             //Load WorkItemDefinitions from ConfigurationService

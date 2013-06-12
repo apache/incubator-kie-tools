@@ -171,7 +171,7 @@ public class FactModelServiceImpl implements FactModelService {
 
     private List<FactMetaModel> loadAllAvailableTypes( final Path path ) {
         final List<FactMetaModel> allAvailableTypes = new ArrayList<FactMetaModel>();
-        final Path projectRoot = projectService.resolveProject( path ).getPath();
+        final Path projectRoot = projectService.resolveProject( path ).getRootPath();
         if ( projectRoot == null ) {
             return allAvailableTypes;
         }

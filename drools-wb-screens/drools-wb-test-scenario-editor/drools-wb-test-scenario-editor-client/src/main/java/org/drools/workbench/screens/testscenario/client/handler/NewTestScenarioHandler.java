@@ -1,24 +1,24 @@
 package org.drools.workbench.screens.testscenario.client.handler;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.client.TestScenarioResourceType;
+import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.drools.workbench.screens.testscenario.client.TestScenarioResourceType;
-import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.uberfire.backend.vfs.Path;
-import org.kie.workbench.common.services.shared.project.Package;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class NewTestScenarioHandler
@@ -67,7 +67,8 @@ public class NewTestScenarioHandler
             projectService.call( new RemoteCallback<Package>() {
                 @Override
                 public void callback( final Package pkg ) {
-                    callback.onSuccess( pkg.getPackageTestResourcesPath() != null );
+                    boolean accept = ( pkg == null ? false : pkg.getPackageTestResourcesPath() != null );
+                    callback.onSuccess( accept );
                 }
             } ).resolvePackage( path );
         }
