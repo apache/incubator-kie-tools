@@ -176,6 +176,7 @@ public class DataObjectFieldEditor extends Composite {
                 "label".equals(event.getPropertyName())) {
 
                 initTypeList();
+                setSelectedType();
             }
         }
     }
@@ -224,8 +225,7 @@ public class DataObjectFieldEditor extends Composite {
                 description.setText( (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM));
             }
 
-            String type = getObjectField().getClassName() + (getObjectField().isMultiple() ? DataModelerUtils.MULTIPLE:"");
-            typeSelector.setSelectedValue(type);
+            setSelectedType();
 
             annotation = objectField.getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
             if (annotation != null) {
@@ -442,6 +442,12 @@ public class DataObjectFieldEditor extends Composite {
                 typeSelector.addItem(typeName.getKey(), typeName.getValue());
             }
         }
+    }
+
+    private void setSelectedType() {
+        String type = getObjectField() != null ?
+                (getObjectField().getClassName() + (getObjectField().isMultiple() ? DataModelerUtils.MULTIPLE:"")) : null;
+        typeSelector.setSelectedValue(type);
     }
 
     private void clean() {
