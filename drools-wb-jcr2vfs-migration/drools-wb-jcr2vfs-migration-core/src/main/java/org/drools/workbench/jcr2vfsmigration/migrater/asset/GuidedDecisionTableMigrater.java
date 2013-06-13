@@ -74,7 +74,15 @@ public class GuidedDecisionTableMigrater {
             attrs = new HashMap<String, Object>();
         }        
         
-        GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( jcrAssetItem.getContent() );
+        String content = jcrAssetItem.getContent();
+        
+/*        while(content.indexOf("<auditLog>") > -1) {
+        	content  = content.replaceAll(content.substring(content.indexOf("<auditLog>"), content.indexOf("</auditLog>")+11), "");
+        }
+        */
+        content = content.replaceAll("org.drools.guvnor.client.modeldriven.dt52.Pattern52", "Pattern52");
+        
+        GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
         
         //Add package
         final String requiredPackageName = projectService.resolvePackage( path ).getPackageName();
