@@ -17,6 +17,8 @@ import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.shared.context.ProjectAddedEvent;
 import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
+import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
@@ -114,6 +116,8 @@ public class ExplorerPresenter {
     }
 
     private void load() {
+        //Show busy popup. Groups cascade through Repositories, Projects, Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Group>>() {
             @Override
             public void callback( final Collection<Group> groups ) {
@@ -121,7 +125,7 @@ public class ExplorerPresenter {
                                 getActiveGroup() );
             }
 
-        } ).getGroups();
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
     }
 
     public void groupSelected( final Group group ) {
@@ -141,6 +145,8 @@ public class ExplorerPresenter {
         if ( group == null ) {
             return;
         }
+        //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
@@ -148,7 +154,7 @@ public class ExplorerPresenter {
                                       getActiveRepository() );
             }
 
-        } ).getRepositories( group );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
     }
 
     public void repositorySelected( final Repository repository ) {
@@ -168,6 +174,8 @@ public class ExplorerPresenter {
         if ( repository == null ) {
             return;
         }
+        //Show busy popup. Projects cascade through Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
             public void callback( final Collection<Project> projects ) {
@@ -175,7 +183,7 @@ public class ExplorerPresenter {
                                   getActiveProject() );
             }
 
-        } ).getProjects( repository );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
     }
 
     public void projectSelected( final Project project ) {
@@ -195,13 +203,15 @@ public class ExplorerPresenter {
         if ( project == null ) {
             return;
         }
+        //Show busy popup. Packages cascade through Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
             public void callback( final Collection<Package> packages ) {
                 view.setPackages( packages,
                                   getActivePackage() );
             }
-        } ).getPackages( project );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }
 
     public void packageSelected( final Package pkg ) {
@@ -221,12 +231,15 @@ public class ExplorerPresenter {
         if ( pkg == null ) {
             return;
         }
+        //Show busy popup. Once Items are loaded it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Item>>() {
             @Override
             public void callback( final Collection<Item> items ) {
                 view.setItems( items );
+                view.hideBusyIndicator();
             }
-        } ).getItems( pkg );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getItems( pkg );
     }
 
     public void itemSelected( final Item item ) {

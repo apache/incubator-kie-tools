@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.mvp.UberView;
@@ -13,7 +14,8 @@ import org.uberfire.client.mvp.UberView;
  * Explorer View definition
  */
 public interface ExplorerView extends
-                              UberView<ExplorerPresenter> {
+                              UberView<ExplorerPresenter>,
+                              HasBusyIndicator {
 
     void setGroups( final Collection<Group> groups,
                     final Group activeGroup );

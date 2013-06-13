@@ -29,6 +29,7 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.client.common.BusyPopup;
 
 /**
  * The Explorer's view implementation
@@ -339,4 +340,15 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddPackages.add( makePackageNavLink( pkg ) );
         }
     }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
 }
