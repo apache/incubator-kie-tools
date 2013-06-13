@@ -61,7 +61,7 @@ public class KieSessionAsyncJobRequestObserver {
     }  
     
     //Commented out for the time being, due to kssion problem.
-/*    public boolean approveRequest(JobRequest jobRequest) {
+    public boolean approveRequest(JobRequest jobRequest) {
         if(!defaultGuvnorApprover.requestApproval(jobRequest)) {
             JobResult result = new JobResult();
             result.setJodId(jobRequest.getJodId());
@@ -72,11 +72,11 @@ public class KieSessionAsyncJobRequestObserver {
         }
         
         return true;
-    }*/
+    }
 
-    
+/*    
     public boolean approveRequest(JobRequest jobRequest) {
         return true;
-    }
+    }*/
     
 }
