@@ -1,5 +1,6 @@
 package org.drools.workbench.screens.testscenario.client.handler;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -12,6 +13,8 @@ import org.drools.workbench.screens.testscenario.client.resources.images.TestSce
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
@@ -19,7 +22,6 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
-import org.kie.workbench.common.services.shared.context.Package;
 
 @ApplicationScoped
 public class NewTestScenarioHandler
@@ -42,6 +44,12 @@ public class NewTestScenarioHandler
     @Override
     public IsWidget getIcon() {
         return TestScenarioAltedImages.INSTANCE.TestScenario();
+    }
+
+    @Override
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        this.pathLabel.setPath( ( (KieWorkbenchContext) context ).getActivePackage().getPackageTestResourcesPath() );
+        return this.extensions;
     }
 
     @Override
