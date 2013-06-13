@@ -1,5 +1,6 @@
 package org.uberfire.workbench.events;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -11,7 +12,7 @@ import org.kie.commons.validation.PortablePreconditions;
 @Portable
 public class ResourceBatchChangesEvent {
 
-    private Set<ResourceChange> batch;
+    private Set<ResourceChange> batch = new HashSet<ResourceChange>();
 
     public ResourceBatchChangesEvent() {
         //Empty constructor for Errai marshalling
