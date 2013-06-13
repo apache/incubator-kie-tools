@@ -14,7 +14,6 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Handler for the creation of new Folders
@@ -40,16 +39,16 @@ public class NewPackageHandler
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
-        projectService.call( getSuccessCallback( presenter ),
+        projectService.call( getPackageSuccessCallback( presenter ),
                              new DefaultErrorCallback() ).newPackage( pkg,
                                                                       baseFileName );
     }
 
-    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
-        return new RemoteCallback<Path>() {
+    private RemoteCallback<Package> getPackageSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Package>() {
 
             @Override
-            public void callback( Path pathToPom ) {
+            public void callback( final Package pkg ) {
                 presenter.complete();
                 notifySuccess();
             }

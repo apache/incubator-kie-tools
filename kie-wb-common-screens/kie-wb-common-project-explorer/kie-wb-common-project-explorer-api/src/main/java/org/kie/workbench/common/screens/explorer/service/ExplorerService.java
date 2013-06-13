@@ -24,6 +24,7 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Service definition for Explorer editor
@@ -40,5 +41,8 @@ public interface ExplorerService {
     Collection<Package> getPackages( final Project project );
 
     Collection<Item> getItems( final Package pkg );
+
+    Collection<Item> handleResourceEvent( final Package pkg,
+                                          final Path resource );
 
 }

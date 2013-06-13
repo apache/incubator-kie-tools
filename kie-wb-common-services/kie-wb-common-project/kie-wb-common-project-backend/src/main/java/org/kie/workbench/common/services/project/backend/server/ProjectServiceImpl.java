@@ -26,13 +26,16 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.project.service.KModuleService;
 import org.kie.workbench.common.services.project.service.POMService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.context.ProjectAddedEvent;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
@@ -40,7 +43,10 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped
@@ -67,6 +73,9 @@ public class ProjectServiceImpl
     private ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
+    private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
+    private Event<ProjectAddedEvent> projectAddedEvent;
+    private Event<PackageAddedEvent> packageAddedEvent;
 
     private Identity identity;
 
@@ -82,6 +91,9 @@ public class ProjectServiceImpl
                                final MetadataService metadataService,
                                final ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
+                               final Event<ResourceBatchChangesEvent> resourceBatchChangesEvent,
+                               final Event<ProjectAddedEvent> projectAddedEvent,
+                               final Event<PackageAddedEvent> packageAddedEvent,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
@@ -90,6 +102,9 @@ public class ProjectServiceImpl
         this.metadataService = metadataService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
+        this.resourceBatchChangesEvent = resourceBatchChangesEvent;
+        this.projectAddedEvent = projectAddedEvent;
+        this.packageAddedEvent = packageAddedEvent;
         this.identity = identity;
     }
 
@@ -293,40 +308,65 @@ public class ProjectServiceImpl
         ioService.write( paths.convert( projectConfigPath ),
                          projectConfigurationContentHandler.toString( new ProjectImports() ) );
 
-        //Signal creation to interested parties
+        //Raise an event for the new project
+        final Project project = resolveProject( projectRootPath );
+        projectAddedEvent.fire( new ProjectAddedEvent( project ) );
+
+        //Raise an event for the other resources (UberFire components cannot handle PackageAddedEvents)
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
-        return resolveProject( projectRootPath );
+        return project;
     }
 
     @Override
-    public void newPackage( final Package parentPackage,
-                            final String packageName ) {
+    public Package newPackage( final Package parentPackage,
+                               final String packageName ) {
         final Path mainSrcPath = parentPackage.getPackageMainSrcPath();
         final Path testSrcPath = parentPackage.getPackageTestSrcPath();
         final Path mainResourcesPath = parentPackage.getPackageMainResourcesPath();
         final Path testResourcesPath = parentPackage.getPackageTestResourcesPath();
 
+        Path pkgPath = null;
+
+        final ResourceBatchChangesEvent batchChangesEvent = new ResourceBatchChangesEvent();
+
         final org.kie.commons.java.nio.file.Path nioMainSrcPackagePath = paths.convert( mainSrcPath ).resolve( packageName );
         if ( !Files.exists( nioMainSrcPackagePath ) ) {
-            final Path directoryPath = paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
-            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+            pkgPath = paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
+            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
+                                                                  pkgPath ) );
         }
         final org.kie.commons.java.nio.file.Path nioTestSrcPackagePath = paths.convert( testSrcPath ).resolve( packageName );
         if ( !Files.exists( nioTestSrcPackagePath ) ) {
-            final Path directoryPath = paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
-            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+            pkgPath = paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
+            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
+                                                                  pkgPath ) );
         }
         final org.kie.commons.java.nio.file.Path nioMainResourcesPackagePath = paths.convert( mainResourcesPath ).resolve( packageName );
         if ( !Files.exists( nioMainResourcesPackagePath ) ) {
-            final Path directoryPath = paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
-            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+            pkgPath = paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
+            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
+                                                                  pkgPath ) );
         }
         final org.kie.commons.java.nio.file.Path nioTestResourcesPackagePath = paths.convert( testResourcesPath ).resolve( packageName );
         if ( !Files.exists( nioTestResourcesPackagePath ) ) {
-            final Path directoryPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
-            resourceAddedEvent.fire( new ResourceAddedEvent( directoryPath ) );
+            pkgPath = paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
+            batchChangesEvent.getBatch().add( new ResourceChange( ChangeType.ADD,
+                                                                  pkgPath ) );
         }
+
+        //pkgPath should not be null at this stage or something has gone wrong!
+        PortablePreconditions.checkNotNull( "pkgPath",
+                                            pkgPath );
+
+        //Raise an event for the new package
+        final Package pkg = resolvePackage( pkgPath );
+        packageAddedEvent.fire( new PackageAddedEvent( pkg ) );
+
+        //Raise an event for the other resources (UberFire components cannot handle PackageAddedEvents)
+        resourceBatchChangesEvent.fire( batchChangesEvent );
+
+        return pkg;
     }
 
     private boolean hasPom( final org.kie.commons.java.nio.file.Path path ) {

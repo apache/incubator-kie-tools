@@ -28,6 +28,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
@@ -200,6 +201,20 @@ public class ExplorerServiceImpl
     private String getPackagePath( final String packageName ) {
         return packageName.replaceAll( "\\.",
                                        "/" );
+    }
+
+    @Override
+    public Collection<Item> handleResourceEvent( final Package pkg,
+                                                 final Path resource ) {
+        PortablePreconditions.checkNotNull( "pkg",
+                                            pkg );
+        PortablePreconditions.checkNotNull( "resource",
+                                            resource );
+        final Package resourcePackage = projectService.resolvePackage( resource );
+        if ( resourcePackage == null ) {
+            return null;
+        }
+        return getItems( pkg );
     }
 
 }

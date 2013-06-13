@@ -26,7 +26,8 @@
   <artifactId>kie-wb-common-project</artifactId>
   <packaging>pom</packaging>
 
-  <name>Guvnor Project</name>
+  <name>Kie Workbench - Common - Project</name>
+  <description>Kie Workbench - Common - Project</description>
 
   <modules>
     <module>kie-wb-common-project-api</module>

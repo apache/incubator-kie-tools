@@ -75,11 +75,17 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @return
      */
     Project newProject( final Repository repository,
-                     final String name,
-                     final POM pom,
-                     final String baseURL );
+                        final String name,
+                        final POM pom,
+                        final String baseURL );
 
-    void newPackage( final Package pkg,
-                     final String packageName );
+    /**
+     * Creates a new package as a child of the provide package.
+     * @param pkg
+     * @param packageName
+     * @return
+     */
+    Package newPackage( final Package pkg,
+                        final String packageName );
 
 }

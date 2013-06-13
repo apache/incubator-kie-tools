@@ -29,4 +29,10 @@ public interface ExplorerView extends
 
     void setItems( final Collection<Item> items );
 
+    void addRepository( final Repository repository );
+
+    void addProject( final Project project );
+
+    void addPackage( final Package pkg );
+
 }

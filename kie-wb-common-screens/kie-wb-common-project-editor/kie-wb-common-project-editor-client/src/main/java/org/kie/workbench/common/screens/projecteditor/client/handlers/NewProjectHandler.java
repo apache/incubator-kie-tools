@@ -1,6 +1,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.handlers;
 
+import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -12,12 +14,16 @@ import org.kie.commons.data.Pair;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.PathLabel;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
+import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 /**
@@ -27,13 +33,32 @@ import org.uberfire.workbench.events.RepositoryChangeEvent;
 public class NewProjectHandler
         implements NewResourceHandler {
 
-    @Inject
-    private WizardPresenter wizardPresenter;
+    private final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
+
+    private final PathLabel pathLabel = new PathLabel();
 
     @Inject
     private NewProjectWizard wizard;
 
+    @Inject
+    private WizardPresenter wizardPresenter;
+
+    @Inject
+    private WorkbenchContext context;
+
     private boolean isRepositorySelected = false;
+
+    @PostConstruct
+    private void setupExtensions() {
+        this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(),
+                                           pathLabel ) );
+    }
+
+    @Override
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        this.pathLabel.setPath( ( (KieWorkbenchContext) context ).getActiveRepository().getRoot() );
+        return this.extensions;
+    }
 
     @Override
     public String getDescription() {
@@ -57,11 +82,6 @@ public class NewProjectHandler
         } else {
             ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
         }
-    }
-
-    @Override
-    public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        return null;
     }
 
     @Override

@@ -12,11 +12,14 @@ import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
 import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.context.ProjectAddedEvent;
 import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
@@ -26,6 +29,8 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.context.WorkbenchContext;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
@@ -46,6 +51,12 @@ public class ExplorerPresenter {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private RuntimeAuthorizationManager authorizationManager;
 
     @Inject
     private Event<GroupChangeEvent> groupChangeEvent;
@@ -71,18 +82,25 @@ public class ExplorerPresenter {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    private Group activeGroup;
-    private Repository activeRepository;
-    private Project activeProject;
-    private Package activePackage;
-
     @OnStart
     public void onStart() {
-        activeGroup = context.getActiveGroup();
-        activeRepository = context.getActiveRepository();
-        activeProject = ( (KieWorkbenchContext) context ).getActiveProject();
-        activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
         load();
+    }
+
+    private Group getActiveGroup() {
+        return context.getActiveGroup();
+    }
+
+    private Repository getActiveRepository() {
+        return context.getActiveRepository();
+    }
+
+    private Project getActiveProject() {
+        return ( (KieWorkbenchContext) context ).getActiveProject();
+    }
+
+    private Package getActivePackage() {
+        return ( (KieWorkbenchContext) context ).getActivePackage();
     }
 
     @WorkbenchPartView
@@ -100,14 +118,14 @@ public class ExplorerPresenter {
             @Override
             public void callback( final Collection<Group> groups ) {
                 view.setGroups( groups,
-                                activeGroup );
+                                getActiveGroup() );
             }
 
         } ).getGroups();
     }
 
     public void groupSelected( final Group group ) {
-        if ( !group.equals( activeGroup ) ) {
+        if ( !group.equals( getActiveGroup() ) ) {
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
         } else {
             groupChangeHandler( group );
@@ -116,7 +134,6 @@ public class ExplorerPresenter {
 
     public void groupChangeHandler( final @Observes GroupChangeEvent event ) {
         final Group group = event.getGroup();
-        activeGroup = group;
         groupChangeHandler( group );
     }
 
@@ -128,14 +145,14 @@ public class ExplorerPresenter {
             @Override
             public void callback( final Collection<Repository> repositories ) {
                 view.setRepositories( repositories,
-                                      activeRepository );
+                                      getActiveRepository() );
             }
 
         } ).getRepositories( group );
     }
 
     public void repositorySelected( final Repository repository ) {
-        if ( !repository.equals( activeRepository ) ) {
+        if ( !repository.equals( getActiveRepository() ) ) {
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
         } else {
             repositoryChangeHandler( repository );
@@ -144,7 +161,6 @@ public class ExplorerPresenter {
 
     public void repositoryChangeHandler( final @Observes RepositoryChangeEvent event ) {
         final Repository repository = event.getRepository();
-        activeRepository = repository;
         repositoryChangeHandler( repository );
     }
 
@@ -156,14 +172,14 @@ public class ExplorerPresenter {
             @Override
             public void callback( final Collection<Project> projects ) {
                 view.setProjects( projects,
-                                  activeProject );
+                                  getActiveProject() );
             }
 
         } ).getProjects( repository );
     }
 
     public void projectSelected( final Project project ) {
-        if ( !project.equals( activeProject ) ) {
+        if ( !project.equals( getActiveProject() ) ) {
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
         } else {
             projectChangeHandler( project );
@@ -172,7 +188,6 @@ public class ExplorerPresenter {
 
     public void projectChangeHandler( final @Observes ProjectChangeEvent event ) {
         final Project project = event.getProject();
-        activeProject = project;
         projectChangeHandler( project );
     }
 
@@ -184,13 +199,13 @@ public class ExplorerPresenter {
             @Override
             public void callback( final Collection<Package> packages ) {
                 view.setPackages( packages,
-                                  activePackage );
+                                  getActivePackage() );
             }
         } ).getPackages( project );
     }
 
     public void packageSelected( final Package pkg ) {
-        if ( !pkg.equals( activePackage ) ) {
+        if ( !pkg.equals( getActivePackage() ) ) {
             packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
         } else {
             packageChangeHandler( pkg );
@@ -199,7 +214,6 @@ public class ExplorerPresenter {
 
     public void packageChangeHandler( final @Observes PackageChangeEvent event ) {
         final Package pkg = event.getPackage();
-        activePackage = pkg;
         packageChangeHandler( pkg );
     }
 
@@ -224,34 +238,102 @@ public class ExplorerPresenter {
         placeManager.goTo( item.getPath() );
     }
 
-    // Refresh when a Resource has been added
+    public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
+        final Repository repository = event.getNewRepository();
+        if ( repository == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( repository,
+                                             identity ) ) {
+            view.addRepository( repository );
+        }
+    }
+
+    public void onProjectAdded( @Observes final ProjectAddedEvent event ) {
+        final Project project = event.getProject();
+        if ( project == null ) {
+            return;
+        }
+        if ( getActiveRepository() == null ) {
+            return;
+        }
+        final String projectRoot = project.getRootPath().toURI();
+        final String activeRepositoryRoot = getActiveRepository().getRoot().toURI();
+        if ( !projectRoot.startsWith( activeRepositoryRoot ) ) {
+            return;
+        }
+        if ( authorizationManager.authorize( project,
+                                             identity ) ) {
+            view.addProject( project );
+        }
+    }
+
+    public void onPackageAdded( @Observes final PackageAddedEvent event ) {
+        final Package pkg = event.getPackage();
+        if ( pkg == null ) {
+            return;
+        }
+        if ( getActiveProject() == null ) {
+            return;
+        }
+        final String packageProjectRoot = pkg.getProjectRootPath().toURI();
+        final String activeProjectRoot = getActiveProject().getRootPath().toURI();
+        if ( !packageProjectRoot.startsWith( activeProjectRoot ) ) {
+            return;
+        }
+        view.addPackage( pkg );
+    }
+
+    // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        //TODO Refresh only if required
-        //loadItems( context.getActivePath() );
+        final Path resource = event.getPath();
+        handleResourceChangeEvent( resource );
     }
 
-    // Refresh when a Resource has been deleted
+    // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        //TODO Refresh only if required
-        //loadItems( context.getActivePath() );
+        final Path resource = event.getPath();
+        handleResourceChangeEvent( resource );
     }
 
-    // Refresh when a Resource has been copied
+    // Refresh when a Resource has been copied, if it exists in the active package
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
-        //TODO Refresh only if required
-        //loadItems( context.getActivePath() );
+        final Path resource = event.getDestinationPath();
+        handleResourceChangeEvent( resource );
     }
 
-    // Refresh when a Resource has been renamed
+    // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        //TODO Refresh only if required
-        //loadItems( context.getActivePath() );
+        final Path resource = event.getDestinationPath();
+        handleResourceChangeEvent( resource );
     }
 
-    // Refresh when a batch Resource change has occurred
+    private void handleResourceChangeEvent( final Path resource ) {
+        if ( resource == null || getActivePackage() == null ) {
+            return;
+        }
+        explorerService.call( new RemoteCallback<Collection<Item>>() {
+            @Override
+            public void callback( final Collection<Item> items ) {
+                if ( items != null ) {
+                    view.setItems( items );
+                }
+            }
+        } ).handleResourceEvent( getActivePackage(),
+                                 resource );
+    }
+
+    // Refresh when a batch Resource change has occurred. For simplicity simply re-load all items
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        //TODO Refresh only if required
-        //loadItems( context.getActivePath() );
+        if ( getActivePackage() == null ) {
+            return;
+        }
+        explorerService.call( new RemoteCallback<Collection<Item>>() {
+            @Override
+            public void callback( final Collection<Item> items ) {
+                view.setItems( items );
+            }
+        } ).getItems( getActivePackage() );
     }
 
 }

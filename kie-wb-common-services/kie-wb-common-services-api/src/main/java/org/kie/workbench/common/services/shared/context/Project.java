@@ -15,21 +15,28 @@
  */
 package org.kie.workbench.common.services.shared.context;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.authz.RuntimeResource;
 
 /**
  * An item representing a project
  */
 @Portable
-public class Project {
+public class Project implements RuntimeResource {
 
     private Path rootPath;
     private Path pomXMLPath;
     private Path kmoduleXMLPath;
     private Path importsPath;
     private String title;
+
+    private Collection<String> roles = new ArrayList<String>();
 
     public Project() {
         //For Errai-marshalling
@@ -70,6 +77,21 @@ public class Project {
 
     public String getTitle() {
         return this.title;
+    }
+
+    @Override
+    public String getSignatureId() {
+        return getClass().getName() + "#" + getRootPath().toURI();
+    }
+
+    @Override
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return Collections.emptySet();
     }
 
     @Override
