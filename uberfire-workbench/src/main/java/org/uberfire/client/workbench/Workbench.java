@@ -81,8 +81,8 @@ public class Workbench
     @Inject
     private WorkbenchMenuBarPresenter menuBarPresenter;
 
-    @Inject
-    private WorkbenchToolBarPresenter toolBarPresenter;
+//    @Inject
+//    private WorkbenchToolBarPresenter toolBarPresenter;
 
 //    @Inject
 //    private WorkbenchStatusBarPresenter statusBarPresenter;
@@ -92,11 +92,13 @@ public class Workbench
 
     @PostConstruct
     public void setup() {
+        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+            container.add( menuBarPresenter.getView() );
+        }
         //Menu bar
-        container.add( menuBarPresenter.getView() );
 
-        //Tool bar
-        container.add( toolBarPresenter.getView() );
+//        //Tool bar
+//        container.add( toolBarPresenter.getView() );
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
@@ -136,9 +138,11 @@ public class Workbench
         } );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-        if ( defaultPerspective != null ) {
-            placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+            AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
+            if ( defaultPerspective != null ) {
+                placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+            }
         }
 
         //Save Workbench state when Window is closed
@@ -165,6 +169,13 @@ public class Workbench
             public void onResize( ResizeEvent event ) {
                 doResizeWorkbenchContainer( event.getWidth(),
                                             event.getHeight() );
+            }
+        } );
+
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                onResize();
             }
         } );
     }
@@ -198,12 +209,18 @@ public class Workbench
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
         final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
-        final int toolBarHeight = toolBarPresenter.getHeight();
+//        final int toolBarHeight = toolBarPresenter.getHeight();
 //        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
-        final int availableHeight = height - menuBarHeight - toolBarHeight;// - statusBarHeight;
+        final int availableHeight;
+        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+            availableHeight = height - menuBarHeight;
+        } else {
+            availableHeight = height;
+        }
+
+//        final int availableHeight = height - menuBarHeight - toolBarHeight;// - statusBarHeight;
         workbenchContainer.setPixelSize( width, availableHeight );
-        workbench.setPixelSize( width,
-                                availableHeight );
+        workbench.setPixelSize( width, availableHeight );
 
         final Widget w = workbench.getWidget();
         if ( w != null ) {
