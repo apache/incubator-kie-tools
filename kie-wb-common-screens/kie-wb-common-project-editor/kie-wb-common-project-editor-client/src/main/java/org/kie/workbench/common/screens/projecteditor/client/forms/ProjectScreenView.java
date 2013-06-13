@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
@@ -24,6 +25,8 @@ import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+
+import java.util.List;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -43,10 +46,14 @@ public interface ProjectScreenView
 
         void onImportsMetadataPanelSelected();
 
+        void onDependenciesSelected();
+
     }
     void setPresenter(Presenter projectScreenPresenter);
 
     void setPOM(POM pom);
+
+    void setDependencies(List<Dependency> dependencies);
 
     void setPomMetadata(Metadata pomMetaData);
 
@@ -61,6 +68,8 @@ public interface ProjectScreenView
     void showImportsPanel();
 
     void showImportsMetadataPanel();
+
+    void showDependenciesPanel();
 
     void showGAVMetadataPanel();
 

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.common.services.project.service.model.KModuleModel;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
 
 import javax.enterprise.inject.New;
+import java.util.List;
 
 public class ProjectScreenViewImpl
         extends Composite
@@ -43,11 +45,12 @@ public class ProjectScreenViewImpl
 
 
     private static final int GAV_PANEL_INDEX = 0;
-    private static final int GAV_METADATA_PANEL_INDEX = 1;
-    private static final int KBASE_PANEL_INDEX = 2;
-    private static final int KBASE_METADATA_PANEL_INDEX = 3;
-    private static final int IMPORTS_PANEL_INDEX = 4;
-    private static final int IMPORTS_METADATA_PANEL_INDEX = 5;
+    private static final int DEPENDENCY_PANEL_INDEX = 1;
+    private static final int GAV_METADATA_PANEL_INDEX = 2;
+    private static final int KBASE_PANEL_INDEX = 3;
+    private static final int KBASE_METADATA_PANEL_INDEX = 4;
+    private static final int IMPORTS_PANEL_INDEX = 5;
+    private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
 
     private POMEditorPanel pomEditorPanel;
     private MetadataWidget pomMetadataWidget;
@@ -56,6 +59,7 @@ public class ProjectScreenViewImpl
     private MetadataWidget kModuleMetaDataPanel;
     private ImportsWidgetPresenter importsWidgetPresenter;
     private MetadataWidget importsPageMetadata;
+    private DependencyGrid dependencyGrid;
 
     interface ProjectScreenViewImplBinder
             extends
@@ -73,6 +77,7 @@ public class ProjectScreenViewImpl
 
     @Inject
     public ProjectScreenViewImpl(@New POMEditorPanel pomEditorPanel,
+                                 @New DependencyGrid dependencyGrid,
                                  @New MetadataWidget pomMetadataWidget,
                                  @New KModuleEditorPanel kModuleEditorPanel,
                                  @New MetadataWidget kModuleMetaDataPanel,
@@ -83,6 +88,9 @@ public class ProjectScreenViewImpl
 
         this.pomEditorPanel = pomEditorPanel;
         deckPanel.add(pomEditorPanel);
+
+        this.dependencyGrid = dependencyGrid;
+        deckPanel.add(dependencyGrid);
 
         this.pomMetadataWidget = pomMetadataWidget;
         deckPanel.add(pomMetadataWidget);
@@ -138,17 +146,7 @@ public class ProjectScreenViewImpl
 
     @UiHandler(value = "dependenciesButton")
     public void onDependenciesButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies());
-    }
-
-    @UiHandler(value = "dependenciesMetadataButton")
-    public void onDependenciesMetadataButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
-    }
-
-    @UiHandler(value = "dependenciesSourceButton")
-    public void onDependenciesSourceButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies() + ": " + ProjectEditorConstants.INSTANCE.Source());
+        presenter.onDependenciesSelected();
     }
 
     @UiHandler(value = "kbaseButton")
@@ -164,7 +162,7 @@ public class ProjectScreenViewImpl
     @Override
     public void showKBasePanel() {
         deckPanel.showWidget(KBASE_PANEL_INDEX);
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings());
+        dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.KnowledgeBasesAndSessions());
     }
 
     @Override
@@ -198,9 +196,44 @@ public class ProjectScreenViewImpl
         importsPageMetadata.setContent(projectImportsMetadata, false);
     }
 
+    //    @UiHandler(value = "categoriesButton")
+//    public void onCategoriesButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories());
+//    }
+//
+//    @UiHandler(value = "categoriedMetadataButton")
+//    public void onCategoriedMetadataButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+//    }
+//
+//    @UiHandler(value = "dslButton")
+//    public void onDslButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL());
+//    }
+//
+//    @UiHandler(value = "metadataButton")
+//    public void onMetadataButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+//    }
+//
+//    @UiHandler(value = "enumsButton")
+//    public void onEnumsButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums());
+//    }
+//
+//    @UiHandler(value = "enumsMetadataButton")
+//    public void onEnumsMetadataButtonClick(ClickEvent clickEvent) {
+//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+    @Override
+    public void showDependenciesPanel() {
+        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies() + ": " + ProjectEditorConstants.INSTANCE.DependenciesList());
+        deckPanel.showWidget(DEPENDENCY_PANEL_INDEX);
+
+    }
+
     @Override
     public void showImportsPanel() {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Imports());
+        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Imports() + ": " + ProjectEditorConstants.INSTANCE.ImportSuggestions());
         deckPanel.showWidget(IMPORTS_PANEL_INDEX);
     }
 
@@ -210,35 +243,7 @@ public class ProjectScreenViewImpl
         deckPanel.showWidget(IMPORTS_METADATA_PANEL_INDEX);
     }
 
-    @UiHandler(value = "categoriesButton")
-    public void onCategoriesButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories());
-    }
-
-    @UiHandler(value = "categoriedMetadataButton")
-    public void onCategoriedMetadataButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
-    }
-
-    @UiHandler(value = "dslButton")
-    public void onDslButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL());
-    }
-
-    @UiHandler(value = "metadataButton")
-    public void onMetadataButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
-    }
-
-    @UiHandler(value = "enumsButton")
-    public void onEnumsButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums());
-    }
-
-    @UiHandler(value = "enumsMetadataButton")
-    public void onEnumsMetadataButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
-    }
+//    }
 
     @Override
     public void showBusyIndicator(final String message) {
@@ -256,6 +261,11 @@ public class ProjectScreenViewImpl
     }
 
     @Override
+    public void setDependencies(List<Dependency> dependencies) {
+        dependencyGrid.fillList(dependencies);
+    }
+
+    @Override
     public void setPomMetadata(Metadata pomMetaData) {
         pomMetadataWidget.setContent(pomMetaData, false);
     }
@@ -269,5 +279,4 @@ public class ProjectScreenViewImpl
     public void setKModuleMetadata(Metadata kModuleMetaData) {
         kModuleMetaDataPanel.setContent(kModuleMetaData, false);
     }
-
 }

@@ -157,4 +157,8 @@ public interface ProjectEditorConstants
 
     String Enums();
 
+    String DependenciesList();
+
+    String KnowledgeBasesAndSessions();
+
 }
