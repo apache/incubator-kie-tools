@@ -57,14 +57,25 @@ public class BusyPopup extends DecoratedPopupPanel {
 
         @Override
         public void onStart() {
+            state = MessageState.SHOWING;
             super.onStart();
             INSTANCE.center();
-            state = MessageState.VISIBLE;
         }
 
+        @Override
+        public void onComplete() {
+            state = MessageState.VISIBLE;
+            super.onComplete();
+        }
     };
 
     private static final LinearFadeOutAnimation fadeOutAnimation = new LinearFadeOutAnimation( INSTANCE ) {
+
+        @Override
+        public void onStart() {
+            state = MessageState.HIDING;
+            super.onStart();
+        }
 
         @Override
         public void onComplete() {
@@ -83,11 +94,17 @@ public class BusyPopup extends DecoratedPopupPanel {
     }
 
     public static void showMessage( final String message ) {
+        if ( state == MessageState.SHOWING || state == MessageState.VISIBLE ) {
+            return;
+        }
         INSTANCE.message.setText( message );
         deferredShowTimer.schedule( 250 );
     }
 
     public static void close() {
+        if ( state == MessageState.HIDING || state == MessageState.HIDDEN ) {
+            return;
+        }
         deferredShowTimer.cancel();
         if ( state == MessageState.VISIBLE ) {
             fadeOutAnimation.run( 250 );
@@ -95,8 +112,10 @@ public class BusyPopup extends DecoratedPopupPanel {
     }
 
     private enum MessageState {
-        HIDDEN,
-        VISIBLE
+        SHOWING,
+        VISIBLE,
+        HIDING,
+        HIDDEN
     }
 
 }
