@@ -26,7 +26,7 @@
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
   <bootstrap:Container>
-    <bootstrap:Hero>
+    <bootstrap:Row addStyleNames="well">
       <bootstrap:DropdownButton text="Project Settings: Group arfifact version" ui:field="dropDownButton">
 
         <bootstrap:NavList>
@@ -86,7 +86,7 @@
           <!--</bootstrap:NavLink>-->
         </bootstrap:NavList>
       </bootstrap:DropdownButton>
-    </bootstrap:Hero>
+    </bootstrap:Row>
     <gwt:DeckPanel ui:field="deckPanel"/>
   </bootstrap:Container>
 </ui:UiBinder>
