@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+    >
+
+  <ui:with field="i18n"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="resources"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+
+  <bootstrap:Container>
+    <bootstrap:DropdownButton text="Project Settings: Group arfifact version" ui:field="dropDownButton">
+
+      <bootstrap:NavList>
+        <bootstrap:NavHeader>
+          <ui:text from="{i18n.ProjectSettings}"/>
+        </bootstrap:NavHeader>
+        <bootstrap:NavLink ui:field="gavButton">
+          <ui:text from="{i18n.GroupArtifactVersion}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="gavMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="gavSourceButton">
+          <ui:text from="{i18n.Source}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="dependenciesButton">
+          <ui:text from="{i18n.Dependencies}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="dependenciesMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="dependenciesSourceButton">
+          <ui:text from="{i18n.Source}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="kbaseButton">
+          <ui:text from="{i18n.KnowledgeBaseSettings}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="kbaseMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="kbaseSourceButton">
+          <ui:text from="{i18n.Source}"/>
+        </bootstrap:NavLink>
+      </bootstrap:NavList>
+
+      <bootstrap:NavList>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="importsButton">
+          <ui:text from="{i18n.Imports}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="importsMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="categoriesButton">
+          <ui:text from="{i18n.Categories}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="categoriedMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="dslButton">
+          <ui:text from="{i18n.DSL}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="metadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink addStyleNames="nav-header" ui:field="enumsButton">
+          <ui:text from="{i18n.Enums}"/>
+        </bootstrap:NavLink>
+        <bootstrap:NavLink ui:field="enumsMetadataButton">
+          <ui:text from="{i18n.Metadata}"/>
+        </bootstrap:NavLink>
+      </bootstrap:NavList>
+    </bootstrap:DropdownButton>
+    <gwt:DeckPanel ui:field="deckPanel"/>
+  </bootstrap:Container>
+</ui:UiBinder>

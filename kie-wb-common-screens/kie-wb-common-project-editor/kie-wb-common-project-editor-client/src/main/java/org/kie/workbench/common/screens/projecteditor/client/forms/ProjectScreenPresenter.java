@@ -42,9 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
-import org.uberfire.client.workbench.context.WorkbenchContext;
+import org.uberfire.client.context.WorkbenchContext;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -54,16 +52,6 @@ public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
     private ProjectScreenView view;
-    private MultiPageEditor multiPage;
-
-    private POMEditorPanel pomPanel;
-    private MetadataWidget pomMetaDataPanel;
-
-    private KModuleEditorPanel kModuleEditorPanel;
-    private MetadataWidget kModuleMetaDataPanel;
-
-    private ImportsWidgetPresenter importsWidgetPresenter;
-    private MetadataWidget importsPageMetadata;
 
     private Caller<ProjectScreenService> projectScreenService;
     private Caller<ProjectService> projectService;
@@ -80,100 +68,22 @@ public class ProjectScreenPresenter
     }
 
     @Inject
-    public ProjectScreenPresenter( @New ProjectScreenView view,
-                                   @New POMEditorPanel pomPanel,
-                                   @New MetadataWidget pomMetaDataPanel,
-                                   @New KModuleEditorPanel kModuleEditorPanel,
-                                   @New MetadataWidget kModuleMetaDataPanel,
-                                   @New ImportsWidgetPresenter importsWidgetPresenter,
-                                   @New MetadataWidget importsPageMetadata,
-                                   WorkbenchContext workbenchContext,
-                                   Caller<ProjectScreenService> projectScreenService,
-                                   Caller<ProjectService> projectService,
-                                   Caller<BuildService> buildServiceCaller,
-                                   SaveOperationService saveOperationService ) {
+    public ProjectScreenPresenter(@New ProjectScreenView view,
+                                  WorkbenchContext workbenchContext,
+                                  Caller<ProjectScreenService> projectScreenService,
+                                  Caller<ProjectService> projectService,
+                                  Caller<BuildService> buildServiceCaller,
+                                  SaveOperationService saveOperationService) {
         this.view = view;
-        this.multiPage = new MultiPageEditor( MultiPageEditor.TabPosition.LEFT );
+        view.setPresenter(this);
 
-        this.pomPanel = pomPanel;
-        this.pomMetaDataPanel = pomMetaDataPanel;
-
-        this.kModuleEditorPanel = kModuleEditorPanel;
-        this.kModuleMetaDataPanel = kModuleMetaDataPanel;
-
-        this.importsWidgetPresenter = importsWidgetPresenter;
-        this.importsPageMetadata = importsPageMetadata;
         this.projectScreenService = projectScreenService;
         this.projectService = projectService;
 
         this.buildServiceCaller = buildServiceCaller;
         this.saveOperationService = saveOperationService;
 
-        //POM Panel and Metadata
-        multiPage.addPage( new Page( pomPanel,
-                                     ProjectEditorConstants.INSTANCE.PomDotXml() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-        multiPage.addPage( new Page( pomMetaDataPanel,
-                                     ProjectEditorConstants.INSTANCE.PomDotXmlMetadata() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-
-        //KModule Panel and Metadata
-        multiPage.addPage( new Page( kModuleEditorPanel,
-                                     ProjectEditorConstants.INSTANCE.KModuleDotXml() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-        multiPage.addPage( new Page( kModuleMetaDataPanel,
-                                     ProjectEditorConstants.INSTANCE.KModuleDotXmlMetadata() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-
-        //Imports Panel and Metadata
-        multiPage.addPage( new Page( importsWidgetPresenter, ProjectEditorConstants.INSTANCE.ImportSuggestions() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-        multiPage.addPage( new Page( this.importsPageMetadata, ProjectEditorConstants.INSTANCE.ImportSuggestionsMetadata() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-
-        showCurrentProjectInfoIfAny( ( (KieWorkbenchContext) workbenchContext ).getActiveProject() );
+        showCurrentProjectInfoIfAny(workbenchContext.getActivePath());
 
         makeMenuBar();
     }
@@ -182,13 +92,20 @@ public class ProjectScreenPresenter
         showCurrentProjectInfoIfAny( event.getProject() );
     }
 
-    private void showCurrentProjectInfoIfAny( final Project project ) {
-        if ( !project.equals( this.project ) ) {
-            this.project = project;
-            this.pathToPomXML = project.getPomXMLPath();
-            init();
-            multiPage.selectPage( 0 );
-        }
+    private void showCurrentProjectInfoIfAny(Path path) {
+        projectService.call(new RemoteCallback<Path>() {
+            @Override
+            public void callback(Path pathToPomXML) {
+
+                // TODO: Check save if there are changes -Rikkola-
+                if (pathToPomXML != null && (ProjectScreenPresenter.this.pathToPomXML == null || !ProjectScreenPresenter.this.pathToPomXML.equals(pathToPomXML))) {
+
+                    ProjectScreenPresenter.this.pathToPomXML = pathToPomXML;
+                    init();
+//                    multiPage.selectPage(0);
+                }
+            }
+        }).resolvePathToPom(path);
     }
 
     private void init() {
@@ -200,14 +117,14 @@ public class ProjectScreenPresenter
                     public void callback( ProjectScreenModel model ) {
                         ProjectScreenPresenter.this.model = model;
 
-                        pomPanel.setPOM( model.getPOM(), false );
-                        pomMetaDataPanel.setContent( model.getPOMMetaData(), false );
+                        view.setPOM(model.getPOM());
+                        view.setPomMetadata(model.getPOMMetaData());
 
-                        kModuleEditorPanel.setData( model.getKModule(), false );
-                        kModuleMetaDataPanel.setContent( model.getKModuleMetaData(), false );
+                        view.setKModule(model.getKModule());
+                        view.setKModuleMetadata(model.getKModuleMetaData());
 
-                        importsWidgetPresenter.setData( model.getProjectImports(), false );
-                        importsPageMetadata.setContent( model.getProjectImportsMetaData(), false );
+                        view.setImports(model.getProjectImports());
+                        view.setImportsMetadata(model.getProjectImportsMetaData());
                     }
                 }
 
@@ -277,7 +194,7 @@ public class ProjectScreenPresenter
 
     @WorkbenchPartView
     public IsWidget asWidget() {
-        return multiPage;
+        return view.asWidget();
     }
 
     @WorkbenchMenu
@@ -285,4 +202,33 @@ public class ProjectScreenPresenter
         return menus;
     }
 
+    @Override
+    public void onGAVPanelSelected() {
+        view.showGAVPanel();
+    }
+
+    @Override
+    public void onGAVMetadataPanelSelected() {
+        view.showGAVMetadataPanel();
+    }
+
+    @Override
+    public void onKBasePanelSelected() {
+        view.showKBasePanel();
+    }
+
+    @Override
+    public void onKBaseMetadataPanelSelected() {
+        view.showKBaseMetadataPanel();
+    }
+
+    @Override
+    public void onImportsPanelSelected() {
+        view.showImportsPanel();
+    }
+
+    @Override
+    public void onImportsMetadataPanelSelected() {
+        view.showImportsMetadataPanel();
+    }
 }

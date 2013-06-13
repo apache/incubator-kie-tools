@@ -17,7 +17,13 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.services.project.service.model.KModuleModel;
+import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.project.service.model.ProjectImports;
+import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -25,6 +31,43 @@ public interface ProjectScreenView
 
     interface Presenter {
 
+        void onGAVPanelSelected();
+
+        void onGAVMetadataPanelSelected();
+
+        void onKBasePanelSelected();
+
+        void onKBaseMetadataPanelSelected();
+
+        void onImportsPanelSelected();
+
+        void onImportsMetadataPanelSelected();
+
     }
+    void setPresenter(Presenter projectScreenPresenter);
+
+    void setPOM(POM pom);
+
+    void setPomMetadata(Metadata pomMetaData);
+
+    void setKModule(KModuleModel kModule);
+
+    void setKModuleMetadata(Metadata kModuleMetaData);
+
+    void setImports(ProjectImports projectImports);
+
+    void setImportsMetadata(Metadata projectImportsMetadata);
+
+    void showImportsPanel();
+
+    void showImportsMetadataPanel();
+
+    void showGAVMetadataPanel();
+
+    void showGAVPanel();
+
+    void showKBasePanel();
+
+    void showKBaseMetadataPanel();
 
 }

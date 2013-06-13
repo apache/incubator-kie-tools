@@ -138,4 +138,23 @@ public interface ProjectEditorConstants
     String ImportSuggestions();
 
     String ImportSuggestionsMetadata();
+
+    String ProjectSettings();
+
+    String GroupArtifactVersion();
+
+    String Metadata();
+
+    String Source();
+
+    String KnowledgeBaseSettings();
+
+    String Imports();
+
+    String Categories();
+
+    String DSL();
+
+    String Enums();
+
 }
