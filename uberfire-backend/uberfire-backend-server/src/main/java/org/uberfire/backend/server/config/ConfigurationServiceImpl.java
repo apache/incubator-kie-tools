@@ -1,6 +1,5 @@
 package org.uberfire.backend.server.config;
 
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +31,7 @@ import org.uberfire.security.Identity;
 
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
+
     private static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
     private static final String MONITOR_DISABLED = "org.kie.sys.repo.monitor.disabled";
     private static final String MONITOR_CHECK_INTERVAL = "org.kie.sys.repo.monitor.interval";
@@ -47,7 +47,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Inject
     private Identity identity;
-
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
@@ -72,15 +71,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         } catch ( FileSystemAlreadyExistsException e ) {
         }
         // enable monitor by default
-        if (System.getProperty(MONITOR_DISABLED) == null) {
+        if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(new CheckConfigurationUpdates());
+            executorService.execute( new CheckConfigurationUpdates() );
         }
     }
 
     @PreDestroy
     public void shutdown() {
-        if (this.executorService != null) {
+        if ( this.executorService != null ) {
             this.executorService.shutdownNow();
         }
     }
@@ -117,34 +116,23 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public boolean addConfiguration( final ConfigGroup configGroup ) {
-        try {
-            String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS, "_");
+        String filename = configGroup.getName().replaceAll( INVALID_FILENAME_CHARS, "_" );
 
-            final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
-            // avoid duplicated writes to not cause cyclic cluster sync
-            if (ioService.exists(filePath)) {
-                return true;
-            }
-
-            final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
-                                                                         "Created config " + filePath.getFileName() );
-            final OutputStream outputStream = ioService.newOutputStream( filePath,
-                                                                         StandardOpenOption.TRUNCATE_EXISTING,
-                                                                         commentedOption );
-
-            final String xml = marshaller.marshall( configGroup );
-            outputStream.write( xml.getBytes( "UTF-8" ) );
-            outputStream.close();
-
-            //Invalidate cache if a new item has been created; otherwise cached value is stale
-            configuration.remove( configGroup.getType() );
-            updateLastModified();
-
+        final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
+        // avoid duplicated writes to not cause cyclic cluster sync
+        if ( ioService.exists( filePath ) ) {
             return true;
-
-        } catch ( java.io.IOException e ) {
-            throw new RuntimeException( "Error when creating asset", e );
         }
+
+        final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
+                                                                     "Created config " + filePath.getFileName() );
+        ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
+
+        //Invalidate cache if a new item has been created; otherwise cached value is stale
+        configuration.remove( configGroup.getType() );
+        updateLastModified();
+
+        return true;
     }
 
     @Override
@@ -152,16 +140,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         //Invalidate cache if an item has been removed; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
-        String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS, "_");
+        String filename = configGroup.getName().replaceAll( INVALID_FILENAME_CHARS, "_" );
         final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
 
         // avoid duplicated writes to not cause cyclic cluster sync
-        if (!ioService.exists(filePath)) {
+        if ( !ioService.exists( filePath ) ) {
             return true;
         }
         boolean result = ioService.deleteIfExists( filePath );
 
-        if (result) {
+        if ( result ) {
             updateLastModified();
         }
 
@@ -177,27 +165,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     protected long getLastModified() {
-        final Path lastModifiedPath = ioService.get( systemRepository.getUri() ).resolve(LAST_MODIFIED_MARKER_FILE);
+        final Path lastModifiedPath = ioService.get( systemRepository.getUri() ).resolve( LAST_MODIFIED_MARKER_FILE );
 
-        return ioService.getLastModifiedTime(lastModifiedPath).toMillis();
+        return ioService.getLastModifiedTime( lastModifiedPath ).toMillis();
     }
 
     protected void updateLastModified() {
-        try {
-            final Path lastModifiedPath = ioService.get( systemRepository.getUri() ).resolve(LAST_MODIFIED_MARKER_FILE);
-            final CommentedOption commentedOption = new CommentedOption( "system", "system repo updated" );
-            final OutputStream outputStream = ioService.newOutputStream(lastModifiedPath,
-                    StandardOpenOption.TRUNCATE_EXISTING,
-                    commentedOption );
+        final Path lastModifiedPath = ioService.get( systemRepository.getUri() ).resolve( LAST_MODIFIED_MARKER_FILE );
+        final CommentedOption commentedOption = new CommentedOption( "system", "system repo updated" );
 
-            outputStream.write(new Date().toString().getBytes());
-            outputStream.close();
-            // update the last value to avoid to be retriggered byt the monitor
-            localLastModifiedValue = getLastModified();
+        ioService.write( lastModifiedPath, new Date().toString().getBytes(), commentedOption );
 
-        } catch ( java.io.IOException e ) {
-            throw new RuntimeException( "Error when updating system repository", e );
-        }
+        // update the last value to avoid to be retriggered byt the monitor
+        localLastModifiedValue = getLastModified();
     }
 
     private class CheckConfigurationUpdates implements Runnable {
@@ -207,19 +187,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         @Override
         public void run() {
 
-            while (active) {
+            while ( active ) {
                 try {
                     long currentValue = getLastModified();
-                    if (currentValue > localLastModifiedValue) {
+                    if ( currentValue > localLastModifiedValue ) {
                         localLastModifiedValue = currentValue;
                         // invalidate cached values as system repo has changed - for now only for deployments
-                        configuration.remove(ConfigType.DEPLOYMENT);
-                        changedEvent.fire(new SystemRepositoryChangedEvent());
+                        configuration.remove( ConfigType.DEPLOYMENT );
+                        changedEvent.fire( new SystemRepositoryChangedEvent() );
 
                     }
 
-                    Thread.sleep(Long.parseLong(System.getProperty(MONITOR_CHECK_INTERVAL, "2000")));
-                } catch (Exception e) {
+                    Thread.sleep( Long.parseLong( System.getProperty( MONITOR_CHECK_INTERVAL, "2000" ) ) );
+                } catch ( Exception e ) {
 
                 }
             }
