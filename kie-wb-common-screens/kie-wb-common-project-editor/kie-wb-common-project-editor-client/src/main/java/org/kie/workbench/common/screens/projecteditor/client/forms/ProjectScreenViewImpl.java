@@ -36,9 +36,11 @@ import org.kie.workbench.common.widgets.configresource.client.widget.unbound.Imp
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import java.util.List;
 
+@ApplicationScoped
 public class ProjectScreenViewImpl
         extends Composite
         implements ProjectScreenView {
@@ -76,13 +78,13 @@ public class ProjectScreenViewImpl
     DeckPanel deckPanel;
 
     @Inject
-    public ProjectScreenViewImpl(@New POMEditorPanel pomEditorPanel,
-                                 @New DependencyGrid dependencyGrid,
-                                 @New MetadataWidget pomMetadataWidget,
-                                 @New KModuleEditorPanel kModuleEditorPanel,
-                                 @New MetadataWidget kModuleMetaDataPanel,
-                                 @New ImportsWidgetPresenter importsWidgetPresenter,
-                                 @New MetadataWidget importsPageMetadata) {
+    public ProjectScreenViewImpl(POMEditorPanel pomEditorPanel,
+                                 DependencyGrid dependencyGrid,
+                                 MetadataWidget pomMetadataWidget,
+                                 KModuleEditorPanel kModuleEditorPanel,
+                                 MetadataWidget kModuleMetaDataPanel,
+                                 ImportsWidgetPresenter importsWidgetPresenter,
+                                 MetadataWidget importsPageMetadata) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
