@@ -35,8 +35,6 @@ public interface ListFormComboPanelView
 
     }
 
-    void setListTitle(String title);
-
     void addItem( String name );
 
     void setPresenter( Presenter presenter );

@@ -41,6 +41,8 @@ public interface KBaseFormView
 
     void setName( String name );
 
+    void setDefault(boolean aDefault);
+
     void setEqualsBehaviorEquality();
 
     void setEqualsBehaviorIdentity();

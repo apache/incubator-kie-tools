@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.widgets;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,10 +25,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -47,9 +46,6 @@ public class ListFormComboPanelViewImpl
     }
 
     private static ListFormComboPanelViewImplBinder uiBinder = GWT.create(ListFormComboPanelViewImplBinder.class);
-
-    @UiField
-    Label listTitle;
 
     @UiField
     ListBox list;
@@ -76,11 +72,6 @@ public class ListFormComboPanelViewImpl
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void setListTitle(String title) {
-        listTitle.setText(title);
     }
 
     @Override

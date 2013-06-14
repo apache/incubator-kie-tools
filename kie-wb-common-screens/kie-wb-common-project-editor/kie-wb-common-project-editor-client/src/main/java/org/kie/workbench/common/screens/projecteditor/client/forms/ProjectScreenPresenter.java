@@ -113,14 +113,14 @@ public class ProjectScreenPresenter
 
                         view.setImports(model.getProjectImports());
                         view.setImportsMetadata(model.getProjectImportsMetaData());
+
+                        view.hideBusyIndicator();
                     }
                 }
 
         ).load(pathToPomXML);
 
         view.showGAVPanel();
-
-        view.hideBusyIndicator();
     }
 
     private void makeMenuBar() {

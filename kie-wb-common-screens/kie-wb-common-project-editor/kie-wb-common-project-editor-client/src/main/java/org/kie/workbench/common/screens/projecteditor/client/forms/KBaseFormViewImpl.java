@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import com.github.gwtbootstrap.client.ui.PageHeader;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -23,8 +24,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.model.KSessionModel;
 
 import javax.enterprise.inject.New;
@@ -46,7 +47,7 @@ public class KBaseFormViewImpl
     private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
 
     @UiField
-    Label nameLabel;
+    PageHeader nameLabel;
 
     @UiField
     RadioButton equalsBehaviorIdentity;
@@ -83,6 +84,15 @@ public class KBaseFormViewImpl
     @Override
     public void setName(String name) {
         nameLabel.setText(name);
+    }
+
+    @Override
+    public void setDefault(boolean aDefault) {
+        if (aDefault) {
+            nameLabel.setSubtext(ProjectEditorConstants.INSTANCE.BracketDefaultBracket());
+        } else {
+            nameLabel.setSubtext("");
+        }
     }
 
     @Override

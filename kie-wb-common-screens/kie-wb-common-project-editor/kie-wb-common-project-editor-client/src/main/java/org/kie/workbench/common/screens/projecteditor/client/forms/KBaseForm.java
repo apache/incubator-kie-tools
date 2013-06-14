@@ -42,6 +42,7 @@ public class KBaseForm
         this.model = knowledgeBaseConfiguration;
 
         view.setName(knowledgeBaseConfiguration.getName());
+        view.setDefault(knowledgeBaseConfiguration.isDefault());
 
         setEqualsBehaviour(knowledgeBaseConfiguration);
 

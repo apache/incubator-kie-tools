@@ -18,44 +18,27 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:editor='urn:import:org.kie.workbench.common.screens.projecteditor.client.forms'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+  <ui:with field="i18n"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="resources"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:HTMLPanel width="100%">
-    <div>
-      <div>
-        <div style='float:left; padding-right:5px;'>
-          <gwt:Label text="{i18n.Name}"/>
-        </div>
-        <div style='float:left;'>
-          <gwt:Label ui:field="nameLabel"/>
-        </div>
-        <div style='clear:both;'/>
-      </div>
-      <div style="float:left" class='{resources.mainCss.selectionBox}'>
-        <gwt:Label text="{i18n.EqualsBehavior}"/>
-        <div>
-          <b:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
-        </div>
-        <div>
-          <b:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
-        </div>
-      </div>
-      <div style="float:left" class='{resources.mainCss.selectionBox}'>
-        <div>
-          <gwt:Label text="{i18n.EventProcessingMode}"/>
-          <div>
-            <b:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
-          </div>
-          <div>
-            <b:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
-          </div>
-        </div>
-      </div>
-      <div style='clear:both;'/>
-    </div>
+
+  <bootstrap:Container>
+    <bootstrap:PageHeader ui:field="nameLabel"></bootstrap:PageHeader>
+    <bootstrap:Heading size="4">
+      <ui:text from="{i18n.EqualsBehavior}"/>
+    </bootstrap:Heading>
+    <bootstrap:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
+    <bootstrap:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
+    <bootstrap:Heading size="4">
+      <ui:text from="{i18n.EventProcessingMode}"/>
+    </bootstrap:Heading>
+    <bootstrap:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
+    <bootstrap:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
+
     <gwt:TabLayoutPanel barHeight="50" barUnit="PX" height="400px" width="600px">
       <gwt:tab>
         <gwt:header>
@@ -70,6 +53,6 @@
         <editor:KSessionsPanel ui:field="statelessSessionsPanel"/>
       </gwt:tab>
     </gwt:TabLayoutPanel>
-  </gwt:HTMLPanel>
+  </bootstrap:Container>
 
 </ui:UiBinder>

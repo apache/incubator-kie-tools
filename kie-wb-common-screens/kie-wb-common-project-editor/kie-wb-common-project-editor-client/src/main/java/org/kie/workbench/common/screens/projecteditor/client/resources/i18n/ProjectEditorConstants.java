@@ -161,4 +161,5 @@ public interface ProjectEditorConstants
 
     String KnowledgeBasesAndSessions();
 
+    String BracketDefaultBracket();
 }

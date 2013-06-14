@@ -18,29 +18,34 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="i18n"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
 
-  <gwt:HTMLPanel>
-    <div>
-      <gwt:Label ui:field="listTitle"/>
-      <gwt:HorizontalPanel>
-        <gwt:Button ui:field="addButton" text="{i18n.Add}"/>
-        <gwt:Button ui:field="renameButton" text="{i18n.Rename}"/>
-        <gwt:Button ui:field="deleteButton" text="{i18n.Delete}"/>
-        <gwt:Button ui:field="makeDefaultButton" text="{i18n.MakeDefault}"/>
-      </gwt:HorizontalPanel>
-    </div>
-    <div>
-      <div style='float:left;'>
-        <gwt:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
-      </div>
-      <div style='float:left; padding-left:20px;'>
-        <gwt:SimplePanel ui:field="kSessionForm"/>
-      </div>
-      <div style='clear:both;'/>
-    </div>
-  </gwt:HTMLPanel>
+
+  <bootstrap:Container>
+    <bootstrap:Container addStyleNames="pull-left">
+      <bootstrap:ButtonGroup>
+        <bootstrap:Button ui:field="addButton">
+          <ui:text from="{i18n.Add}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="renameButton">
+          <ui:text from="{i18n.Rename}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="deleteButton">
+          <ui:text from="{i18n.Delete}"/>
+        </bootstrap:Button>
+        <bootstrap:Button ui:field="makeDefaultButton">
+          <ui:text from="{i18n.MakeDefault}"/>
+        </bootstrap:Button>
+      </bootstrap:ButtonGroup>
+      <bootstrap:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
+    </bootstrap:Container>
+    <bootstrap:Container addStyleNames="pull-left">
+      <gwt:SimplePanel ui:field="kSessionForm"/>
+    </bootstrap:Container>
+  </bootstrap:Container>
 
 </ui:UiBinder>
