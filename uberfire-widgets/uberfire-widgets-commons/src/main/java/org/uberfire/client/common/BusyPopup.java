@@ -106,7 +106,7 @@ public class BusyPopup extends DecoratedPopupPanel {
             return;
         }
         deferredShowTimer.cancel();
-        if ( state == MessageState.VISIBLE ) {
+        if ( state == MessageState.VISIBLE || state == MessageState.SHOWING ) {
             fadeOutAnimation.run( 250 );
         }
     }
