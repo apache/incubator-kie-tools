@@ -131,6 +131,10 @@ public class ExplorerPresenter {
             public void callback( final Collection<Group> groups ) {
                 view.setGroups( groups,
                                 getActiveGroup() );
+                //If there are no groups there is no cascade so ensure busy popup is closed.
+                if ( groups.size() == 0 ) {
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
@@ -160,6 +164,10 @@ public class ExplorerPresenter {
             public void callback( final Collection<Repository> repositories ) {
                 view.setRepositories( repositories,
                                       getActiveRepository() );
+                //If there are no repositories there is no cascade so ensure busy popup is closed.
+                if ( repositories.size() == 0 ) {
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
@@ -189,6 +197,10 @@ public class ExplorerPresenter {
             public void callback( final Collection<Project> projects ) {
                 view.setProjects( projects,
                                   getActiveProject() );
+                //If there are no projects there is no cascade so ensure busy popup is closed.
+                if ( projects.size() == 0 ) {
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
@@ -217,6 +229,10 @@ public class ExplorerPresenter {
         if ( packages != null ) {
             view.setPackages( packages,
                               getActivePackage() );
+            //If there are no packages there is no cascade so ensure busy popup is closed.
+            if ( packages.size() == 0 ) {
+                view.hideBusyIndicator();
+            }
             return;
         }
 
@@ -229,6 +245,10 @@ public class ExplorerPresenter {
                                        packages );
                 view.setPackages( packages,
                                   getActivePackage() );
+                //If there are no packages there is no cascade so ensure busy popup is closed.
+                if ( packages.size() == 0 ) {
+                    view.hideBusyIndicator();
+                }
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }
@@ -255,6 +275,10 @@ public class ExplorerPresenter {
         final Collection<Item> items = itemCache.getEntry( pkg );
         if ( items != null ) {
             view.setItems( items );
+            //If there are no packages there is no cascade so ensure busy popup is closed.
+            if ( items.size() == 0 ) {
+                view.hideBusyIndicator();
+            }
             return;
         }
 
