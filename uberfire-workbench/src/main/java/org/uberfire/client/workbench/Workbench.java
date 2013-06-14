@@ -44,8 +44,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.navbar.NavBar;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -79,13 +79,7 @@ public class Workbench
     private WorkbenchPickupDragController dragController;
 
     @Inject
-    private WorkbenchMenuBarPresenter menuBarPresenter;
-
-//    @Inject
-//    private WorkbenchToolBarPresenter toolBarPresenter;
-
-//    @Inject
-//    private WorkbenchStatusBarPresenter statusBarPresenter;
+    private NavBar navBar;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
@@ -93,20 +87,13 @@ public class Workbench
     @PostConstruct
     public void setup() {
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            container.add( menuBarPresenter.getView() );
+            container.add( navBar );
         }
-        //Menu bar
-
-//        //Tool bar
-//        container.add( toolBarPresenter.getView() );
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
-
-//        //Status bar
-//        container.add( statusBarPresenter.getView() );
 
         initWidget( container );
     }
@@ -178,6 +165,7 @@ public class Workbench
                 onResize();
             }
         } );
+
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
@@ -208,17 +196,15 @@ public class Workbench
 
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
-        final int menuBarHeight = menuBarPresenter.getView().asWidget().getOffsetHeight();
-//        final int toolBarHeight = toolBarPresenter.getHeight();
-//        final int statusBarHeight = statusBarPresenter.getView().asWidget().getOffsetHeight();
+        final int navBarHeight = navBar.asWidget().getOffsetHeight();
+
         final int availableHeight;
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            availableHeight = height - menuBarHeight;
+            availableHeight = height - navBarHeight;
         } else {
             availableHeight = height;
         }
 
-//        final int availableHeight = height - menuBarHeight - toolBarHeight;// - statusBarHeight;
         workbenchContainer.setPixelSize( width, availableHeight );
         workbench.setPixelSize( width, availableHeight );
 

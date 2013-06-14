@@ -14,20 +14,25 @@ import org.uberfire.backend.vfs.Path;
 public class GitRepository implements Repository {
 
     public static final String SCHEME = "git";
-    private static final String USER_NAME = "username";
-    private static final String USER_PASSWORD = "password";
 
     private String alias = null;
     private final Map<String, Object> environment = new HashMap<String, Object>();
     private Path root;
 
     private Collection<String> roles = new ArrayList<String>();
+    private String publicURI;
 
     public GitRepository() {
     }
 
     public GitRepository( final String alias ) {
         this.alias = alias;
+    }
+
+    public GitRepository( final String alias,
+                          final String publicURI ) {
+        this.alias = alias;
+        this.publicURI = publicURI;
     }
 
     @Override
@@ -62,11 +67,7 @@ public class GitRepository implements Repository {
 
     @Override
     public boolean isValid() {
-        final Object username = environment.get( USER_NAME );
-        final Object password = environment.get( USER_PASSWORD );
-        return alias != null &&
-                username != null &&
-                password != null;
+        return alias != null;
     }
 
     @Override
@@ -75,8 +76,17 @@ public class GitRepository implements Repository {
     }
 
     @Override
+    public String getPublicUri() {
+        return publicURI;
+    }
+
+    @Override
     public String getSignatureId() {
         return getClass().getName() + "#" + getUri();
+    }
+
+    public void setPublicUri( String publicURI ) {
+        this.publicURI = publicURI;
     }
 
     @Override
@@ -107,7 +117,7 @@ public class GitRepository implements Repository {
         if ( alias != null ? !alias.equals( that.alias ) : that.alias != null ) {
             return false;
         }
-        if ( environment != null ? !environment.equals( that.environment ) : that.environment != null ) {
+        if ( !environment.equals( that.environment ) ) {
             return false;
         }
 
@@ -117,7 +127,7 @@ public class GitRepository implements Repository {
     @Override
     public int hashCode() {
         int result = alias != null ? alias.hashCode() : 0;
-        result = 31 * result + ( environment != null ? environment.hashCode() : 0 );
+        result = 31 * result + ( environment.hashCode() );
         return result;
     }
 

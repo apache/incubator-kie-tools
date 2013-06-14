@@ -83,6 +83,7 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         }
 
         repo.setRoot( paths.convert( fs.getRootDirectories().iterator().next() ) );
+        repo.setPublicUri( fs.toString() );
 
         return repo;
     }

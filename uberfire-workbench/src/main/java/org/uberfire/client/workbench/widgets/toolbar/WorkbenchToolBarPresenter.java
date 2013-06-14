@@ -63,9 +63,6 @@ public class WorkbenchToolBarPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private WorkbenchToolBarPresenterUtils toolBarUtils;
-
     //Items relating to the Workbench as a whole
     private List<ToolBar> workbenchItems = new ArrayList<ToolBar>();
 
@@ -133,30 +130,30 @@ public class WorkbenchToolBarPresenter {
 
     public void addWorkbenchItem( final ToolBar toolBar ) {
 
-        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-
-        if ( !filteredToolBar.getItems().isEmpty() ) {
-            workbenchItems.add( filteredToolBar );
-            view.addToolBar( filteredToolBar );
-        }
+////        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+//
+//        if ( !filteredToolBar.getItems().isEmpty() ) {
+//            workbenchItems.add( filteredToolBar );
+//            view.addToolBar( filteredToolBar );
+//        }
     }
 
     public void addWorkbenchPerspective( final ToolBar toolBar ) {
-        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-
-        if ( !filteredToolBar.getItems().isEmpty() ) {
-            workbenchPerspectiveItems.add( filteredToolBar );
-            view.addToolBar( filteredToolBar );
-        }
+//        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+//
+//        if ( !filteredToolBar.getItems().isEmpty() ) {
+//            workbenchPerspectiveItems.add( filteredToolBar );
+//            view.addToolBar( filteredToolBar );
+//        }
     }
 
     public void addWorkbenchContextItem( final ToolBar toolBar ) {
-        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-
-        if ( !filteredToolBar.getItems().isEmpty() ) {
-            workbenchContextItems.add( filteredToolBar );
-            view.addToolBar( filteredToolBar );
-        }
+//        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
+//
+//        if ( !filteredToolBar.getItems().isEmpty() ) {
+//            workbenchContextItems.add( filteredToolBar );
+//            view.addToolBar( filteredToolBar );
+//        }
     }
 
     public void clearWorkbenchItems() {

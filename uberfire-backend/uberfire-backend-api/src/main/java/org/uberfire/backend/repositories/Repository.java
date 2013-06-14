@@ -20,6 +20,8 @@ public interface Repository extends RuntimeResource {
 
     String getUri();
 
+    String getPublicUri();
+
     Path getRoot();
 
 }

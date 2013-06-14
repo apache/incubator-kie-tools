@@ -40,6 +40,7 @@ import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.RoleProvider;
+import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.ResourceDecisionManager;
 import org.uberfire.security.authz.RoleDecisionManager;
@@ -56,8 +57,8 @@ import static org.uberfire.security.server.SecurityConstants.*;
 
 public class UberFireSecurityFilter implements Filter {
 
-    private final Logger          LOG             = LoggerFactory.getLogger( UberFireSecurityFilter.class );
-    private       SecurityManager securityManager = null;
+    private final Logger LOG = LoggerFactory.getLogger( UberFireSecurityFilter.class );
+    private SecurityManager securityManager = null;
 
     @Override
     public void init( final FilterConfig filterConfig )
@@ -76,6 +77,7 @@ public class UberFireSecurityFilter implements Filter {
         final ResourceDecisionManager accessDecisionManager = getURLAccessDecisionManager( options );
         final RoleDecisionManager roleDecisionManager = getRoleDecisionManager( options );
         final RoleProvider roleProvider = getRoleProvider( options );
+        final SubjectPropertiesProvider propertiesProvider = getPropertiesProvider( options );
 
         this.securityManager = HttpSecurityManagerImpl.newBuilder()
                 .addAuthManager( authManager )
@@ -85,6 +87,7 @@ public class UberFireSecurityFilter implements Filter {
                 .addAuthenticatedStorageProvider( new HttpSessionStorage() )
                 .addAuthenticatedStorageProvider( cookieStorage )
                 .addRoleProvider( roleProvider )
+                .addSubjectPropertiesProvider( propertiesProvider )
                 .addAuthzManager( authzManager )
                 .addVotingStrategy( urlVotingStrategy )
                 .addAccessDecisionManager( accessDecisionManager )
@@ -132,6 +135,12 @@ public class UberFireSecurityFilter implements Filter {
         final String roleProvider = options.get( ROLE_PROVIDER_KEY );
 
         return loadConfigClazz( roleProvider, RoleProvider.class );
+    }
+
+    private SubjectPropertiesProvider getPropertiesProvider( final Map<String, String> options ) {
+        final String propertiesProvider = options.get( SUBJECT_PROPERTIES_PROVIDER_KEY );
+
+        return loadConfigClazz( propertiesProvider, SubjectPropertiesProvider.class );
     }
 
     private RoleDecisionManager getRoleDecisionManager( final Map<String, String> options ) {
@@ -191,8 +200,8 @@ public class UberFireSecurityFilter implements Filter {
         AuthenticationScheme scheme = null;
         if ( authScheme == null || authScheme.isEmpty() ) {
             return new FormAuthenticationScheme();
-        }  else {
-            scheme =  loadConfigClazz( authScheme, AuthenticationScheme.class );
+        } else {
+            scheme = loadConfigClazz( authScheme, AuthenticationScheme.class );
         }
 
         if ( scheme == null && authScheme.equalsIgnoreCase( FORM ) ) {
@@ -290,7 +299,7 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private <T> T loadConfigClazz( final String clazzName,
-                                   Class<T> typeOf ) {
+                                   final Class<T> typeOf ) {
 
         if ( clazzName == null || clazzName.isEmpty() ) {
             return null;

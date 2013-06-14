@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>jboss-as7.0</id>
+  <formats>
+    <format>war</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/src/main/jbossas7</directory>
+      <outputDirectory>.</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.uberfire:uberfire-webapp-thora:war</include>
+      </includes>
+      <outputDirectory>.</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>WEB-INF/jetty-env.xml</exclude>
+          <exclude>WEB-INF/web.xml</exclude>
+
+          <!-- UF Client Related -->
+          <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
+
+          <!-- GWT Client Related -->
+          <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>
+          <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
+          <exclude>WEB-INF/lib/gchart-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-crypto-*.jar</exclude>
+
+
+          <!-- General -->
+          <exclude>WEB-INF/lib/*-sources.jar</exclude>
+          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
+
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-ui-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-data-binding-*.jar</exclude>
+
+
+          <!-- Jetty -->
+          <exclude>WEB-INF/lib/jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/mail-*.jar</exclude>
+          <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
+          <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
+          <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/weld-*.jar</exclude>
+          <exclude>WEB-INF/lib/javax*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-interceptors-api_*.jar</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

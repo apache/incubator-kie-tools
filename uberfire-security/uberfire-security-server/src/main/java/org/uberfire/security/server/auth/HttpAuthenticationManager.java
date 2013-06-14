@@ -16,16 +16,11 @@
 
 package org.uberfire.security.server.auth;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
@@ -40,6 +35,7 @@ import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
+import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.HttpSecurityContext;
@@ -52,14 +48,12 @@ import static org.uberfire.security.Role.*;
 import static org.uberfire.security.auth.AuthenticationStatus.*;
 
 //TODO {porcelli} support for jaas!
-public class HttpAuthenticationManager implements AuthenticationManager,
-                                                  Serializable {
-
-    private static final long serialVersionUID = 4343210317731383536L;
+public class HttpAuthenticationManager implements AuthenticationManager {
 
     private final List<AuthenticationScheme> authSchemes;
     private final List<AuthenticationProvider> authProviders;
     private final List<RoleProvider> roleProviders;
+    private final List<SubjectPropertiesProvider> subjectPropertiesProviders;
     private final List<AuthenticatedStorageProvider> authStorageProviders;
 
     private final ResourceManager resourceManager;
@@ -70,11 +64,13 @@ public class HttpAuthenticationManager implements AuthenticationManager,
     public HttpAuthenticationManager( final List<AuthenticationScheme> authScheme,
                                       final List<AuthenticationProvider> authProviders,
                                       final List<RoleProvider> roleProviders,
+                                      final List<SubjectPropertiesProvider> subjectPropertiesProviders,
                                       final List<AuthenticatedStorageProvider> authStorageProviders,
                                       final ResourceManager resourceManager ) {
         this.authSchemes = checkNotEmpty( "authScheme", authScheme );
         this.authProviders = checkNotEmpty( "authProviders", authProviders );
         this.roleProviders = checkNotEmpty( "roleProviders", roleProviders );
+        this.subjectPropertiesProviders = checkNotNull( "subjectPropertiesProviders", subjectPropertiesProviders );
         this.authStorageProviders = checkNotEmpty( "authStorageProviders", authStorageProviders );
         this.resourceManager = checkNotNull( "resourceManager", resourceManager );
     }
@@ -144,28 +140,33 @@ public class HttpAuthenticationManager implements AuthenticationManager,
             roles.addAll( roleProvider.loadRoles( principal ) );
         }
 
+        final Map<String, String> properties = new HashMap<String, String>();
+        for ( final SubjectPropertiesProvider propertiesProvider : subjectPropertiesProviders ) {
+            properties.putAll( propertiesProvider.loadProperties( principal ) );
+        }
+
         final String name = principal.getName();
-        final Subject result = new IdentityImpl( name, roles );
+        final Subject result = new IdentityImpl( name, roles, properties );
 
         for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
             storeProvider.store( httpContext, result );
         }
 
-        final String originalRequest = requestCache.remove(httpContext.getRequest().getSession().getId());
-        if (originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted()) {
+        final String originalRequest = requestCache.remove( httpContext.getRequest().getSession().getId() );
+        if ( originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted() ) {
             try {
-                if (useRedirect(originalRequest)) {
-                    httpContext.getResponse().sendRedirect(originalRequest);
+                if ( useRedirect( originalRequest ) ) {
+                    httpContext.getResponse().sendRedirect( originalRequest );
                 } else {
                     // subject must be already set here since we forwarding
-                    SecurityFactory.setSubject(result);
-                    RequestDispatcher rd = httpContext.getRequest().getRequestDispatcher(originalRequest.replaceFirst(httpContext.getRequest().getContextPath(), ""));
+                    SecurityFactory.setSubject( result );
+                    RequestDispatcher rd = httpContext.getRequest().getRequestDispatcher( originalRequest.replaceFirst( httpContext.getRequest().getContextPath(), "" ) );
                     // forward instead of sendRedirect as sendRedirect will always use GET method which
                     // means it can change http method if non GET was used for instance POST
-                    rd.forward(httpContext.getRequest(), httpContext.getResponse());
+                    rd.forward( httpContext.getRequest(), httpContext.getResponse() );
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to redirect.");
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to redirect." );
             }
         }
 
@@ -181,11 +182,8 @@ public class HttpAuthenticationManager implements AuthenticationManager,
         httpContext.getRequest().getSession().invalidate();
     }
 
-    private boolean useRedirect(String originalRequest) {
+    private boolean useRedirect( String originalRequest ) {
         // hack for gwt hosted mode
-        if (originalRequest.indexOf("gwt.codesvr") != -1) {
-            return true;
-        }
-        return false;
+        return originalRequest.contains( "gwt.codesvr" );
     }
 }

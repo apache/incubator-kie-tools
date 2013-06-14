@@ -42,7 +42,7 @@ public class SecurityFactory {
     @Produces
     @RequestScoped
     public static Identity getIdentity() {
-        return new IdentityImpl( subjects.get().getName(), subjects.get().getRoles() );
+        return new IdentityImpl( subjects.get().getName(), subjects.get().getRoles(), subjects.get().getProperties() );
     }
 
     @Produces

@@ -49,61 +49,62 @@ public class UberfireServlet extends HttpServlet {
     CompiledTemplate userDataTemplate = null;
 
     @Override
-    public void init(final ServletConfig config) throws ServletException {
+    public void init( final ServletConfig config ) throws ServletException {
         try {
-            final String appTemplateRef = getConfig(config, "org.uberfire.template.app");
-            if (appTemplateRef != null) {
-                appTemplate = compileTemplate(getFileContent(appTemplateRef));
+            final String appTemplateRef = getConfig( config, "org.uberfire.template.app" );
+            if ( appTemplateRef != null ) {
+                appTemplate = compileTemplate( getFileContent( appTemplateRef ) );
             } else {
-                appTemplate = compileTemplate(getResourceContent("app.html.template"));
+                appTemplate = compileTemplate( getResourceContent( "app.html.template" ) );
             }
-        } catch (Exception ex) {
-            final String headerRef = getConfig(config, "org.uberfire.template.header");
-            if (headerRef != null) {
-                headerTemplate = compileTemplate(getFileContent(headerRef));
+        } catch ( Exception ex ) {
+            final String headerRef = getConfig( config, "org.uberfire.template.header" );
+            if ( headerRef != null ) {
+                headerTemplate = compileTemplate( getFileContent( headerRef ) );
             } else {
-                headerTemplate = compileTemplate(getResourceContent("header.html.template"));
+                headerTemplate = compileTemplate( getResourceContent( "header.html.template" ) );
             }
 
-            final String footerRef = getConfig(config, "org.uberfire.template.footer");
-            if (footerRef != null) {
-                footerTemplate = compileTemplate(getFileContent(footerRef));
+            final String footerRef = getConfig( config, "org.uberfire.template.footer" );
+            if ( footerRef != null ) {
+                footerTemplate = compileTemplate( getFileContent( footerRef ) );
             } else {
-                footerTemplate = compileTemplate(getResourceContent("footer.html.template"));
+                footerTemplate = compileTemplate( getResourceContent( "footer.html.template" ) );
             }
-            userDataTemplate = compileTemplate(getResourceContent("user_data_on_html.template"));
+            userDataTemplate = compileTemplate( getResourceContent( "user_data_on_html.template" ) );
         }
     }
 
-    private String getFileContent(final String fileName) {
+    private String getFileContent( final String fileName ) {
         try {
-            return getTemplateContent(new BufferedInputStream(new FileInputStream(fileName)));
-        } catch (FileNotFoundException e) {
-            throw new IllegalStateException("Template file not found.", e);
+            return getTemplateContent( new BufferedInputStream( new FileInputStream( fileName ) ) );
+        } catch ( FileNotFoundException e ) {
+            throw new IllegalStateException( "Template file not found.", e );
         }
     }
 
-    private String getResourceContent(final String resourceName) {
-        return getTemplateContent(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(resourceName)));
+    private String getResourceContent( final String resourceName ) {
+        return getTemplateContent( new BufferedInputStream( getClass().getClassLoader().getResourceAsStream( resourceName ) ) );
     }
 
-    private String getTemplateContent(final BufferedInputStream content) {
+    private String getTemplateContent( final BufferedInputStream content ) {
         try {
             final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-            IOUtils.copy(content, outContent);
+            IOUtils.copy( content, outContent );
             content.close();
 
             return outContent.toString();
-        } catch (IOException ex) {
-            throw new IllegalStateException("Can't copy content.", ex);
+        } catch ( IOException ex ) {
+            throw new IllegalStateException( "Can't copy content.", ex );
         }
 
     }
 
-    private String getConfig(final ServletConfig config, final String key) {
-        final String keyValue = config.getInitParameter(key);
+    private String getConfig( final ServletConfig config,
+                              final String key ) {
+        final String keyValue = config.getInitParameter( key );
 
-        if (keyValue != null && keyValue.isEmpty()) {
+        if ( keyValue != null && keyValue.isEmpty() ) {
             return null;
         }
 
@@ -111,75 +112,96 @@ public class UberfireServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+    protected void doGet( final HttpServletRequest request,
+                          final HttpServletResponse response )
             throws ServletException, IOException {
 
-        response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType( "text/html" );
+        response.setCharacterEncoding( "UTF-8" );
 
         final PrintWriter writer = response.getWriter();
 
-        if (appTemplate != null) {
-            loadApp(writer);
+        if ( appTemplate != null ) {
+            loadApp( writer );
         } else {
-            loadHeader(writer);
-            loadUserInfo(writer);
-            loadFooter(writer);
+            loadHeader( writer );
+            loadUserInfo( writer );
+            loadFooter( writer );
         }
 
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+    protected void doPost( HttpServletRequest req,
+                           HttpServletResponse resp ) throws ServletException, IOException {
+        doGet( req, resp );
     }
 
-    private void loadApp(PrintWriter writer) {
+    private void loadApp( PrintWriter writer ) {
         final Subject subject = SecurityFactory.getIdentity();
 
         final Map<String, String> map = new HashMap<String, String>() {{
-            put("name", subject.getName());
-            put("roles", collectionAsString(subject.getRoles()));
+            put( "name", subject.getName() );
+            put( "roles", collectionAsString( subject.getRoles() ) );
+            put( "properties", mapAsString( subject.getProperties() ) );
         }};
 
-        final String content = TemplateRuntime.execute(appTemplate, map).toString();
+        final String content = TemplateRuntime.execute( appTemplate, map ).toString();
 
-        writer.append(content);
+        writer.append( content );
     }
 
-    private void loadHeader(PrintWriter writer) {
-        final String content = (String) TemplateRuntime.execute(headerTemplate);
-        writer.append(content);
+    private void loadHeader( PrintWriter writer ) {
+        final String content = (String) TemplateRuntime.execute( headerTemplate );
+        writer.append( content );
     }
 
-    private void loadFooter(PrintWriter writer) {
-        final String content = (String) TemplateRuntime.execute(footerTemplate);
-        writer.append(content);
+    private void loadFooter( PrintWriter writer ) {
+        final String content = (String) TemplateRuntime.execute( footerTemplate );
+        writer.append( content );
     }
 
-    private void loadUserInfo(PrintWriter writer) {
+    private void loadUserInfo( PrintWriter writer ) {
         final Subject subject = SecurityFactory.getIdentity();
 
         final Map<String, String> map = new HashMap<String, String>() {{
-            put("name", subject.getName());
-            put("roles", collectionAsString(subject.getRoles()));
+            put( "name", subject.getName() );
+            put( "roles", collectionAsString( subject.getRoles() ) );
+            put( "properties", mapAsString( subject.getProperties() ) );
         }};
 
-        final String content = TemplateRuntime.execute(userDataTemplate, map).toString();
+        final String content = TemplateRuntime.execute( userDataTemplate, map ).toString();
 
-        writer.append(content);
+        writer.append( content );
     }
 
-    private String collectionAsString(final Collection<Role> collection) {
+    private String collectionAsString( final Collection<Role> collection ) {
         final StringBuilder sb = new StringBuilder();
 
         Iterator<Role> iterator = collection.iterator();
         int i = 0;
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             final Role next = iterator.next();
-            sb.append('"').append(next.getName()).append('"');
-            if (i + 1 < collection.size()) {
-                sb.append(", ");
+            sb.append( '"' ).append( next.getName() ).append( '"' );
+            if ( i + 1 < collection.size() ) {
+                sb.append( ", " );
+            }
+            i++;
+        }
+
+        return sb.toString();
+    }
+
+    private String mapAsString( final Map<String, String> map ) {
+        final StringBuilder sb = new StringBuilder();
+
+        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+        int i = 0;
+        while ( iterator.hasNext() ) {
+            final Map.Entry<String, String> next = iterator.next();
+            sb.append( '"' ).append( next.getKey() ).append( '"' ).append( ":" ).append( '"' ).append( next.getValue() ).append( '"' );
+            if ( i + 1 < map.size() ) {
+                sb.append( ", " );
             }
             i++;
         }

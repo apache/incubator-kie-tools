@@ -17,11 +17,14 @@
 package org.uberfire.security.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.json.client.JSONObject;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
 import org.jboss.errai.bus.client.framework.MessageBus;
@@ -32,8 +35,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-import static org.jboss.errai.bus.client.api.base.MessageBuilder.createConversation;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 @EntryPoint
 public class SecurityEntryPoint {
@@ -41,12 +43,13 @@ public class SecurityEntryPoint {
     private static final String ANONYMOUS = "Anonymous";
     private Identity currentIdentity = null;
 
-    @Inject MessageBus bus;
+    @Inject
+    MessageBus bus;
 
     @Produces
     @ApplicationScoped
     public Identity currentUser() {
-        if (currentIdentity == null) {
+        if ( currentIdentity == null ) {
             setup();
         }
         return currentIdentity;
@@ -56,26 +59,32 @@ public class SecurityEntryPoint {
         final JSONSubject clientSubject = loadCurrentSubject();
         final String name;
         final List<Role> roles = new ArrayList<Role>();
+        final Map<String, String> properties = new HashMap<String, String>();
 
-        if (clientSubject == null) {
+        if ( clientSubject == null ) {
             name = ANONYMOUS;
-            roles.add(new Role() {
+            roles.add( new Role() {
                 @Override
                 public String getName() {
                     return ANONYMOUS;
                 }
-            });
+            } );
 
         } else {
             name = clientSubject.getName();
-            for (int i = 0; i < clientSubject.getRoles().length(); i++) {
-                final String roleName = clientSubject.getRoles().get(i);
-                roles.add(new Role() {
+            for ( int i = 0; i < clientSubject.getRoles().length(); i++ ) {
+                final String roleName = clientSubject.getRoles().get( i );
+                roles.add( new Role() {
                     @Override
                     public String getName() {
                         return roleName;
                     }
-                });
+                } );
+            }
+
+            final JSONObject json = new JSONObject( clientSubject.getProperties() );
+            for ( final String key : json.keySet() ) {
+                properties.put( key, json.get( key ).isString().stringValue() );
             }
         }
 
@@ -86,14 +95,40 @@ public class SecurityEntryPoint {
             }
 
             @Override
-            public boolean hasRole(final Role role) {
-                checkNotNull("role", role);
-                for (final Role activeRole : roles) {
-                    if (activeRole.getName().equals(role.getName())){
+            public boolean hasRole( final Role role ) {
+                checkNotNull( "role", role );
+                for ( final Role activeRole : roles ) {
+                    if ( activeRole.getName().equals( role.getName() ) ) {
                         return true;
                     }
                 }
                 return false;
+            }
+
+            @Override
+            public Map<String, String> getProperties() {
+                return properties;
+            }
+
+            @Override
+            public void aggregateProperty( final String name,
+                                           final String value ) {
+                throw new RuntimeException( "Identity.aggregateProperty method not allowed" );
+            }
+
+            @Override
+            public void removeProperty( final String name ) {
+                throw new RuntimeException( "Identity.removeProperty method not allowed" );
+            }
+
+            @Override
+            public String getProperty( final String name,
+                                       final String defaultValue ) {
+                final String value = properties.get( name );
+                if ( value == null ) {
+                    return defaultValue;
+                }
+                return value;
             }
 
             @Override
@@ -102,26 +137,26 @@ public class SecurityEntryPoint {
             }
         };
 
-        bus.subscribe(CLIENT_ERROR_SUBJECT, new MessageCallback() {
+        bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
             @Override
-            public void callback(Message message) {
+            public void callback( Message message ) {
                 try {
-                    final Throwable caught = message.get(Throwable.class, MessageParts.Throwable);
+                    final Throwable caught = message.get( Throwable.class, MessageParts.Throwable );
                     throw caught;
-                } catch (AuthorizationException ex) {
-                    redirect("/login.jsp");
-                } catch (Throwable ex) {
+                } catch ( AuthorizationException ex ) {
+                    redirect( "/login.jsp" );
+                } catch ( Throwable ex ) {
                     //Let other ErrorCallbacks handle specific errors
                 }
             }
-        });
+        } );
     }
 
     public static final native JSONSubject loadCurrentSubject() /*-{
         return $wnd.current_user;
     }-*/;
 
-    public static native void redirect(final String url)/*-{
+    public static native void redirect( final String url )/*-{
         $wnd.location = url;
     }-*/;
 

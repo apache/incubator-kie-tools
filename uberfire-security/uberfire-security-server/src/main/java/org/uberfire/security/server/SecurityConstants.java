@@ -28,6 +28,8 @@ public interface SecurityConstants {
 
     final String ROLE_PROVIDER_KEY = "org.uberfire.auth.provider.role";
 
+    final String SUBJECT_PROPERTIES_PROVIDER_KEY = "org.uberfire.auth.provider.subject.properties";
+
     final String ROLE_DECISION_MANAGER_KEY = "org.uberfire.authz.role";
 
     final String URL_VOTING_MANAGER_KEY = "org.uberfire.authz.voting.url";

@@ -17,6 +17,7 @@
 package org.uberfire.security;
 
 import java.util.List;
+import java.util.Map;
 
 import org.uberfire.security.auth.Principal;
 
@@ -24,6 +25,16 @@ public interface Subject extends Principal {
 
     List<Role> getRoles();
 
-    boolean hasRole(final Role role);
+    boolean hasRole( final Role role );
+
+    Map<String, String> getProperties();
+
+    void aggregateProperty( final String name,
+                            final String value );
+
+    void removeProperty( final String name );
+
+    String getProperty( final String name,
+                        final String defaultValue );
 
 }

@@ -86,11 +86,13 @@ public class RepositoryServiceImpl implements RepositoryService {
     public Repository createRepository( final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) {
+
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY,
                                                                                   alias,
                                                                                   "" );
         repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
                                                                             new ArrayList<String>() ) );
+
         if ( !env.containsKey( SCHEME ) ) {
             repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME,
                                                                                 scheme ) );
