@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
+import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
@@ -83,6 +85,12 @@ public class ExplorerPresenter {
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private LRUPackageCache packageCache;
+
+    @Inject
+    private LRUItemCache itemCache;
 
     @OnStart
     public void onStart() {
@@ -203,11 +211,22 @@ public class ExplorerPresenter {
         if ( project == null ) {
             return;
         }
+
+        //Check cache
+        final Collection<Package> packages = packageCache.getEntry( project );
+        if ( packages != null ) {
+            view.setPackages( packages,
+                              getActivePackage() );
+            return;
+        }
+
         //Show busy popup. Packages cascade through Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
             public void callback( final Collection<Package> packages ) {
+                packageCache.setEntry( project,
+                                       packages );
                 view.setPackages( packages,
                                   getActivePackage() );
             }
@@ -231,11 +250,21 @@ public class ExplorerPresenter {
         if ( pkg == null ) {
             return;
         }
+
+        //Check cache
+        final Collection<Item> items = itemCache.getEntry( pkg );
+        if ( items != null ) {
+            view.setItems( items );
+            return;
+        }
+
         //Show busy popup. Once Items are loaded it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Item>>() {
             @Override
             public void callback( final Collection<Item> items ) {
+                itemCache.setEntry( pkg,
+                                    items );
                 view.setItems( items );
                 view.hideBusyIndicator();
             }
@@ -341,6 +370,7 @@ public class ExplorerPresenter {
         if ( getActivePackage() == null ) {
             return;
         }
+        itemCache.invalidateCache( getActivePackage() );
         explorerService.call( new RemoteCallback<Collection<Item>>() {
             @Override
             public void callback( final Collection<Item> items ) {

@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -141,66 +142,103 @@ public class ExplorerServiceImpl
 
     @Override
     public Collection<Package> getPackages( final Project project ) {
-        final Collection<Package> packages = new HashSet<Package>();
+        final Set<String> packageNames = new HashSet<String>();
         final Path projectRoot = project.getRootPath();
+        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
         for ( String src : sourcePaths ) {
-            final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
             final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
-            packages.addAll( getPackages( nioPackageRootSrcPath ) );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath ) );
         }
+
+        final Collection<Package> packages = new HashSet<Package>();
+        final org.kie.commons.java.nio.file.Path nioPackagesRootPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
+        for ( String packagePathSuffix : packageNames ) {
+            final org.kie.commons.java.nio.file.Path nioPackagePath = nioPackagesRootPath.resolve( packagePathSuffix );
+            packages.add( makePackage( nioPackagePath ) );
+        }
+
         return packages;
     }
 
-    private Collection<Package> getPackages( final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
-        final Collection<Package> packages = new HashSet<Package>();
+    private Set<String> getPackageNames( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
+                                         final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
+        final Set<String> packageNames = new HashSet<String>();
         if ( !Files.exists( nioPackageSrcPath ) ) {
-            return packages;
+            return packageNames;
         }
-        packages.add( makePackage( nioPackageSrcPath ) );
+        packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                nioPackageSrcPath ) );
         final DirectoryStream<org.kie.commons.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
                                                                                                                           metaDataFileFilter );
         for ( org.kie.commons.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
             if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
-                packages.addAll( getPackages( nioChildPackageSrcPath ) );
+                packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                      nioChildPackageSrcPath ) );
             }
         }
-        return packages;
+        return packageNames;
+    }
+
+    private String getPackagePathSuffix( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
+                                         final org.kie.commons.java.nio.file.Path nioPackagePath ) {
+        final org.kie.commons.java.nio.file.Path nioMainSrcPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path nioTestSrcPath = nioProjectRootPath.resolve( TEST_SRC_PATH );
+        final org.kie.commons.java.nio.file.Path nioMainResourcesPath = nioProjectRootPath.resolve( MAIN_RESOURCES_PATH );
+        final org.kie.commons.java.nio.file.Path nioTestResourcesPath = nioProjectRootPath.resolve( TEST_RESOURCES_PATH );
+
+        String packageName = null;
+        org.kie.commons.java.nio.file.Path packagePath = null;
+        if ( nioPackagePath.startsWith( nioMainSrcPath ) ) {
+            packagePath = nioMainSrcPath.relativize( nioPackagePath );
+            packageName = packagePath.toString();
+        } else if ( nioPackagePath.startsWith( nioTestSrcPath ) ) {
+            packagePath = nioTestSrcPath.relativize( nioPackagePath );
+            packageName = packagePath.toString();
+        } else if ( nioPackagePath.startsWith( nioMainResourcesPath ) ) {
+            packagePath = nioMainResourcesPath.relativize( nioPackagePath );
+            packageName = packagePath.toString();
+        } else if ( nioPackagePath.startsWith( nioTestResourcesPath ) ) {
+            packagePath = nioTestResourcesPath.relativize( nioPackagePath );
+            packageName = packagePath.toString();
+        }
+
+        return packageName;
     }
 
     private Package makePackage( final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
-        final Package pkg = projectService.resolvePackage( paths.convert( nioPackageSrcPath ) );
+        final Package pkg = projectService.resolvePackage( paths.convert( nioPackageSrcPath,
+                                                                          false ) );
         return pkg;
     }
 
     @Override
     public Collection<Item> getItems( final Package pkg ) {
         final Collection<Item> items = new HashSet<Item>();
-        final Path projectRootPath = pkg.getProjectRootPath();
-        final String packageName = pkg.getPackageName();
-        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRootPath );
-        for ( String src : sourcePaths ) {
-            final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
-            final org.kie.commons.java.nio.file.Path nioPackageSrcPath = nioPackageRootSrcPath.resolve( getPackagePath( packageName ) );
-            if ( Files.exists( nioPackageSrcPath ) ) {
-                final DirectoryStream<org.kie.commons.java.nio.file.Path> nioSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
-                                                                                                                      dotFileFilter );
-                for ( org.kie.commons.java.nio.file.Path nioPath : nioSrcPaths ) {
-                    if ( Files.isRegularFile( nioPath ) ) {
-                        final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
-                        final String fileName = path.getFileName();
-                        final Item item = new Item( path,
-                                                    fileName );
-                        items.add( item );
-                    }
+        items.addAll( getItems( pkg.getPackageMainSrcPath() ) );
+        items.addAll( getItems( pkg.getPackageTestSrcPath() ) );
+        items.addAll( getItems( pkg.getPackageMainResourcesPath() ) );
+        items.addAll( getItems( pkg.getPackageTestResourcesPath() ) );
+        return items;
+    }
+
+    private Collection<Item> getItems( final Path packagePath ) {
+        final Collection<Item> items = new HashSet<Item>();
+        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        if ( Files.exists( nioPackagePath ) ) {
+            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
+                                                                                                               dotFileFilter );
+            for ( org.kie.commons.java.nio.file.Path nioPath : nioPaths ) {
+                if ( Files.isRegularFile( nioPath ) ) {
+                    final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
+                    final String fileName = path.getFileName();
+                    final Item item = new Item( path,
+                                                fileName );
+                    items.add( item );
                 }
             }
         }
         return items;
-    }
-
-    private String getPackagePath( final String packageName ) {
-        return packageName.replaceAll( "\\.",
-                                       "/" );
     }
 
     @Override
