@@ -48,7 +48,8 @@ public class NewTestScenarioHandler
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.pathLabel.setPath( ( (KieWorkbenchContext) context ).getActivePackage().getPackageTestResourcesPath() );
+        final Package activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
+        this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageTestResourcesPath() ) );
         return this.extensions;
     }
 
