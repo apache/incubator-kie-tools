@@ -20,6 +20,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
@@ -56,7 +57,8 @@ public class NewProjectHandler
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.pathLabel.setPath( ( (KieWorkbenchContext) context ).getActiveRepository().getRoot() );
+        final Repository activeRepository = ( (KieWorkbenchContext) context ).getActiveRepository();
+        this.pathLabel.setPath( ( activeRepository == null ? null : activeRepository.getRoot() ) );
         return this.extensions;
     }
 

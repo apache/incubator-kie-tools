@@ -58,7 +58,8 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.pathLabel.setPath( ( (KieWorkbenchContext) context ).getActivePackage().getPackageMainResourcesPath() );
+        final Package activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
+        this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageMainResourcesPath() ) );
         return this.extensions;
     }
 
