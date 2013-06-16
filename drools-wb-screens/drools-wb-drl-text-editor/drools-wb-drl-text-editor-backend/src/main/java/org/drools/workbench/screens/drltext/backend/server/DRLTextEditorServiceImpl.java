@@ -35,6 +35,7 @@ import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCa
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.file.CopyService;
 import org.kie.workbench.common.services.shared.file.DeleteService;
 import org.kie.workbench.common.services.shared.file.RenameService;
@@ -240,7 +241,8 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                 return drl;
             }
 
-            final String requiredPackageName = projectService.resolvePackage( resource ).getPackageName();
+            final Package pkg = projectService.resolvePackage( resource );
+            final String requiredPackageName = ( pkg == null ? null : pkg.getPackageName() );
             final HasPackageName mockHasPackageName = new HasPackageName() {
 
                 @Override

@@ -107,7 +107,9 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                         final ScoreCardModel content,
                         final String comment ) {
         try {
-            content.setPackageName( projectService.resolvePackage( context ).getPackageName() );
+            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( context );
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            content.setPackageName( packageName );
 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
@@ -162,7 +164,9 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                       final Metadata metadata,
                       final String comment ) {
         try {
-            model.setPackageName( projectService.resolvePackage( resource ).getPackageName() );
+            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( resource );
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            model.setPackageName( packageName );
 
             ioService.write( paths.convert( resource ),
                              GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
