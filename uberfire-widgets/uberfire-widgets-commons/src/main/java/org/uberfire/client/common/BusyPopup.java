@@ -46,7 +46,7 @@ public class BusyPopup extends DecoratedPopupPanel {
         }
     };
 
-    private static MessageState state = MessageState.HIDDEN;
+    private static MessageState state = MessageState.DORMANT;
 
     @UiField
     Label message;
@@ -58,8 +58,8 @@ public class BusyPopup extends DecoratedPopupPanel {
         @Override
         public void onStart() {
             state = MessageState.SHOWING;
-            super.onStart();
             INSTANCE.center();
+            super.onStart();
         }
 
         @Override
@@ -79,9 +79,9 @@ public class BusyPopup extends DecoratedPopupPanel {
 
         @Override
         public void onComplete() {
-            super.onComplete();
+            state = MessageState.DORMANT;
             INSTANCE.hide();
-            state = MessageState.HIDDEN;
+            super.onComplete();
         }
     };
 
@@ -94,28 +94,49 @@ public class BusyPopup extends DecoratedPopupPanel {
     }
 
     public static void showMessage( final String message ) {
-        if ( state == MessageState.SHOWING || state == MessageState.VISIBLE ) {
-            return;
+        switch ( state ) {
+            case DORMANT:
+                INSTANCE.message.setText( message );
+                deferredShowTimer.schedule( 250 );
+                state = MessageState.PENDING;
+                break;
+            case PENDING:
+            case SHOWING:
+            case VISIBLE:
+                INSTANCE.message.setText( message );
+                break;
+            case HIDING:
+                fadeOutAnimation.cancel();
+                INSTANCE.message.setText( message );
+                fadeInAnimation.onComplete();
         }
-        INSTANCE.message.setText( message );
-        deferredShowTimer.schedule( 250 );
     }
 
     public static void close() {
-        if ( state == MessageState.HIDING || state == MessageState.HIDDEN ) {
-            return;
-        }
-        deferredShowTimer.cancel();
-        if ( state == MessageState.VISIBLE ) {
-            fadeOutAnimation.run( 250 );
+        switch ( state ) {
+            case DORMANT:
+                break;
+            case PENDING:
+                deferredShowTimer.cancel();
+                break;
+            case SHOWING:
+                fadeInAnimation.cancel();
+                fadeOutAnimation.run( 250 );
+                break;
+            case VISIBLE:
+                fadeOutAnimation.run( 250 );
+                break;
+            case HIDING:
+                break;
         }
     }
 
     private enum MessageState {
+        DORMANT,
+        PENDING,
         SHOWING,
         VISIBLE,
-        HIDING,
-        HIDDEN
+        HIDING
     }
 
 }
