@@ -32,4 +32,6 @@ public interface Constants
 
     public String nullEntry();
 
+    public String noItemsExist();
+
 }

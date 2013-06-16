@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Accordion;
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.services.shared.context.Package;
@@ -49,6 +52,9 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     @UiField
     Accordion itemsContainer;
+
+    @Inject
+    Classifier classifier;
 
     //TreeSet sorts members upon insertion
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
@@ -106,7 +112,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            setItems( Collections.EMPTY_LIST );
+            presenter.handleIncompleteContext();
         }
     }
 
@@ -158,7 +164,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            setItems( Collections.EMPTY_LIST );
+            presenter.handleIncompleteContext();
         }
     }
 
@@ -208,7 +214,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            setItems( Collections.EMPTY_LIST );
+            presenter.handleIncompleteContext();
         }
     }
 
@@ -256,7 +262,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         } else {
             ddPackages.setText( Constants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            setItems( Collections.EMPTY_LIST );
+            presenter.handleIncompleteContext();
         }
     }
 
@@ -291,14 +297,18 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             final List<Item> sortedItems = new ArrayList<Item>( items );
             Collections.sort( sortedItems,
                               Sorters.ITEM_SORTER );
-            final AccordionGroup group = new AccordionGroup();
-            group.setHeading( "Items" );
-            for ( Item item : sortedItems ) {
-                group.add( makeItemNavLink( item ) );
+            final Map<String, Collection<Item>> groups = classifier.group( sortedItems );
+            for ( Map.Entry<String, Collection<Item>> e : groups.entrySet() ) {
+                final AccordionGroup group = new AccordionGroup();
+                group.setHeading( e.getKey() );
+                for ( Item item : e.getValue() ) {
+                    group.add( makeItemNavLink( item ) );
+                }
+                itemsContainer.add( group );
             }
-            itemsContainer.add( group );
+
         } else {
-            itemsContainer.add( new Label( Constants.INSTANCE.nullEntry() ) );
+            itemsContainer.add( new Label( Constants.INSTANCE.noItemsExist() ) );
         }
     }
 
