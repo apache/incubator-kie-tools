@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.kie.workbench.common.screens.explorer.client;
 
 import java.util.ArrayList;
@@ -27,12 +42,14 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
+import org.kie.workbench.common.screens.explorer.client.widgets.AccordionGroupTriggerWidget;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
  * The Explorer's view implementation
@@ -44,6 +61,8 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             UiBinder<Widget, ExplorerViewImpl> {
 
     }
+
+    private static final String MISCELLANEOUS = "Miscellaneous";
 
     private static ExplorerViewImplBinder uiBinder = GWT.create( ExplorerViewImplBinder.class );
 
@@ -297,10 +316,10 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             final List<Item> sortedItems = new ArrayList<Item>( items );
             Collections.sort( sortedItems,
                               Sorters.ITEM_SORTER );
-            final Map<String, Collection<Item>> groups = classifier.group( sortedItems );
-            for ( Map.Entry<String, Collection<Item>> e : groups.entrySet() ) {
+            final Map<ClientResourceType, Collection<Item>> groups = classifier.group( sortedItems );
+            for ( Map.Entry<ClientResourceType, Collection<Item>> e : groups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
-                group.setHeading( e.getKey() );
+                group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
                 for ( Item item : e.getValue() ) {
                     group.add( makeItemNavLink( item ) );
                 }
@@ -310,6 +329,22 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         } else {
             itemsContainer.add( new Label( Constants.INSTANCE.noItemsExist() ) );
         }
+    }
+
+    private AccordionGroupTriggerWidget makeTriggerWidget( final ClientResourceType resourceType ) {
+        final String description = getResourceTypeDescription( resourceType );
+        final IsWidget icon = resourceType.getIcon();
+        if ( icon == null ) {
+            return new AccordionGroupTriggerWidget( description );
+        }
+        return new AccordionGroupTriggerWidget( icon,
+                                                description );
+    }
+
+    private String getResourceTypeDescription( final ClientResourceType resourceType ) {
+        String description = resourceType.getDescription();
+        description = ( description == null || description.isEmpty() ) ? MISCELLANEOUS : description;
+        return description;
     }
 
     private IsWidget makeItemNavLink( final Item item ) {

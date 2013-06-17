@@ -231,7 +231,7 @@ public class ExplorerServiceImpl
             for ( org.kie.commons.java.nio.file.Path nioPath : nioPaths ) {
                 if ( Files.isRegularFile( nioPath ) ) {
                     final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
-                    final String fileName = path.getFileName();
+                    final String fileName = getBaseFileName( path.getFileName() );
                     final Item item = new Item( path,
                                                 fileName );
                     items.add( item );
@@ -239,6 +239,13 @@ public class ExplorerServiceImpl
             }
         }
         return items;
+    }
+
+    private String getBaseFileName( final String fileName ) {
+        final int dotIndex = fileName.indexOf( "." );
+        //Return dotFiles with the leading dot
+        return ( dotIndex > 0 ? fileName.substring( 0,
+                                                    dotIndex ) : fileName );
     }
 
     @Override

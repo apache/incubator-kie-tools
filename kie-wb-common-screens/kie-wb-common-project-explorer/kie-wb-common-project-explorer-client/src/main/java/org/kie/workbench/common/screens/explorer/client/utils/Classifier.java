@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.kie.workbench.common.screens.explorer.client.utils;
 
 import java.util.ArrayList;
@@ -21,8 +36,6 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  */
 @ApplicationScoped
 public class Classifier {
-
-    private static final String MISCELLANEOUS = "Miscellaneous";
 
     private List<ClientResourceType> resourceTypes = new ArrayList<ClientResourceType>();
 
@@ -58,29 +71,28 @@ public class Classifier {
                           } );
     }
 
-    public Map<String, Collection<Item>> group( final Collection<Item> items ) {
-        final Map<String, Collection<Item>> groups = new HashMap<String, Collection<Item>>();
+    public Map<ClientResourceType, Collection<Item>> group( final Collection<Item> items ) {
+        final Map<ClientResourceType, Collection<Item>> groups = new HashMap<ClientResourceType, Collection<Item>>();
         for ( Item item : items ) {
-            final String description = ( findDescription( item ) );
-            Collection<Item> itemsForDescription = groups.get( description );
-            if ( itemsForDescription == null ) {
-                itemsForDescription = new ArrayList<Item>();
-                groups.put( description,
-                            itemsForDescription );
+            final ClientResourceType resourceType = ( findResourceType( item ) );
+            Collection<Item> itemsForGroup = groups.get( resourceType );
+            if ( itemsForGroup == null ) {
+                itemsForGroup = new ArrayList<Item>();
+                groups.put( resourceType,
+                            itemsForGroup );
             }
-            itemsForDescription.add( item );
+            itemsForGroup.add( item );
         }
         return groups;
     }
 
-    private String findDescription( final Item item ) {
+    private ClientResourceType findResourceType( final Item item ) {
         for ( ClientResourceType resourceType : resourceTypes ) {
             if ( resourceType.accept( item.getPath() ) ) {
-                final String description = resourceType.getDescription();
-                return ( ( description == null || description.isEmpty() ) ? MISCELLANEOUS : description );
+                return resourceType;
             }
         }
-        return MISCELLANEOUS;
+        throw new IllegalArgumentException( "Unable to find ResourceType for " + item.getPath().toURI() + ". Is AnyResourceType on the classpath?" );
     }
 
 }
