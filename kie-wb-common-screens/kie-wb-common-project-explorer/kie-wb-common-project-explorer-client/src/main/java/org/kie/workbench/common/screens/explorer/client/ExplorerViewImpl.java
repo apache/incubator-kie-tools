@@ -28,9 +28,11 @@ import com.github.gwtbootstrap.client.ui.Accordion;
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.NavList;
 import com.github.gwtbootstrap.client.ui.SplitDropdownButton;
 import com.github.gwtbootstrap.client.ui.Well;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -90,9 +92,13 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public ExplorerViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         ddGroups.setIcon( IconType.GROUP );
+        ddGroups.setSize( ButtonSize.SMALL );
         ddRepositories.setIcon( IconType.BUILDING );
+        ddRepositories.setSize( ButtonSize.SMALL );
         ddProjects.setIcon( IconType.DESKTOP );
+        ddProjects.setSize( ButtonSize.SMALL );
         ddPackages.setIcon( IconType.FOLDER_OPEN );
+        ddPackages.setSize( ButtonSize.SMALL );
         breadCrumbs.add( ddGroups );
         breadCrumbs.add( ddRepositories );
         breadCrumbs.add( ddProjects );
@@ -320,8 +326,10 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             for ( Map.Entry<ClientResourceType, Collection<Item>> e : groups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
                 group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
+                final NavList itemsNavList = new NavList();
+                group.add( itemsNavList );
                 for ( Item item : e.getValue() ) {
-                    group.add( makeItemNavLink( item ) );
+                    itemsNavList.add( makeItemNavLink( item ) );
                 }
                 itemsContainer.add( group );
             }
