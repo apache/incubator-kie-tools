@@ -22,6 +22,7 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
  * Sorters
@@ -65,6 +66,25 @@ public class Sorters {
         public int compare( final Item o1,
                             final Item o2 ) {
             return o1.getFileName().compareTo( o2.getFileName() );
+        }
+    };
+
+    public static Comparator<ClientResourceType> RESOURCE_TYPE_GROUP_SORTER = new Comparator<ClientResourceType>() {
+        @Override
+        public int compare( final ClientResourceType o1,
+                            final ClientResourceType o2 ) {
+            final String o1description = o1.getDescription();
+            final String o2description = o2.getDescription();
+            if ( o1description == null && o2description == null ) {
+                return 0;
+            }
+            if ( o1description == null && o2description != null ) {
+                return 1;
+            }
+            if ( o1description != null && o2description == null ) {
+                return -1;
+            }
+            return o1description.compareTo( o2description );
         }
     };
 

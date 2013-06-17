@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.inject.Inject;
 
@@ -322,8 +323,10 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
             final List<Item> sortedItems = new ArrayList<Item>( items );
             Collections.sort( sortedItems,
                               Sorters.ITEM_SORTER );
-            final Map<ClientResourceType, Collection<Item>> groups = classifier.group( sortedItems );
-            for ( Map.Entry<ClientResourceType, Collection<Item>> e : groups.entrySet() ) {
+            final Map<ClientResourceType, Collection<Item>> resourceTypeGroups = classifier.group( sortedItems );
+            final TreeMap<ClientResourceType, Collection<Item>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<Item>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
+            sortedResourceTypeGroups.putAll( resourceTypeGroups );
+            for ( Map.Entry<ClientResourceType, Collection<Item>> e : sortedResourceTypeGroups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
                 group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
                 final NavList itemsNavList = new NavList();
