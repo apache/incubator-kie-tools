@@ -54,3 +54,9 @@
     float: none;
     margin: -2px 0 0 10px;
 }
+
+@external .navbar-fixed-top, .navbar-fixed-bottom;
+
+.navbar-fixed-top, .navbar-fixed-bottom {
+    position: static !important;
+}

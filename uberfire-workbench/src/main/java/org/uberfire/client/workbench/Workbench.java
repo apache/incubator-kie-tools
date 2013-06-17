@@ -43,7 +43,6 @@ import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.client.workbench.widgets.navbar.NavBar;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -197,7 +196,6 @@ public class Workbench
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
         final int navBarHeight = navBar.asWidget().getOffsetHeight();
-
         final int availableHeight;
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
             availableHeight = height - navBarHeight;
@@ -215,5 +213,4 @@ public class Workbench
             }
         }
     }
-
 }

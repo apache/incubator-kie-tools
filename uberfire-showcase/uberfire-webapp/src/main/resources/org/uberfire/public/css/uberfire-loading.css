@@ -41,10 +41,3 @@
 #loading-msg {
     font: normal 10px arial, tahoma, sans-serif;
 }
-
-/*
-TODO {porcelli} quick hack
-*/
-.navbar-fixed-top, .navbar-fixed-bottom {
-    position: static !important;
-}
