@@ -16,6 +16,7 @@
 
 package org.drools.workbench.backend.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -42,9 +43,8 @@ import org.uberfire.backend.server.config.ConfigurationService;
 public class AppSetup {
 
     // default groups
-    private static final String DROOLS_WB_GROUP1 = "Group1";
-    private static final String DROOLS_WB_GROUP2 = "Group2";
-    private static final String DROOLS_WB_GROUP3 = "Group3";
+    private static final String DROOLS_WB_GROUP1 = "demo";
+    private static final String DROOLS_WB_GROUP1_OWNER = "demo@drools.org";
 
     // default repository section - start
     private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
@@ -84,26 +84,11 @@ public class AppSetup {
         // TODO in case groups are not defined
         Group group1 = groupService.getGroup( DROOLS_WB_GROUP1 );
         if ( group1 == null ) {
-            group1 = groupService.createGroup( DROOLS_WB_GROUP1,
-                                               "" );
-            groupService.addRole( group1,
-                                  "ADMIN" );
-            groupService.addRepository( group1,
-                                        repository1 );
-        }
-        Group group2 = groupService.getGroup( DROOLS_WB_GROUP2 );
-        if ( group2 == null ) {
-            group2 = groupService.createGroup( DROOLS_WB_GROUP2,
-                                               "" );
-            groupService.addRole( group2,
-                                  "ADMIN" );
-        }
-        Group group3 = groupService.getGroup( DROOLS_WB_GROUP3 );
-        if ( group3 == null ) {
-            group3 = groupService.createGroup( DROOLS_WB_GROUP3,
-                                               "" );
-            groupService.addRole( group3,
-                                  "NON_EXISTENT_ROLE" );
+            final List<Repository> repositories = new ArrayList<Repository>();
+            repositories.add( repository1 );
+            groupService.createGroup( DROOLS_WB_GROUP1,
+                                      DROOLS_WB_GROUP1_OWNER,
+                                      repositories );
         }
 
         //Define mandatory properties

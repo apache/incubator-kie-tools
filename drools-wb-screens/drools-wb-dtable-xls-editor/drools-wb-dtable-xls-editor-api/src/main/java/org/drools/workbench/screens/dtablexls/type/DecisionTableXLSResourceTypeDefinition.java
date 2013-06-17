@@ -16,7 +16,7 @@ public class DecisionTableXLSResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "XLS Decision Table";
     }
 
     @Override

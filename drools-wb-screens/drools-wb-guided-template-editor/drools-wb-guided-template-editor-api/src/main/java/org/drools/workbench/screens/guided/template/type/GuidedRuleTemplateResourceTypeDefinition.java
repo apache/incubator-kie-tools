@@ -17,7 +17,7 @@ public class GuidedRuleTemplateResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "Guided Rule Template";
     }
 
     @Override

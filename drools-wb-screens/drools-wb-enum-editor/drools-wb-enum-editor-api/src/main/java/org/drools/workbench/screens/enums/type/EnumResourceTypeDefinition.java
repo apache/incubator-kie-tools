@@ -16,7 +16,7 @@ public class EnumResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Enumeration definition";
     }
 
     @Override

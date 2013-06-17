@@ -16,7 +16,7 @@ public class GuidedScoreCardResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "Guided Score Card";
     }
 
     @Override

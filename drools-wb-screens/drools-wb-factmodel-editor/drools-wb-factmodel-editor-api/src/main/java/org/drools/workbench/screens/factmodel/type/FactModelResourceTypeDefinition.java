@@ -15,7 +15,7 @@ public class FactModelResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Fact Model definition";
     }
 
     @Override

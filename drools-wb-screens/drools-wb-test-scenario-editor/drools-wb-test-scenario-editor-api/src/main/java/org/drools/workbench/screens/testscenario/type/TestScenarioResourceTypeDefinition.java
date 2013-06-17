@@ -16,7 +16,7 @@ public class TestScenarioResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "Test Scenario";
     }
 
     @Override

@@ -16,7 +16,7 @@ public class GuidedRuleDRLResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "Guided Rule";
     }
 
     @Override

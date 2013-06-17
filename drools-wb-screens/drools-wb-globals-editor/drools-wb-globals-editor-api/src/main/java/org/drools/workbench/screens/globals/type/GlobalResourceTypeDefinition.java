@@ -15,7 +15,7 @@ public class GlobalResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Globals definition";
     }
 
     @Override

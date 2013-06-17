@@ -15,7 +15,7 @@ public class GuidedDTableResourceTypeDefinition implements ResourceTypeDefinitio
 
     @Override
     public String getDescription() {
-        return null;
+        return "Guided Decision Table";
     }
 
     @Override

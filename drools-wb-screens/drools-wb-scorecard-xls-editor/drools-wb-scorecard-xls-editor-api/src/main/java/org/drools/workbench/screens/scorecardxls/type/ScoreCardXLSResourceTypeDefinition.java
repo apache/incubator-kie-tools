@@ -16,7 +16,7 @@ public class ScoreCardXLSResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "XLS Score Card";
     }
 
     @Override

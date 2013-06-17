@@ -16,7 +16,7 @@ public class DSLResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "Domain Specific Language definition";
     }
 
     @Override

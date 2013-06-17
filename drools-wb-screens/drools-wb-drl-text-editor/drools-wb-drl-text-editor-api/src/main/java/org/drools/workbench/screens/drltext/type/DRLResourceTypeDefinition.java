@@ -16,7 +16,7 @@ public class DRLResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return null;
+        return "DRL";
     }
 
     @Override
