@@ -16,7 +16,7 @@ public class GuidedRuleDSLRResourceTypeDefinition
 
     @Override
     public String getDescription() {
-        return "Guided Rule";
+        return "Guided Rule (with DSL)";
     }
 
     @Override
