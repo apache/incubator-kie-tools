@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.workbench.common.screens.explorer.client.resources.i18n;
+package org.kie.workbench.common.screens.explorer.client.resources;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.resources.client.ClientBundle;
+import org.kie.workbench.common.screens.explorer.client.resources.css.StylesCss;
 
 /**
- * Explorer I18N constants
+ * ProjectExplorerResources for Explorer
  */
-public interface Constants
+public interface ProjectExplorerResources
         extends
-        Messages {
+        ClientBundle {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final ProjectExplorerResources INSTANCE = GWT.create( ProjectExplorerResources.class );
 
-    public String explorerTitle();
-
-    public String nullEntry();
-
-    public String noItemsExist();
+    @Source("css/Styles.css")
+    StylesCss CSS();
 
 }

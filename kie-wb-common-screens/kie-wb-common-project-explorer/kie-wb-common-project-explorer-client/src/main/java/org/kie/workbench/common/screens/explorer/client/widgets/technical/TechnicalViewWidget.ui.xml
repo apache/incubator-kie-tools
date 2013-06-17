@@ -17,22 +17,16 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:eb="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
-             xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
   <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
-  <g:HTMLPanel>
-    <div style="padding: 5px">
-      <b:ButtonGroup toggle="radio">
-        <b:Button width="50%" text="{i18n.businessView}" ui:field="btnBusinessView" active="true"/>
-        <b:Button width="50%" text="{i18n.technicalView}" ui:field="btnTechnicalView"/>
-      </b:ButtonGroup>
-      <hr/>
-      <eb:BusinessViewWidget/>
-      <et:TechnicalViewWidget/>
+  <g:HTMLPanel visible="false">
+    <div ui:field="technicalView">
+      <b:Well>
+        <b:Label text="Technical View - TODO"/>
+      </b:Well>
     </div>
   </g:HTMLPanel>
 

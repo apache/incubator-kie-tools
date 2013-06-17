@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.explorer.client.resources;
+
+package org.kie.workbench.common.screens.explorer.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.kie.workbench.common.screens.explorer.client.resources.css.StylesCss;
 
-/**
- * Resources for Explorer
- */
-public interface Resources
+public interface ProjectExplorerImageResources
         extends
         ClientBundle {
 
-    public static final Resources INSTANCE = GWT.create( Resources.class );
-
-    @Source("css/Styles.css")
-    StylesCss CSS();
+    public static final ProjectExplorerImageResources INSTANCE = GWT.create( ProjectExplorerImageResources.class );
 
 }

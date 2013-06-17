@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.explorer.client.resources.images;
+package org.kie.workbench.common.screens.explorer.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.i18n.client.Messages;
 
-public interface ImageResources
+/**
+ * Explorer I18N constants
+ */
+public interface ProjectExplorerConstants
         extends
-        ClientBundle {
+        Messages {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final ProjectExplorerConstants INSTANCE = GWT.create( ProjectExplorerConstants.class );
 
-    @Source("repositoryIcon.png")
-    ImageResource repositoryIcon();
+    public String explorerTitle();
 
-    @Source("projectIcon.png")
-    ImageResource projectIcon();
+    public String nullEntry();
 
-    @Source("packageIcon.png")
-    ImageResource packageIcon();
+    public String noItemsExist();
 
-    @Source("folderIcon.png")
-    ImageResource folderIcon();
+    public String businessView();
 
-    @Source("fileIcon.png")
-    ImageResource fileIcon();
+    public String technicalView();
 
 }

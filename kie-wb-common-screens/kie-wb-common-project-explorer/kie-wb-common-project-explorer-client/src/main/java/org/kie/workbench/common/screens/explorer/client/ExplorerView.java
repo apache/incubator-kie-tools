@@ -15,41 +15,17 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import java.util.Collection;
-
-import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessView;
+import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalView;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.mvp.UberView;
 
 /**
  * Explorer View definition
  */
-public interface ExplorerView extends
-                              UberView<ExplorerPresenter>,
-                              HasBusyIndicator {
-
-    void setGroups( final Collection<Group> groups,
-                    final Group activeGroup );
-
-    void setRepositories( final Collection<Repository> repositories,
-                          final Repository activeRepository );
-
-    void setProjects( final Collection<Project> projects,
-                      final Project activeProject );
-
-    void setPackages( final Collection<Package> packages,
-                      final Package activePackage );
-
-    void setItems( final Collection<Item> items );
-
-    void addRepository( final Repository repository );
-
-    void addProject( final Project project );
-
-    void addPackage( final Package pkg );
+public interface ExplorerView extends UberView<ExplorerPresenter>,
+                                      BusinessView,
+                                      TechnicalView,
+                                      HasBusyIndicator {
 
 }

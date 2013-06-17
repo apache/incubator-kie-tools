@@ -17,15 +17,18 @@ package org.kie.workbench.common.screens.explorer.client;
 
 import java.util.Collection;
 import java.util.Collections;
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.screens.explorer.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
+import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
@@ -64,7 +67,8 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
  * Repository, Package, Folder and File explorer
  */
 @WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
-public class ExplorerPresenter {
+public class ExplorerPresenter implements BusinessViewPresenter,
+                                          TechnicalViewPresenter {
 
     @Inject
     private Caller<ExplorerService> explorerService;
@@ -108,6 +112,12 @@ public class ExplorerPresenter {
     @Inject
     private LRUItemCache itemCache;
 
+    @PostConstruct
+    public void init() {
+        view.init( (BusinessViewPresenter) this );
+        view.init( (TechnicalViewPresenter) this );
+    }
+
     @OnStart
     public void onStart() {
         load();
@@ -136,7 +146,7 @@ public class ExplorerPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.explorerTitle();
+        return ProjectExplorerConstants.INSTANCE.explorerTitle();
     }
 
     private void load() {

@@ -17,22 +17,20 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:eb="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
-             xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
   <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
-  <g:HTMLPanel>
-    <div style="padding: 5px">
-      <b:ButtonGroup toggle="radio">
-        <b:Button width="50%" text="{i18n.businessView}" ui:field="btnBusinessView" active="true"/>
-        <b:Button width="50%" text="{i18n.technicalView}" ui:field="btnTechnicalView"/>
-      </b:ButtonGroup>
-      <hr/>
-      <eb:BusinessViewWidget/>
-      <et:TechnicalViewWidget/>
+  <g:HTMLPanel visible="true">
+    <div ui:field="businessView">
+      <b:Well ui:field="breadCrumbs">
+        <b:SplitDropdownButton ui:field="ddGroups" icon="GROUP" size="MINI"/>
+        <b:SplitDropdownButton ui:field="ddRepositories" icon="BUILDING" size="MINI"/>
+        <b:SplitDropdownButton ui:field="ddProjects" icon="DESKTOP" size="MINI"/>
+        <b:SplitDropdownButton ui:field="ddPackages" icon="FOLDER_OPEN" size="MINI"/>
+      </b:Well>
+      <b:Accordion ui:field="itemsContainer"/>
     </div>
   </g:HTMLPanel>
 
