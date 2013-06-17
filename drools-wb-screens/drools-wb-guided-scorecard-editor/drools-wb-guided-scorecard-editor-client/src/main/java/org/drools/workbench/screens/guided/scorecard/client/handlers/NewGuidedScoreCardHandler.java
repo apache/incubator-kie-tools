@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.scorecard.client.resources.images.ImageResources;
+import org.drools.workbench.screens.guided.scorecard.client.resources.GuidedScoreCardResources;
+import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -35,12 +35,12 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newGuidedScoreCardDescription();
+        return GuidedScoreCardConstants.INSTANCE.newGuidedScoreCardDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.scoreCardIcon() );
+        return new Image( GuidedScoreCardResources.INSTANCE.images().scoreCardIcon() );
     }
 
     @Override

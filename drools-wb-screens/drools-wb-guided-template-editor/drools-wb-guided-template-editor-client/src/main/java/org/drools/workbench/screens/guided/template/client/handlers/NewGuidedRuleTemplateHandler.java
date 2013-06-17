@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.resources.GuidedTemplateEditorResources;
-import org.drools.workbench.screens.guided.template.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.template.client.resources.i18n.GuidedTemplateEditorConstants;
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -39,7 +39,7 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.NewGuidedRuleTemplateDescription();
+        return GuidedTemplateEditorConstants.INSTANCE.NewGuidedRuleTemplateDescription();
     }
 
     @Override

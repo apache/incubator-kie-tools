@@ -28,11 +28,11 @@ import com.google.gwt.i18n.client.Messages;
  * properties file can still be used on the server). To use this, use
  * <code>GWT.create(Constants.class)</code>.
  */
-public interface Constants
+public interface GuidedTemplateEditorConstants
         extends
         Messages {
 
-    Constants INSTANCE = GWT.create( Constants.class );
+    GuidedTemplateEditorConstants INSTANCE = GWT.create( GuidedTemplateEditorConstants.class );
 
     String NewGuidedRuleTemplateDescription();
 

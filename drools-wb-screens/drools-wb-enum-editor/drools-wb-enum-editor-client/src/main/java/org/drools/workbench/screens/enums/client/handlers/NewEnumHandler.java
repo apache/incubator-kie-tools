@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.enums.client.resources.i18n.Constants;
-import org.drools.workbench.screens.enums.client.resources.images.ImageResources;
+import org.drools.workbench.screens.enums.client.resources.EnumEditorResources;
+import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -38,12 +38,12 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newEnumDescription();
+        return EnumEditorConstants.INSTANCE.newEnumDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.enumsIcon() );
+        return new Image( EnumEditorResources.INSTANCE.images().enumsIcon() );
     }
 
     @Override

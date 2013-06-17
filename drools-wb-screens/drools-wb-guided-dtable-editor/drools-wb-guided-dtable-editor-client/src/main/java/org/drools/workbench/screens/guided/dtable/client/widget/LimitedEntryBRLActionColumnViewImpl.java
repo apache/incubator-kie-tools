@@ -28,7 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
@@ -57,7 +57,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
                isNew,
                isReadOnly );
 
-        setTitle( Constants.INSTANCE.ActionBRLFragmentConfiguration() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ActionBRLFragmentConfiguration() );
     }
 
     protected boolean isHeaderUnique( String header ) {

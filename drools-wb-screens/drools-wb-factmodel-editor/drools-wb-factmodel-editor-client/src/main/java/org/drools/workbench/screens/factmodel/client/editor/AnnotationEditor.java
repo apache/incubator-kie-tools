@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 
 /**
@@ -77,8 +77,8 @@ public class AnnotationEditor
 
         setControlValues( annotation );
 
-        editAnnotationIcon.setTitle( Constants.INSTANCE.Rename() );
-        deleteAnnotationIcon.setTitle( Constants.INSTANCE.Delete() );
+        editAnnotationIcon.setTitle( FactModelConstants.INSTANCE.Rename() );
+        deleteAnnotationIcon.setTitle( FactModelConstants.INSTANCE.Delete() );
     }
 
     //This is a simplified annotation editor and thus we only

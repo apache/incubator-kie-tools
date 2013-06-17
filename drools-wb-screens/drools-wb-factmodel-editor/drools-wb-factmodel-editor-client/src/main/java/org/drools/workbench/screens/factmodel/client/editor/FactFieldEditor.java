@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
 
 public class FactFieldEditor
@@ -71,8 +71,8 @@ public class FactFieldEditor
         setTypeText( field.type );
         fieldName.setText( field.name );
 
-        editFieldIcon.setTitle( Constants.INSTANCE.Rename() );
-        deleteFieldIcon.setTitle( Constants.INSTANCE.Delete() );
+        editFieldIcon.setTitle( FactModelConstants.INSTANCE.Rename() );
+        deleteFieldIcon.setTitle( FactModelConstants.INSTANCE.Delete() );
     }
 
     @UiHandler("editFieldIcon")

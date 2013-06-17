@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.globals.client.resources.GlobalsEditorResources;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.client.resources.images.GlobalsEditorImageResources;
 import org.drools.workbench.screens.globals.client.type.GlobalResourceType;
@@ -44,7 +45,7 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GlobalsEditorImageResources.INSTANCE.globalsIcon() );
+        return new Image( GlobalsEditorResources.INSTANCE.images().globalsIcon() );
     }
 
     @Override

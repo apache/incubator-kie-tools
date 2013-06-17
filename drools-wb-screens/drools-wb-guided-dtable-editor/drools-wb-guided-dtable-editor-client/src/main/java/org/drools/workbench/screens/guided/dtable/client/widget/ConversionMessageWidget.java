@@ -23,8 +23,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 
 /**
@@ -53,13 +54,13 @@ public class ConversionMessageWidget extends Composite {
 
         switch ( message.getMessageType() ) {
             case ERROR:
-                this.image.setResource( Resources.INSTANCE.images().error() );
+                this.image.setResource( GuidedDecisionTableResources.INSTANCE.images().error() );
                 break;
             case INFO:
-                this.image.setResource( Resources.INSTANCE.images().information() );
+                this.image.setResource( GuidedDecisionTableResources.INSTANCE.images().information() );
                 break;
             case WARNING:
-                this.image.setResource( Resources.INSTANCE.images().warning() );
+                this.image.setResource( GuidedDecisionTableResources.INSTANCE.images().warning() );
                 break;
         }
         this.label.setText( message.getMessage() );

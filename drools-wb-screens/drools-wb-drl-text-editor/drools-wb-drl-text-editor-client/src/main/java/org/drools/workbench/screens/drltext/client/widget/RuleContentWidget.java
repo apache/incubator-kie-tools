@@ -23,7 +23,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
-import org.drools.workbench.screens.drltext.client.resources.Resources;
+import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
@@ -41,7 +41,7 @@ public class RuleContentWidget
         text.getElement().setAttribute( "spellcheck",
                                         "false" );
 
-        text.setStyleName( Resources.INSTANCE.CSS().defaultTextArea() );
+        text.setStyleName( DRLTextEditorResources.INSTANCE.CSS().defaultTextArea() );
 
         text.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {

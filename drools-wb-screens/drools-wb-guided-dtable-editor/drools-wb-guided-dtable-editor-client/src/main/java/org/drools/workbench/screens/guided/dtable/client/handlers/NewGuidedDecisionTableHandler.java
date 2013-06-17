@@ -8,8 +8,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
@@ -63,18 +64,18 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add( new Pair<String, GuidedDecisionTableOptions>( Constants.INSTANCE.Options(),
+        extensions.add( new Pair<String, GuidedDecisionTableOptions>( GuidedDecisionTableConstants.INSTANCE.Options(),
                                                                       options ) );
     }
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.NewGuidedDecisionTableDescription();
+        return GuidedDecisionTableConstants.INSTANCE.NewGuidedDecisionTableDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( Resources.INSTANCE.images().guidedDecisionTableIcon() );
+        return new Image( GuidedDecisionTableResources.INSTANCE.images().guidedDecisionTableIcon() );
     }
 
     @Override

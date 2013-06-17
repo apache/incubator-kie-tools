@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.drltext.client.resources;
+package org.drools.workbench.screens.dtablexls.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.drools.workbench.screens.drltext.client.resources.css.StylesCss;
+import org.drools.workbench.screens.dtablexls.client.resources.css.StylesCss;
+import org.drools.workbench.screens.dtablexls.client.resources.images.DecisionTableXLSImageResources;
 
-public interface Resources
+public interface DecisionTableXLSResources
         extends
         ClientBundle {
 
-    public static final Resources INSTANCE = GWT.create( Resources.class );
+    public static final DecisionTableXLSResources INSTANCE = GWT.create( DecisionTableXLSResources.class );
 
     @Source("css/Styles.css")
     StylesCss CSS();
+
+    DecisionTableXLSImageResources images();
 
 }

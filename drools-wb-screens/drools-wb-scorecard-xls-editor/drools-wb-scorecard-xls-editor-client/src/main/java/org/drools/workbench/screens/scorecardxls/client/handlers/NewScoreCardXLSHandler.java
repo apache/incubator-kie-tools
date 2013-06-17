@@ -8,8 +8,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.editor.URLHelper;
+import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
-import org.drools.workbench.screens.scorecardxls.client.resources.images.ImageResources;
+import org.drools.workbench.screens.scorecardxls.client.resources.images.ScoreCardXLSEditorImageResources;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -59,7 +60,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.scoreCardSmall() );
+        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().scoreCardIcon() );
     }
 
     @Override

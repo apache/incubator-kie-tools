@@ -52,8 +52,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
@@ -86,11 +86,11 @@ public class ConditionPopup extends FormStylePopup {
     private ImageButton editOp;
 
     private RadioButton literal = new RadioButton( "constraintValueType",
-                                                   Constants.INSTANCE.LiteralValue() );
+                                                   GuidedDecisionTableConstants.INSTANCE.LiteralValue() );
     private RadioButton formula = new RadioButton( "constraintValueType",
-                                                   Constants.INSTANCE.Formula() );
+                                                   GuidedDecisionTableConstants.INSTANCE.Formula() );
     private RadioButton predicate = new RadioButton( "constraintValueType",
-                                                     Constants.INSTANCE.Predicate() );
+                                                     GuidedDecisionTableConstants.INSTANCE.Predicate() );
 
     private CEPWindowOperatorsDropdown cwo;
     private TextBox entryPointName;
@@ -135,7 +135,7 @@ public class ConditionPopup extends FormStylePopup {
                                                         isReadOnly,
                                                         allowEmptyValues() );
 
-        setTitle( Constants.INSTANCE.ConditionColumnConfiguration() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ConditionColumnConfiguration() );
         setModal( false );
 
         HorizontalPanel pattern = new HorizontalPanel();
@@ -143,9 +143,9 @@ public class ConditionPopup extends FormStylePopup {
         doPatternLabel();
 
         //Pattern selector
-        ImageButton changePattern = new ImageButton( ImageResources508.INSTANCE.Edit(),
-                                                     ImageResources508.INSTANCE.EditDisabled(),
-                                                     Constants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
+        ImageButton changePattern = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
+                                                     GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+                                                     GuidedDecisionTableConstants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
                                                      new ClickHandler() {
                                                          public void onClick( ClickEvent w ) {
                                                              showChangePattern( w );
@@ -154,7 +154,7 @@ public class ConditionPopup extends FormStylePopup {
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
 
-        addAttribute( Constants.INSTANCE.Pattern(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Pattern(),
                       pattern );
 
         //Radio buttons for Calculation Type
@@ -164,7 +164,7 @@ public class ConditionPopup extends FormStylePopup {
                 valueTypes.add( literal );
                 valueTypes.add( formula );
                 valueTypes.add( predicate );
-                addAttribute( Constants.INSTANCE.CalculationType(),
+                addAttribute( GuidedDecisionTableConstants.INSTANCE.CalculationType(),
                               valueTypes );
 
                 switch ( editingCol.getConstraintValueType() ) {
@@ -220,9 +220,9 @@ public class ConditionPopup extends FormStylePopup {
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( ImageResources508.INSTANCE.Edit(),
-                                          ImageResources508.INSTANCE.EditDisabled(),
-                                          Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
+        this.editField = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
+                                          GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+                                          GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                           new ClickHandler() {
                                               public void onClick( ClickEvent w ) {
                                                   showFieldChange();
@@ -230,16 +230,16 @@ public class ConditionPopup extends FormStylePopup {
                                           } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( Constants.INSTANCE.Field(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        this.editOp = new ImageButton( ImageResources508.INSTANCE.Edit(),
-                                       ImageResources508.INSTANCE.EditDisabled(),
-                                       Constants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
+        this.editOp = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
+                                       GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+                                       GuidedDecisionTableConstants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                        new ClickHandler() {
                                            public void onClick( ClickEvent w ) {
                                                showOperatorChange();
@@ -247,13 +247,13 @@ public class ConditionPopup extends FormStylePopup {
                                        } );
         editOp.setEnabled( !isReadOnly );
         operator.add( editOp );
-        addAttribute( Constants.INSTANCE.Operator(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Operator(),
                       operator );
         doOperatorLabel();
         doImageButtons();
 
         //Add CEP fields for patterns containing Facts declared as Events
-        cepWindowRowIndex = addAttribute( Constants.INSTANCE.DTLabelOverCEPWindow(),
+        cepWindowRowIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DTLabelOverCEPWindow(),
                                           createCEPWindowWidget( editingPattern ) );
         displayCEPOperators();
 
@@ -268,7 +268,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.DTLabelFromEntryPoint(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint(),
                       entryPointName );
 
         //Column header
@@ -282,7 +282,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Optional value list
@@ -328,23 +328,23 @@ public class ConditionPopup extends FormStylePopup {
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueListWidget );
-            vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
-                                   Constants.INSTANCE.ValueListsExplanation() ) );
-            addAttribute( Constants.INSTANCE.optionalValueList(),
+            vl.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.ValueList(),
+                                   GuidedDecisionTableConstants.INSTANCE.ValueListsExplanation() ) );
+            addAttribute( GuidedDecisionTableConstants.INSTANCE.optionalValueList(),
                           vl );
         }
         doValueList();
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( Constants.INSTANCE.DefaultValue(),
+            defaultValueWidgetContainerIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
                                                              defaultValueWidgetContainer );
             makeDefaultValueWidget();
         }
 
         //Limited entry value widget
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
+            limitedEntryValueAttributeIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.LimitedEntryValue(),
                                                             limitedEntryValueWidgetContainer );
             makeLimitedValueWidget();
         }
@@ -358,32 +358,32 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.Binding(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
                       binding );
 
         //Hide column tick-box
-        addAttribute( Constants.INSTANCE.HideThisColumn(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
+        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
 
                     //Field mandatory for Literals and Formulae
                     if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
-                        Window.alert( Constants.INSTANCE.PleaseSelectOrEnterField() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseSelectOrEnterField() );
                         return;
                     }
 
                     //Operator optional for Literals and Formulae
                     if ( null == editingCol.getOperator() || "".equals( editingCol.getOperator() ) ) {
-                        Window.alert( Constants.INSTANCE.NotifyNoSelectedOperator() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
                     }
 
                 } else {
@@ -394,20 +394,20 @@ public class ConditionPopup extends FormStylePopup {
 
                 //Check for unique binding
                 if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
 
                 //Check column header is unique
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -548,16 +548,16 @@ public class ConditionPopup extends FormStylePopup {
     private void doFieldLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             if ( this.editingCol.getFactField() == null || this.editingCol.getFactField().equals( "" ) ) {
-                fieldLabel.setText( Constants.INSTANCE.notNeededForPredicate() );
+                fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
             } else {
                 fieldLabel.setText( this.editingCol.getFactField() );
             }
             fieldLabelInterpolationInfo.setVisible( true );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            fieldLabel.setText( Constants.INSTANCE.pleaseSelectAPatternFirst() );
+            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else if ( nil( editingCol.getFactField() ) ) {
-            fieldLabel.setText( Constants.INSTANCE.pleaseSelectAField() );
+            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else {
             fieldLabel.setText( this.editingCol.getFactField() );
@@ -566,13 +566,13 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            operatorLabel.setText( Constants.INSTANCE.notNeededForPredicate() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            operatorLabel.setText( Constants.INSTANCE.pleaseSelectAPatternFirst() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
-            operatorLabel.setText( Constants.INSTANCE.pleaseChooseAFieldFirst() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setText( Constants.INSTANCE.pleaseSelectAField() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
         } else {
             operatorLabel.setText( HumanReadable.getOperatorDisplayName(editingCol.getOperator()) );
         }
@@ -585,7 +585,7 @@ public class ConditionPopup extends FormStylePopup {
             String boundName = editingPattern.getBoundName();
             if ( factType != null && factType.length() > 0 ) {
                 if ( editingPattern.isNegated() ) {
-                    patternLabel.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
+                    patternLabel.append( GuidedDecisionTableConstants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
                 } else {
                     patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
                 }
@@ -607,8 +607,8 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private InfoPopup getPredicateHint() {
-        return new InfoPopup( Constants.INSTANCE.Predicates(),
-                              Constants.INSTANCE.PredicatesInfo() );
+        return new InfoPopup( GuidedDecisionTableConstants.INSTANCE.Predicates(),
+                              GuidedDecisionTableConstants.INSTANCE.PredicatesInfo() );
     }
 
     private void doValueList() {
@@ -662,7 +662,7 @@ public class ConditionPopup extends FormStylePopup {
         ListBox patterns = new ListBox();
         for ( Pattern52 p : model.getPatterns() ) {
             if ( !vars.contains( p.getBoundName() ) ) {
-                patterns.addItem( ( p.isNegated() ? Constants.INSTANCE.negatedPattern() + " " : "" )
+                patterns.addItem( ( p.isNegated() ? GuidedDecisionTableConstants.INSTANCE.negatedPattern() + " " : "" )
                                           + p.getFactType()
                                           + " [" + p.getBoundName() + "]",
                                   p.getFactType()
@@ -682,7 +682,7 @@ public class ConditionPopup extends FormStylePopup {
 
     private void showOperatorChange() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( Constants.INSTANCE.SetTheOperator() );
+        pop.setTitle( GuidedDecisionTableConstants.INSTANCE.SetTheOperator() );
         pop.setModal( false );
 
         final String factType = editingPattern.getFactType();
@@ -713,11 +713,11 @@ public class ConditionPopup extends FormStylePopup {
         final CEPOperatorsDropdown box = new CEPOperatorsDropdown( displayOps,
                                                                    editingCol );
 
-        box.addItem( Constants.INSTANCE.noOperator(),
+        box.addItem( GuidedDecisionTableConstants.INSTANCE.noOperator(),
                      "" );
-        pop.addAttribute( Constants.INSTANCE.Operator(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Operator(),
                           box );
-        Button b = new Button( Constants.INSTANCE.OK() );
+        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -753,17 +753,17 @@ public class ConditionPopup extends FormStylePopup {
             return;
         }
         final FormStylePopup pop = new FormStylePopup();
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( pats );
         hp.add( ok );
 
-        pop.addAttribute( Constants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
                           hp );
         pop.addAttribute( "",
-                          new HTML( Constants.INSTANCE.ORwithEmphasis() ) );
+                          new HTML( GuidedDecisionTableConstants.INSTANCE.ORwithEmphasis() ) );
 
-        Button createPattern = new Button( Constants.INSTANCE.CreateNewFactPattern() );
+        Button createPattern = new Button( GuidedDecisionTableConstants.INSTANCE.CreateNewFactPattern() );
         createPattern.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 pop.hide();
@@ -832,9 +832,9 @@ public class ConditionPopup extends FormStylePopup {
                 break;
 
         }
-        pop.addAttribute( Constants.INSTANCE.Field(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
-        Button b = new Button( Constants.INSTANCE.OK() );
+        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -862,12 +862,12 @@ public class ConditionPopup extends FormStylePopup {
 
     protected void showNewPatternDialog() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( Constants.INSTANCE.CreateANewFactPattern() );
+        pop.setTitle( GuidedDecisionTableConstants.INSTANCE.CreateANewFactPattern() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
             types.addItem( oracle.getFactTypes()[ i ] );
         }
-        pop.addAttribute( Constants.INSTANCE.FactType(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
         binding.addChangeHandler( new ChangeHandler() {
@@ -876,7 +876,7 @@ public class ConditionPopup extends FormStylePopup {
                                                             "" ) );
             }
         } );
-        pop.addAttribute( Constants.INSTANCE.Binding(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
                           binding );
 
         //Patterns can be negated, i.e. "not Pattern(...)"
@@ -889,10 +889,10 @@ public class ConditionPopup extends FormStylePopup {
             }
 
         } );
-        pop.addAttribute( Constants.INSTANCE.negatePattern(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.negatePattern(),
                           chkNegated );
 
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
@@ -901,13 +901,13 @@ public class ConditionPopup extends FormStylePopup {
                 String fn = isPatternNegated ? "" : binding.getText();
                 if ( !isPatternNegated ) {
                     if ( fn.equals( "" ) ) {
-                        Window.alert( Constants.INSTANCE.PleaseEnterANameForFact() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameForFact() );
                         return;
                     } else if ( fn.equals( ft ) ) {
-                        Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                         return;
                     } else if ( !isBindingUnique( fn ) ) {
-                        Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                         return;
                     }
                 }
@@ -946,7 +946,7 @@ public class ConditionPopup extends FormStylePopup {
     //Widget for CEP 'windows'
     private Widget createCEPWindowWidget( final HasCEPWindow c ) {
         HorizontalPanel hp = new HorizontalPanel();
-        Label lbl = new Label( Constants.INSTANCE.OverCEPWindow() );
+        Label lbl = new Label( GuidedDecisionTableConstants.INSTANCE.OverCEPWindow() );
         lbl.setStyleName( "paddedLabel" );
         hp.add( lbl );
 

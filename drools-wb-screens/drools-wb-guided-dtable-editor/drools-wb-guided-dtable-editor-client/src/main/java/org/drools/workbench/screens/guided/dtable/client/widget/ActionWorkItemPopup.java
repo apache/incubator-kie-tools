@@ -41,9 +41,9 @@ import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefiniti
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -77,7 +77,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider,
                                                                      isReadOnly );
 
-        setTitle( Constants.INSTANCE.ColumnConfigurationWorkItem() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItem() );
         setModal( false );
 
         //Column header
@@ -91,12 +91,12 @@ public class ActionWorkItemPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Work Item Definitions
         final ListBox workItemsListBox = new ListBox();
-        addAttribute( Constants.INSTANCE.WorkItemNameColon(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.WorkItemNameColon(),
                       workItemsListBox );
         workItemsListBox.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
@@ -116,34 +116,34 @@ public class ActionWorkItemPopup extends FormStylePopup {
         }
 
         //Work Item Input Parameters
-        workItemInputParametersIndex = addAttribute( Constants.INSTANCE.WorkItemInputParameters(),
+        workItemInputParametersIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.WorkItemInputParameters(),
                                                      workItemInputParameters,
                                                      false );
         setupWorkItems( workItemsListBox,
                         workItemDefinitions );
 
         //Hide column tick-box
-        addAttribute( Constants.INSTANCE.HideThisColumn(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
+        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -249,14 +249,14 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private void setupWorkItems( final ListBox workItemsListBox,
                                  final Set<PortableWorkDefinition> workItemDefinitions ) {
         workItemsListBox.clear();
-        workItemsListBox.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
+        workItemsListBox.addItem( GuidedDecisionTableConstants.INSTANCE.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
 
         //Add list of Work Item Definitions to list box
         if ( workItemDefinitions.size() > 0 ) {
             workItemsListBox.clear();
             workItemsListBox.setEnabled( true && !isReadOnly );
-            workItemsListBox.addItem( Constants.INSTANCE.Choose(),
+            workItemsListBox.addItem( GuidedDecisionTableConstants.INSTANCE.Choose(),
                                       "" );
             workItemDefinitionsMap = new HashMap<String, PortableWorkDefinition>();
 

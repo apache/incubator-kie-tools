@@ -20,7 +20,7 @@
              xmlns:guvnor='urn:import:org.drools.workbench.screens.guided.rule.client.editor'
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants"/>
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="images" type="org.drools.workbench.screens.globals.client.resources.images.GlobalsEditorImageResources"/>
   <ui:with field="wizardResources" type="org.kie.workbench.common.widgets.client.resources.WizardResources"/>
 

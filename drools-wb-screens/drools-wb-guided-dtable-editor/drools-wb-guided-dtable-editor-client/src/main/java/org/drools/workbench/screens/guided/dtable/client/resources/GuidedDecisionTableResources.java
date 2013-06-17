@@ -3,7 +3,7 @@ package org.drools.workbench.screens.guided.dtable.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import org.drools.workbench.screens.guided.dtable.client.resources.css.CssResources;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources;
 import org.kie.workbench.common.widgets.decoratedgrid.client.resources.TableImageResources;
 import org.kie.workbench.common.widgets.client.resources.CollapseExpand;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
@@ -11,11 +11,11 @@ import org.kie.workbench.common.widgets.client.resources.ItemImages;
 /**
  * General Decision Table resources.
  */
-public interface Resources
+public interface GuidedDecisionTableResources
         extends
         ClientBundle {
 
-    Resources INSTANCE = GWT.create( Resources.class );
+    GuidedDecisionTableResources INSTANCE = GWT.create( GuidedDecisionTableResources.class );
 
     TableImageResources tableImageResources();
 
@@ -26,6 +26,6 @@ public interface Resources
     @Source("css/DecisionTable.css")
     CssResources css();
 
-    ImageResources images();
+    GuidedDecisionTableImageResources images();
 
 };

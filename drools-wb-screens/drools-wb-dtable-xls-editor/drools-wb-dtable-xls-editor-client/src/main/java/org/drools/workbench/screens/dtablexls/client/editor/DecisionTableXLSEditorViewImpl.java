@@ -31,8 +31,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
-import org.drools.workbench.screens.dtablexls.client.resources.images.ImageResources;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.uberfire.backend.vfs.Path;
@@ -126,7 +126,7 @@ public class DecisionTableXLSEditorViewImpl
     }
 
     private Image getIcon() {
-        Image image = new Image( ImageResources.INSTANCE.decisionTable() );
+        Image image = new Image( DecisionTableXLSResources.INSTANCE.images().decisionTableIconLarge() );
         image.setAltText( DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
         return image;
     }

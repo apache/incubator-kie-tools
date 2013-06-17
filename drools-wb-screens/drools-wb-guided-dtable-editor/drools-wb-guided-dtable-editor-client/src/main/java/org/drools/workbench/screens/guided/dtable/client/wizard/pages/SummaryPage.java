@@ -19,7 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -39,7 +39,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public String getTitle() {
-        return Constants.INSTANCE.DecisionTableWizardSummary();
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardSummary();
     }
 
     @Override

@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.workbench.screens.drltext.client.resources.images;
+package org.drools.workbench.screens.scorecardxls.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.drools.workbench.screens.scorecardxls.client.resources.css.StylesCss;
+import org.drools.workbench.screens.scorecardxls.client.resources.images.ScoreCardXLSEditorImageResources;
 
-public interface ImageResources
+public interface ScoreCardXLSEditorResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final ScoreCardXLSEditorResources INSTANCE = GWT.create( ScoreCardXLSEditorResources.class );
 
-    @Source("class.gif")
-    ImageResource classImage();
+    @Source("css/Styles.css")
+    StylesCss CSS();
 
-    @Source("field.gif")
-    ImageResource field();
+    ScoreCardXLSEditorImageResources images();
+
 }

@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.dsltext.client.resources;
+package org.drools.workbench.screens.enums.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.drools.workbench.screens.dsltext.client.resources.css.StylesCss;
+import org.drools.workbench.screens.enums.client.resources.images.EnumEditorImageResources;
 
-public interface Resources
+public interface EnumEditorResources
         extends
         ClientBundle {
 
-    public static final Resources INSTANCE = GWT.create( Resources.class );
+    public static final EnumEditorResources INSTANCE = GWT.create( EnumEditorResources.class );
 
-    @Source("css/Styles.css")
-    StylesCss CSS();
+    EnumEditorImageResources images();
 
 }

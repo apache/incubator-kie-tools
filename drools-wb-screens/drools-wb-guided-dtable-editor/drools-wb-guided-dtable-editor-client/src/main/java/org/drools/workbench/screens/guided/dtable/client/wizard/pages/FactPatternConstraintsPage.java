@@ -29,7 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
@@ -56,7 +56,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public String getTitle() {
-        return Constants.INSTANCE.DecisionTableWizardFactPatternConstraints();
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardFactPatternConstraints();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
         //Add predicates
         if ( model.getTableFormat() == GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ) {
-            final AvailableField field = new AvailableField( Constants.INSTANCE.DecisionTableWizardPredicate(),
+            final AvailableField field = new AvailableField( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardPredicate(),
                                                              BaseSingleFieldConstraint.TYPE_PREDICATE );
             availableFields.add( field );
         }

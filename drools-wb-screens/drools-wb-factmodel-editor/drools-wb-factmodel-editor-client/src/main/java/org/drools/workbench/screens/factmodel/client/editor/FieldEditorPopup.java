@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -84,7 +84,7 @@ public class FieldEditorPopup {
         HorizontalPanel typeP = new HorizontalPanel();
         typeP.add( fieldType );
         final ListBox typeChoice = new ListBox();
-        typeChoice.addItem( Constants.INSTANCE.chooseType() );
+        typeChoice.addItem( FactModelConstants.INSTANCE.chooseType() );
 
         for ( Map.Entry<String, String> entry : modelNameHelper.getTypeDescriptions().entrySet() ) {
             typeChoice.addItem( entry.getValue(),
@@ -100,29 +100,29 @@ public class FieldEditorPopup {
 
         typeP.add( typeChoice );
 
-        pop.addAttribute( Constants.INSTANCE.FieldNameAttribute(),
+        pop.addAttribute( FactModelConstants.INSTANCE.FieldNameAttribute(),
                           fieldName );
-        pop.addAttribute( Constants.INSTANCE.Type(),
+        pop.addAttribute( FactModelConstants.INSTANCE.Type(),
                           typeP );
 
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( FactModelConstants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
 
                 String dataType = fieldType.getText();
                 if ( !isDataTypeValid( dataType ) ) {
-                    Window.alert( Constants.INSTANCE.InvalidDataTypeName( dataType ) );
+                    Window.alert( FactModelConstants.INSTANCE.InvalidDataTypeName( dataType ) );
                     return;
                 }
 
                 String name = fieldName.getText();
                 if ( !isNameValid( name ) ) {
-                    Window.alert( Constants.INSTANCE.InvalidModelName( name ) );
+                    Window.alert( FactModelConstants.INSTANCE.InvalidModelName( name ) );
                     return;
                 }
                 if ( doesTheNameExist( name ) ) {
-                    Window.alert( Constants.INSTANCE.NameTakenForModel( name ) );
+                    Window.alert( FactModelConstants.INSTANCE.NameTakenForModel( name ) );
                     return;
                 }
                 if ( factModelAlreadyHasAName( name ) ) {
@@ -162,7 +162,7 @@ public class FieldEditorPopup {
             }
 
             private boolean isTheUserSureHeWantsToChangeTheName() {
-                return Window.confirm( Constants.INSTANCE.ModelNameChangeWarning() );
+                return Window.confirm( FactModelConstants.INSTANCE.ModelNameChangeWarning() );
             }
 
             private boolean doesTheNameExist( String name ) {

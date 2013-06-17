@@ -18,6 +18,7 @@ package org.drools.workbench.screens.globals.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import org.drools.workbench.screens.globals.client.resources.css.GlobalsEditorStylesCss;
+import org.drools.workbench.screens.globals.client.resources.images.GlobalsEditorImageResources;
 
 /**
  * Resources for Globals Editor
@@ -30,5 +31,7 @@ public interface GlobalsEditorResources
 
     @Source("css/Styles.css")
     GlobalsEditorStylesCss CSS();
+
+    GlobalsEditorImageResources images();
 
 }

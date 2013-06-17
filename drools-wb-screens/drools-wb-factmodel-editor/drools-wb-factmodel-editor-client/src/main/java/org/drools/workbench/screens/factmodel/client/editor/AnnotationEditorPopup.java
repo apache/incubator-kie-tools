@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -102,18 +102,18 @@ public class AnnotationEditorPopup {
 
         setControlValues( annotation );
 
-        Button btnOK = new Button( Constants.INSTANCE.OK() );
+        Button btnOK = new Button( FactModelConstants.INSTANCE.OK() );
 
         btnOK.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
                 String name = txtName.getText();
                 if ( !isNameValid( name ) ) {
-                    Window.alert( Constants.INSTANCE.InvalidModelName( name ) );
+                    Window.alert( FactModelConstants.INSTANCE.InvalidModelName( name ) );
                     return;
                 }
                 if ( doesTheNameExist( name ) ) {
-                    Window.alert( Constants.INSTANCE.NameTakenForModel( name ) );
+                    Window.alert( FactModelConstants.INSTANCE.NameTakenForModel( name ) );
                     return;
                 }
                 if ( annotationAlreadyHasAName() && annotationNameHasChanged( name ) ) {
@@ -162,7 +162,7 @@ public class AnnotationEditorPopup {
             }
 
             private boolean isTheUserSureHeWantsToChangeTheName() {
-                return Window.confirm( Constants.INSTANCE.ModelNameChangeWarning() );
+                return Window.confirm( FactModelConstants.INSTANCE.ModelNameChangeWarning() );
             }
 
             private boolean doesTheNameExist( String name ) {

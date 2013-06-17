@@ -72,9 +72,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
@@ -173,13 +174,13 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( Resources.INSTANCE.images().information() ).getHTML()
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().information() ).getHTML()
                                                        + "&nbsp;"
-                                                       + Constants.INSTANCE.ConfigureColumnsNote() ) );
+                                                       + GuidedDecisionTableConstants.INSTANCE.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
-        disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.DecisionTable() );
-        disclosurePanel.setTitle( Constants.INSTANCE.DecisionTable() );
+        disclosurePanel = new DecoratedDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.DecisionTable() );
+        disclosurePanel.setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTable() );
         disclosurePanel.setWidth( "100%" );
 
         VerticalPanel config = new VerticalPanel();
@@ -191,19 +192,19 @@ public class GuidedDecisionTableWidget extends Composite
             config.add( newColumn() );
         }
 
-        conditions = new DecoratedDisclosurePanel( Constants.INSTANCE.ConditionColumns() );
+        conditions = new DecoratedDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ConditionColumns() );
         conditions.setWidth( "75%" );
         conditions.setOpen( false );
         conditions.add( getConditions() );
         config.add( conditions );
 
-        actions = new DecoratedDisclosurePanel( Constants.INSTANCE.ActionColumns() );
+        actions = new DecoratedDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ActionColumns() );
         actions.setWidth( "75%" );
         actions.setOpen( false );
         actions.add( getActions() );
         config.add( actions );
 
-        options = new DecoratedDisclosurePanel( Constants.INSTANCE.Options() );
+        options = new DecoratedDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.Options() );
         options.setWidth( "75%" );
         options.setOpen( false );
         options.add( getAttributes() );
@@ -269,7 +270,7 @@ public class GuidedDecisionTableWidget extends Composite
     private SmallLabel makeColumnLabel( ActionCol52 ac ) {
         SmallLabel label = new SmallLabel( ac.getHeader() );
         if ( ac.isHideColumn() ) {
-            label.setStylePrimaryName( Resources.INSTANCE.css().columnLabelHidden() );
+            label.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
         }
         return label;
     }
@@ -278,10 +279,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         if ( c instanceof ActionWorkItemSetFieldCol52 ) {
             final ActionWorkItemSetFieldCol52 awisf = (ActionWorkItemSetFieldCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionWorkItemSetFieldPopup ed = new ActionWorkItemSetFieldPopup( oracle,
@@ -302,10 +303,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionSetFieldCol52 ) {
             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionSetFieldPopup ed = new ActionSetFieldPopup( oracle,
@@ -326,10 +327,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemInsertFactCol52 ) {
             final ActionWorkItemInsertFactCol52 awiif = (ActionWorkItemInsertFactCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionWorkItemInsertFactPopup ed = new ActionWorkItemInsertFactPopup( oracle,
@@ -350,10 +351,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionInsertFactCol52 ) {
             final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionInsertFactPopup ed = new ActionInsertFactPopup( oracle,
@@ -374,10 +375,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionRetractFactCol52 ) {
             final ActionRetractFactCol52 arf = (ActionRetractFactCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionRetractFactPopup ed = new ActionRetractFactPopup( model,
@@ -397,10 +398,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof ActionWorkItemCol52 ) {
             final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             ActionWorkItemPopup popup = new ActionWorkItemPopup( path,
@@ -423,10 +424,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof LimitedEntryBRLActionColumn ) {
             final LimitedEntryBRLActionColumn column = (LimitedEntryBRLActionColumn) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( path,
@@ -443,10 +444,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof BRLActionColumn ) {
             final BRLActionColumn column = (BRLActionColumn) c;
-            Image edit = ImageResources508.INSTANCE.Edit();
-            edit.setAltText( Constants.INSTANCE.EditThisActionColumnConfiguration() );
+            Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+            edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration() );
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
@@ -467,13 +468,13 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget removeAction( final ActionCol52 c ) {
         if ( c instanceof LimitedEntryBRLActionColumn ) {
-            Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-            image.setAltText( Constants.INSTANCE.RemoveThisActionColumn() );
+            Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+            image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn() );
             return new ImageButton( image,
-                                    Constants.INSTANCE.RemoveThisActionColumn(),
+                                    GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            String cm = Constants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (LimitedEntryBRLActionColumn) c );
                                                 refreshActionsWidget();
@@ -482,13 +483,13 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         } else if ( c instanceof BRLActionColumn ) {
-            Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-            image.setAltText( Constants.INSTANCE.RemoveThisActionColumn() );
+            Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+            image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn() );
             return new ImageButton( image,
-                                    Constants.INSTANCE.RemoveThisActionColumn(),
+                                    GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            String cm = Constants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (BRLActionColumn) c );
                                                 refreshActionsWidget();
@@ -497,13 +498,13 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
 
         }
-        Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( Constants.INSTANCE.RemoveThisActionColumn() );
+        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn() );
         return new ImageButton( image,
-                                Constants.INSTANCE.RemoveThisActionColumn(),
+                                GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
-                                        String cm = Constants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
+                                        String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( c.getHeader() );
                                         if ( Window.confirm( cm ) ) {
                                             dtable.deleteColumn( c );
                                             refreshActionsWidget();
@@ -549,7 +550,7 @@ public class GuidedDecisionTableWidget extends Composite
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( Resources.INSTANCE.css().patternSectionHeader() );
+                patternHeaderPanel.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternSectionHeader() );
                 Label patternLabel = makePatternLabel( p );
                 patternHeaderPanel.add( patternLabel );
                 patternPanel.add( patternHeaderPanel );
@@ -576,7 +577,7 @@ public class GuidedDecisionTableWidget extends Composite
                 boolean bAreConditionsDraggable = conditions.size() > 1 && !isReadOnly;
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     HorizontalPanel hp = new HorizontalPanel();
-                    hp.setStylePrimaryName( Resources.INSTANCE.css().patternConditionSectionHeader() );
+                    hp.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternConditionSectionHeader() );
                     if ( !isReadOnly ) {
                         hp.add( removeCondition( c ) );
                     }
@@ -600,7 +601,7 @@ public class GuidedDecisionTableWidget extends Composite
                 BRLConditionColumn brl = (BRLConditionColumn) column;
 
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( Resources.INSTANCE.css().patternSectionHeader() );
+                patternHeaderPanel.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternSectionHeader() );
                 HorizontalPanel patternPanel = new HorizontalPanel();
                 if ( !isReadOnly ) {
                     patternPanel.add( removeCondition( brl ) );
@@ -624,8 +625,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget newColumn() {
         AddButton addButton = new AddButton();
-        addButton.setText( Constants.INSTANCE.NewColumn() );
-        addButton.setTitle( Constants.INSTANCE.AddNewColumn() );
+        addButton.setText( GuidedDecisionTableConstants.INSTANCE.NewColumn() );
+        addButton.setTitle( GuidedDecisionTableConstants.INSTANCE.AddNewColumn() );
 
         addButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
@@ -636,36 +637,36 @@ public class GuidedDecisionTableWidget extends Composite
                 final ListBox choice = new ListBox();
                 choice.setVisibleItemCount( NewColumnTypes.values().length );
 
-                choice.addItem( Constants.INSTANCE.AddNewMetadataOrAttributeColumn(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.AddNewMetadataOrAttributeColumn(),
                                 NewColumnTypes.METADATA_ATTRIBUTE.name() );
                 choice.addItem( SECTION_SEPARATOR );
-                choice.addItem( Constants.INSTANCE.AddNewConditionSimpleColumn(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.AddNewConditionSimpleColumn(),
                                 NewColumnTypes.CONDITION_SIMPLE.name() );
                 choice.addItem( SECTION_SEPARATOR );
-                choice.addItem( Constants.INSTANCE.SetTheValueOfAField(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.SetTheValueOfAField(),
                                 NewColumnTypes.ACTION_UPDATE_FACT_FIELD.name() );
-                choice.addItem( Constants.INSTANCE.SetTheValueOfAFieldOnANewFact(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.SetTheValueOfAFieldOnANewFact(),
                                 NewColumnTypes.ACTION_INSERT_FACT_FIELD.name() );
-                choice.addItem( Constants.INSTANCE.RetractAnExistingFact(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.RetractAnExistingFact(),
                                 NewColumnTypes.ACTION_RETRACT_FACT.name() );
 
                 //Checkbox to include Advanced Action types
-                final CheckBox chkIncludeAdvancedOptions = new CheckBox( SafeHtmlUtils.fromString( Constants.INSTANCE.IncludeAdvancedOptions() ) );
+                final CheckBox chkIncludeAdvancedOptions = new CheckBox( SafeHtmlUtils.fromString( GuidedDecisionTableConstants.INSTANCE.IncludeAdvancedOptions() ) );
                 chkIncludeAdvancedOptions.setValue( false );
                 chkIncludeAdvancedOptions.addClickHandler( new ClickHandler() {
 
                     public void onClick( ClickEvent event ) {
                         if ( chkIncludeAdvancedOptions.getValue() ) {
                             addItem( 3,
-                                     Constants.INSTANCE.AddNewConditionBRLFragment(),
+                                     GuidedDecisionTableConstants.INSTANCE.AddNewConditionBRLFragment(),
                                      NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
-                            addItem( Constants.INSTANCE.WorkItemAction(),
+                            addItem( GuidedDecisionTableConstants.INSTANCE.WorkItemAction(),
                                      NewColumnTypes.ACTION_WORKITEM.name() );
-                            addItem( Constants.INSTANCE.WorkItemActionSetField(),
+                            addItem( GuidedDecisionTableConstants.INSTANCE.WorkItemActionSetField(),
                                      NewColumnTypes.ACTION_WORKITEM_UPDATE_FACT_FIELD.name() );
-                            addItem( Constants.INSTANCE.WorkItemActionInsertFact(),
+                            addItem( GuidedDecisionTableConstants.INSTANCE.WorkItemActionInsertFact(),
                                      NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
-                            addItem( Constants.INSTANCE.AddNewActionBRLFragment(),
+                            addItem( GuidedDecisionTableConstants.INSTANCE.AddNewActionBRLFragment(),
                                      NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         } else {
                             removeItem( NewColumnTypes.CONDITION_BRL_FRAGMENT.name() );
@@ -713,7 +714,7 @@ public class GuidedDecisionTableWidget extends Composite
                 } );
 
                 //OK button to create column
-                final Button ok = new Button( Constants.INSTANCE.OK() );
+                final Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
                 ok.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent w ) {
                         String s = choice.getValue( choice.getSelectedIndex() );
@@ -743,9 +744,9 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showMetaDataAndAttribute() {
                         // show choice of attributes
-                        final Image image = ImageResources508.INSTANCE.Config();
+                        final Image image = GuidedDecisionTableImageResources508.INSTANCE.Config();
                         final FormStylePopup pop = new FormStylePopup( image,
-                                                                       Constants.INSTANCE.AddAnOptionToTheRule() );
+                                                                       GuidedDecisionTableConstants.INSTANCE.AddAnOptionToTheRule() );
                         final ListBox list = RuleAttributeWidget.getAttributeList();
 
                         //This attribute is only used for Decision Tables
@@ -761,7 +762,7 @@ public class GuidedDecisionTableWidget extends Composite
                             }
                         }
 
-                        final Image addbutton = ImageResources508.INSTANCE.NewItem();
+                        final Image addbutton = GuidedDecisionTableImageResources508.INSTANCE.NewItem();
                         final TextBox box = new TextBox();
                         box.setVisibleLength( 15 );
 
@@ -777,14 +778,14 @@ public class GuidedDecisionTableWidget extends Composite
                             }
                         } );
 
-                        addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
+                        addbutton.setTitle( GuidedDecisionTableConstants.INSTANCE.AddMetadataToTheRule() );
 
                         addbutton.addClickHandler( new ClickHandler() {
                             public void onClick( ClickEvent w ) {
 
                                 String metadata = box.getText();
                                 if ( !isUnique( metadata ) ) {
-                                    Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                                     return;
                                 }
                                 MetadataCol52 met = new MetadataCol52();
@@ -809,9 +810,9 @@ public class GuidedDecisionTableWidget extends Composite
                         horiz.add( box );
                         horiz.add( addbutton );
 
-                        pop.addAttribute( Constants.INSTANCE.Metadata1(),
+                        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Metadata1(),
                                           horiz );
-                        pop.addAttribute( Constants.INSTANCE.Attribute(),
+                        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Attribute(),
                                           list );
                         pop.show();
                     }
@@ -1003,8 +1004,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                 } );
 
-                pop.setTitle( Constants.INSTANCE.AddNewColumn() );
-                pop.addAttribute( Constants.INSTANCE.TypeOfColumn(),
+                pop.setTitle( GuidedDecisionTableConstants.INSTANCE.AddNewColumn() );
+                pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.TypeOfColumn(),
                                   choice );
                 pop.addAttribute( "",
                                   chkIncludeAdvancedOptions );
@@ -1098,7 +1099,7 @@ public class GuidedDecisionTableWidget extends Composite
         sb.append( cc.getHeader() );
         SmallLabel label = new SmallLabel( sb.toString() );
         if ( cc.isHideColumn() ) {
-            label.setStylePrimaryName( Resources.INSTANCE.css().columnLabelHidden() );
+            label.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
         }
         return label;
     }
@@ -1109,7 +1110,7 @@ public class GuidedDecisionTableWidget extends Composite
         String boundName = p.getBoundName();
         if ( factType != null && factType.length() > 0 ) {
             if ( p.isNegated() ) {
-                patternLabel.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
+                patternLabel.append( GuidedDecisionTableConstants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
             } else {
                 patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
             }
@@ -1125,10 +1126,10 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget editCondition( final Pattern52 origPattern,
                                   final ConditionCol52 origCol ) {
-        Image edit = ImageResources508.INSTANCE.Edit();
-        edit.setAltText( Constants.INSTANCE.EditThisColumnsConfiguration() );
+        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration() );
         return new ImageButton( edit,
-                                Constants.INSTANCE.EditThisColumnsConfiguration(),
+                                GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         ConditionPopup dialog = new ConditionPopup( oracle,
@@ -1154,11 +1155,11 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editCondition( final BRLConditionColumn origCol ) {
-        Image edit = ImageResources508.INSTANCE.Edit();
-        edit.setAltText( Constants.INSTANCE.EditThisColumnsConfiguration() );
+        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration() );
         if ( origCol instanceof LimitedEntryBRLConditionColumn ) {
             return new ImageButton( edit,
-                                    Constants.INSTANCE.EditThisColumnsConfiguration(),
+                                    GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( path,
@@ -1174,7 +1175,7 @@ public class GuidedDecisionTableWidget extends Composite
                                     } );
         }
         return new ImageButton( edit,
-                                Constants.INSTANCE.EditThisColumnsConfiguration(),
+                                GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
@@ -1191,18 +1192,18 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeCondition( final ConditionCol52 c ) {
-        Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( Constants.INSTANCE.RemoveThisConditionColumn() );
+        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn() );
         if ( c instanceof LimitedEntryBRLConditionColumn ) {
             return new ImageButton( image,
-                                    Constants.INSTANCE.RemoveThisConditionColumn(),
+                                    GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             if ( !canConditionBeDeleted( (LimitedEntryBRLConditionColumn) c ) ) {
-                                                Window.alert( Constants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
                                                 return;
                                             }
-                                            String cm = Constants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (LimitedEntryBRLConditionColumn) c );
                                                 refreshConditionsWidget();
@@ -1212,14 +1213,14 @@ public class GuidedDecisionTableWidget extends Composite
 
         } else if ( c instanceof BRLConditionColumn ) {
             return new ImageButton( image,
-                                    Constants.INSTANCE.RemoveThisConditionColumn(),
+                                    GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             if ( !canConditionBeDeleted( (BRLConditionColumn) c ) ) {
-                                                Window.alert( Constants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
                                                 return;
                                             }
-                                            String cm = Constants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (BRLConditionColumn) c );
                                                 refreshConditionsWidget();
@@ -1229,14 +1230,14 @@ public class GuidedDecisionTableWidget extends Composite
 
         }
         return new ImageButton( image,
-                                Constants.INSTANCE.RemoveThisConditionColumn(),
+                                GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         if ( !canConditionBeDeleted( c ) ) {
-                                            Window.alert( Constants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                            Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
                                             return;
                                         }
-                                        String cm = Constants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                        String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
                                         if ( Window.confirm( cm ) ) {
                                             dtable.deleteColumn( c );
                                             refreshConditionsWidget();
@@ -1256,7 +1257,7 @@ public class GuidedDecisionTableWidget extends Composite
         if ( model.getMetadataCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( Constants.INSTANCE.Metadata1() ) );
+            hp.add( new SmallLabel( GuidedDecisionTableConstants.INSTANCE.Metadata1() ) );
             attributeConfigWidget.add( hp );
         }
         for ( MetadataCol52 atc : model.getMetadataCols() ) {
@@ -1270,7 +1271,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( label );
 
             final MetadataCol52 at = atc;
-            final CheckBox hide = new CheckBox( Constants.INSTANCE.HideThisColumn() );
+            final CheckBox hide = new CheckBox( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() );
             hide.setStyleName( "form-field" );
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
@@ -1290,7 +1291,7 @@ public class GuidedDecisionTableWidget extends Composite
         if ( model.getAttributeCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( Constants.INSTANCE.Attributes() ) );
+            hp.add( new SmallLabel( GuidedDecisionTableConstants.INSTANCE.Attributes() ) );
             attributeConfigWidget.add( hp );
         }
 
@@ -1319,14 +1320,14 @@ public class GuidedDecisionTableWidget extends Composite
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
-                final CheckBox useRowNumber = new CheckBox( Constants.INSTANCE.UseRowNumber() );
+                final CheckBox useRowNumber = new CheckBox( GuidedDecisionTableConstants.INSTANCE.UseRowNumber() );
                 useRowNumber.setStyleName( "form-field" );
                 useRowNumber.setValue( at.isUseRowNumber() );
                 useRowNumber.setEnabled( !isReadOnly );
                 hp.add( useRowNumber );
 
                 hp.add( new SmallLabel( "(" ) );
-                final CheckBox reverseOrder = new CheckBox( Constants.INSTANCE.ReverseOrder() );
+                final CheckBox reverseOrder = new CheckBox( GuidedDecisionTableConstants.INSTANCE.ReverseOrder() );
                 reverseOrder.setStyleName( "form-field" );
                 reverseOrder.setValue( at.isReverseOrder() );
                 reverseOrder.setEnabled( at.isUseRowNumber() && !isReadOnly );
@@ -1349,10 +1350,10 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( ")" ) );
             }
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( Constants.INSTANCE.DefaultValue() ) );
+            hp.add( new SmallLabel( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ) );
             hp.add( defaultValue );
 
-            final CheckBox hide = new CheckBox( Constants.INSTANCE.HideThisColumn() );
+            final CheckBox hide = new CheckBox( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() );
             hide.setStyleName( "form-field" );
             hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
@@ -1390,21 +1391,21 @@ public class GuidedDecisionTableWidget extends Composite
     private void setColumnLabelStyleWhenHidden( SmallLabel label,
                                                 boolean isHidden ) {
         if ( isHidden ) {
-            label.addStyleName( Resources.INSTANCE.css().columnLabelHidden() );
+            label.addStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
         } else {
-            label.removeStyleName( Resources.INSTANCE.css().columnLabelHidden() );
+            label.removeStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
         }
     }
 
     private Widget removeAttr( final AttributeCol52 at ) {
-        Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( Constants.INSTANCE.RemoveThisAttribute() );
+        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisAttribute() );
 
         return new ImageButton( image,
-                                Constants.INSTANCE.RemoveThisAttribute(),
+                                GuidedDecisionTableConstants.INSTANCE.RemoveThisAttribute(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
-                                        String ms = Constants.INSTANCE.DeleteActionColumnWarning( at.getAttribute() );
+                                        String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( at.getAttribute() );
                                         if ( Window.confirm( ms ) ) {
                                             dtable.deleteColumn( at );
                                             refreshAttributeWidget();
@@ -1415,14 +1416,14 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeMeta( final MetadataCol52 md ) {
-        Image image = ImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( Constants.INSTANCE.RemoveThisMetadata() );
+        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
+        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisMetadata() );
 
         return new ImageButton( image,
-                                Constants.INSTANCE.RemoveThisMetadata(),
+                                GuidedDecisionTableConstants.INSTANCE.RemoveThisMetadata(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
-                                        String ms = Constants.INSTANCE.DeleteActionColumnWarning( md.getMetadata() );
+                                        String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( md.getMetadata() );
                                         if ( Window.confirm( ms ) ) {
                                             dtable.deleteColumn( md );
                                             refreshAttributeWidget();

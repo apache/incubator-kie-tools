@@ -19,8 +19,9 @@ import com.google.gwt.resources.client.ImageResource;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 
 /**
  * A class to provide different resources for Decision Tables
@@ -30,160 +31,160 @@ public class DecisionTableResourcesProvider
         ResourcesProvider<BaseColumn> {
 
     public int rowHeight() {
-        return Resources.INSTANCE.css().rowHeight();
+        return GuidedDecisionTableResources.INSTANCE.css().rowHeight();
     }
 
     public int rowHeaderHeight() {
-        return Resources.INSTANCE.css().rowHeaderHeight();
+        return GuidedDecisionTableResources.INSTANCE.css().rowHeaderHeight();
     }
 
     public int rowHeaderSplitterHeight() {
-        return Resources.INSTANCE.css().rowHeaderSplitterHeight();
+        return GuidedDecisionTableResources.INSTANCE.css().rowHeaderSplitterHeight();
     }
 
     public int rowHeaderSorterHeight() {
-        return Resources.INSTANCE.css().rowHeaderSorterHeight();
+        return GuidedDecisionTableResources.INSTANCE.css().rowHeaderSorterHeight();
     }
 
     public int sidebarWidth() {
-        return Resources.INSTANCE.css().sidebarWidth();
+        return GuidedDecisionTableResources.INSTANCE.css().sidebarWidth();
     }
 
     public int borderWidth() {
-        return Resources.INSTANCE.css().borderWidth();
+        return GuidedDecisionTableResources.INSTANCE.css().borderWidth();
     }
 
     public int borderWidthThick() {
-        return Resources.INSTANCE.css().borderWidthThick();
+        return GuidedDecisionTableResources.INSTANCE.css().borderWidthThick();
     }
 
     public String cellTableColumn( BaseColumn column ) {
         if ( column instanceof ConditionCol52 ) {
-            return Resources.INSTANCE.css().conditionColumn();
+            return GuidedDecisionTableResources.INSTANCE.css().conditionColumn();
         } else if ( column instanceof ActionCol52 ) {
-            return Resources.INSTANCE.css().actionColumn();
+            return GuidedDecisionTableResources.INSTANCE.css().actionColumn();
         }
-        return Resources.INSTANCE.css().metaColumn();
+        return GuidedDecisionTableResources.INSTANCE.css().metaColumn();
     }
 
     public String cellTable() {
-        return Resources.INSTANCE.css().cellTable();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTable();
     }
 
     public String cellTableEvenRow() {
-        return Resources.INSTANCE.css().cellTableEvenRow();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableEvenRow();
     }
 
     public String cellTableOddRow() {
-        return Resources.INSTANCE.css().cellTableOddRow();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableOddRow();
     }
 
     public String cellTableCell() {
-        return Resources.INSTANCE.css().cellTableCell();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableCell();
     }
 
     public String cellTableCellSelected() {
-        return Resources.INSTANCE.css().cellTableCellSelected();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableCellSelected();
     }
 
     public String cellTableCellMultipleValues() {
-        return Resources.INSTANCE.css().cellTableCellMultipleValues();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableCellMultipleValues();
     }
 
     public String cellTableCellOtherwise() {
-        return Resources.INSTANCE.css().cellTableCellOtherwise();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableCellOtherwise();
     }
 
     public String cellTableCellDiv() {
-        return Resources.INSTANCE.css().cellTableCellDiv();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableCellDiv();
     }
 
     public String cellTableGroupDiv() {
-        return Resources.INSTANCE.css().cellTableGroupDiv();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableGroupDiv();
     }
 
     public String cellTableTextDiv() {
-        return Resources.INSTANCE.css().cellTableTextDiv();
+        return GuidedDecisionTableResources.INSTANCE.css().cellTableTextDiv();
     }
 
     public String headerRowBottom() {
-        return Resources.INSTANCE.css().headerRowBottom();
+        return GuidedDecisionTableResources.INSTANCE.css().headerRowBottom();
     }
 
     public String headerRowIntermediate() {
-        return Resources.INSTANCE.css().headerRowIntermediate();
+        return GuidedDecisionTableResources.INSTANCE.css().headerRowIntermediate();
     }
 
     public String headerText() {
-        return Resources.INSTANCE.css().headerText();
+        return GuidedDecisionTableResources.INSTANCE.css().headerText();
     }
 
     public String headerSplitter() {
-        return Resources.INSTANCE.css().headerSplitter();
+        return GuidedDecisionTableResources.INSTANCE.css().headerSplitter();
     }
 
     public String headerResizer() {
-        return Resources.INSTANCE.css().headerResizer();
+        return GuidedDecisionTableResources.INSTANCE.css().headerResizer();
     }
 
     public String selectorSpacer() {
-        return Resources.INSTANCE.css().selectorSpacer();
+        return GuidedDecisionTableResources.INSTANCE.css().selectorSpacer();
     }
 
     public String selectorSpacerOuterDiv() {
-        return Resources.INSTANCE.css().selectorSpacerOuterDiv();
+        return GuidedDecisionTableResources.INSTANCE.css().selectorSpacerOuterDiv();
     }
 
     public String selectorSpacerInnerDiv() {
-        return Resources.INSTANCE.css().selectorSpacerInnerDiv();
+        return GuidedDecisionTableResources.INSTANCE.css().selectorSpacerInnerDiv();
     }
 
     public String selectorCell() {
-        return Resources.INSTANCE.css().selectorCell();
+        return GuidedDecisionTableResources.INSTANCE.css().selectorCell();
     }
 
     public ImageResource arrowSpacerIcon() {
-        return Resources.INSTANCE.images().arrowSpacerIcon();
+        return GuidedDecisionTableResources.INSTANCE.images().arrowSpacerIcon();
     }
 
     public ImageResource downArrowIcon() {
-        return Resources.INSTANCE.tableImageResources().downArrow();
+        return GuidedDecisionTableResources.INSTANCE.tableImageResources().downArrow();
     }
 
     public ImageResource smallDownArrowIcon() {
-        return Resources.INSTANCE.tableImageResources().smallDownArrow();
+        return GuidedDecisionTableResources.INSTANCE.tableImageResources().smallDownArrow();
     }
 
     public ImageResource upArrowIcon() {
-        return Resources.INSTANCE.tableImageResources().upArrow();
+        return GuidedDecisionTableResources.INSTANCE.tableImageResources().upArrow();
     }
 
     public ImageResource smallUpArrowIcon() {
-        return Resources.INSTANCE.tableImageResources().smallUpArrow();
+        return GuidedDecisionTableResources.INSTANCE.tableImageResources().smallUpArrow();
     }
 
     public ImageResource toggleUnmergeIcon() {
-        return Resources.INSTANCE.images().toggleUnmergeIcon();
+        return GuidedDecisionTableResources.INSTANCE.images().toggleUnmergeIcon();
     }
 
     public ImageResource toggleMergeIcon() {
-        return Resources.INSTANCE.images().toggleMergeIcon();
+        return GuidedDecisionTableResources.INSTANCE.images().toggleMergeIcon();
     }
 
     public ImageResource selectorAddIcon() {
-        return Resources.INSTANCE.itemImages().newItem();
+        return GuidedDecisionTableResources.INSTANCE.itemImages().newItem();
     }
 
     public ImageResource selectorDeleteIcon() {
-        return Resources.INSTANCE.itemImages().deleteItemSmall();
+        return GuidedDecisionTableResources.INSTANCE.itemImages().deleteItemSmall();
     }
 
     public ImageResource collapseCellsIcon() {
-        return Resources.INSTANCE.collapseExpand().collapse();
+        return GuidedDecisionTableResources.INSTANCE.collapseExpand().collapse();
     }
 
     public ImageResource expandCellsIcon() {
-        return Resources.INSTANCE.collapseExpand().expand();
+        return GuidedDecisionTableResources.INSTANCE.collapseExpand().expand();
     }
 
 }

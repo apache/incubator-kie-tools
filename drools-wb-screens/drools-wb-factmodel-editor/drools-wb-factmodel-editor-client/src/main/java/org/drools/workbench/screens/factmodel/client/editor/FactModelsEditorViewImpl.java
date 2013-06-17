@@ -28,7 +28,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactModels;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -65,8 +65,8 @@ public class FactModelsEditorViewImpl
     public FactModelsEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        addFactIcon.setTitle( Constants.INSTANCE.AddNewFactType() );
-        addFactIcon.setText( Constants.INSTANCE.AddNewFactType() );
+        addFactIcon.setTitle( FactModelConstants.INSTANCE.AddNewFactType() );
+        addFactIcon.setText( FactModelConstants.INSTANCE.AddNewFactType() );
     }
 
     @Override

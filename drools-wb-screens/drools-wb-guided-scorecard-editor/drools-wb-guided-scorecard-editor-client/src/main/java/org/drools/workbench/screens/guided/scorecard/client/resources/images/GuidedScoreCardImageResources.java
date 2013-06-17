@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.enums.client.resources.images;
+package org.drools.workbench.screens.guided.scorecard.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface GuidedScoreCardImageResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
-
-    @Source("enumsIcon.gif")
-    ImageResource enumsIcon();
-
+    @Source("scoreCardIcon.gif")
+    ImageResource scoreCardIcon();
 }

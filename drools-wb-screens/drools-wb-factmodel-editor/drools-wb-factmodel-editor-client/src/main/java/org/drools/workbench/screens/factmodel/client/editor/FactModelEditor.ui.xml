@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
-  <ui:with field='images' type='org.drools.workbench.screens.factmodel.client.resources.images.ImageResources'/>
+  <ui:with field='images' type='org.drools.workbench.screens.factmodel.client.resources.images.FactModelImageResources'/>
   <ui:with field='roundCornersResource' type='org.kie.workbench.common.widgets.client.resources.RoundedCornersResource' />
   <ui:with field='itemImages' type='org.kie.workbench.common.widgets.client.resources.ItemImages' />
 

@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.resources.images;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface GuidedDecisionTableImageResources
         extends
         ClientBundle {
 

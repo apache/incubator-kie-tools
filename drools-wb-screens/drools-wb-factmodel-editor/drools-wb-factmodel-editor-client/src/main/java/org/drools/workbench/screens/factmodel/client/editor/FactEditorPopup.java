@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.uberfire.client.common.FormStylePopup;
 
@@ -84,14 +84,14 @@ public class FactEditorPopup {
     public void show() {
 
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( Constants.INSTANCE.Name() );
+        pop.setTitle( FactModelConstants.INSTANCE.Name() );
         HorizontalPanel changeName = new HorizontalPanel();
         final TextBox name = new TextBox();
         name.setText( factModel.getName() );
         changeName.add( name );
 
         int selectedIndex = 0;
-        lstSuperTypes.addItem( Constants.INSTANCE.DoesNotExtend() );
+        lstSuperTypes.addItem( FactModelConstants.INSTANCE.DoesNotExtend() );
 
         //Populate super-types
         if ( superTypeFactModels != null ) {
@@ -123,7 +123,7 @@ public class FactEditorPopup {
                     String newSuperType = lstSuperTypes.getItemText( lstSuperTypes.getSelectedIndex() );
                     factModel.setSuperType( newSuperType );
                     if ( createsCircularDependency( newSuperType ) ) {
-                        Window.alert( Constants.INSTANCE.CreatesCircularDependency( name.getText() ) );
+                        Window.alert( FactModelConstants.INSTANCE.CreatesCircularDependency( name.getText() ) );
                         factModel.setSuperType( oldSuperType );
                         lstSuperTypes.setSelectedIndex( getSelectedIndex( oldSuperType ) );
                         return;
@@ -136,7 +136,7 @@ public class FactEditorPopup {
 
         } );
 
-        Button nameButton = new Button( Constants.INSTANCE.OK() );
+        Button nameButton = new Button( FactModelConstants.INSTANCE.OK() );
 
         nameButton.addKeyPressHandler( new NoSpaceKeyPressHandler() );
 
@@ -145,11 +145,11 @@ public class FactEditorPopup {
             public void onClick( ClickEvent event ) {
                 String factName = name.getText();
                 if ( !isNameValid( factName ) ) {
-                    Window.alert( Constants.INSTANCE.InvalidModelName( factName ) );
+                    Window.alert( FactModelConstants.INSTANCE.InvalidModelName( factName ) );
                     return;
                 }
                 if ( doesTheNameExist( factName ) ) {
-                    Window.alert( Constants.INSTANCE.NameTakenForModel( factName ) );
+                    Window.alert( FactModelConstants.INSTANCE.NameTakenForModel( factName ) );
                     return;
                 }
                 if ( factModelAlreadyHasAName( factName ) ) {
@@ -186,7 +186,7 @@ public class FactEditorPopup {
             }
 
             private boolean isTheUserSureHeWantsToChangeTheName() {
-                return Window.confirm( Constants.INSTANCE.ModelNameChangeWarning() );
+                return Window.confirm( FactModelConstants.INSTANCE.ModelNameChangeWarning() );
             }
 
             private boolean doesTheNameExist( String name ) {
@@ -198,9 +198,9 @@ public class FactEditorPopup {
             }
         } );
 
-        pop.addAttribute( Constants.INSTANCE.Name(),
+        pop.addAttribute( FactModelConstants.INSTANCE.Name(),
                           changeName );
-        pop.addAttribute( Constants.INSTANCE.TypeExtends(),
+        pop.addAttribute( FactModelConstants.INSTANCE.TypeExtends(),
                           lstSuperTypes );
         pop.addRow( nameButton );
 

@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * Explorer I18N constants
  */
-public interface Constants
+public interface GuidedDecisionTableConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final GuidedDecisionTableConstants INSTANCE = GWT.create( GuidedDecisionTableConstants.class );
 
     //Decision Table
     String NoPatternBindingsAvailable();

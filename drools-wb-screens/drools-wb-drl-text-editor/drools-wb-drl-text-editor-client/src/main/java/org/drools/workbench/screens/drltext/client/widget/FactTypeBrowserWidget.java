@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.screens.drltext.client.resources.Resources;
+import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.drools.workbench.screens.drltext.client.resources.images.ImageResources;
+import org.drools.workbench.screens.drltext.client.resources.images.DRLTextEditorImageResources;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
@@ -68,7 +68,7 @@ public class FactTypeBrowserWidget
 
         panel.add( tree );
 
-        tree.setStyleName( Resources.INSTANCE.CSS().categoryExplorerTree() );
+        tree.setStyleName( DRLTextEditorResources.INSTANCE.CSS().categoryExplorerTree() );
         tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
             public void onSelection( SelectionEvent<TreeItem> event ) {
                 Object o = event.getSelectedItem().getUserObject();
@@ -93,7 +93,7 @@ public class FactTypeBrowserWidget
         if ( dataModel.getFactTypes() != null ) {
             for ( String type : dataModel.getFactTypes() ) {
                 TreeItem it = new TreeItem();
-                it.setHTML( AbstractImagePrototype.create( ImageResources.INSTANCE.classImage() ).getHTML()
+                it.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().classImage() ).getHTML()
                                     + "<small>"
                                     + type + "</small>" );
                 it.setUserObject( type + "( )" );
@@ -103,7 +103,7 @@ public class FactTypeBrowserWidget
                 if ( fields != null ) {
                     for ( String field : fields ) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML( AbstractImagePrototype.create( ImageResources.INSTANCE.field() ).getHTML()
+                        fi.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().fieldImage() ).getHTML()
                                             + "<small>"
                                             + field + "</small>" );
                         fi.setUserObject( field );

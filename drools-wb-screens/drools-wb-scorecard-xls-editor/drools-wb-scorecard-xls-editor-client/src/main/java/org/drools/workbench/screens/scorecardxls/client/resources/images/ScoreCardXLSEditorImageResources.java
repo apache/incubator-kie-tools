@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.workitems.client.resources.images;
+package org.drools.workbench.screens.scorecardxls.client.resources.images;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface WorkItemsEditorImageResources
+public interface ScoreCardXLSEditorImageResources
         extends
         ClientBundle {
 
-    @Source("workitemIcon.gif")
-    ImageResource workitemIcon();
+    @Source("scoreCardIcon.gif")
+    ImageResource scoreCardIcon();
+
+    @Source("scoreCardIconLarge.png")
+    ImageResource scoreCardIconLarge();
 
 }

@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scorecardxls.client.resources;
+
+package org.drools.workbench.screens.enums.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.i18n.client.Messages;
 
-import org.drools.workbench.screens.scorecardxls.client.resources.css.StylesCss;
-
-public interface Resources
+/**
+ * EnumEditor I18N constants
+ */
+public interface EnumEditorConstants
         extends
-        ClientBundle {
+        Messages {
 
-    public static final Resources INSTANCE = GWT.create( Resources.class );
+    public static final EnumEditorConstants INSTANCE = GWT.create( EnumEditorConstants.class );
 
-    @Source("css/Styles.css")
-    StylesCss CSS();
+    String newEnumDescription();
+
+    String FactColumnHeader();
+
+    String FieldColumnHeader();
+
+    String ContextColumnHeader();
+
+    String AddEnum();
 
 }

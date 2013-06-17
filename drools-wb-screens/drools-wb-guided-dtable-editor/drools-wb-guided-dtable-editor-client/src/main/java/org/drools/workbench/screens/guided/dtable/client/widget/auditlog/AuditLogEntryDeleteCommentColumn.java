@@ -23,8 +23,9 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -70,7 +71,7 @@ public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, Imag
                                        NativeEvent event,
                                        ValueUpdater<ImageResource> valueUpdater ) {
             if ( valueUpdater != null ) {
-                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisItem() ) ) {
+                if ( Window.confirm( GuidedDecisionTableConstants.INSTANCE.AreYouSureYouWantToRemoveThisItem() ) ) {
                     valueUpdater.update( image );
                 }
             }
@@ -78,7 +79,7 @@ public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, Imag
 
     };
 
-    private static final ImageResource image = Resources.INSTANCE.images().deleteItemSmall();
+    private static final ImageResource image = GuidedDecisionTableResources.INSTANCE.images().deleteItemSmall();
 
     public AuditLogEntryDeleteCommentColumn() {
         super( cell );

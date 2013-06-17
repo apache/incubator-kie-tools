@@ -44,8 +44,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInse
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
@@ -99,7 +99,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                                    model );
         this.isReadOnly = isReadOnly;
 
-        setTitle( Constants.INSTANCE.ColumnConfigurationWorkItemInsertFact() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemInsertFact() );
         setModal( false );
 
         //Fact being inserted
@@ -109,7 +109,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
         ImageButton changePattern = new ImageButton( createEnabledEdit(),
                                                      createDisabledEdit(),
-                                                     Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
+                                                     GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
                                                      new ClickHandler() {
                                                          public void onClick( ClickEvent w ) {
                                                              showChangePattern( w );
@@ -117,7 +117,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( Constants.INSTANCE.Pattern(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Pattern(),
                       pattern );
 
         //Fact field being set
@@ -126,7 +126,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         field.add( fieldLabel );
         ImageButton editField = new ImageButton( createEnabledEdit(),
                                                  createDisabledEdit(),
-                                                 Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
+                                                 GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                                  new ClickHandler() {
                                                      public void onClick( ClickEvent w ) {
                                                          showFieldChange();
@@ -134,7 +134,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( Constants.INSTANCE.Field(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
@@ -149,15 +149,15 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Logical insertion
-        addAttribute( Constants.INSTANCE.LogicallyInsertColon(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(),
                       doInsertLogical() );
 
         //Bind field to a WorkItem result parameter
-        addAttribute( Constants.INSTANCE.BindActionFieldToWorkItem(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.BindActionFieldToWorkItem(),
                       doBindFieldToWorkItem() );
         if ( !isReadOnly ) {
             workItemResultParameters.addChangeHandler( new ChangeHandler() {
@@ -177,35 +177,35 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( Constants.INSTANCE.HideThisColumn(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
+        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 if ( !isValidFactType() ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnPattern() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnPattern() );
                     return;
                 }
                 if ( !isValidFactField() ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnField() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnField() );
                     return;
                 }
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -222,14 +222,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     private Image createDisabledEdit() {
-        Image disabledEdit = ImageResources508.INSTANCE.EditDisabled();
-        disabledEdit.setAltText( Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
+        Image disabledEdit = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        disabledEdit.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
         return disabledEdit;
     }
 
     private Image createEnabledEdit() {
-        Image edit = ImageResources508.INSTANCE.Edit();
-        edit.setAltText( Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
+        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        edit.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
         return edit;
     }
 
@@ -252,7 +252,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
     private void doFieldLabel() {
         if ( nil( this.editingCol.getFactField() ) ) {
-            fieldLabel.setText( Constants.INSTANCE.pleaseChooseFactType() );
+            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseFactType() );
         } else {
             fieldLabel.setText( editingCol.getFactField() );
         }
@@ -305,9 +305,9 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[ i ] );
         }
-        pop.addAttribute( Constants.INSTANCE.Field(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
-        Button b = new Button( Constants.INSTANCE.OK() );
+        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -346,12 +346,12 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         hp.add( pats );
         hp.add( ok );
 
-        pop.addAttribute( Constants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
                           hp );
         pop.addAttribute( "",
-                          new HTML( Constants.INSTANCE.ORwithEmphasis() ) );
+                          new HTML( GuidedDecisionTableConstants.INSTANCE.ORwithEmphasis() ) );
 
-        Button createPattern = new Button( Constants.INSTANCE.CreateNewFactPattern() );
+        Button createPattern = new Button( GuidedDecisionTableConstants.INSTANCE.CreateNewFactPattern() );
         createPattern.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 pop.hide();
@@ -379,18 +379,18 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
     protected void showNewPatternDialog() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( Constants.INSTANCE.NewFactSelectTheType() );
+        pop.setTitle( GuidedDecisionTableConstants.INSTANCE.NewFactSelectTheType() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
             types.addItem( oracle.getFactTypes()[ i ] );
         }
-        pop.addAttribute( Constants.INSTANCE.FactType(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( Constants.INSTANCE.Binding(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
                           binding );
 
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
@@ -398,13 +398,13 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();
                 if ( fn.equals( "" ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameForFact() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !isBindingUnique( fn ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
 
@@ -468,8 +468,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( Constants.INSTANCE.LogicallyInsertANewFact(),
-                               Constants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
+        hp.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertANewFact(),
+                               GuidedDecisionTableConstants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 
@@ -490,7 +490,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         //Populate list of available result parameters
         if ( actionWorkItems.size() == 0 ) {
             workItemResultParameters.setEnabled( false );
-            workItemResultParameters.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
+            workItemResultParameters.addItem( GuidedDecisionTableConstants.INSTANCE.NoWorkItemsAvailable() );
             editingCol.setWorkItemName( null );
             editingCol.setWorkItemResultParameterName( null );
             editingCol.setParameterClassName( null );
@@ -520,7 +520,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
             //Disable selection if no suitable parameters were found
             if ( workItemResultParameters.getItemCount() == 0 ) {
                 workItemResultParameters.setEnabled( false );
-                workItemResultParameters.addItem( Constants.INSTANCE.NoWorkItemsAvailable() );
+                workItemResultParameters.addItem( GuidedDecisionTableConstants.INSTANCE.NoWorkItemsAvailable() );
                 editingCol.setWorkItemName( null );
                 editingCol.setWorkItemResultParameterName( null );
                 editingCol.setParameterClassName( null );

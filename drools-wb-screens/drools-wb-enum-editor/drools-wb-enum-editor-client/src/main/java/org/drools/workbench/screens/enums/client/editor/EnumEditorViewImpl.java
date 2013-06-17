@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import org.drools.workbench.screens.enums.client.resources.i18n.Constants;
+import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.client.widget.DeleteButtonCellWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
@@ -114,16 +114,16 @@ public class EnumEditorViewImpl extends Composite implements EnumEditorView {
 
         cellTable.addColumn( deleteButtonColumn );
         cellTable.addColumn( factNameColumn,
-                             Constants.INSTANCE.FactColumnHeader() );
+                             EnumEditorConstants.INSTANCE.FactColumnHeader() );
         cellTable.addColumn( fieldNameColumn,
-                             Constants.INSTANCE.FieldColumnHeader() );
+                             EnumEditorConstants.INSTANCE.FieldColumnHeader() );
         cellTable.addColumn( contextColumn,
-                             Constants.INSTANCE.ContextColumnHeader() );
+                             EnumEditorConstants.INSTANCE.ContextColumnHeader() );
 
         // Connect the table to the data provider.
         dataProvider.addDataDisplay( cellTable );
 
-        final Button addButton = new Button( Constants.INSTANCE.AddEnum(),
+        final Button addButton = new Button( EnumEditorConstants.INSTANCE.AddEnum(),
                                              new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
                 isDirty = true;

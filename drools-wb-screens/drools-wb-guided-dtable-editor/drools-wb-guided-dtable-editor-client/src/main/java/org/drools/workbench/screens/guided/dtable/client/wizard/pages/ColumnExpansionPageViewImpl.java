@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
 import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
@@ -132,7 +132,7 @@ public class ColumnExpansionPageViewImpl extends Composite
         availableColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableColumnsWidget.setMinimumWidth( 275 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableColumns() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableColumnsWidget.setEmptyListWidget( lstEmpty );
 
@@ -154,7 +154,7 @@ public class ColumnExpansionPageViewImpl extends Composite
         chosenColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenColumnsWidget.setMinimumWidth( 275 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenColumns() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenColumnsWidget.setEmptyListWidget( lstEmpty );
 

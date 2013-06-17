@@ -71,6 +71,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
@@ -78,7 +79,6 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortConfigur
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SortDataEvent;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
 import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
@@ -327,7 +327,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof DescriptionCol52 ) {
-                tce.appendChild( makeLabel( Constants.INSTANCE.Description(),
+                tce.appendChild( makeLabel( GuidedDecisionTableConstants.INSTANCE.Description(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement>cast().setRowSpan( 4 );
@@ -365,7 +365,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             } else if ( modelCol instanceof AnalysisCol52 ) {
-                tce.appendChild( makeLabel( Constants.INSTANCE.Analysis(),
+                tce.appendChild( makeLabel( GuidedDecisionTableConstants.INSTANCE.Analysis(),
                                             width,
                                             resources.rowHeaderHeight() ) );
                 tce.<TableCellElement>cast().setRowSpan( 4 );
@@ -524,7 +524,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             String boundName = ccPattern.getBoundName();
                             if ( factType != null && factType.length() > 0 ) {
                                 if ( ccPattern.isNegated() ) {
-                                    label.append( Constants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
+                                    label.append( GuidedDecisionTableConstants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
                                 } else {
                                     label.append( factType ).append( " [" ).append( boundName ).append( "]" );
                                 }
@@ -664,9 +664,9 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                 label.append( "]" );
                             }
                         } else if ( ac instanceof ActionRetractFactCol52 ) {
-                            label.append( "[" + Constants.INSTANCE.Retract() + "]" );
+                            label.append( "[" + GuidedDecisionTableConstants.INSTANCE.Retract() + "]" );
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
-                            label.append( "[" + Constants.INSTANCE.WorkItemAction() + "]" );
+                            label.append( "[" + GuidedDecisionTableConstants.INSTANCE.WorkItemAction() + "]" );
                         } else if ( ac instanceof BRLActionVariableColumn ) {
                             BRLActionVariableColumn brl = (BRLActionVariableColumn) ac;
                             String field = brl.getFactField();

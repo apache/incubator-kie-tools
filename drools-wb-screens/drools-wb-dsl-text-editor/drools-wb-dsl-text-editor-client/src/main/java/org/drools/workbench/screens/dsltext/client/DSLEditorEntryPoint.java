@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.dsltext.client;
 
-import org.drools.workbench.screens.dsltext.client.resources.Resources;
+import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
@@ -24,7 +24,7 @@ public class DSLEditorEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        Resources.INSTANCE.CSS().ensureInjected();
+        DSLTextEditorResources.INSTANCE.CSS().ensureInjected();
     }
 
 }

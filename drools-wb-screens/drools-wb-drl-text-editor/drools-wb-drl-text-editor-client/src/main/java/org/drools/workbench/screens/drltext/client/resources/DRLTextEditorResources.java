@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.screens.drltext.client.resources;
 
-package org.drools.workbench.screens.workitems.client.resources.images;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.drools.workbench.screens.drltext.client.resources.css.StylesCss;
+import org.drools.workbench.screens.drltext.client.resources.images.DRLTextEditorImageResources;
 
-public interface WorkItemsEditorImageResources
+public interface DRLTextEditorResources
         extends
         ClientBundle {
 
-    @Source("workitemIcon.gif")
-    ImageResource workitemIcon();
+    public static final DRLTextEditorResources INSTANCE = GWT.create( DRLTextEditorResources.class );
+
+    @Source("css/Styles.css")
+    StylesCss CSS();
+
+    DRLTextEditorImageResources images();
 
 }

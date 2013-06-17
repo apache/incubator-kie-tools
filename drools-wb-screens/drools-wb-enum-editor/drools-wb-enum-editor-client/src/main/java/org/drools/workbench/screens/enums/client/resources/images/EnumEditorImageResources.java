@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.enums.client.resources.i18n;
+package org.drools.workbench.screens.enums.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-/**
- * EnumEditor I18N constants
- */
-public interface Constants
+public interface EnumEditorImageResources
         extends
-        Messages {
+        ClientBundle {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
-
-    String newEnumDescription();
-
-    String FactColumnHeader();
-
-    String FieldColumnHeader();
-
-    String ContextColumnHeader();
-
-    String AddEnum();
+    @Source("enumsIcon.gif")
+    ImageResource enumsIcon();
 
 }

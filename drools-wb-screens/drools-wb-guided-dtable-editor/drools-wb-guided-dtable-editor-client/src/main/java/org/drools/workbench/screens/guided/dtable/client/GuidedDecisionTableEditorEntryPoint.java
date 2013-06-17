@@ -15,16 +15,17 @@
  */
 package org.drools.workbench.screens.guided.dtable.client;
 
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 
 @EntryPoint
 public class GuidedDecisionTableEditorEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        Resources.INSTANCE.css().ensureInjected();
+        GuidedDecisionTableResources.INSTANCE.css().ensureInjected();
     }
 
 }

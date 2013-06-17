@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -186,32 +186,32 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
 
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-            Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
         }
         if ( isNew ) {
             if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
             if ( isDefined() ) {
                 doInsertColumn();
             } else {
-                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
                 return;
             }
 
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
                 }
             }
             if ( isDefined() ) {
                 doUpdateColumn();
             } else {
-                Window.alert( Constants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.DecisionTableBRLFragmentNothingDefined() );
                 return;
             }
 

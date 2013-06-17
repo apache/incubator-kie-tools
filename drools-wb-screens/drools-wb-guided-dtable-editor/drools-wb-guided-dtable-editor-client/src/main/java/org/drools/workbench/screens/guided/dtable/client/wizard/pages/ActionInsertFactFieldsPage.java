@@ -32,7 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCo
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
@@ -72,7 +72,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public String getTitle() {
-        return Constants.INSTANCE.DecisionTableWizardActionInsertFacts();
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardActionInsertFacts();
     }
 
     @Override

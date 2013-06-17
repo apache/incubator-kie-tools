@@ -18,6 +18,7 @@ package org.drools.workbench.screens.workitems.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import org.drools.workbench.screens.workitems.client.resources.css.WorkItemsEditorStylesCss;
+import org.drools.workbench.screens.workitems.client.resources.images.WorkItemsEditorImageResources;
 
 public interface WorkItemsEditorResources
         extends
@@ -27,5 +28,7 @@ public interface WorkItemsEditorResources
 
     @Source("css/WorkItemsEditorStyles.css")
     WorkItemsEditorStylesCss CSS();
+
+    WorkItemsEditorImageResources images();
 
 }

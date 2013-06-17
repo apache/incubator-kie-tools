@@ -22,7 +22,7 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**
  * A cell to render AuditLogEntry's
@@ -60,7 +60,7 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
         //Audit Log entry type and date
         final String eventTypeDisplayText = AuditLogEntryCellHelper.getEventTypeDisplayText( value.getGenericType() );
-        final String whenWhoDisplayText = Constants.INSTANCE.AuditLogEntryOn1( format.format( value.getDateOfEntry() ),
+        final String whenWhoDisplayText = GuidedDecisionTableConstants.INSTANCE.AuditLogEntryOn1( format.format( value.getDateOfEntry() ),
                                                                                value.getUserName() );
         sb.append( TEMPLATE.entrySummary( eventTypeDisplayText,
                                           whenWhoDisplayText ) );

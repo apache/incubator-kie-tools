@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.widgets.client.resources.WizardResources;
 import org.uberfire.backend.vfs.Path;
 
@@ -120,10 +120,10 @@ public class SummaryPageViewImpl extends Composite
     public void setTableFormat( GuidedDecisionTable52.TableFormat tableFormat ) {
         switch ( tableFormat ) {
             case EXTENDED_ENTRY:
-                lblTableFormat.setText( Constants.INSTANCE.TableFormatExtendedEntry() );
+                lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatExtendedEntry() );
                 break;
             case LIMITED_ENTRY:
-                lblTableFormat.setText( Constants.INSTANCE.TableFormatLimitedEntry() );
+                lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatLimitedEntry() );
                 break;
         }
     }

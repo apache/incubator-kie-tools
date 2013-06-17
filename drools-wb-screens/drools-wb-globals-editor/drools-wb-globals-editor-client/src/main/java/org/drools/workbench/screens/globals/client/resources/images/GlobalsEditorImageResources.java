@@ -16,15 +16,12 @@
 
 package org.drools.workbench.screens.globals.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
 public interface GlobalsEditorImageResources
         extends
         ClientBundle {
-
-    public static final GlobalsEditorImageResources INSTANCE = GWT.create( GlobalsEditorImageResources.class );
 
     @Source("globalsIcon.gif")
     ImageResource globalsIcon();

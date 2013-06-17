@@ -27,7 +27,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
 import org.uberfire.client.common.AddButton;
@@ -71,11 +71,11 @@ public class FactFieldsEditor
         addAnnotationRows();
         addFieldRows();
 
-        addFieldIcon.setTitle( Constants.INSTANCE.AddField() );
-        addFieldIcon.setText( Constants.INSTANCE.AddField() );
+        addFieldIcon.setTitle( FactModelConstants.INSTANCE.AddField() );
+        addFieldIcon.setText( FactModelConstants.INSTANCE.AddField() );
 
-        addAnnotationIcon.setTitle( Constants.INSTANCE.AddAnnotation() );
-        addAnnotationIcon.setText( Constants.INSTANCE.AddAnnotation() );
+        addAnnotationIcon.setTitle( FactModelConstants.INSTANCE.AddAnnotation() );
+        addAnnotationIcon.setText( FactModelConstants.INSTANCE.AddAnnotation() );
 
     }
 
@@ -141,7 +141,7 @@ public class FactFieldsEditor
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
+                if ( Window.confirm( FactModelConstants.INSTANCE.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
                     fieldsPanel.remove( editor );
                     fields.remove( field );
                 }
@@ -157,7 +157,7 @@ public class FactFieldsEditor
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
+                if ( Window.confirm( FactModelConstants.INSTANCE.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
                     fieldsPanel.remove( editor );
                     annotations.remove( annotation );
                 }

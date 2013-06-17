@@ -45,8 +45,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
@@ -103,7 +103,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                         isReadOnly,
                                                         allowEmptyValues() );
 
-        setTitle( Constants.INSTANCE.ActionColumnConfigurationInsertingANewFact() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ActionColumnConfigurationInsertingANewFact() );
         setModal( false );
 
         //Fact being inserted
@@ -114,7 +114,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         ImageButton changePattern = createChangePatternButton();
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( Constants.INSTANCE.Pattern(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Pattern(),
                       pattern );
 
         //Fact field being set
@@ -125,7 +125,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         ImageButton editField = createEditFieldButton();
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( Constants.INSTANCE.Field(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                       field );
         doFieldLabel();
 
@@ -140,7 +140,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Optional value list
@@ -185,61 +185,61 @@ public class ActionInsertFactPopup extends FormStylePopup {
             }
             HorizontalPanel vl = new HorizontalPanel();
             vl.add( valueListWidget );
-            vl.add( new InfoPopup( Constants.INSTANCE.ValueList(),
-                                   Constants.INSTANCE.ValueListsExplanation() ) );
-            addAttribute( Constants.INSTANCE.optionalValueList(),
+            vl.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.ValueList(),
+                                   GuidedDecisionTableConstants.INSTANCE.ValueListsExplanation() ) );
+            addAttribute( GuidedDecisionTableConstants.INSTANCE.optionalValueList(),
                           vl );
         }
         doValueList();
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( Constants.INSTANCE.DefaultValue(),
+            defaultValueWidgetContainerIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
                                                              defaultValueWidgetContainer );
             makeDefaultValueWidget();
         }
 
         //Limited entry value widget
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            limitedEntryValueAttributeIndex = addAttribute( Constants.INSTANCE.LimitedEntryValue(),
+            limitedEntryValueAttributeIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.LimitedEntryValue(),
                                                             limitedEntryValueWidgetContainer );
             makeLimitedValueWidget();
         }
 
         //Logical insertion
-        addAttribute( Constants.INSTANCE.LogicallyInsertColon(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(),
                       doInsertLogical() );
 
         //Hide column tick-box
-        addAttribute( Constants.INSTANCE.HideThisColumn(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
+        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 if ( !isValidFactType() ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnPattern() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnPattern() );
                     return;
                 }
                 if ( !isValidFactField() ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnField() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnField() );
                     return;
                 }
                 if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
 
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -256,13 +256,13 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createEditFieldButton() {
-        Image edit = ImageResources508.INSTANCE.Edit();
-        edit.setAltText( Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
-        Image editDisabled = ImageResources508.INSTANCE.EditDisabled();
-        editDisabled.setAltText( Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
+        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
+        Image editDisabled = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        editDisabled.setAltText( GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
         return new ImageButton( edit,
                                 editDisabled,
-                                Constants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
+                                GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         showFieldChange();
@@ -271,14 +271,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createChangePatternButton() {
-        Image edit = ImageResources508.INSTANCE.Edit();
-        edit.setAltText( Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
-        Image editDisabled = ImageResources508.INSTANCE.EditDisabled();
-        editDisabled.setAltText( Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
+        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        edit.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
+        Image editDisabled = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        editDisabled.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
 
         return new ImageButton( edit,
                                 editDisabled,
-                                Constants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
+                                GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         showChangePattern( w );
@@ -366,7 +366,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     private void doFieldLabel() {
         if ( nil( this.editingCol.getFactField() ) ) {
-            fieldLabel.setText( Constants.INSTANCE.pleaseChooseFactType() );
+            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseFactType() );
         } else {
             fieldLabel.setText( editingCol.getFactField() );
         }
@@ -452,9 +452,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[ i ] );
         }
-        pop.addAttribute( Constants.INSTANCE.Field(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
-        Button b = new Button( Constants.INSTANCE.OK() );
+        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
                           b );
         b.addClickHandler( new ClickHandler() {
@@ -495,12 +495,12 @@ public class ActionInsertFactPopup extends FormStylePopup {
         hp.add( pats );
         hp.add( ok );
 
-        pop.addAttribute( Constants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
                           hp );
         pop.addAttribute( "",
-                          new HTML( Constants.INSTANCE.ORwithEmphasis() ) );
+                          new HTML( GuidedDecisionTableConstants.INSTANCE.ORwithEmphasis() ) );
 
-        Button createPattern = new Button( Constants.INSTANCE.CreateNewFactPattern() );
+        Button createPattern = new Button( GuidedDecisionTableConstants.INSTANCE.CreateNewFactPattern() );
         createPattern.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 pop.hide();
@@ -530,18 +530,18 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
     protected void showNewPatternDialog() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( Constants.INSTANCE.NewFactSelectTheType() );
+        pop.setTitle( GuidedDecisionTableConstants.INSTANCE.NewFactSelectTheType() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
             types.addItem( oracle.getFactTypes()[ i ] );
         }
-        pop.addAttribute( Constants.INSTANCE.FactType(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( Constants.INSTANCE.Binding(),
+        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
                           binding );
 
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
@@ -549,13 +549,13 @@ public class ActionInsertFactPopup extends FormStylePopup {
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();
                 if ( fn.equals( "" ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameForFact() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !isBindingUnique( fn ) ) {
-                    Window.alert( Constants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
 
@@ -609,8 +609,8 @@ public class ActionInsertFactPopup extends FormStylePopup {
             } );
         }
         hp.add( cb );
-        hp.add( new InfoPopup( Constants.INSTANCE.LogicallyInsertANewFact(),
-                               Constants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
+        hp.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertANewFact(),
+                               GuidedDecisionTableConstants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 

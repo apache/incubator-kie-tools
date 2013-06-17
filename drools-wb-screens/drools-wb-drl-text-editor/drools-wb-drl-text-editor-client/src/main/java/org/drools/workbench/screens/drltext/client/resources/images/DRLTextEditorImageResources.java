@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.factmodel.client.resources.images;
+package org.drools.workbench.screens.drltext.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface DRLTextEditorImageResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    @Source("drlIcon.gif")
+    ImageResource DRLIcon();
 
-    @Source("edit.gif")
-    ImageResource edit();
+    @Source("class.gif")
+    ImageResource classImage();
 
-    @Source("shuffle_up.gif")
-    ImageResource shuffleUp();
-
-    @Source("shuffle_down.gif")
-    ImageResource shuffleDown();
-
-    @Source("factModelIcon.gif")
-    ImageResource factModelIcon();
+    @Source("field.gif")
+    ImageResource fieldImage();
 
 }

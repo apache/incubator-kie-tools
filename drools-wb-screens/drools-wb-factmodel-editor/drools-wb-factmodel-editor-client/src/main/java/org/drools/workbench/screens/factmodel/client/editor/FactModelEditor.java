@@ -32,7 +32,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.kie.workbench.common.widgets.client.resources.CollapseExpand;
 import org.kie.workbench.common.widgets.client.resources.i18n.CollapseExpandConstants;
@@ -93,9 +93,9 @@ public class FactModelEditor
 
         setIconImage();
 
-        moveUpIcon.setTitle( Constants.INSTANCE.MoveUp() );
-        moveDownIcon.setTitle( Constants.INSTANCE.MoveDown() );
-        deleteIcon.setTitle( Constants.INSTANCE.RemoveThisFactType() );
+        moveUpIcon.setTitle( FactModelConstants.INSTANCE.MoveUp() );
+        moveDownIcon.setTitle( FactModelConstants.INSTANCE.MoveDown() );
+        deleteIcon.setTitle( FactModelConstants.INSTANCE.RemoveThisFactType() );
 
         addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
             public void onOpen( OpenEvent<AbstractLazyStackPanelHeader> event ) {
@@ -153,12 +153,12 @@ public class FactModelEditor
         for ( FactMetaModel fmm : superTypeFactModels ) {
             if ( fmm.hasSuperType() ) {
                 if ( fmm.getSuperType().equals( factMetaModel.getName() ) ) {
-                    Window.confirm( Constants.INSTANCE.CannotDeleteADeclarationThatIsASuperType() );
+                    Window.confirm( FactModelConstants.INSTANCE.CannotDeleteADeclarationThatIsASuperType() );
                     return;
                 }
             }
         }
-        if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToRemoveThisFact() ) ) {
+        if ( Window.confirm( FactModelConstants.INSTANCE.AreYouSureYouWantToRemoveThisFact() ) ) {
             deleteEvent.execute();
         }
     }

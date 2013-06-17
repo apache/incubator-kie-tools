@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * Explorer I18N constants
  */
-public interface Constants
+public interface GuidedScoreCardConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final GuidedScoreCardConstants INSTANCE = GWT.create( GuidedScoreCardConstants.class );
 
     public String scorecard();
 

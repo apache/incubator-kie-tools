@@ -15,16 +15,16 @@
  */
 package org.drools.workbench.screens.dtablexls.client;
 
+import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.drools.workbench.screens.dtablexls.client.resources.Resources;
 
 @EntryPoint
 public class DecisionTableXLSEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        Resources.INSTANCE.CSS().ensureInjected();
+        DecisionTableXLSResources.INSTANCE.CSS().ensureInjected();
     }
 
 }

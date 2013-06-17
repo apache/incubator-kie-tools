@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 
 /**
@@ -43,7 +43,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public String getTitle() {
-        return Constants.INSTANCE.DecisionTableWizardColumnExpansion();
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardColumnExpansion();
     }
 
     @Override

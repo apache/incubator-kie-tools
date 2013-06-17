@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorResources;
 import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEditorConstants;
-import org.drools.workbench.screens.workitems.client.resources.images.WorkItemsEditorImageResources;
 import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -43,7 +43,7 @@ public class NewWorkItemHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( WorkItemsEditorImageResources.INSTANCE.workitemImage() );
+        return new Image( WorkItemsEditorResources.INSTANCE.images().workitemIcon() );
     }
 
     @Override

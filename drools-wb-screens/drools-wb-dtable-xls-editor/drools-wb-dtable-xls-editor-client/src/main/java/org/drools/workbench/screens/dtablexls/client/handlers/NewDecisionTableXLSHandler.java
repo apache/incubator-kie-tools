@@ -8,8 +8,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.dtablexls.client.editor.URLHelper;
+import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
-import org.drools.workbench.screens.dtablexls.client.resources.images.ImageResources;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -59,7 +59,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.decisionTableSmall() );
+        return new Image( DecisionTableXLSResources.INSTANCE.images().decisionTableIcon() );
     }
 
     @Override

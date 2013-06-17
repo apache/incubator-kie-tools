@@ -52,7 +52,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionSetFieldCell;
@@ -189,7 +189,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 180 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
@@ -212,7 +212,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableFieldsWidget.setMinimumWidth( 175 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableFields() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableFieldsWidget.setEmptyListWidget( lstEmpty );
 
@@ -235,7 +235,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         chosenFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenFieldsWidget.setMinimumWidth( 175 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenFields() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenFieldsWidget.setEmptyListWidget( lstEmpty );
 

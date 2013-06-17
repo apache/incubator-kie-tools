@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.scorecard.client.resources.images;
+package org.drools.workbench.screens.dtablexls.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface DecisionTableXLSImageResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    @Source("decisionTableIcon.gif")
+    ImageResource decisionTableIcon();
 
-    @Source("scoreCardIcon.gif")
-    ImageResource scoreCardIcon();
+    @Source("decisionTableIconLarge.png")
+    ImageResource decisionTableIconLarge();
+
 }

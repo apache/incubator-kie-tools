@@ -24,7 +24,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.drools.workbench.screens.dsltext.client.resources.Resources;
+import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.ResizableTextArea;
@@ -45,7 +45,7 @@ public class DSLEditorViewImpl
         dslText.setWidth( "100%" );
         dslText.getElement().setAttribute( "spellcheck",
                                            "false" );
-        dslText.setStyleName( Resources.INSTANCE.CSS().defaultTextArea() );
+        dslText.setStyleName( DSLTextEditorResources.INSTANCE.CSS().defaultTextArea() );
 
         dslText.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {

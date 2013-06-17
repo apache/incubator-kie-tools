@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.workbench.screens.dtablexls.client.resources.images;
+package org.drools.workbench.screens.factmodel.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.drools.workbench.screens.factmodel.client.resources.images.FactModelImageResources;
 
-public interface ImageResources
+public interface FactModelResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final FactModelResources INSTANCE = GWT.create( FactModelResources.class );
 
-    @Source("decision_table_small.gif")
-    ImageResource decisionTableSmall();
+    FactModelImageResources images();
 
-    @Source("decision_table.png")
-    ImageResource decisionTable();
 }

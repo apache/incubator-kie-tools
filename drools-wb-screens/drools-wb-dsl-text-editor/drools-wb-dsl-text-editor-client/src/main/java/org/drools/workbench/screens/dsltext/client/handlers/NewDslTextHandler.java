@@ -5,8 +5,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.drools.workbench.screens.dsltext.client.resources.i18n.DSLTextEditorConstants;
-import org.drools.workbench.screens.dsltext.client.resources.images.ImageResources;
+import org.drools.workbench.screens.dsltext.client.resources.images.DSLTextEditorImageResources;
 import org.drools.workbench.screens.dsltext.client.type.DSLResourceType;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -43,7 +44,7 @@ public class NewDslTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.newDSL() );
+        return new Image( DSLTextEditorResources.INSTANCE.images().DSLIcon() );
     }
 
     @Override

@@ -19,8 +19,8 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants" />
-  <ui:with field="images" type="org.drools.workbench.screens.guided.dtable.client.resources.images.ImageResources" />
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
+  <ui:with field="images" type="org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources" />
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
   <g:VerticalPanel width="100%">

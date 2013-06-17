@@ -51,7 +51,7 @@ import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
@@ -98,17 +98,17 @@ public class GuidedScoreCardEditor extends Composite {
         this.oracle = oracle;
         this.oracleModelFields = oracle.getModelFields();
 
-        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( Constants.INSTANCE.scoreCardTitle0( model.getName() ) );
+        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.scoreCardTitle0( model.getName() ) );
         disclosurePanel.setWidth( "100%" );
-        disclosurePanel.setTitle( Constants.INSTANCE.scorecard() );
+        disclosurePanel.setTitle( GuidedScoreCardConstants.INSTANCE.scorecard() );
         disclosurePanel.setOpen( true );
 
-        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel( Constants.INSTANCE.setupParameters() );
+        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.setupParameters() );
         configPanel.setWidth( "95%" );
         configPanel.setOpen( true );
         configPanel.add( getScorecardProperties() );
 
-        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( Constants.INSTANCE.characteristics() );
+        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.characteristics() );
         characteristicsPanel.setOpen( model.getCharacteristics().size() > 0 );
         characteristicsPanel.setWidth( "95%" );
         characteristicsPanel.add( getCharacteristics() );
@@ -288,13 +288,13 @@ public class GuidedScoreCardEditor extends Composite {
 
         scorecardPropertiesGrid.setText( 0,
                                          0,
-                                         Constants.INSTANCE.facts() );
+                                         GuidedScoreCardConstants.INSTANCE.facts() );
         scorecardPropertiesGrid.setText( 0,
                                          1,
-                                         Constants.INSTANCE.resultantScoreField() );
+                                         GuidedScoreCardConstants.INSTANCE.resultantScoreField() );
         scorecardPropertiesGrid.setText( 0,
                                          2,
-                                         Constants.INSTANCE.initialScore() );
+                                         GuidedScoreCardConstants.INSTANCE.initialScore() );
 
         scorecardPropertiesGrid.setWidget( 1,
                                            0,
@@ -308,16 +308,16 @@ public class GuidedScoreCardEditor extends Composite {
 
         scorecardPropertiesGrid.setText( 2,
                                          0,
-                                         Constants.INSTANCE.useReasonCodes() );
+                                         GuidedScoreCardConstants.INSTANCE.useReasonCodes() );
         scorecardPropertiesGrid.setText( 2,
                                          1,
-                                         Constants.INSTANCE.resultantReasonCodesField() );
+                                         GuidedScoreCardConstants.INSTANCE.resultantReasonCodesField() );
         scorecardPropertiesGrid.setText( 2,
                                          2,
-                                         Constants.INSTANCE.reasonCodesAlgorithm() );
+                                         GuidedScoreCardConstants.INSTANCE.reasonCodesAlgorithm() );
         scorecardPropertiesGrid.setText( 2,
                                          3,
-                                         Constants.INSTANCE.baselineScore() );
+                                         GuidedScoreCardConstants.INSTANCE.baselineScore() );
 
         scorecardPropertiesGrid.setWidget( 3,
                                            0,
@@ -372,7 +372,7 @@ public class GuidedScoreCardEditor extends Composite {
     private Widget getCharacteristics() {
         characteristicsPanel = new VerticalPanel();
         final HorizontalPanel toolbar = new HorizontalPanel();
-        btnAddCharacteristic = new Button( Constants.INSTANCE.addCharacteristic(),
+        btnAddCharacteristic = new Button( GuidedScoreCardConstants.INSTANCE.addCharacteristic(),
                                            new ClickHandler() {
                                                public void onClick( ClickEvent event ) {
                                                    addCharacteristic( null );
@@ -396,7 +396,7 @@ public class GuidedScoreCardEditor extends Composite {
             if ( name == null || name.trim().length() == 0 ) {
                 name = "Untitled";
             }
-            final String msg = Constants.INSTANCE.promptDeleteCharacteristic0( name );
+            final String msg = GuidedScoreCardConstants.INSTANCE.promptDeleteCharacteristic0( name );
             if ( Window.confirm( msg ) ) {
                 characteristicsTables.remove( selectedTable );
                 characteristicsAttrMap.remove( selectedTable );
@@ -440,7 +440,7 @@ public class GuidedScoreCardEditor extends Composite {
                 etc.setEnabled( false );
                 ( (Button) selectedTable.getWidget( 0, 3 ) ).setEnabled( characteristicsAttrMap.get( selectedTable ).getList().size() != 2 );
                 if ( newAttribute != null ) {
-                    newAttribute.setValue( Constants.INSTANCE.notApplicable() );
+                    newAttribute.setValue( GuidedScoreCardConstants.INSTANCE.notApplicable() );
                 }
             } else if ( "String".equalsIgnoreCase( field ) ) {
                 newOptions = Arrays.asList( stringOperators );
@@ -462,7 +462,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setStyleName( "rule-ListHeader" );
 
-        Button btnAddAttribute = new Button( Constants.INSTANCE.addAttribute(),
+        Button btnAddAttribute = new Button( GuidedScoreCardConstants.INSTANCE.addAttribute(),
                                              new ClickHandler() {
                                                  public void onClick( final ClickEvent event ) {
                                                      addAttribute( cGrid,
@@ -470,7 +470,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                  }
                                              } );
 
-        Button btnRemoveCharacteristic = new Button( Constants.INSTANCE.removeCharacteristic(),
+        Button btnRemoveCharacteristic = new Button( GuidedScoreCardConstants.INSTANCE.removeCharacteristic(),
                                                      new ClickHandler() {
                                                          public void onClick( ClickEvent event ) {
                                                              removeCharacteristic( cGrid );
@@ -512,7 +512,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setWidget( 0,
                          0,
-                         new Label( Constants.INSTANCE.name() ) );
+                         new Label( GuidedScoreCardConstants.INSTANCE.name() ) );
         final TextBox tbName = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
         cGrid.setWidget( 0,
                          1,
@@ -526,16 +526,16 @@ public class GuidedScoreCardEditor extends Composite {
 
         cGrid.setWidget( 1,
                          0,
-                         new Label( Constants.INSTANCE.fact() ) );
+                         new Label( GuidedScoreCardConstants.INSTANCE.fact() ) );
         cGrid.setWidget( 1,
                          1,
-                         new Label( Constants.INSTANCE.characteristic() ) );
+                         new Label( GuidedScoreCardConstants.INSTANCE.characteristic() ) );
         cGrid.setWidget( 1,
                          2,
-                         new Label( Constants.INSTANCE.baselineScore() ) );
+                         new Label( GuidedScoreCardConstants.INSTANCE.baselineScore() ) );
         cGrid.setWidget( 1,
                          3,
-                         new Label( Constants.INSTANCE.reasonCode() ) );
+                         new Label( GuidedScoreCardConstants.INSTANCE.reasonCode() ) );
 
         cGrid.setWidget( 2,
                          0,
@@ -700,7 +700,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         final ActionCell.Delegate<Attribute> delegate = new ActionCell.Delegate<Attribute>() {
             public void execute( final Attribute attribute ) {
-                if ( Window.confirm( Constants.INSTANCE.promptDeleteAttribute() ) ) {
+                if ( Window.confirm( GuidedScoreCardConstants.INSTANCE.promptDeleteAttribute() ) ) {
                     final List<Attribute> list = characteristicsAttrMap.get( cGrid ).getList();
                     list.remove( attribute );
                     ( (ListBox) cGrid.getWidget( 2,
@@ -714,21 +714,21 @@ public class GuidedScoreCardEditor extends Composite {
             }
         };
 
-        final Cell<Attribute> actionCell = new ActionCell<Attribute>( Constants.INSTANCE.remove(),
+        final Cell<Attribute> actionCell = new ActionCell<Attribute>( GuidedScoreCardConstants.INSTANCE.remove(),
                                                                       delegate );
         final Column<Attribute, String> actionColumn = new IdentityColumn( actionCell );
 
         // Add the columns.
         attributeCellTable.addColumn( operatorColumn,
-                                      Constants.INSTANCE.operator() );
+                                      GuidedScoreCardConstants.INSTANCE.operator() );
         attributeCellTable.addColumn( valueColumn,
-                                      Constants.INSTANCE.value() );
+                                      GuidedScoreCardConstants.INSTANCE.value() );
         attributeCellTable.addColumn( partialScoreColumn,
-                                      Constants.INSTANCE.partialScore() );
+                                      GuidedScoreCardConstants.INSTANCE.partialScore() );
         attributeCellTable.addColumn( reasonCodeColumn,
-                                      Constants.INSTANCE.reasonCode() );
+                                      GuidedScoreCardConstants.INSTANCE.reasonCode() );
         attributeCellTable.addColumn( actionColumn,
-                                      Constants.INSTANCE.actions() );
+                                      GuidedScoreCardConstants.INSTANCE.actions() );
         attributeCellTable.setWidth( "100%",
                                      true );
 

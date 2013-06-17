@@ -31,10 +31,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
+import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
-import org.drools.workbench.screens.scorecardxls.client.resources.images.ImageResources;
-import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
@@ -126,7 +126,7 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     private Image getIcon() {
-        Image image = new Image( ImageResources.INSTANCE.scoreCard() );
+        Image image = new Image( ScoreCardXLSEditorResources.INSTANCE.images().scoreCardIconLarge() );
         image.setAltText( ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
         return image;
     }

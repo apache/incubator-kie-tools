@@ -32,7 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionSetFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
@@ -70,7 +70,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public String getTitle() {
-        return Constants.INSTANCE.DecisionTableWizardActionSetFields();
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardActionSetFields();
     }
 
     @Override

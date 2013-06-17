@@ -38,8 +38,8 @@ import org.drools.workbench.models.commons.shared.rule.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.editor.ModellerWidgetFactory;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
@@ -215,12 +215,12 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-            Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
         }
         if ( isNew ) {
             if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                 return;
             }
             //Ensure variables reflect (name) changes made in RuleModeller
@@ -230,7 +230,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !isHeaderUnique( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
                 }
             }

@@ -55,8 +55,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.Resources;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
@@ -171,10 +172,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     SimplePanel defaultValueWidgetContainer;
 
     @UiField(provided = true)
-    PushButton btnMoveUp = new PushButton( AbstractImagePrototype.create( Resources.INSTANCE.images().shuffleUp() ).createImage() );
+    PushButton btnMoveUp = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( Resources.INSTANCE.images().shuffleDown() ).createImage() );
+    PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleDown() ).createImage() );
 
     @New
     @Inject
@@ -226,7 +227,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 175 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
@@ -249,7 +250,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableFieldsWidget.setMinimumWidth( 175 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoAvailableFields() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableFieldsWidget.setEmptyListWidget( lstEmpty );
 
@@ -272,7 +273,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenConditionsWidget.setMinimumWidth( 175 );
 
-        final Label lstEmpty = new Label( Constants.INSTANCE.DecisionTableWizardNoChosenFields() );
+        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenConditionsWidget.setEmptyListWidget( lstEmpty );
 

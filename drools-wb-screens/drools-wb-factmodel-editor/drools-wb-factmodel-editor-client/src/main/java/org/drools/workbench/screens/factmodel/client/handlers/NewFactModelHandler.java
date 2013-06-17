@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.factmodel.client.resources.i18n.Constants;
-import org.drools.workbench.screens.factmodel.client.resources.images.ImageResources;
+import org.drools.workbench.screens.factmodel.client.resources.FactModelResources;
+import org.drools.workbench.screens.factmodel.client.resources.i18n.FactModelConstants;
 import org.drools.workbench.screens.factmodel.client.type.FactModelResourceType;
 import org.drools.workbench.screens.factmodel.model.FactModels;
 import org.drools.workbench.screens.factmodel.service.FactModelService;
@@ -39,12 +39,12 @@ public class NewFactModelHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return Constants.INSTANCE.newFactModelDescription();
+        return FactModelConstants.INSTANCE.newFactModelDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.factModelIcon() );
+        return new Image( FactModelResources.INSTANCE.images().factModelIcon() );
     }
 
     @Override

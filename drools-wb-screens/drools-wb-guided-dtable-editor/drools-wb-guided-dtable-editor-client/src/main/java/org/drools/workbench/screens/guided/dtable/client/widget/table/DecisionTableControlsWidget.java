@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.uberfire.security.Identity;
@@ -44,7 +44,7 @@ public class DecisionTableControlsWidget extends Composite {
         Panel panel = new HorizontalPanel();
 
         // Add row button
-        addRowButton = new Button( Constants.INSTANCE.AddRow(),
+        addRowButton = new Button( GuidedDecisionTableConstants.INSTANCE.AddRow(),
                                    new ClickHandler() {
                                        public void onClick( ClickEvent event ) {
                                            if ( dtable != null ) {
@@ -56,7 +56,7 @@ public class DecisionTableControlsWidget extends Composite {
         panel.add( addRowButton );
 
         //Otherwise button
-        otherwiseButton = new Button( Constants.INSTANCE.Otherwise(),
+        otherwiseButton = new Button( GuidedDecisionTableConstants.INSTANCE.Otherwise(),
                                       new ClickHandler() {
                                           public void onClick( ClickEvent event ) {
                                               if ( dtable != null ) {
@@ -68,7 +68,7 @@ public class DecisionTableControlsWidget extends Composite {
         panel.add( otherwiseButton );
 
         // Analyse button
-        analyzeButton = new Button( Constants.INSTANCE.Analyze(),
+        analyzeButton = new Button( GuidedDecisionTableConstants.INSTANCE.Analyze(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent event ) {
                                             if ( dtable != null ) {
@@ -80,7 +80,7 @@ public class DecisionTableControlsWidget extends Composite {
         panel.add( analyzeButton );
 
         // Audit Log button
-        auditLogButton = new Button( Constants.INSTANCE.DecisionTableAuditLog(),
+        auditLogButton = new Button( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog(),
                                      new ClickHandler() {
                                          public void onClick( ClickEvent event ) {
                                              if ( dtable != null ) {

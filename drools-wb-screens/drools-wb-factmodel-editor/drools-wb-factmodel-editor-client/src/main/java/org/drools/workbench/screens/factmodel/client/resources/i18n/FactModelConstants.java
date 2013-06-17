@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.Messages;
 /**
  * EnumEditor I18N constants
  */
-public interface Constants
+public interface FactModelConstants
         extends
         Messages {
 
-    public static final Constants INSTANCE = GWT.create( Constants.class );
+    public static final FactModelConstants INSTANCE = GWT.create( FactModelConstants.class );
 
     String OK();
 

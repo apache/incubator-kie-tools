@@ -28,8 +28,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractPopupEditCell;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.BoundFactsChangedEvent;
 
 /**
@@ -92,7 +92,7 @@ public class PopupBoundPatternDropDownEditCell extends AbstractPopupEditCell<Str
         }
         listBox.setEnabled( listBox.getItemCount() > 0 );
         if ( listBox.getItemCount() == 0 ) {
-            listBox.addItem( Constants.INSTANCE.NoPatternBindingsAvailable() );
+            listBox.addItem( GuidedDecisionTableConstants.INSTANCE.NoPatternBindingsAvailable() );
         }
     }
 

@@ -33,7 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Constants;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.uberfire.client.common.FormStylePopup;
 
 /**
@@ -54,7 +54,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
 
-        setTitle( Constants.INSTANCE.ColumnConfigurationRetractAFact() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationRetractAFact() );
         setModal( false );
 
         //Show available pattern bindings, if Limited Entry
@@ -74,7 +74,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
                 } );
             }
-            addAttribute( Constants.INSTANCE.FactToRetractColon(),
+            addAttribute( GuidedDecisionTableConstants.INSTANCE.FactToRetractColon(),
                           patterns );
         }
 
@@ -89,31 +89,31 @@ public class ActionRetractFactPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( Constants.INSTANCE.ColumnHeaderDescription(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
                       header );
 
         //Hide column tick-box
-        addAttribute( Constants.INSTANCE.HideThisColumn(),
+        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( Constants.INSTANCE.ApplyChanges() );
+        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( Constants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( Constants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -154,7 +154,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
     private ListBox loadBoundFacts( String binding ) {
         ListBox listBox = new ListBox();
-        listBox.addItem( Constants.INSTANCE.Choose() );
+        listBox.addItem( GuidedDecisionTableConstants.INSTANCE.Choose() );
         List<String> factBindings = rm.getLHSBoundFacts();
 
         for ( int index = 0; index < factBindings.size(); index++ ) {
@@ -170,7 +170,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         listBox.setEnabled( listBox.getItemCount() > 1 );
         if ( listBox.getItemCount() == 1 ) {
             listBox.clear();
-            listBox.addItem( Constants.INSTANCE.NoPatternBindingsAvailable() );
+            listBox.addItem( GuidedDecisionTableConstants.INSTANCE.NoPatternBindingsAvailable() );
         }
         return listBox;
     }

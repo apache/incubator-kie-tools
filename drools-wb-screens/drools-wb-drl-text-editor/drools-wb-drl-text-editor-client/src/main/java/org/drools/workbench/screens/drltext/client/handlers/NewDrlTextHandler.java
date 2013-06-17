@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.drools.workbench.screens.drltext.client.resources.images.ImageResources;
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -43,7 +43,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ImageResources.INSTANCE.classImage() );
+        return new Image( DRLTextEditorResources.INSTANCE.images().DRLIcon() );
     }
 
     @Override

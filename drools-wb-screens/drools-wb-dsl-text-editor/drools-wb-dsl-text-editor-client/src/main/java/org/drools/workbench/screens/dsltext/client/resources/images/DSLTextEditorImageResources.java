@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scorecardxls.client.resources.images;
+package org.drools.workbench.screens.dsltext.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface ImageResources
+public interface DSLTextEditorImageResources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    @Source("dslIcon.gif")
+    ImageResource DSLIcon();
 
-    @Source("score_card_small.gif")
-    ImageResource scoreCardSmall();
-    
-    @Source("score_card.png")
-    ImageResource scoreCard();
 }
