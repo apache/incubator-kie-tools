@@ -20,7 +20,6 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -36,7 +35,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected final PathLabel pathLabel = new PathLabel();
 
     @Inject
-    protected WorkbenchContext context;
+    protected KieWorkbenchContext context;
 
     @Inject
     protected Caller<ProjectService> projectService;
@@ -58,7 +57,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        final Package activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
+        final Package activePackage = context.getActivePackage();
         this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageMainResourcesPath() ) );
         return this.extensions;
     }
@@ -79,7 +78,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         if ( path == null ) {
             callback.onSuccess( false );
         } else {
-            final Package pkg = ( (KieWorkbenchContext) context ).getActivePackage();
+            final Package pkg = context.getActivePackage();
             boolean accept = ( pkg == null ? false : pkg.getPackageMainResourcesPath() != null );
             callback.onSuccess( accept );
         }

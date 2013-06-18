@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Technical View implementation
  */
+@ApplicationScoped
 public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     interface TechnicalViewImplBinder

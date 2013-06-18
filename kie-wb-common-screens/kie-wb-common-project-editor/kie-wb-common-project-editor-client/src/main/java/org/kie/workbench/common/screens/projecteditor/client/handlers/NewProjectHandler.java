@@ -24,7 +24,6 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 /**
@@ -45,7 +44,7 @@ public class NewProjectHandler
     private WizardPresenter wizardPresenter;
 
     @Inject
-    private WorkbenchContext context;
+    private KieWorkbenchContext context;
 
     private boolean isRepositorySelected = false;
 
@@ -57,7 +56,7 @@ public class NewProjectHandler
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        final Repository activeRepository = ( (KieWorkbenchContext) context ).getActiveRepository();
+        final Repository activeRepository = context.getActiveRepository();
         this.pathLabel.setPath( ( activeRepository == null ? null : activeRepository.getRoot() ) );
         return this.extensions;
     }

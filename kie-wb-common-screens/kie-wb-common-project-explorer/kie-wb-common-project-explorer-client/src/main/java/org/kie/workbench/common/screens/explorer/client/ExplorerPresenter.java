@@ -27,7 +27,9 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
+import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessView;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalView;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
@@ -51,7 +53,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.GroupChangeEvent;
@@ -98,10 +99,16 @@ public class ExplorerPresenter implements BusinessViewPresenter,
     private Event<PathChangeEvent> pathChangeEvent;
 
     @Inject
-    private WorkbenchContext context;
+    private KieWorkbenchContext context;
 
     @Inject
     private ExplorerView view;
+
+    @Inject
+    private BusinessView businessView;
+
+    @Inject
+    private TechnicalView technicalView;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
@@ -114,8 +121,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
 
     @PostConstruct
     public void init() {
-        view.init( (BusinessViewPresenter) this );
-        view.init( (TechnicalViewPresenter) this );
+        businessView.init( this );
+        technicalView.init( this );
     }
 
     @OnStart
@@ -132,11 +139,11 @@ public class ExplorerPresenter implements BusinessViewPresenter,
     }
 
     private Project getActiveProject() {
-        return ( (KieWorkbenchContext) context ).getActiveProject();
+        return context.getActiveProject();
     }
 
     private Package getActivePackage() {
-        return ( (KieWorkbenchContext) context ).getActivePackage();
+        return context.getActivePackage();
     }
 
     @WorkbenchPartView
@@ -155,15 +162,15 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         explorerService.call( new RemoteCallback<Collection<Group>>() {
             @Override
             public void callback( final Collection<Group> groups ) {
-                view.setGroups( groups,
-                                getActiveGroup() );
+                businessView.setGroups( groups,
+                                        getActiveGroup() );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
     }
 
     public void handleIncompleteContext() {
-        view.setItems( Collections.EMPTY_LIST );
+        businessView.setItems( Collections.EMPTY_LIST );
         view.hideBusyIndicator();
     }
 
@@ -189,8 +196,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
-                view.setRepositories( repositories,
-                                      getActiveRepository() );
+                businessView.setRepositories( repositories,
+                                              getActiveRepository() );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
@@ -218,8 +225,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
             public void callback( final Collection<Project> projects ) {
-                view.setProjects( projects,
-                                  getActiveProject() );
+                businessView.setProjects( projects,
+                                          getActiveProject() );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
@@ -246,8 +253,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         //Check cache
         final Collection<Package> packages = packageCache.getEntry( project );
         if ( packages != null ) {
-            view.setPackages( packages,
-                              getActivePackage() );
+            businessView.setPackages( packages,
+                                      getActivePackage() );
             return;
         }
 
@@ -258,8 +265,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Package> packages ) {
                 packageCache.setEntry( project,
                                        packages );
-                view.setPackages( packages,
-                                  getActivePackage() );
+                businessView.setPackages( packages,
+                                          getActivePackage() );
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }
@@ -285,7 +292,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         //Check cache
         final Collection<Item> items = itemCache.getEntry( pkg );
         if ( items != null ) {
-            view.setItems( items );
+            businessView.setItems( items );
+            view.hideBusyIndicator();
             return;
         }
 
@@ -296,7 +304,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Item> items ) {
                 itemCache.setEntry( pkg,
                                     items );
-                view.setItems( items );
+                businessView.setItems( items );
                 view.hideBusyIndicator();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getItems( pkg );
@@ -318,7 +326,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         }
         if ( authorizationManager.authorize( repository,
                                              identity ) ) {
-            view.addRepository( repository );
+            businessView.addRepository( repository );
         }
     }
 
@@ -337,7 +345,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         }
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            view.addProject( project );
+            businessView.addProject( project );
         }
     }
 
@@ -354,7 +362,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         if ( !packageProjectRoot.startsWith( activeProjectRoot ) ) {
             return;
         }
-        view.addPackage( pkg );
+        businessView.addPackage( pkg );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
@@ -389,7 +397,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             @Override
             public void callback( final Collection<Item> items ) {
                 if ( items != null ) {
-                    view.setItems( items );
+                    businessView.setItems( items );
                 }
             }
         } ).handleResourceEvent( getActivePackage(),
@@ -405,7 +413,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         explorerService.call( new RemoteCallback<Collection<Item>>() {
             @Override
             public void callback( final Collection<Item> items ) {
-                view.setItems( items );
+                businessView.setItems( items );
             }
         } ).getItems( getActivePackage() );
     }

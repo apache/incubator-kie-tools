@@ -34,7 +34,6 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -59,7 +58,7 @@ public class NewResourcePresenter {
     }
 
     @Inject
-    protected WorkbenchContext context;
+    protected KieWorkbenchContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;
@@ -132,7 +131,7 @@ public class NewResourcePresenter {
     public void makeItem() {
         if ( activeHandler != null ) {
             if ( activeHandler.validate() ) {
-                activeHandler.create( ( (KieWorkbenchContext) context ).getActivePackage(),
+                activeHandler.create( context.getActivePackage(),
                                       view.getFileName(),
                                       NewResourcePresenter.this );
             }

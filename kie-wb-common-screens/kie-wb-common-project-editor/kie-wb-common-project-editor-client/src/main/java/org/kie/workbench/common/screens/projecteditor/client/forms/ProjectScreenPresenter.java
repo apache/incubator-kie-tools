@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -35,14 +39,9 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -65,7 +64,7 @@ public class ProjectScreenPresenter
 
     @Inject
     public ProjectScreenPresenter(@New ProjectScreenView view,
-                                  WorkbenchContext workbenchContext,
+                                  KieWorkbenchContext workbenchContext,
                                   Caller<ProjectScreenService> projectScreenService,
                                   Caller<BuildService> buildServiceCaller,
                                   SaveOperationService saveOperationService) {
@@ -77,7 +76,7 @@ public class ProjectScreenPresenter
         this.buildServiceCaller = buildServiceCaller;
         this.saveOperationService = saveOperationService;
 
-        showCurrentProjectInfoIfAny(((KieWorkbenchContext) workbenchContext).getActiveProject());
+        showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
 
         makeMenuBar();
     }

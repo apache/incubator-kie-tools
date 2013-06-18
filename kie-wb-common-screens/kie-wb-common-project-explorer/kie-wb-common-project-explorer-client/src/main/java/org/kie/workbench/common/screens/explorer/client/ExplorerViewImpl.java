@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -28,15 +27,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
-import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewWidget;
-import org.kie.workbench.common.screens.explorer.model.Item;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.Project;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
 
 /**
@@ -52,17 +44,17 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     private static ExplorerViewImplBinder uiBinder = GWT.create( ExplorerViewImplBinder.class );
 
-    @Inject
-    private BusinessViewWidget businessView;
-
-    @Inject
-    private TechnicalViewWidget technicalView;
-
     @UiField
     Button btnBusinessView;
 
     @UiField
     Button btnTechnicalView;
+
+    @Inject
+    private BusinessViewWidget businessView;
+
+    @Inject
+    private TechnicalViewWidget technicalView;
 
     private ExplorerPresenter presenter;
 
@@ -77,74 +69,14 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         this.presenter = presenter;
     }
 
-    @Override
-    public void init( final BusinessViewPresenter presenter ) {
-        businessView.init( presenter );
-    }
-
-    @Override
-    public void init( final TechnicalViewPresenter presenter ) {
-        technicalView.init( presenter );
-    }
-
     @UiFactory
-    //Use injected BusinessViewWidget instance in UiBinder
     public BusinessViewWidget getBusinessView() {
-        return businessView;
+        return this.businessView;
     }
 
     @UiFactory
-    //Use injected TechnicalViewWidget instance in UiBinder
     public TechnicalViewWidget getTechnicalView() {
-        return technicalView;
-    }
-
-    @Override
-    public void setGroups( final Collection<Group> groups,
-                           final Group activeGroup ) {
-        businessView.setGroups( groups,
-                                activeGroup );
-    }
-
-    @Override
-    public void setRepositories( final Collection<Repository> repositories,
-                                 final Repository activeRepository ) {
-        businessView.setRepositories( repositories,
-                                      activeRepository );
-    }
-
-    @Override
-    public void setProjects( final Collection<Project> projects,
-                             final Project activeProject ) {
-        businessView.setProjects( projects,
-                                  activeProject );
-    }
-
-    @Override
-    public void setPackages( final Collection<Package> packages,
-                             final Package activePackage ) {
-        businessView.setPackages( packages,
-                                  activePackage );
-    }
-
-    @Override
-    public void setItems( final Collection<Item> items ) {
-        businessView.setItems( items );
-    }
-
-    @Override
-    public void addRepository( final Repository newRepository ) {
-        businessView.addRepository( newRepository );
-    }
-
-    @Override
-    public void addProject( final Project newProject ) {
-        businessView.addProject( newProject );
-    }
-
-    @Override
-    public void addPackage( final Package newPackage ) {
-        businessView.addPackage( newPackage );
+        return this.technicalView;
     }
 
     @UiHandler("btnBusinessView")

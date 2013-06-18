@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessView;
-import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalView;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
 
@@ -24,8 +22,6 @@ import org.uberfire.client.mvp.UberView;
  * Explorer View definition
  */
 public interface ExplorerView extends UberView<ExplorerPresenter>,
-                                      BusinessView,
-                                      TechnicalView,
                                       HasBusyIndicator {
 
 }

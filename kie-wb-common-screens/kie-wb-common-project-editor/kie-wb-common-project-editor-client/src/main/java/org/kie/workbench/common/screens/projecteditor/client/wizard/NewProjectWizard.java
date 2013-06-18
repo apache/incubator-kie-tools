@@ -13,6 +13,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -22,7 +23,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class NewProjectWizard
@@ -50,7 +50,7 @@ public class NewProjectWizard
     private Caller<ProjectService> projectServiceCaller;
 
     @Inject
-    private WorkbenchContext context;
+    private KieWorkbenchContext context;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private POM pom;

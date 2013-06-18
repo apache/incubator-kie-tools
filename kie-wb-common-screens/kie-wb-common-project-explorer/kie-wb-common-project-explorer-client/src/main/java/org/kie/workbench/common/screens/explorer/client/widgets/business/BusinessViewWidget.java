@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Accordion;
@@ -53,6 +54,7 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 /**
  * Business View implementation
  */
+@ApplicationScoped
 public class BusinessViewWidget extends Composite implements BusinessView {
 
     interface BusinessViewImplBinder
