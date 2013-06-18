@@ -96,8 +96,11 @@ public class GuidedEditorMigrater {
             BRMSPackageBuilder builder = new BRMSPackageBuilder(rulesRepository.loadModuleByUUID(jcrModule.getUuid()));
             BRLContentHandler handler = new BRLContentHandler();
             handler.assembleDRL(builder, jcrAsset, sb);
-
-            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(sb.toString(), path);
+            
+            //Support for # has been removed from Drools Expert
+            String content = sb.toString().replaceAll("#", "//");
+            
+            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
             sourceDRLWithImport = packageImportHelper.assertPackageImportDRL(sourceDRLWithImport, path);
             
             ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));

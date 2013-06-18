@@ -71,7 +71,10 @@ public class PlainTextAssetWithPackagePropertyMigrater {
         sb.append( "\n" );
         sb.append("end");     
         
-        String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(sb.toString(), path);
+        //Support for # has been removed from Drools Expert
+        String content = sb.toString().replaceAll("#", "//");
+        
+        String sourceWithImport = drlTextEditorServiceImpl.assertPackageName(content, path);
         sourceWithImport = packageImportHelper.assertPackageImportDRL(sourceWithImport, path);
         
         ioService.write( nioPath, sourceWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));

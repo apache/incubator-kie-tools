@@ -49,6 +49,8 @@ public class PlainTextAssetMigrater {
         
         String content = jcrAssetItem.getContent();
 
+        //Support for # has been removed from Drools Expert
+        content = content.replaceAll("#", "//");
         ioService.write( nioPath, content, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
     }
 
