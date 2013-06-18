@@ -81,6 +81,9 @@ public class DataObjectEditor extends Composite {
     PackageSelector packageSelector;
 
     @UiField
+    Label superclassLabel;
+
+    @UiField
     SuperclassSelector superclassSelector;
 
     @UiField
@@ -317,22 +320,44 @@ public class DataObjectEditor extends Composite {
     private void superClassChanged(ChangeEvent event) {
         if (getDataObject() == null) return;
 
-        String newSuperClass = superclassSelector.getSuperclassList().getValue();
-        String oldSuperClass = getDataObject().getSuperClassName();
+        // Set widgets to errorpopup for styling purposes etc.
+        ep.setTitleWidget(superclassLabel);
+        ep.setValueWidget(superclassSelector.getSuperclassList());
+
+        final String newSuperClass = superclassSelector.getSuperclassList().getValue();
+        final String oldSuperClass = getDataObject().getSuperClassName();
+
+        // No notification needed
+        if ( (("".equalsIgnoreCase(newSuperClass) || SuperclassSelector.NOT_SELECTED.equals(newSuperClass)) && oldSuperClass == null) ||
+                newSuperClass.equalsIgnoreCase(oldSuperClass) ) {
+            superclassLabel.setStyleName(null);
+            return;
+        }
 
         if (newSuperClass != null && !"".equals(newSuperClass) && !SuperclassSelector.NOT_SELECTED.equals(newSuperClass)) {
-            getDataObject().setSuperClassName(newSuperClass);
+            validatorService.canExtend(getContext(), getDataObject().getClassName(), newSuperClass, new ValidatorCallback() {
+                @Override
+                public void onFailure() {
+                    ep.showMessage(Constants.INSTANCE.validation_error_cyclic_extension(getDataObject().getClassName(), newSuperClass));
+                }
 
-            // Remove former extension refs if superclass has changed
-            if (oldSuperClass != null && !"".equals(oldSuperClass)) {
-                getContext().getHelper().dataObjectExtended(oldSuperClass, getDataObject().getClassName(), false);
-            }
-            getContext().getHelper().dataObjectExtended(newSuperClass, getDataObject().getClassName(), true);
+                @Override
+                public void onSuccess() {
+                    getDataObject().setSuperClassName(newSuperClass);
+
+                    // Remove former extension refs if superclass has changed
+                    if (oldSuperClass != null && !"".equals(oldSuperClass)) {
+                        getContext().getHelper().dataObjectExtended(oldSuperClass, getDataObject().getClassName(), false);
+                    }
+                    getContext().getHelper().dataObjectExtended(newSuperClass, getDataObject().getClassName(), true);
+                    notifyObjectChange("superClassName", oldSuperClass, newSuperClass);
+                }
+            });
         } else {
             getDataObject().setSuperClassName(null);
             getContext().getHelper().dataObjectExtended(oldSuperClass, getDataObject().getClassName(), false);
+            notifyObjectChange("superClassName", oldSuperClass, newSuperClass);
         }
-        notifyObjectChange("superClassName", oldSuperClass, newSuperClass);
     }
 
     void roleChanged(final ChangeEvent event) {

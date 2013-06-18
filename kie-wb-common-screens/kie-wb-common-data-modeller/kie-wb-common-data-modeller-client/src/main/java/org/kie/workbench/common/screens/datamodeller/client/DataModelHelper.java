@@ -145,9 +145,28 @@ public class DataModelHelper {
         return orderedBaseTypes.containsValue(type);
     }
 
-    public Boolean isBeingExtended(String parentClassName) {
-        Set s = siblingsMap.get(parentClassName);
-        return s != null && s.size() > 0;
+    /**
+     * Evaluate if an object can safely extend another one (at least as far as the extension hierarchy is concerned).
+     * @param siblingCandidate The class name of the extending object
+     * @param parentCandidate The class name of the extended object
+     * @return True if the extension does not provoke a conflict with the existing extension hierarchy.
+     */
+    public Boolean isAssignableFrom(String siblingCandidate, String parentCandidate) {
+        if (siblingCandidate == null || siblingCandidate.length() == 0 ||
+            parentCandidate == null || parentCandidate.length() == 0 ||
+            siblingCandidate.equals(parentCandidate)) return false;
+
+        Set<String> candidatesSiblings = siblingsMap.get(siblingCandidate);
+        boolean candidateHasSiblings = candidatesSiblings != null && candidatesSiblings.size() > 0;
+
+        if (candidateHasSiblings) {
+            if (candidatesSiblings.contains(parentCandidate)) return false;
+            for (String newSiblingCandidate : candidatesSiblings) {
+                if (!isAssignableFrom(newSiblingCandidate, parentCandidate)) return false;
+            }
+        }
+
+        return true;
     }
 
     public void setDataModel(DataModelTO dataModel) {

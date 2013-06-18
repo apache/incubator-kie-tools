@@ -175,4 +175,6 @@ public interface Constants extends Messages {
 
     public String validation_error_cannot_change_object_package();
 
+    public String validation_error_cyclic_extension(String sibling, String parent);
+
 }

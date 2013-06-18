@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.validation;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelHelper;
@@ -82,7 +83,7 @@ public class ValidatorService {
 
     public void isUniqueEntityName(String packageName, String name, DataModelTO model, ValidatorCallback callback) {
         Boolean b = Boolean.TRUE;
-        String className = packageName != null ? packageName + "." + name : name;
+        String className = ( (packageName != null && !"".equals(packageName)) ? packageName + "." : "" ) + name;
         for (DataObjectTO d : model.getDataObjects()) {
             if (d.getClassName().equalsIgnoreCase(className)) {
                 b = Boolean.FALSE;
@@ -105,6 +106,11 @@ public class ValidatorService {
         callback.onSuccess();
     }
 
+    public void canExtend(DataModelerContext context, String siblingCandidateName, String parentCandidateName, ValidatorCallback callback) {
+        if (context.getHelper().isAssignableFrom(siblingCandidateName, parentCandidateName)) callback.onSuccess();
+        else callback.onFailure();
+    }
+
     public void isValidPosition(String position, ValidatorCallback callback) {
         int i = -1;
         if (position == null || position.length() == 0) i = 0;  // null or empty String is allowed
@@ -115,8 +121,8 @@ public class ValidatorService {
         else callback.onSuccess();
     }
 
-    public void canDeleteDataObject(DataModelHelper helper, DataObjectTO object, DataModelTO model, ValidatorCallback callback) {
-        if (!helper.isDataObjectReferenced(object.getClassName())) callback.onSuccess();
+    public void canDeleteDataObject(DataModelerContext context, DataObjectTO object, DataModelTO model, ValidatorCallback callback) {
+        if (!context.getHelper().isDataObjectReferenced(object.getClassName())) callback.onSuccess();
         else callback.onFailure();
     }
 }

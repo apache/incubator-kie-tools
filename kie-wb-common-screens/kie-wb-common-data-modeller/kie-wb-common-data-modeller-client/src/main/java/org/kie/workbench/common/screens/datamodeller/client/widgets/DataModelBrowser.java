@@ -313,7 +313,7 @@ public class DataModelBrowser extends Composite {
 
     private void deleteDataObject(final DataObjectTO dataObjectTO, final int index) {
 
-        validatorService.canDeleteDataObject(getContext().getHelper(), dataObjectTO, getDataModel(), new ValidatorCallback() {
+        validatorService.canDeleteDataObject(getContext(), dataObjectTO, getDataModel(), new ValidatorCallback() {
             @Override
             public void onFailure() {
                 ErrorPopup.showMessage(Constants.INSTANCE.validation_error_cannot_delete_object(DataModelerUtils.getDataObjectUILabel(dataObjectTO)));
