@@ -21,7 +21,6 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelHelper;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
@@ -31,6 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.assembleClassName;
 
 @ApplicationScoped
 public class ValidatorService {
@@ -83,7 +83,7 @@ public class ValidatorService {
 
     public void isUniqueEntityName(String packageName, String name, DataModelTO model, ValidatorCallback callback) {
         Boolean b = Boolean.TRUE;
-        String className = ( (packageName != null && !"".equals(packageName)) ? packageName + "." : "" ) + name;
+        String className = assembleClassName(packageName, name);
         for (DataObjectTO d : model.getDataObjects()) {
             if (d.getClassName().equalsIgnoreCase(className)) {
                 b = Boolean.FALSE;

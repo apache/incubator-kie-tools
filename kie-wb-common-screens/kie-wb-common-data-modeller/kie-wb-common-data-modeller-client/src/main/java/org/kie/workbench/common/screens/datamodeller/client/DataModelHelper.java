@@ -26,6 +26,8 @@ import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 
 import java.util.*;
 
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.assembleClassName;
+
 public class DataModelHelper {
 
     private DataModelTO dataModel;
@@ -74,7 +76,6 @@ public class DataModelHelper {
         return orderedBaseTypes;
     }
 
-    // TODO change from listener methods to event observers
     // DataModelHelper methods
 
     public void dataModelChanged(DataModelerPropertyChangeEvent changeEvent) {
@@ -93,17 +94,20 @@ public class DataModelHelper {
     }
 
     private void nameChanged(DataObjectTO object, String oldName, String newName) {
-        adjustPropertyClassNames(object.getPackageName() + "." + oldName, object.getPackageName() + "." + newName);
+        adjustDataObjects( assembleClassName(object.getPackageName(), oldName),
+                           assembleClassName(object.getPackageName(), newName) );
     }
 
     private void packageChanged(DataObjectTO object, String oldPackage, String newPackage) {
-        adjustPropertyClassNames(oldPackage + "." + object.getName(), newPackage + "." + object.getName());
+        adjustDataObjects( assembleClassName(oldPackage, object.getName()),
+                           assembleClassName(newPackage, object.getName()) );
     }
 
-    private void adjustPropertyClassNames(String oldClassName, String newClassname) {
-        if ( referencedBy.get(oldClassName) != null && referencedBy.get(oldClassName).size() != 0 ) {
+    private void adjustDataObjects(String oldClassName, String newClassname) {
+        Set<String> s = referencedBy.get(oldClassName);
+        if ( s != null && s.size() != 0 ) {
             // Get the object referencing the modified object
-            for (String refHolderClassName : referencedBy.get(oldClassName)) {
+            for (String refHolderClassName : s) {
                 // Go get the referencing object (in case of a 'self' reference, find it through the new name!)
                 DataObjectTO refHolder = dataModel.getDataObjectByClassName(oldClassName.equalsIgnoreCase(refHolderClassName) ? newClassname : refHolderClassName);
                 for (ObjectPropertyTO prop : refHolder.getProperties()) {
@@ -111,6 +115,13 @@ public class DataModelHelper {
                         prop.setClassName(newClassname);
                     }
                 }
+            }
+        }
+        s = siblingsMap.get(oldClassName);
+        if ( s != null && s.size() != 0 ) {
+            for (String siblingClassName : s) {
+                DataObjectTO sibling = dataModel.getDataObjectByClassName(siblingClassName);
+                sibling.setSuperClassName(newClassname);
             }
         }
     }

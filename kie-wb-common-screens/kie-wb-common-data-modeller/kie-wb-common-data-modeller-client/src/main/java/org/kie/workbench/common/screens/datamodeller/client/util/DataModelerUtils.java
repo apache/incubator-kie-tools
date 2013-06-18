@@ -73,6 +73,13 @@ public class DataModelerUtils {
         return sb.toString();
     }
 
+    public static String assembleClassName(String objPackage, String objName) {
+        if (objName == null || objName.length() == 0) return null;
+        StringBuilder sb = new StringBuilder(objName);
+        if ( objPackage != null && !"".equals(objPackage) ) sb.insert(0, ".").insert(0, objPackage);
+        return sb.toString();
+    }
+
     public String extractClassName(String fullClassName) {
 
         if (fullClassName == null) return null;

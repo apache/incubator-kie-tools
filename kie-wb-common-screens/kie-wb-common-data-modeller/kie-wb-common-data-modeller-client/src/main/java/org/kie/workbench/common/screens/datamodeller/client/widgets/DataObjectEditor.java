@@ -313,17 +313,17 @@ public class DataObjectEditor extends Composite {
         ep.setTitleWidget(packageNameLabel);
         ep.setValueWidget(packageSelector.getPackageList());
 
-        final String newPackageName = packageSelector.getPackageList().getValue();
+        final String newPackageName = PackageSelector.NOT_SELECTED.equals(packageSelector.getPackageList().getValue()) ?
+                                            null : packageSelector.getPackageList().getValue();
         final String oldPackageName = getDataObject().getPackageName();
 
         // No notification needed
-        if ( (("".equalsIgnoreCase(newPackageName) || PackageSelector.NOT_SELECTED.equals(newPackageName)) && oldPackageName == null) ||
-                newPackageName.equalsIgnoreCase(oldPackageName) ) {
+        if ( (newPackageName == null && oldPackageName == null) ||
+                (newPackageName != null && newPackageName.equalsIgnoreCase(oldPackageName)) ) {
             packageNameLabel.setStyleName(null);
             return;
-        }
 
-        if (newPackageName != null && !"".equals(newPackageName) && !PackageSelector.NOT_SELECTED.equals(newPackageName)) {
+        } else {
             validatorService.isUniqueEntityName(newPackageName, getDataObject().getName(), getDataModel(), new ValidatorCallback() {
                 @Override
                 public void onFailure() {
@@ -337,9 +337,6 @@ public class DataObjectEditor extends Composite {
                     notifyObjectChange("packageName", oldPackageName, newPackageName);
                 }
             });
-        } else {
-            getDataObject().setPackageName(null);
-            notifyObjectChange("packageName", oldPackageName, newPackageName);
         }
     }
 
