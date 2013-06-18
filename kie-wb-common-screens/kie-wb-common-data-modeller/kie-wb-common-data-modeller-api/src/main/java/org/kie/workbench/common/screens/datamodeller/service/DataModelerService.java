@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
@@ -24,36 +27,20 @@ import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
 
-import java.util.List;
-import java.util.Map;
-
 @Remote
 public interface DataModelerService {
 
-    Path createModel(Path context, String fileName);
+    Path createModel( final Path context,
+                      final String fileName );
 
-    Project resolveProject(Path path);
+    DataModelTO loadModel( final Project project );
 
-    DataModelTO loadModel(final Path path);
-    
-    GenerationResult saveModel(DataModelTO dataModel, final Path path);
-
-    /**
-     * Indicates if given path related to a project is inside project resources path. (src/main/resources or src/test/resources)
-     *
-     * e.g. MyProject/src/main/resources/myfiles is inside the project main resources path.
-     * e.g. MyProject/src/test/java/org/jboss is not.
-     *
-     * @param resource The path to check.
-     *
-     * @return resource if the path is inside the resources path, null in any other case.
-     *
-     */
-    Path resolveResourcePackage(final Path resource);
+    GenerationResult saveModel( final DataModelTO dataModel,
+                                final Project project );
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
-    Map<String, Boolean> evaluateIdentifiers(String[] identifiers);
+    Map<String, Boolean> evaluateIdentifiers( final String[] identifiers );
 
     Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
 

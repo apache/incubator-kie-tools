@@ -35,6 +35,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.uberfire.backend.vfs.Path;
@@ -49,9 +50,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -97,12 +96,12 @@ public class DataModelerScreenPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<PathChangeEvent> pathChange;
+    private Event<ProjectChangeEvent> projectChangeEvent;
 
     @Inject
-    private WorkbenchContext workbenchContext;
+    private KieWorkbenchContext workbenchContext;
 
-    private Path currentProject;
+    private Project currentProject;
 
     private DataModelTO dataModel;
 
@@ -126,7 +125,7 @@ public class DataModelerScreenPresenter {
         makeToolBar();
         initContext();
         open = true;
-        processPathChange( workbenchContext.getActivePath() );
+        processProjectChange( workbenchContext.getActiveProject() );
     }
 
     @IsDirty
@@ -148,11 +147,11 @@ public class DataModelerScreenPresenter {
         clearContext();
     }
 
-    public void onSave( final Path newProjectPath ) {
+    public void onSave( final Project project ) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
-        if ( newProjectPath == null ) {
-            pathChange.fire( new PathChangeEvent( currentProject ) );
+        if ( project == null ) {
+            projectChangeEvent.fire( new ProjectChangeEvent( currentProject ) );
         }
 
         modelerService.call( new RemoteCallback<GenerationResult>() {
@@ -162,16 +161,16 @@ public class DataModelerScreenPresenter {
                 restoreModelStatus( result );
                 getContext().setDirty( false );
                 notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
-                if ( newProjectPath != null ) {
-                    loadProjectDataModel( newProjectPath );
+                if ( project != null ) {
+                    loadProjectDataModel( project );
                 }
                 dataModelerEvent.fire( new DataModelerEvent( DataModelerEvent.DATA_MODEL_BROWSER,
                                                              getDataModel(),
                                                              dataModel.getDataObjects().size() > 0 ? dataModel.getDataObjects().get( 0 ) : null ) );
             }
         },
-                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() )
-                           ).saveModel( getDataModel(), currentProject );
+                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(),
+                                                                                                                        currentProject );
     }
 
     @WorkbenchMenu
@@ -184,38 +183,38 @@ public class DataModelerScreenPresenter {
         return this.toolBar;
     }
 
-    private void loadProjectDataModel( final Path path ) {
+    private void loadProjectDataModel( final Project project ) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_loading() );
 
-        modelerService.call(
-                new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
-                    @Override
-                    public void callback( final Map<String, AnnotationDefinitionTO> defs ) {
+        final Path projectRootPath = project.getRootPath();
 
-                        context.setAnnotationDefinitions( defs );
+        modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
+            @Override
+            public void callback( final Map<String, AnnotationDefinitionTO> defs ) {
 
-                        modelerService.call(
-                                new RemoteCallback<DataModelTO>() {
+                context.setAnnotationDefinitions( defs );
 
-                                    @Override
-                                    public void callback( DataModelTO dataModel ) {
-                                        BusyPopup.close();
-                                        dataModel.setParentProjectName( path.getFileName() );
-                                        setDataModel( dataModel );
-                                        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( path.toURI() ) ) );
-                                    }
+                modelerService.call(
+                        new RemoteCallback<DataModelTO>() {
 
-                                },
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() )
-                                           ).loadModel( path );
+                            @Override
+                            public void callback( DataModelTO dataModel ) {
+                                BusyPopup.close();
+                                dataModel.setParentProjectName( projectRootPath.getFileName() );
+                                setDataModel( dataModel );
+                                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
+                            }
 
-                    }
-                },
-                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
+                        },
+                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( project );
+
+            }
+        },
+                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
                            ).getAnnotationDefinitions();
 
-        currentProject = path;
+        currentProject = project;
     }
 
     public DataModelTO getDataModel() {
@@ -251,54 +250,44 @@ public class DataModelerScreenPresenter {
         if ( project == null ) {
             return;
         }
-        processPathChange( event.getProject().getRootPath() );
+        processProjectChange( event.getProject() );
     }
 
     private boolean isOpen() {
         return open;
     }
 
-    private void processPathChange( final Path newPath ) {
+    private void processProjectChange( final Project newProject ) {
 
         final boolean[] needsSave = new boolean[]{ false };
 
-        if ( newPath != null && isOpen() && currentProjectChanged( newPath ) ) {
-
-            modelerService.call(
-                    new RemoteCallback<Project>() {
-                        @Override
-                        public void callback( Project project) {
-                            Path projectPath = project.getRootPath();
-                            if ( projectPath != null ) {
-                                //the project has changed.
-                                if ( getContext() != null && getContext().isDirty() ) {
-                                    needsSave[ 0 ] = Window.confirm( Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProject != null ? currentProject.toURI() : null, projectPath.toURI() ) );
-                                } else if ( currentProject != null ) {
-                                    Window.alert( Constants.INSTANCE.modelEditor_notify_project_change( currentProject.toURI(), projectPath.toURI() ) );
-                                }
-                                if ( needsSave[ 0 ] ) {
-                                    onSave( projectPath );
-                                } else {
-                                    loadProjectDataModel( projectPath );
-                                }
-                            } else {
-                                //By definition the data modeler will only load model from project paths
-                            }
-                        }
-                    },
-                    new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_projectPath_calc_error() )
-                               ).resolveProject( newPath );
+        if ( newProject != null && isOpen() && currentProjectChanged( newProject ) ) {
+            //the project has changed.
+            final String newProjectURI = newProject.getRootPath().toURI();
+            final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
+            if ( getContext() != null && getContext().isDirty() ) {
+                needsSave[ 0 ] = Window.confirm( Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
+                                                                                                                          newProjectURI ) );
+            } else if ( currentProject != null ) {
+                Window.alert( Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI,
+                                                                                    newProjectURI ) );
+            }
+            if ( needsSave[ 0 ] ) {
+                onSave( newProject );
+            } else {
+                loadProjectDataModel( newProject );
+            }
 
         } else {
             //TODO check if this is possible. By definition we will always have a path.
         }
     }
 
-    private boolean currentProjectChanged( Path newPath ) {
+    private boolean currentProjectChanged( final Project newProject ) {
         if ( currentProject == null ) {
             return true;
         }
-        return !newPath.toURI().startsWith( currentProject.toURI() );
+        return !newProject.getRootPath().equals( currentProject.getRootPath() );
     }
 
     private void restoreModelStatus( GenerationResult result ) {

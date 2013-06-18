@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +29,6 @@ import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -51,7 +48,6 @@ import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracl
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils;
-import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,9 +78,6 @@ public class DataModelerServiceImpl implements DataModelerService {
     private Paths paths;
 
     @Inject
-    private ProjectService projectService;
-
-    @Inject
     private DataModelService dataModelService;
 
     @Inject
@@ -105,10 +98,10 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public DataModelTO loadModel( Path path ) {
+    public DataModelTO loadModel( Project project ) {
 
         if ( logger.isDebugEnabled() ) {
-            logger.debug( "Loading data model from path: " + path );
+            logger.debug( "Loading data model from path: " + project.getRootPath() );
         }
 
         Long startTime = System.currentTimeMillis();
@@ -117,7 +110,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         Path projectPath = null;
 
         try {
-            projectPath = projectService.resolveProject( path ).getRootPath();
+            projectPath = project.getRootPath();
             if ( logger.isDebugEnabled() ) {
                 logger.debug( "Current project path is: " + projectPath );
             }
@@ -132,29 +125,28 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
-                logger.debug( "Time elapsed when loading " + path.getFileName() + ": " + ( endTime - startTime ) + " ms" );
+                logger.debug( "Time elapsed when loading " + projectPath.getFileName() + ": " + ( endTime - startTime ) + " ms" );
             }
 
             return dataModelTO;
 
         } catch ( Exception e ) {
-            logger.error( "Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e );
-            throw new ServiceException( "Data model couldn't be loaded, path: " + path + ", projectPath: " + projectPath + ".", e );
+            logger.error( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
+            throw new ServiceException( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
         }
     }
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
-                                       final Path path ) {
+                                       final Project project ) {
+
+        Path projectPath = project.getRootPath();
 
         try {
 
             Long startTime = System.currentTimeMillis();
 
-            //get the path to project root directory (the main pom.xml directory) and calculate
-            //the java sources path
-            Path projectPath = projectService.resolveProject( path ).getRootPath();
-
+            //calculate the java sources path
             //ensure java sources directory exists.
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
@@ -182,7 +174,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
-                logger.debug( "Time elapsed when saving " + path.getFileName() + ": " + ( endTime - startTime ) + " ms" );
+                logger.debug( "Time elapsed when saving " + projectPath.getFileName() + ": " + ( endTime - startTime ) + " ms" );
             }
 
             GenerationResult result = new GenerationResult();
@@ -191,7 +183,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             return result;
 
         } catch ( Exception e ) {
-            logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + path, e );
+            logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + projectPath, e );
             throw new ServiceException( "Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e );
         }
     }
@@ -204,11 +196,6 @@ public class DataModelerServiceImpl implements DataModelerService {
             types.add( new PropertyTypeTO( baseType.getName(), baseType.getClassName() ) );
         }
         return types;
-    }
-
-    @Override
-    public Project resolveProject( Path path ) {
-        return projectService.resolveProject( path );
     }
 
     @Override
@@ -234,45 +221,6 @@ public class DataModelerServiceImpl implements DataModelerService {
             annotations.put( annotationDefinitionTO.getClassName(), annotationDefinitionTO );
         }
         return annotations;
-    }
-
-    @Override
-    public Path resolveResourcePackage( final Path resource ) {
-
-        //TODO this method should be moved to the ProjectService class
-        //Null resource paths cannot resolve to a Project
-        if ( resource == null ) {
-            return null;
-        }
-
-        //If Path is not within a Project we cannot resolve a package
-        final Path projectRoot = projectService.resolveProject( resource ).getRootPath();
-        if ( projectRoot == null ) {
-            return null;
-        }
-
-        //The Path must be within a Project's src/main/resources or src/test/resources path
-        boolean resolved = false;
-        org.kie.commons.java.nio.file.Path path = paths.convert( resource ).normalize();
-        final org.kie.commons.java.nio.file.Path srcResourcesPath = paths.convert( projectRoot ).resolve( MAIN_RESOURCES_PATH );
-        final org.kie.commons.java.nio.file.Path testResourcesPath = paths.convert( projectRoot ).resolve( TEST_RESOURCES_PATH );
-
-        if ( path.startsWith( srcResourcesPath ) ) {
-            resolved = true;
-        } else if ( path.startsWith( testResourcesPath ) ) {
-            resolved = true;
-        }
-        if ( !resolved ) {
-            return null;
-        }
-
-        //If the Path is already a folder simply return it
-        if ( Files.isDirectory( path ) ) {
-            return resource;
-        }
-
-        path = path.getParent();
-        return paths.convert( path );
     }
 
     private void notifyFileChanges( List<Path> deleteableFiles,
@@ -473,26 +421,6 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         filePath = filePath.resolve( name + ".java" );
         return filePath;
-    }
-
-    private List<Path> calculateProjectPackages( IOService ioService,
-                                                 Path path ) throws IOException {
-
-        Collection<FileUtils.ScanResult> scanResults;
-        List<Path> results = new ArrayList<Path>();
-
-        FileUtils fileUtils = FileUtils.getInstance();
-
-        Path projectHome = projectService.resolveProject( path ).getRootPath();
-        org.kie.commons.java.nio.file.Path javaPath = existsProjectJavaPath( paths.convert( projectHome ) );
-        if ( javaPath != null ) {
-            scanResults = fileUtils.scanDirectories( ioService, javaPath, false, true );
-            for ( FileUtils.ScanResult scanResult : scanResults ) {
-                results.add( paths.convert( scanResult.getFile() ) );
-            }
-
-        }
-        return results;
     }
 
 }
