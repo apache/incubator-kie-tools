@@ -309,12 +309,38 @@ public class DataObjectEditor extends Composite {
     private void packageChanged(ChangeEvent event) {
         if (getDataObject() == null) return;
 
-        final String oldPackageName = getDataObject().getPackageName();
+        // Set widgets to errorpopup for styling purposes etc.
+        ep.setTitleWidget(packageNameLabel);
+        ep.setValueWidget(packageSelector.getPackageList());
+
         final String newPackageName = packageSelector.getPackageList().getValue();
-        if (newPackageName != null && !"".equals(newPackageName) && !PackageSelector.NOT_SELECTED.equals(newPackageName))
-            getDataObject().setPackageName(newPackageName);
-        else getDataObject().setPackageName(null);
-        notifyObjectChange("packageName", oldPackageName, newPackageName);
+        final String oldPackageName = getDataObject().getPackageName();
+
+        // No notification needed
+        if ( (("".equalsIgnoreCase(newPackageName) || PackageSelector.NOT_SELECTED.equals(newPackageName)) && oldPackageName == null) ||
+                newPackageName.equalsIgnoreCase(oldPackageName) ) {
+            packageNameLabel.setStyleName(null);
+            return;
+        }
+
+        if (newPackageName != null && !"".equals(newPackageName) && !PackageSelector.NOT_SELECTED.equals(newPackageName)) {
+            validatorService.isUniqueEntityName(newPackageName, getDataObject().getName(), getDataModel(), new ValidatorCallback() {
+                @Override
+                public void onFailure() {
+                    ep.showMessage(Constants.INSTANCE.validation_error_object_already_exists(getDataObject().getName(), newPackageName));
+                }
+
+                @Override
+                public void onSuccess() {
+                    packageNameLabel.setStyleName(null);
+                    dataObject.setPackageName(newPackageName);
+                    notifyObjectChange("packageName", oldPackageName, newPackageName);
+                }
+            });
+        } else {
+            getDataObject().setPackageName(null);
+            notifyObjectChange("packageName", oldPackageName, newPackageName);
+        }
     }
 
     private void superClassChanged(ChangeEvent event) {
