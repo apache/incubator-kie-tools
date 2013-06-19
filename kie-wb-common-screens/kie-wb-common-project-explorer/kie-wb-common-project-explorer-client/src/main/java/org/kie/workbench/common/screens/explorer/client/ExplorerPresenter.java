@@ -414,13 +414,18 @@ public class ExplorerPresenter implements BusinessViewPresenter,
         if ( getActivePackage() == null ) {
             return;
         }
+
         itemCache.invalidateCache( getActivePackage() );
-        explorerService.call( new RemoteCallback<Collection<Item>>() {
+        packageCache.invalidateCache( getActiveProject() );
+        explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
-            public void callback( final Collection<Item> items ) {
-                businessView.setItems( items );
+            public void callback( final Collection<Package> packages ) {
+                packageCache.setEntry( getActiveProject(),
+                                       packages );
+                businessView.setPackages( packages,
+                                          getActivePackage() );
             }
-        } ).getItems( getActivePackage() );
+        } ).getPackages( getActiveProject() );
     }
 
 }
