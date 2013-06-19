@@ -14,7 +14,7 @@ public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getDescription() {
-        return "Any file";
+        return "Others";
     }
 
     @Override
