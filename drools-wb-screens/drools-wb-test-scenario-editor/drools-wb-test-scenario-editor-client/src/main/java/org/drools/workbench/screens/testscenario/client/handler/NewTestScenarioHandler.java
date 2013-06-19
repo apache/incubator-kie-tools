@@ -14,7 +14,6 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.data.Pair;
-import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
@@ -48,7 +47,7 @@ public class NewTestScenarioHandler
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        final Package activePackage = ( (KieWorkbenchContext) context ).getActivePackage();
+        final Package activePackage = context.getActivePackage();
         this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageTestResourcesPath() ) );
         return this.extensions;
     }
