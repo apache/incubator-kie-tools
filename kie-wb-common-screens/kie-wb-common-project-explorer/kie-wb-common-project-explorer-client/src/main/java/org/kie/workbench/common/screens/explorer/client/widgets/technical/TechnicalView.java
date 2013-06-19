@@ -15,7 +15,12 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import java.util.Collection;
+
 import com.google.gwt.user.client.ui.HasVisibility;
+import org.kie.workbench.common.services.shared.context.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 
 /**
  * Technical View definition.
@@ -23,4 +28,13 @@ import com.google.gwt.user.client.ui.HasVisibility;
 public interface TechnicalView extends HasVisibility {
 
     void init( final TechnicalViewPresenter presenter );
+
+    void setGroups( final Collection<Group> groups );
+
+    void setRepositories( final Group parentGroup,
+                          final Collection<Repository> repositories );
+
+    void setProjects( final Repository parentRepository,
+                      final Collection<Project> projects );
+
 }

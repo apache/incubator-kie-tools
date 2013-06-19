@@ -89,9 +89,10 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     Classifier classifier;
 
     //TreeSet sorts members upon insertion
+    private final Set<Group> sortedGroups = new TreeSet<Group>( Sorters.GROUP_SORTER );
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
-    private final Set<org.kie.workbench.common.services.shared.context.Package> sortedPackages = new TreeSet<Package>( Sorters.PACKAGE_SORTER );
+    private final Set<Package> sortedPackages = new TreeSet<Package>( Sorters.PACKAGE_SORTER );
 
     private BusinessViewPresenter presenter;
 
@@ -109,16 +110,15 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                            final Group activeGroup ) {
         ddGroups.clear();
         if ( !groups.isEmpty() ) {
-            final List<Group> sortedGroups = new ArrayList<Group>( groups );
-            Collections.sort( sortedGroups,
-                              Sorters.GROUP_SORTER );
-
-            final Group selectedGroup = getSelectedGroup( sortedGroups,
-                                                          activeGroup );
+            sortedGroups.clear();
+            sortedGroups.addAll( groups );
 
             for ( Group group : sortedGroups ) {
                 ddGroups.add( makeGroupNavLink( group ) );
             }
+
+            final Group selectedGroup = getSelectedGroup( sortedGroups,
+                                                          activeGroup );
             ddGroups.setText( selectedGroup.getName() );
             ddGroups.getTriggerWidget().setEnabled( true );
             presenter.groupSelected( selectedGroup );
@@ -135,7 +135,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private Group getSelectedGroup( final List<Group> groups,
+    private Group getSelectedGroup( final Set<Group> groups,
                                     final Group activeGroup ) {
         if ( groups.isEmpty() ) {
             return null;
@@ -143,7 +143,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         if ( activeGroup != null && groups.contains( activeGroup ) ) {
             return activeGroup;
         }
-        return groups.get( 0 );
+        return groups.iterator().next();
     }
 
     private IsWidget makeGroupNavLink( final Group group ) {

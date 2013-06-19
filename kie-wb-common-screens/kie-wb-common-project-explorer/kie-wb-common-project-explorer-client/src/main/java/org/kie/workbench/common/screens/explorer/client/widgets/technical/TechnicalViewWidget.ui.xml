@@ -24,9 +24,7 @@
 
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
-      <b:Well>
-        <b:Label text="Technical View - TODO"/>
-      </b:Well>
+      <b:NavList ui:field="items"/>
     </div>
   </g:HTMLPanel>
 

@@ -164,6 +164,7 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Group> groups ) {
                 businessView.setGroups( groups,
                                         getActiveGroup() );
+                technicalView.setGroups( groups );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
@@ -198,6 +199,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Repository> repositories ) {
                 businessView.setRepositories( repositories,
                                               getActiveRepository() );
+                technicalView.setRepositories( group,
+                                               repositories );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
@@ -227,6 +230,8 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Project> projects ) {
                 businessView.setProjects( projects,
                                           getActiveProject() );
+                technicalView.setProjects( repository,
+                                           projects );
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );

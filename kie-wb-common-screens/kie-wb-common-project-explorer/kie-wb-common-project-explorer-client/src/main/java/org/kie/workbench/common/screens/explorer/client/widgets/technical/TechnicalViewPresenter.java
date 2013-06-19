@@ -15,9 +15,21 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import org.kie.workbench.common.services.shared.context.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
+
 /**
  * Technical View Presenter definition
  */
 public interface TechnicalViewPresenter {
+
+    public void handleIncompleteContext();
+
+    public void groupSelected( final Group group );
+
+    public void repositorySelected( final Repository repository );
+
+    public void projectSelected( final Project project );
 
 }
