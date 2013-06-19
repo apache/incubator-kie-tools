@@ -48,7 +48,7 @@ public class ActivityBeansCache {
             final String id = getIdentifier( activityBean );
 
             if ( activitiesById.keySet().contains( id ) ) {
-                throw new RuntimeException( "Conflic detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+                throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
             }
 
             activitiesById.put( id, activityBean );
