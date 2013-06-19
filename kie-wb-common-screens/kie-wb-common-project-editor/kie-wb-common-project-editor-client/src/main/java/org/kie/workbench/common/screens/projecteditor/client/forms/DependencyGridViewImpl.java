@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -26,20 +28,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.project.service.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.services.project.service.model.Dependency;
 
 import java.util.List;
 
 public class DependencyGridViewImpl
-        extends ResizeComposite
+        extends Composite
         implements DependencyGridView {
 
 
@@ -90,8 +90,8 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
-                if(checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());  
+                if (checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setArtifactId(value);
@@ -116,8 +116,8 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
-                if(checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());       
+                if (checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setGroupId(value);
@@ -142,8 +142,8 @@ public class DependencyGridViewImpl
         column.setFieldUpdater(new FieldUpdater<Dependency, String>() {
             @Override
             public void update(int index, Dependency dependency, String value) {
-                if(checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());      
+                if (checkIsInValid(value)) {
+                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setVersion(value);
@@ -152,12 +152,12 @@ public class DependencyGridViewImpl
         dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.VersionID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
-    
+
     boolean checkIsInValid(String content) {
-        if(content !=null && (content.contains("<") || content.contains(">") || content.contains("&"))) {
+        if (content != null && (content.contains("<") || content.contains(">") || content.contains("&"))) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -195,13 +195,6 @@ public class DependencyGridViewImpl
     @Override
     public void setList(List<Dependency> dependencies) {
         dataGrid.setRowData(dependencies);
-    }
-
-    @Override
-    public void onResize() {
-        setPixelSize(getParent().getOffsetWidth(),
-                getParent().getOffsetHeight());
-        super.onResize();
     }
 
     @UiHandler("addDependencyButton")
