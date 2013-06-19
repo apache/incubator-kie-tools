@@ -16,9 +16,9 @@
 
 package org.uberfire.client.common;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -40,11 +40,11 @@ public class ErrorPopup extends Popup {
     private static final String WIDTH = 400 + "px";
 
     private ErrorPopup() {
-
+        //Make sure it appears on top of other popups
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         setTitle( CommonConstants.INSTANCE.Error() );
         setWidth( WIDTH );
         setModal( true );
-
         body.setWidth( "100%" );
     }
 
