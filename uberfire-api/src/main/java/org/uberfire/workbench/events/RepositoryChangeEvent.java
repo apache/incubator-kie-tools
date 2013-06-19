@@ -24,6 +24,10 @@ public class RepositoryChangeEvent {
 
     private final Repository repository;
 
+    public RepositoryChangeEvent() {
+        this.repository = null;
+    }
+
     public RepositoryChangeEvent( final Repository repository ) {
         this.repository = repository;
     }

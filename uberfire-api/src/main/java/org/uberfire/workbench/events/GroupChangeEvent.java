@@ -24,6 +24,10 @@ public class GroupChangeEvent {
 
     private final Group group;
 
+    public GroupChangeEvent() {
+        this.group = null;
+    }
+
     public GroupChangeEvent( final Group group ) {
         this.group = group;
     }
