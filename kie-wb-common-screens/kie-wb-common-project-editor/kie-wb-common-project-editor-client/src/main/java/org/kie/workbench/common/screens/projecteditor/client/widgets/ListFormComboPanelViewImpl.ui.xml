@@ -26,7 +26,7 @@
 
 
   <bootstrap:Container>
-    <bootstrap:Container addStyleNames="pull-left">
+    <bootstrap:Column size="4">
       <bootstrap:ButtonGroup>
         <bootstrap:Button ui:field="addButton">
           <ui:text from="{i18n.Add}"/>
@@ -42,10 +42,10 @@
         </bootstrap:Button>
       </bootstrap:ButtonGroup>
       <bootstrap:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
-    </bootstrap:Container>
-    <bootstrap:Container addStyleNames="pull-left">
+    </bootstrap:Column>
+    <bootstrap:Column size="2">
       <gwt:SimplePanel ui:field="kSessionForm"/>
-    </bootstrap:Container>
+    </bootstrap:Column>
   </bootstrap:Container>
 
 </ui:UiBinder>
