@@ -24,8 +24,6 @@ import org.uberfire.backend.repositories.Repository;
  */
 public interface TechnicalViewPresenter {
 
-    public void handleIncompleteContext();
-
     public void groupSelected( final Group group );
 
     public void repositorySelected( final Repository repository );

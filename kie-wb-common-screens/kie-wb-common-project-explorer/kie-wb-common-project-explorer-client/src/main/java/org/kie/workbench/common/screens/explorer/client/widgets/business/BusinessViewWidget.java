@@ -131,7 +131,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            presenter.handleIncompleteContext();
         }
     }
 
@@ -183,7 +182,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            presenter.handleIncompleteContext();
         }
     }
 
@@ -233,7 +231,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            presenter.handleIncompleteContext();
         }
     }
 
@@ -281,7 +278,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         } else {
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            presenter.handleIncompleteContext();
         }
     }
 

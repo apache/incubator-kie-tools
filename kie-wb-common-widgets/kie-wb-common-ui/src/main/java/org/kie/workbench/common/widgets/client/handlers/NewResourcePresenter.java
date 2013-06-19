@@ -90,7 +90,7 @@ public class NewResourcePresenter {
     }
 
     private void enableNewResourceHandlers( final Package pkg ) {
-        final Path path = pkg.getPackageMainResourcesPath();
+        final Path path = ( pkg == null ? null : pkg.getPackageMainResourcesPath() );
         for ( final NewResourceHandler handler : this.handlers ) {
             handler.acceptPath( path,
                                 new Callback<Boolean, Void>() {

@@ -22,6 +22,10 @@ public class ProjectChangeEvent {
 
     private final Project project;
 
+    public ProjectChangeEvent() {
+        this.project = null;
+    }
+
     public ProjectChangeEvent( final Project project ) {
         this.project = project;
     }

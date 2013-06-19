@@ -59,6 +59,14 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
 
+    private enum Context {
+        GROUP,
+        REPOSITORY,
+        PROJECT
+    }
+
+    private Context context;
+
     private TechnicalViewPresenter presenter;
 
     public TechnicalViewWidget() {
@@ -72,83 +80,109 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     @Override
     public void setGroups( final Collection<Group> groups ) {
-        items.clear();
         if ( !groups.isEmpty() ) {
             sortedGroups.clear();
             sortedGroups.addAll( groups );
-
-            for ( Group group : sortedGroups ) {
-                items.add( makeGroupNavLink( group.getName(),
-                                             group ) );
-            }
+            populateGroupView();
         } else {
             items.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
-            presenter.handleIncompleteContext();
         }
-    }
-
-    private IsWidget makeGroupNavLink( final String caption,
-                                       final Group group ) {
-        final NavLink navLink = new NavLink( caption );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.groupSelected( group );
-            }
-        } );
-        return navLink;
     }
 
     @Override
     public void setRepositories( final Group parentGroup,
                                  final Collection<Repository> repositories ) {
-        items.clear();
         if ( !repositories.isEmpty() ) {
             sortedRepositories.clear();
             sortedRepositories.addAll( repositories );
-
-            items.add( makeGroupNavLink( "..",
-                                         parentGroup ) );
-            for ( Repository repository : sortedRepositories ) {
-                items.add( makeRepositoryNavLink( repository.getAlias(),
-                                                  repository ) );
-            }
         } else {
             items.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
-            presenter.handleIncompleteContext();
         }
-    }
-
-    private IsWidget makeRepositoryNavLink( final String caption,
-                                            final Repository repository ) {
-        final NavLink navLink = new NavLink( caption );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.repositorySelected( repository );
-            }
-        } );
-        return navLink;
     }
 
     @Override
     public void setProjects( final Repository parentRepository,
                              final Collection<Project> projects ) {
-        items.clear();
         if ( !projects.isEmpty() ) {
             sortedProjects.clear();
             sortedProjects.addAll( projects );
-
-            items.add( makeRepositoryNavLink( "..",
-                                              parentRepository ) );
-            for ( Project project : sortedProjects ) {
-                items.add( makeProjectNavLink( project ) );
-            }
         } else {
             items.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
-            presenter.handleIncompleteContext();
+        }
+    }
+
+    public void refresh() {
+
+    }
+
+    private void populateGroupView() {
+        items.clear();
+        for ( Group group : sortedGroups ) {
+            items.add( makeGroupNavLink( group ) );
+        }
+    }
+
+    private IsWidget makeGroupNavLink( final Group group ) {
+        final NavLink navLink = new NavLink( group.getName() );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                populateRepositoryView();
+            }
+        } );
+        return navLink;
+    }
+
+    private IsWidget makeParentGroupNavLink() {
+        final NavLink navLink = new NavLink( ".." );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                populateGroupView();
+            }
+        } );
+        return navLink;
+    }
+
+    private void populateRepositoryView() {
+        items.clear();
+        items.add( makeParentGroupNavLink() );
+        for ( Repository repository : sortedRepositories ) {
+            items.add( makeRepositoryNavLink( repository ) );
+        }
+    }
+
+    private IsWidget makeRepositoryNavLink( final Repository repository ) {
+        final NavLink navLink = new NavLink( repository.getAlias() );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                populateProjectView();
+            }
+        } );
+        return navLink;
+    }
+
+    private IsWidget makeParentRepositoryNavLink() {
+        final NavLink navLink = new NavLink( ".." );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                populateRepositoryView();
+            }
+        } );
+        return navLink;
+    }
+
+    private void populateProjectView() {
+        items.clear();
+        items.add( makeParentRepositoryNavLink() );
+        for ( Project project : sortedProjects ) {
+            items.add( makeProjectNavLink( project ) );
         }
     }
 
@@ -158,7 +192,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.projectSelected( project );
+//                presenter.projectSelected( project );
             }
         } );
         return navLink;

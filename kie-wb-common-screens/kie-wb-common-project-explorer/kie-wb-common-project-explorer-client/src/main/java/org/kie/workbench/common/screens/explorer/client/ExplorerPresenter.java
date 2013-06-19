@@ -164,15 +164,17 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Group> groups ) {
                 businessView.setGroups( groups,
                                         getActiveGroup() );
-                technicalView.setGroups( groups );
+                if ( groups.isEmpty() ) {
+                    businessView.setItems( Collections.EMPTY_LIST );
+                    groupChangeEvent.fire( new GroupChangeEvent() );
+                    repositoryChangeEvent.fire( new RepositoryChangeEvent() );
+                    projectChangeEvent.fire( new ProjectChangeEvent() );
+                    packageChangeEvent.fire( new PackageChangeEvent() );
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
-    }
-
-    public void handleIncompleteContext() {
-        businessView.setItems( Collections.EMPTY_LIST );
-        view.hideBusyIndicator();
     }
 
     public void groupSelected( final Group group ) {
@@ -199,8 +201,13 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Repository> repositories ) {
                 businessView.setRepositories( repositories,
                                               getActiveRepository() );
-                technicalView.setRepositories( group,
-                                               repositories );
+                if ( repositories.isEmpty() ) {
+                    businessView.setItems( Collections.EMPTY_LIST );
+                    repositoryChangeEvent.fire( new RepositoryChangeEvent() );
+                    projectChangeEvent.fire( new ProjectChangeEvent() );
+                    packageChangeEvent.fire( new PackageChangeEvent() );
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
@@ -230,8 +237,12 @@ public class ExplorerPresenter implements BusinessViewPresenter,
             public void callback( final Collection<Project> projects ) {
                 businessView.setProjects( projects,
                                           getActiveProject() );
-                technicalView.setProjects( repository,
-                                           projects );
+                if ( projects.isEmpty() ) {
+                    businessView.setItems( Collections.EMPTY_LIST );
+                    projectChangeEvent.fire( new ProjectChangeEvent() );
+                    packageChangeEvent.fire( new PackageChangeEvent() );
+                    view.hideBusyIndicator();
+                }
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
@@ -272,6 +283,11 @@ public class ExplorerPresenter implements BusinessViewPresenter,
                                        packages );
                 businessView.setPackages( packages,
                                           getActivePackage() );
+                if ( packages.isEmpty() ) {
+                    businessView.setItems( Collections.EMPTY_LIST );
+                    packageChangeEvent.fire( new PackageChangeEvent() );
+                    view.hideBusyIndicator();
+                }
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }

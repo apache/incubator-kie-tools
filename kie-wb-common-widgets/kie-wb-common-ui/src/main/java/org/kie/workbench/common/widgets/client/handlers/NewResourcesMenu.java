@@ -78,23 +78,24 @@ public class NewResourcesMenu {
     }
 
     private void enableNewResourceHandlers( final Package pkg ) {
-        final Path path = pkg.getPackageMainResourcesPath();
+        final Path path = ( pkg == null ? null : pkg.getPackageMainResourcesPath() );
         for ( Map.Entry<NewResourceHandler, MenuItem> e : this.newResourceHandlers.entrySet() ) {
             final NewResourceHandler handler = e.getKey();
             final MenuItem menuItem = e.getValue();
-            handler.acceptPath( path, new Callback<Boolean, Void>() {
-                @Override
-                public void onFailure( Void reason ) {
-                    // Nothing to do there right now.
-                }
+            handler.acceptPath( path,
+                                new Callback<Boolean, Void>() {
+                                    @Override
+                                    public void onFailure( Void reason ) {
+                                        // Nothing to do there right now.
+                                    }
 
-                @Override
-                public void onSuccess( final Boolean result ) {
-                    if ( result != null ) {
-                        menuItem.setEnabled( result );
-                    }
-                }
-            } );
+                                    @Override
+                                    public void onSuccess( final Boolean result ) {
+                                        if ( result != null ) {
+                                            menuItem.setEnabled( result );
+                                        }
+                                    }
+                                } );
 
         }
     }

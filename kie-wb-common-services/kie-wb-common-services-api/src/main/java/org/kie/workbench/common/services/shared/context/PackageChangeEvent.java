@@ -22,6 +22,10 @@ public class PackageChangeEvent {
 
     private final Package pkg;
 
+    public PackageChangeEvent() {
+        pkg = null;
+    }
+
     public PackageChangeEvent( final Package pkg ) {
         this.pkg = pkg;
     }
