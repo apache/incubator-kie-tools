@@ -37,6 +37,13 @@
               <b:HelpInline ui:field="nameHelpInline" />
             </b:Controls>
           </b:ControlGroup>
+          <b:ControlGroup ui:field="groupGroup">
+            <b:ControlLabel>Group</b:ControlLabel>
+            <b:Controls>
+              <b:ListBox ui:field="groupDropdown" />
+              <b:HelpInline ui:field="groupHelpInline" />
+            </b:Controls>
+          </b:ControlGroup>
           <b:ControlGroup ui:field="urlGroup">
             <b:ControlLabel for="url">
               <font color="red">*</font>

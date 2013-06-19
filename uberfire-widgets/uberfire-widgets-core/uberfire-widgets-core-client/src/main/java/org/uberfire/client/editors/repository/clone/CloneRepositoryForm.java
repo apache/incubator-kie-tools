@@ -16,6 +16,7 @@
 
 package org.uberfire.client.editors.repository.clone;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -42,6 +44,8 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 
@@ -60,11 +64,23 @@ public class CloneRepositoryForm
     @Inject
     private Caller<RepositoryService> repositoryService;
 
+    @Inject
+    private Caller<GroupService> groupService;
+
+    @UiField
+    ControlGroup groupGroup;
+
     @UiField
     ControlGroup nameGroup;
 
     @UiField
     TextBox nameTextBox;
+
+    @UiField
+    ListBox groupDropdown;
+
+    @UiField
+    HelpInline groupHelpInline;
 
     @UiField
     HelpInline nameHelpInline;
@@ -87,6 +103,8 @@ public class CloneRepositoryForm
     @UiField
     Modal popup;
 
+    private Map<String, Group> availableGroups = new HashMap<String, Group>();
+
     @PostConstruct
     public void init() {
         setWidget( uiBinder.createAndBindUi( this ) );
@@ -105,6 +123,29 @@ public class CloneRepositoryForm
                 urlHelpInline.setText( "" );
             }
         } );
+
+        //populate group list box
+        groupService.call(new RemoteCallback<Collection<Group>>() {
+                              @Override
+                              public void callback( Collection<Group> groups ) {
+                                  groupDropdown.addItem("-----select group-----");
+                                  if (groups != null && !groups.isEmpty()) {
+                                      for (Group group : groups) {
+                                          groupDropdown.addItem(group.getName(), group.getName());
+                                          availableGroups.put(group.getName(), group);
+                                      }
+                                  }
+                              }
+                          },
+                new ErrorCallback() {
+                    @Override
+                    public boolean error( final Message message,
+                            final Throwable throwable ) {
+                        Window.alert( "Can't load groups. \n" + message.toString() );
+
+                        return false;
+                    }
+                }).getGroups();
     }
 
     @UiHandler("clone")
@@ -126,6 +167,14 @@ public class CloneRepositoryForm
         } else {
             urlGroup.setType( ControlGroupType.NONE );
         }
+        final String group = groupDropdown.getValue(groupDropdown.getSelectedIndex());
+        if ( !availableGroups.isEmpty() && !availableGroups.containsKey(group)) {
+            groupGroup.setType( ControlGroupType.ERROR );
+            groupHelpInline.setText( "Group is mandatory" );
+            hasError = true;
+        } else {
+            groupGroup.setType( ControlGroupType.NONE );
+        }
 
         if ( hasError ) {
             return;
@@ -141,11 +190,31 @@ public class CloneRepositoryForm
         env.put( "crypt:password", password );
         env.put( "origin", origin );
 
+
         repositoryService.call( new RemoteCallback<Repository>() {
                                     @Override
                                     public void callback( Repository o ) {
-                                        Window.alert( "The repository is cloned successfully" );
+                                    Window.alert( "The repository is cloned successfully" );
+                                    if (availableGroups.containsKey(group)) {
+                                        groupService.call(new RemoteCallback<Collection<Group>>() {
+                                                              @Override
+                                                              public void callback( Collection<Group> groups ) {
+                                                                  hide();
+                                                              }
+                                                          },
+                                                new ErrorCallback() {
+                                                    @Override
+                                                    public boolean error( final Message message,
+                                                            final Throwable throwable ) {
+                                                        Window.alert( "Can't add repository to a group. \n" + message.toString() );
+
+                                                        return false;
+                                                    }
+                                                }).addRepository(availableGroups.get(group), o);
+
+                                    }  else {
                                         hide();
+                                    }
                                     }
                                 },
                                 new ErrorCallback() {

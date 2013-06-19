@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
@@ -19,6 +20,7 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 
+@Service
 @ApplicationScoped
 public class GroupServiceImpl implements GroupService {
 
@@ -52,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Collection<Group> getGroups() {
-        return Collections.unmodifiableCollection( registeredGroups.values() );
+        return new ArrayList<Group>( registeredGroups.values() );
     }
 
     @Override
@@ -113,7 +115,7 @@ public class GroupServiceImpl implements GroupService {
             ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
             repositories.getValue().add( repository.getAlias() );
 
-            configurationService.addConfiguration( thisGroupConfig );
+            configurationService.updateConfiguration( thisGroupConfig );
 
             final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
             registeredGroups.put( updatedGroup.getName(),
@@ -132,7 +134,7 @@ public class GroupServiceImpl implements GroupService {
             final ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
             repositories.getValue().remove( repository.getAlias() );
 
-            configurationService.addConfiguration( thisGroupConfig );
+            configurationService.updateConfiguration( thisGroupConfig );
 
             final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
             registeredGroups.put( updatedGroup.getName(),
@@ -151,7 +153,7 @@ public class GroupServiceImpl implements GroupService {
             final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
             roles.getValue().add( role );
 
-            configurationService.addConfiguration( thisGroupConfig );
+            configurationService.updateConfiguration( thisGroupConfig );
 
             final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
             registeredGroups.put( updatedGroup.getName(),
@@ -170,7 +172,7 @@ public class GroupServiceImpl implements GroupService {
             final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
             roles.getValue().remove( role );
 
-            configurationService.addConfiguration( thisGroupConfig );
+            configurationService.updateConfiguration( thisGroupConfig );
 
             final Group updatedGroup = groupFactory.newGroup( thisGroupConfig );
             registeredGroups.put( updatedGroup.getName(),

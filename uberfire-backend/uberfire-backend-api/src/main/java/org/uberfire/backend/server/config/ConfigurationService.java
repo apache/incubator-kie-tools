@@ -8,6 +8,8 @@ public interface ConfigurationService {
 
     boolean addConfiguration( ConfigGroup configGroup );
 
+    boolean updateConfiguration( ConfigGroup configGroup );
+
     boolean removeConfiguration( ConfigGroup configGroup );
 
 }

@@ -16,6 +16,7 @@
 
 package org.uberfire.client.editors.repository.create;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -23,7 +24,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -46,6 +49,8 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 
@@ -65,8 +70,20 @@ public class CreateRepositoryForm
     @Inject
     private Caller<RepositoryService> repositoryService;
 
+    @Inject
+    private Caller<GroupService> groupService;
+
+    @UiField
+    ControlGroup groupGroup;
+
+    @UiField
+    HelpInline groupHelpInline;
+
     @UiField
     ControlGroup nameGroup;
+
+    @UiField
+    ListBox groupDropdown;
 
     @UiField
     TextBox nameTextBox;
@@ -83,6 +100,8 @@ public class CreateRepositoryForm
     @UiField
     Modal popup;
 
+    private Map<String, Group> availableGroups = new HashMap<String, Group>();
+
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -94,6 +113,28 @@ public class CreateRepositoryForm
                 nameHelpInline.setText( "" );
             }
         } );
+        //populate group list box
+        groupService.call(new RemoteCallback<Collection<Group>>() {
+                              @Override
+                              public void callback( Collection<Group> groups ) {
+                                  groupDropdown.addItem("-----select group-----");
+                                  if (groups != null && !groups.isEmpty()) {
+                                      for (Group group : groups) {
+                                          groupDropdown.addItem(group.getName(), group.getName());
+                                          availableGroups.put(group.getName(), group);
+                                      }
+                                  }
+                              }
+                          },
+                new ErrorCallback() {
+                    @Override
+                    public boolean error( final Message message,
+                            final Throwable throwable ) {
+                        Window.alert( "Can't load groups. \n" + message.toString() );
+
+                        return false;
+                    }
+                }).getGroups();
     }
 
     @Override
@@ -113,6 +154,15 @@ public class CreateRepositoryForm
             nameGroup.setType( ControlGroupType.NONE );
         }
 
+        final String group = groupDropdown.getValue(groupDropdown.getSelectedIndex());
+        if ( !availableGroups.isEmpty() && !availableGroups.containsKey(group)) {
+            groupGroup.setType( ControlGroupType.ERROR );
+            groupHelpInline.setText( "Group is mandatory" );
+            hasError = true;
+        } else {
+            groupGroup.setType( ControlGroupType.NONE );
+        }
+
         if ( hasError ) {
             return;
         }
@@ -126,11 +176,31 @@ public class CreateRepositoryForm
         env.put( "crypt:password", password );
         env.put( "init", true );
 
+
         repositoryService.call( new RemoteCallback<Repository>() {
                                     @Override
                                     public void callback( Repository o ) {
                                         Window.alert( "The repository is created successfully" );
-                                        hide();
+                                        if (availableGroups.containsKey(group)) {
+                                            groupService.call(new RemoteCallback<Collection<Group>>() {
+                                                              @Override
+                                                              public void callback( Collection<Group> groups ) {
+                                                                  hide();
+                                                              }
+                                                          },
+                                                new ErrorCallback() {
+                                                    @Override
+                                                    public boolean error( final Message message,
+                                                            final Throwable throwable ) {
+                                                        Window.alert( "Can't add repository to a group. \n" + message.toString() );
+
+                                                        return false;
+                                                    }
+                                                }).addRepository(availableGroups.get(group), o);
+
+                                            }  else {
+                                                hide();
+                                            }
                                     }
                                 },
                                 new ErrorCallback() {
@@ -143,6 +213,9 @@ public class CreateRepositoryForm
                                     }
                                 }
                               ).createRepository( scheme, alias, env );
+
+
+
     }
 
     @UiHandler("cancel")

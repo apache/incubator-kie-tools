@@ -73,7 +73,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             executorService = Executors.newSingleThreadExecutor();
-            executorService.execute( new CheckConfigurationUpdates() );
+            executorService.execute(new CheckConfigurationUpdates());
         }
     }
 
@@ -126,6 +126,23 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Created config " + filePath.getFileName() );
+        ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
+
+        //Invalidate cache if a new item has been created; otherwise cached value is stale
+        configuration.remove( configGroup.getType() );
+        updateLastModified();
+
+        return true;
+    }
+
+    @Override
+    public boolean updateConfiguration(ConfigGroup configGroup) {
+        String filename = configGroup.getName().replaceAll( INVALID_FILENAME_CHARS, "_" );
+
+        final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
+
+        final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
+                "Updated config " + filePath.getFileName() );
         ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
         //Invalidate cache if a new item has been created; otherwise cached value is stale

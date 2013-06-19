@@ -2,8 +2,10 @@ package org.uberfire.backend.group;
 
 import java.util.Collection;
 
+import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.repositories.Repository;
 
+@Remote
 public interface GroupService {
 
     Group getGroup( final String name );
