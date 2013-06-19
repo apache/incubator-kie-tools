@@ -16,7 +16,7 @@ public class WorkItemsTypeDefinition
 
     @Override
     public String getDescription() {
-        return "Work Item definition";
+        return "Work Item Definitions";
     }
 
     @Override
