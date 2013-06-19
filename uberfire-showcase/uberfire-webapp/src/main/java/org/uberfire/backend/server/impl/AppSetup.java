@@ -1,12 +1,16 @@
 package org.uberfire.backend.server.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.commons.services.cdi.Startup;
 import org.kie.commons.services.cdi.StartupType;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 
@@ -23,11 +27,19 @@ public class AppSetup {
     private static final String PLAYGROUND_UID = "guvnorngtestuser1";
     private static final String PLAYGROUND_PWD = "test1234";
 
+    private static final String PLAYGROUND_GROUP = "demo";
+    private static final String PLAYGROUND_GROUP_OWNER = "demo@uberfire.com";
+
     @Inject
     private RepositoryService repositoryService;
 
+    @Inject
+    private GroupService groupService;
+
     @PostConstruct
     public void assertPlayground() {
+        final List<Repository> repositories = new ArrayList<Repository>();
+
         final Repository repository = repositoryService.getRepository( PLAYGROUND_ALIAS );
         if ( repository == null ) {
             repositoryService.createRepository( PLAYGROUND_SCHEME, PLAYGROUND_ALIAS,
@@ -36,6 +48,14 @@ public class AppSetup {
                                                     put( "username", PLAYGROUND_UID );
                                                     put( "crypt:password", PLAYGROUND_PWD );
                                                 }} );
+        }
+
+        repositories.add( repository );
+        final Group group = groupService.getGroup( PLAYGROUND_GROUP );
+        if ( group == null ) {
+            groupService.createGroup( PLAYGROUND_GROUP,
+                                      PLAYGROUND_GROUP_OWNER,
+                                      repositories );
         }
     }
 
