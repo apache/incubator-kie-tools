@@ -63,13 +63,13 @@ public class ProjectScreenPresenter
     }
 
     @Inject
-    public ProjectScreenPresenter(@New ProjectScreenView view,
-                                  KieWorkbenchContext workbenchContext,
-                                  Caller<ProjectScreenService> projectScreenService,
-                                  Caller<BuildService> buildServiceCaller,
-                                  SaveOperationService saveOperationService) {
+    public ProjectScreenPresenter( @New ProjectScreenView view,
+                                   KieWorkbenchContext workbenchContext,
+                                   Caller<ProjectScreenService> projectScreenService,
+                                   Caller<BuildService> buildServiceCaller,
+                                   SaveOperationService saveOperationService ) {
         this.view = view;
-        view.setPresenter(this);
+        view.setPresenter( this );
 
         this.projectScreenService = projectScreenService;
 
@@ -81,12 +81,12 @@ public class ProjectScreenPresenter
         makeMenuBar();
     }
 
-    public void selectedPathChanged(@Observes final ProjectChangeEvent event) {
-        showCurrentProjectInfoIfAny(event.getProject());
+    public void selectedPathChanged( @Observes final ProjectChangeEvent event ) {
+        showCurrentProjectInfoIfAny( event.getProject() );
     }
 
-    private void showCurrentProjectInfoIfAny(final Project project) {
-        if (!project.equals(this.project)) {
+    private void showCurrentProjectInfoIfAny( final Project project ) {
+        if ( project != null && !project.equals( this.project ) ) {
             this.project = project;
             this.pathToPomXML = project.getPomXMLPath();
             init();
@@ -94,52 +94,51 @@ public class ProjectScreenPresenter
     }
 
     private void init() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
-                    public void callback(ProjectScreenModel model) {
+                    public void callback( ProjectScreenModel model ) {
                         ProjectScreenPresenter.this.model = model;
 
-                        view.setPOM(model.getPOM());
-                        view.setDependencies(model.getPOM().getDependencies());
-                        view.setPomMetadata(model.getPOMMetaData());
+                        view.setPOM( model.getPOM() );
+                        view.setDependencies( model.getPOM().getDependencies() );
+                        view.setPomMetadata( model.getPOMMetaData() );
 
+                        view.setKModule( model.getKModule() );
+                        view.setKModuleMetadata( model.getKModuleMetaData() );
 
-                        view.setKModule(model.getKModule());
-                        view.setKModuleMetadata(model.getKModuleMetaData());
-
-                        view.setImports(model.getProjectImports());
-                        view.setImportsMetadata(model.getProjectImportsMetaData());
+                        view.setImports( model.getProjectImports() );
+                        view.setImportsMetadata( model.getProjectImportsMetaData() );
 
                         view.hideBusyIndicator();
                     }
                 }
 
-        ).load(pathToPomXML);
+                                 ).load( pathToPomXML );
 
         view.showGAVPanel();
     }
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu(CommonConstants.INSTANCE.File())
+                .newTopLevelMenu( CommonConstants.INSTANCE.File() )
                 .menus()
-                .menu(CommonConstants.INSTANCE.Save())
-                .respondsWith(getSaveCommand())
+                .menu( CommonConstants.INSTANCE.Save() )
+                .respondsWith( getSaveCommand() )
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu(ProjectEditorConstants.INSTANCE.Build())
-                .respondsWith(new Command() {
+                .newTopLevelMenu( ProjectEditorConstants.INSTANCE.Build() )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator(ProjectEditorConstants.INSTANCE.Building());
-                        buildServiceCaller.call(getBuildSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).buildAndDeploy(project);
+                        view.showBusyIndicator( ProjectEditorConstants.INSTANCE.Building() );
+                        buildServiceCaller.call( getBuildSuccessCallback(),
+                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
                     }
-                })
+                } )
                 .endMenu().build();
 
     }
@@ -148,21 +147,21 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                saveOperationService.save(pathToPomXML,
-                        new CommandWithCommitMessage() {
-                            @Override
-                            public void execute(final String comment) {
-                                view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                saveOperationService.save( pathToPomXML,
+                                           new CommandWithCommitMessage() {
+                                               @Override
+                                               public void execute( final String comment ) {
+                                                   view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                projectScreenService.call(new RemoteCallback<Void>() {
-                                    @Override
-                                    public void callback(Void v) {
-                                        view.hideBusyIndicator();
-                                    }
-                                }).save(pathToPomXML, model, comment);
+                                                   projectScreenService.call( new RemoteCallback<Void>() {
+                                                       @Override
+                                                       public void callback( Void v ) {
+                                                           view.hideBusyIndicator();
+                                                       }
+                                                   } ).save( pathToPomXML, model, comment );
 
-                            }
-                        });
+                                               }
+                                           } );
             }
         };
     }
@@ -170,7 +169,7 @@ public class ProjectScreenPresenter
     private RemoteCallback getBuildSuccessCallback() {
         return new RemoteCallback<Void>() {
             @Override
-            public void callback(final Void v) {
+            public void callback( final Void v ) {
                 view.hideBusyIndicator();
             }
         };

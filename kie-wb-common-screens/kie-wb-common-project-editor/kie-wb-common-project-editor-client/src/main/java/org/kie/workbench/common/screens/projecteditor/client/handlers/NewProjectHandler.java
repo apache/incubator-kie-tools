@@ -75,7 +75,7 @@ public class NewProjectHandler
     public void create( final Package pkg,
                         final String projectName,
                         final NewResourcePresenter presenter ) {
-        if ( pkg != null ) {
+        if ( isRepositorySelected ) {
             wizard.setProjectName( projectName );
             wizardPresenter.start( wizard );
             presenter.complete();
