@@ -21,13 +21,15 @@ import com.google.gwt.user.client.ui.HasVisibility;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
 /**
  * Business View definition.
  */
-public interface BusinessView extends HasVisibility {
+public interface BusinessView extends HasBusyIndicator,
+                                      HasVisibility {
 
     void init( final BusinessViewPresenter presenter );
 
@@ -40,7 +42,7 @@ public interface BusinessView extends HasVisibility {
     void setProjects( final Collection<Project> projects,
                       final Project activeProject );
 
-    void setPackages( final Collection<org.kie.workbench.common.services.shared.context.Package> packages,
+    void setPackages( final Collection<Package> packages,
                       final Package activePackage );
 
     void setItems( final Collection<Item> items );

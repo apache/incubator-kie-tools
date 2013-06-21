@@ -19,22 +19,25 @@ import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasVisibility;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
 /**
  * Technical View definition.
  */
-public interface TechnicalView extends HasVisibility {
+public interface TechnicalView extends HasBusyIndicator,
+                                       HasVisibility {
 
     void init( final TechnicalViewPresenter presenter );
 
-    void setGroups( final Collection<Group> groups );
+    void setGroups( final Collection<Group> groups,
+                    final Group activeGroup );
 
-    void setRepositories( final Group parentGroup,
-                          final Collection<Repository> repositories );
+    void setRepositories( final Collection<Repository> repositories,
+                          final Repository activeRepository );
 
-    void setProjects( final Repository parentRepository,
-                      final Collection<Project> projects );
+    void setProjects( final Collection<Project> projects,
+                      final Project activeProject );
 
 }

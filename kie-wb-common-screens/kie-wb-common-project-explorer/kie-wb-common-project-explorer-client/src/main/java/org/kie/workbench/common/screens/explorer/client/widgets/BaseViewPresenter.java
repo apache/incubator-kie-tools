@@ -13,8 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.screens.explorer.client;
+package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import java.util.Collection;
+
+import org.kie.workbench.common.screens.explorer.client.ExplorerPresenter;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 
@@ -23,14 +27,31 @@ import org.uberfire.backend.repositories.Repository;
  * are selected. The Project Explorer's presenter performs the same actions no matter what "View" is selected by calling methods
  * defined on this interface. BusinessView + TechnicalView become redundant. Both implement this interface.
  */
-public interface ExplorerPresenter {
+public interface BaseViewPresenter {
+
+    void activate();
+
+    void deactivate();
+
+    void init( final ExplorerPresenter presenter );
+
+    void setGroups( final Collection<Group> groups,
+                    final Group selectedGroup );
 
     void groupSelected( final Group group );
 
+    void setRepositories( final Collection<Repository> repositories,
+                          final Repository selectedRepository );
+
     void repositorySelected( final Repository repository );
 
-    void selectBusinessView();
+    void setProjects( final Collection<Project> projects,
+                      final Project selectedProject );
 
-    void selectTechnicalView();
+    void projectSelected( final Project project );
+
+    void addRepository( final Repository repository );
+
+    void addProject( final Project project );
 
 }

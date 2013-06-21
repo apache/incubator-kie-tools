@@ -27,8 +27,8 @@
   <g:HTMLPanel>
     <div style="padding: 5px">
       <b:ButtonGroup toggle="radio">
-        <b:Button width="50%" text="{i18n.businessView}" ui:field="btnBusinessView"/>
-        <b:Button width="50%" text="{i18n.technicalView}" ui:field="btnTechnicalView" enabled="false"/>
+        <b:Button width="50%" text="{i18n.businessView}" ui:field="btnBusinessView" active="true"/>
+        <b:Button width="50%" text="{i18n.technicalView}" ui:field="btnTechnicalView"/>
       </b:ButtonGroup>
       <hr/>
       <eb:BusinessViewWidget/>

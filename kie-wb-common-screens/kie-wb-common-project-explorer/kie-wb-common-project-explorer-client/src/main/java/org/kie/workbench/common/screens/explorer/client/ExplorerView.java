@@ -21,7 +21,7 @@ import org.uberfire.client.mvp.UberView;
 /**
  * Explorer View definition
  */
-public interface ExplorerView extends UberView<ExplorerPresenter>,
+public interface ExplorerView extends UberView<ExplorerPresenterImpl>,
                                       HasBusyIndicator {
 
 }

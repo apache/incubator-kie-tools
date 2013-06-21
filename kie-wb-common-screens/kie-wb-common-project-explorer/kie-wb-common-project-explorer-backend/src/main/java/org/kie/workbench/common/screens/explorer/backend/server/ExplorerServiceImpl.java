@@ -114,6 +114,9 @@ public class ExplorerServiceImpl
     @Override
     public Collection<Repository> getRepositories( final Group group ) {
         final Collection<Repository> authorizedRepositories = new HashSet<Repository>();
+        if ( group == null ) {
+            return authorizedRepositories;
+        }
         for ( Repository repository : group.getRepositories() ) {
             if ( authorizationManager.authorize( repository,
                                                  identity ) ) {
@@ -126,6 +129,9 @@ public class ExplorerServiceImpl
     @Override
     public Collection<Project> getProjects( final Repository repository ) {
         final Collection<Project> authorizedProjects = new HashSet<Project>();
+        if ( repository == null ) {
+            return authorizedProjects;
+        }
         final Path repositoryRoot = repository.getRoot();
         final DirectoryStream<org.kie.commons.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( paths.convert( repositoryRoot ) );
         for ( org.kie.commons.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
@@ -142,7 +148,11 @@ public class ExplorerServiceImpl
 
     @Override
     public Collection<Package> getPackages( final Project project ) {
+        final Collection<Package> packages = new HashSet<Package>();
         final Set<String> packageNames = new HashSet<String>();
+        if ( project == null ) {
+            return packages;
+        }
         final Path projectRoot = project.getRootPath();
         final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
         for ( String src : sourcePaths ) {
@@ -151,7 +161,6 @@ public class ExplorerServiceImpl
                                                   nioPackageRootSrcPath ) );
         }
 
-        final Collection<Package> packages = new HashSet<Package>();
         final org.kie.commons.java.nio.file.Path nioPackagesRootPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
         for ( String packagePathSuffix : packageNames ) {
             final org.kie.commons.java.nio.file.Path nioPackagePath = nioPackagesRootPath.resolve( packagePathSuffix );
@@ -215,6 +224,9 @@ public class ExplorerServiceImpl
     @Override
     public Collection<Item> getItems( final Package pkg ) {
         final Collection<Item> items = new HashSet<Item>();
+        if ( pkg == null ) {
+            return items;
+        }
         items.addAll( getItems( pkg.getPackageMainSrcPath() ) );
         items.addAll( getItems( pkg.getPackageTestSrcPath() ) );
         items.addAll( getItems( pkg.getPackageMainResourcesPath() ) );

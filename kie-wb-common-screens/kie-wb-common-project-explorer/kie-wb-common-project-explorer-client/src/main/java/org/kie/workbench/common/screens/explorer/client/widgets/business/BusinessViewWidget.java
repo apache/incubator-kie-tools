@@ -49,6 +49,7 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -122,7 +123,9 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddGroups.setText( selectedGroup.getName() );
             ddGroups.getTriggerWidget().setEnabled( true );
             presenter.groupSelected( selectedGroup );
+
         } else {
+            setItems( Collections.EMPTY_LIST );
             ddGroups.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddGroups.getTriggerWidget().setEnabled( false );
             ddRepositories.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
@@ -131,14 +134,12 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            hideBusyIndicator();
         }
     }
 
-    private Group getSelectedGroup( final Set<Group> groups,
+    private Group getSelectedGroup( final Collection<Group> groups,
                                     final Group activeGroup ) {
-        if ( groups.isEmpty() ) {
-            return null;
-        }
         if ( activeGroup != null && groups.contains( activeGroup ) ) {
             return activeGroup;
         }
@@ -162,6 +163,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     public void setRepositories( final Collection<Repository> repositories,
                                  final Repository activeRepository ) {
         ddRepositories.clear();
+
         if ( !repositories.isEmpty() ) {
             sortedRepositories.clear();
             sortedRepositories.addAll( repositories );
@@ -175,21 +177,21 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddRepositories.setText( selectedRepository.getAlias() );
             ddRepositories.getTriggerWidget().setEnabled( true );
             presenter.repositorySelected( selectedRepository );
+
         } else {
+            setItems( Collections.EMPTY_LIST );
             ddRepositories.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddRepositories.getTriggerWidget().setEnabled( false );
             ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            hideBusyIndicator();
         }
     }
 
-    private Repository getSelectedRepository( final Set<Repository> repositories,
+    private Repository getSelectedRepository( final Collection<Repository> repositories,
                                               final Repository activeRepository ) {
-        if ( repositories.isEmpty() ) {
-            return null;
-        }
         if ( activeRepository != null && repositories.contains( activeRepository ) ) {
             return activeRepository;
         }
@@ -213,6 +215,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     public void setProjects( final Collection<Project> projects,
                              final Project activeProject ) {
         ddProjects.clear();
+
         if ( !projects.isEmpty() ) {
             sortedProjects.clear();
             sortedProjects.addAll( projects );
@@ -226,19 +229,19 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.setText( selectedProject.getTitle() );
             ddProjects.getTriggerWidget().setEnabled( true );
             presenter.projectSelected( selectedProject );
+
         } else {
+            setItems( Collections.EMPTY_LIST );
             ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            hideBusyIndicator();
         }
     }
 
-    private Project getSelectedProject( final Set<Project> projects,
+    private Project getSelectedProject( final Collection<Project> projects,
                                         final Project activeProject ) {
-        if ( projects.isEmpty() ) {
-            return null;
-        }
         if ( activeProject != null && projects.contains( activeProject ) ) {
             return activeProject;
         }
@@ -262,6 +265,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     public void setPackages( final Collection<Package> packages,
                              final Package activePackage ) {
         ddPackages.clear();
+
         if ( !packages.isEmpty() ) {
             sortedPackages.clear();
             sortedPackages.addAll( packages );
@@ -275,17 +279,17 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddPackages.setText( selectedPackage.getCaption() );
             ddPackages.getTriggerWidget().setEnabled( true );
             presenter.packageSelected( selectedPackage );
+
         } else {
+            setItems( Collections.EMPTY_LIST );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
+            hideBusyIndicator();
         }
     }
 
-    private Package getSelectedPackage( final Set<Package> packages,
+    private Package getSelectedPackage( final Collection<Package> packages,
                                         final Package activePackage ) {
-        if ( packages.isEmpty() ) {
-            return null;
-        }
         if ( activePackage != null && packages.contains( activePackage ) ) {
             return activePackage;
         }
@@ -384,6 +388,16 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         for ( Package pkg : sortedPackages ) {
             ddPackages.add( makePackageNavLink( pkg ) );
         }
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 
 }

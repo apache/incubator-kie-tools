@@ -38,4 +38,12 @@ public interface ProjectExplorerConstants
 
     public String technicalView();
 
+    public String groups();
+
+    public String repositories();
+
+    public String projects();
+
+    public String files();
+
 }

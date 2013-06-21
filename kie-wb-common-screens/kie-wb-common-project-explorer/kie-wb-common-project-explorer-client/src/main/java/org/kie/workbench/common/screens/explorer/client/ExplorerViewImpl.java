@@ -65,7 +65,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void init( final ExplorerPresenter presenter ) {
+    public void init( final ExplorerPresenterImpl presenter ) {
         this.presenter = presenter;
     }
 
@@ -81,14 +81,12 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     @UiHandler("btnBusinessView")
     public void onClickBusinessViewButton( final ClickEvent event ) {
-        businessView.setVisible( true );
-        technicalView.setVisible( false );
+        presenter.selectBusinessView();
     }
 
     @UiHandler("btnTechnicalView")
     public void onClickTechnicalViewButton( final ClickEvent event ) {
-        businessView.setVisible( false );
-        technicalView.setVisible( true );
+        presenter.selectTechnicalView();
     }
 
     @Override
