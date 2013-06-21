@@ -16,7 +16,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
@@ -35,6 +35,6 @@ public interface BusinessViewPresenter extends BaseViewPresenter {
 
     void packageSelected( final Package pkg );
 
-    void itemSelected( final Item item );
+    void itemSelected( final FolderItem folderItem );
 
 }

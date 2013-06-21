@@ -25,6 +25,7 @@ import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.NavList;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -35,6 +36,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
@@ -64,7 +67,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private final Set<Group> sortedGroups = new TreeSet<Group>( Sorters.GROUP_SORTER );
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
-    private final Set<String> sortedFilesAndFolders = new TreeSet<String>();
+    private final Set<FolderItem> sortedFolderListing = new TreeSet<FolderItem>( Sorters.FOLDER_LISTING_SORTER );
 
     private enum Context {
         GROUPS,
@@ -80,6 +83,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private Group activeGroup;
     private Repository activeRepository;
     private Project activeProject;
+    private FolderListing activeFolderListing;
 
     public TechnicalViewWidget() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -97,6 +101,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeGroup = null;
         this.activeRepository = null;
         this.activeProject = null;
+        this.activeFolderListing = null;
         context = Context.GROUPS;
         hideBusyIndicator();
         refresh();
@@ -110,6 +115,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeGroup = activeGroup;
         this.activeRepository = null;
         this.activeProject = null;
+        this.activeFolderListing = null;
         context = Context.REPOSITORIES;
         hideBusyIndicator();
         refresh();
@@ -121,23 +127,26 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
                              final Group activeGroup ) {
         sortedProjects.clear();
         sortedProjects.addAll( projects );
-        this.activeRepository = activeRepository;
         this.activeGroup = activeGroup;
+        this.activeRepository = activeRepository;
         this.activeProject = null;
+        this.activeFolderListing = null;
         context = Context.PROJECTS;
         hideBusyIndicator();
         refresh();
     }
 
     @Override
-    public void setFilesAndFolders( final Project activeProject,
+    public void setFilesAndFolders( final FolderListing activeFolderListing,
+                                    final Project activeProject,
                                     final Repository activeRepository,
                                     final Group activeGroup ) {
-        sortedFilesAndFolders.clear();
-        sortedFilesAndFolders.add( "Nothing to see here yet!" );
-        this.activeProject = activeProject;
-        this.activeRepository = activeRepository;
+        sortedFolderListing.clear();
+        sortedFolderListing.addAll( activeFolderListing.getFolderItems() );
         this.activeGroup = activeGroup;
+        this.activeRepository = activeRepository;
+        this.activeProject = activeProject;
+        this.activeFolderListing = activeFolderListing;
         context = Context.PATHS;
         hideBusyIndicator();
         refresh();
@@ -262,17 +271,55 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private void populatePathView() {
         items.clear();
         items.add( new NavHeader( ProjectExplorerConstants.INSTANCE.files() ) );
-        items.add( makeParentProjectNavLink() );
-        items.add( new Label( "-- TODO-- " ) );
+        items.add( makeParentFolderNavLink( activeFolderListing ) );
+        if ( !sortedFolderListing.isEmpty() ) {
+            for ( FolderItem folderItem : sortedFolderListing ) {
+                switch ( folderItem.getType() ) {
+                    case FOLDER:
+                        items.add( makeFolderNavLink( folderItem ) );
+                        break;
+                    case FILE:
+                        items.add( makeFileNavLink( folderItem ) );
+                        break;
+                }
+            }
+        } else {
+            items.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
+        }
     }
 
-    private IsWidget makeParentProjectNavLink() {
+    private IsWidget makeParentFolderNavLink( final FolderListing folder ) {
         final NavLink navLink = new NavLink( ".." );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.projectSelected( null );
+                presenter.parentFolderSelected( folder );
+            }
+        } );
+        return navLink;
+    }
+
+    private IsWidget makeFolderNavLink( final FolderItem folderItem ) {
+        final NavLink navLink = new NavLink( folderItem.getFileName() );
+        navLink.setIcon( IconType.FOLDER_CLOSE );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.folderSelected( folderItem.getPath() );
+            }
+        } );
+        return navLink;
+    }
+
+    private IsWidget makeFileNavLink( final FolderItem folderItem ) {
+        final NavLink navLink = new NavLink( folderItem.getFileName() );
+        navLink.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.fileSelected( folderItem.getPath() );
             }
         } );
         return navLink;
@@ -289,6 +336,9 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         if ( activeProject != null ) {
             breadcrumbs.add( makeProjectBreadCrumb( activeProject ) );
         }
+        if ( activeFolderListing != null ) {
+            breadcrumbs.add( makeFolderListingBreadCrumb( activeFolderListing ) );
+        }
     }
 
     private IsWidget makeGroupBreadCrumb( final Group activeGroup ) {
@@ -301,6 +351,10 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private IsWidget makeProjectBreadCrumb( final Project activeProject ) {
         return new NavLink( activeProject.getTitle() );
+    }
+
+    private IsWidget makeFolderListingBreadCrumb( final FolderListing actFolderListing ) {
+        return new NavLink( actFolderListing.getPath().toURI() );
     }
 
     @Override

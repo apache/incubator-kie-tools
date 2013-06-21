@@ -16,9 +16,11 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Technical View Presenter definition
@@ -30,5 +32,11 @@ public interface TechnicalViewPresenter extends BaseViewPresenter {
     void repositorySelected( final Repository repository );
 
     void projectSelected( final Project project );
+
+    void parentFolderSelected( final FolderListing folder );
+
+    void folderSelected( final Path path );
+
+    void fileSelected( final Path path );
 
 }

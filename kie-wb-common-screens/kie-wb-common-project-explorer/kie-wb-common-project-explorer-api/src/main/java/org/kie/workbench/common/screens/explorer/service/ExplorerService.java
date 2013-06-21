@@ -19,7 +19,8 @@ package org.kie.workbench.common.screens.explorer.service;
 import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
@@ -40,9 +41,11 @@ public interface ExplorerService {
 
     Collection<Package> getPackages( final Project project );
 
-    Collection<Item> getItems( final Package pkg );
+    Collection<FolderItem> getItems( final Package pkg );
 
-    Collection<Item> handleResourceEvent( final Package pkg,
-                                          final Path resource );
+    FolderListing getFolderListing( final Path path );
+
+    Collection<FolderItem> handleResourceEvent( final Package pkg,
+                                                final Path resource );
 
 }

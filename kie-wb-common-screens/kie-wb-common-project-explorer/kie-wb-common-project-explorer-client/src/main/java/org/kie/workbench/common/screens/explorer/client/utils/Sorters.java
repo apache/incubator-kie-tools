@@ -17,11 +17,12 @@ package org.kie.workbench.common.screens.explorer.client.utils;
 
 import java.util.Comparator;
 
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -29,6 +30,9 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  */
 public class Sorters {
 
+    /**
+     * A comparator to sort Groups alphabetically by group name.
+     */
     public static Comparator<Group> GROUP_SORTER = new Comparator<Group>() {
         @Override
         public int compare( final Group o1,
@@ -37,6 +41,9 @@ public class Sorters {
         }
     };
 
+    /**
+     * A comparator to sort Repositories alphabetically by repository name.
+     */
     public static Comparator<Repository> REPOSITORY_SORTER = new Comparator<Repository>() {
         @Override
         public int compare( final Repository o1,
@@ -45,6 +52,9 @@ public class Sorters {
         }
     };
 
+    /**
+     * A comparator to sort Projects alphabetically by project name.
+     */
     public static Comparator<Project> PROJECT_SORTER = new Comparator<Project>() {
         @Override
         public int compare( final Project o1,
@@ -53,6 +63,9 @@ public class Sorters {
         }
     };
 
+    /**
+     * A comparator to sort Packages alphabetically by package name.
+     */
     public static Comparator<Package> PACKAGE_SORTER = new Comparator<Package>() {
         @Override
         public int compare( final Package o1,
@@ -61,14 +74,20 @@ public class Sorters {
         }
     };
 
-    public static Comparator<Item> ITEM_SORTER = new Comparator<Item>() {
+    /**
+     * A comparator to sort FolderItems alphabetically by filename.
+     */
+    public static Comparator<FolderItem> ITEM_SORTER = new Comparator<FolderItem>() {
         @Override
-        public int compare( final Item o1,
-                            final Item o2 ) {
+        public int compare( final FolderItem o1,
+                            final FolderItem o2 ) {
             return o1.getFileName().compareTo( o2.getFileName() );
         }
     };
 
+    /**
+     * A comparator to sort ClientResourceTypes alphabetically by description.
+     */
     public static Comparator<ClientResourceType> RESOURCE_TYPE_GROUP_SORTER = new Comparator<ClientResourceType>() {
         @Override
         public int compare( final ClientResourceType o1,
@@ -86,6 +105,33 @@ public class Sorters {
             }
             return o1description.compareTo( o2description );
         }
+    };
+
+    /**
+     * A comparator to sort FolderItems alphabetically by folder and then files.
+     */
+    public static Comparator<FolderItem> FOLDER_LISTING_SORTER = new Comparator<FolderItem>() {
+
+        @Override
+        public int compare( final FolderItem o1,
+                            final FolderItem o2 ) {
+            final int comparison = o1.getType().compareTo( o2.getType() );
+            if ( comparison == 0 ) {
+                return compareTo( o1,
+                                  o2 );
+            }
+            return comparison;
+        }
+
+        public int compareTo( final FolderItem o1,
+                              final FolderItem o2 ) {
+            return toLowerCase( o1.getPath() ).compareTo( toLowerCase( o2.getPath() ) );
+        }
+
+        private String toLowerCase( final Path path ) {
+            return path == null ? "" : path.toURI().toLowerCase();
+        }
+
     };
 
 }

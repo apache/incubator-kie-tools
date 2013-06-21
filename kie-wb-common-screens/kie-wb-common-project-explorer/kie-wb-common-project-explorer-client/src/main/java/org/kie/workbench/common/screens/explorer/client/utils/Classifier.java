@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -71,28 +71,28 @@ public class Classifier {
                           } );
     }
 
-    public Map<ClientResourceType, Collection<Item>> group( final Collection<Item> items ) {
-        final Map<ClientResourceType, Collection<Item>> groups = new HashMap<ClientResourceType, Collection<Item>>();
-        for ( Item item : items ) {
-            final ClientResourceType resourceType = ( findResourceType( item ) );
-            Collection<Item> itemsForGroup = groups.get( resourceType );
+    public Map<ClientResourceType, Collection<FolderItem>> group( final Collection<FolderItem> folderItems ) {
+        final Map<ClientResourceType, Collection<FolderItem>> groups = new HashMap<ClientResourceType, Collection<FolderItem>>();
+        for ( FolderItem folderItem : folderItems ) {
+            final ClientResourceType resourceType = ( findResourceType( folderItem ) );
+            Collection<FolderItem> itemsForGroup = groups.get( resourceType );
             if ( itemsForGroup == null ) {
-                itemsForGroup = new ArrayList<Item>();
+                itemsForGroup = new ArrayList<FolderItem>();
                 groups.put( resourceType,
                             itemsForGroup );
             }
-            itemsForGroup.add( item );
+            itemsForGroup.add( folderItem );
         }
         return groups;
     }
 
-    private ClientResourceType findResourceType( final Item item ) {
+    private ClientResourceType findResourceType( final FolderItem folderItem ) {
         for ( ClientResourceType resourceType : resourceTypes ) {
-            if ( resourceType.accept( item.getPath() ) ) {
+            if ( resourceType.accept( folderItem.getPath() ) ) {
                 return resourceType;
             }
         }
-        throw new IllegalArgumentException( "Unable to find ResourceType for " + item.getPath().toURI() + ". Is AnyResourceType on the classpath?" );
+        throw new IllegalArgumentException( "Unable to find ResourceType for " + folderItem.getPath().toURI() + ". Is AnyResourceType on the classpath?" );
     }
 
 }

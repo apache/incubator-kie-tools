@@ -25,7 +25,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
@@ -152,10 +152,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( group == null || !group.equals( getActiveGroup() ) ) {
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
         }
-        groupChangeHandler( group );
-    }
-
-    private void groupChangeHandler( final Group group ) {
         //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
@@ -175,10 +171,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( repository == null || !repository.equals( getActiveRepository() ) ) {
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
         }
-        repositoryChangeHandler( repository );
-    }
-
-    private void repositoryChangeHandler( final Repository repository ) {
         //Show busy popup. Projects cascade through Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Project>>() {
@@ -198,10 +190,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( project == null || !project.equals( getActiveProject() ) ) {
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
         }
-        projectChangeHandler( project );
-    }
-
-    private void projectChangeHandler( final Project project ) {
         //Check cache
         if ( project != null ) {
             final Collection<Package> packages = packageCache.getEntry( project );
@@ -235,15 +223,11 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
             packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
         }
-        packageChangeHandler( pkg );
-    }
-
-    private void packageChangeHandler( final Package pkg ) {
         //Check cache
         if ( pkg != null ) {
-            final Collection<Item> items = itemCache.getEntry( pkg );
-            if ( items != null ) {
-                view.setItems( items );
+            final Collection<FolderItem> folderItems = itemCache.getEntry( pkg );
+            if ( folderItems != null ) {
+                view.setItems( folderItems );
                 view.hideBusyIndicator();
                 return;
             }
@@ -251,14 +235,14 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
         //Show busy popup. Once Items are loaded it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Item>>() {
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final Collection<Item> items ) {
+            public void callback( final Collection<FolderItem> folderItems ) {
                 if ( pkg != null ) {
                     itemCache.setEntry( pkg,
-                                        items );
+                                        folderItems );
                 }
-                view.setItems( items );
+                view.setItems( folderItems );
                 view.hideBusyIndicator();
 
             }
@@ -266,13 +250,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     }
 
     @Override
-    public void itemSelected( final Item item ) {
-        final Path path = item.getPath();
+    public void itemSelected( final FolderItem folderItem ) {
+        final Path path = folderItem.getPath();
         if ( path == null ) {
             return;
         }
         pathChangeEvent.fire( new PathChangeEvent( path ) );
-        placeManager.goTo( item.getPath() );
+        placeManager.goTo( folderItem.getPath() );
     }
 
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
@@ -374,11 +358,11 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( !isActive ) {
             return;
         }
-        explorerService.call( new RemoteCallback<Collection<Item>>() {
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final Collection<Item> items ) {
-                if ( items != null ) {
-                    view.setItems( items );
+            public void callback( final Collection<FolderItem> folderItems ) {
+                if ( folderItems != null ) {
+                    view.setItems( folderItems );
                 }
             }
         } ).handleResourceEvent( activePackage,

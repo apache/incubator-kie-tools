@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.uberfire.backend.vfs.Path;
@@ -41,13 +41,13 @@ public class LRUItemCache {
 
     private static final int MAX_ENTRIES = 10;
 
-    private Map<Package, Collection<Item>> cache;
+    private Map<Package, Collection<FolderItem>> cache;
 
     @Inject
     private Caller<ProjectService> projectService;
 
     public LRUItemCache() {
-        cache = new LinkedHashMap<Package, Collection<Item>>( MAX_ENTRIES + 1,
+        cache = new LinkedHashMap<Package, Collection<FolderItem>>( MAX_ENTRIES + 1,
                                                               0.75f,
                                                               true ) {
             public boolean removeEldestEntry( Map.Entry eldest ) {
@@ -101,20 +101,20 @@ public class LRUItemCache {
         } ).resolvePackage( resource );
     }
 
-    public Collection<Item> getEntry( final Package pkg ) {
+    public Collection<FolderItem> getEntry( final Package pkg ) {
         PortablePreconditions.checkNotNull( "pkg",
                                             pkg );
         return cache.get( pkg );
     }
 
     public void setEntry( final Package pkg,
-                          final Collection<Item> items ) {
+                          final Collection<FolderItem> folderItems ) {
         PortablePreconditions.checkNotNull( "pkg",
                                             pkg );
-        PortablePreconditions.checkNotNull( "items",
-                                            items );
+        PortablePreconditions.checkNotNull( "folderItems",
+                                            folderItems );
         cache.put( pkg,
-                   items );
+                   folderItems );
     }
 
     public void invalidateCache( final Package pkg ) {

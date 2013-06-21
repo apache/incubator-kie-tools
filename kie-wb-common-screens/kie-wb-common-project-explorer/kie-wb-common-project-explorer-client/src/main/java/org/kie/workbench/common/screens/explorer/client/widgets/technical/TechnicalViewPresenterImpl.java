@@ -24,7 +24,8 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
@@ -135,10 +136,10 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         final Package activePackage = getActivePackage();
 
         if ( activePackage != null ) {
-            loadFilesAndFolders( activeProject );
+            loadFilesAndFolders( activePackage.getProjectRootPath() );
 
         } else if ( activeProject != null ) {
-            loadFilesAndFolders( activeProject );
+            loadFilesAndFolders( activeProject.getRootPath() );
 
         } else if ( activeRepository != null ) {
             loadProjects( activeRepository );
@@ -188,19 +189,20 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( activeRepository );
     }
 
-    //TODO {manstis} Load files and folders
-    private void loadFilesAndFolders( final Project activeProject ) {
+    private void loadFilesAndFolders( final Path path ) {
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Package>>() {
+        explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
-            public void callback( final Collection<Package> packages ) {
+            public void callback( final FolderListing folderListing ) {
+                final Project activeProject = getActiveProject();
                 final Repository activeRepository = getActiveRepository();
                 final Group activeGroup = getActiveGroup();
-                view.setFilesAndFolders( activeProject,
+                view.setFilesAndFolders( folderListing,
+                                         activeProject,
                                          activeRepository,
                                          activeGroup );
             }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( activeProject );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getFolderListing( path );
     }
 
     @Override
@@ -208,10 +210,6 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( group == null || !group.equals( getActiveGroup() ) ) {
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
         }
-        groupChangeHandler( group );
-    }
-
-    private void groupChangeHandler( final Group group ) {
         if ( group == null ) {
             loadGroups();
         } else {
@@ -224,10 +222,6 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( repository == null || !repository.equals( getActiveRepository() ) ) {
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
         }
-        repositoryChangeHandler( repository );
-    }
-
-    private void repositoryChangeHandler( final Repository repository ) {
         if ( repository == null ) {
             loadRepositories( getActiveGroup() );
         } else {
@@ -240,15 +234,43 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( project == null || !project.equals( getActiveProject() ) ) {
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
         }
-        projectChangeHandler( project );
-    }
-
-    private void projectChangeHandler( final Project project ) {
         if ( project == null ) {
             loadProjects( getActiveRepository() );
         } else {
-            loadFilesAndFolders( project );
+            loadFilesAndFolders( project.getRootPath() );
         }
+    }
+
+    @Override
+    public void parentFolderSelected( final FolderListing folder ) {
+        //TODO {manstis} If path resolves to a Package raise a PackageChangeEvent
+//        final Package pkg = null;
+//        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+//            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+//        }
+        pathChangeEvent.fire( new PathChangeEvent( folder.getParentPath() ) );
+        if ( folder.getPath().equals( getActiveProject().getRootPath() ) ) {
+            loadProjects( getActiveRepository() );
+        } else {
+            loadFilesAndFolders( folder.getParentPath() );
+        }
+    }
+
+    @Override
+    public void folderSelected( final Path path ) {
+        //TODO {manstis} If path resolves to a Package raise a PackageChangeEvent
+//        final Package pkg = null;
+//        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+//            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+//        }
+        pathChangeEvent.fire( new PathChangeEvent( path ) );
+        loadFilesAndFolders( path );
+    }
+
+    @Override
+    public void fileSelected( final Path path ) {
+        pathChangeEvent.fire( new PathChangeEvent( path ) );
+        placeManager.goTo( path );
     }
 
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
@@ -348,11 +370,11 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( !isActive ) {
             return;
         }
-        explorerService.call( new RemoteCallback<Collection<Item>>() {
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final Collection<Item> items ) {
-                if ( items != null ) {
-                    //TODO {manstis} view.setItems( items );
+            public void callback( final Collection<FolderItem> folderItems ) {
+                if ( folderItems != null ) {
+                    //TODO {manstis} view.setItems( folderItems );
                 }
             }
         } ).handleResourceEvent( activePackage,

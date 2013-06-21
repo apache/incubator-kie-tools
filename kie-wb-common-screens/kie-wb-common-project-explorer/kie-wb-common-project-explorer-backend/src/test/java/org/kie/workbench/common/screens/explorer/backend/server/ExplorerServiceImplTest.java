@@ -84,7 +84,7 @@ public class ExplorerServiceImplTest {
 //
 //        //But there should be a single Project called 'ProjectStructureValid'
 //        boolean fail = true;
-//        for ( final Item item : result.getItems() ) {
+//        for ( final FolderItem item : result.getItems() ) {
 //            if ( item instanceof Project ) {
 //                assertEquals( "ExplorerBackendTestProjectStructureValid",
 //                              item.getCaption() );
@@ -160,7 +160,7 @@ public class ExplorerServiceImplTest {
 //        assertNotNull( result );
 //
 //        //Check items count
-//        final List<Item> items = result.getItems();
+//        final List<FolderItem> items = result.getItems();
 //        assertEquals( 3,
 //                      items.size() );
 //
@@ -222,7 +222,7 @@ public class ExplorerServiceImplTest {
 //        assertNotNull( result );
 //
 //        //Check items count
-//        final List<Item> items = result.getItems();
+//        final List<FolderItem> items = result.getItems();
 //        assertEquals( 3,
 //                      items.size() );
 //
@@ -271,9 +271,9 @@ public class ExplorerServiceImplTest {
 //    }
 //
 //    private void assertContainsPathUri( String pathUri,
-//                                        List<Item> items ) {
+//                                        List<FolderItem> items ) {
 //        boolean found = false;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( pathUri.equals( item.getPath().toURI() ) ) {
 //                found = true;
 //            }
@@ -282,9 +282,9 @@ public class ExplorerServiceImplTest {
 //    }
 //
 //    private void assertContainsPath( Path path,
-//                                     List<Item> items ) {
+//                                     List<FolderItem> items ) {
 //        boolean found = false;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( path.equals( item.getPath() ) ) {
 //                found = true;
 //            }
@@ -293,9 +293,9 @@ public class ExplorerServiceImplTest {
 //    }
 //
 //    private void assertContainsCaption( String caption,
-//                                        List<Item> items ) {
+//                                        List<FolderItem> items ) {
 //        boolean found = false;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( caption.equals( item.getCaption() ) ) {
 //                found = true;
 //            }
@@ -303,10 +303,10 @@ public class ExplorerServiceImplTest {
 //        assertTrue( "Find caption", found );
 //    }
 //
-//    private void assertContainsParentFolderItem( List<Item> items,
+//    private void assertContainsParentFolderItem( List<FolderItem> items,
 //                                                 int amount ) {
 //        int count = 0;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( item instanceof ParentFolderItem ) {
 //                count++;
 //            }
@@ -314,10 +314,10 @@ public class ExplorerServiceImplTest {
 //        assertEquals( amount, count );
 //    }
 //
-//    private void assertContainsParentPackageItem( List<Item> items,
+//    private void assertContainsParentPackageItem( List<FolderItem> items,
 //                                                  int amount ) {
 //        int count = 0;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( item instanceof ParentPackageItem ) {
 //                count++;
 //            }
@@ -325,10 +325,10 @@ public class ExplorerServiceImplTest {
 //        assertEquals( amount, count );
 //    }
 //
-//    private void assertContainsPackageItem( List<Item> items,
+//    private void assertContainsPackageItem( List<FolderItem> items,
 //                                            int amount ) {
 //        int count = 0;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( item instanceof org.kie.workbench.common.screens.explorer.model.Package ) {
 //                count++;
 //            }
@@ -336,10 +336,10 @@ public class ExplorerServiceImplTest {
 //        assertEquals( amount, count );
 //    }
 //
-//    private void assertContainsFolderItem( List<Item> items,
+//    private void assertContainsFolderItem( List<FolderItem> items,
 //                                           int amount ) {
 //        int count = 0;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( item instanceof FolderItem ) {
 //                count++;
 //            }
@@ -347,10 +347,10 @@ public class ExplorerServiceImplTest {
 //        assertEquals( amount, count );
 //    }
 //
-//    private void assertContainsFileItem( List<Item> items,
+//    private void assertContainsFileItem( List<FolderItem> items,
 //                                         int amount ) {
 //        int count = 0;
-//        for ( Item item : items ) {
+//        for ( FolderItem item : items ) {
 //            if ( item instanceof FileItem ) {
 //                count++;
 //            }
@@ -376,7 +376,7 @@ public class ExplorerServiceImplTest {
 //        assertNotNull( result );
 //
 //        //Check items count
-//        final List<Item> items = result.getItems();
+//        final List<FolderItem> items = result.getItems();
 //        assertEquals( 2,
 //                      items.size() );
 //

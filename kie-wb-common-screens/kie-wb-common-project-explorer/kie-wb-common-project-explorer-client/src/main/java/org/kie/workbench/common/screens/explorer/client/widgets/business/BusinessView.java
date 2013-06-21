@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasVisibility;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
@@ -45,7 +45,7 @@ public interface BusinessView extends HasBusyIndicator,
     void setPackages( final Collection<Package> packages,
                       final Package activePackage );
 
-    void setItems( final Collection<Item> items );
+    void setItems( final Collection<FolderItem> folderItems );
 
     void addRepository( final Repository repository );
 

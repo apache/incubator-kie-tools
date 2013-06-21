@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.screens.explorer.backend.server;
 
 import java.util.ArrayList;
@@ -30,7 +29,9 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
@@ -222,20 +223,20 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<Item> getItems( final Package pkg ) {
-        final Collection<Item> items = new HashSet<Item>();
+    public Collection<FolderItem> getItems( final Package pkg ) {
+        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
         if ( pkg == null ) {
-            return items;
+            return folderItems;
         }
-        items.addAll( getItems( pkg.getPackageMainSrcPath() ) );
-        items.addAll( getItems( pkg.getPackageTestSrcPath() ) );
-        items.addAll( getItems( pkg.getPackageMainResourcesPath() ) );
-        items.addAll( getItems( pkg.getPackageTestResourcesPath() ) );
-        return items;
+        folderItems.addAll( getItems( pkg.getPackageMainSrcPath() ) );
+        folderItems.addAll( getItems( pkg.getPackageTestSrcPath() ) );
+        folderItems.addAll( getItems( pkg.getPackageMainResourcesPath() ) );
+        folderItems.addAll( getItems( pkg.getPackageTestResourcesPath() ) );
+        return folderItems;
     }
 
-    private Collection<Item> getItems( final Path packagePath ) {
-        final Collection<Item> items = new HashSet<Item>();
+    private Collection<FolderItem> getItems( final Path packagePath ) {
+        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
         final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
             final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
@@ -244,13 +245,14 @@ public class ExplorerServiceImpl
                 if ( Files.isRegularFile( nioPath ) ) {
                     final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
                     final String fileName = getBaseFileName( path.getFileName() );
-                    final Item item = new Item( path,
-                                                fileName );
-                    items.add( item );
+                    final FolderItem folderItem = new FolderItem( path,
+                                                                  fileName,
+                                                                  FolderItemType.FILE );
+                    folderItems.add( folderItem );
                 }
             }
         }
-        return items;
+        return folderItems;
     }
 
     private String getBaseFileName( final String fileName ) {
@@ -261,8 +263,38 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<Item> handleResourceEvent( final Package pkg,
-                                                 final Path resource ) {
+    public FolderListing getFolderListing( final Path path ) {
+        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
+        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final Path parentPath = paths.convert( nioPath.getParent() );
+        if ( Files.exists( nioPath ) ) {
+            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath );
+            for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
+                if ( Files.isRegularFile( np ) ) {
+                    final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                    final String fileName = getBaseFileName( p.getFileName() );
+                    final FolderItem folderItem = new FolderItem( p,
+                                                                  fileName,
+                                                                  FolderItemType.FILE );
+                    folderItems.add( folderItem );
+                } else if ( Files.isDirectory( np ) ) {
+                    final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                    final String fileName = getBaseFileName( p.getFileName() );
+                    final FolderItem folderItem = new FolderItem( p,
+                                                                  fileName,
+                                                                  FolderItemType.FOLDER );
+                    folderItems.add( folderItem );
+                }
+            }
+        }
+        return new FolderListing( path,
+                                  parentPath,
+                                  folderItems );
+    }
+
+    @Override
+    public Collection<FolderItem> handleResourceEvent( final Package pkg,
+                                                       final Path resource ) {
         PortablePreconditions.checkNotNull( "pkg",
                                             pkg );
         PortablePreconditions.checkNotNull( "resource",

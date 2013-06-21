@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
-import org.kie.workbench.common.screens.explorer.model.Item;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
@@ -310,22 +310,22 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     }
 
     @Override
-    public void setItems( final Collection<Item> items ) {
+    public void setItems( final Collection<FolderItem> folderItems ) {
         itemsContainer.clear();
-        if ( !items.isEmpty() ) {
-            final List<Item> sortedItems = new ArrayList<Item>( items );
-            Collections.sort( sortedItems,
+        if ( !folderItems.isEmpty() ) {
+            final List<FolderItem> sortedFolderItems = new ArrayList<FolderItem>( folderItems );
+            Collections.sort( sortedFolderItems,
                               Sorters.ITEM_SORTER );
-            final Map<ClientResourceType, Collection<Item>> resourceTypeGroups = classifier.group( sortedItems );
-            final TreeMap<ClientResourceType, Collection<Item>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<Item>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
+            final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( sortedFolderItems );
+            final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
-            for ( Map.Entry<ClientResourceType, Collection<Item>> e : sortedResourceTypeGroups.entrySet() ) {
+            for ( Map.Entry<ClientResourceType, Collection<FolderItem>> e : sortedResourceTypeGroups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
                 group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
                 final NavList itemsNavList = new NavList();
                 group.add( itemsNavList );
-                for ( Item item : e.getValue() ) {
-                    itemsNavList.add( makeItemNavLink( item ) );
+                for ( FolderItem folderItem : e.getValue() ) {
+                    itemsNavList.add( makeItemNavLink( folderItem ) );
                 }
                 itemsContainer.add( group );
             }
@@ -351,13 +351,13 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         return description;
     }
 
-    private IsWidget makeItemNavLink( final Item item ) {
-        final NavLink navLink = new NavLink( item.getFileName() );
+    private IsWidget makeItemNavLink( final FolderItem folderItem ) {
+        final NavLink navLink = new NavLink( folderItem.getFileName() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.itemSelected( item );
+                presenter.itemSelected( folderItem );
             }
         } );
         return navLink;
