@@ -15,13 +15,6 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
-import java.util.Collection;
-
-import org.kie.workbench.common.screens.explorer.client.ExplorerPresenter;
-import org.kie.workbench.common.services.shared.context.Project;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
-
 /**
  * The idea is that Project Explorer swaps the "View" it is communicating with depending on whether the Business or Technical views
  * are selected. The Project Explorer's presenter performs the same actions no matter what "View" is selected by calling methods
@@ -32,26 +25,5 @@ public interface BaseViewPresenter {
     void activate();
 
     void deactivate();
-
-    void init( final ExplorerPresenter presenter );
-
-    void setGroups( final Collection<Group> groups,
-                    final Group selectedGroup );
-
-    void groupSelected( final Group group );
-
-    void setRepositories( final Collection<Repository> repositories,
-                          final Repository selectedRepository );
-
-    void repositorySelected( final Repository repository );
-
-    void setProjects( final Collection<Project> projects,
-                      final Project selectedProject );
-
-    void projectSelected( final Project project );
-
-    void addRepository( final Repository repository );
-
-    void addProject( final Project project );
 
 }

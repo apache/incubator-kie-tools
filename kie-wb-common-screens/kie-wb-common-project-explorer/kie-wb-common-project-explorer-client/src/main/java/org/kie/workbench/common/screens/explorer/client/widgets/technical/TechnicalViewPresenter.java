@@ -16,10 +16,19 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
+import org.kie.workbench.common.services.shared.context.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 
 /**
  * Technical View Presenter definition
  */
 public interface TechnicalViewPresenter extends BaseViewPresenter {
+
+    void groupSelected( final Group group );
+
+    void repositorySelected( final Repository repository );
+
+    void projectSelected( final Project project );
 
 }

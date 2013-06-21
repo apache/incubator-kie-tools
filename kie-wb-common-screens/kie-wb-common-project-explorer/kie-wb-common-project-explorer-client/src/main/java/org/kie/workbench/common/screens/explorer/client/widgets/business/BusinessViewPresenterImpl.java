@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.screens.explorer.client.ExplorerPresenter;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
 import org.kie.workbench.common.screens.explorer.model.Item;
@@ -33,14 +32,20 @@ import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
 import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
 import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.services.shared.context.ProjectAddedEvent;
 import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -53,10 +58,22 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Inject
+    private Identity identity;
+
+    @Inject
+    private RuntimeAuthorizationManager authorizationManager;
+
+    @Inject
     private Caller<ExplorerService> explorerService;
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<GroupChangeEvent> groupChangeEvent;
+
+    @Inject
+    private Event<RepositoryChangeEvent> repositoryChangeEvent;
 
     @Inject
     private Event<ProjectChangeEvent> projectChangeEvent;
@@ -81,7 +98,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     private boolean isActive = false;
 
-    private ExplorerPresenter explorerPresenter;
+    private Group getActiveGroup() {
+        return context.getActiveGroup();
+    }
+
+    private Repository getActiveRepository() {
+        return context.getActiveRepository();
+    }
 
     private Project getActiveProject() {
         return context.getActiveProject();
@@ -100,6 +123,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     public void activate() {
         this.isActive = true;
         this.view.setVisible( true );
+        initialiseViewForActiveContext();
     }
 
     @Override
@@ -108,50 +132,83 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         this.view.setVisible( false );
     }
 
-    @Override
-    public void init( final ExplorerPresenter explorerPresenter ) {
-        this.explorerPresenter = explorerPresenter;
-    }
+    private void initialiseViewForActiveContext() {
+        //Show busy popup. Groups cascade through Repositories, Projects, Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        explorerService.call( new RemoteCallback<Collection<Group>>() {
+            @Override
+            public void callback( final Collection<Group> groups ) {
+                final Group activeGroup = getActiveGroup();
+                view.setGroups( groups,
+                                activeGroup );
 
-    @Override
-    public void setGroups( final Collection<Group> groups,
-                           final Group selectedGroup ) {
-        view.setGroups( groups,
-                        selectedGroup );
+            }
+
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
     }
 
     @Override
     public void groupSelected( final Group group ) {
-        explorerPresenter.groupSelected( group );
+        if ( group == null || !group.equals( getActiveGroup() ) ) {
+            groupChangeEvent.fire( new GroupChangeEvent( group ) );
+        } else {
+            groupChangeHandler( group );
+        }
     }
 
-    @Override
-    public void setRepositories( final Collection<Repository> repositories,
-                                 final Repository selectedRepository ) {
-        view.setRepositories( repositories,
-                              selectedRepository );
+    public void groupChangeHandler( final @Observes GroupChangeEvent event ) {
+        if ( !isActive ) {
+            return;
+        }
+        final Group group = event.getGroup();
+        groupChangeHandler( group );
+    }
+
+    private void groupChangeHandler( final Group group ) {
+        //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        explorerService.call( new RemoteCallback<Collection<Repository>>() {
+            @Override
+            public void callback( final Collection<Repository> repositories ) {
+                final Repository activeRepository = getActiveRepository();
+                view.setRepositories( repositories,
+                                      activeRepository );
+
+            }
+
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
     }
 
     @Override
     public void repositorySelected( final Repository repository ) {
-        explorerPresenter.repositorySelected( repository );
+        if ( repository == null || !repository.equals( getActiveRepository() ) ) {
+            repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
+        } else {
+            repositoryChangeHandler( repository );
+        }
     }
 
-    @Override
-    public void setProjects( final Collection<Project> projects,
-                             final Project selectedProject ) {
-        view.setProjects( projects,
-                          selectedProject );
+    public void repositoryChangeHandler( final @Observes RepositoryChangeEvent event ) {
+        if ( !isActive ) {
+            return;
+        }
+        final Repository repository = event.getRepository();
+        repositoryChangeHandler( repository );
     }
 
-    @Override
-    public void addRepository( final Repository repository ) {
-        view.addRepository( repository );
-    }
+    private void repositoryChangeHandler( final Repository repository ) {
+        //Show busy popup. Projects cascade through Packages and Items where it is closed
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        explorerService.call( new RemoteCallback<Collection<Project>>() {
+            @Override
+            public void callback( final Collection<Project> projects ) {
+                final Project activeProject = getActiveProject();
+                view.setProjects( projects,
+                                  activeProject );
 
-    @Override
-    public void addProject( final Project project ) {
-        view.addProject( project );
+            }
+
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
     }
 
     @Override
@@ -254,16 +311,63 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         placeManager.goTo( item.getPath() );
     }
 
+    public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
+        //Repositories are not cached so no need to do anything if this presenter is not active
+        if ( !isActive ) {
+            return;
+        }
+        final Repository repository = event.getNewRepository();
+        if ( repository == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( repository,
+                                             identity ) ) {
+            view.addRepository( repository );
+        }
+    }
+
+    public void onProjectAdded( @Observes final ProjectAddedEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( !isActive ) {
+            return;
+        }
+        final Project project = event.getProject();
+        if ( project == null ) {
+            return;
+        }
+        final Repository activeRepository = getActiveRepository();
+        if ( activeRepository == null ) {
+            return;
+        }
+        final String projectRoot = project.getRootPath().toURI();
+        final String activeRepositoryRoot = activeRepository.getRoot().toURI();
+        if ( !projectRoot.startsWith( activeRepositoryRoot ) ) {
+            return;
+        }
+        if ( authorizationManager.authorize( project,
+                                             identity ) ) {
+            view.addProject( project );
+        }
+    }
+
     public void onPackageAdded( @Observes final PackageAddedEvent event ) {
+        //Invalidate the Package cache even if this presenter is not active
         final Package pkg = event.getPackage();
         if ( pkg == null ) {
             return;
         }
-        if ( getActiveProject() == null ) {
+        final Project activeProject = getActiveProject();
+        if ( activeProject == null ) {
+            return;
+        }
+        packageCache.invalidateCache( activeProject );
+
+        //Don't update the view if this presenter is not active
+        if ( !isActive ) {
             return;
         }
         final String packageProjectRoot = pkg.getProjectRootPath().toURI();
-        final String activeProjectRoot = getActiveProject().getRootPath().toURI();
+        final String activeProjectRoot = activeProject.getRootPath().toURI();
         if ( !packageProjectRoot.startsWith( activeProjectRoot ) ) {
             return;
         }
@@ -295,7 +399,15 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     }
 
     private void handleResourceChangeEvent( final Path resource ) {
-        if ( resource == null || getActivePackage() == null ) {
+        //Invalidate the Items cache even if this presenter is not active
+        final Package activePackage = getActivePackage();
+        if ( resource == null || activePackage == null ) {
+            return;
+        }
+        itemCache.invalidateCache( activePackage );
+
+        //Don't update the view if this presenter is not active
+        if ( !isActive ) {
             return;
         }
         explorerService.call( new RemoteCallback<Collection<Item>>() {
@@ -305,29 +417,34 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                     view.setItems( items );
                 }
             }
-        } ).handleResourceEvent( getActivePackage(),
+        } ).handleResourceEvent( activePackage,
                                  resource );
     }
 
     // Refresh when a batch Resource change has occurred. For simplicity simply re-load all items
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        if ( getActivePackage() == null ) {
+        //Invalidate the Packages and Items cache even if this presenter is not active
+        final Project activeProject = getActiveProject();
+        final Package activePackage = getActivePackage();
+        if ( activePackage == null ) {
             return;
         }
+        itemCache.invalidateCache( activePackage );
+        packageCache.invalidateCache( activeProject );
 
-        itemCache.invalidateCache( getActivePackage() );
-        packageCache.invalidateCache( getActiveProject() );
+        //Don't update the view if this presenter is not active
+        if ( !isActive ) {
+            return;
+        }
         explorerService.call( new RemoteCallback<Collection<Package>>() {
             @Override
             public void callback( final Collection<Package> packages ) {
-                final Project activeProject = getActiveProject();
-                final Package activePackage = getActivePackage();
                 packageCache.setEntry( activeProject,
                                        packages );
                 view.setPackages( packages,
                                   activePackage );
             }
-        } ).getPackages( getActiveProject() );
+        } ).getPackages( activeProject );
     }
 
 }

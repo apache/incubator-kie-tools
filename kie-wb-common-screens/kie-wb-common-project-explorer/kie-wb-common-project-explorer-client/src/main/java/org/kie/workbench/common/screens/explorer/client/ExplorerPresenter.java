@@ -15,19 +15,12 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.repositories.Repository;
-
 /**
  * The idea is that Project Explorer swaps the "View" it is communicating with depending on whether the Business or Technical views
  * are selected. The Project Explorer's presenter performs the same actions no matter what "View" is selected by calling methods
  * defined on this interface. BusinessView + TechnicalView become redundant. Both implement this interface.
  */
 public interface ExplorerPresenter {
-
-    void groupSelected( final Group group );
-
-    void repositorySelected( final Repository repository );
 
     void selectBusinessView();
 

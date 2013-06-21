@@ -64,6 +64,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private final Set<Group> sortedGroups = new TreeSet<Group>( Sorters.GROUP_SORTER );
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
+    private final Set<String> sortedFilesAndFolders = new TreeSet<String>();
 
     private enum Context {
         GROUPS,
@@ -90,33 +91,59 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     }
 
     @Override
-    public void setGroups( final Collection<Group> groups,
-                           final Group activeGroup ) {
+    public void setGroups( final Collection<Group> groups ) {
         sortedGroups.clear();
         sortedGroups.addAll( groups );
-        this.activeGroup = activeGroup;
-        refresh( Context.GROUPS );
+        this.activeGroup = null;
+        this.activeRepository = null;
+        this.activeProject = null;
+        context = Context.GROUPS;
+        hideBusyIndicator();
+        refresh();
     }
 
     @Override
     public void setRepositories( final Collection<Repository> repositories,
-                                 final Repository activeRepository ) {
+                                 final Group activeGroup ) {
         sortedRepositories.clear();
         sortedRepositories.addAll( repositories );
-        this.activeRepository = activeRepository;
-        refresh( Context.REPOSITORIES );
+        this.activeGroup = activeGroup;
+        this.activeRepository = null;
+        this.activeProject = null;
+        context = Context.REPOSITORIES;
+        hideBusyIndicator();
+        refresh();
     }
 
     @Override
     public void setProjects( final Collection<Project> projects,
-                             final Project activeProject ) {
+                             final Repository activeRepository,
+                             final Group activeGroup ) {
         sortedProjects.clear();
         sortedProjects.addAll( projects );
-        this.activeProject = activeProject;
-        refresh( Context.PROJECTS );
+        this.activeRepository = activeRepository;
+        this.activeGroup = activeGroup;
+        this.activeProject = null;
+        context = Context.PROJECTS;
+        hideBusyIndicator();
+        refresh();
     }
 
-    private void refresh( final Context context ) {
+    @Override
+    public void setFilesAndFolders( final Project activeProject,
+                                    final Repository activeRepository,
+                                    final Group activeGroup ) {
+        sortedFilesAndFolders.clear();
+        sortedFilesAndFolders.add( "Nothing to see here yet!" );
+        this.activeProject = activeProject;
+        this.activeRepository = activeRepository;
+        this.activeGroup = activeGroup;
+        context = Context.PATHS;
+        hideBusyIndicator();
+        refresh();
+    }
+
+    private void refresh() {
         switch ( context ) {
             case GROUPS:
                 populateGroupView();
@@ -245,7 +272,6 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                context = Context.PROJECTS;
                 presenter.projectSelected( null );
             }
         } );

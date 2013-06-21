@@ -18,11 +18,20 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.Item;
 import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
+import org.uberfire.backend.group.Group;
+import org.uberfire.backend.repositories.Repository;
 
 /**
  * Business View Presenter definition
  */
 public interface BusinessViewPresenter extends BaseViewPresenter {
+
+    void groupSelected( final Group group );
+
+    void repositorySelected( final Repository repository );
+
+    void projectSelected( final Project project );
 
     void packageSelected( final Package pkg );
 
