@@ -32,8 +32,11 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
+import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -82,6 +85,18 @@ public class NewResourcePresenter {
             handlers.add( handler );
         }
         view.setHandlers( handlers );
+    }
+
+    public void selectedGroupChanged( @Observes final GroupChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
+    }
+
+    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
+    }
+
+    public void selectedProjectChanged( @Observes final ProjectChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
     }
 
     public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {

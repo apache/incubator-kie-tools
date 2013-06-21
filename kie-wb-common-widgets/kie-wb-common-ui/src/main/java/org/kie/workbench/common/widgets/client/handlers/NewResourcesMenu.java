@@ -15,10 +15,14 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
+import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -27,6 +31,9 @@ import org.uberfire.workbench.model.menu.MenuItem;
  */
 @ApplicationScoped
 public class NewResourcesMenu {
+
+    @Inject
+    private KieWorkbenchContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;
@@ -70,6 +77,18 @@ public class NewResourcesMenu {
 
     public List<MenuItem> getMenuItems() {
         return items;
+    }
+
+    public void selectedGroupChanged( @Observes final GroupChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
+    }
+
+    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
+    }
+
+    public void selectedProjectChanged( @Observes final ProjectChangeEvent event ) {
+        enableNewResourceHandlers( context.getActivePackage() );
     }
 
     public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {

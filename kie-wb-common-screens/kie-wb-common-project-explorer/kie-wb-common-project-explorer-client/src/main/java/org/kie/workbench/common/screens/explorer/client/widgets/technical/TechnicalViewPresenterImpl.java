@@ -207,16 +207,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     public void groupSelected( final Group group ) {
         if ( group == null || !group.equals( getActiveGroup() ) ) {
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
-        } else {
-            groupChangeHandler( group );
         }
-    }
-
-    public void groupChangeHandler( final @Observes GroupChangeEvent event ) {
-        if ( !isActive ) {
-            return;
-        }
-        final Group group = event.getGroup();
         groupChangeHandler( group );
     }
 
@@ -232,16 +223,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     public void repositorySelected( final Repository repository ) {
         if ( repository == null || !repository.equals( getActiveRepository() ) ) {
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
-        } else {
-            repositoryChangeHandler( repository );
         }
-    }
-
-    public void repositoryChangeHandler( final @Observes RepositoryChangeEvent event ) {
-        if ( !isActive ) {
-            return;
-        }
-        final Repository repository = event.getRepository();
         repositoryChangeHandler( repository );
     }
 
@@ -257,16 +239,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     public void projectSelected( final Project project ) {
         if ( project == null || !project.equals( getActiveProject() ) ) {
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-        } else {
-            projectChangeHandler( project );
         }
-    }
-
-    public void projectChangeHandler( final @Observes ProjectChangeEvent event ) {
-        if ( !isActive ) {
-            return;
-        }
-        final Project project = event.getProject();
         projectChangeHandler( project );
     }
 
