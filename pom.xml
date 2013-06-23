@@ -327,6 +327,7 @@
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
+    <module>uberfire-js</module>
     <module>uberfire-showcase</module>
   </modules>
 
@@ -437,6 +438,13 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workbench</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- JS Native Plugins -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-js</artifactId>
         <version>${project.version}</version>
       </dependency>
 

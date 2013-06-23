@@ -4,6 +4,8 @@
 <module>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
+  <inherits name="org.uberfire.UberfireJS"/>
+
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>

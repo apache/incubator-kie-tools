@@ -23,6 +23,34 @@
 
 <!-- The GWT js file generated at run time -->
 <script type="text/javascript" src='org.uberfire.UberfireShowcase.nocache.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+<script type="text/javascript">
+
+this.addEventListener("load", doStuff, true);
+
+function doStuff(e) {
+
+  var angularTemplate = '<div ng-app><div><label>Name:</label><input type="text" ng-model="yourName" placeholder="Enter a name here"><hr><h1>Hello {{yourName}}!</h1></div></div>';
+
+  $registerPlugin( {
+      id : "my angular js",
+      build : function () {
+        return angularTemplate;
+      }
+  } );
+
+//  var myPlugin = {
+//      id : "my name",
+//      build : function () {
+//        return "<div>COOL!</div>";
+//      }
+//  };
+  // $registerPlugin(myPlugin);
+
+}
+
+</script>
 
 </body>
 </html>
