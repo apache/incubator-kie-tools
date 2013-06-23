@@ -1,21 +1,33 @@
 package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.guvnor.client.asseteditor.drools.factmodel.AnnotationMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.repository.AssetItem;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.drools.workbench.screens.factmodel.service.FactModelService;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -46,42 +58,109 @@ public class FactModelsMigrater {
     
     @Inject
     private Paths paths;
-        
-    @Inject
-    DRLTextEditorService drlTextEditorServiceImpl;
     
     @Inject
     PackageImportHelper packageImportHelper;
+
+    @Inject
+    private ProjectService projectService;
+    
+    @Inject
+    private DataModelerService modelerService;    
+
+    private Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
+    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
     
     public void migrate(Module jcrModule, AssetItem jcrAssetItem) {      
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
         }
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);     
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-
-        Map<String, Object> attrs;
-        try {
-            attrs = ioService.readAttributes( nioPath );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }        
         
-        FactModelContentHandler h = new FactModelContentHandler();
-        StringBuilder stringBuilder = new StringBuilder();
+        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);   
+        Project project = projectService.resolveProject(path);
         
+        initBasePropertyTypes();
+        initAnnotationDefinitions();        
+        
+        if(project == null) {
+        	Path projectRootPath = migrationPathManager.generatePathForModule(jcrModule);
+        	//Quick hack to pass mock values for pomPath etc, to make Project constructor happy. We only use projectRootPath anyway
+        	project = new Project( projectRootPath,
+        			projectRootPath,
+        			projectRootPath,
+        			projectRootPath,
+                    "" );
+        }
+   
         try {
             Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset(jcrAssetItem.getUUID());
-            h.assembleSource(jcrAsset.getContent(), stringBuilder);
-
-            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName(stringBuilder.toString(), path);
-            sourceDRLWithImport = packageImportHelper.assertPackageImportDRL(sourceDRLWithImport, path);
             
-            ioService.write( nioPath, sourceDRLWithImport, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));  
+            FactModels factModels = ((FactModels) jcrAsset.getContent());
+            DataModelTO dataModelTO  = new DataModelTO();
+            
+            for ( FactMetaModel factMetaModel : factModels.models ) {
+            	
+            	//TODO: handle package name
+                DataObjectTO dataObjectTO = createDataObject("", factMetaModel.getName(), factMetaModel.getSuperType());
+            	List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();                
+            	addAnnotations(dataObjectTO, annotationMetaModel);
+                List<FieldMetaModel> fields = factMetaModel.getFields();
+                
+                for(FieldMetaModel fieldMetaModel : fields) {
+                	String filedName = fieldMetaModel.name;
+                	String fildType = fieldMetaModel.type;
+                	//Guvnor 5.5 (and earlier) does not have MultipleType
+                	boolean isMultiple = false;
+                	boolean isBaseType = isBaseType(fildType);
+                    ObjectPropertyTO property = new ObjectPropertyTO(filedName,
+                    		fildType,
+                            isMultiple,
+                            isBaseType);              
+                	//field has no annotation in Guvnor 5.5 (and earlier)
+                    dataObjectTO.getProperties().add(property);
+                }
+                
+                dataModelTO.getDataObjects().add(dataObjectTO);
+            }
+            
+            modelerService.saveModel(dataModelTO, project);
+
         } catch (SerializationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
      }
+    
+    private void initBasePropertyTypes() {
+    	List<PropertyTypeTO> baseTypes = modelerService.getBasePropertyTypes();
+        if (baseTypes != null) {
+            for (PropertyTypeTO type : baseTypes) {
+                orderedBaseTypes.put(type.getName(), type.getClassName());
+            }
+        }
+    }
+    
+    public Boolean isBaseType(String type) {
+        return orderedBaseTypes.containsValue(type);
+    }
+    
+    private void initAnnotationDefinitions() {
+    	annotationDefinitions = modelerService.getAnnotationDefinitions();
+    }
+    
+    private DataObjectTO createDataObject(String packageName, String name, String superClass) {
+        DataObjectTO dataObject = new DataObjectTO(name, packageName, superClass);
+/*        if (label != null && !"".equals(label)) {
+            dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, label);
+        }*/
+        return dataObject;
+    }
+    
+    private void addAnnotations(DataObjectTO dataObject, List<AnnotationMetaModel> annotationMetaModelList) {
+    	for(AnnotationMetaModel annotationMetaModel : annotationMetaModelList) {
+            dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, annotationMetaModel.name);
+    	}    		
+    }
+
 }
