@@ -27,6 +27,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
+import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
@@ -65,6 +66,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Inject
     private Caller<ExplorerService> explorerService;
+
+    @Inject
+    private Caller<ProjectService> projectService;
 
     @Inject
     private PlaceManager placeManager;
@@ -243,11 +247,16 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void parentFolderSelected( final FolderListing folder ) {
-        //TODO {manstis} If path resolves to a Package raise a PackageChangeEvent
-//        final Package pkg = null;
-//        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
-//            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
-//        }
+        //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
+        projectService.call( new RemoteCallback<Package>() {
+            @Override
+            public void callback( final Package pkg ) {
+                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                }
+            }
+        } ).resolvePackage( folder.getParentPath() );
+
         pathChangeEvent.fire( new PathChangeEvent( folder.getParentPath() ) );
         if ( folder.getPath().equals( getActiveProject().getRootPath() ) ) {
             loadProjects( getActiveRepository() );
@@ -258,11 +267,16 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void folderSelected( final Path path ) {
-        //TODO {manstis} If path resolves to a Package raise a PackageChangeEvent
-//        final Package pkg = null;
-//        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
-//            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
-//        }
+        //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
+        projectService.call( new RemoteCallback<Package>() {
+            @Override
+            public void callback( final Package pkg ) {
+                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                }
+            }
+        } ).resolvePackage( path );
+
         pathChangeEvent.fire( new PathChangeEvent( path ) );
         loadFilesAndFolders( path );
     }

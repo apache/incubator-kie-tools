@@ -16,8 +16,10 @@
 package org.kie.workbench.common.screens.explorer.backend.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
@@ -264,6 +266,8 @@ public class ExplorerServiceImpl
 
     @Override
     public FolderListing getFolderListing( final Path path ) {
+
+        //Get list of files and folders contained in the path
         final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
         final Path parentPath = paths.convert( nioPath.getParent() );
@@ -287,9 +291,30 @@ public class ExplorerServiceImpl
                 }
             }
         }
+
+        //Get Path segments from the given Path back to the root
+        final List<Path> segments = getPathSegments( path );
+
         return new FolderListing( path,
                                   parentPath,
-                                  folderItems );
+                                  folderItems,
+                                  segments );
+    }
+
+    private List<Path> getPathSegments( final Path path ) {
+        org.kie.commons.java.nio.file.Path nioSegmentPath = paths.convert( path );
+        //We're not interested in the terminal segment prior to root (i.e. the Project name)
+        final int segmentCount = nioSegmentPath.getNameCount() - 1;
+        if ( segmentCount < 1 ) {
+            return new ArrayList<Path>();
+        }
+        //Order from root to leaf (as we use getParent from the leaf we add them in reverse order)
+        final Path[] segments = new Path[ segmentCount ];
+        for ( int idx = segmentCount; idx > 0; idx-- ) {
+            segments[ idx - 1 ] = paths.convert( nioSegmentPath );
+            nioSegmentPath = nioSegmentPath.getParent();
+        }
+        return Arrays.asList( segments );
     }
 
     @Override

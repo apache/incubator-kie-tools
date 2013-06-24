@@ -41,6 +41,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
 /**
@@ -327,34 +328,68 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private void makeBreadCrumbs() {
         breadcrumbs.clear();
-        if ( activeGroup != null ) {
-            breadcrumbs.add( makeGroupBreadCrumb( activeGroup ) );
-        }
-        if ( activeRepository != null ) {
-            breadcrumbs.add( makeRepositoryBreadCrumb( activeRepository ) );
-        }
-        if ( activeProject != null ) {
-            breadcrumbs.add( makeProjectBreadCrumb( activeProject ) );
-        }
-        if ( activeFolderListing != null ) {
-            breadcrumbs.add( makeFolderListingBreadCrumb( activeFolderListing ) );
-        }
+        makeGroupBreadCrumb();
+        makeRepositoryBreadCrumb();
+        makeProjectBreadCrumb();
+        makeFolderListingBreadCrumb();
     }
 
-    private IsWidget makeGroupBreadCrumb( final Group activeGroup ) {
-        return new NavLink( activeGroup.getName() );
+    private void makeGroupBreadCrumb() {
+        if ( activeGroup == null ) {
+            return;
+        }
+        final NavLink link = new NavLink( activeGroup.getName() );
+        link.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                presenter.groupSelected( activeGroup );
+            }
+        } );
+        breadcrumbs.add( link );
     }
 
-    private IsWidget makeRepositoryBreadCrumb( final Repository activeRepository ) {
-        return new NavLink( activeRepository.getAlias() );
+    private void makeRepositoryBreadCrumb() {
+        if ( activeRepository == null ) {
+            return;
+        }
+        final NavLink link = new NavLink( activeRepository.getAlias() );
+        link.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                presenter.repositorySelected( activeRepository );
+            }
+        } );
+        breadcrumbs.add( link );
     }
 
-    private IsWidget makeProjectBreadCrumb( final Project activeProject ) {
-        return new NavLink( activeProject.getTitle() );
+    private void makeProjectBreadCrumb() {
+        if ( activeProject == null ) {
+            return;
+        }
+        final NavLink link = new NavLink( activeProject.getTitle() );
+        link.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                presenter.projectSelected( activeProject );
+            }
+        } );
+        breadcrumbs.add( link );
     }
 
-    private IsWidget makeFolderListingBreadCrumb( final FolderListing actFolderListing ) {
-        return new NavLink( actFolderListing.getPath().toURI() );
+    private void makeFolderListingBreadCrumb() {
+        if ( activeFolderListing == null ) {
+            return;
+        }
+        for ( final Path segment : activeFolderListing.getSegments() ) {
+            final NavLink link = new NavLink( segment.getFileName() );
+            link.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( final ClickEvent event ) {
+                    presenter.folderSelected( segment );
+                }
+            } );
+            breadcrumbs.add( link );
+        }
     }
 
     @Override

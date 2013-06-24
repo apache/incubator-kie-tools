@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.explorer.model;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
@@ -30,6 +31,7 @@ public class FolderListing {
     private Path path;
     private Path parentPath;
     private Collection<FolderItem> folderItems;
+    private List<Path> segments;
 
     public FolderListing() {
         //For Errai-marshalling
@@ -37,13 +39,16 @@ public class FolderListing {
 
     public FolderListing( final Path path,
                           final Path parentPath,
-                          final Collection<FolderItem> folderItems ) {
+                          final Collection<FolderItem> folderItems,
+                          final List<Path> segments ) {
         this.path = PortablePreconditions.checkNotNull( "path",
                                                         path );
         this.parentPath = PortablePreconditions.checkNotNull( "parentPath",
                                                               parentPath );
         this.folderItems = PortablePreconditions.checkNotNull( "folderItems",
                                                                folderItems );
+        this.segments = PortablePreconditions.checkNotNull( "segments",
+                                                            segments );
     }
 
     public Path getPath() {
@@ -56,6 +61,10 @@ public class FolderListing {
 
     public Collection<FolderItem> getFolderItems() {
         return folderItems;
+    }
+
+    public List<Path> getSegments() {
+        return segments;
     }
 
 }
