@@ -29,14 +29,56 @@
 
 this.addEventListener("load", doStuff, true);
 
+function TodoCtrl($scope) {
+  $scope.todos = [
+    {text:'learn angular', done:true},
+    {text:'build an angular app', done:false}];
+
+  $scope.addTodo = function() {
+    $scope.todos.push({text:$scope.todoText, done:false});
+    $scope.todoText = '';
+  };
+
+  $scope.remaining = function() {
+    var count = 0;
+    angular.forEach($scope.todos, function(todo) {
+      count += todo.done ? 0 : 1;
+    });
+    return count;
+  };
+
+  $scope.archive = function() {
+    var oldTodos = $scope.todos;
+    $scope.todos = [];
+    angular.forEach(oldTodos, function(todo) {
+      if (!todo.done) $scope.todos.push(todo);
+    });
+  };
+}
+
 function doStuff(e) {
 
-  var angularTemplate = '<div ng-app><div><label>Name:</label><input type="text" ng-model="yourName" placeholder="Enter a name here"><hr><h1>Hello {{yourName}}!</h1></div></div>';
+var strVar="";
+strVar += "<div ng-controller=\"TodoCtrl\">";
+strVar += "      <span>{{remaining()}} of {{todos.length}} remaining<\/span>";
+strVar += "      [ <a href=\"\" ng-click=\"archive()\">archive<\/a> ]";
+strVar += "      <ul class=\"unstyled\">";
+strVar += "        <li ng-repeat=\"todo in todos\">";
+strVar += "          <input type=\"checkbox\" ng-model=\"todo.done\">";
+strVar += "          <span class=\"done-{{todo.done}}\">{{todo.text}}<\/span>";
+strVar += "        <\/li>";
+strVar += "      <\/ul>";
+strVar += "      <form ng-submit=\"addTodo()\">";
+strVar += "        <input type=\"text\" ng-model=\"todoText\"  size=\"30\"";
+strVar += "               placeholder=\"add new todo here\">";
+strVar += "        <input class=\"btn-primary\" type=\"submit\" value=\"add\">";
+strVar += "      <\/form>";
+strVar += "    <\/div>";
 
   $registerPlugin( {
       id : "my angular js",
       build : function () {
-        return angularTemplate;
+        return strVar;
       }
   } );
 

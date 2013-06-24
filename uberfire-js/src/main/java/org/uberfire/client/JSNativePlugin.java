@@ -3,7 +3,6 @@ package org.uberfire.client;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 
 public class JSNativePlugin {
@@ -11,7 +10,6 @@ public class JSNativePlugin {
     private final JavaScriptObject obj;
 
     public JSNativePlugin( final JavaScriptObject obj ) {
-        Window.alert( obj.toString() );
         this.obj = obj;
     }
 

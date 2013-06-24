@@ -32,7 +32,7 @@ public class SimpleJSHack {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "My JS Hack!";
+        return "My Angular Hack!";
     }
 
     @WorkbenchPartView
