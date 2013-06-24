@@ -31,14 +31,14 @@ import org.uberfire.client.mvp.UberView;
 </#if>
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.workbench.annotations.Identifier;
+import javax.inject.Named;
 import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
-@Identifier("${identifier}")
+@Named("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */

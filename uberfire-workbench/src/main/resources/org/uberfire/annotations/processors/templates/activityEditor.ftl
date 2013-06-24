@@ -28,7 +28,7 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 </#if>
-import org.uberfire.client.workbench.annotations.Identifier;
+import javax.inject.Named;
 <#if associatedResources??>
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 </#if>
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@Identifier(${identifier})
+@Named(${identifier})
 <#if associatedResources??>
 ${associatedResources}
 </#if>

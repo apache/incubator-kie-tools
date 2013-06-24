@@ -17,7 +17,6 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
-import org.uberfire.client.workbench.annotations.Identifier;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -44,8 +43,11 @@ public class ActivityBeansCache {
     public void init() {
         final Collection<IOCBeanDef<Activity>> availableActivities = iocManager.lookupBeans( Activity.class );
 
-        for ( final IOCBeanDef<Activity> activityBean : availableActivities ) {
-            final String id = getIdentifier( activityBean );
+        for ( final IOCBeanDef<Activity> baseBean : availableActivities ) {
+            //{porcelli} TODO workaround an Errai bug - it doesn't attach bean names when you lookup by a type that's not the concrete bean type
+            final IOCBeanDef<Activity> activityBean = (IOCBeanDef<Activity>) iocManager.lookupBean( baseBean.getBeanClass() );
+
+            final String id = activityBean.getName();
 
             if ( activitiesById.keySet().contains( id ) ) {
                 throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
@@ -73,22 +75,6 @@ public class ActivityBeansCache {
                 }
             }
         } );
-    }
-
-    /**
-     * Given a bean definition return it's @Identifier value
-     * @param beanDefinition
-     * @return List of possible identifier, empty if none
-     */
-    private String getIdentifier( final IOCBeanDef beanDefinition ) {
-        final Set<Annotation> annotations = beanDefinition.getQualifiers();
-        for ( Annotation a : annotations ) {
-            if ( a instanceof Identifier ) {
-                final Identifier identifier = (Identifier) a;
-                return identifier.value();
-            }
-        }
-        throw new RuntimeException( "Invalid Activity, missing @Identifier " + beanDefinition.getBeanClass().getName() );
     }
 
     private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {

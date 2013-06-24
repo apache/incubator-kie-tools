@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.annotations.Identifier;
+import javax.inject.Named;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@Identifier("test11")
+@Named("test11")
 @AssociatedResources({
     org.uberfire.client.mvp.MyTestType.class
 })

@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 </#if>
-import org.uberfire.client.workbench.annotations.Identifier;
+import javax.inject.Named;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Identifier("${identifier}")
+@Named("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */

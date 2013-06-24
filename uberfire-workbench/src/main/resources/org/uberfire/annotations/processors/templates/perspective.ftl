@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.annotations.Identifier;
+import javax.inject.Named;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -40,7 +40,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 </#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
-@Identifier("${identifier}")
+@Named("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
