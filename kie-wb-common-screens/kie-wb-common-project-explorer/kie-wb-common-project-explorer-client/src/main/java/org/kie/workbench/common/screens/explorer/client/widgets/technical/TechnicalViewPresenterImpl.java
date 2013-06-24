@@ -97,8 +97,6 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Inject
     private LRUItemCache itemCache;
 
-    private boolean isActive = false;
-
     private Group getActiveGroup() {
         return context.getActiveGroup();
     }
@@ -118,19 +116,6 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @PostConstruct
     public void init() {
         this.view.init( this );
-    }
-
-    @Override
-    public void activate() {
-        this.isActive = true;
-        this.view.setVisible( true );
-        initialiseViewForActiveContext();
-    }
-
-    @Override
-    public void deactivate() {
-        this.isActive = false;
-        this.view.setVisible( false );
     }
 
     private void initialiseViewForActiveContext() {
@@ -287,9 +272,22 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         placeManager.goTo( path );
     }
 
+    @Override
+    public boolean isVisible() {
+        return view.isVisible();
+    }
+
+    @Override
+    public void setVisible( final boolean visible ) {
+        if ( visible ) {
+            initialiseViewForActiveContext();
+        }
+        view.setVisible( visible );
+    }
+
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
         //Repositories are not cached so no need to do anything if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final Repository repository = event.getNewRepository();
@@ -298,13 +296,13 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         if ( authorizationManager.authorize( repository,
                                              identity ) ) {
-            //TODO {manstis} view.addRepository( repository );
+            view.addRepository( repository );
         }
     }
 
     public void onProjectAdded( @Observes final ProjectAddedEvent event ) {
         //Projects are not cached so no need to do anything if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final Project project = event.getProject();
@@ -322,7 +320,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            //TODO {manstis} view.addProject( project );
+            view.addProject( project );
         }
     }
 
@@ -337,7 +335,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final String packageProjectRoot = pkg.getProjectRootPath().toURI();
@@ -381,7 +379,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         itemCache.invalidateCache( activePackage );
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
@@ -406,7 +404,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         itemCache.invalidateCache( activePackage );
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         explorerService.call( new RemoteCallback<Collection<Package>>() {

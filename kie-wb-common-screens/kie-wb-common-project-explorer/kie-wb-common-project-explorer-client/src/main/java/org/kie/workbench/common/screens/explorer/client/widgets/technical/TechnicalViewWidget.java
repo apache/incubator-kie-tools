@@ -70,6 +70,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
     private final Set<FolderItem> sortedFolderListing = new TreeSet<FolderItem>( Sorters.FOLDER_LISTING_SORTER );
 
+    //The view being displayed
     private enum Context {
         GROUPS,
         REPOSITORIES,
@@ -77,7 +78,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         PATHS
     }
 
-    private Context context = Context.GROUPS;
+    private Context activeContext = Context.GROUPS;
 
     private TechnicalViewPresenter presenter;
 
@@ -103,7 +104,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeRepository = null;
         this.activeProject = null;
         this.activeFolderListing = null;
-        context = Context.GROUPS;
+        activeContext = Context.GROUPS;
         hideBusyIndicator();
         refresh();
     }
@@ -117,7 +118,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeRepository = null;
         this.activeProject = null;
         this.activeFolderListing = null;
-        context = Context.REPOSITORIES;
+        activeContext = Context.REPOSITORIES;
         hideBusyIndicator();
         refresh();
     }
@@ -132,7 +133,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeRepository = activeRepository;
         this.activeProject = null;
         this.activeFolderListing = null;
-        context = Context.PROJECTS;
+        activeContext = Context.PROJECTS;
         hideBusyIndicator();
         refresh();
     }
@@ -148,13 +149,13 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeRepository = activeRepository;
         this.activeProject = activeProject;
         this.activeFolderListing = activeFolderListing;
-        context = Context.PATHS;
+        activeContext = Context.PATHS;
         hideBusyIndicator();
         refresh();
     }
 
     private void refresh() {
-        switch ( context ) {
+        switch ( activeContext ) {
             case GROUPS:
                 populateGroupView();
                 break;
@@ -169,6 +170,32 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
                 break;
         }
         makeBreadCrumbs();
+    }
+
+    private void refresh( final Context updatedContext ) {
+        switch ( updatedContext ) {
+            case GROUPS:
+                if ( activeContext.equals( updatedContext ) ) {
+                    populateGroupView();
+                }
+                break;
+            case REPOSITORIES:
+                if ( activeContext.equals( updatedContext ) ) {
+                    populateRepositoryView();
+                }
+                break;
+            case PROJECTS:
+                if ( activeContext.equals( updatedContext ) ) {
+                    populateProjectView();
+                }
+                break;
+            case PATHS:
+                if ( activeContext.equals( updatedContext ) ) {
+                    populatePathView();
+                    makeBreadCrumbs();
+                }
+                break;
+        }
     }
 
     private void populateGroupView() {
@@ -390,6 +417,18 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
             } );
             breadcrumbs.add( link );
         }
+    }
+
+    @Override
+    public void addRepository( final Repository repository ) {
+        sortedRepositories.add( repository );
+        refresh( Context.REPOSITORIES );
+    }
+
+    @Override
+    public void addProject( final Project project ) {
+        sortedProjects.add( project );
+        refresh( Context.PROJECTS );
     }
 
     @Override

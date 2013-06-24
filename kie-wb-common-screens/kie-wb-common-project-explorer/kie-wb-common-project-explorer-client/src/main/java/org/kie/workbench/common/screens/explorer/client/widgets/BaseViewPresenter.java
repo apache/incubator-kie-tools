@@ -15,15 +15,11 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import com.google.gwt.user.client.ui.HasVisibility;
+
 /**
- * The idea is that Project Explorer swaps the "View" it is communicating with depending on whether the Business or Technical views
- * are selected. The Project Explorer's presenter performs the same actions no matter what "View" is selected by calling methods
- * defined on this interface. BusinessView + TechnicalView become redundant. Both implement this interface.
+ * Base for the different views
  */
-public interface BaseViewPresenter {
-
-    void activate();
-
-    void deactivate();
+public interface BaseViewPresenter extends HasVisibility {
 
 }

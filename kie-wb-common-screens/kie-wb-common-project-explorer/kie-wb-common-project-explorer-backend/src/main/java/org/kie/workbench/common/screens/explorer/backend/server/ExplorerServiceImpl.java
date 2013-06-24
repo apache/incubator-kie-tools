@@ -120,7 +120,9 @@ public class ExplorerServiceImpl
         if ( group == null ) {
             return authorizedRepositories;
         }
-        for ( Repository repository : group.getRepositories() ) {
+        //Reload Group as the group's repository list might have been changed server-side
+        final Collection<Repository> repositories = groupService.getGroup( group.getName() ).getRepositories();
+        for ( Repository repository : repositories ) {
             if ( authorizationManager.authorize( repository,
                                                  identity ) ) {
                 authorizedRepositories.add( repository );

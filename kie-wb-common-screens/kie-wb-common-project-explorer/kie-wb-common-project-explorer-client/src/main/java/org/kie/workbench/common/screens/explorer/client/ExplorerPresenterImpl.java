@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
-import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -42,8 +41,6 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     private TechnicalViewPresenter technicalViewPresenter;
 
-    private BaseViewPresenter activeViewPresenter;
-
     @PostConstruct
     public void init() {
         selectBusinessView();
@@ -61,20 +58,14 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
     @Override
     public void selectBusinessView() {
-        if ( activeViewPresenter != null ) {
-            activeViewPresenter.deactivate();
-        }
-        activeViewPresenter = businessViewPresenter;
-        activeViewPresenter.activate();
+        businessViewPresenter.setVisible( true );
+        technicalViewPresenter.setVisible( false );
     }
 
     @Override
     public void selectTechnicalView() {
-        if ( activeViewPresenter != null ) {
-            activeViewPresenter.deactivate();
-        }
-        activeViewPresenter = technicalViewPresenter;
-        activeViewPresenter.activate();
+        businessViewPresenter.setVisible( false );
+        technicalViewPresenter.setVisible( true );
     }
 
 }

@@ -96,8 +96,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     @Inject
     private LRUItemCache itemCache;
 
-    private boolean isActive = false;
-
     private Group getActiveGroup() {
         return context.getActiveGroup();
     }
@@ -117,19 +115,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     @PostConstruct
     public void init() {
         this.view.init( this );
-    }
-
-    @Override
-    public void activate() {
-        this.isActive = true;
-        this.view.setVisible( true );
-        initialiseViewForActiveContext();
-    }
-
-    @Override
-    public void deactivate() {
-        this.isActive = false;
-        this.view.setVisible( false );
     }
 
     private void initialiseViewForActiveContext() {
@@ -259,9 +244,22 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         placeManager.goTo( folderItem.getPath() );
     }
 
+    @Override
+    public boolean isVisible() {
+        return view.isVisible();
+    }
+
+    @Override
+    public void setVisible( final boolean visible ) {
+        if ( visible ) {
+            initialiseViewForActiveContext();
+        }
+        view.setVisible( visible );
+    }
+
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
         //Repositories are not cached so no need to do anything if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final Repository repository = event.getNewRepository();
@@ -276,7 +274,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     public void onProjectAdded( @Observes final ProjectAddedEvent event ) {
         //Projects are not cached so no need to do anything if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final Project project = event.getProject();
@@ -311,7 +309,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         packageCache.invalidateCache( activeProject );
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         final String packageProjectRoot = pkg.getProjectRootPath().toURI();
@@ -355,7 +353,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         itemCache.invalidateCache( activePackage );
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
@@ -381,7 +379,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         packageCache.invalidateCache( activeProject );
 
         //Don't update the view if this presenter is not active
-        if ( !isActive ) {
+        if ( !view.isVisible() ) {
             return;
         }
         explorerService.call( new RemoteCallback<Collection<Package>>() {

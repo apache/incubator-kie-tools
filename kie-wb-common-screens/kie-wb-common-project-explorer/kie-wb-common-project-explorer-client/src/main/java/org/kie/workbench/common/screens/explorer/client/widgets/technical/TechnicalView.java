@@ -46,4 +46,8 @@ public interface TechnicalView extends HasBusyIndicator,
                              final Repository activeRepository,
                              final Group activeGroup );
 
+    void addRepository( final Repository repository );
+
+    void addProject( final Project project );
+
 }
