@@ -40,8 +40,16 @@ public class JSEntryPoint {
                 for ( final String s : response ) {
                     ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
                 }
+                runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
+                    @Override
+                    public void callback( Collection<String> response ) {
+                        for ( final String s : response ) {
+                            ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
+                        }
+                    }
+                } ).listPluginsContent();
             }
-        } ).listPluginsContent();
+        } ).listFramworksContent();
     }
 
     public static void registerPlugin( final Object _obj ) {

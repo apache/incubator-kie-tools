@@ -24,20 +24,13 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
     private ServletContext servletContext;
 
     @Override
+    public Collection<String> listFramworksContent() {
+        return directoryContent( "frameworks", "*.js" );
+    }
+
+    @Override
     public Collection<String> listPluginsContent() {
-        final Collection<String> result = new ArrayList<String>();
-
-        final Path pluginsRootPath = Paths.get( URI.create( "file://" + servletContext.getRealPath( "plugins" ) ) );
-
-        if ( Files.isDirectory( pluginsRootPath ) ) {
-            final DirectoryStream<Path> stream = Files.newDirectoryStream( pluginsRootPath, "*.js" );
-
-            for ( final Path activeJS : stream ) {
-                result.add( new String( Files.readAllBytes( activeJS ) ) );
-            }
-        }
-
-        return result;
+        return directoryContent( "plugins", "*.js" );
     }
 
     @Override
@@ -54,4 +47,22 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
         }
         return "";
     }
+
+    private Collection<String> directoryContent( final String directory,
+                                                 final String glob ) {
+        final Collection<String> result = new ArrayList<String>();
+
+        final Path pluginsRootPath = Paths.get( URI.create( "file://" + servletContext.getRealPath( directory ) ) );
+
+        if ( Files.isDirectory( pluginsRootPath ) ) {
+            final DirectoryStream<Path> stream = Files.newDirectoryStream( pluginsRootPath, glob );
+
+            for ( final Path activeJS : stream ) {
+                result.add( new String( Files.readAllBytes( activeJS ) ) );
+            }
+        }
+
+        return result;
+    }
+
 }

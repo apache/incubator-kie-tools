@@ -38,7 +38,7 @@ function TodoCtrl($scope) {
 $registerPlugin({
     id: "my angular js",
     type: "angularjs",
-    templateUrl: "sample.html",
+    templateUrl: "angular.sample.html",
     title: function () {
         return "angular " + Math.floor(Math.random() * 10);
     },
