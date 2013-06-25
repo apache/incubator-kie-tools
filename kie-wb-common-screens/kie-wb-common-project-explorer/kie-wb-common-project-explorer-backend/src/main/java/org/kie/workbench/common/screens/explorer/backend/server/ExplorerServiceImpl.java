@@ -274,7 +274,8 @@ public class ExplorerServiceImpl
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
         final Path parentPath = paths.convert( nioPath.getParent() );
         if ( Files.exists( nioPath ) ) {
-            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath );
+            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
+                                                                                                               dotFileFilter );
             for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
                 if ( Files.isRegularFile( np ) ) {
                     final org.uberfire.backend.vfs.Path p = paths.convert( np );

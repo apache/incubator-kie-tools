@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -44,6 +43,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
@@ -95,6 +95,8 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Inject
     private TechnicalView view;
 
+    private FolderListing activeFolderListing;
+
     private Group getActiveGroup() {
         return context.getActiveGroup();
     }
@@ -124,6 +126,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
         if ( activePackage != null ) {
             loadFilesAndFolders( activePackage.getProjectRootPath() );
+            packageChangeEvent.fire( new PackageChangeEvent() );
 
         } else if ( activeProject != null ) {
             loadFilesAndFolders( activeProject.getRootPath() );
@@ -140,6 +143,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     private void loadGroups() {
+        activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Group>>() {
             @Override
@@ -152,6 +156,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     private void loadRepositories( final Group activeGroup ) {
+        activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
@@ -165,6 +170,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     private void loadProjects( final Repository activeRepository ) {
+        activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
@@ -187,6 +193,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                 final Project activeProject = getActiveProject();
                 final Repository activeRepository = getActiveRepository();
                 final Group activeGroup = getActiveGroup();
+                activeFolderListing = folderListing;
                 view.setItems( folderListing,
                                activeProject,
                                activeRepository,
@@ -295,196 +302,131 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
     }
 
-//    public void onPackageAdded( @Observes final PackageAddedEvent event ) {
-//        final Package pkg = event.getPackage();
-//        if ( pkg == null ) {
-//            return;
-//        }
-//        final Package activePackage = getActivePackage();
-//        if ( activePackage == null ) {
-//            return;
-//        }
-//
-//        //Don't update the view if this presenter is not active
-//        if ( !view.isVisible() ) {
-//            return;
-//        }
-//        final String packageMainSrc = pkg.getPackageMainSrcPath().toURI();
-//        final String packageTestSrc = pkg.getPackageTestSrcPath().toURI();
-//        final String packageMainResources = pkg.getPackageMainResourcesPath().toURI();
-//        final String packageTestResources = pkg.getPackageTestResourcesPath().toURI();
-//        final String activePackageMainSrc = activePackage.getPackageMainSrcPath().toURI();
-//        final String activePackageTestSrc = activePackage.getPackageTestSrcPath().toURI();
-//        final String activePackageMainResources = activePackage.getPackageMainResourcesPath().toURI();
-//        final String activePackageTestResources = activePackage.getPackageTestResourcesPath().toURI();
-//        FolderItem folder = null;
-//        if ( packageMainSrc.startsWith( activePackageMainSrc ) ) {
-//            folder = makeFolderItem( pkg.getPackageMainSrcPath() );
-//        } else if ( packageTestSrc.startsWith( activePackageTestSrc ) ) {
-//            folder = makeFolderItem( pkg.getPackageTestSrcPath() );
-//        } else if ( packageMainResources.startsWith( activePackageMainResources ) ) {
-//            folder = makeFolderItem( pkg.getPackageMainResourcesPath() );
-//        } else if ( packageTestResources.startsWith( activePackageTestResources ) ) {
-//            folder = makeFolderItem( pkg.getPackageTestResourcesPath() );
-//        }
-//        if ( folder != null ) {
-//            view.addFolderItem( folder );
-//        }
-//    }
-//
-//    private FolderItem makeFolderItem( final Path path ) {
-//        return new FolderItem( path,
-//                               path.getFileName(),
-//                               FolderItemType.FOLDER );
-//    }
-
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
         final Path resource = event.getPath();
-
+        if ( resource == null ) {
+            return;
+        }
         projectService.call( new RemoteCallback<Project>() {
 
             @Override
             public void callback( final Project project ) {
-                if ( project == null || !project.getRootPath().equals( resource ) ) {
-                    addRegularResource( resource );
-                } else {
+                //Is the new resource a Project root otherwise it's a file inside a package
+                if ( project != null && project.getRootPath().equals( resource ) ) {
                     addProjectResource( project );
+                } else if ( isInActiveFolderListing( resource ) ) {
+                    view.addItem( makeFileItem( resource ) );
                 }
+            }
+
+            private void addProjectResource( final Project project ) {
+                //Projects are not cached so no need to do anything if this presenter is not active
+                if ( !view.isVisible() ) {
+                    return;
+                }
+                if ( authorizationManager.authorize( project,
+                                                     identity ) ) {
+                    view.addProject( project );
+                }
+
             }
         } ).resolveProject( resource );
     }
 
-    private void addRegularResource( final Path resource ) {
-        handleResourceEvent( resource,
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     view.addItem( makeFileItem( resource ) );
-                                 }
-                             } );
-    }
-
-    private void addProjectResource( final Project project ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
-        if ( !view.isVisible() ) {
-            return;
+    private boolean isInActiveFolderListing( final Path resource ) {
+        if ( activeFolderListing == null ) {
+            return false;
         }
-        final Repository activeRepository = getActiveRepository();
-        if ( activeRepository == null ) {
-            return;
+        //Check resource path starts with the active folder list path
+        final String resourceUri = resource.toURI();
+        final String activeFolderListingUri = activeFolderListing.getPath().toURI();
+        if ( resourceUri.startsWith( activeFolderListingUri ) ) {
+            //If there are no additional path separators the resource must be within the active folder listing
+            final String resourceLeafUri = resourceUri.replace( activeFolderListingUri,
+                                                                "" );
+            return resourceLeafUri.indexOf( "/",
+                                            1 ) == -1;
         }
-        final String projectRootUri = project.getRootPath().toURI();
-        final String activeRepositoryRootUri = activeRepository.getRoot().toURI();
-        if ( !projectRootUri.startsWith( activeRepositoryRootUri ) ) {
-            return;
-        }
-        if ( authorizationManager.authorize( project,
-                                             identity ) ) {
-            view.addProject( project );
-        }
+        return false;
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
         final Path resource = event.getPath();
-        handleResourceEvent( resource,
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     view.removeItem( makeFileItem( resource ) );
-                                 }
-                             } );
+        if ( resource == null ) {
+            return;
+        }
+        if ( isInActiveFolderListing( resource ) ) {
+            view.removeItem( makeFileItem( resource ) );
+        }
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
         final Path resource = event.getDestinationPath();
-        handleResourceEvent( resource,
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     view.addItem( makeFileItem( resource ) );
-                                 }
-                             } );
+        if ( resource == null ) {
+            return;
+        }
+        if ( isInActiveFolderListing( resource ) ) {
+            view.addItem( makeFileItem( resource ) );
+        }
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
         final Path resource = event.getDestinationPath();
-        handleResourceEvent( resource,
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     final FolderItem item = makeFileItem( resource );
-                                     view.removeItem( item );
-                                     view.addItem( item );
-                                 }
-                             } );
+        if ( resource == null ) {
+            return;
+        }
+        if ( isInActiveFolderListing( resource ) ) {
+            final FolderItem item = makeFileItem( resource );
+            view.removeItem( item );
+            view.addItem( item );
+        }
     }
 
     // Refresh when a batch Resource change has occurred
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
         final Set<ResourceChange> changes = resourceBatchChangesEvent.getBatch();
         for ( final ResourceChange change : changes ) {
-            switch ( change.getType() ) {
-                case ADD:
-                    handleResourceEvent( change.getPath(),
-                                         new Command() {
+            final Path resource = change.getPath();
+            final ChangeType changeType = change.getType();
+            projectService.call( new RemoteCallback<Package>() {
 
-                                             @Override
-                                             public void execute() {
-                                                 view.addItem( makeFileItem( change.getPath() ) );
-                                             }
-                                         } );
-                    break;
-                case DELETE:
-                    handleResourceEvent( change.getPath(),
-                                         new Command() {
+                @Override
+                public void callback( final Package pkg ) {
+                    if ( isInActiveFolderListing( resource ) ) {
+                        if ( isNewPackage( pkg,
+                                           resource ) ) {
+                            view.addItem( makeFolderItem( resource ) );
+                        } else {
+                            switch ( changeType ) {
+                                case ADD:
+                                    view.addItem( makeFileItem( resource ) );
+                                    break;
+                                case DELETE:
+                                    view.removeItem( makeFileItem( resource ) );
+                            }
+                        }
+                    }
+                }
 
-                                             @Override
-                                             public void execute() {
-                                                 view.removeItem( makeFileItem( change.getPath() ) );
-                                             }
-                                         } );
-                    break;
-            }
-        }
-    }
+                private boolean isNewPackage( final Package pkg,
+                                              final Path resource ) {
+                    if ( pkg.getPackageMainSrcPath().equals( resource ) ) {
+                        return true;
+                    } else if ( pkg.getPackageTestSrcPath().equals( resource ) ) {
+                        return true;
+                    } else if ( pkg.getPackageMainResourcesPath().equals( resource ) ) {
+                        return true;
+                    } else if ( pkg.getPackageTestResourcesPath().equals( resource ) ) {
+                        return true;
+                    }
+                    return false;
+                }
 
-    private void handleResourceEvent( final Path resource,
-                                      final Command cmd ) {
-        //Invalidate the Items cache
-        final Package activePackage = getActivePackage();
-        if ( resource == null || activePackage == null ) {
-            return;
-        }
-
-        //Don't update the view if not visible
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final String r = resource.toURI();
-        final String activePackageMainSrc = activePackage.getPackageMainSrcPath().toURI();
-        final String activePackageTestSrc = activePackage.getPackageTestSrcPath().toURI();
-        final String activePackageMainResources = activePackage.getPackageMainResourcesPath().toURI();
-        final String activePackageTestResources = activePackage.getPackageTestResourcesPath().toURI();
-        boolean isResourceInActivePackage = false;
-        if ( r.startsWith( activePackageMainSrc ) ) {
-            isResourceInActivePackage = true;
-        } else if ( r.startsWith( activePackageTestSrc ) ) {
-            isResourceInActivePackage = true;
-        } else if ( r.startsWith( activePackageMainResources ) ) {
-            isResourceInActivePackage = true;
-        } else if ( r.startsWith( activePackageTestResources ) ) {
-            isResourceInActivePackage = true;
-        }
-        if ( isResourceInActivePackage ) {
-            cmd.execute();
+            } ).resolvePackage( resource );
         }
     }
 
@@ -492,6 +434,12 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         return new FolderItem( path,
                                path.getFileName(),
                                FolderItemType.FILE );
+    }
+
+    private FolderItem makeFolderItem( final Path path ) {
+        return new FolderItem( path,
+                               path.getFileName(),
+                               FolderItemType.FOLDER );
     }
 
 }
