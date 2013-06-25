@@ -208,6 +208,7 @@
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>

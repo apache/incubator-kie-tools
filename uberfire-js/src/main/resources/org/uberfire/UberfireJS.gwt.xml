@@ -29,6 +29,6 @@
   <inherits name="org.uberfire.security.UberfireSecurityAPI"/>
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
-  <script src="js/uf.plugin.manager.js"/>
+  <script src="js/angular-1.0.7.min.js"/>
 
 </module>

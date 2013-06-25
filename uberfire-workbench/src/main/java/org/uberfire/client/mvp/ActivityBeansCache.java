@@ -77,7 +77,18 @@ public class ActivityBeansCache {
         } );
     }
 
-    private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef beanDefinition ) {
+    //Used for runtime plugins
+    public void addNewScreenActivity( final IOCBeanDef<Activity> activityBean ) {
+        final String id = activityBean.getName();
+
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+        }
+
+        activitiesById.put( id, activityBean );
+    }
+
+    private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef<?> beanDefinition ) {
         AssociatedResources associatedResources = null;
         Priority priority = null;
 

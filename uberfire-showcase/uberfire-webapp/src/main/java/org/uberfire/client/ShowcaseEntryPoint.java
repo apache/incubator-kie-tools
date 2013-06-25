@@ -70,7 +70,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    private String[] menuItems = new String[]{ "JSHack", "FileExplorer", "Chart", "MiscellaneousFeatures", "MultiPage", "Duplicate" };
+    private String[] menuItems = new String[]{ "my angular js", "FileExplorer", "Chart", "MiscellaneousFeatures", "MultiPage", "Duplicate" };
 
     @AfterInitialization
     public void startApp() {
