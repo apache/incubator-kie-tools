@@ -76,7 +76,7 @@ public class BuildChangeListener {
                 executor.shutdownNow();
                 if ( !executor.awaitTermination( 10,
                                                  TimeUnit.SECONDS ) ) {
-                    System.err.println( "executor did not terminate" );
+                    log.error( "executor did not terminate" );
                 }
             }
         } catch ( InterruptedException e ) {
@@ -95,6 +95,7 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceAddedEvent",
                                             resourceAddedEvent );
         final Path resource = resourceAddedEvent.getPath();
+        log.info( "Incremental build request received for: " + resource.toURI() + " (added)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
         final Package pkg = projectService.resolvePackage( resource );
@@ -108,6 +109,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
+                    log.info( "Incremental build request being processed: " + resource.toURI() + "(added)." );
                     buildService.addPackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -127,6 +129,7 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceDeletedEvent",
                                             resourceDeletedEvent );
         final Path resource = resourceDeletedEvent.getPath();
+        log.info( "Incremental build request received for: " + resource.toURI() + " (deleted)." );
 
         //If resource is not within a Package it cannot be used for an incremental build
         final Package pkg = projectService.resolvePackage( resource );
@@ -140,6 +143,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
+                    log.info( "Incremental build request being processed: " + resource.toURI() + "(deleted)." );
                     buildService.deletePackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -159,6 +163,7 @@ public class BuildChangeListener {
         PortablePreconditions.checkNotNull( "resourceUpdatedEvent",
                                             resourceUpdatedEvent );
         final Path resource = resourceUpdatedEvent.getPath();
+        log.info( "Incremental build request received for: " + resource.toURI() + " (updated)." );
 
         //If resource is not within a Project it cannot be used for an incremental build
         final Project project = projectService.resolveProject( resource );
@@ -183,6 +188,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
+                    log.info( "Incremental build request being processed: " + resource.toURI() + "(updated)." );
                     buildService.updateProjectResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -199,6 +205,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
+                    log.info( "Incremental build request being processed: " + resource.toURI() + "(updated)." );
                     buildService.updatePackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -217,6 +224,7 @@ public class BuildChangeListener {
         //Perform incremental build
         PortablePreconditions.checkNotNull( "resourceBatchChangesEvent",
                                             resourceBatchChangesEvent );
+        log.info( "Batch incremental build request received." );
 
         //Block changes together with their respective project as Builder operates at the Project level
         final Set<ResourceChange> batch = resourceBatchChangesEvent.getBatch();
@@ -236,6 +244,7 @@ public class BuildChangeListener {
                 }
                 final Set<ResourceChange> projectChanges = projectBatchChanges.get( project );
                 projectChanges.add( change );
+                log.info( "- Batch content: " + change.getPath().toURI() + " (" + change.getType().toString() + ")." );
             }
         }
 
@@ -246,6 +255,7 @@ public class BuildChangeListener {
                 @Override
                 public void run() {
                     try {
+                        log.info( "Batch incremental build request being processed." );
                         buildService.applyBatchResourceChanges( e.getKey(),
                                                                 e.getValue() );
                     } catch ( Exception e ) {
