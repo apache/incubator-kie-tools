@@ -137,7 +137,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void groupSelected( final Group group ) {
-        groupChangeEvent.fire( new GroupChangeEvent( group ) );
+        if ( group == null || !group.equals( getActiveGroup() ) ) {
+            groupChangeEvent.fire( new GroupChangeEvent( group ) );
+        }
 
         //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -155,7 +157,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void repositorySelected( final Repository repository ) {
-        repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
+        if ( repository == null || !repository.equals( getActiveRepository() ) ) {
+            repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
+        }
 
         //Show busy popup. Projects cascade through Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -173,7 +177,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void projectSelected( final Project project ) {
-        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        if ( project == null || !project.equals( getActiveProject() ) ) {
+            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        }
 
         //Check cache
         if ( project != null ) {
@@ -205,7 +211,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void packageSelected( final Package pkg ) {
-        packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+        }
 
         //Check cache
         if ( pkg != null ) {

@@ -205,9 +205,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void groupSelected( final Group group ) {
-        groupChangeEvent.fire( new GroupChangeEvent( group ) );
-        repositoryChangeEvent.fire( new RepositoryChangeEvent() );
-        projectChangeEvent.fire( new ProjectChangeEvent() );
+        if ( group == null || !group.equals( getActiveGroup() ) ) {
+            groupChangeEvent.fire( new GroupChangeEvent( group ) );
+        }
         if ( group == null ) {
             loadGroups();
         } else {
@@ -217,8 +217,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void repositorySelected( final Repository repository ) {
-        repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
-        projectChangeEvent.fire( new ProjectChangeEvent() );
+        if ( repository == null || !repository.equals( getActiveRepository() ) ) {
+            repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
+        }
         if ( repository == null ) {
             loadRepositories( getActiveGroup() );
         } else {
@@ -228,7 +229,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void projectSelected( final Project project ) {
-        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        if ( project == null || !project.equals( getActiveProject() ) ) {
+            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        }
         if ( project == null ) {
             loadProjects( getActiveRepository() );
         } else {
@@ -242,7 +245,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         projectService.call( new RemoteCallback<Package>() {
             @Override
             public void callback( final Package pkg ) {
-                packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                }
             }
         } ).resolvePackage( folder.getParentPath() );
 
@@ -260,7 +265,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         projectService.call( new RemoteCallback<Package>() {
             @Override
             public void callback( final Package pkg ) {
-                packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                }
             }
         } ).resolvePackage( path );
 
