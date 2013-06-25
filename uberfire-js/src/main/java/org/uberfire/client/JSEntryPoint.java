@@ -16,6 +16,7 @@ import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static com.google.gwt.core.client.ScriptInjector.*;
 import static org.jboss.errai.ioc.client.QualifierUtil.*;
@@ -61,8 +62,15 @@ public class JSEntryPoint {
         }
     }
 
+    public static void goTo( final String place ) {
+        final IOCBeanManager beanManager = IOC.getBeanManager();
+        final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
+        placeManager.goTo( new DefaultPlaceRequest( place ) );
+    }
+
     // Alias registerPlugin with a global JS function.
     private native void publish() /*-{
         $wnd.$registerPlugin = @org.uberfire.client.JSEntryPoint::registerPlugin(Ljava/lang/Object;);
+        $wnd.$goToPlace = @org.uberfire.client.JSEntryPoint::goTo(Ljava/lang/String;);
     }-*/;
 }

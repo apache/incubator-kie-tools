@@ -1,4 +1,7 @@
 function TodoCtrl($scope) {
+
+    $scope.placeText = "MiscellaneousFeatures";
+
     $scope.todos = [
         {text: 'learn angular', done: true},
         {text: 'build an angular app', done: false}
@@ -25,6 +28,10 @@ function TodoCtrl($scope) {
                 $scope.todos.push(todo);
             }
         });
+    };
+
+    $scope.goto = function () {
+        $goToPlace($scope.placeText);
     };
 }
 
