@@ -99,10 +99,10 @@ public class FactModelsMigrater {
             FactModels factModels = ((FactModels) jcrAsset.getContent());
             DataModelTO dataModelTO  = new DataModelTO();
             
+            String packageName = jcrModule.getName();
+            
             for ( FactMetaModel factMetaModel : factModels.models ) {
-            	
-            	//TODO: handle package name
-                DataObjectTO dataObjectTO = createDataObject("", factMetaModel.getName(), factMetaModel.getSuperType());
+                DataObjectTO dataObjectTO = createDataObject(packageName, factMetaModel.getName(), factMetaModel.getSuperType());
             	List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();                
             	addAnnotations(dataObjectTO, annotationMetaModel);
                 List<FieldMetaModel> fields = factMetaModel.getFields();
@@ -167,7 +167,7 @@ public class FactModelsMigrater {
     			value = values.values().iterator().next();
     		}
     		
-    		if("role".equals(name)) {
+    		if("Role".equals(name)) {
                 dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.ROLE_ANNOTATION), key, value);		
     		} else if("Position".equals(name)) {
                 dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.POSITION_ANNOTATON), key, value);
