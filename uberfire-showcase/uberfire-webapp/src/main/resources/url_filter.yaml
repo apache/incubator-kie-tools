@@ -10,3 +10,4 @@ exclude:
    - /org.uberfire.UberfireShowcase/images/**
    - /org.uberfire.UberfireShowcase/css/**
    - /css/**
+   - /plugins/**
