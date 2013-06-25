@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -97,7 +98,9 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
     private BusinessViewPresenter presenter;
 
-    public BusinessViewWidget() {
+    @PostConstruct
+    public void init() {
+        //Cannot create and bind UI until after injection points have been initialized
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 

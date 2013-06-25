@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.github.gwtbootstrap.client.ui.Breadcrumbs;
@@ -87,7 +88,9 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private Project activeProject;
     private FolderListing activeFolderListing;
 
-    public TechnicalViewWidget() {
+    @PostConstruct
+    public void init() {
+        //Cannot create and bind UI until after injection points have been initialized
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
