@@ -2,6 +2,7 @@ package org.uberfire.client;
 
 import java.util.Collection;
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -17,6 +18,7 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.ApplicationReadyEvent;
 
 import static com.google.gwt.core.client.ScriptInjector.*;
 import static org.jboss.errai.ioc.client.QualifierUtil.*;
@@ -26,6 +28,9 @@ public class JSEntryPoint {
 
     @Inject
     private Caller<RuntimePluginsService> runtimePluginsService;
+
+    @Inject
+    private Event<ApplicationReadyEvent> appReady;
 
     @PostConstruct
     public void init() {
@@ -43,13 +48,22 @@ public class JSEntryPoint {
                 runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
                     @Override
                     public void callback( Collection<String> response ) {
-                        for ( final String s : response ) {
-                            ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
+                        try {
+                            for ( final String s : response ) {
+                                ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
+                            }
+                        } finally {
+                            appReady.fire( new ApplicationReadyEvent() );
                         }
                     }
+
                 } ).listPluginsContent();
             }
-        } ).listFramworksContent();
+        }
+
+                                  ).
+
+                listFramworksContent();
     }
 
     public static void registerPlugin( final Object _obj ) {

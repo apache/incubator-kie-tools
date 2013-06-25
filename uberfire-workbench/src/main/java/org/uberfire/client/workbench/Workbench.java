@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
@@ -46,6 +47,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.navbar.NavBar;
 import org.uberfire.client.workbench.widgets.panels.PanelManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
@@ -97,9 +99,9 @@ public class Workbench
         initWidget( container );
     }
 
-    @AfterInitialization
-    @SuppressWarnings("unused")
-    private void bootstrap() {
+    //    @AfterInitialization
+//    @SuppressWarnings("unused")
+    private void bootstrap( @Observes ApplicationReadyEvent event ) {
 
         //Clear environment
         workbench.clear();
