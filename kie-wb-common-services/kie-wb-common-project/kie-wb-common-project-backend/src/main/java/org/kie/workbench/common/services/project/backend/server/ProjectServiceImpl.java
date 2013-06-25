@@ -33,9 +33,7 @@ import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
 import org.kie.workbench.common.services.shared.context.Project;
-import org.kie.workbench.common.services.shared.context.ProjectAddedEvent;
 import org.kie.workbench.common.services.shared.metadata.MetadataService;
 import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.workingset.client.model.WorkingSetSettings;
@@ -74,8 +72,6 @@ public class ProjectServiceImpl
 
     private Event<ResourceAddedEvent> resourceAddedEvent;
     private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
-    private Event<ProjectAddedEvent> projectAddedEvent;
-    private Event<PackageAddedEvent> packageAddedEvent;
 
     private Identity identity;
 
@@ -92,8 +88,6 @@ public class ProjectServiceImpl
                                final ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                final Event<ResourceAddedEvent> resourceAddedEvent,
                                final Event<ResourceBatchChangesEvent> resourceBatchChangesEvent,
-                               final Event<ProjectAddedEvent> projectAddedEvent,
-                               final Event<PackageAddedEvent> packageAddedEvent,
                                final Identity identity ) {
         this.ioService = ioService;
         this.paths = paths;
@@ -103,8 +97,6 @@ public class ProjectServiceImpl
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.resourceAddedEvent = resourceAddedEvent;
         this.resourceBatchChangesEvent = resourceBatchChangesEvent;
-        this.projectAddedEvent = projectAddedEvent;
-        this.packageAddedEvent = packageAddedEvent;
         this.identity = identity;
     }
 
@@ -199,7 +191,7 @@ public class ProjectServiceImpl
 
         org.kie.commons.java.nio.file.Path nioResource = paths.convert( resource );
 
-        if ( Files.isRegularFile( nioResource ) ) {
+        if ( !Files.exists( nioResource ) || Files.isRegularFile( nioResource ) ) {
             nioResource = nioResource.getParent();
         }
 
@@ -310,9 +302,6 @@ public class ProjectServiceImpl
 
         //Raise an event for the new project
         final Project project = resolveProject( projectRootPath );
-        projectAddedEvent.fire( new ProjectAddedEvent( project ) );
-
-        //Raise an event for the other resources (UberFire components cannot handle PackageAddedEvents)
         resourceAddedEvent.fire( new ResourceAddedEvent( projectRootPath ) );
 
         return project;
@@ -361,9 +350,6 @@ public class ProjectServiceImpl
 
         //Raise an event for the new package
         final Package pkg = resolvePackage( pkgPath );
-        packageAddedEvent.fire( new PackageAddedEvent( pkg ) );
-
-        //Raise an event for the other resources (UberFire components cannot handle PackageAddedEvents)
         resourceBatchChangesEvent.fire( batchChangesEvent );
 
         return pkg;

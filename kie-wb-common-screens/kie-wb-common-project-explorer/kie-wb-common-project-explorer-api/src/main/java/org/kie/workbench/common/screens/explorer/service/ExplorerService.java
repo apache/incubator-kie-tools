@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
@@ -45,7 +46,6 @@ public interface ExplorerService {
 
     FolderListing getFolderListing( final Path path );
 
-    Collection<FolderItem> handleResourceEvent( final Package pkg,
-                                                final Path resource );
+    ResourceContext resolveResourceContext( final Path path );
 
 }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasVisibility;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
@@ -41,13 +42,17 @@ public interface TechnicalView extends HasBusyIndicator,
                       final Repository activeRepository,
                       final Group activeGroup );
 
-    void setFilesAndFolders( final FolderListing activeFolderListing,
-                             final Project activeProject,
-                             final Repository activeRepository,
-                             final Group activeGroup );
+    void setItems( final FolderListing activeFolderListing,
+                   final Project activeProject,
+                   final Repository activeRepository,
+                   final Group activeGroup );
 
     void addRepository( final Repository repository );
 
     void addProject( final Project project );
+
+    void addItem( final FolderItem item );
+
+    void removeItem( final FolderItem item );
 
 }

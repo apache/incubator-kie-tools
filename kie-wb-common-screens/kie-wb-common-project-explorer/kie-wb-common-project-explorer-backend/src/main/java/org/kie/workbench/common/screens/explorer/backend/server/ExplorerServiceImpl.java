@@ -30,10 +30,10 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.backend.file.LinkedDotFileFilter;
 import org.kie.workbench.common.services.backend.file.LinkedMetaInfFolderFilter;
@@ -278,16 +278,14 @@ public class ExplorerServiceImpl
             for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
                 if ( Files.isRegularFile( np ) ) {
                     final org.uberfire.backend.vfs.Path p = paths.convert( np );
-                    final String fileName = getBaseFileName( p.getFileName() );
                     final FolderItem folderItem = new FolderItem( p,
-                                                                  fileName,
+                                                                  p.getFileName(),
                                                                   FolderItemType.FILE );
                     folderItems.add( folderItem );
                 } else if ( Files.isDirectory( np ) ) {
                     final org.uberfire.backend.vfs.Path p = paths.convert( np );
-                    final String fileName = getBaseFileName( p.getFileName() );
                     final FolderItem folderItem = new FolderItem( p,
-                                                                  fileName,
+                                                                  p.getFileName(),
                                                                   FolderItemType.FOLDER );
                     folderItems.add( folderItem );
                 }
@@ -320,17 +318,14 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<FolderItem> handleResourceEvent( final Package pkg,
-                                                       final Path resource ) {
-        PortablePreconditions.checkNotNull( "pkg",
-                                            pkg );
-        PortablePreconditions.checkNotNull( "resource",
-                                            resource );
-        final Package resourcePackage = projectService.resolvePackage( resource );
-        if ( resourcePackage == null ) {
-            return null;
+    public ResourceContext resolveResourceContext( final Path path ) {
+        if ( path == null ) {
+            return new ResourceContext();
         }
-        return getItems( pkg );
+        final Project project = projectService.resolveProject( path );
+        final Package pkg = projectService.resolvePackage( path );
+        return new ResourceContext( project,
+                                    pkg );
     }
 
 }

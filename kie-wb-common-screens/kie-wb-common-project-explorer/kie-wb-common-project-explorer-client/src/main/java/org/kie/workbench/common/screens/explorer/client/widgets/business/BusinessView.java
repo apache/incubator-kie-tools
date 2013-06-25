@@ -53,4 +53,8 @@ public interface BusinessView extends HasBusyIndicator,
 
     void addPackage( final Package pkg );
 
+    void addItem( final FolderItem item );
+
+    void removeItem( final FolderItem item );
+
 }

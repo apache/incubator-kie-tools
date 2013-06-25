@@ -16,8 +16,10 @@
 package org.kie.workbench.common.services.shared.context;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
+import com.google.inject.Inject;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
@@ -31,6 +33,15 @@ import org.uberfire.workbench.events.RepositoryChangeEvent;
 @ApplicationScoped
 public class KieWorkbenchContext {
 
+    @Inject
+    private Event<RepositoryChangeEvent> repositoryChangeEvent;
+
+    @Inject
+    private Event<ProjectChangeEvent> projectChangeEvent;
+
+    @Inject
+    private Event<PackageChangeEvent> packageChangeEvent;
+
     private Group activeGroup;
     private Repository activeRepository;
     private Project activeProject;
@@ -39,22 +50,22 @@ public class KieWorkbenchContext {
     public void setActiveGroup( @Observes final GroupChangeEvent event ) {
         final Group activeGroup = event.getGroup();
         setActiveGroup( activeGroup );
-        setActiveRepository( (Repository) null );
-        setActiveProject( (Project) null );
-        setActivePackage( (Package) null );
+        repositoryChangeEvent.fire( new RepositoryChangeEvent() );
+        projectChangeEvent.fire( new ProjectChangeEvent() );
+        packageChangeEvent.fire( new PackageChangeEvent() );
     }
 
     public void setActiveRepository( @Observes final RepositoryChangeEvent event ) {
         final Repository activeRepository = event.getRepository();
         setActiveRepository( activeRepository );
-        setActiveProject( (Project) null );
-        setActivePackage( (Package) null );
+        projectChangeEvent.fire( new ProjectChangeEvent() );
+        packageChangeEvent.fire( new PackageChangeEvent() );
     }
 
     public void setActiveProject( @Observes final ProjectChangeEvent event ) {
         final Project activeProject = event.getProject();
         setActiveProject( activeProject );
-        setActivePackage( (Package) null );
+        packageChangeEvent.fire( new PackageChangeEvent() );
     }
 
     public void setActivePackage( @Observes final PackageChangeEvent event ) {

@@ -19,13 +19,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.event.Observes;
 
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.PackageAddedEvent;
 import org.kie.workbench.common.services.shared.context.Project;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * A client-side cache of Packages per project
@@ -44,19 +41,6 @@ public class LRUPackageCache {
                 return size() > MAX_ENTRIES;
             }
         };
-    }
-
-    public void onPackageAdded( @Observes final PackageAddedEvent event ) {
-        final Path projectRoot = event.getPackage().getProjectRootPath();
-        Project projectToInvalidate = null;
-        for ( Project project : getKeys() ) {
-            if ( project.getRootPath().equals( projectRoot ) ) {
-                projectToInvalidate = project;
-            }
-        }
-        if ( projectToInvalidate != null ) {
-            invalidateCache( projectToInvalidate );
-        }
     }
 
     public Collection<Package> getEntry( final Project project ) {

@@ -45,12 +45,12 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.file.DotFileFilter;
 import org.kie.workbench.common.services.backend.file.JavaFileFilter;
 import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.services.project.service.model.ProjectImports;
 import org.kie.workbench.common.services.shared.builder.model.BuildMessage;
 import org.kie.workbench.common.services.shared.builder.model.BuildResults;
 import org.kie.workbench.common.services.shared.builder.model.IncrementalBuildResults;
 import org.kie.workbench.common.services.shared.builder.model.TypeSource;
+import org.kie.workbench.common.services.shared.context.Package;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceChange;
@@ -146,6 +146,11 @@ public class Builder {
         PortablePreconditions.checkNotNull( "resource",
                                             resource );
 
+        //Only files can be processed
+        if ( !Files.isRegularFile( resource ) ) {
+            return new IncrementalBuildResults();
+        }
+
         //Check a full build has been performed
         if ( !isBuilt() ) {
             throw new IllegalStateException( "A full build needs to be performed before any incremental operations." );
@@ -177,6 +182,11 @@ public class Builder {
     public IncrementalBuildResults deleteResource( final Path resource ) {
         PortablePreconditions.checkNotNull( "resource",
                                             resource );
+
+        //Only files can be processed
+        if ( !Files.isRegularFile( resource ) ) {
+            return new IncrementalBuildResults();
+        }
 
         //Check a full build has been performed
         if ( !isBuilt() ) {
@@ -220,6 +230,11 @@ public class Builder {
         for ( ResourceChange change : changes ) {
             final ChangeType type = change.getType();
             final Path resource = paths.convert( change.getPath() );
+
+            //Only files can be processed
+            if ( !Files.isRegularFile( resource ) ) {
+                continue;
+            }
 
             PortablePreconditions.checkNotNull( "type",
                                                 type );
@@ -408,6 +423,11 @@ public class Builder {
             return TypeSource.JAVA_PROJECT;
         }
         return TypeSource.JAVA_DEPENDENCY;
+    }
+
+    private boolean isRegularFile( final org.uberfire.backend.vfs.Path resource ) {
+        final org.kie.commons.java.nio.file.Path p = paths.convert( resource );
+        return Files.isRegularFile( p );
     }
 
 }

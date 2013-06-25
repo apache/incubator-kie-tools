@@ -105,7 +105,6 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeProject = null;
         this.activeFolderListing = null;
         activeContext = Context.GROUPS;
-        hideBusyIndicator();
         refresh();
     }
 
@@ -119,7 +118,6 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeProject = null;
         this.activeFolderListing = null;
         activeContext = Context.REPOSITORIES;
-        hideBusyIndicator();
         refresh();
     }
 
@@ -134,15 +132,14 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeProject = null;
         this.activeFolderListing = null;
         activeContext = Context.PROJECTS;
-        hideBusyIndicator();
         refresh();
     }
 
     @Override
-    public void setFilesAndFolders( final FolderListing activeFolderListing,
-                                    final Project activeProject,
-                                    final Repository activeRepository,
-                                    final Group activeGroup ) {
+    public void setItems( final FolderListing activeFolderListing,
+                          final Project activeProject,
+                          final Repository activeRepository,
+                          final Group activeGroup ) {
         sortedFolderListing.clear();
         sortedFolderListing.addAll( activeFolderListing.getFolderItems() );
         this.activeGroup = activeGroup;
@@ -150,7 +147,6 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         this.activeProject = activeProject;
         this.activeFolderListing = activeFolderListing;
         activeContext = Context.PATHS;
-        hideBusyIndicator();
         refresh();
     }
 
@@ -429,6 +425,18 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     public void addProject( final Project project ) {
         sortedProjects.add( project );
         refresh( Context.PROJECTS );
+    }
+
+    @Override
+    public void addItem( final FolderItem item ) {
+        sortedFolderListing.add( item );
+        refresh( Context.PATHS );
+    }
+
+    @Override
+    public void removeItem( final FolderItem item ) {
+        sortedFolderListing.remove( item );
+        refresh( Context.PATHS );
     }
 
     @Override

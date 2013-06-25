@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -94,6 +93,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
     private final Set<Package> sortedPackages = new TreeSet<Package>( Sorters.PACKAGE_SORTER );
+    private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
 
     private BusinessViewPresenter presenter;
 
@@ -312,10 +312,9 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     @Override
     public void setItems( final Collection<FolderItem> folderItems ) {
         itemsContainer.clear();
+        sortedFolderItems.clear();
+        sortedFolderItems.addAll( folderItems );
         if ( !folderItems.isEmpty() ) {
-            final List<FolderItem> sortedFolderItems = new ArrayList<FolderItem>( folderItems );
-            Collections.sort( sortedFolderItems,
-                              Sorters.ITEM_SORTER );
             final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( sortedFolderItems );
             final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
@@ -388,6 +387,20 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         for ( Package pkg : sortedPackages ) {
             ddPackages.add( makePackageNavLink( pkg ) );
         }
+    }
+
+    @Override
+    public void addItem( final FolderItem item ) {
+        final Collection<FolderItem> currentItems = new ArrayList<FolderItem>( sortedFolderItems );
+        currentItems.add( item );
+        setItems( currentItems );
+    }
+
+    @Override
+    public void removeItem( final FolderItem item ) {
+        final Collection<FolderItem> currentItems = new ArrayList<FolderItem>( sortedFolderItems );
+        currentItems.remove( item );
+        setItems( currentItems );
     }
 
     @Override
