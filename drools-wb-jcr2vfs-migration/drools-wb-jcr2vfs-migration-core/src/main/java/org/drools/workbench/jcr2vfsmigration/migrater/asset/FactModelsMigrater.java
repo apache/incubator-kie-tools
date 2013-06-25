@@ -151,15 +151,29 @@ public class FactModelsMigrater {
     
     private DataObjectTO createDataObject(String packageName, String name, String superClass) {
         DataObjectTO dataObject = new DataObjectTO(name, packageName, superClass);
-/*        if (label != null && !"".equals(label)) {
-            dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, label);
-        }*/
         return dataObject;
     }
     
     private void addAnnotations(DataObjectTO dataObject, List<AnnotationMetaModel> annotationMetaModelList) {
     	for(AnnotationMetaModel annotationMetaModel : annotationMetaModelList) {
-            dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, annotationMetaModel.name);
+    		String name = annotationMetaModel.name;
+    		Map<String, String> values = annotationMetaModel.values;
+ 
+    		String key = AnnotationDefinitionTO.VALUE_PARAM;
+    		String value = "";
+    		
+    		if(values.size() > 0) {
+    			key = values.keySet().iterator().next();
+    			value = values.values().iterator().next();
+    		}
+    		
+    		if("role".equals(name)) {
+                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.ROLE_ANNOTATION), key, value);		
+    		} else if("Position".equals(name)) {
+                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.POSITION_ANNOTATON), key, value);
+	   		} else if("Equals".equals(name)) {
+                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.EQUALS_ANNOTATION), key, value);	
+    		}
     	}    		
     }
 
