@@ -109,7 +109,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + "(added)." );
+                    log.info( "Incremental build request being processed: " + resource.toURI() + " (added)." );
                     buildService.addPackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -143,7 +143,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + "(deleted)." );
+                    log.info( "Incremental build request being processed: " + resource.toURI() + " (deleted)." );
                     buildService.deletePackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -188,7 +188,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + "(updated)." );
+                    log.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
                     buildService.updateProjectResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
@@ -205,7 +205,7 @@ public class BuildChangeListener {
             @Override
             public void run() {
                 try {
-                    log.info( "Incremental build request being processed: " + resource.toURI() + "(updated)." );
+                    log.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
                     buildService.updatePackageResource( resource );
                 } catch ( Exception e ) {
                     log.error( e.getMessage(),
