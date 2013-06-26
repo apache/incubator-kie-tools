@@ -5,7 +5,6 @@ import org.kie.workbench.common.services.shared.context.Project;
 
 public interface SessionService {
 
-    KieSession newKieSession(final Project project,
-                             final String sessionName);
+    KieSession newKieSession( final Project project );
 
 }
