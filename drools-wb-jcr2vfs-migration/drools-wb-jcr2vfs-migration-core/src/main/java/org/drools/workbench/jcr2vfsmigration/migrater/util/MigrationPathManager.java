@@ -35,11 +35,12 @@ public class MigrationPathManager {
 
     public Path generateRootPath() {
 
-        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( "project" ));
+        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" );
 
-        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+        return paths.convert( _path, false);
 
-        return path;
+//        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+//        return path;
     }
     
     public Path generatePathForModule( Module jcrModule ) {

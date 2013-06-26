@@ -71,7 +71,7 @@ public class FactModelsMigrater {
     private Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
     
-    public void migrate(Module jcrModule, AssetItem jcrAssetItem) {      
+    public void migrate(Module jcrModule, AssetItem jcrAssetItem) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
@@ -99,7 +99,7 @@ public class FactModelsMigrater {
             FactModels factModels = ((FactModels) jcrAsset.getContent());
             DataModelTO dataModelTO  = new DataModelTO();
             
-            String packageName = jcrModule.getName();
+            String packageName = getPackageName(jcrModule);
             
             for ( FactMetaModel factMetaModel : factModels.models ) {
                 DataObjectTO dataObjectTO = createDataObject(packageName, factMetaModel.getName(), factMetaModel.getSuperType());
@@ -131,6 +131,19 @@ public class FactModelsMigrater {
             e.printStackTrace();
         }
      }
+
+    //The JCR Module name also contains the project name. This code attempts to create a package name
+    //from the full JCR Module name (assuming they're formatted "projectName.subModule1.subModule2" etc
+    private String getPackageName(Module jcrModule) {
+        String packageName = jcrModule.getName();
+        int dotIndex = packageName.indexOf( "." );
+        if(dotIndex==-1) {
+            packageName="";
+        } else {
+            packageName = packageName.substring( dotIndex +1 );
+        }
+        return packageName;
+    }
     
     private void initBasePropertyTypes() {
     	List<PropertyTypeTO> baseTypes = modelerService.getBasePropertyTypes();

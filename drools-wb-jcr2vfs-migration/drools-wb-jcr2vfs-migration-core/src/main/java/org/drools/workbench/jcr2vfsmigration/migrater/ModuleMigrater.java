@@ -7,6 +7,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.kie.workbench.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.project.service.model.GAV;
 import org.kie.workbench.common.services.project.service.model.POM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,10 @@ public class ModuleMigrater {
 
     private void migrate( Module jcrModule ) {
         //Set up project structure:
-        POM pom = new POM();
+        GAV gav = new GAV(jcrModule.getName(),
+                          jcrModule.getName(),
+                          "0.0.1");
+        POM pom = new POM(gav);
 
         Path modulePath = migrationPathManager.generateRootPath();
         projectService.newProject( makeRepository( modulePath ),
