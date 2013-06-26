@@ -59,11 +59,7 @@ public class JSEntryPoint {
 
                 } ).listPluginsContent();
             }
-        }
-
-                                  ).
-
-                listFramworksContent();
+        } ).listFramworksContent();
     }
 
     public static void registerPlugin( final Object _obj ) {
@@ -84,6 +80,24 @@ public class JSEntryPoint {
         }
     }
 
+    public static void registerPerspective( final Object _obj ) {
+        final JavaScriptObject obj = (JavaScriptObject) _obj;
+
+        if ( JSNativePlugin.hasStringProperty( obj, "id" ) ) {
+            final IOCBeanManager beanManager = IOC.getBeanManager();
+            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
+
+            final JSNativePerspective newNativePerspective = beanManager.lookupBean( JSNativePerspective.class ).getInstance();
+            newNativePerspective.build( obj );
+
+            final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
+
+            beanManager.addBean( (Class) Activity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
+
+            activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
+        }
+    }
+
     public static void goTo( final String place ) {
         final IOCBeanManager beanManager = IOC.getBeanManager();
         final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
@@ -93,6 +107,7 @@ public class JSEntryPoint {
     // Alias registerPlugin with a global JS function.
     private native void publish() /*-{
         $wnd.$registerPlugin = @org.uberfire.client.JSEntryPoint::registerPlugin(Ljava/lang/Object;);
+        $wnd.$registerPerspective = @org.uberfire.client.JSEntryPoint::registerPerspective(Ljava/lang/Object;);
         $wnd.$goToPlace = @org.uberfire.client.JSEntryPoint::goTo(Ljava/lang/String;);
     }-*/;
 }

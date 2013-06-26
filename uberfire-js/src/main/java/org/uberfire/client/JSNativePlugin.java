@@ -156,8 +156,8 @@ public class JSNativePlugin {
         return hasStringProperty( obj, "template" ) || hasStringProperty( obj, "templateUrl" );
     }
 
-    private static native boolean hasMethod( final JavaScriptObject obj,
-                                             final String methodName )  /*-{
+    static native boolean hasMethod( final JavaScriptObject obj,
+                                     final String methodName )  /*-{
         return ((typeof obj[methodName]) === "function");
     }-*/;
 

@@ -16,11 +16,8 @@
 
 package org.uberfire.security.client;
 
-import java.util.Map;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.json.client.JSONObject;
 
 public class JSONSubject extends JavaScriptObject {
 
