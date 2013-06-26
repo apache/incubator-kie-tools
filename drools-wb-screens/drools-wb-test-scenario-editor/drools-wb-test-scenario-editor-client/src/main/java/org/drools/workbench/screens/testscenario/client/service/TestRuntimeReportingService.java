@@ -35,6 +35,7 @@ public class TestRuntimeReportingService {
             successEvent.fire(new Success());
         } else {
             dataProvider.getList().addAll(message.getFailures());
+            dataProvider.flush();
         }
 
         placeManager.goTo("org.kie.guvnor.TestResults");

@@ -238,15 +238,13 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public void runScenario( final Path path,
-                             final Scenario scenario,
-                             final String sessionName ) {
+                             final Scenario scenario ) {
         try {
 
             final Project project = projectService.resolveProject( path );
 
             new ScenarioRunnerWrapper().run( scenario,
-                                             sessionService.newKieSession( project,
-                                                                           sessionName ),
+                                             sessionService.newKieSession( project ),
                                              testResultMessageEvent );
 
         } catch ( Exception e ) {
@@ -255,8 +253,7 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public void runAllScenarios( final Path testResourcePath,
-                                 final String sessionName ) {
+    public void runAllScenarios( final Path testResourcePath ) {
         try {
             final Project project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
@@ -267,8 +264,7 @@ public class ScenarioTestEditorServiceImpl
             }
 
             new ScenarioRunnerWrapper().run( scenarios,
-                                             sessionService.newKieSession( project,
-                                                                           sessionName ),
+                                             sessionService.newKieSession( project ),
                                              testResultMessageEvent );
 
         } catch ( Exception e ) {

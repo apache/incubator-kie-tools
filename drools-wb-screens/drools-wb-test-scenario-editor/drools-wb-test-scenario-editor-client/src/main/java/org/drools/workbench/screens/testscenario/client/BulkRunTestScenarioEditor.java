@@ -19,12 +19,7 @@ package org.drools.workbench.screens.testscenario.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
@@ -32,14 +27,13 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.mvp.Command;
 
 public class BulkRunTestScenarioEditor
-        implements IsWidget, BulkRunTestScenarioEditorView.Presenter, HasBusyIndicator {
+        implements IsWidget,
+                   BulkRunTestScenarioEditorView.Presenter,
+                   HasBusyIndicator {
 
     @Inject
     private BulkRunTestScenarioEditorView view;
@@ -50,28 +44,15 @@ public class BulkRunTestScenarioEditor
 
     @PostConstruct
     public void init() {
-        view.setPresenter(this);        
+        view.setPresenter( this );
     }
-    
-    public void init(final Path path,
-                     final boolean isReadOnly ) {
+
+    public void init( final Path path,
+                      final boolean isReadOnly ) {
         this.path = path;
         if ( isReadOnly ) {
             view.setReadOnly();
         }
-    }
-
-    private void setTitle( final String titleText ) {
-        if ( titleText == null || titleText.isEmpty() ) {
-            view.setTitleText( TestScenarioConstants.INSTANCE.RunAllScenarios() );
-        } else {
-            view.setTitleText( titleText );
-        }
-    }
-
-    public void save( final String commitMessage,
-                      final Command callback,
-                      final Metadata metadata ) {
     }
 
     @Override
@@ -79,44 +60,22 @@ public class BulkRunTestScenarioEditor
         return view.asWidget();
     }
 
-    public String getTitle() {
-        return view.getTitleWidget();
-    }
-
     @Override
     public void onRunAllButton() {
-        final FormStylePopup pop = new FormStylePopup();
-        final TextBox sessionNameTextBox = new TextBox();        
-        pop.addAttribute("session name" + ":", sessionNameTextBox);
-
-        Button ok = new Button("OK");
-        ok.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
-                    Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
-                    return;
-                }
-                
-                BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
-
-                scenarioService.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(Void v) {
-                        pop.hide();
-                        BusyPopup.close();
-                    }
-                },
-                        new HasBusyIndicatorDefaultErrorCallback(BulkRunTestScenarioEditor.this)
-                ).runAllScenarios(path, sessionNameTextBox.getText());                        
+        BusyPopup.showMessage( TestScenarioConstants.INSTANCE.BuildingAndRunningScenario() );
+        scenarioService.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void v ) {
+                BusyPopup.close();
             }
-        });
-        pop.addAttribute( "", ok);
-        pop.show();                
+        },
+                              new HasBusyIndicatorDefaultErrorCallback( BulkRunTestScenarioEditor.this )
+                            ).runAllScenarios( path );
     }
 
     @Override
-    public void showBusyIndicator(String message) {
-        BusyPopup.showMessage(message);
+    public void showBusyIndicator( String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override

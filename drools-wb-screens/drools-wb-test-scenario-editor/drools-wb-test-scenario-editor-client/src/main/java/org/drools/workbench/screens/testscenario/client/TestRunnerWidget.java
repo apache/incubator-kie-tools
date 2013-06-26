@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -29,7 +28,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.BuilderResultLine;
@@ -44,96 +42,71 @@ import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.workbench.common.widgets.errors.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
-
-    FlexTable results = new FlexTable();
-    VerticalPanel layout = new VerticalPanel();
-
+    private FlexTable results = new FlexTable();
+    private VerticalPanel layout = new VerticalPanel();
     private SimplePanel actions = new SimplePanel();
 
-    public TestRunnerWidget(final Scenario scenario,
-                            final Caller<ScenarioTestEditorService> testScenarioEditorService,
-                            final Path path) {
+    public TestRunnerWidget( final Scenario scenario,
+                             final Caller<ScenarioTestEditorService> testScenarioEditorService,
+                             final Path path ) {
 
-        final Button run = new Button(TestScenarioConstants.INSTANCE.RunScenario());
-        run.setTitle(TestScenarioConstants.INSTANCE.RunScenarioTip());
-        run.addClickHandler(new ClickHandler() {
+        final Button run = new Button( TestScenarioConstants.INSTANCE.RunScenario() );
+        run.setTitle( TestScenarioConstants.INSTANCE.RunScenarioTip() );
+        run.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-//                final FormStylePopup pop = new FormStylePopup();
-//                final TextBox sessionNameTextBox = new TextBox();
-//                pop.addAttribute(TestScenarioConstants.INSTANCE.SessionName() + ":", sessionNameTextBox);
+            public void onClick( ClickEvent event ) {
+                testScenarioEditorService.call( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void v ) {
+                        BusyPopup.close();
+                        layout.clear();
+                        layout.add( actions );
+                        layout.add( results );
+                        actions.setVisible( true );
+                    }
+                }, new HasBusyIndicatorDefaultErrorCallback( TestRunnerWidget.this ) ).runScenario( path,
+                                                                                                    scenario );
+            }
+        } );
 
-//                Button ok = new Button("OK");
-//                ok.addClickHandler(new ClickHandler() {
-//                    public void onClick(ClickEvent event) {
-//                        if(sessionNameTextBox.getText() == null || "".equals(sessionNameTextBox.getText())) {
-//                            Window.alert(TestScenarioConstants.INSTANCE.PleaseInputSessionName());
-//                            return;
-//                        }
-//
-//                        BusyPopup.showMessage(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
-
-
-
-                        testScenarioEditorService.call(new RemoteCallback<Void>() {
-                            @Override
-                            public void callback(Void v) {
-//                                 pop.hide();
-                                BusyPopup.close();
-                                layout.clear();
-                                layout.add(actions);
-                                layout.add(results);
-                                actions.setVisible(true);
-                            }
-                        },
-                                new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)
-                        ).runScenario(path, scenario, "");
-//                    }
-//                });
-//                pop.addAttribute( "", ok);
-//                pop.show();
-             }
-        });
-
-        actions.add(run);
-        layout.add(actions);
-        initWidget(layout);
+        actions.add( run );
+        layout.add( actions );
+        initWidget( layout );
     }
 
-    private void showErrors(List<BuilderResultLine> rs) {
+    private void showErrors( List<BuilderResultLine> rs ) {
         results.clear();
-        results.setVisible(true);
+        results.setVisible( true );
 
         FlexTable errTable = new FlexTable();
-        errTable.setStyleName("build-Results");
-        for (int i = 0; i < rs.size(); i++) {
+        errTable.setStyleName( "build-Results" );
+        for ( int i = 0; i < rs.size(); i++ ) {
             int row = i;
-            final BuilderResultLine res = rs.get(i);
-            errTable.setWidget(row,
-                    0,
-                    new Image(ImageResources.INSTANCE.error()));
-            if (res.getAssetFormat().equals("package")) {
-                errTable.setText(row,
-                        1,
-                        TestScenarioConstants.INSTANCE.packageConfigurationProblem1() + res.getMessage());
+            final BuilderResultLine res = rs.get( i );
+            errTable.setWidget( row,
+                                0,
+                                new Image( ImageResources.INSTANCE.error() ) );
+            if ( res.getAssetFormat().equals( "package" ) ) {
+                errTable.setText( row,
+                                  1,
+                                  TestScenarioConstants.INSTANCE.packageConfigurationProblem1() + res.getMessage() );
             } else {
-                errTable.setText(row,
-                        1,
-                        "[" + res.getAssetName() + "] " + res.getMessage());
+                errTable.setText( row,
+                                  1,
+                                  "[" + res.getAssetName() + "] " + res.getMessage() );
             }
 
         }
-        ScrollPanel scroll = new ScrollPanel(errTable);
+        ScrollPanel scroll = new ScrollPanel( errTable );
 
-        scroll.setWidth("100%");
-        results.setWidget(0,
-                0,
-                scroll);
+        scroll.setWidth( "100%" );
+        results.setWidget( 0,
+                           0,
+                           scroll );
 
     }
 
@@ -243,107 +216,107 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 //
 //    }
 
-    private Widget doAuditView(List<String[]> auditLog) {
+    private Widget doAuditView( List<String[]> auditLog ) {
         VerticalPanel vp = new VerticalPanel();
-        vp.add(new HTML("<hr/>"));
+        vp.add( new HTML( "<hr/>" ) );
         FlexTable g = new FlexTable();
         int row = 0;
         boolean firing = false;
-        for (int i = 0; i < auditLog.size(); i++) {
-            String[] lg = auditLog.get(i);
+        for ( int i = 0; i < auditLog.size(); i++ ) {
+            String[] lg = auditLog.get( i );
 
-            int id = Integer.parseInt(lg[0]);
-            if (id <= 7) {
-                if (id <= 3) {
-                    if (!firing) {
-                        g.setWidget(row,
-                                0,
-                                getEventImage(lg[0]));
-                        g.setWidget(row,
-                                1,
-                                new SmallLabel(lg[1]));
+            int id = Integer.parseInt( lg[ 0 ] );
+            if ( id <= 7 ) {
+                if ( id <= 3 ) {
+                    if ( !firing ) {
+                        g.setWidget( row,
+                                     0,
+                                     getEventImage( lg[ 0 ] ) );
+                        g.setWidget( row,
+                                     1,
+                                     new SmallLabel( lg[ 1 ] ) );
                     } else {
-                        g.setWidget(row,
-                                1,
-                                hz(getEventImage(lg[0]),
-                                        new SmallLabel(lg[1])));
+                        g.setWidget( row,
+                                     1,
+                                     hz( getEventImage( lg[ 0 ] ),
+                                         new SmallLabel( lg[ 1 ] ) ) );
                     }
                     row++;
-                } else if (id == 6) {
+                } else if ( id == 6 ) {
                     firing = true;
-                    g.setWidget(row,
-                            0,
-                            getEventImage(lg[0]));
-                    g.setWidget(row,
-                            1,
-                            new SmallLabel("<b>" + lg[1] + "</b>"));
+                    g.setWidget( row,
+                                 0,
+                                 getEventImage( lg[ 0 ] ) );
+                    g.setWidget( row,
+                                 1,
+                                 new SmallLabel( "<b>" + lg[ 1 ] + "</b>" ) );
                     row++;
-                } else if (id == 7) {
+                } else if ( id == 7 ) {
                     firing = false;
                 } else {
-                    g.setWidget(row,
-                            0,
-                            getEventImage(lg[0]));
-                    g.setWidget(row,
-                            1,
-                            new SmallLabel("<font color='grey'>" + lg[1] + "</font>"));
+                    g.setWidget( row,
+                                 0,
+                                 getEventImage( lg[ 0 ] ) );
+                    g.setWidget( row,
+                                 1,
+                                 new SmallLabel( "<font color='grey'>" + lg[ 1 ] + "</font>" ) );
                     row++;
                 }
             } else {
-                g.setWidget(row,
-                        0,
-                        new Image(AuditEventsImages.INSTANCE.miscEvent()));
-                g.setWidget(row,
-                        1,
-                        new SmallLabel("<font color='grey'>" + lg[1] + "</font>"));
+                g.setWidget( row,
+                             0,
+                             new Image( AuditEventsImages.INSTANCE.miscEvent() ) );
+                g.setWidget( row,
+                             1,
+                             new SmallLabel( "<font color='grey'>" + lg[ 1 ] + "</font>" ) );
                 row++;
             }
         }
-        vp.add(g);
-        vp.add(new HTML("<hr/>"));
+        vp.add( g );
+        vp.add( new HTML( "<hr/>" ) );
         return vp;
     }
 
-    private Widget hz(Image image,
-                      SmallLabel smallLabel) {
+    private Widget hz( Image image,
+                       SmallLabel smallLabel ) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add(image);
-        h.add(smallLabel);
+        h.add( image );
+        h.add( smallLabel );
         return h;
     }
 
-    private Image getEventImage(String eventType) {
+    private Image getEventImage( String eventType ) {
         int type;
 
         try {
-            type = Integer.parseInt(eventType);
-        } catch (NumberFormatException e) {
-            return new Image(AuditEventsImages.INSTANCE.miscEvent());
+            type = Integer.parseInt( eventType );
+        } catch ( NumberFormatException e ) {
+            return new Image( AuditEventsImages.INSTANCE.miscEvent() );
         }
 
-        switch (type) {
+        switch ( type ) {
             case 1:
-                return new Image(AuditEventsImages.INSTANCE.image1());
+                return new Image( AuditEventsImages.INSTANCE.image1() );
             case 2:
-                return new Image(AuditEventsImages.INSTANCE.image2());
+                return new Image( AuditEventsImages.INSTANCE.image2() );
             case 3:
-                return new Image(AuditEventsImages.INSTANCE.image3());
+                return new Image( AuditEventsImages.INSTANCE.image3() );
             case 4:
-                return new Image(AuditEventsImages.INSTANCE.image4());
+                return new Image( AuditEventsImages.INSTANCE.image4() );
             case 5:
-                return new Image(AuditEventsImages.INSTANCE.image5());
+                return new Image( AuditEventsImages.INSTANCE.image5() );
             case 6:
-                return new Image(AuditEventsImages.INSTANCE.image6());
+                return new Image( AuditEventsImages.INSTANCE.image6() );
             case 7:
-                return new Image(AuditEventsImages.INSTANCE.image7());
+                return new Image( AuditEventsImages.INSTANCE.image7() );
             default:
-                return new Image(AuditEventsImages.INSTANCE.miscEvent());
+                return new Image( AuditEventsImages.INSTANCE.miscEvent() );
         }
     }
 
     @Override
-    public void showBusyIndicator(String message) {
-        BusyPopup.showMessage(message);
+    public void showBusyIndicator( String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override

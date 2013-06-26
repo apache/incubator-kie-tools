@@ -42,9 +42,9 @@ public class BulkRunTestScenarioEditorViewImpl
             UiBinder<Widget, BulkRunTestScenarioEditorViewImpl> {
 
     }
-    
+
     private Presenter presenter;
-    
+
     private static BulkRunTestScenarioEditorViewImplBinder uiBinder = GWT.create( BulkRunTestScenarioEditorViewImplBinder.class );
 
     private final Event<NotificationEvent> notificationEvent;
@@ -54,7 +54,7 @@ public class BulkRunTestScenarioEditorViewImpl
 
     @Inject
     public BulkRunTestScenarioEditorViewImpl( Event<NotificationEvent> notificationEvent/*,
-                                   DependencyGrid dependencyGrid */) {
+                                   DependencyGrid dependencyGrid */ ) {
         //this.dependencyGrid = dependencyGrid;
         initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;
@@ -74,12 +74,13 @@ public class BulkRunTestScenarioEditorViewImpl
     public void setDependencies( List<Dependency> dependencies ) {
         //dependencyGrid.fillList( dependencies );
     }
-/*
-    @Override
-    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
-        gavEditor.addArtifactIdChangeHandler( changeHandler );
-    }
-*/
+
+    /*
+        @Override
+        public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+            gavEditor.addArtifactIdChangeHandler( changeHandler );
+        }
+    */
     @Override
     public void setReadOnly() {
         //dependencyGrid.setReadOnly();
@@ -107,15 +108,15 @@ public class BulkRunTestScenarioEditorViewImpl
     public void hideBusyIndicator() {
         BusyPopup.close();
     }
-    
+
     @UiHandler("runAllButton")
     public void onRunAllButton( final ClickEvent e ) {
         presenter.onRunAllButton();
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;        
+    public void setPresenter( Presenter presenter ) {
+        this.presenter = presenter;
     }
 
 }

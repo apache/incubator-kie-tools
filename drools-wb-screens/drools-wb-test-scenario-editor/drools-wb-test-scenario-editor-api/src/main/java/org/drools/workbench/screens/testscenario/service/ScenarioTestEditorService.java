@@ -40,8 +40,10 @@ public interface ScenarioTestEditorService
         SupportsCopy,
         SupportsRename {
 
-    TestScenarioModelContent loadContent(Path path);
+    TestScenarioModelContent loadContent( Path path );
 
-    void runScenario(Path path, Scenario scenario, String sessoinName);
-    void runAllScenarios(Path path, String sessoinName);
+    void runScenario( Path path,
+                      Scenario scenario );
+
+    void runAllScenarios( Path path );
 }
