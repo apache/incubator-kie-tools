@@ -127,6 +127,17 @@ public class WorkbenchMenuBarView extends Composite
 
     }
 
+    @Override
+    public void clear() {
+        menuBarLeft.clear();
+        menuBarCenter.clear();
+        menuBarRight.clear();
+
+        leftMenuItemsMap.clear();
+        rightMenuItemsMap.clear();
+        centerMenuItemsMap.clear();
+    }
+
     //Recursively converts a Presenter Menu item to a GWT MenuItem
     private Widget makeMenuItem( final MenuItem item ) {
         if ( item instanceof MenuItemCommand ) {

@@ -52,6 +52,8 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         void addMenuItem( final MenuItem menuItem );
 
         void removeMenuItem( final MenuItem menuItem );
+
+        void clear();
     }
 
     private PlaceRequest activePlace;
@@ -70,7 +72,6 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     //Transient items relating to the current Workbench Perspective
     private List<MenuItem> workbenchPerspectiveItems = new ArrayList<MenuItem>();
-
     //Transient items relating to the current WorkbenchPart context
     private List<MenuItem> workbenchContextItems = new ArrayList<MenuItem>();
 
@@ -158,13 +159,10 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     @Override
     public void clearWorkbenchMenus() {
-        if ( workbenchItems.isEmpty() ) {
-            return;
-        }
-        for ( MenuItem item : workbenchItems ) {
-            view.removeMenuItem( item );
-        }
+        view.clear();
         workbenchItems.clear();
+        workbenchPerspectiveItems.clear();
+        workbenchContextItems.clear();
     }
 
     @Override

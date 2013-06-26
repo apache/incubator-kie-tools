@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -19,6 +20,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.events.NewPerspectiveEvent;
+import org.uberfire.workbench.events.NewWorkbenchScreenEvent;
 
 import static java.util.Collections.*;
 
@@ -28,16 +31,17 @@ import static java.util.Collections.*;
 @ApplicationScoped
 public class ActivityBeansCache {
 
-    private final Map<String, IOCBeanDef<Activity>> activitiesById;
-    private final List<ActivityAndMetaInfo> activities;
-    private final IOCBeanManager iocManager;
+    @Inject
+    private IOCBeanManager iocManager;
 
     @Inject
-    public ActivityBeansCache( final IOCBeanManager iocManager ) {
-        this.iocManager = iocManager;
-        this.activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
-        this.activities = new ArrayList<ActivityAndMetaInfo>();
-    }
+    private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
+
+    @Inject
+    private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
+
+    private final Map<String, IOCBeanDef<Activity>> activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
+    private final List<ActivityAndMetaInfo> activities = new ArrayList<ActivityAndMetaInfo>();
 
     @PostConstruct
     public void init() {
@@ -86,6 +90,19 @@ public class ActivityBeansCache {
         }
 
         activitiesById.put( id, activityBean );
+        newWorkbenchScreenEventEvent.fire( new NewWorkbenchScreenEvent( id ) );
+    }
+
+    //Used for runtime plugins
+    public void addNewPerspectiveActivity( final IOCBeanDef<Activity> activityBean ) {
+        final String id = activityBean.getName();
+
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+        }
+
+        activitiesById.put( id, activityBean );
+        newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
     }
 
     private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef<?> beanDefinition ) {

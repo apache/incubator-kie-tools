@@ -16,7 +16,9 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
 
@@ -75,6 +77,8 @@ public class JSEntryPoint {
             final JSWorkbenchScreenActivity activity = new JSWorkbenchScreenActivity( newNativePlugin, beanManager.lookupBean( PlaceManager.class ).getInstance() );
 
             beanManager.addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            beanManager.addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            beanManager.addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
 
             activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
         }
@@ -92,9 +96,9 @@ public class JSEntryPoint {
 
             final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
 
-            beanManager.addBean( (Class) Activity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
+            beanManager.addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
 
-            activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
+            activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
         }
     }
 
