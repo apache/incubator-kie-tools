@@ -41,6 +41,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
@@ -127,7 +128,7 @@ public class Workbench
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
+            final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
             if ( defaultPerspective != null ) {
                 placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
             }
@@ -169,17 +170,15 @@ public class Workbench
 
     }
 
-    private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
-        final Iterator<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        outer_loop:
+    private PerspectiveActivity getDefaultPerspectiveActivity() {
+        PerspectiveActivity defaultPerspective = null;
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
+        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
         while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
-            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
+            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
+            final PerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
                 defaultPerspective = instance;
-                break outer_loop;
             } else {
                 iocManager.destroyBean( instance );
             }

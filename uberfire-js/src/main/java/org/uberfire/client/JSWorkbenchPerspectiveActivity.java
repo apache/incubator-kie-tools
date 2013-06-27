@@ -51,7 +51,7 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
     @Override
     public PerspectiveDefinition getPerspective() {
-        return nativePerspective.getPerspectiveDefinition();
+        return nativePerspective.buildPerspective();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
     @Override
     public boolean isDefault() {
-        return false;
+        return nativePerspective.isDefault();
     }
 
     @Override

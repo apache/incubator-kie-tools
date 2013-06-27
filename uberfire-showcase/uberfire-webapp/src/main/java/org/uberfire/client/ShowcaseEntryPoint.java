@@ -99,7 +99,7 @@ public class ShowcaseEntryPoint {
     private void setupMenu( @Observes final ApplicationReadyEvent event ) {
         menubar.clearWorkbenchMenus();
 
-        final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
+        final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
                 newTopLevelMenu( "Home" )
@@ -194,17 +194,17 @@ public class ShowcaseEntryPoint {
         return perspectives;
     }
 
-    private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
-        final Iterator<IOCBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        outer_loop:
+    private PerspectiveActivity getDefaultPerspectiveActivity() {
+        PerspectiveActivity defaultPerspective = null;
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
+        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
+
         while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
-            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
+            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
+            final PerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
                 defaultPerspective = instance;
-                break outer_loop;
+                break;
             } else {
                 iocManager.destroyBean( instance );
             }

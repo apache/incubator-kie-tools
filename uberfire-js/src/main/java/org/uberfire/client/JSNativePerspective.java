@@ -41,7 +41,6 @@ public class JSNativePerspective {
     private Caller<WorkbenchServices> wbServices;
 
     private JavaScriptObject obj;
-    private PerspectiveDefinition perspectiveDefinition = null;
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
@@ -52,11 +51,17 @@ public class JSNativePerspective {
             throw new RuntimeException( "Can't build more than once." );
         }
         this.obj = obj;
-        buildPerspective();
     }
 
     public native String getId()  /*-{
         return this.@org.uberfire.client.JSNativePerspective::obj.id;
+    }-*/;
+
+    public native boolean isDefault()  /*-{
+        if ((typeof this.@org.uberfire.client.JSNativePerspective::obj.is_default === "boolean")) {
+            return this.@org.uberfire.client.JSNativePerspective::obj.is_default;
+        }
+        return false;
     }-*/;
 
     public void onReveal() {
@@ -79,15 +84,15 @@ public class JSNativePerspective {
         return TRAITS;
     }
 
-    public PerspectiveDefinition getPerspectiveDefinition() {
-        return perspectiveDefinition;
-    }
-
-    private void buildPerspective() {
-        perspectiveDefinition = new PerspectiveDefinitionImpl();
+    public PerspectiveDefinition buildPerspective() {
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl();
         perspectiveDefinition.setName( getId() );
 
         final JSPanelDefinition view = getView( obj );
+        final boolean isSerializable = getIsSerializable( obj );
+
+        perspectiveDefinition.setTransient( !isSerializable );
+
         final JsArray<JSPartDefinition> parts = view.getParts();
         final JsArray<JSPanelDefinition> panels = view.getChildren();
 
@@ -95,6 +100,8 @@ public class JSNativePerspective {
 
         buildParts( root, parts );
         buildPanels( root, panels );
+
+        return perspectiveDefinition;
     }
 
     private void buildParts( final PanelDefinition panel,
@@ -103,6 +110,14 @@ public class JSNativePerspective {
             for ( int i = 0; i < parts.length(); i++ ) {
                 final JSPartDefinition part = parts.get( i );
                 final PlaceRequest placeRequest = new DefaultPlaceRequest( part.getPlaceName() );
+
+                if ( part.getParameters() != null ) {
+                    final JSONObject json = new JSONObject( part.getParameters() );
+                    for ( final String key : json.keySet() ) {
+                        placeRequest.addParameter( key, json.get( key ).isString().stringValue() );
+                    }
+                }
+
                 panel.addPart( new PartDefinitionImpl( placeRequest ) );
             }
         }
@@ -118,8 +133,17 @@ public class JSNativePerspective {
                     newPanel.setWidth( activePanelDef.getWidth() );
                 }
 
-//                newPanel.setMinWidth( activePanelDef.getMinWidth() );
-//                newPanel.setHeight( activePanelDef.getHeight() );
+                if ( activePanelDef.getMinWidth() > 0 ) {
+                    newPanel.setMinWidth( activePanelDef.getMinWidth() );
+                }
+
+                if ( activePanelDef.getHeight() > 0 ) {
+                    newPanel.setHeight( activePanelDef.getHeight() );
+                }
+
+                if ( activePanelDef.getMinHeight() > 0 ) {
+                    newPanel.setHeight( activePanelDef.getMinHeight() );
+                }
 
                 buildParts( newPanel, activePanelDef.getParts() );
 
@@ -129,6 +153,13 @@ public class JSNativePerspective {
             }
         }
     }
+
+    private static native boolean getIsSerializable( final JavaScriptObject o ) /*-{
+        if ((typeof o["is_serializable"]) === "boolean") {
+            return o.is_serializable;
+        }
+        return false;
+    }-*/;
 
     private static native JSPanelDefinition getView( final JavaScriptObject o ) /*-{
         return o.view;

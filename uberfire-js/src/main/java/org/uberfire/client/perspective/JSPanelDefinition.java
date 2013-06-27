@@ -15,12 +15,25 @@ public class JSPanelDefinition extends JavaScriptObject {
         return -1;
     }-*/;
 
-    public final native Integer getMinWidth() /*-{
-        return this.min_width;
+    public final native int getMinWidth() /*-{
+        if ((typeof this["min_width"]) === "number") {
+            return this.min_width;
+        }
+        return -1;
     }-*/;
 
-    public final native Integer getHeight() /*-{
-        return this.height;
+    public final native int getHeight() /*-{
+        if ((typeof this["height"]) === "number") {
+            return this.height;
+        }
+        return -1;
+    }-*/;
+
+    public final native int getMinHeight() /*-{
+        if ((typeof this["min_height"]) === "number") {
+            return this.min_height;
+        }
+        return -1;
     }-*/;
 
     public final native String getPosition() /*-{
