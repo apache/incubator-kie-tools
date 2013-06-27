@@ -235,7 +235,7 @@ public class ProjectResourceDispatcher {
             }
 
             //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath(), "someSession" );
+            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath() );
 
             //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
 
