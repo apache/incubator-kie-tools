@@ -35,17 +35,11 @@ public interface TechnicalView extends HasBusyIndicator,
 
     void setGroups( final Collection<Group> groups );
 
-    void setRepositories( final Collection<Repository> repositories,
-                          final Group activeGroup );
+    void setRepositories( final Collection<Repository> repositories );
 
-    void setProjects( final Collection<Project> projects,
-                      final Repository activeRepository,
-                      final Group activeGroup );
+    void setProjects( final Collection<Project> projects );
 
-    void setItems( final FolderListing activeFolderListing,
-                   final Project activeProject,
-                   final Repository activeRepository,
-                   final Group activeGroup );
+    void setItems( final FolderListing activeFolderListing );
 
     void addRepository( final Repository repository );
 

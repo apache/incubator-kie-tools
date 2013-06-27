@@ -123,9 +123,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
             final Group selectedGroup = getSelectedGroup( sortedGroups,
                                                           activeGroup );
-            ddGroups.setText( selectedGroup.getName() );
-            ddGroups.getTriggerWidget().setEnabled( true );
-            presenter.groupSelected( selectedGroup );
+            selectGroup( selectedGroup );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -141,12 +139,11 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private Group getSelectedGroup( final Collection<Group> groups,
-                                    final Group activeGroup ) {
-        if ( activeGroup != null && groups.contains( activeGroup ) ) {
-            return activeGroup;
-        }
-        return groups.iterator().next();
+    @Override
+    public void selectGroup( final Group group ) {
+        ddGroups.setText( group.getName() );
+        ddGroups.getTriggerWidget().setEnabled( true );
+        presenter.groupSelected( group );
     }
 
     private IsWidget makeGroupNavLink( final Group group ) {
@@ -160,6 +157,17 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
+    }
+
+    private Group getSelectedGroup( final Collection<Group> groups,
+                                    final Group activeGroup ) {
+        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
+        for ( Group group : groups ) {
+            if ( group.equals( activeGroup ) ) {
+                return activeGroup;
+            }
+        }
+        return groups.iterator().next();
     }
 
     @Override
@@ -177,9 +185,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
             final Repository selectedRepository = getSelectedRepository( sortedRepositories,
                                                                          activeRepository );
-            ddRepositories.setText( selectedRepository.getAlias() );
-            ddRepositories.getTriggerWidget().setEnabled( true );
-            presenter.repositorySelected( selectedRepository );
+            selectRepository( selectedRepository );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -193,12 +199,11 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private Repository getSelectedRepository( final Collection<Repository> repositories,
-                                              final Repository activeRepository ) {
-        if ( activeRepository != null && repositories.contains( activeRepository ) ) {
-            return activeRepository;
-        }
-        return repositories.iterator().next();
+    @Override
+    public void selectRepository( final Repository repository ) {
+        ddRepositories.setText( repository.getAlias() );
+        ddRepositories.getTriggerWidget().setEnabled( true );
+        presenter.repositorySelected( repository );
     }
 
     private IsWidget makeRepositoryNavLink( final Repository repository ) {
@@ -212,6 +217,17 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
+    }
+
+    private Repository getSelectedRepository( final Collection<Repository> repositories,
+                                              final Repository activeRepository ) {
+        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
+        for ( Repository repository : repositories ) {
+            if ( repository.equals( activeRepository ) ) {
+                return activeRepository;
+            }
+        }
+        return repositories.iterator().next();
     }
 
     @Override
@@ -229,9 +245,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
             final Project selectedProject = getSelectedProject( sortedProjects,
                                                                 activeProject );
-            ddProjects.setText( selectedProject.getTitle() );
-            ddProjects.getTriggerWidget().setEnabled( true );
-            presenter.projectSelected( selectedProject );
+            selectProject( selectedProject );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -243,12 +257,11 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private Project getSelectedProject( final Collection<Project> projects,
-                                        final Project activeProject ) {
-        if ( activeProject != null && projects.contains( activeProject ) ) {
-            return activeProject;
-        }
-        return projects.iterator().next();
+    @Override
+    public void selectProject( final Project project ) {
+        ddProjects.setText( project.getTitle() );
+        ddProjects.getTriggerWidget().setEnabled( true );
+        presenter.projectSelected( project );
     }
 
     private IsWidget makeProjectNavLink( final Project project ) {
@@ -262,6 +275,17 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
+    }
+
+    private Project getSelectedProject( final Collection<Project> projects,
+                                        final Project activeProject ) {
+        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
+        for ( Project project : projects ) {
+            if ( project.equals( activeProject ) ) {
+                return activeProject;
+            }
+        }
+        return projects.iterator().next();
     }
 
     @Override
@@ -279,9 +303,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
             final Package selectedPackage = getSelectedPackage( sortedPackages,
                                                                 activePackage );
-            ddPackages.setText( selectedPackage.getCaption() );
-            ddPackages.getTriggerWidget().setEnabled( true );
-            presenter.packageSelected( selectedPackage );
+            selectPackage( selectedPackage );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -291,12 +313,11 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private Package getSelectedPackage( final Collection<Package> packages,
-                                        final Package activePackage ) {
-        if ( activePackage != null && packages.contains( activePackage ) ) {
-            return activePackage;
-        }
-        return packages.iterator().next();
+    @Override
+    public void selectPackage( final Package pkg ) {
+        ddPackages.setText( pkg.getCaption() );
+        ddPackages.getTriggerWidget().setEnabled( true );
+        presenter.packageSelected( pkg );
     }
 
     private IsWidget makePackageNavLink( final Package pkg ) {
@@ -310,6 +331,17 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
+    }
+
+    private Package getSelectedPackage( final Collection<Package> packages,
+                                        final Package activePackage ) {
+        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
+        for ( Package pkg : packages ) {
+            if ( pkg.equals( activePackage ) ) {
+                return activePackage;
+            }
+        }
+        return packages.iterator().next();
     }
 
     @Override

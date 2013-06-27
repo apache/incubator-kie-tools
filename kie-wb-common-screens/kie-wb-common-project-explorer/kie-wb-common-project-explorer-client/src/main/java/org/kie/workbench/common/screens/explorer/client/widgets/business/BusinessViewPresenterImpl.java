@@ -26,6 +26,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
+import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
@@ -99,21 +100,17 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     @Inject
     private LRUItemCache itemCache;
 
-    private Group getActiveGroup() {
-        return context.getActiveGroup();
-    }
+    //Active context
+    private Group activeGroup = null;
+    private Repository activeRepository = null;
+    private Project activeProject = null;
+    private Package activePackage = null;
 
-    private Repository getActiveRepository() {
-        return context.getActiveRepository();
-    }
-
-    private Project getActiveProject() {
-        return context.getActiveProject();
-    }
-
-    private Package getActivePackage() {
-        return context.getActivePackage();
-    }
+    //Displayed context
+    private Group displayedGroup = null;
+    private Repository displayedRepository = null;
+    private Project displayedProject = null;
+    private Package displayedPackage = null;
 
     @PostConstruct
     public void init() {
@@ -121,12 +118,23 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     }
 
     private void initialiseViewForActiveContext() {
+        //Store active context as it changes during population of the view
+        activeGroup = context.getActiveGroup();
+        activeRepository = context.getActiveRepository();
+        activeProject = context.getActiveProject();
+        activePackage = context.getActivePackage();
+
+        //Invalidate the view so it is constructed from the active context
+        displayedGroup = null;
+        displayedRepository = null;
+        displayedProject = null;
+        displayedPackage = null;
+
         //Show busy popup. Groups cascade through Repositories, Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Group>>() {
             @Override
             public void callback( final Collection<Group> groups ) {
-                final Group activeGroup = getActiveGroup();
                 view.setGroups( groups,
                                 activeGroup );
 
@@ -137,19 +145,32 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void groupSelected( final Group group ) {
-        if ( group == null || !group.equals( getActiveGroup() ) ) {
+        if ( Utils.hasGroupChanged( group,
+                                    displayedGroup ) ) {
+            activeGroup = group;
+            displayedGroup = group;
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
+            doGroupChanged( group );
         }
+    }
 
+    public void onGroupChanged( final @Observes GroupChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Group group = event.getGroup();
+        view.selectGroup( group );
+    }
+
+    private void doGroupChanged( final Group group ) {
         //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
-                final Repository activeRepository = getActiveRepository();
                 view.setRepositories( repositories,
                                       activeRepository );
-
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
@@ -157,19 +178,32 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void repositorySelected( final Repository repository ) {
-        if ( repository == null || !repository.equals( getActiveRepository() ) ) {
+        if ( Utils.hasRepositoryChanged( repository,
+                                         displayedRepository ) ) {
+            activeRepository = repository;
+            displayedRepository = repository;
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
+            doRepositoryChanged( repository );
         }
+    }
 
+    public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Repository repository = event.getRepository();
+        view.selectRepository( repository );
+    }
+
+    private void doRepositoryChanged( final Repository repository ) {
         //Show busy popup. Projects cascade through Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
             public void callback( final Collection<Project> projects ) {
-                final Project activeProject = getActiveProject();
                 view.setProjects( projects,
                                   activeProject );
-
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
@@ -177,15 +211,30 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void projectSelected( final Project project ) {
-        if ( project == null || !project.equals( getActiveProject() ) ) {
+        if ( Utils.hasProjectChanged( project,
+                                      displayedProject ) ) {
+            activeProject = project;
+            displayedProject = project;
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+            doProjectChanged( project );
         }
+    }
 
+    public void onProjectChanged( final @Observes ProjectChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Project project = event.getProject();
+        view.selectProject( project );
+    }
+
+    private void doProjectChanged( final Project project ) {
         //Check cache
         if ( project != null ) {
             final Collection<Package> packages = packageCache.getEntry( project );
             if ( packages != null ) {
-                final Package activePackage = getActivePackage();
+                view.selectProject( project );
                 view.setPackages( packages,
                                   activePackage );
                 return;
@@ -201,20 +250,33 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                     packageCache.setEntry( project,
                                            packages );
                 }
-                final Package activePackage = getActivePackage();
                 view.setPackages( packages,
-                                  activePackage );
-
+                                  context.getActivePackage() );
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }
 
     @Override
     public void packageSelected( final Package pkg ) {
-        if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+        if ( Utils.hasPackageChanged( pkg,
+                                      displayedPackage ) ) {
+            activePackage = pkg;
+            displayedPackage = pkg;
             packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+            doPackageChanged( pkg );
         }
+    }
 
+    public void onPackageChanged( final @Observes PackageChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Package pkg = event.getPackage();
+        view.selectPackage( pkg );
+    }
+
+    private void doPackageChanged( final Package pkg ) {
         //Check cache
         if ( pkg != null ) {
             final Collection<FolderItem> folderItems = itemCache.getEntry( pkg );
@@ -236,7 +298,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                 }
                 view.setItems( folderItems );
                 view.hideBusyIndicator();
-
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getItems( pkg );
     }
@@ -321,11 +382,10 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     }
 
     private boolean isActivePackage( final Package pkg ) {
-        final Package activePackage = getActivePackage();
-        if ( pkg == null || activePackage == null ) {
+        if ( pkg == null || displayedPackage == null ) {
             return false;
         }
-        return pkg.equals( activePackage );
+        return pkg.equals( displayedPackage );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package

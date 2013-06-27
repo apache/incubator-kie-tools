@@ -27,16 +27,26 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface TechnicalViewPresenter extends BaseViewPresenter {
 
-    void groupSelected( final Group group );
+    void selectGroup( final Group group );
 
-    void repositorySelected( final Repository repository );
+    void selectRepository( final Repository repository );
 
-    void projectSelected( final Project project );
+    void selectProject( final Project project );
 
-    void parentFolderSelected( final FolderListing folder );
+    void selectProjectRoot();
 
-    void folderSelected( final Path path );
+    void selectParentFolder( final FolderListing folder );
 
-    void fileSelected( final Path path );
+    void selectFolder( final Path path );
+
+    void selectFile( final Path path );
+
+    Group getActiveGroup();
+
+    Repository getActiveRepository();
+
+    Project getActiveProject();
+
+    FolderListing getActiveFolderListing();
 
 }

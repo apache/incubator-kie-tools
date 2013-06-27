@@ -83,11 +83,6 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private TechnicalViewPresenter presenter;
 
-    private Group activeGroup;
-    private Repository activeRepository;
-    private Project activeProject;
-    private FolderListing activeFolderListing;
-
     @PostConstruct
     public void init() {
         //Cannot create and bind UI until after injection points have been initialized
@@ -103,52 +98,30 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     public void setGroups( final Collection<Group> groups ) {
         sortedGroups.clear();
         sortedGroups.addAll( groups );
-        this.activeGroup = null;
-        this.activeRepository = null;
-        this.activeProject = null;
-        this.activeFolderListing = null;
         activeContext = Context.GROUPS;
         refresh();
     }
 
     @Override
-    public void setRepositories( final Collection<Repository> repositories,
-                                 final Group activeGroup ) {
+    public void setRepositories( final Collection<Repository> repositories ) {
         sortedRepositories.clear();
         sortedRepositories.addAll( repositories );
-        this.activeGroup = activeGroup;
-        this.activeRepository = null;
-        this.activeProject = null;
-        this.activeFolderListing = null;
         activeContext = Context.REPOSITORIES;
         refresh();
     }
 
     @Override
-    public void setProjects( final Collection<Project> projects,
-                             final Repository activeRepository,
-                             final Group activeGroup ) {
+    public void setProjects( final Collection<Project> projects ) {
         sortedProjects.clear();
         sortedProjects.addAll( projects );
-        this.activeGroup = activeGroup;
-        this.activeRepository = activeRepository;
-        this.activeProject = null;
-        this.activeFolderListing = null;
         activeContext = Context.PROJECTS;
         refresh();
     }
 
     @Override
-    public void setItems( final FolderListing activeFolderListing,
-                          final Project activeProject,
-                          final Repository activeRepository,
-                          final Group activeGroup ) {
+    public void setItems( final FolderListing activeFolderListing ) {
         sortedFolderListing.clear();
         sortedFolderListing.addAll( activeFolderListing.getFolderItems() );
-        this.activeGroup = activeGroup;
-        this.activeRepository = activeRepository;
-        this.activeProject = activeProject;
-        this.activeFolderListing = activeFolderListing;
         activeContext = Context.PATHS;
         refresh();
     }
@@ -215,7 +188,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.groupSelected( group );
+                presenter.selectGroup( group );
             }
         } );
         return navLink;
@@ -240,7 +213,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.groupSelected( null );
+                presenter.selectGroup( null );
             }
         } );
         return navLink;
@@ -252,7 +225,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.repositorySelected( repository );
+                presenter.selectRepository( repository );
             }
         } );
         return navLink;
@@ -277,7 +250,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.repositorySelected( null );
+                presenter.selectRepository( null );
             }
         } );
         return navLink;
@@ -289,7 +262,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.projectSelected( project );
+                presenter.selectProject( project );
             }
         } );
         return navLink;
@@ -298,7 +271,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private void populatePathView() {
         items.clear();
         items.add( new NavHeader( ProjectExplorerConstants.INSTANCE.files() ) );
-        items.add( makeParentFolderNavLink( activeFolderListing ) );
+        items.add( makeParentFolderNavLink( presenter.getActiveFolderListing() ) );
         if ( !sortedFolderListing.isEmpty() ) {
             for ( FolderItem folderItem : sortedFolderListing ) {
                 switch ( folderItem.getType() ) {
@@ -321,7 +294,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.parentFolderSelected( folder );
+                presenter.selectParentFolder( folder );
             }
         } );
         return navLink;
@@ -334,7 +307,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.folderSelected( folderItem.getPath() );
+                presenter.selectFolder( folderItem.getPath() );
             }
         } );
         return navLink;
@@ -346,7 +319,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.fileSelected( folderItem.getPath() );
+                presenter.selectFile( folderItem.getPath() );
             }
         } );
         return navLink;
@@ -361,6 +334,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     }
 
     private void makeGroupBreadCrumb() {
+        final Group activeGroup = presenter.getActiveGroup();
         if ( activeGroup == null ) {
             return;
         }
@@ -368,13 +342,14 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                presenter.groupSelected( activeGroup );
+                presenter.selectRepository( null );
             }
         } );
         breadcrumbs.add( link );
     }
 
     private void makeRepositoryBreadCrumb() {
+        final Repository activeRepository = presenter.getActiveRepository();
         if ( activeRepository == null ) {
             return;
         }
@@ -382,13 +357,14 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                presenter.repositorySelected( activeRepository );
+                presenter.selectProject( null );
             }
         } );
         breadcrumbs.add( link );
     }
 
     private void makeProjectBreadCrumb() {
+        final Project activeProject = presenter.getActiveProject();
         if ( activeProject == null ) {
             return;
         }
@@ -396,13 +372,14 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                presenter.projectSelected( activeProject );
+                presenter.selectProjectRoot();
             }
         } );
         breadcrumbs.add( link );
     }
 
     private void makeFolderListingBreadCrumb() {
+        final FolderListing activeFolderListing = presenter.getActiveFolderListing();
         if ( activeFolderListing == null ) {
             return;
         }
@@ -411,7 +388,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
             link.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( final ClickEvent event ) {
-                    presenter.folderSelected( segment );
+                    presenter.selectFolder( segment );
                 }
             } );
             breadcrumbs.add( link );

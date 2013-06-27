@@ -191,7 +191,7 @@ public class ProjectServiceImpl
 
         org.kie.commons.java.nio.file.Path nioResource = paths.convert( resource );
 
-        if ( !Files.exists( nioResource ) || Files.isRegularFile( nioResource ) ) {
+        if ( Files.isRegularFile( nioResource ) ) {
             nioResource = nioResource.getParent();
         }
 

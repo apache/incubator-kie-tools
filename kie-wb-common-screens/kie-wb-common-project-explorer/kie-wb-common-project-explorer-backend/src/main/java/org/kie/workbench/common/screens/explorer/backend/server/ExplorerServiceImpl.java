@@ -158,6 +158,8 @@ public class ExplorerServiceImpl
         if ( project == null ) {
             return packages;
         }
+        //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
+        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
         final Path projectRoot = project.getRootPath();
         final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
         for ( String src : sourcePaths ) {
@@ -166,10 +168,16 @@ public class ExplorerServiceImpl
                                                   nioPackageRootSrcPath ) );
         }
 
-        final org.kie.commons.java.nio.file.Path nioPackagesRootPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
+        //Construct Package objects for each package name
+        final Set<String> resolvedPackages = new HashSet<String>();
         for ( String packagePathSuffix : packageNames ) {
-            final org.kie.commons.java.nio.file.Path nioPackagePath = nioPackagesRootPath.resolve( packagePathSuffix );
-            packages.add( makePackage( nioPackagePath ) );
+            for ( String src : sourcePaths ) {
+                final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    packages.add( makePackage( nioPackagePath ) );
+                    resolvedPackages.add( packagePathSuffix );
+                }
+            }
         }
 
         return packages;

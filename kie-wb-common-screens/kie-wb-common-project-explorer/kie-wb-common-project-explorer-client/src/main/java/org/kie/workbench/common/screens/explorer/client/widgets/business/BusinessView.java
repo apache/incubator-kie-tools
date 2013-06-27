@@ -36,14 +36,22 @@ public interface BusinessView extends HasBusyIndicator,
     void setGroups( final Collection<Group> groups,
                     final Group activeGroup );
 
+    void selectGroup( final Group group );
+
     void setRepositories( final Collection<Repository> repositories,
                           final Repository activeRepository );
+
+    void selectRepository( final Repository repository );
 
     void setProjects( final Collection<Project> projects,
                       final Project activeProject );
 
+    void selectProject( final Project project );
+
     void setPackages( final Collection<Package> packages,
                       final Package activePackage );
+
+    void selectPackage( final Package pkg );
 
     void setItems( final Collection<FolderItem> folderItems );
 

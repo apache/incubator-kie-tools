@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
+import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -95,23 +96,12 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Inject
     private TechnicalView view;
 
-    private FolderListing activeFolderListing;
-
-    private Group getActiveGroup() {
-        return context.getActiveGroup();
-    }
-
-    private Repository getActiveRepository() {
-        return context.getActiveRepository();
-    }
-
-    private Project getActiveProject() {
-        return context.getActiveProject();
-    }
-
-    private Package getActivePackage() {
-        return context.getActivePackage();
-    }
+    //Active context
+    private Group activeGroup = null;
+    private Repository activeRepository = null;
+    private Project activeProject = null;
+    private Package activePackage = null;
+    private FolderListing activeFolderListing = null;
 
     @PostConstruct
     public void init() {
@@ -119,10 +109,11 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     private void initialiseViewForActiveContext() {
-        final Group activeGroup = getActiveGroup();
-        final Repository activeRepository = getActiveRepository();
-        final Project activeProject = getActiveProject();
-        final Package activePackage = getActivePackage();
+        activeGroup = context.getActiveGroup();
+        activeRepository = context.getActiveRepository();
+        activeProject = context.getActiveProject();
+        activePackage = context.getActivePackage();
+        activeFolderListing = null;
 
         if ( activePackage != null ) {
             loadFilesAndFolders( activePackage.getProjectRootPath() );
@@ -143,6 +134,10 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     private void loadGroups() {
+        activeGroup = null;
+        activeRepository = null;
+        activeProject = null;
+        activePackage = null;
         activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Group>>() {
@@ -155,30 +150,33 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
     }
 
-    private void loadRepositories( final Group activeGroup ) {
+    private void loadRepositories( final Group group ) {
+        activeGroup = group;
+        activeRepository = null;
+        activeProject = null;
+        activePackage = null;
         activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
-                view.setRepositories( repositories,
-                                      activeGroup );
+                view.setRepositories( repositories );
                 view.hideBusyIndicator();
             }
 
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( activeGroup );
     }
 
-    private void loadProjects( final Repository activeRepository ) {
+    private void loadProjects( final Repository repository ) {
+        activeRepository = repository;
+        activeProject = null;
+        activePackage = null;
         activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
             public void callback( final Collection<Project> projects ) {
-                final Group activeGroup = getActiveGroup();
-                view.setProjects( projects,
-                                  activeRepository,
-                                  activeGroup );
+                view.setProjects( projects );
                 view.hideBusyIndicator();
             }
 
@@ -190,82 +188,123 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
             public void callback( final FolderListing folderListing ) {
-                final Project activeProject = getActiveProject();
-                final Repository activeRepository = getActiveRepository();
-                final Group activeGroup = getActiveGroup();
                 activeFolderListing = folderListing;
-                view.setItems( folderListing,
-                               activeProject,
-                               activeRepository,
-                               activeGroup );
+                view.setItems( folderListing );
                 view.hideBusyIndicator();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getFolderListing( path );
     }
 
     @Override
-    public void groupSelected( final Group group ) {
-        if ( group == null || !group.equals( getActiveGroup() ) ) {
+    public void selectGroup( final Group group ) {
+        if ( Utils.hasGroupChanged( group,
+                                    activeGroup ) ) {
+            activeGroup = group;
             groupChangeEvent.fire( new GroupChangeEvent( group ) );
-        }
-        if ( group == null ) {
-            loadGroups();
-        } else {
-            loadRepositories( group );
+            if ( group == null ) {
+                loadGroups();
+            } else {
+                loadRepositories( group );
+            }
         }
     }
 
+    public void onGroupChanged( final @Observes GroupChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Group group = event.getGroup();
+        selectGroup( group );
+    }
+
     @Override
-    public void repositorySelected( final Repository repository ) {
-        if ( repository == null || !repository.equals( getActiveRepository() ) ) {
+    public void selectRepository( final Repository repository ) {
+        if ( Utils.hasRepositoryChanged( repository,
+                                         activeRepository ) ) {
+            activeRepository = repository;
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
-        }
-        if ( repository == null ) {
-            loadRepositories( getActiveGroup() );
-        } else {
-            loadProjects( repository );
+            if ( repository == null ) {
+                loadRepositories( activeGroup );
+            } else {
+                loadProjects( repository );
+            }
         }
     }
 
+    public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Repository repository = event.getRepository();
+        selectRepository( repository );
+    }
+
     @Override
-    public void projectSelected( final Project project ) {
-        if ( project == null || !project.equals( getActiveProject() ) ) {
+    public void selectProject( final Project project ) {
+        if ( Utils.hasProjectChanged( project,
+                                      activeProject ) ) {
+            activeProject = project;
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-        }
-        if ( project == null ) {
-            loadProjects( getActiveRepository() );
-        } else {
-            loadFilesAndFolders( project.getRootPath() );
+            if ( project == null ) {
+                loadProjects( activeRepository );
+            } else {
+                loadFilesAndFolders( project.getRootPath() );
+            }
         }
     }
 
+    public void onProjectChanged( final @Observes ProjectChangeEvent event ) {
+        //Don't process event if the view is not visible. State is synchronized when made visible.
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Project project = event.getProject();
+        selectProject( project );
+    }
+
     @Override
-    public void parentFolderSelected( final FolderListing folder ) {
+    public void selectProjectRoot() {
+        activePackage = null;
+        packageChangeEvent.fire( new PackageChangeEvent() );
+        pathChangeEvent.fire( new PathChangeEvent( activeProject.getRootPath() ) );
+        loadFilesAndFolders( activeProject.getRootPath() );
+    }
+
+    @Override
+    public void selectParentFolder( final FolderListing folder ) {
         //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
         projectService.call( new RemoteCallback<Package>() {
             @Override
             public void callback( final Package pkg ) {
-                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                if ( Utils.hasPackageChanged( pkg,
+                                              activePackage ) ) {
+                    activePackage = pkg;
                     packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
                 }
             }
         } ).resolvePackage( folder.getParentPath() );
 
         pathChangeEvent.fire( new PathChangeEvent( folder.getParentPath() ) );
-        if ( folder.getPath().equals( getActiveProject().getRootPath() ) ) {
-            loadProjects( getActiveRepository() );
+
+        //If the folder represents the Project Root the parent is the list of projects
+        if ( folder.getPath().equals( activeProject.getRootPath() ) ) {
+            loadProjects( activeRepository );
         } else {
             loadFilesAndFolders( folder.getParentPath() );
         }
     }
 
     @Override
-    public void folderSelected( final Path path ) {
+    public void selectFolder( final Path path ) {
         //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
         projectService.call( new RemoteCallback<Package>() {
             @Override
             public void callback( final Package pkg ) {
-                if ( pkg == null || !pkg.equals( getActivePackage() ) ) {
+                if ( Utils.hasPackageChanged( pkg,
+                                              activePackage ) ) {
+                    activePackage = pkg;
                     packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
                 }
             }
@@ -276,9 +315,29 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     @Override
-    public void fileSelected( final Path path ) {
+    public void selectFile( final Path path ) {
         pathChangeEvent.fire( new PathChangeEvent( path ) );
         placeManager.goTo( path );
+    }
+
+    @Override
+    public Group getActiveGroup() {
+        return activeGroup;
+    }
+
+    @Override
+    public Repository getActiveRepository() {
+        return activeRepository;
+    }
+
+    @Override
+    public Project getActiveProject() {
+        return activeProject;
+    }
+
+    @Override
+    public FolderListing getActiveFolderListing() {
+        return activeFolderListing;
     }
 
     @Override
