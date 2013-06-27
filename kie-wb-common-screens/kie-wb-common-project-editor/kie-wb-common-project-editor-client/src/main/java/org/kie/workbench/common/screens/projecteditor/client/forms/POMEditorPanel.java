@@ -16,20 +16,18 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.services.data.observer.Observer;
 import org.kie.workbench.common.services.project.service.model.POM;
-
-import javax.inject.Inject;
 
 public class POMEditorPanel
         implements IsWidget {
 
     private final POMEditorPanelView view;
     private POM model;
-    private Observer<POM> observer;
 
     @Inject
     public POMEditorPanel(final POMEditorPanelView view) {
@@ -43,7 +41,6 @@ public class POMEditorPanel
         }
 
         this.model = model;
-        observer = new Observer(model);
 
         view.setGAV(model.getGav());
         view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
@@ -70,6 +67,7 @@ public class POMEditorPanel
     }
 
     public boolean isDirty() {
-        return observer.isDirty(model);
+        return false;
     }
+
 }

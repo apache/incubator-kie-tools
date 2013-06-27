@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.data.util;
+package org.kie.workbench.common.widgets.client.util;
 
 public class ConstraintValueEditorHelper {
 

@@ -24,7 +24,6 @@
     <module>kie-wb-common-data-modeller-core</module>
     <module>kie-wb-common-security</module>
     <module>kie-wb-common-builder</module>
-    <module>kie-wb-common-data</module>
     <module>kie-wb-common-workingset-api</module>
     <module>kie-wb-common-workingset-client</module>
     <!--module>kie-wb-common-defaultapprover</module-->
