@@ -28,7 +28,6 @@ import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
 import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
@@ -352,7 +351,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
             public void callback( final ResourceContext context ) {
                 final Project project = context.getProject();
                 final Package pkg = context.getPackage();
-                if ( project == null && pkg == null ) {
+                if ( project == null || pkg == null ) {
                     return;
                 }
                 //Is the new resource a Project root
@@ -362,8 +361,8 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                 }
                 //Otherwise it's a file inside a package
                 itemCache.invalidateCache( pkg );
-                if ( isActivePackage( pkg ) ) {
-                    view.addItem( makeFileItem( resource ) );
+                if ( isInActivePackage( resource ) ) {
+                    view.addItem( Utils.makeFileItem( resource ) );
                 }
             }
 
@@ -381,12 +380,36 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         } ).resolveResourceContext( resource );
     }
 
-    private boolean isActivePackage( final Package pkg ) {
-        if ( pkg == null || displayedPackage == null ) {
+    private boolean isInActivePackage( final Path resource ) {
+        if ( displayedPackage == null ) {
             return false;
         }
-        return pkg.equals( displayedPackage );
+        //Check resource path starts with the active folder list path
+        final Path pkgMainSrcPath = displayedPackage.getPackageMainSrcPath();
+        final Path pkgTestSrcPath = displayedPackage.getPackageTestSrcPath();
+        final Path pkgMainResourcesPath = displayedPackage.getPackageMainResourcesPath();
+        final Path pkgTestResourcesPath = displayedPackage.getPackageTestResourcesPath();
+
+        if ( Utils.isLeaf( resource,
+                     pkgMainSrcPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                     pkgTestSrcPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                     pkgMainResourcesPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                     pkgTestResourcesPath ) ) {
+            return true;
+        }
+        return false;
     }
+
+
 
     // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
@@ -394,21 +417,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
-
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null && pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( isActivePackage( pkg ) ) {
-                    view.removeItem( makeFileItem( resource ) );
-                }
-            }
-        } ).resolveResourceContext( resource );
+        if ( isInActivePackage( resource ) ) {
+            view.removeItem( Utils.makeFileItem( resource ) );
+        }
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
@@ -417,21 +428,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
-
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null && pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( isActivePackage( pkg ) ) {
-                    view.addItem( makeFileItem( resource ) );
-                }
-            }
-        } ).resolveResourceContext( resource );
+        if ( isInActivePackage( resource ) ) {
+            view.addItem( Utils.makeFileItem( resource ) );
+        }
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
@@ -440,23 +439,11 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
-
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null && pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( isActivePackage( pkg ) ) {
-                    final FolderItem item = makeFileItem( resource );
-                    view.removeItem( item );
-                    view.addItem( item );
-                }
-            }
-        } ).resolveResourceContext( resource );
+        if ( isInActivePackage( resource ) ) {
+            final FolderItem item = Utils.makeFileItem( resource );
+            view.removeItem( item );
+            view.addItem( item );
+        }
     }
 
     // Refresh when a batch Resource change has occurred
@@ -470,46 +457,33 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                 @Override
                 public void callback( final ResourceContext context ) {
                     final Project project = context.getProject();
-                    final Package pkg = context.getPackage();
-                    if ( project == null && pkg == null ) {
+                    if ( project == null ) {
                         return;
                     }
                     packageCache.invalidateCache( project );
+                    final Package pkg = context.getPackage();
+                    if ( pkg == null ) {
+                        return;
+                    }
                     itemCache.invalidateCache( pkg );
-                    if ( isActivePackage( pkg ) ) {
-                        switch ( changeType ) {
-                            case ADD:
-                                view.addItem( makeFileItem( resource ) );
-                                break;
-                            case DELETE:
-                                view.removeItem( makeFileItem( resource ) );
+                    if ( isInActivePackage( resource ) ) {
+                        if ( Utils.isPackagePath( resource,
+                                                  pkg ) ) {
+                            view.addPackage( pkg );
+                        } else {
+                            switch ( changeType ) {
+                                case ADD:
+                                    view.addItem( Utils.makeFileItem( resource ) );
+                                    break;
+                                case DELETE:
+                                    view.removeItem( Utils.makeFileItem( resource ) );
+                            }
                         }
-                    } else if ( isNewPackage( pkg ) ) {
-                        view.addPackage( pkg );
                     }
-                }
-
-                private boolean isNewPackage( final Package pkg ) {
-                    if ( pkg.getPackageMainSrcPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageTestSrcPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageMainResourcesPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageTestResourcesPath().equals( resource ) ) {
-                        return true;
-                    }
-                    return false;
                 }
 
             } ).resolveResourceContext( resource );
         }
-    }
-
-    private FolderItem makeFileItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FILE );
     }
 
 }

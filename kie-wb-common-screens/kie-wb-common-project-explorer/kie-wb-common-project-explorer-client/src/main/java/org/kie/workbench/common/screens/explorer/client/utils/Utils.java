@@ -15,16 +15,25 @@
  */
 package org.kie.workbench.common.screens.explorer.client.utils;
 
-import org.kie.workbench.common.services.shared.context.Project;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.services.shared.context.Package;
+import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * General utilities
  */
 public class Utils {
 
+    /**
+     * A convenience method to compare two Groups avoiding cluttering code with null checks.
+     * @param group
+     * @param activeGroup
+     * @return
+     */
     public static boolean hasGroupChanged( final Group group,
                                            final Group activeGroup ) {
         if ( group == null && activeGroup != null ) {
@@ -39,6 +48,12 @@ public class Utils {
         return !group.equals( activeGroup );
     }
 
+    /**
+     * A convenience method to compare two Repositories avoiding cluttering code with null checks.
+     * @param repository
+     * @param activeRepository
+     * @return
+     */
     public static boolean hasRepositoryChanged( final Repository repository,
                                                 final Repository activeRepository ) {
         if ( repository == null && activeRepository != null ) {
@@ -53,6 +68,12 @@ public class Utils {
         return !repository.equals( activeRepository );
     }
 
+    /**
+     * A convenience method to compare two Projects avoiding cluttering code with null checks.
+     * @param project
+     * @param activeProject
+     * @return
+     */
     public static boolean hasProjectChanged( final Project project,
                                              final Project activeProject ) {
         if ( project == null && activeProject != null ) {
@@ -67,6 +88,12 @@ public class Utils {
         return !project.equals( activeProject );
     }
 
+    /**
+     * A convenience method to compare two PAckages avoiding cluttering code with null checks.
+     * @param pkg
+     * @param activePackage
+     * @return
+     */
     public static boolean hasPackageChanged( final Package pkg,
                                              final Package activePackage ) {
         if ( pkg == null && activePackage != null ) {
@@ -79,6 +106,71 @@ public class Utils {
             return false;
         }
         return !pkg.equals( activePackage );
+    }
+
+    /**
+     * Check whether a Path represents a Package
+     * @param resource
+     * @param pkg
+     * @return
+     */
+    public static boolean isPackagePath( final Path resource,
+                                         final Package pkg ) {
+        if ( pkg.getPackageMainSrcPath().equals( resource ) ) {
+            return true;
+        } else if ( pkg.getPackageTestSrcPath().equals( resource ) ) {
+            return true;
+        } else if ( pkg.getPackageMainResourcesPath().equals( resource ) ) {
+            return true;
+        } else if ( pkg.getPackageTestResourcesPath().equals( resource ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Make a Folder Item representing a File
+     * @param path
+     * @return
+     */
+    public static FolderItem makeFileItem( final Path path ) {
+        return new FolderItem( path,
+                               path.getFileName(),
+                               FolderItemType.FILE );
+    }
+
+    /**
+     * Make a Folder Item representing a Folder
+     * @param path
+     * @return
+     */
+    public static FolderItem makeFolderItem( final Path path ) {
+        return new FolderItem( path,
+                               path.getFileName(),
+                               FolderItemType.FOLDER );
+    }
+
+    /**
+     * Check whether the child is is the immediate leaf of the parent. This method is really dirty as it depends
+     * upon String manipulation to determine whether the child is the immediate leaf of the parent. This was originally
+     * performed server-side using NIO2 Path semantics however problems occur when trying to determine whether a Path
+     * is a file or folder when the Path does not exist.
+     * @param child
+     * @param parent
+     * @return
+     */
+    public static boolean isLeaf( final Path child,
+                                  final Path parent ) {
+        final String childUri = child.toURI();
+        final String parentUri = parent.toURI();
+        if ( childUri.startsWith( parentUri ) ) {
+            //If there are no additional path separators the resource must be within the active folder listing
+            final String leafUri = childUri.replace( parentUri,
+                                                     "" );
+            return leafUri.indexOf( "/",
+                                    1 ) == -1;
+        }
+        return false;
     }
 
 }

@@ -26,8 +26,8 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
@@ -70,7 +70,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     private Caller<ExplorerService> explorerService;
 
     @Inject
-    private Caller<ProjectService> projectService;
+    private Caller<ProjectService> projectService2;
 
     @Inject
     private PlaceManager placeManager;
@@ -275,16 +275,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Override
     public void selectParentFolder( final FolderListing folder ) {
         //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
-        projectService.call( new RemoteCallback<Package>() {
+        explorerService.call( new RemoteCallback<ResourceContext>() {
             @Override
-            public void callback( final Package pkg ) {
+            public void callback( final ResourceContext context ) {
+                final Package pkg = context.getPackage();
                 if ( Utils.hasPackageChanged( pkg,
                                               activePackage ) ) {
                     activePackage = pkg;
                     packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
                 }
             }
-        } ).resolvePackage( folder.getParentPath() );
+        } ).resolveResourceContext( folder.getParentPath() );
 
         pathChangeEvent.fire( new PathChangeEvent( folder.getParentPath() ) );
 
@@ -299,16 +300,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Override
     public void selectFolder( final Path path ) {
         //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
-        projectService.call( new RemoteCallback<Package>() {
+        explorerService.call( new RemoteCallback<ResourceContext>() {
             @Override
-            public void callback( final Package pkg ) {
+            public void callback( final ResourceContext context ) {
+                final Package pkg = context.getPackage();
                 if ( Utils.hasPackageChanged( pkg,
                                               activePackage ) ) {
                     activePackage = pkg;
                     packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
                 }
             }
-        } ).resolvePackage( path );
+        } ).resolveResourceContext( path );
 
         pathChangeEvent.fire( new PathChangeEvent( path ) );
         loadFilesAndFolders( path );
@@ -374,15 +376,16 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( resource == null ) {
             return;
         }
-        projectService.call( new RemoteCallback<Project>() {
+        explorerService.call( new RemoteCallback<ResourceContext>() {
 
             @Override
-            public void callback( final Project project ) {
+            public void callback( final ResourceContext context ) {
                 //Is the new resource a Project root otherwise it's a file inside a package
+                final Project project = context.getProject();
                 if ( project != null && project.getRootPath().equals( resource ) ) {
                     addProjectResource( project );
                 } else if ( isInActiveFolderListing( resource ) ) {
-                    view.addItem( makeFileItem( resource ) );
+                    view.addItem( Utils.makeFileItem( resource ) );
                 }
             }
 
@@ -397,24 +400,15 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                 }
 
             }
-        } ).resolveProject( resource );
+        } ).resolveResourceContext( resource );
     }
 
     private boolean isInActiveFolderListing( final Path resource ) {
         if ( activeFolderListing == null ) {
             return false;
         }
-        //Check resource path starts with the active folder list path
-        final String resourceUri = resource.toURI();
-        final String activeFolderListingUri = activeFolderListing.getPath().toURI();
-        if ( resourceUri.startsWith( activeFolderListingUri ) ) {
-            //If there are no additional path separators the resource must be within the active folder listing
-            final String resourceLeafUri = resourceUri.replace( activeFolderListingUri,
-                                                                "" );
-            return resourceLeafUri.indexOf( "/",
-                                            1 ) == -1;
-        }
-        return false;
+        return Utils.isLeaf( resource,
+                             activeFolderListing.getPath() );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -424,7 +418,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
             return;
         }
         if ( isInActiveFolderListing( resource ) ) {
-            view.removeItem( makeFileItem( resource ) );
+            view.removeItem( Utils.makeFileItem( resource ) );
         }
     }
 
@@ -435,7 +429,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
             return;
         }
         if ( isInActiveFolderListing( resource ) ) {
-            view.addItem( makeFileItem( resource ) );
+            view.addItem( Utils.makeFileItem( resource ) );
         }
     }
 
@@ -446,7 +440,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
             return;
         }
         if ( isInActiveFolderListing( resource ) ) {
-            final FolderItem item = makeFileItem( resource );
+            final FolderItem item = Utils.makeFileItem( resource );
             view.removeItem( item );
             view.addItem( item );
         }
@@ -458,54 +452,29 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         for ( final ResourceChange change : changes ) {
             final Path resource = change.getPath();
             final ChangeType changeType = change.getType();
-            projectService.call( new RemoteCallback<Package>() {
+            explorerService.call( new RemoteCallback<ResourceContext>() {
 
                 @Override
-                public void callback( final Package pkg ) {
+                public void callback( final ResourceContext context ) {
+                    final Package pkg = context.getPackage();
                     if ( isInActiveFolderListing( resource ) ) {
-                        if ( isNewPackage( pkg,
-                                           resource ) ) {
-                            view.addItem( makeFolderItem( resource ) );
+                        if ( Utils.isPackagePath( resource,
+                                                  pkg ) ) {
+                            view.addItem( Utils.makeFolderItem( resource ) );
                         } else {
                             switch ( changeType ) {
                                 case ADD:
-                                    view.addItem( makeFileItem( resource ) );
+                                    view.addItem( Utils.makeFileItem( resource ) );
                                     break;
                                 case DELETE:
-                                    view.removeItem( makeFileItem( resource ) );
+                                    view.removeItem( Utils.makeFileItem( resource ) );
                             }
                         }
                     }
                 }
 
-                private boolean isNewPackage( final Package pkg,
-                                              final Path resource ) {
-                    if ( pkg.getPackageMainSrcPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageTestSrcPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageMainResourcesPath().equals( resource ) ) {
-                        return true;
-                    } else if ( pkg.getPackageTestResourcesPath().equals( resource ) ) {
-                        return true;
-                    }
-                    return false;
-                }
-
-            } ).resolvePackage( resource );
+            } ).resolveResourceContext( resource );
         }
-    }
-
-    private FolderItem makeFileItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FILE );
-    }
-
-    private FolderItem makeFolderItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FOLDER );
     }
 
 }
