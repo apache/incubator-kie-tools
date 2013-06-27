@@ -33,6 +33,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-js</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.googlecode.gwt-crypto</groupId>
       <artifactId>gwt-crypto</artifactId>
       <version>2.3.0</version>
@@ -216,6 +221,7 @@
           <module>org.uberfire.FastCompiledUberThora</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-commons-validation</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
