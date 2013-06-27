@@ -58,11 +58,6 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-data</artifactId>
-    </dependency>
-
     <!-- Models held within Drools -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -605,7 +600,6 @@
             <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-security</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>

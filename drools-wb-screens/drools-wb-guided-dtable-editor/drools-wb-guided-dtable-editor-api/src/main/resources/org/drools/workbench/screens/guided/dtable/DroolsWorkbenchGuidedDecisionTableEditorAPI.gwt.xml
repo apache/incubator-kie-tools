@@ -25,7 +25,6 @@
   <inherits name="org.drools.workbench.models.guided.dtable.DroolsWorkbenchModelsGuidedDTable"/>
 
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
-  <inherits name="org.kie.workbench.common.services.data.KieWorkbenchCommonData"/>
 
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
   <inherits name='org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget'/>

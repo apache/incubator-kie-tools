@@ -34,7 +34,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEnt
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.data.util.ConstraintValueEditorHelper;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 
 /**
  * A utility class to expand Condition column definitions into rows. Action
