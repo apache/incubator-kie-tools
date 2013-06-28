@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.screens.explorer.model;
 
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.Project;
 
 /**
  * The context of a resource path

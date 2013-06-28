@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.guvnor.common.services.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
-import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Base FactBuilder containing common code

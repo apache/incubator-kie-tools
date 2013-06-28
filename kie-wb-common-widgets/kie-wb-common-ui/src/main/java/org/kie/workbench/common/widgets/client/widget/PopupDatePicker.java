@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.Date;
+
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,10 +39,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
-
-import java.util.Date;
 
 /**
  * A Date Picker that renders its value as a Label. When the Label is clicked on

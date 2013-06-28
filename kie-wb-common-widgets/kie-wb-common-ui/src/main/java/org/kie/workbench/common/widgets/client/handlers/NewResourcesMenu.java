@@ -13,12 +13,12 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
+import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.events.PackageChangeEvent;
+import org.guvnor.common.services.project.events.ProjectChangeEvent;
+import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.kie.workbench.common.services.shared.context.KieWorkbenchContext;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.PackageChangeEvent;
-import org.kie.workbench.common.services.shared.context.ProjectChangeEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.GroupChangeEvent;
@@ -92,7 +92,7 @@ public class NewResourcesMenu {
     }
 
     public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
-        final org.kie.workbench.common.services.shared.context.Package pkg = event.getPackage();
+        final Package pkg = event.getPackage();
         enableNewResourceHandlers( pkg );
     }
 

@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.services.project.service.model.KSessionModel;
-
 import java.util.Map;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.KSessionModel;
 
 public interface KBaseFormView
         extends IsWidget {

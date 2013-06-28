@@ -1,8 +1,8 @@
 package org.kie.workbench.common.widgets.metadata.client.callbacks;
 
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 
 /**
  * Callback to set the MetaData Widgets content

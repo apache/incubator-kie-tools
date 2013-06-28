@@ -16,7 +16,14 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
+import org.guvnor.common.services.builder.model.TypeSource;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
@@ -25,19 +32,24 @@ import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationListener;
-import org.kie.workbench.common.services.datamodeller.core.*;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.DescriptionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.EqualsAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.LabelAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.RoleAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class DataModelOracleDriver implements ModelDriver {
     

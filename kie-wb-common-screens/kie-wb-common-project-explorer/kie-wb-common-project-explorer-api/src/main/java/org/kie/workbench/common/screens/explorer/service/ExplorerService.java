@@ -18,12 +18,12 @@ package org.kie.workbench.common.screens.explorer.service;
 
 import java.util.Collection;
 
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;

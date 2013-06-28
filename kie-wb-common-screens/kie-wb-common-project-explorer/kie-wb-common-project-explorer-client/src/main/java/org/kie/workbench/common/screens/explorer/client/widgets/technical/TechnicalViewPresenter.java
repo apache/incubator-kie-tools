@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;

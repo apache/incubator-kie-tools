@@ -14,6 +14,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOSearchService;
 import org.kie.commons.io.IOService;
@@ -25,8 +27,6 @@ import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
-import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
-import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;

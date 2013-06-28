@@ -18,11 +18,11 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.Set;
 
+import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.shared.builder.BuildService;
-import org.kie.workbench.common.services.shared.context.Project;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 

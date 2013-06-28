@@ -1,9 +1,9 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 
 public interface ProjectImportsScreenView extends HasBusyIndicator,
         IsWidget {

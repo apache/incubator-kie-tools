@@ -18,16 +18,12 @@
 package org.kie.workbench.common.services.rest;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -39,20 +35,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.project.service.model.POM;
-
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
@@ -66,7 +58,6 @@ import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.Repository;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
-import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
@@ -88,8 +79,8 @@ public class ProjectResource {
     @Inject
     protected BuildService buildService;
 
-    @Inject
-    protected ScenarioTestEditorService scenarioTestEditorService;
+//    @Inject
+//    protected ScenarioTestEditorService scenarioTestEditorService;
 
     @Inject
     private Paths paths;

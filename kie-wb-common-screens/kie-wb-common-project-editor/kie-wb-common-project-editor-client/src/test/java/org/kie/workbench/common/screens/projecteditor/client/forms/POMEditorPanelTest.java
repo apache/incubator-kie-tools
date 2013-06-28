@@ -16,17 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.POM;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.project.service.model.GAV;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
-import org.mockito.ArgumentCaptor;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
 
-import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class POMEditorPanelTest {

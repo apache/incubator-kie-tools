@@ -16,17 +16,14 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import org.guvnor.common.services.project.model.KBaseModel;
+import org.guvnor.common.services.project.model.KModuleModel;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.project.service.model.KBaseModel;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.mockito.ArgumentCaptor;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.anyString;

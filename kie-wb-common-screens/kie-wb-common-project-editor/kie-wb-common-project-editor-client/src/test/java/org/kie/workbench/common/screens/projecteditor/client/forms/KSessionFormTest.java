@@ -16,16 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import org.guvnor.common.services.project.model.ClockTypeOption;
+import org.guvnor.common.services.project.model.KSessionModel;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionForm;
-import org.kie.workbench.common.screens.projecteditor.client.forms.KSessionFormView;
-import org.kie.workbench.common.services.project.service.model.ClockTypeOption;
-import org.kie.workbench.common.services.project.service.model.KSessionModel;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class KSessionFormTest {
 
@@ -59,7 +56,7 @@ public class KSessionFormTest {
 
         // Check default
         verify(view).selectRealtime();
-        assertEquals(ClockTypeOption.REALTIME, model.getClockType());
+        assertEquals( ClockTypeOption.REALTIME, model.getClockType());
 
         presenter.onPseudoSelect();
         assertEquals(ClockTypeOption.PSEUDO, model.getClockType());

@@ -15,6 +15,11 @@
   <description>Kie Workbench - Common - Services API</description>
 
   <dependencies>
+    
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>

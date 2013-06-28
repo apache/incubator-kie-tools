@@ -16,18 +16,14 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
-import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGridView;
-import org.kie.workbench.common.screens.projecteditor.client.forms.DependencySelectorPopup;
-import org.kie.workbench.common.services.project.service.model.Dependency;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.guvnor.common.services.project.model.Dependency;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.mockito.Mockito.*;
 
 public class DependencyGridTest {
 

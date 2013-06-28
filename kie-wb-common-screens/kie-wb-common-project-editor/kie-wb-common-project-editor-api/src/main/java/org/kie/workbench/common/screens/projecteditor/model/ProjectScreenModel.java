@@ -1,10 +1,10 @@
 package org.kie.workbench.common.screens.projecteditor.model;
 
+import org.guvnor.common.services.project.model.KModuleModel;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 
 @Portable
 public class ProjectScreenModel {

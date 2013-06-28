@@ -16,19 +16,17 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.workbench.common.screens.projecteditor.client.forms.KBaseForm;
-import org.kie.workbench.common.screens.projecteditor.client.forms.KBaseFormView;
-import org.kie.workbench.common.services.project.service.model.AssertBehaviorOption;
-import org.kie.workbench.common.services.project.service.model.EventProcessingOption;
-import org.kie.workbench.common.services.project.service.model.KBaseModel;
-import org.kie.workbench.common.services.project.service.model.KSessionModel;
-import org.mockito.ArgumentCaptor;
-
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
+import org.guvnor.common.services.project.model.AssertBehaviorOption;
+import org.guvnor.common.services.project.model.EventProcessingOption;
+import org.guvnor.common.services.project.model.KBaseModel;
+import org.guvnor.common.services.project.model.KSessionModel;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class KBaseFormTest {
@@ -71,8 +69,8 @@ public class KBaseFormTest {
         KBaseModel config = new KBaseModel();
         config.setName("Name");
 
-        config.setEqualsBehavior(AssertBehaviorOption.EQUALITY);
-        config.setEventProcessingMode(EventProcessingOption.CLOUD);
+        config.setEqualsBehavior( AssertBehaviorOption.EQUALITY);
+        config.setEventProcessingMode( EventProcessingOption.CLOUD);
 
         config.getStatelessSessions().put("1", createStatelessKSession("1"));
         config.getStatelessSessions().put("2", createStatelessKSession("2"));

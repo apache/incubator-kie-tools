@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.project.service.model.AssertBehaviorOption;
-import org.kie.workbench.common.services.project.service.model.EventProcessingOption;
-import org.kie.workbench.common.services.project.service.model.KBaseModel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
-
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.AssertBehaviorOption;
+import org.guvnor.common.services.project.model.EventProcessingOption;
+import org.guvnor.common.services.project.model.KBaseModel;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
 
 public class KBaseForm
         implements Form<KBaseModel>, KBaseFormView.Presenter {

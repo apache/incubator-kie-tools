@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.ValueChanged;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 abstract class DatePicker extends DirtyableComposite {
 

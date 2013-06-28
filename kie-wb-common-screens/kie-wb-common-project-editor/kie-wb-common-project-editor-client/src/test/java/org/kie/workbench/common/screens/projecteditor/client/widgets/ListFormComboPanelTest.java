@@ -16,16 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.widgets;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
-import org.kie.workbench.common.services.project.service.model.HasListFormComboPanelProperties;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 
 import static org.mockito.Mockito.*;
 

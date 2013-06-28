@@ -1,6 +1,0 @@
-rule "Added"
-when
-//Nothing
-then
-//Nothing
-end

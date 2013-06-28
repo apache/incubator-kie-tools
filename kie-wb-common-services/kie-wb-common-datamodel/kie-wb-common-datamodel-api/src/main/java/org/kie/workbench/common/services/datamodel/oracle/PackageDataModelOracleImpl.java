@@ -13,13 +13,13 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
+import org.guvnor.common.services.builder.model.TypeSource;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
-import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Default implementation of DataModelOracle

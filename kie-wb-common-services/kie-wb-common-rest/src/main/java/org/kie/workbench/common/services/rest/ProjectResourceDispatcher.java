@@ -3,24 +3,22 @@ package org.kie.workbench.common.services.rest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.Group;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.Repository;
-import org.kie.workbench.common.services.shared.builder.BuildService;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
@@ -52,8 +50,8 @@ public class ProjectResourceDispatcher {
     @Inject
     private Event<JobResult> jobResultEvent;
     
-    @Inject
-    protected ScenarioTestEditorService scenarioTestEditorService;
+//    @Inject
+//    protected ScenarioTestEditorService scenarioTestEditorService;
 
     public void cloneRepository(String jobId, Repository repository) {
         System.out.println("-----KieSessionAsyncJobRequestObserver:createOrCloneRepository--- , repository name:" + repository.getName());
@@ -212,37 +210,37 @@ public class ProjectResourceDispatcher {
         }
     }
     
-    public void testProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {
-        System.out.println( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
-        JobResult result = new JobResult();
-        result.setJodId(jobId);
-        
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-
-        if ( repositoryPath == null ) {
-            result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
-            result.setResult("Repository [" + repositoryName + "] does not exist");  
-            jobResultEvent.fire(result);
-            return;
-        } else {
-            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
-
-            if ( project == null ) {
-                result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
-                result.setResult("Project [" + projectName + "] does not exist" );  
-                jobResultEvent.fire(result);
-                return;
-            }
-
-            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath() );
-
-            //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
-
-            result.setStatus(JobRequest.Status.SUCCESS);
-            jobResultEvent.fire(result);
-        }
-    }   
+//    public void testProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {
+//        System.out.println( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+//        JobResult result = new JobResult();
+//        result.setJodId(jobId);
+//
+//        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+//
+//        if ( repositoryPath == null ) {
+//            result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
+//            result.setResult("Repository [" + repositoryName + "] does not exist");
+//            jobResultEvent.fire(result);
+//            return;
+//        } else {
+//            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
+//
+//            if ( project == null ) {
+//                result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
+//                result.setResult("Project [" + projectName + "] does not exist" );
+//                jobResultEvent.fire(result);
+//                return;
+//            }
+//
+//            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
+//            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath() );
+//
+//            //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
+//
+//            result.setStatus(JobRequest.Status.SUCCESS);
+//            jobResultEvent.fire(result);
+//        }
+//    }   
     
     public void deployProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {        
         System.out.println( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );

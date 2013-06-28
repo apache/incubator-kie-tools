@@ -1,6 +1,0 @@
-rule "Updated"
-when
-//Nothing
-then
-//Nothing
-end

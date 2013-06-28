@@ -1,9 +1,9 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.project.service.ProjectService;
 
 public class MockProjectServiceCaller
         implements Caller<ProjectService> {

@@ -23,9 +23,9 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import org.guvnor.common.services.shared.file.upload.FileManagerFields;
+import org.guvnor.common.services.shared.file.upload.FileOperation;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.services.shared.file.upload.FileManagerFields;
-import org.kie.workbench.common.services.shared.file.upload.FileOperation;
 import org.uberfire.backend.vfs.Path;
 
 /**

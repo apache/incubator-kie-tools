@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.project.service.model.Dependency;
-import org.kie.workbench.common.services.project.service.model.GAV;
-
-import javax.inject.Inject;
-import java.util.List;
+import org.guvnor.common.services.project.model.Dependency;
+import org.guvnor.common.services.project.model.GAV;
 
 public class DependencyGrid
         implements IsWidget, DependencyGridView.Presenter {

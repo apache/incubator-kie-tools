@@ -3,13 +3,13 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.type.POMResourceType;
-import org.kie.workbench.common.services.project.service.POMService;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
@@ -19,8 +19,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "pomScreen", supportedTypes = {POMResourceType.class})
 public class PomEditorScreenPresenter {

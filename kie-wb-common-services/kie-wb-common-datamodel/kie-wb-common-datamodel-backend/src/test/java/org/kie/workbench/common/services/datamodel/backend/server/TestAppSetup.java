@@ -21,10 +21,10 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.kie.workbench.common.services.project.service.KModuleService;
 import org.uberfire.backend.repositories.Repository;
 
 import static org.mockito.Mockito.*;

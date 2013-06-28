@@ -20,8 +20,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.POM;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.services.project.service.model.POM;
 
 public class POMEditorPanel
         implements IsWidget {

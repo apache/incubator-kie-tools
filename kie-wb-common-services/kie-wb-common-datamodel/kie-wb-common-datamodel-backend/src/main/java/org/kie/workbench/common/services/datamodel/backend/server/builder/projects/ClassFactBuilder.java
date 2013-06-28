@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.guvnor.common.services.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.ClassToGenericClassConverter;
@@ -23,7 +24,6 @@ import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutato
 import org.kie.workbench.common.services.datamodel.model.MethodInfo;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
-import org.kie.workbench.common.services.shared.builder.model.TypeSource;
 
 /**
  * Builder for Fact Types originating from a .class

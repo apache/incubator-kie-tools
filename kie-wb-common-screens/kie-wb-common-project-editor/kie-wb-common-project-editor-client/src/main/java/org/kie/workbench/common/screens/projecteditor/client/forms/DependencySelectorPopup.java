@@ -1,12 +1,12 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.ArrayList;
+import javax.inject.Inject;
+
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.workbench.common.services.project.service.model.GAV;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
 
 public class DependencySelectorPopup
         implements DependencySelectorPopupView.Presenter {

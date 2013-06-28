@@ -1,6 +1,0 @@
-rule "Deleted"
-when
-//Nothing
-then
-//Nothing
-end

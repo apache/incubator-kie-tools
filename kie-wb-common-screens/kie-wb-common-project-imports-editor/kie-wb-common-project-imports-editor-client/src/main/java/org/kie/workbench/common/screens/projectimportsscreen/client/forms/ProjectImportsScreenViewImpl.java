@@ -1,17 +1,17 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Window;
-import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.MultiPageEditorView;
 import org.uberfire.client.common.Page;
-
-import javax.inject.Inject;
 
 public class ProjectImportsScreenViewImpl
         extends MultiPageEditorView

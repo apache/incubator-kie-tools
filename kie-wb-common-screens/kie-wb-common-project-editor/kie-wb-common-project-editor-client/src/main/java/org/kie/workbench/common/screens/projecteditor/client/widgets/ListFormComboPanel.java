@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.widgets;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.project.service.model.HasListFormComboPanelProperties;
+import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-
-import java.util.Map;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {

@@ -17,15 +17,11 @@
   <description>Kie Workbench - Common - Services</description>
 
   <modules>
-    <module>kie-wb-common-project</module>
     <module>kie-wb-common-datamodel</module>
     <module>kie-wb-common-services-api</module>
     <module>kie-wb-common-services-backend</module>
     <module>kie-wb-common-data-modeller-core</module>
     <module>kie-wb-common-security</module>
-    <module>kie-wb-common-builder</module>
-    <module>kie-wb-common-workingset-api</module>
-    <module>kie-wb-common-workingset-client</module>
     <!--module>kie-wb-common-defaultapprover</module-->
     <module>kie-wb-common-rest</module>
   </modules>

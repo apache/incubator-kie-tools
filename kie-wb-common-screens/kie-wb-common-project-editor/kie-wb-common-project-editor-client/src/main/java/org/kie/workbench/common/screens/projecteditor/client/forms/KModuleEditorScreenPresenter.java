@@ -3,23 +3,22 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-
+import org.guvnor.common.services.project.model.KModuleModel;
+import org.guvnor.common.services.project.service.KModuleService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.project.service.KModuleService;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "kmoduleScreen", supportedTypes = { KModuleResourceType.class })
 public class KModuleEditorScreenPresenter {

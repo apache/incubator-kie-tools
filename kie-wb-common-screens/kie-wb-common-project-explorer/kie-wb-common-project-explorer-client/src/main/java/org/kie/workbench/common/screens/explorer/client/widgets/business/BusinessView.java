@@ -18,9 +18,9 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasVisibility;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.services.shared.context.Package;
-import org.kie.workbench.common.services.shared.context.Project;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;

@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.services.project.service.model.Dependency;
-
 import java.util.List;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.Dependency;
 
 public interface DependencyGridView
         extends IsWidget {

@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.project.service.model.ClockTypeOption;
-import org.kie.workbench.common.services.project.service.model.KSessionModel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
-
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.ClockTypeOption;
+import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
 
 public class KSessionForm
         implements Form<KSessionModel>, KSessionFormView.Presenter {

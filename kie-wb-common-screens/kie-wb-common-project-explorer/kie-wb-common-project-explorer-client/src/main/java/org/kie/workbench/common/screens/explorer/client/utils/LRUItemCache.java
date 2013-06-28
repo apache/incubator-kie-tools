@@ -19,13 +19,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.Caller;
+import org.guvnor.common.services.project.model.Package;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.context.Package;
 
 /**
  * A client-side cache of Packages per project
@@ -35,9 +32,6 @@ public class LRUItemCache {
     private static final int MAX_ENTRIES = 10;
 
     private Map<Package, Collection<FolderItem>> cache;
-
-    @Inject
-    private Caller<ProjectService> projectService;
 
     public LRUItemCache() {
         cache = new LinkedHashMap<Package, Collection<FolderItem>>( MAX_ENTRIES + 1,

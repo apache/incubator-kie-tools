@@ -56,14 +56,16 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-project-backend</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
     </dependency>  
 
+    <!-- This causes a circular dependency. The REST method to run tests should be moved to a class in drools-wb
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
     </dependency>
+    -->
     
     <!-- for test? -->
     <dependency>
@@ -76,8 +78,8 @@
       <artifactId>kie-wb-common-services-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-builder</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-builder</artifactId>
     </dependency>        
     
     <dependency>

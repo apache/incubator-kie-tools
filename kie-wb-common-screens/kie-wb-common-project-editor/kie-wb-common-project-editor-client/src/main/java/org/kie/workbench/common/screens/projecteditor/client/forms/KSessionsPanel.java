@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.kie.workbench.common.services.project.service.model.KSessionModel;
-import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
-
 import javax.inject.Inject;
+
+import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
+import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 
 public class KSessionsPanel
         extends ListFormComboPanel<KSessionModel> {

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,19 +29,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.guvnor.common.services.project.model.Dependency;
+import org.guvnor.common.services.project.model.KModuleModel;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.services.project.service.model.Dependency;
-import org.kie.workbench.common.services.project.service.model.KModuleModel;
-import org.kie.workbench.common.services.project.service.model.POM;
-import org.kie.workbench.common.services.project.service.model.ProjectImports;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import java.util.List;
 
 @ApplicationScoped
 public class ProjectScreenViewImpl
