@@ -16,11 +16,11 @@
 
 package org.drools.workbench.screens.scorecardxls.service;
 
+import org.guvnor.common.services.shared.file.SupportsCopy;
+import org.guvnor.common.services.shared.file.SupportsDelete;
+import org.guvnor.common.services.shared.file.SupportsRename;
+import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.shared.file.SupportsCopy;
-import org.kie.workbench.common.services.shared.file.SupportsDelete;
-import org.kie.workbench.common.services.shared.file.SupportsRename;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 
 @Remote
 public interface ScoreCardXLSService

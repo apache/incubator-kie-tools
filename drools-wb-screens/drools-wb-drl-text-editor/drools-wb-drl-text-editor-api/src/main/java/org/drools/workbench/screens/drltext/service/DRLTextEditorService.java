@@ -17,14 +17,14 @@
 package org.drools.workbench.screens.drltext.service;
 
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
+import org.guvnor.common.services.shared.file.SupportsCopy;
+import org.guvnor.common.services.shared.file.SupportsCreate;
+import org.guvnor.common.services.shared.file.SupportsDelete;
+import org.guvnor.common.services.shared.file.SupportsRead;
+import org.guvnor.common.services.shared.file.SupportsRename;
+import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.shared.file.SupportsCopy;
-import org.kie.workbench.common.services.shared.file.SupportsCreate;
-import org.kie.workbench.common.services.shared.file.SupportsDelete;
-import org.kie.workbench.common.services.shared.file.SupportsRead;
-import org.kie.workbench.common.services.shared.file.SupportsRename;
-import org.kie.workbench.common.services.shared.file.SupportsUpdate;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

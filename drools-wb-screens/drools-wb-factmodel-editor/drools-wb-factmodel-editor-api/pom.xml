@@ -23,8 +23,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
     </dependency>
 
     <dependency>

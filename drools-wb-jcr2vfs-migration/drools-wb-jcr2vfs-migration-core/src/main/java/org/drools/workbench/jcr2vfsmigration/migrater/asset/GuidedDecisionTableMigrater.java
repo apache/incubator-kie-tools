@@ -18,10 +18,11 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.workbench.common.services.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -85,7 +86,7 @@ public class GuidedDecisionTableMigrater {
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
         //Add package
-        final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( path );
+        final Package pkg = projectService.resolvePackage( path );
         final String requiredPackageName = ( pkg == null ? null : pkg.getPackageName() );
         if ( requiredPackageName != null || !"".equals( requiredPackageName ) ) {
             model.setPackageName( requiredPackageName );

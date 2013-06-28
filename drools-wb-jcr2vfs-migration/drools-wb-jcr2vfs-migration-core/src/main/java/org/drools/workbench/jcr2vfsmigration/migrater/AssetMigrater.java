@@ -32,8 +32,8 @@ import org.drools.workbench.jcr2vfsmigration.migrater.asset.PlainTextAssetMigrat
 import org.drools.workbench.jcr2vfsmigration.migrater.asset.PlainTextAssetWithPackagePropertyMigrater;
 import org.drools.workbench.jcr2vfsmigration.migrater.asset.TestScenarioMigrater;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.workbench.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -69,7 +69,7 @@ public class AssetMigrater {
     @Inject
     protected TestScenarioMigrater testScenarioMigrater;
     @Inject
-    protected MetadataService metadataService;        
+    protected MetadataService metadataService;
     @Inject
     protected MigrationPathManager migrationPathManager;
     @Inject
@@ -239,7 +239,7 @@ public class AssetMigrater {
          //final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
         Metadata metadata = new Metadata();
         for(DiscussionRecord discussion: discussions) {
-            metadata.addDiscussion( new org.kie.workbench.common.services.shared.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );
+            metadata.addDiscussion( new org.guvnor.common.services.shared.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );
         }
 
         Path path = migrationPathManager.generatePathForAsset(jcrModule, assetItemJCR);

@@ -6,13 +6,12 @@ import javax.inject.Inject;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.project.service.model.GAV;
-import org.kie.workbench.common.services.project.service.model.POM;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped

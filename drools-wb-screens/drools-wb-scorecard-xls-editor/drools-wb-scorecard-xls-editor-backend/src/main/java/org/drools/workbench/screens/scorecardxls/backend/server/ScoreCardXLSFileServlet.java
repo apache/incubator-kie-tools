@@ -22,8 +22,8 @@ import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.file.upload.AbstractFileServlet;
 import org.kie.commons.io.IOService;
-import org.kie.workbench.common.services.backend.file.upload.AbstractFileServlet;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

@@ -45,9 +45,9 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;

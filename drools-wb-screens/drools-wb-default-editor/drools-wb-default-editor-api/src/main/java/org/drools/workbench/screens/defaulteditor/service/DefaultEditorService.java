@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.defaulteditor.service;
 
+import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.shared.file.SupportsUpdate;
 
 @Remote
 public interface DefaultEditorService extends SupportsUpdate<String> {

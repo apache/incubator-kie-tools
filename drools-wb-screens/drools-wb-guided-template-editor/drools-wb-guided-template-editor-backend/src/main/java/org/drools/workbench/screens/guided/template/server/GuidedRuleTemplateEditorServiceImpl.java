@@ -26,21 +26,22 @@ import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.file.CopyService;
+import org.guvnor.common.services.shared.file.DeleteService;
+import org.guvnor.common.services.shared.file.RenameService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.workbench.common.services.backend.SourceServices;
-import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
-import org.kie.workbench.common.services.datamodel.events.InvalidateDMOPackageCacheEvent;
+import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.file.CopyService;
-import org.kie.workbench.common.services.shared.file.DeleteService;
-import org.kie.workbench.common.services.shared.file.RenameService;
-import org.kie.workbench.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -100,7 +101,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                         final TemplateModel content,
                         final String comment ) {
         try {
-            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( context );
+            final Package pkg = projectService.resolvePackage( context );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
@@ -157,7 +158,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                       final Metadata metadata,
                       final String comment ) {
         try {
-            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( resource );
+            final Package pkg = projectService.resolvePackage( resource );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 

@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.guided.dtable;
 
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
-import org.kie.workbench.common.services.datamodel.model.DateConverter;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.datamodel.model.DateConverter;
 
 /**
  * Convenience class to handle date conversion in a normal JVM (i.e. not running

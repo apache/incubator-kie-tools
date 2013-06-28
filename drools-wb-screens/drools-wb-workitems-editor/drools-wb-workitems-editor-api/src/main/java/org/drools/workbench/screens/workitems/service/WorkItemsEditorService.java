@@ -21,14 +21,14 @@ import java.util.Set;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
+import org.guvnor.common.services.shared.file.SupportsCopy;
+import org.guvnor.common.services.shared.file.SupportsCreate;
+import org.guvnor.common.services.shared.file.SupportsDelete;
+import org.guvnor.common.services.shared.file.SupportsRead;
+import org.guvnor.common.services.shared.file.SupportsRename;
+import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.services.shared.file.SupportsCopy;
-import org.kie.workbench.common.services.shared.file.SupportsCreate;
-import org.kie.workbench.common.services.shared.file.SupportsDelete;
-import org.kie.workbench.common.services.shared.file.SupportsRead;
-import org.kie.workbench.common.services.shared.file.SupportsRename;
-import org.kie.workbench.common.services.shared.file.SupportsUpdate;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 
 @Remote

@@ -3,11 +3,11 @@ package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
@@ -17,8 +17,11 @@ import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.drools.workbench.screens.factmodel.service.FactModelService;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.commons.io.IOService;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
@@ -26,17 +29,10 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.context.Project;
-import org.drools.workbench.screens.factmodel.service.FactModelService;
-import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-
-import com.google.gwt.user.client.rpc.SerializationException;
 
 @ApplicationScoped
 public class FactModelsMigrater {

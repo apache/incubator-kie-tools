@@ -9,8 +9,8 @@ import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResour
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
+import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.kie.workbench.common.services.shared.context.Package;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;

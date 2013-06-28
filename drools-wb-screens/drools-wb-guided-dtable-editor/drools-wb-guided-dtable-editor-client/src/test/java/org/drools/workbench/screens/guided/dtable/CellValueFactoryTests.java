@@ -33,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
@@ -42,7 +43,6 @@ import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.model.ModelField.FIELD_CLASS_TYPE;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static junit.framework.Assert.*;

@@ -22,8 +22,8 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 

@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
 import com.google.gwt.core.client.GWT;
-import org.kie.workbench.common.services.shared.file.upload.FileManagerFields;
+import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.uberfire.backend.vfs.Path;
 
 /**

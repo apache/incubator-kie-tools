@@ -19,8 +19,8 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.workbench.common.services.project.service.model.Dependency;
 
 
 public interface BulkRunTestScenarioEditorView extends HasBusyIndicator,

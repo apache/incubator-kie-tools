@@ -29,24 +29,25 @@ import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.FileDiscoveryService;
+import org.guvnor.common.services.backend.file.FileExtensionFilter;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.file.CopyService;
+import org.guvnor.common.services.shared.file.DeleteService;
+import org.guvnor.common.services.shared.file.RenameService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.workbench.common.services.backend.SourceServices;
-import org.kie.workbench.common.services.backend.exceptions.ExceptionUtilities;
-import org.kie.workbench.common.services.backend.file.FileDiscoveryService;
-import org.kie.workbench.common.services.backend.file.FileExtensionFilter;
-import org.kie.workbench.common.services.datamodel.events.InvalidateDMOProjectCacheEvent;
+import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.kie.workbench.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.file.CopyService;
-import org.kie.workbench.common.services.shared.file.DeleteService;
-import org.kie.workbench.common.services.shared.file.RenameService;
-import org.kie.workbench.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.shared.validation.model.BuilderResult;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -114,7 +115,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                         final RuleModel content,
                         final String comment ) {
         try {
-            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( context );
+            final Package pkg = projectService.resolvePackage( context );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
@@ -203,7 +204,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
-            final org.kie.workbench.common.services.shared.context.Package pkg = projectService.resolvePackage( resource );
+            final Package pkg = projectService.resolvePackage( resource );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 

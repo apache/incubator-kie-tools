@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.screens.guided.rule.client.util;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import org.kie.workbench.common.services.shared.config.ApplicationPreferences;
-import org.kie.workbench.common.services.datamodel.model.DateConverter;
-
 import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.datamodel.model.DateConverter;
 
 /**
  * Convenience class to handle date conversion when running under GWT.

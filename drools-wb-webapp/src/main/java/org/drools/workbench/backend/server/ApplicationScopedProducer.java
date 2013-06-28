@@ -23,6 +23,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.kie.commons.cluster.ClusterServiceFactory;
 import org.kie.commons.io.IOSearchService;
 import org.kie.commons.io.IOService;
@@ -40,7 +41,6 @@ import org.kie.kieora.engine.MetaModelStore;
 import org.kie.kieora.io.IOSearchIndex;
 import org.kie.kieora.io.IOServiceIndexedImpl;
 import org.kie.kieora.search.SearchIndex;
-import org.kie.workbench.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.security.server.cdi.SecurityFactory;

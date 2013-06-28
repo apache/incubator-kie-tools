@@ -158,8 +158,8 @@
       <artifactId>kie-wb-common-project-editor-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-project-backend</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
     </dependency>  
     <dependency>
       <groupId>org.drools</groupId>
