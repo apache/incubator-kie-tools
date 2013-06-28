@@ -25,7 +25,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -61,7 +61,7 @@ public class NewResourcePresenter {
     }
 
     @Inject
-    protected KieWorkbenchContext context;
+    protected ProjectContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;

@@ -8,7 +8,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;

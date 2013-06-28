@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.ClassToGenericClassConverter;

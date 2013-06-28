@@ -40,7 +40,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.commons.io.IOService;

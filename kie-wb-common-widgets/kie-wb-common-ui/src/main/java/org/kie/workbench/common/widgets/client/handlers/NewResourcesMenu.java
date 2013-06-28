@@ -13,7 +13,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -33,7 +33,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 public class NewResourcesMenu {
 
     @Inject
-    private KieWorkbenchContext context;
+    private ProjectContext context;
 
     @Inject
     private IOCBeanManager iocBeanManager;

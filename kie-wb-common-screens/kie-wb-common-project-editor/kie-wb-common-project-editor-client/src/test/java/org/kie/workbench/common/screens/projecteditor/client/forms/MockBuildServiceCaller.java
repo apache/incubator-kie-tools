@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.Set;
 
-import org.guvnor.common.services.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;

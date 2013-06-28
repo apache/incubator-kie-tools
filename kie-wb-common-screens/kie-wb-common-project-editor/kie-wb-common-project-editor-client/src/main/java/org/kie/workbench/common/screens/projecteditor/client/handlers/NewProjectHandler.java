@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
@@ -44,7 +44,7 @@ public class NewProjectHandler
     private WizardPresenter wizardPresenter;
 
     @Inject
-    private KieWorkbenchContext context;
+    private ProjectContext context;
 
     private boolean isRepositorySelected = false;
 

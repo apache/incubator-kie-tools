@@ -24,7 +24,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -99,7 +99,7 @@ public class DataModelerScreenPresenter {
     private Event<ProjectChangeEvent> projectChangeEvent;
 
     @Inject
-    private KieWorkbenchContext workbenchContext;
+    private ProjectContext workbenchContext;
 
     private Project currentProject;
 

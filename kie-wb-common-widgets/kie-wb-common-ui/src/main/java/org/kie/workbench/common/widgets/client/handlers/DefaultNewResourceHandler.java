@@ -10,7 +10,7 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -35,7 +35,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected final PathLabel pathLabel = new PathLabel();
 
     @Inject
-    protected KieWorkbenchContext context;
+    protected ProjectContext context;
 
     @Inject
     protected Caller<ProjectService> projectService;

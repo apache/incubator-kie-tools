@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodel.model.Annotation;

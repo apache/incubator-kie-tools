@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;

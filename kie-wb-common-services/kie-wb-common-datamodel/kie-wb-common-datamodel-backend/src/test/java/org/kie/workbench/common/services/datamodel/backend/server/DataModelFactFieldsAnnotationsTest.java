@@ -3,7 +3,7 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 import java.util.Map;
 import java.util.Set;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;

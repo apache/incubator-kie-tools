@@ -5,7 +5,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;

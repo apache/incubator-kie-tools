@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;

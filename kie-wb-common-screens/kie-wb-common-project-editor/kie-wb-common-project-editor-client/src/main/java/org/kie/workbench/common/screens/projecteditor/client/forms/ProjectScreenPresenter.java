@@ -21,8 +21,8 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.builder.service.BuildService;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -64,7 +64,7 @@ public class ProjectScreenPresenter
 
     @Inject
     public ProjectScreenPresenter( @New ProjectScreenView view,
-                                   KieWorkbenchContext workbenchContext,
+                                   ProjectContext workbenchContext,
                                    Caller<ProjectScreenService> projectScreenService,
                                    Caller<BuildService> buildServiceCaller,
                                    SaveOperationService saveOperationService ) {

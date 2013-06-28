@@ -13,7 +13,7 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;

@@ -1,6 +1,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.guvnor.common.services.builder.model.TypeSource;
+import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.model.ModelField;
 
 /**

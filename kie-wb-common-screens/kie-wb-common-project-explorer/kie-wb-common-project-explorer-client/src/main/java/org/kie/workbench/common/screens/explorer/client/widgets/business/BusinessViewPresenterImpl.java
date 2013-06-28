@@ -22,7 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -88,7 +88,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     private Event<PathChangeEvent> pathChangeEvent;
 
     @Inject
-    private KieWorkbenchContext context;
+    private ProjectContext context;
 
     @Inject
     private BusinessView view;

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.context.KieWorkbenchContext;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -50,7 +50,7 @@ public class NewProjectWizard
     private Caller<ProjectService> projectServiceCaller;
 
     @Inject
-    private KieWorkbenchContext context;
+    private ProjectContext context;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private POM pom;

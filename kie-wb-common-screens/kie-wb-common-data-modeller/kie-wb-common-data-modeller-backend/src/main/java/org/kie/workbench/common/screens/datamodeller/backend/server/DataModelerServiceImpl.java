@@ -27,7 +27,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
