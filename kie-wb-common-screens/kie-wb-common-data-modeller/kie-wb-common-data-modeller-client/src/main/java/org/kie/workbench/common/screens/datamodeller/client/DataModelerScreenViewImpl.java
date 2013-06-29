@@ -23,23 +23,16 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.ModelPropertiesEditor;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DataModelBrowser;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.ModelPropertiesEditor;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.List;
 
 //@Dependent
 public class DataModelerScreenViewImpl extends Composite
@@ -72,6 +65,9 @@ public class DataModelerScreenViewImpl extends Composite
 
     @Inject
     private DataObjectBrowser dataObjectBrowser;
+
+    @Inject
+    private Event<DataModelerEvent> dataModelerEvent;
 
     private DataModelerContext context;
 
@@ -106,7 +102,9 @@ public class DataModelerScreenViewImpl extends Composite
 
     private void updateChangeStatus(DataModelerEvent event) {
         if (context != null && event.isFrom(context.getDataModel())) {
+            Boolean oldDirtyStatus = context.isDirty();
             context.setDirty(true);
+            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), oldDirtyStatus, context.isDirty()));
         }
     }
 

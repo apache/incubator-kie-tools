@@ -31,6 +31,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
@@ -159,18 +160,19 @@ public class DataModelerScreenPresenter {
             public void callback( GenerationResult result ) {
                 BusyPopup.close();
                 restoreModelStatus( result );
+                Boolean oldDirtyStatus = getContext().isDirty();
                 getContext().setDirty( false );
                 notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
                 if ( project != null ) {
                     loadProjectDataModel( project );
                 }
-                dataModelerEvent.fire( new DataModelerEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
                                                              getDataModel(),
-                                                             dataModel.getDataObjects().size() > 0 ? dataModel.getDataObjects().get( 0 ) : null ) );
+                                                             oldDirtyStatus,
+                                                             getContext().isDirty()));
             }
         },
-                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(),
-                                                                                                                        currentProject );
+        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(),  currentProject );
     }
 
     @WorkbenchMenu

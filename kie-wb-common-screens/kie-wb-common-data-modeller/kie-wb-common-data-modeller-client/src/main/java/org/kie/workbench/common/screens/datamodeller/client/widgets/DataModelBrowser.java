@@ -43,11 +43,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataObjectComparator;
@@ -203,18 +199,19 @@ public class DataModelBrowser extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        setModelName();
+        setModelName(false);
         loadDataModel(context.getDataModel());
     }
 
-    private void setModelName() {
-        if (context.getDataModel() != null) {
-            String name = context.getDataModel().getParentProjectName();
+    private void setModelName(boolean modified) {
+        if (getContext() != null && getContext().getDataModel() != null) {
+            String name = getContext().getDataModel().getParentProjectName();
             if (name != null) {
                 if (name.length() > BROWSER_MAX_LENGTH) {
                     setTooltip(modelName, name);
                 }
-                modelName.setText(DataModelerUtils.getMaxLengthClippedString(name, BROWSER_MAX_LENGTH));
+                name = DataModelerUtils.getMaxLengthClippedString(name, BROWSER_MAX_LENGTH) + (modified ? MODIFIED_MARKER : "");
+                modelName.setText(name);
             }
         }
     }
@@ -335,11 +332,10 @@ public class DataModelBrowser extends Composite {
     }
 
     // Event Observers
-    private void checkModelStatus(@Observes DataModelerEvent event) {
-        String name = modelName.getText();
-        if (context.isDirty() && !name.endsWith(MODIFIED_MARKER)) modelName.setText(name + MODIFIED_MARKER);
-        else modelName.setText(name);
-
+    private void onModelStatusChange(@Observes DataModelStatusChangeEvent event) {
+        if (event.isFrom(getDataModel())) {
+            setModelName(Boolean.TRUE.equals(event.getNewValue()));
+        }
     }
 
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
