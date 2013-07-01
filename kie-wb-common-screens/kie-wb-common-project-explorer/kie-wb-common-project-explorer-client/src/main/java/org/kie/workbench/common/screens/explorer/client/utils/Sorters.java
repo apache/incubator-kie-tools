@@ -37,7 +37,7 @@ public class Sorters {
         @Override
         public int compare( final Group o1,
                             final Group o2 ) {
-            return o1.getName().compareTo( o2.getName() );
+            return o1.getName().toLowerCase().compareTo( o2.getName().toLowerCase() );
         }
     };
 
@@ -48,7 +48,7 @@ public class Sorters {
         @Override
         public int compare( final Repository o1,
                             final Repository o2 ) {
-            return o1.getAlias().compareTo( o2.getAlias() );
+            return toLowerCase( o1.getRoot() ).compareTo( toLowerCase( o2.getRoot() ) );
         }
     };
 
@@ -59,7 +59,7 @@ public class Sorters {
         @Override
         public int compare( final Project o1,
                             final Project o2 ) {
-            return o1.getTitle().compareTo( o2.getTitle() );
+            return toLowerCase( o1.getRootPath() ).compareTo( toLowerCase( o2.getRootPath() ) );
         }
     };
 
@@ -70,7 +70,7 @@ public class Sorters {
         @Override
         public int compare( final Package o1,
                             final Package o2 ) {
-            return o1.getCaption().compareTo( o2.getCaption() );
+            return o1.getCaption().toLowerCase().compareTo( o2.getCaption().toLowerCase() );
         }
     };
 
@@ -81,7 +81,7 @@ public class Sorters {
         @Override
         public int compare( final FolderItem o1,
                             final FolderItem o2 ) {
-            return o1.getFileName().compareTo( o2.getFileName() );
+            return toLowerCase( o1.getPath() ).compareTo( toLowerCase( o2.getPath() ) );
         }
     };
 
@@ -128,10 +128,9 @@ public class Sorters {
             return toLowerCase( o1.getPath() ).compareTo( toLowerCase( o2.getPath() ) );
         }
 
-        private String toLowerCase( final Path path ) {
-            return path == null ? "" : path.toURI().toLowerCase();
-        }
-
     };
 
+    private static String toLowerCase( final Path path ) {
+        return path == null ? "" : path.toURI().toLowerCase();
+    }
 }
