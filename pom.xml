@@ -17,6 +17,8 @@
 
   <modules>
     <module>drools-wb-screens</module>
+    <module>drools-wb-rest</module>
+    <!--module>kie-wb-common-defaultapprover</module-->
     <module>drools-wb-webapp</module>
     <module>drools-wb-jcr2vfs-migration</module>
   </modules>

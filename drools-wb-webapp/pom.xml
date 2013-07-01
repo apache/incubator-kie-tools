@@ -167,11 +167,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-rest</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-editor-client</artifactId>
     </dependency>
@@ -240,7 +235,13 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-home-client</artifactId>
     </dependency>
-
+    
+    <!-- Drools Workbench REST -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-rest</artifactId>
+    </dependency>
+    
     <!-- Drools Workbench Screens -->
     <dependency>
       <groupId>org.drools</groupId>
