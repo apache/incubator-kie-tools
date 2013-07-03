@@ -256,9 +256,8 @@ public class ExplorerServiceImpl
             for ( org.kie.commons.java.nio.file.Path nioPath : nioPaths ) {
                 if ( Files.isRegularFile( nioPath ) ) {
                     final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
-                    final String fileName = getBaseFileName( path.getFileName() );
                     final FolderItem folderItem = new FolderItem( path,
-                                                                  fileName,
+                                                                  path.getFileName(),
                                                                   FolderItemType.FILE );
                     folderItems.add( folderItem );
                 }
@@ -267,45 +266,42 @@ public class ExplorerServiceImpl
         return folderItems;
     }
 
-    private String getBaseFileName( final String fileName ) {
-        final int dotIndex = fileName.indexOf( "." );
-        //Return dotFiles with the leading dot
-        return ( dotIndex > 0 ? fileName.substring( 0,
-                                                    dotIndex ) : fileName );
-    }
-
     @Override
     public FolderListing getFolderListing( final Path path ) {
 
         //Get list of files and folders contained in the path
         final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-        final Path parentPath = paths.convert( nioPath.getParent() );
-        if ( Files.exists( nioPath ) ) {
-            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
-                                                                                                               dotFileFilter );
-            for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
-                if ( Files.isRegularFile( np ) ) {
-                    final org.uberfire.backend.vfs.Path p = paths.convert( np );
-                    final FolderItem folderItem = new FolderItem( p,
-                                                                  p.getFileName(),
-                                                                  FolderItemType.FILE );
-                    folderItems.add( folderItem );
-                } else if ( Files.isDirectory( np ) ) {
-                    final org.uberfire.backend.vfs.Path p = paths.convert( np );
-                    final FolderItem folderItem = new FolderItem( p,
-                                                                  p.getFileName(),
-                                                                  FolderItemType.FOLDER );
-                    folderItems.add( folderItem );
-                }
+
+        //Scan upwards until the path exists (as the current path could have been deleted)
+        org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        while ( !Files.exists( nioPath ) ) {
+            nioPath = nioPath.getParent();
+        }
+        final Path basePath = paths.convert( nioPath );
+        final Path baseParentPath = paths.convert( nioPath.getParent() );
+        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
+                                                                                                           dotFileFilter );
+        for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
+            if ( Files.isRegularFile( np ) ) {
+                final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                final FolderItem folderItem = new FolderItem( p,
+                                                              p.getFileName(),
+                                                              FolderItemType.FILE );
+                folderItems.add( folderItem );
+            } else if ( Files.isDirectory( np ) ) {
+                final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                final FolderItem folderItem = new FolderItem( p,
+                                                              p.getFileName(),
+                                                              FolderItemType.FOLDER );
+                folderItems.add( folderItem );
             }
         }
 
         //Get Path segments from the given Path back to the root
-        final List<Path> segments = getPathSegments( path );
+        final List<Path> segments = getPathSegments( basePath );
 
-        return new FolderListing( path,
-                                  parentPath,
+        return new FolderListing( basePath,
+                                  baseParentPath,
                                   folderItems,
                                   segments );
     }

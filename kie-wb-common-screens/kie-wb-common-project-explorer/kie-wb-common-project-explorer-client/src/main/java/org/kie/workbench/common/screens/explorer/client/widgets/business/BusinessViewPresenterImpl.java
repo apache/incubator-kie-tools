@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -44,13 +43,11 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
-import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
@@ -341,6 +338,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getPath();
         if ( resource == null ) {
             return;
@@ -350,8 +350,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
             @Override
             public void callback( final ResourceContext context ) {
                 final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
+                if ( project == null ) {
                     return;
                 }
                 //Is the new resource a Project root
@@ -360,8 +359,15 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                     return;
                 }
                 //Otherwise it's a file inside a package
+                final Package pkg = context.getPackage();
+                if ( pkg == null ) {
+                    return;
+                }
                 itemCache.invalidateCache( pkg );
-                if ( isInActivePackage( resource ) ) {
+                if ( Utils.isPackagePath( resource,
+                                          pkg ) ) {
+                    view.addPackage( pkg );
+                } else if ( isInActivePackage( resource ) ) {
                     view.addItem( Utils.makeFileItem( resource ) );
                 }
             }
@@ -391,28 +397,29 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         final Path pkgTestResourcesPath = displayedPackage.getPackageTestResourcesPath();
 
         if ( Utils.isLeaf( resource,
-                     pkgMainSrcPath ) ) {
+                           pkgMainSrcPath ) ) {
             return true;
         }
         if ( Utils.isLeaf( resource,
-                     pkgTestSrcPath ) ) {
+                           pkgTestSrcPath ) ) {
             return true;
         }
         if ( Utils.isLeaf( resource,
-                     pkgMainResourcesPath ) ) {
+                           pkgMainResourcesPath ) ) {
             return true;
         }
         if ( Utils.isLeaf( resource,
-                     pkgTestResourcesPath ) ) {
+                           pkgTestResourcesPath ) ) {
             return true;
         }
         return false;
     }
 
-
-
     // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getPath();
         if ( resource == null ) {
             return;
@@ -424,6 +431,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     // Refresh when a Resource has been copied, if it exists in the active package
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getDestinationPath();
         if ( resource == null ) {
             return;
@@ -435,55 +445,27 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        final Path resource = event.getDestinationPath();
-        if ( resource == null ) {
+        if ( !view.isVisible() ) {
             return;
         }
-        if ( isInActivePackage( resource ) ) {
-            final FolderItem item = Utils.makeFileItem( resource );
-            view.removeItem( item );
-            view.addItem( item );
+        final Path sourcePath = event.getSourcePath();
+        final Path destinationPath = event.getDestinationPath();
+        if ( isInActivePackage( sourcePath ) ) {
+            view.removeItem( Utils.makeFileItem( sourcePath ) );
+        }
+        if ( isInActivePackage( destinationPath ) ) {
+            view.addItem( Utils.makeFileItem( destinationPath ) );
         }
     }
 
-    // Refresh when a batch Resource change has occurred
+    // Refresh when a batch Resource change has occurred. Simply refresh everything.
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        final Set<ResourceChange> changes = resourceBatchChangesEvent.getBatch();
-        for ( final ResourceChange change : changes ) {
-            final Path resource = change.getPath();
-            final ChangeType changeType = change.getType();
-            explorerService.call( new RemoteCallback<ResourceContext>() {
-
-                @Override
-                public void callback( final ResourceContext context ) {
-                    final Project project = context.getProject();
-                    if ( project == null ) {
-                        return;
-                    }
-                    packageCache.invalidateCache( project );
-                    final Package pkg = context.getPackage();
-                    if ( pkg == null ) {
-                        return;
-                    }
-                    itemCache.invalidateCache( pkg );
-                    if ( isInActivePackage( resource ) ) {
-                        if ( Utils.isPackagePath( resource,
-                                                  pkg ) ) {
-                            view.addPackage( pkg );
-                        } else {
-                            switch ( changeType ) {
-                                case ADD:
-                                    view.addItem( Utils.makeFileItem( resource ) );
-                                    break;
-                                case DELETE:
-                                    view.removeItem( Utils.makeFileItem( resource ) );
-                            }
-                        }
-                    }
-                }
-
-            } ).resolveResourceContext( resource );
+        itemCache.invalidateCache();
+        packageCache.invalidateCache();
+        if ( !view.isVisible() ) {
+            return;
         }
+        initialiseViewForActiveContext();
     }
 
 }

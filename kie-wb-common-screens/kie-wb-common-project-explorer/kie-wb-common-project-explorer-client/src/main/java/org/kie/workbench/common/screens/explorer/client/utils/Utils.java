@@ -140,17 +140,6 @@ public class Utils {
     }
 
     /**
-     * Make a Folder Item representing a Folder
-     * @param path
-     * @return
-     */
-    public static FolderItem makeFolderItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FOLDER );
-    }
-
-    /**
      * Check whether the child is is the immediate leaf of the parent. This method is really dirty as it depends
      * upon String manipulation to determine whether the child is the immediate leaf of the parent. This was originally
      * performed server-side using NIO2 Path semantics however problems occur when trying to determine whether a Path
@@ -171,6 +160,17 @@ public class Utils {
                                     1 ) == -1;
         }
         return false;
+    }
+
+    /**
+     * Strip the file extension from a full filename
+     * @param fileName
+     * @return
+     */
+    public static String getBaseFileName( final String fileName ) {
+        final int dotIndex = fileName.lastIndexOf( "." );
+        return ( dotIndex > 0 ? fileName.substring( 0,
+                                                    dotIndex ) : fileName );
     }
 
 }

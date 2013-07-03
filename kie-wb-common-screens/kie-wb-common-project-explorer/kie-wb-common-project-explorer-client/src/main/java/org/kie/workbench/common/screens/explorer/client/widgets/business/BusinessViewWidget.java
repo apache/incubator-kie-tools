@@ -46,10 +46,12 @@ import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
+import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -359,7 +361,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                 final NavList itemsNavList = new NavList();
                 group.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
-                    itemsNavList.add( makeItemNavLink( folderItem ) );
+                    itemsNavList.add( makeItemNavLink( e.getKey(),
+                                                       folderItem ) );
                 }
                 itemsContainer.add( group );
             }
@@ -385,8 +388,13 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         return description;
     }
 
-    private IsWidget makeItemNavLink( final FolderItem folderItem ) {
-        final NavLink navLink = new NavLink( folderItem.getFileName() );
+    private IsWidget makeItemNavLink( final ClientResourceType resourceType,
+                                      final FolderItem folderItem ) {
+        String fileName = folderItem.getFileName();
+        if ( !( resourceType instanceof AnyResourceType ) ) {
+            fileName = Utils.getBaseFileName( fileName );
+        }
+        final NavLink navLink = new NavLink( fileName );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override

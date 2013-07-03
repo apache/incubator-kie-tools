@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import java.util.Collection;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -31,7 +30,6 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
@@ -44,13 +42,11 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
-import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
@@ -113,9 +109,11 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         activeRepository = context.getActiveRepository();
         activeProject = context.getActiveProject();
         activePackage = context.getActivePackage();
-        activeFolderListing = null;
 
-        if ( activePackage != null ) {
+        if ( activeFolderListing != null ) {
+            loadFilesAndFolders( activeFolderListing.getPath() );
+            
+        } else if ( activePackage != null ) {
             loadFilesAndFolders( activePackage.getProjectRootPath() );
             packageChangeEvent.fire( new PackageChangeEvent() );
 
@@ -350,6 +348,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Override
     public void setVisible( final boolean visible ) {
         if ( visible ) {
+            activeFolderListing = null;
             initialiseViewForActiveContext();
         }
         view.setVisible( visible );
@@ -372,6 +371,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getPath();
         if ( resource == null ) {
             return;
@@ -380,11 +382,21 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
             @Override
             public void callback( final ResourceContext context ) {
-                //Is the new resource a Project root otherwise it's a file inside a package
                 final Project project = context.getProject();
-                if ( project != null && project.getRootPath().equals( resource ) ) {
+                if ( project == null ) {
+                    return;
+                }
+                //Is the new resource a Project root
+                if ( project.getRootPath().equals( resource ) ) {
                     addProjectResource( project );
-                } else if ( isInActiveFolderListing( resource ) ) {
+                    return;
+                }
+                //Otherwise it's a file inside a package
+                final Package pkg = context.getPackage();
+                if ( pkg == null ) {
+                    return;
+                }
+                if ( isInActiveFolderListing( resource ) ) {
                     view.addItem( Utils.makeFileItem( resource ) );
                 }
             }
@@ -413,6 +425,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getPath();
         if ( resource == null ) {
             return;
@@ -424,6 +439,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     // Refresh when a Resource has been copied, if it exists in the active package
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
         final Path resource = event.getDestinationPath();
         if ( resource == null ) {
             return;
@@ -435,46 +453,25 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        final Path resource = event.getDestinationPath();
-        if ( resource == null ) {
+        if ( !view.isVisible() ) {
             return;
         }
-        if ( isInActiveFolderListing( resource ) ) {
-            final FolderItem item = Utils.makeFileItem( resource );
-            view.removeItem( item );
-            view.addItem( item );
+        final Path sourcePath = event.getSourcePath();
+        final Path destinationPath = event.getDestinationPath();
+        if ( isInActiveFolderListing( sourcePath ) ) {
+            view.removeItem( Utils.makeFileItem( sourcePath ) );
+        }
+        if ( isInActiveFolderListing( destinationPath ) ) {
+            view.addItem( Utils.makeFileItem( destinationPath ) );
         }
     }
 
-    // Refresh when a batch Resource change has occurred
+    // Refresh when a batch Resource change has occurred. Simple refresh everything.
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        final Set<ResourceChange> changes = resourceBatchChangesEvent.getBatch();
-        for ( final ResourceChange change : changes ) {
-            final Path resource = change.getPath();
-            final ChangeType changeType = change.getType();
-            explorerService.call( new RemoteCallback<ResourceContext>() {
-
-                @Override
-                public void callback( final ResourceContext context ) {
-                    final Package pkg = context.getPackage();
-                    if ( isInActiveFolderListing( resource ) ) {
-                        if ( Utils.isPackagePath( resource,
-                                                  pkg ) ) {
-                            view.addItem( Utils.makeFolderItem( resource ) );
-                        } else {
-                            switch ( changeType ) {
-                                case ADD:
-                                    view.addItem( Utils.makeFileItem( resource ) );
-                                    break;
-                                case DELETE:
-                                    view.removeItem( Utils.makeFileItem( resource ) );
-                            }
-                        }
-                    }
-                }
-
-            } ).resolveResourceContext( resource );
+        if ( !view.isVisible() ) {
+            return;
         }
+        initialiseViewForActiveContext();
     }
 
 }

@@ -59,6 +59,10 @@ public class LRUItemCache {
                    folderItems );
     }
 
+    public void invalidateCache() {
+        this.cache.clear();
+    }
+
     public void invalidateCache( final Package pkg ) {
         PortablePreconditions.checkNotNull( "pkg",
                                             pkg );

@@ -59,6 +59,10 @@ public class LRUPackageCache {
                    packages );
     }
 
+    public void invalidateCache() {
+        this.cache.clear();
+    }
+
     public void invalidateCache( final Project project ) {
         PortablePreconditions.checkNotNull( "project",
                                             project );
