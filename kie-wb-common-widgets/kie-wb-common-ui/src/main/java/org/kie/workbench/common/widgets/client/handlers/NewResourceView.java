@@ -31,6 +31,8 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Well;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import com.github.gwtbootstrap.client.ui.event.ShownEvent;
+import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -74,6 +76,8 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
         }
     };
 
+    private Widget activeHandlerWidget = null;
+
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
                                                                                       cancelCommand );
 
@@ -107,6 +111,15 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
+
+        addShownHandler( new ShownHandler() {
+            @Override
+            public void onShown( ShownEvent shownEvent ) {
+                if ( activeHandlerWidget != null ) {
+                    activeHandlerWidget.getElement().scrollIntoView();
+                }
+            }
+        } );
     }
 
     @Override
@@ -135,6 +148,7 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
 
         //Select handler
         final RadioButton option = handlerToWidgetMap.get( handler );
+        activeHandlerWidget = option;
         if ( option != null ) {
             option.setValue( true,
                              true );

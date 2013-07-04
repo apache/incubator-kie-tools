@@ -123,8 +123,6 @@ public interface ProjectEditorConstants
 
     String newPackageDescription();
 
-    String newFolderDescription();
-
     String NoRepositorySelectedPleaseSelectARepository();
     
     String XMLMarkIsNotAllowed();
