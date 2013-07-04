@@ -15,4 +15,11 @@ public interface RepositoryService {
     Repository createRepository( final String scheme,
                                  final String alias,
                                  final Map<String, Object> env );
+
+    void addRole( final Repository repository,
+                  final String role );
+
+    void removeRole( final Repository repository,
+                     final String role );
+
 }

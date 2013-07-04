@@ -2,7 +2,6 @@ package org.uberfire.backend.server.repositories.git;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,14 +56,6 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
                 repo.addEnvironmentParameter( item.getName(), secureService.decrypt( item.getValue().toString() ) );
             } else {
                 repo.addEnvironmentParameter( item.getName(), item.getValue() );
-            }
-        }
-
-        //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> roles = repoConfig.getConfigItem( "security:roles" );
-        if ( roles != null ) {
-            for ( String role : roles.getValue() ) {
-                repo.getRoles().add( role );
             }
         }
 

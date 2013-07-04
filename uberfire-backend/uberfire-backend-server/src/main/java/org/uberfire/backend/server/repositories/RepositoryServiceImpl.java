@@ -18,6 +18,8 @@ import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
+import org.uberfire.backend.server.config.ConfigItem;
+import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 
@@ -123,4 +125,57 @@ public class RepositoryServiceImpl implements RepositoryService {
         configuredRepositoriesList.add( repository );
         return repository;
     }
+
+    @Override
+    public void addRole( final Repository repository,
+                         final String role ) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+
+        if ( thisRepositoryConfig != null ) {
+            final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
+            roles.getValue().add( role );
+
+            configurationService.updateConfiguration( thisRepositoryConfig );
+
+            final Repository updatedRepository = repositoryFactory.newRepository( thisRepositoryConfig );
+            configuredRepositories.put( updatedRepository.getAlias(),
+                                        updatedRepository );
+            configuredRepositoriesList.add( updatedRepository );
+        } else {
+            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
+        }
+    }
+
+    @Override
+    public void removeRole( final Repository repository,
+                            final String role ) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+
+        if ( thisRepositoryConfig != null ) {
+            final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
+            roles.getValue().remove( role );
+
+            configurationService.updateConfiguration( thisRepositoryConfig );
+
+            final Repository updatedRepository = repositoryFactory.newRepository( thisRepositoryConfig );
+            configuredRepositories.put( updatedRepository.getAlias(),
+                                        updatedRepository );
+            configuredRepositoriesList.add( updatedRepository );
+        } else {
+            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
+        }
+    }
+
+    protected ConfigGroup findRepositoryConfig( final String alias ) {
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.REPOSITORY );
+        if ( groups != null ) {
+            for ( ConfigGroup groupConfig : groups ) {
+                if ( groupConfig.getName().equals( alias ) ) {
+                    return groupConfig;
+                }
+            }
+        }
+        return null;
+    }
+
 }
