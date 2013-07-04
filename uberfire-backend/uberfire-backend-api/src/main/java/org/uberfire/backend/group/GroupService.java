@@ -30,5 +30,7 @@ public interface GroupService {
 
     void removeRole( final Group group,
                      final String role );
+    
+    void removeGroup(final String groupName);
 
 }

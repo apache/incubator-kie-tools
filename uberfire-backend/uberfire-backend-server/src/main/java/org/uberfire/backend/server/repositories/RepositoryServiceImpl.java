@@ -1,10 +1,14 @@
 package org.uberfire.backend.server.repositories;
 
+import static org.uberfire.backend.server.config.ConfigType.REPOSITORY;
+import static org.uberfire.backend.server.repositories.EnvironmentParameters.SCHEME;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -22,9 +26,6 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
-
-import static org.uberfire.backend.server.config.ConfigType.*;
-import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
 
 @Service
 @ApplicationScoped
@@ -47,8 +48,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     private Event<NewRepositoryEvent> event;
 
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
-    private List<Repository> configuredRepositoriesList = new ArrayList<Repository>();
 
+    @SuppressWarnings("unchecked")
     @PostConstruct
     public void loadRepositories() {
         final List<ConfigGroup> repoConfigs = configurationService.getConfiguration( REPOSITORY );
@@ -57,12 +58,12 @@ public class RepositoryServiceImpl implements RepositoryService {
                 final Repository repository = repositoryFactory.newRepository( config );
                 configuredRepositories.put( repository.getAlias(),
                                             repository );
-                configuredRepositoriesList.add( repository );
             }
         }
 
         ioService.onNewFileSystem( new IOService.NewFileSystemListener() {
-            @Override
+            
+			@Override
             public void execute( final FileSystem newFileSystem,
                                  final String scheme,
                                  final String name,
@@ -81,7 +82,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Override
     public Collection<Repository> getRepositories() {
-        return configuredRepositoriesList;
+        return new ArrayList<Repository>(configuredRepositories.values());
     }
 
     @Override
@@ -122,13 +123,11 @@ public class RepositoryServiceImpl implements RepositoryService {
         configurationService.addConfiguration( repositoryConfig );
         configuredRepositories.put( repository.getAlias(),
                                     repository );
-        configuredRepositoriesList.add( repository );
         return repository;
     }
-
-    @Override
-    public void addRole( final Repository repository,
-                         final String role ) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public void addRole(Repository repository, String role) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
@@ -137,18 +136,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             configurationService.updateConfiguration( thisRepositoryConfig );
 
-            final Repository updatedRepository = repositoryFactory.newRepository( thisRepositoryConfig );
-            configuredRepositories.put( updatedRepository.getAlias(),
-                                        updatedRepository );
-            configuredRepositoriesList.add( updatedRepository );
+            final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
+            configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
         } else {
             throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
     }
 
-    @Override
-    public void removeRole( final Repository repository,
-                            final String role ) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public void removeRole(Repository repository, String role) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
@@ -157,10 +154,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             configurationService.updateConfiguration( thisRepositoryConfig );
 
-            final Repository updatedRepository = repositoryFactory.newRepository( thisRepositoryConfig );
-            configuredRepositories.put( updatedRepository.getAlias(),
-                                        updatedRepository );
-            configuredRepositoriesList.add( updatedRepository );
+            final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
+            configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
         } else {
             throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
@@ -178,4 +173,14 @@ public class RepositoryServiceImpl implements RepositoryService {
         return null;
     }
 
+	@Override
+	public void removeRepository(String alias) {
+		final ConfigGroup thisRepositoryConfig = findRepositoryConfig( alias );
+
+        if ( thisRepositoryConfig != null ) {
+        	configurationService.removeConfiguration(thisRepositoryConfig);
+        	configuredRepositories.remove(alias);
+        }
+		
+	}
 }

@@ -21,5 +21,7 @@ public interface RepositoryService {
 
     void removeRole( final Repository repository,
                      final String role );
+    
+    void removeRepository(final String alias);
 
 }

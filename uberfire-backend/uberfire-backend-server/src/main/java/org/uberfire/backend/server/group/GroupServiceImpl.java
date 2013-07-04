@@ -2,10 +2,10 @@ package org.uberfire.backend.server.group;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -106,6 +106,7 @@ public class GroupServiceImpl implements GroupService {
         return repositoryList;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void addRepository( final Group group,
                                final Repository repository ) {
@@ -125,6 +126,7 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void removeRepository( final Group group,
                                   final Repository repository ) {
@@ -144,6 +146,7 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void addRole( final Group group,
                          final String role ) {
@@ -163,7 +166,8 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public void removeRole( final Group group,
                             final String role ) {
         final ConfigGroup thisGroupConfig = findGroupConfig( group.getName() );
@@ -193,4 +197,15 @@ public class GroupServiceImpl implements GroupService {
         }
         return null;
     }
+
+	@Override
+	public void removeGroup(String groupName) {
+		 final ConfigGroup thisGroupConfig = findGroupConfig( groupName );
+
+        if ( thisGroupConfig != null ) {
+        	configurationService.removeConfiguration(thisGroupConfig);
+        	registeredGroups.remove(groupName);
+        }
+		
+	}
 }
