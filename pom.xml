@@ -315,6 +315,20 @@
         </configuration>
       </plugin>
 
+      <!-- Zanata - translations -->
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>2.3.0</version>
+        <configuration>
+          <excludes>**/ErraiApp.properties</excludes>
+          <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
+          <srcDir>src/main/resources/</srcDir>
+          <transDir>src/main/resources/</transDir>
+          <includes>**/*Constants*.properties</includes>
+        </configuration>
+      </plugin>
+
     </plugins>
 
   </build>

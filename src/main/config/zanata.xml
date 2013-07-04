@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>https://translate.jboss.org/</url>
+  <project>uberfire</project>
+  <project-version>0.3.0</project-version>
+  <project-type>utf8properties</project-type>
+
+  <locales>
+    <locale map-from="es_ES">es</locale>
+    <locale map-from="fr_FR">fr</locale>
+    <locale map-from="ja_JP">ja</locale>
+    <locale>de</locale>
+    <locale>pt-BR</locale>
+    <locale map-from="zh_CN">zh-Hans</locale>
+  </locales>
+
+</config>
