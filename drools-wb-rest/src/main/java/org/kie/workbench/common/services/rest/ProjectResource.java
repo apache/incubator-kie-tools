@@ -293,7 +293,9 @@ public class ProjectResource {
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
+
         jobs.put(id, jobRequest);
         
         compileProjectRequestEvent.fire(jobRequest);
@@ -317,6 +319,7 @@ public class ProjectResource {
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
         jobs.put(id, jobRequest);
         
@@ -341,6 +344,7 @@ public class ProjectResource {
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
         jobs.put(id, jobRequest);
         
@@ -356,8 +360,7 @@ public class ProjectResource {
     public JobRequest deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
-            BuildConfig mavenConfig ) {
-        
+            BuildConfig mavenConfig ) {        
         System.out.println( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -365,6 +368,7 @@ public class ProjectResource {
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
+        jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
         jobs.put(id, jobRequest);
         
