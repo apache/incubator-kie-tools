@@ -74,6 +74,10 @@ public class AttachmentFileWidget extends Composite {
         callback.execute();
     }
 
+    public void reset() {
+        form.reset();
+    }
+
     public void submit( final Path context,
                         final String fileName,
                         final String targetUrl,
