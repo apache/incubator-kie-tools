@@ -33,5 +33,6 @@ public interface StackBarWidget {
     
     int getMaxPlaces();
     
+    void refresh();
     
 }

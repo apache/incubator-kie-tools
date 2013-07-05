@@ -87,18 +87,20 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
     private Button collapseButton;
     private Button closeButton;
     
-    private boolean alwaysOpen = false;
+    private boolean alwaysOpened = false;
     
     private int maxPlaces = 1;
     
     public StackBarWidgetImpl(final Long id, final String place){
-        this(id, place, false, 1);
+        this(id, place, 1, false);
     }
     
     
-    public StackBarWidgetImpl(final Long id, final String place, boolean alwaysOpen, int maxPlaces) {
+    public StackBarWidgetImpl(final Long id, final String place, int maxPlaces, boolean alwaysOpened) {
         this.places.add(place);
         currentPlace = place;
+        this.alwaysOpened = alwaysOpened;
+        this.maxPlaces = maxPlaces;
         this.id = id;
         title = new UnorderedList();
         
@@ -108,13 +110,13 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
         barSystemButtons = new ButtonGroup();
         
         
-        if(!alwaysOpen){
+        if(!alwaysOpened){
             collapseButton = new Button(); 
-            collapseButton.setIcon(IconType.ARROW_DOWN);
+            collapseButton.setIcon(IconType.ARROW_LEFT);
             collapseButton.setSize(ButtonSize.MINI);
             collapseButton.addClickHandler(new ClickHandler() {
 
-                private boolean opened = false;
+                private boolean opened = true;
                 @Override
                 public void onClick(ClickEvent event) {
                     if(!opened){
@@ -133,17 +135,14 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
 
             });
             barSystemButtons.add(collapseButton);
-        }else{
-            
         }
-        if(maxPlaces < 1){
+        if(maxPlaces > 1){
             navButton = new Button(); 
             navButton.setIcon(IconType.TH_LIST);
             navButton.setSize(ButtonSize.MINI);
             navButton.setVisible(false);
             navButton.addClickHandler(new ClickHandler() {
-
-                private boolean opened = false;
+                private boolean opened = true;
                 @Override
                 public void onClick(ClickEvent event) {
                     if(!opened){
@@ -194,10 +193,12 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
         
         initializeBar(place);
        
-        if(alwaysOpen){
-            showContent(currentPlace);
-        }
         
+    }
+    
+    public void refresh(){
+        showContent(currentPlace);
+        showPlaces();
     }
     
     private void initializeBar(String place){
@@ -217,7 +218,7 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
     
     private void showPlaces(){
         placesPanel.clear();
-        if(!this.places.isEmpty()){
+        if(this.places.size() > 1){
             FlowPanel internalPanel = new FlowPanel();
             internalPanel.setStyleName("span12");
             FlowPanel externalPanel = new FlowPanel();
@@ -269,7 +270,7 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
     
     @Override
     public void addPlace(String place){
-       if(this.places.size() <= maxPlaces){
+       if(this.places.size() >= maxPlaces){
            notification.fire(new NotificationEvent("This bar is full, remove places or add the place to a new bar"));
            return;
        } 
@@ -354,12 +355,12 @@ public class StackBarWidgetImpl extends Composite implements StackBarWidget{
     
     @Override
     public void setAlwaysOpen(boolean open) {
-        this.alwaysOpen = open;
+        this.alwaysOpened = open;
     }
 
     @Override
     public boolean getAlwaysOpen() {
-        return this.alwaysOpen;
+        return this.alwaysOpened;
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.screens.stackablebar;
 
+import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -50,11 +51,6 @@ public class StackBarContainerImpl extends Composite implements StackBarContaine
     
     private int maxBars = 1;
 
-    public StackBarContainerImpl(int maxBars) {
-        this();
-        this.maxBars = maxBars;
-        bars = new HashMap<Long, StackBarWidget>(maxBars);
-    }
 
     public StackBarContainerImpl() {
         initWidget(container);
@@ -63,21 +59,27 @@ public class StackBarContainerImpl extends Composite implements StackBarContaine
     }
 
     @Override
-    public Long addNewBar(String place) {
+    public Long addNewBar(String place, int maxPlaces, boolean alwaysOpened) {
         Long id = null;
         if (bars.size() >= maxBars) {
             notification.fire(new NotificationEvent("The bar container is full, please delete the unused bars to add new ones!"));
         } else {
             id = idGenerator++;
-            StackBarWidgetImpl stackBarWidget = new StackBarWidgetImpl(id, place);
+            StackBarWidgetImpl stackBarWidget = new StackBarWidgetImpl(id, place, maxPlaces, alwaysOpened);
             stackBarWidget.setActivityManager(activityManager);
             stackBarWidget.setCloseEvent(closeEvent);
             stackBarWidget.setNotification(notification);
             stackBarWidget.setCloseBarEvent(closeBarEvent);
+            stackBarWidget.refresh();
             bars.put(id, stackBarWidget);
         }
 
         return id;
+    }
+    
+    @Override
+    public Long addNewBar(String place) {
+        return addNewBar(place, 1, false);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class StackBarContainerImpl extends Composite implements StackBarContaine
             return;
         }
         widget.addPlace(place);
+        widget.refresh();
     }
 
     @Override
@@ -102,6 +105,12 @@ public class StackBarContainerImpl extends Composite implements StackBarContaine
 
     @Override
     public void refresh() {
+        if(bars.isEmpty()){
+            container.add(new Label("There are no Bars in this container yet."));
+            return;
+        }else{
+            container.clear();
+        }
         for (Long key : bars.keySet()) {
             FlowPanel panel = new FlowPanel();
             panel.setStyleName("container-fluid");

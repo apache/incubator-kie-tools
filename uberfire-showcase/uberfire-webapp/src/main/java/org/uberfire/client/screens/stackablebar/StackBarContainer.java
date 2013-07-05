@@ -37,6 +37,6 @@ public interface StackBarContainer {
     
     Long addNewBar(String place);
     
-    
+    Long addNewBar(String place, int maxPlaces, boolean alwaysOpened );
     
 }

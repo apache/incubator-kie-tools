@@ -1,6 +1,7 @@
 package org.uberfire.client.screens.stackablebar;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,6 +28,15 @@ public class StackableBarView extends Composite implements StackableBarPresenter
     public TextBox placeTextBox;
     @UiField
     public TextBox idTextBox;
+    @UiField
+    public CheckBox alwaysOpenCheckBox;
+    
+    @UiField
+    public TextBox maxBarsTextBox;
+    
+    @UiField
+    public TextBox maxPlacesTextBox;
+    
     @Inject
     private Event<ClosePlaceEvent> closedEvent;
     @Inject
@@ -43,6 +53,9 @@ public class StackableBarView extends Composite implements StackableBarPresenter
     
     @UiField
     public Button addButton;
+    
+    @UiField
+    public Button createContainerButton;
 
     interface ViewBinder
             extends
@@ -54,13 +67,26 @@ public class StackableBarView extends Composite implements StackableBarPresenter
         initWidget(uiBinder.createAndBindUi(this));
         this.presenter = presenter;
         
-        stackBarContainer.setMaxBars(5);
+    }
+    
+    
+    @UiHandler("createContainerButton")
+    public void onClickCreateContainerButton( final ClickEvent event ) {
+        String maxBars = maxBarsTextBox.getText();
+        if(maxBarsTextBox.getText().equals("")){
+            maxBars = "1";
+        }
+        mainPanel.clear();
+        stackBarContainer.clear();
+        stackBarContainer.setMaxBars(Integer.parseInt(maxBars));
         
         mainPanel.add(((StackBarContainerImpl)stackBarContainer));
+        
+        stackBarContainer.refresh();
     }
     
     @UiHandler("addButton")
-    public void onClickNotificationButton( final ClickEvent event ) {
+    public void onClickAddButton( final ClickEvent event ) {
         Long id = null;
         try {
             id =  new Long(idTextBox.getText());
@@ -68,7 +94,11 @@ public class StackableBarView extends Composite implements StackableBarPresenter
             
         }
         if(id == null){
-            stackBarContainer.addNewBar(placeTextBox.getText());
+            String maxPlaces = maxPlacesTextBox.getText();
+            if(maxPlaces.equals("")){
+                maxPlaces = "1";
+            }
+            stackBarContainer.addNewBar(placeTextBox.getText(), Integer.parseInt(maxPlaces), alwaysOpenCheckBox.getValue());
         }else{
             stackBarContainer.addPlaceToBar(id, placeTextBox.getText());
         }
