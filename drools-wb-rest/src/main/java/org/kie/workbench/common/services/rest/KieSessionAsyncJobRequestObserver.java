@@ -11,6 +11,7 @@ import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
 import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 
 
 @ApplicationScoped
@@ -51,12 +52,12 @@ public class KieSessionAsyncJobRequestObserver {
         projectResourceDispatcher.installProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
     }   
     
-//    public void onTestProjectRequest( final @Observes TestProjectRequest jobRequest) {
-//        if(!approveRequest(jobRequest)) {
-//            return;
-//        }
-//        projectResourceDispatcher.testProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
-//    }
+    public void onTestProjectRequest( final @Observes TestProjectRequest jobRequest) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.testProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
+    }
     
     //Commented out for the time being, due to kssion problem.
     public boolean approveRequest(JobRequest jobRequest) {

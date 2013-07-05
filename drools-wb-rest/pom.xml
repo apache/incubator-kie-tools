@@ -60,12 +60,10 @@
       <artifactId>guvnor-project-backend</artifactId>
     </dependency>  
 
-    <!-- This causes a circular dependency. The REST method to run tests should be moved to a class in drools-wb
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
     </dependency>
-    -->
     
     <!-- for test? -->
     <dependency>
