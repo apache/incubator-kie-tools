@@ -1,6 +1,7 @@
 package org.drools.workbench.screens.scorecardxls.client.editor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.uberfire.backend.vfs.Path;
 
@@ -17,7 +18,7 @@ public class URLHelper {
 
     public static String getDownloadUrl( final Path path ) {
         final StringBuilder sb = new StringBuilder( URLHelper.getServletUrl() );
-        sb.append( "?" ).append( FileManagerFields.FORM_FIELD_PATH ).append( "=" ).append( path.toURI() );
+        sb.append( "?" ).append( FileManagerFields.FORM_FIELD_PATH ).append( "=" ).append( URL.encode( path.toURI() ) );
         return sb.toString();
     }
 

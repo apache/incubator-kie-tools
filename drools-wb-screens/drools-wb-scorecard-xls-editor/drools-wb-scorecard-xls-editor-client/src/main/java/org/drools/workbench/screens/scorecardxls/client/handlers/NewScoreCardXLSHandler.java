@@ -1,9 +1,11 @@
 package org.drools.workbench.screens.scorecardxls.client.handlers;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -53,6 +55,12 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        uploadWidget.reset();
+        return super.getExtensions();
+    }
+
+    @Override
     public String getDescription() {
         return ScoreCardXLSEditorConstants.INSTANCE.NewScoreCardDescription();
     }
@@ -73,7 +81,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                                baseFileName );
         final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
-                                                  path.toURI() + "/" + fileName );
+                                                  URL.encode( path.toURI() + "/" + fileName ) );
 
         uploadWidget.submit( path,
                              fileName,
