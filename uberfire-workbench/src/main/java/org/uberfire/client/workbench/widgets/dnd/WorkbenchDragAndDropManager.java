@@ -25,7 +25,7 @@ import org.uberfire.client.workbench.BeanFactory;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 /**
  * A Manager of drag and drop operations within the Workbench.

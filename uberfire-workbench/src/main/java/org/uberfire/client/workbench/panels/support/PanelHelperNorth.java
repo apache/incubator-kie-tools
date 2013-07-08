@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels.support;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.workbench.model.Position;
 
 /**

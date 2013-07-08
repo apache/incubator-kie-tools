@@ -22,8 +22,7 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
-import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -48,9 +47,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     @Inject
     private WorkbenchMenuBar menuBar;
-
-    @Inject
-    private WorkbenchToolBarPresenter toolBarPresenter;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
@@ -114,7 +110,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         onClose();
 
         menuBar.clearPerspectiveMenus();
-        toolBarPresenter.clearWorkbenchPerspectiveItems();
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
@@ -179,18 +174,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
         //Set up Menu Bar for perspective
         menuBar.aggregatePerspectiveMenus( getMenus() );
-
-        if ( perspective.isToolbarVisible() ) {
-            toolBarPresenter.show();
-
-            //Set up Tool Bar for perspective
-            final ToolBar toolBar = getToolBar();
-            if ( toolBar != null ) {
-                toolBarPresenter.addWorkbenchPerspective( toolBar );
-            }
-        } else {
-            toolBarPresenter.hide();
-        }
 
         onReveal();
     }

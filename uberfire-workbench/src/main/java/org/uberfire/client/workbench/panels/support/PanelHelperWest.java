@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels.support;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,15 +25,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.workbench.model.Position;
 
 /**
- * Helper to add or remove WorkbenchPanels from the South of a
- * VerticalSplitterPanel.
+ * Helper to add or remove WorkbenchPanels from the West of a
+ * HorizontalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = Position.SOUTH)
-public class PanelHelperSouth
+@WorkbenchPosition(position = Position.WEST)
+public class PanelHelperWest
         implements
         PanelHelper {
 
@@ -51,38 +53,38 @@ public class PanelHelperSouth
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( targetPanel,
-                                                                                newPanel,
-                                                                                Position.SOUTH,
-                                                                                preferredSize,
-                                                                                preferredMinSize );
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
+                                                                                    newPanel,
+                                                                                    Position.WEST,
+                                                                                    preferredSize,
+                                                                                    preferredMinSize );
 
             sp.clear();
-            sp.setWidget( vsp );
+            sp.setWidget( hsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
             //so ensure we set the sizes of the new Panel and it's children after the 
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
-            scheduleResize( vsp );
+            scheduleResize( hsp );
         }
     }
 
     @Override
     public void remove( final WorkbenchPanelView panel ) {
-        final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
+        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget northWidget = vsp.getWidget( Position.NORTH );
+        final Widget eastWidget = vsp.getWidget( Position.EAST );
 
         vsp.clear();
 
-        //Set parent's content to the NORTH widget
+        //Set parent's content to the EAST widget
         if ( parent instanceof SimplePanel ) {
-            ( (SimplePanel) parent ).setWidget( northWidget );
+            ( (SimplePanel) parent ).setWidget( eastWidget );
         }
 
-        if ( northWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) northWidget );
+        if ( eastWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) eastWidget );
         }
     }
 

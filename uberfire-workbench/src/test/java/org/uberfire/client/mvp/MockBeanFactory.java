@@ -17,13 +17,13 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
-import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -48,12 +48,12 @@ public class MockBeanFactory
 
     @Override
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-        final RootWorkbenchPanelPresenter panel = new RootWorkbenchPanelPresenter( new MockWorkbenchPanelView(),
-                                                                                   null,
-                                                                                   null,
-                                                                                   null );
-        panel.setDefinition( definition );
-        return panel;
+//        final MultiTabWorkbenchPanelPresenter panel = new MultiTabWorkbenchPanelPresenter( new MockWorkbenchPanelView(),
+//                                                                                   null,
+//                                                                                   null,
+//                                                                                   null );
+//        panel.setDefinition( definition );
+        return null;
     }
 
     @Override

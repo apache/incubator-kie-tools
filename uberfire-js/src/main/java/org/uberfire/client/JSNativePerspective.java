@@ -8,19 +8,15 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
@@ -85,7 +81,7 @@ public class JSNativePerspective {
     }
 
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl();
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( PanelType.ROOT_TAB );
         perspectiveDefinition.setName( getId() );
 
         final JSPanelDefinition view = getView( obj );
@@ -128,7 +124,7 @@ public class JSNativePerspective {
         if ( panels != null ) {
             for ( int i = 0; i < panels.length(); i++ ) {
                 final JSPanelDefinition activePanelDef = panels.get( i );
-                final PanelDefinition newPanel = new PanelDefinitionImpl();
+                final PanelDefinition newPanel = new PanelDefinitionImpl( PanelType.MULTI_TAB, PanelType.MULTI_TAB );
                 if ( activePanelDef.getWidth() > 0 ) {
                     newPanel.setWidth( activePanelDef.getWidth() );
                 }

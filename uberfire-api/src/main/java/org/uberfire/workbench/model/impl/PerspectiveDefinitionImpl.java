@@ -17,7 +17,11 @@ package org.uberfire.workbench.model.impl;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.isRoot;
 
 /**
  * Default implementation of PerspectiveDefinition
@@ -31,9 +35,19 @@ public class PerspectiveDefinitionImpl
 
     private boolean isTransient = false;
 
-    private boolean isToolbarVisible = true;
+    private PanelDefinition root;
 
-    private PanelDefinition root = new PanelDefinitionImpl( true );
+    public PerspectiveDefinitionImpl() {
+    }
+
+    public PerspectiveDefinitionImpl( final PanelType type ) {
+        checkNotNull( "type", type );
+        if ( !isRoot( type ) ) {
+            throw new IllegalArgumentException( "Panel type must named '" + name + "' should be not null!" );
+        }
+
+        this.root = new PanelDefinitionImpl( type );
+    }
 
     @Override
     public boolean isTransient() {
@@ -53,16 +67,6 @@ public class PerspectiveDefinitionImpl
     @Override
     public void setName( final String name ) {
         this.name = name;
-    }
-
-    @Override
-    public boolean isToolbarVisible() {
-        return isToolbarVisible;
-    }
-
-    @Override
-    public void setToolbarVisible( boolean isVisible ) {
-        this.isToolbarVisible = isVisible;
     }
 
     @Override

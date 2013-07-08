@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels.support;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,15 +25,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.workbench.model.Position;
 
 /**
- * Helper to add or remove WorkbenchPanels from the West of a
+ * Helper to add or remove WorkbenchPanels from the East of a
  * HorizontalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = Position.WEST)
-public class PanelHelperWest
+@WorkbenchPosition(position = Position.EAST)
+public class PanelHelperEast
         implements
         PanelHelper {
 
@@ -51,9 +53,9 @@ public class PanelHelperWest
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
-                                                                                    newPanel,
-                                                                                    Position.WEST,
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( newPanel,
+                                                                                    targetPanel,
+                                                                                    Position.EAST,
                                                                                     preferredSize,
                                                                                     preferredMinSize );
 
@@ -72,17 +74,17 @@ public class PanelHelperWest
     public void remove( final WorkbenchPanelView panel ) {
         final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget eastWidget = vsp.getWidget( Position.EAST );
+        final Widget westWidget = vsp.getWidget( Position.WEST );
 
         vsp.clear();
 
-        //Set parent's content to the EAST widget
+        //Set parent's content to the WEST widget
         if ( parent instanceof SimplePanel ) {
-            ( (SimplePanel) parent ).setWidget( eastWidget );
+            ( (SimplePanel) parent ).setWidget( westWidget );
         }
 
-        if ( eastWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) eastWidget );
+        if ( westWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) westWidget );
         }
     }
 

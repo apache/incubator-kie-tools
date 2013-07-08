@@ -15,20 +15,19 @@
  */
 package org.uberfire.client.workbench;
 
-import java.lang.annotation.Annotation;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
-import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.RootWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -44,20 +43,6 @@ public class DefaultBeanFactory
     @Inject
     private IOCBeanManager iocManager;
 
-    private static Annotation WORKBENCH_PANEL = new Annotation() {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RootWorkbenchPanel.class;
-        }
-    };
-
-    private static Annotation WORKBENCH_ROOT_PANEL = new Annotation() {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RootWorkbenchPanel.class;
-        }
-    };
-
     @Override
     public WorkbenchPartPresenter newWorkbenchPart( final String title,
                                                     final IsWidget titleDecoration,
@@ -71,15 +56,38 @@ public class DefaultBeanFactory
 
     @Override
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-        if ( definition.isRoot() ) {
-            final WorkbenchPanelPresenter panel = iocManager.lookupBean( RootWorkbenchPanelPresenter.class,
-                                                                         WORKBENCH_ROOT_PANEL ).getInstance();
-            panel.setDefinition( definition );
-            return panel;
+        final WorkbenchPanelPresenter panel;
+        switch ( definition.getPanelType() ) {
+            case ROOT_TAB:
+            case MULTI_TAB:
+                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            case ROOT_LIST:
+            case MULTI_LIST:
+                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            case ROOT_STACK:
+            case MULTI_STACK:
+                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            case ROOT_SIMPLE:
+            case SIMPLE:
+                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            case STATIC:
+                panel = iocManager.lookupBean( StaticWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            default:
+                throw new IllegalArgumentException( "Unhandled PanelType. Expect subsequent errors." );
         }
-        final WorkbenchPanelPresenter panel = iocManager.lookupBean( RootWorkbenchPanelPresenter.class,
-                                                                     WORKBENCH_PANEL ).getInstance();
+
         panel.setDefinition( definition );
+
         return panel;
     }
 

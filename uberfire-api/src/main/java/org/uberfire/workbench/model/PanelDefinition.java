@@ -83,6 +83,14 @@ public interface PanelDefinition {
     public boolean isRoot();
 
     /**
+     * Get the type of the Panel
+     * @return The panel type
+     */
+    public PanelType getPanelType();
+
+    public PanelType getDefaultChildPanelType();
+
+    /**
      * Get the height of the Panel in pixels
      * @return The height, or null if not set
      */

@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels.support;
+
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 /**
  * Operations to add or remove WorkbenchPanels from the Workbench.

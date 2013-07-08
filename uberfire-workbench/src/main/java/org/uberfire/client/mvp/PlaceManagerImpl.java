@@ -32,7 +32,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;

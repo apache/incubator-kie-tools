@@ -17,11 +17,11 @@ package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
-import org.uberfire.client.workbench.widgets.panels.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.VerticalSplitterPanel;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;

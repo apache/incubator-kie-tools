@@ -36,23 +36,24 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.client.workbench.widgets.navbar.NavBar;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.services.WorkbenchServices;
+
+import static org.uberfire.workbench.model.PanelType.ROOT_SIMPLE;
 
 @ApplicationScoped
 public class Workbench
@@ -100,8 +101,7 @@ public class Workbench
         initWidget( container );
     }
 
-    //    @AfterInitialization
-//    @SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     private void bootstrap( @Observes ApplicationReadyEvent event ) {
 
         //Clear environment
@@ -109,7 +109,7 @@ public class Workbench
         dndManager.unregisterDropControllers();
 
         //Add default workbench widget
-        final PanelDefinition root = new PanelDefinitionImpl( true );
+        final PanelDefinition root = new PanelDefinitionImpl( ROOT_SIMPLE );
         panelManager.setRoot( root );
         workbench.setWidget( panelManager.getPanelView( root ) );
 

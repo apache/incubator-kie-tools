@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -26,11 +27,11 @@ import org.uberfire.workbench.model.PartDefinition;
 /**
  * Panel views
  */
-public interface WorkbenchPanelView
-        extends UberView<WorkbenchPanelPresenter>,
+public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter>
+        extends UberView<P>,
                 RequiresResize {
 
-    WorkbenchPanelPresenter getPresenter();
+    P getPresenter();
 
     void clear();
 

@@ -47,18 +47,6 @@ public interface PerspectiveDefinition {
     public void setName( final String name );
 
     /**
-     * Get whether the Perspective has a visible toolbar.
-     * @return True if the Perspective has a visible toolbar.
-     */
-    public boolean isToolbarVisible();
-
-    /**
-     * Set whether the Perspective has a visible toolbar or not..
-     * @param isVisible True if the Perspective has a visible toolbar.
-     */
-    public void setToolbarVisible( boolean isVisible );
-
-    /**
      * Get the root Panel for this Perspective. The root Panel contains all
      * child Panels. A Perspective is based on a single root Panel.
      * @return The root Panel.

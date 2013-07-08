@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
 
 /**

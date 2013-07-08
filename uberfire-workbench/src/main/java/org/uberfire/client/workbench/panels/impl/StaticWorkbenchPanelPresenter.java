@@ -13,15 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.panels;
+package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.annotations.RootWorkbenchPanel;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.events.MaximizePlaceEvent;
 import org.uberfire.workbench.events.MinimizePlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -32,10 +36,9 @@ import org.uberfire.workbench.model.Position;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-@RootWorkbenchPanel
-public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
+public class StaticWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
-    private WorkbenchPanelView view;
+    private StaticWorkbenchPanelView view;
 
     private PanelManager panelManager;
 
@@ -46,10 +49,10 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     private Event<MinimizePlaceEvent> minimizePanelEvent;
 
     @Inject
-    public RootWorkbenchPanelPresenter( @RootWorkbenchPanel final WorkbenchPanelView view,
-                                        final PanelManager panelManager,
-                                        final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                        final Event<MinimizePlaceEvent> minimizePanelEvent ) {
+    public StaticWorkbenchPanelPresenter( @Named("SimpleView") final StaticWorkbenchPanelView view,
+                                          final PanelManager panelManager,
+                                          final Event<MaximizePlaceEvent> maximizePanelEvent,
+                                          final Event<MinimizePlaceEvent> minimizePanelEvent ) {
         this.view = view;
         this.panelManager = panelManager;
         this.maximizePanelEvent = maximizePanelEvent;
@@ -145,7 +148,7 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     @Override
     public void maximize() {
         if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
+            for ( final PartDefinition part : getDefinition().getParts() ) {
                 maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
             }
         }
@@ -154,7 +157,7 @@ public class RootWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     @Override
     public void minimize() {
         if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
+            for ( final PartDefinition part : getDefinition().getParts() ) {
                 minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
             }
         }

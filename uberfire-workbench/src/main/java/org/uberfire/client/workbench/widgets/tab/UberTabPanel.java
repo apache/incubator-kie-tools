@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.panels.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 

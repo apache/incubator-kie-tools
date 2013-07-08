@@ -23,9 +23,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
+
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 /**
  * Default implementation of PanelDefinition
@@ -41,20 +44,36 @@ public class PanelDefinitionImpl
     private Integer minHeight = null;
     private Integer minWidth = null;
 
-    private boolean isRoot = false;
     private Set<PartDefinition> parts = new HashSet<PartDefinition>();
 
     //Ideally this should be a Set but the order of insertion is important
     private List<PanelDefinition> children = new ArrayList<PanelDefinition>();
 
     private Position position;
+    private PanelType panelType;
+    private PanelType defaultChildPanelType;
+    private boolean isRoot;
 
     public PanelDefinitionImpl() {
     }
 
-    public PanelDefinitionImpl( final boolean isRoot ) {
-        this.isRoot = isRoot;
-        this.position = Position.ROOT;
+    public PanelDefinitionImpl( final PanelType type ) {
+        this.panelType = type;
+        if ( PanelTypeHelper.isRoot( type ) ) {
+            this.position = Position.ROOT;
+            this.isRoot = true;
+        }
+        this.defaultChildPanelType = getDefaultChildType( type );
+    }
+
+    public PanelDefinitionImpl( final PanelType type,
+                                final PanelType defaultChildPanelType ) {
+        this.panelType = type;
+        if ( PanelTypeHelper.isRoot( type ) ) {
+            this.position = Position.ROOT;
+            this.isRoot = true;
+        }
+        this.defaultChildPanelType = defaultChildPanelType;
     }
 
     public void addPart( final PartDefinition part ) {
@@ -137,7 +156,17 @@ public class PanelDefinitionImpl
 
     @Override
     public boolean isRoot() {
-        return this.isRoot;
+        return isRoot;
+    }
+
+    @Override
+    public PanelType getPanelType() {
+        return panelType;
+    }
+
+    @Override
+    public PanelType getDefaultChildPanelType() {
+        return defaultChildPanelType;
     }
 
     @Override

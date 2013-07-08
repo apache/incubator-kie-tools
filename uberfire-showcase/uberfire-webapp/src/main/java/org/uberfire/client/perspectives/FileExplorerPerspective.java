@@ -32,6 +32,7 @@ import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
@@ -43,6 +44,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
+import static org.uberfire.workbench.model.PanelType.*;
 import static org.uberfire.workbench.model.toolbar.IconType.*;
 
 /**
@@ -100,12 +102,12 @@ public class FileExplorerPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_TAB );
         p.setName( "File Explorer" );
 
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinitionImpl();
+        final PanelDefinition west = new PanelDefinitionImpl( STATIC );
         west.setWidth( 200 );
         west.setMinWidth( 150 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );

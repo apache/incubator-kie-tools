@@ -19,16 +19,19 @@ import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.widgets.panels.PanelManager;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.PanelManagerImpl;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
 import static org.mockito.Mockito.*;
+import static org.uberfire.workbench.model.PanelType.ROOT_SIMPLE;
 
 /**
  * Base class for tests requiring a dummy Workbench
@@ -65,13 +68,13 @@ public abstract class BaseWorkbenchTest {
         statusBar = mock( WorkbenchStatusBarPresenter.class );
 
         //Dummy Panel Manager\Workbench
-        panelManager = new PanelManager( factory,
-                                         workbenchPartBeforeCloseEvent,
-                                         workbenchPartOnFocusEvent,
-                                         workbenchPartLostFocusEvent,
-                                         selectWorkbenchPartEvent,
-                                         statusBar );
-        final PanelDefinition root = new PanelDefinitionImpl( true );
+        panelManager = new PanelManagerImpl( factory,
+                                             workbenchPartBeforeCloseEvent,
+                                             workbenchPartOnFocusEvent,
+                                             workbenchPartLostFocusEvent,
+                                             selectWorkbenchPartEvent,
+                                             statusBar );
+        final PanelDefinition root = new PanelDefinitionImpl( ROOT_SIMPLE );
 
         panelManager.setRoot( root );
 
