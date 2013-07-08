@@ -69,17 +69,19 @@ public class Jcr2VfsMigrater {
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
         setupDirectories();
         startContexts();
-      //TO-DO-LIST:
-      //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
-      //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
-      //2. Migrate categories
-      //3. Migrate state
-      //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
-      //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
+        
+        //TO-DO-LIST:
+        //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
+        //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
+        //2. Migrate categories
+        //3. Migrate state
+        //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
+        //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
         moduleMigrater.migrateAll();
         assetMigrater.migrateAll();
         categoryMigrater.migrateAll();
+        
         // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
         endContexts();
         System.out.format("Migration ended: Written into outputVfsRepository ({%s}).\n",

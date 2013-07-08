@@ -18,7 +18,6 @@ package org.drools.workbench.jcr2vfsmigration.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -83,7 +82,7 @@ public class MigrationConfig {
         inputJcrRepository = new File(commandLine.getOptionValue("i", "inputJcr"));
         if (!inputJcrRepository.exists()) {
         	 System.out.println("The inputJcrRepository (" + inputJcrRepository.getAbsolutePath()
-                     + ") does not exist.");
+                     + ") does not exist. Please make sure your inputJcrRepository exists, or use -i to specify alternative location.");
         	 return false;
         }
         
