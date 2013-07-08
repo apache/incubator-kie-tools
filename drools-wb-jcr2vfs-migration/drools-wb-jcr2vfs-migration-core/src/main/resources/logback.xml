@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <!-- %l lowers performance -->
-      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">  
+    <file>runMigration.log</file>  
+    <append>true</append>  
+    <encoder>  
       <pattern>%d [%t] %-5p %m%n</pattern>
-    </encoder>
-  </appender>
-
+    </encoder>  
+  </appender> 
   <logger name="org.kie.guvnor.jcr2vfsmigration" level="debug"/>
 
   <root level="warn">
-    <appender-ref ref="consoleAppender" />
+    <appender-ref ref="FILE" />
   </root>
 
 </configuration>
