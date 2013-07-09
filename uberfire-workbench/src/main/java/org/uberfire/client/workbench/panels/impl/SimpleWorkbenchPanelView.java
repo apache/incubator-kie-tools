@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
@@ -60,6 +61,12 @@ public class SimpleWorkbenchPanelView
         } );
 
         initWidget( panel );
+    }
+
+    @PostConstruct
+    private void setupDragAndDrop() {
+        dndManager.registerDropController( this, factory.newDropController( this ) );
+        panel.setDndManager( dndManager );
     }
 
     @Override

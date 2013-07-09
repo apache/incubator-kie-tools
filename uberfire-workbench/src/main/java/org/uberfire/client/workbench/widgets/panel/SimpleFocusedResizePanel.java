@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PartDefinition;
 
 public class SimpleFocusedResizePanel
@@ -47,6 +48,8 @@ public class SimpleFocusedResizePanel
 
     private PartDefinition partDefinition;
 
+    private WorkbenchDragAndDropManager dndManager;
+
     public SimpleFocusedResizePanel() {
         initWidget( uiBinder.createAndBindUi( this ) );
         container.addClickHandler( new ClickHandler() {
@@ -57,10 +60,15 @@ public class SimpleFocusedResizePanel
         } );
     }
 
+    public void setDndManager( WorkbenchDragAndDropManager dndManager ) {
+        this.dndManager = dndManager;
+    }
+
     public void setPart( final WorkbenchPartPresenter.View part ) {
         this.partDefinition = part.getPresenter().getDefinition();
         content.setWidget( part );
         title.add( new Label( part.getPresenter().getTitle() ) );
+        dndManager.makeDraggable( part, title );
     }
 
     public void clear() {
