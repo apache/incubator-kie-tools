@@ -49,7 +49,7 @@ public class StaticWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     private Event<MinimizePlaceEvent> minimizePanelEvent;
 
     @Inject
-    public StaticWorkbenchPanelPresenter( @Named("SimpleView") final StaticWorkbenchPanelView view,
+    public StaticWorkbenchPanelPresenter( @Named("StaticWorkbenchPanelView") final StaticWorkbenchPanelView view,
                                           final PanelManager panelManager,
                                           final Event<MaximizePlaceEvent> maximizePanelEvent,
                                           final Event<MinimizePlaceEvent> minimizePanelEvent ) {

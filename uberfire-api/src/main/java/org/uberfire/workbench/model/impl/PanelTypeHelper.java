@@ -24,6 +24,8 @@ public final class PanelTypeHelper {
             case ROOT_SIMPLE:
             case SIMPLE:
                 return SIMPLE;
+            case ROOT_STATIC:
+                return STATIC;
             case STATIC:
                 return null;
             default:

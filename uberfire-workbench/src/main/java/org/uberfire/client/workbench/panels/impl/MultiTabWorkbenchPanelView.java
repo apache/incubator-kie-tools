@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.PartDefinition;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-@Named("MultiTabView")
+@Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
         extends BaseWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
@@ -85,7 +85,7 @@ public class MultiTabWorkbenchPanelView
 
     @Override
     public void setFocus( boolean hasFocus ) {
-        this.tabPanel.setFocus( hasFocus );
+        tabPanel.setFocus( hasFocus );
     }
 
     protected UberTabPanel makeTabPanel() {

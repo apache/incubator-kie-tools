@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
+import org.uberfire.client.workbench.widgets.panel.SimpleFocusedResizePanel;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -35,13 +35,13 @@ import org.uberfire.workbench.model.Position;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-@Named("StaticWorkbenchPanelView")
-public class StaticWorkbenchPanelView
-        extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
+@Named("SimpleWorkbenchPanelView")
+public class SimpleWorkbenchPanelView
+        extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
-    private StaticFocusedResizePanel panel = new StaticFocusedResizePanel();
+    private SimpleFocusedResizePanel panel = new SimpleFocusedResizePanel();
 
-    public StaticWorkbenchPanelView() {
+    public SimpleWorkbenchPanelView() {
 
         panel.addFocusHandler( new FocusHandler() {
             @Override
@@ -63,12 +63,12 @@ public class StaticWorkbenchPanelView
     }
 
     @Override
-    public void init( final StaticWorkbenchPanelPresenter presenter ) {
+    public void init( final SimpleWorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public StaticWorkbenchPanelPresenter getPresenter() {
+    public SimpleWorkbenchPanelPresenter getPresenter() {
         return this.presenter;
     }
 
@@ -93,6 +93,7 @@ public class StaticWorkbenchPanelView
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
+        panel.changeTitle( title, titleDecoration );
     }
 
     @Override

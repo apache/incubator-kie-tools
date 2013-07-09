@@ -24,6 +24,7 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -75,9 +76,10 @@ public class DefaultBeanFactory
 
             case ROOT_SIMPLE:
             case SIMPLE:
-                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                panel = iocManager.lookupBean( SimpleWorkbenchPanelPresenter.class ).getInstance();
                 break;
 
+            case ROOT_STATIC:
             case STATIC:
                 panel = iocManager.lookupBean( StaticWorkbenchPanelPresenter.class ).getInstance();
                 break;

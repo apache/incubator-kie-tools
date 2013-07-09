@@ -53,7 +53,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.services.WorkbenchServices;
 
-import static org.uberfire.workbench.model.PanelType.ROOT_SIMPLE;
+import static org.uberfire.workbench.model.PanelType.*;
 
 @ApplicationScoped
 public class Workbench
@@ -109,7 +109,7 @@ public class Workbench
         dndManager.unregisterDropControllers();
 
         //Add default workbench widget
-        final PanelDefinition root = new PanelDefinitionImpl( ROOT_SIMPLE );
+        final PanelDefinition root = new PanelDefinitionImpl( ROOT_STATIC );
         panelManager.setRoot( root );
         workbench.setWidget( panelManager.getPanelView( root ) );
 

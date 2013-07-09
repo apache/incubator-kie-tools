@@ -8,6 +8,7 @@ public enum PanelType {
     ROOT_LIST,
     ROOT_STACK,
     ROOT_SIMPLE,
+    ROOT_STATIC,
     SIMPLE,
     MULTI_TAB,
     MULTI_LIST,

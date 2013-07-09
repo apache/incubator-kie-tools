@@ -36,9 +36,9 @@ import org.uberfire.workbench.model.Position;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-public class MultiTabWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
+public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
-    private MultiTabWorkbenchPanelView view;
+    private SimpleWorkbenchPanelView view;
 
     private PanelManager panelManager;
 
@@ -49,16 +49,17 @@ public class MultiTabWorkbenchPanelPresenter implements WorkbenchPanelPresenter 
     private Event<MinimizePlaceEvent> minimizePanelEvent;
 
     @Inject
-    public MultiTabWorkbenchPanelPresenter( @Named("MultiTabWorkbenchPanelView") final MultiTabWorkbenchPanelView view,
-                                            final PanelManager panelManager,
-                                            final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                            final Event<MinimizePlaceEvent> minimizePanelEvent ) {
+    public SimpleWorkbenchPanelPresenter( @Named("SimpleWorkbenchPanelView") final SimpleWorkbenchPanelView view,
+                                          final PanelManager panelManager,
+                                          final Event<MaximizePlaceEvent> maximizePanelEvent,
+                                          final Event<MinimizePlaceEvent> minimizePanelEvent ) {
         this.view = view;
         this.panelManager = panelManager;
         this.maximizePanelEvent = maximizePanelEvent;
         this.minimizePanelEvent = minimizePanelEvent;
     }
 
+    @SuppressWarnings("unused")
     @PostConstruct
     private void init() {
         view.init( this );
@@ -147,7 +148,7 @@ public class MultiTabWorkbenchPanelPresenter implements WorkbenchPanelPresenter 
     @Override
     public void maximize() {
         if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
+            for ( final PartDefinition part : getDefinition().getParts() ) {
                 maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
             }
         }
@@ -156,7 +157,7 @@ public class MultiTabWorkbenchPanelPresenter implements WorkbenchPanelPresenter 
     @Override
     public void minimize() {
         if ( !getDefinition().isRoot() ) {
-            for ( PartDefinition part : getDefinition().getParts() ) {
+            for ( final PartDefinition part : getDefinition().getParts() ) {
                 minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
             }
         }

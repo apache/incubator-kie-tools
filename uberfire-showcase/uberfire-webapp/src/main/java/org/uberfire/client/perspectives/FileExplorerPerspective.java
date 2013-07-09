@@ -107,7 +107,7 @@ public class FileExplorerPerspective {
 
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinitionImpl( STATIC );
+        final PanelDefinition west = new PanelDefinitionImpl( SIMPLE );
         west.setWidth( 200 );
         west.setMinWidth( 150 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
