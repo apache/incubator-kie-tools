@@ -27,10 +27,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Drag Controller for the Workbench.
@@ -66,6 +66,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final WorkbenchDragContext context = new WorkbenchDragContext( place,
                                                                        sourcePart,
                                                                        sourcePanel,
+                                                                       sourceView.getPresenter().getMenus(),
                                                                        title,
                                                                        titleDecoration,
                                                                        widget,

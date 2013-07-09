@@ -1,6 +1,7 @@
 $registerPerspective({
     id: "Markdown Live Editor",
     is_serializable: false,
+    panel_type: "root_static",
     view: {
         parts: [
             {
@@ -13,6 +14,7 @@ $registerPerspective({
                 width: 600,
                 min_width: 300,
                 position: "west",
+                panel_type: "static",
                 parts: [
                     {
                         place: "MarkdownLiveEditor",

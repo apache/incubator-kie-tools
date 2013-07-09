@@ -18,12 +18,11 @@ public final class PanelTypeHelper {
             case ROOT_LIST:
             case MULTI_LIST:
                 return MULTI_LIST;
-            case ROOT_STACK:
-            case MULTI_STACK:
-                return MULTI_STACK;
             case ROOT_SIMPLE:
             case SIMPLE:
                 return SIMPLE;
+            case SIMPLE_DND:
+                return SIMPLE_DND;
             case ROOT_STATIC:
                 return STATIC;
             case STATIC:

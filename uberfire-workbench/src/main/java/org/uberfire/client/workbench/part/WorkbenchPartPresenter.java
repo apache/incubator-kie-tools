@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Workbench panel part.
@@ -45,6 +46,8 @@ public class WorkbenchPartPresenter {
     private View view;
 
     private String title;
+
+    private Menus menus;
 
     private IsWidget titleDecoration;
 
@@ -83,6 +86,14 @@ public class WorkbenchPartPresenter {
 
     public void setTitle( final String title ) {
         this.title = title;
+    }
+
+    public Menus getMenus() {
+        return menus;
+    }
+
+    public void setMenus( Menus menus ) {
+        this.menus = menus;
     }
 
     public IsWidget getTitleDecoration() {

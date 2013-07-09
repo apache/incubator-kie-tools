@@ -16,21 +16,23 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * The context of a drag and drop operation within the Workbench.
  */
 public class WorkbenchDragContext {
 
-    private final PlaceRequest    place;
-    private final PartDefinition  sourcePart;
+    private final PlaceRequest place;
+    private final PartDefinition sourcePart;
     private final PanelDefinition sourcePanel;
-    private final String          title;
-    private final IsWidget        titleDecoration;
-    private final IsWidget        widget;
+    private final String title;
+    private final IsWidget titleDecoration;
+    private final Menus menus;
+    private final IsWidget widget;
 
     private Integer height;
     private Integer width;
@@ -40,6 +42,7 @@ public class WorkbenchDragContext {
     public WorkbenchDragContext( final PlaceRequest place,
                                  final PartDefinition sourcePart,
                                  final PanelDefinition sourcePanel,
+                                 final Menus menus,
                                  final String title,
                                  final IsWidget titleDecoration,
                                  final IsWidget widget,
@@ -50,6 +53,7 @@ public class WorkbenchDragContext {
         this.place = place;
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
+        this.menus = menus;
         this.title = title;
         this.titleDecoration = titleDecoration;
         this.widget = widget;
@@ -111,4 +115,7 @@ public class WorkbenchDragContext {
         return minWidth;
     }
 
+    public Menus getMenus() {
+        return menus;
+    }
 }

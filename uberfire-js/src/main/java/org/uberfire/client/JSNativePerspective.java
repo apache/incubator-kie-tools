@@ -60,6 +60,10 @@ public class JSNativePerspective {
         return false;
     }-*/;
 
+    private native String getPanelTypeAsString()  /*-{
+        return this.@org.uberfire.client.JSNativePerspective::obj.panel_type;
+    }-*/;
+
     public void onReveal() {
         if ( JSNativePlugin.hasMethod( obj, "on_reveal" ) ) {
             executeOnReveal( obj );
@@ -81,7 +85,7 @@ public class JSNativePerspective {
     }
 
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( PanelType.ROOT_TAB );
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( getDefaultPanelType() );
         perspectiveDefinition.setName( getId() );
 
         final JSPanelDefinition view = getView( obj );
@@ -98,6 +102,23 @@ public class JSNativePerspective {
         buildPanels( root, panels );
 
         return perspectiveDefinition;
+    }
+
+    private PanelType getDefaultPanelType() {
+        return getPanelType( getPanelTypeAsString(), PanelType.ROOT_TAB );
+    }
+
+    private PanelType getPanelType( final String panelType,
+                                    final PanelType defaultType ) {
+        if ( panelType == null ) {
+            return defaultType;
+        }
+
+        try {
+            return PanelType.valueOf( panelType.toUpperCase() );
+        } catch ( Exception ex ) {
+            return defaultType;
+        }
     }
 
     private void buildParts( final PanelDefinition panel,
@@ -124,7 +145,8 @@ public class JSNativePerspective {
         if ( panels != null ) {
             for ( int i = 0; i < panels.length(); i++ ) {
                 final JSPanelDefinition activePanelDef = panels.get( i );
-                final PanelDefinition newPanel = new PanelDefinitionImpl( PanelType.MULTI_TAB, PanelType.MULTI_TAB );
+
+                final PanelDefinition newPanel = new PanelDefinitionImpl( getPanelType( activePanelDef.getPanelTypeAsString(), PanelType.MULTI_TAB ) );
                 if ( activePanelDef.getWidth() > 0 ) {
                     newPanel.setWidth( activePanelDef.getWidth() );
                 }

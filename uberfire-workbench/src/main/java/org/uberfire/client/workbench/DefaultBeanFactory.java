@@ -23,6 +23,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
@@ -32,6 +33,7 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
@@ -45,11 +47,13 @@ public class DefaultBeanFactory
     private IOCBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+    public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
+                                                    final String title,
                                                     final IsWidget titleDecoration,
                                                     final PartDefinition definition ) {
         final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
         part.setTitle( title );
+        part.setMenus( menus );
         part.setTitleDecoration( titleDecoration );
         part.setDefinition( definition );
         return part;
@@ -66,17 +70,17 @@ public class DefaultBeanFactory
 
             case ROOT_LIST:
             case MULTI_LIST:
-                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
-                break;
-
-            case ROOT_STACK:
-            case MULTI_STACK:
-                panel = iocManager.lookupBean( MultiTabWorkbenchPanelPresenter.class ).getInstance();
+                panel = iocManager.lookupBean( MultiListWorkbenchPanelPresenter.class ).getInstance();
                 break;
 
             case ROOT_SIMPLE:
             case SIMPLE:
                 panel = iocManager.lookupBean( SimpleWorkbenchPanelPresenter.class ).getInstance();
+                break;
+
+            case SIMPLE_DND:
+                panel = iocManager.lookupBean( SimpleWorkbenchPanelPresenter.class ).getInstance();
+                ( (SimpleWorkbenchPanelPresenter) panel ).enableDnd();
                 break;
 
             case ROOT_STATIC:

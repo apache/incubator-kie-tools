@@ -67,7 +67,16 @@ public class MultiPagePresenter {
                             } )
                         .endMenu()
                     .endMenus().
-                endMenu().build();
+                endMenu()
+                .newTopLevelMenu( "My New" )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
+                            Window.alert( "Cool!" );
+                        }
+                    } )
+                .endMenu()
+                .build();
     }
 
 }

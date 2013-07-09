@@ -16,22 +16,24 @@
 package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
-import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Factory definition to create new instances of managed beans.
  */
 public interface BeanFactory {
 
-    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+    public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
+                                                    final String title,
                                                     final IsWidget titleDecoration,
                                                     final PartDefinition definition );
 

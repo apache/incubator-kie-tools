@@ -16,8 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.authz.RuntimeResource;
 
 /**
  * Base Activity life-cycles

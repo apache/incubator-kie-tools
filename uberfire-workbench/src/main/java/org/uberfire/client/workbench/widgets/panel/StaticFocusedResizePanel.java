@@ -66,7 +66,9 @@ public class StaticFocusedResizePanel
             setPixelSize( width, height );
 
             container.setPixelSize( width, height );
-            container.getWidget().setPixelSize( width, height );
+            if (container.getWidget() != null){
+                container.getWidget().setPixelSize( width, height );
+            }
         }
         super.onResize();
     }

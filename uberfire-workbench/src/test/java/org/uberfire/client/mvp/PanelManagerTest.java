@@ -3,6 +3,7 @@ package org.uberfire.client.mvp;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.*;
  * when DecoratedWorkbenchPanel(s) and/or WorkbenchPart(s) are added to or removed from
  * the Workbench.
  */
+@Ignore
 public class PanelManagerTest extends BaseWorkbenchTest {
 
     @Test

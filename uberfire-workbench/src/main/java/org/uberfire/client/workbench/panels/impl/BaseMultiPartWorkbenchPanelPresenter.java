@@ -16,10 +16,7 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.PanelManager;
@@ -32,41 +29,21 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-/**
- * A Workbench panel that can contain WorkbenchParts.
- */
-@Dependent
-public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
+public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
-    private SimpleWorkbenchPanelView view;
+    protected BaseMultiPartWorkbenchPanelView view;
 
-    private PanelManager panelManager;
+    protected PanelManager panelManager;
 
-    private PanelDefinition definition;
+    protected PanelDefinition definition;
 
-    private Event<MaximizePlaceEvent> maximizePanelEvent;
+    protected Event<MaximizePlaceEvent> maximizePanelEvent;
 
-    private Event<MinimizePlaceEvent> minimizePanelEvent;
+    protected Event<MinimizePlaceEvent> minimizePanelEvent;
 
-    @Inject
-    public SimpleWorkbenchPanelPresenter( @Named("SimpleWorkbenchPanelView") final SimpleWorkbenchPanelView view,
-                                          final PanelManager panelManager,
-                                          final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                          final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        this.view = view;
-        this.panelManager = panelManager;
-        this.maximizePanelEvent = maximizePanelEvent;
-        this.minimizePanelEvent = minimizePanelEvent;
-    }
-
-    @SuppressWarnings("unused")
     @PostConstruct
     private void init() {
         view.init( this );
-    }
-
-    public void enableDnd() {
-        view.enableDnd();
     }
 
     @Override
@@ -152,7 +129,7 @@ public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     @Override
     public void maximize() {
         if ( !getDefinition().isRoot() ) {
-            for ( final PartDefinition part : getDefinition().getParts() ) {
+            for ( PartDefinition part : getDefinition().getParts() ) {
                 maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
             }
         }
@@ -161,7 +138,7 @@ public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     @Override
     public void minimize() {
         if ( !getDefinition().isRoot() ) {
-            for ( final PartDefinition part : getDefinition().getParts() ) {
+            for ( PartDefinition part : getDefinition().getParts() ) {
                 minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
             }
         }
@@ -178,4 +155,5 @@ public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
         getDefinition().setWidth( width == 0 ? null : width );
         getDefinition().setHeight( height == 0 ? null : height );
     }
+
 }

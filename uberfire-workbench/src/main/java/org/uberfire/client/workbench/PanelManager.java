@@ -7,6 +7,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Manager responsible for adding or removing WorkbenchParts to WorkbenchPanels;
@@ -26,6 +27,7 @@ public interface PanelManager {
     void addWorkbenchPart( final PlaceRequest place,
                            final PartDefinition part,
                            final PanelDefinition panel,
+                           final Menus menus,
                            final String title,
                            final IsWidget titleDecoration,
                            final IsWidget partWidget );

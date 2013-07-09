@@ -2,6 +2,7 @@ package org.uberfire.client.perspective;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import org.uberfire.workbench.model.PanelType;
 
 public class JSPanelDefinition extends JavaScriptObject {
 
@@ -39,6 +40,11 @@ public class JSPanelDefinition extends JavaScriptObject {
     public final native String getPosition() /*-{
         return this.position;
     }-*/;
+
+    public final native String getPanelTypeAsString() /*-{
+        return this.panel_type;
+    }-*/;
+
 
     public final native JsArray<JSPartDefinition> getParts() /*-{
         return this.parts;

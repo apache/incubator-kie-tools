@@ -102,12 +102,12 @@ public class FileExplorerPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_TAB );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_LIST );
         p.setName( "File Explorer" );
 
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinitionImpl( SIMPLE );
+        final PanelDefinition west = new PanelDefinitionImpl( SIMPLE_DND );
         west.setWidth( 200 );
         west.setMinWidth( 150 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );

@@ -15,15 +15,12 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
@@ -34,65 +31,14 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
-        extends BaseWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
-
-    private UberTabPanel tabPanel;
-
-    public MultiTabWorkbenchPanelView() {
-        this.tabPanel = makeTabPanel();
-        initWidget( this.tabPanel );
-    }
-
-    @SuppressWarnings("unused")
-    @PostConstruct
-    private void setupDragAndDrop() {
-        dndManager.registerDropController( this, factory.newDropController( this ) );
-    }
+        extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
     @Override
-    public void init( final MultiTabWorkbenchPanelPresenter presenter ) {
-        this.presenter = presenter;
-        tabPanel.setPresenter( presenter );
-        tabPanel.setDndManager( dndManager );
-    }
-
-    @Override
-    public void clear() {
-        tabPanel.clear();
-    }
-
-    @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
-        tabPanel.addTab( view );
-    }
-
-    @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
-        tabPanel.changeTitle( part, title, titleDecoration );
-    }
-
-    @Override
-    public void selectPart( final PartDefinition part ) {
-        tabPanel.selectTab( part );
-    }
-
-    @Override
-    public void removePart( final PartDefinition part ) {
-        tabPanel.remove( part );
-    }
-
-    @Override
-    public void setFocus( boolean hasFocus ) {
-        tabPanel.setFocus( hasFocus );
-    }
-
-    protected UberTabPanel makeTabPanel() {
+    protected MultiPartWidget setupWidget() {
         final UberTabPanel tabPanel = new UberTabPanel();
 
 //        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-//        tabPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
+//        widget.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
 //            @Override
 //            public void onBeforeSelection( final BeforeSelectionEvent<PartDefinition> event ) {
 //
@@ -117,18 +63,4 @@ public class MultiTabWorkbenchPanelView
 
         return tabPanel;
     }
-
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            setPixelSize( width, height );
-            presenter.onResize( width, height );
-            tabPanel.onResize();
-            super.onResize();
-        }
-    }
-
 }

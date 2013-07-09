@@ -25,12 +25,9 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.SimpleFocusedResizePanel;
-import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -65,8 +62,11 @@ public class SimpleWorkbenchPanelView
 
     @PostConstruct
     private void setupDragAndDrop() {
-        dndManager.registerDropController( this, factory.newDropController( this ) );
         panel.setDndManager( dndManager );
+    }
+
+    public void enableDnd() {
+        panel.enableDnd();
     }
 
     @Override
@@ -87,13 +87,6 @@ public class SimpleWorkbenchPanelView
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         panel.setPart( view );
-    }
-
-    @Override
-    public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView view,
-                          final Position position ) {
-        throw new IllegalArgumentException( "addPanel not supported by Static Panels. Expect subsequent errors." );
     }
 
     @Override
@@ -120,11 +113,13 @@ public class SimpleWorkbenchPanelView
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        final int width = parent.getOffsetWidth();
-        final int height = parent.getOffsetHeight();
-        setPixelSize( width, height );
-        presenter.onResize( width, height );
-        panel.setPixelSize( width, height );
-        super.onResize();
+        if ( parent != null ) {
+            final int width = parent.getOffsetWidth();
+            final int height = parent.getOffsetHeight();
+            setPixelSize( width, height );
+            presenter.onResize( width, height );
+            panel.setPixelSize( width, height );
+            super.onResize();
+        }
     }
 }

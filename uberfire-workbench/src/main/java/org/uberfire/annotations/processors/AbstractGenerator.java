@@ -19,10 +19,9 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
  * A class capable of generating source code using FreeMarker templates

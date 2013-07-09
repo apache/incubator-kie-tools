@@ -15,8 +15,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,9 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -37,9 +36,7 @@ import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
 
 public class UberTabPanel
         extends Composite
-        implements RequiresResize,
-                   HasBeforeSelectionHandlers<PartDefinition>,
-                   HasSelectionHandlers<PartDefinition>,
+        implements MultiPartWidget,
                    ClickHandler {
 
     private static final int MARGIN = 20;
@@ -67,7 +64,7 @@ public class UberTabPanel
         alreadyScheduled = false;
     }
 
-    public void selectTab( final PartDefinition id ) {
+    public void selectPart( final PartDefinition id ) {
         final TabLink tab = partTabIndex.get( id );
         if ( tab != null ) {
             int index = getTabs().getWidgetIndex( tab );
@@ -172,7 +169,7 @@ public class UberTabPanel
         this.presenter = presenter;
     }
 
-    public void addTab( final WorkbenchPartPresenter.View view ) {
+    public void addPart( final WorkbenchPartPresenter.View view ) {
 
         if ( !tabIndex.containsKey( view ) ) {
             final Tab newTab = createTab( view, false, 0, 0 );

@@ -16,7 +16,8 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:tb="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
 
@@ -25,16 +26,33 @@
       font-size: 18px;
     }
 
+    .better_margin {
+      padding-right: 10px;
+    }
+
     .pull-left {
       float: left;
+    }
+
+    .pull-right {
+      float: right;
     }
   </ui:style>
 
   <g:FlowPanel>
     <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
       <g:SimplePanel styleName="{style.title} {style.pull-left}" ui:field="title"/>
+      <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
+        <tb:ButtonGroup ui:field="contextMenu"/>
+        <tb:ButtonGroup>
+          <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
+        </tb:ButtonGroup>
+        <tb:ButtonGroup>
+          <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+        </tb:ButtonGroup>
+      </g:FlowPanel>
     </g:FlowPanel>
-    <g:SimplePanel ui:field="content"/>
+    <g:FlowPanel ui:field="content"/>
   </g:FlowPanel>
 
-</ui:UiBinder>
+</ui:UiBinder> 

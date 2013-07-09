@@ -27,6 +27,7 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * Mock BeanFactory that doesn't use CDI.
@@ -36,7 +37,8 @@ public class MockBeanFactory
         BeanFactory {
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart( final String title,
+    public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
+                                                    final String title,
                                                     final IsWidget titleDecoration,
                                                     final PartDefinition definition ) {
         final WorkbenchPartPresenter part = new WorkbenchPartPresenter( new MockWorkbenchPartView() );

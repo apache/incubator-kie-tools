@@ -38,4 +38,7 @@ public interface WorkbenchCss
 
     String tabCloseButton();
 
+    @ClassName("uf-listbar")
+    String listbar();
+
 }

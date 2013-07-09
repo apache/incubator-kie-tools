@@ -31,6 +31,7 @@ import org.uberfire.workbench.events.DropPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Drop Controller covering the entire DecoratedWorkbenchPanel that renders a Compass
@@ -88,6 +89,7 @@ public class CompassDropController
 
         //Move Part from source to target 
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
+        final Menus menus = workbenchContext.getMenus();
         final String title = workbenchContext.getTitle();
         final IsWidget titleDecoration = workbenchContext.getTitleDecoration();
         final IsWidget widget = workbenchContext.getWidget();
@@ -123,6 +125,7 @@ public class CompassDropController
         panelManager.addWorkbenchPart( place,
                                        sourcePart,
                                        targetPanel,
+                                       menus,
                                        title,
                                        titleDecoration,
                                        widget );

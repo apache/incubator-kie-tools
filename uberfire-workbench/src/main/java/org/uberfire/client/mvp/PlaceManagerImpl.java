@@ -333,6 +333,7 @@ public class PlaceManagerImpl
                 panelManager.addWorkbenchPart( place,
                                                part,
                                                panel,
+                                               activity.getMenus(),
                                                title,
                                                titleDecoration,
                                                widget );

@@ -23,9 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -45,6 +43,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
 public class PanelManagerImpl implements PanelManager {
@@ -158,12 +157,13 @@ public class PanelManagerImpl implements PanelManager {
     public void addWorkbenchPart( final PlaceRequest place,
                                   final PartDefinition part,
                                   final PanelDefinition panel,
+                                  final Menus menus,
                                   final String title,
                                   final IsWidget titleDecoration,
                                   final IsWidget partWidget ) {
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( title, titleDecoration, part );
+            partPresenter = factory.newWorkbenchPart( menus, title, titleDecoration, part );
             partPresenter.setWrappedWidget( partWidget );
             mapPartDefinitionToPresenter.put( part, partPresenter );
         }
@@ -371,15 +371,14 @@ public class PanelManagerImpl implements PanelManager {
         }
 
         //Restore part
-        final IsWidget widget = mapPartDefinitionToPresenter.get( partToRestore ).getPartView();
-        final String title = mapPartDefinitionToPresenter.get( partToRestore ).getTitle();
-        final IsWidget titleDecoration = mapPartDefinitionToPresenter.get( partToRestore ).getTitleDecoration();
+        final WorkbenchPartPresenter presenter = mapPartDefinitionToPresenter.get( partToRestore );
         addWorkbenchPart( partToRestore.getPlace(),
                           partToRestore,
                           panelToRestore,
-                          title,
-                          titleDecoration,
-                          widget );
+                          presenter.getMenus(),
+                          presenter.getTitle(),
+                          presenter.getTitleDecoration(),
+                          presenter.getPartView() );
     }
 
     private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,
