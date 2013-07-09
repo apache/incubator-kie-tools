@@ -25,7 +25,7 @@ public class GlobalResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getSuffix() {
-        return "global.drl";
+        return "gdrl";
     }
 
     @Override

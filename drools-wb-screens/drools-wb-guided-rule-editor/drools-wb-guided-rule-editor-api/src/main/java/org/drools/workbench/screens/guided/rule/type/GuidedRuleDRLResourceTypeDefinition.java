@@ -26,7 +26,7 @@ public class GuidedRuleDRLResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "gre.drl";
+        return "rdrl";
     }
 
     @Override

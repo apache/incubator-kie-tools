@@ -60,9 +60,9 @@ public class MigrationPathManager {
         //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
         org.kie.commons.java.nio.file.Path assetPath = null;
         if(AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && !hasDSL) {
-            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".gre.drl");
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".rdrl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && hasDSL) {
-            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".gre.dslr");
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".rdslr");
         } else {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + "." + jcrAsset.getFormat());           
         }
@@ -84,9 +84,9 @@ public class MigrationPathManager {
 
         org.kie.commons.java.nio.file.Path assetPath = null;
         if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && !hasDSL) {
-            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.drl");
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".rdrl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && hasDSL) {
-            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".gre.dslr");
+            assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".rdslr");
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
             assetPath = modulePath.resolve("src/test/resources/" + jcrAssetItem.getName() + "." + jcrAssetItem.getFormat());
         } else {

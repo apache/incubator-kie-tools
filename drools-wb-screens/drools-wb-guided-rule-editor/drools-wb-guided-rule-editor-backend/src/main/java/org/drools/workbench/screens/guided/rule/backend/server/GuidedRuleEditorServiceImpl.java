@@ -61,7 +61,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_DSLS = new FileExtensionFilter( ".dsl" );
 
-    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_GLOBALS = new FileExtensionFilter( ".global.drl" );
+    private static final DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> FILTER_GLOBALS = new FileExtensionFilter( ".gdrl" );
 
     @Inject
     @Named("ioStrategy")

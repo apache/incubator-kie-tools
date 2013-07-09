@@ -26,7 +26,7 @@ public class ScoreCardXLSResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "scard.xls";
+        return "sxls";
     }
 
     @Override

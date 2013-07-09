@@ -11,7 +11,7 @@ public class DecisionTableXLSResourceTypeDefinition
 
     @Override
     public String getShortName() {
-        return "dtable.xls";
+        return "dtable xls";
     }
 
     @Override
@@ -26,7 +26,7 @@ public class DecisionTableXLSResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "dtable.xls";
+        return "xls";
     }
 
     @Override
