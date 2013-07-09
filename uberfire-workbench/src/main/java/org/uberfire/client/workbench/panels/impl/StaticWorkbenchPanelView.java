@@ -18,15 +18,15 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.panel.SimpleFocusedResizePanel;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -39,25 +39,25 @@ import org.uberfire.workbench.model.Position;
 public class StaticWorkbenchPanelView
         extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
 
-    private SimpleResize panel = new SimpleResize();
+    private SimpleFocusedResizePanel panel = new SimpleFocusedResizePanel();
 
     public StaticWorkbenchPanelView() {
 
         panel.addFocusHandler( new FocusHandler() {
             @Override
-            public void onFocus( FocusEvent event ) {
+            public void onFocus( final FocusEvent event ) {
                 panelManager.onPanelFocus( presenter.getDefinition() );
             }
         } );
 
-//        //When a tab is selected ensure content is resized and set focus
-//        panel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-//            @Override
-//            public void onSelection( SelectionEvent<PartDefinition> event ) {
-//                presenter.onPartLostFocus();
-//                presenter.onPartFocus( event.getSelectedItem() );
-//            }
-//        } );
+        //When a tab is selected ensure content is resized and set focus
+        panel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+            @Override
+            public void onSelection( final SelectionEvent<PartDefinition> event ) {
+                presenter.onPartLostFocus();
+                presenter.onPartFocus( event.getSelectedItem() );
+            }
+        } );
 
         initWidget( panel );
     }
@@ -79,14 +79,14 @@ public class StaticWorkbenchPanelView
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-        panel.setWidget( view );
+        panel.setPart( view );
     }
 
     @Override
     public void addPanel( final PanelDefinition panel,
                           final WorkbenchPanelView view,
                           final Position position ) {
-        throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+        throw new IllegalArgumentException( "addPanel not supported by Static Panels. Expect subsequent errors." );
     }
 
     @Override
@@ -106,7 +106,7 @@ public class StaticWorkbenchPanelView
 
     @Override
     public void setFocus( boolean hasFocus ) {
-        //panel.setFocus( hasFocus );
+        panel.setFocus( hasFocus );
     }
 
     @Override
@@ -119,31 +119,4 @@ public class StaticWorkbenchPanelView
         panel.setPixelSize( width, height );
         super.onResize();
     }
-
-    private class SimpleResize extends SimplePanel implements RequiresResize {
-
-        private SimpleResize() {
-        }
-
-        private SimpleResize( final Widget child ) {
-            super( child );
-        }
-
-        private SimpleResize( final Element elem ) {
-            super( elem );
-        }
-
-        @Override
-        public void onResize() {
-            final int width = getParent().getOffsetWidth();
-            final int height = getParent().getOffsetHeight();
-            getWidget().setPixelSize( width, height );
-        }
-
-        public void addFocusHandler( FocusHandler focusHandler ) {
-            //To change body of created methods use File | Settings | File Templates.
-        }
-
-    }
-
 }
