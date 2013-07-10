@@ -144,7 +144,10 @@ public class ExplorerServiceImpl
                 final org.uberfire.backend.vfs.Path projectPath = paths.convert( nioRepositoryPath );
                 final Project project = projectService.resolveProject( projectPath );
                 if ( project != null ) {
-                    authorizedProjects.add( project );
+                    if ( authorizationManager.authorize( project,
+                                                         identity ) ) {
+                        authorizedProjects.add( project );
+                    }
                 }
             }
         }
