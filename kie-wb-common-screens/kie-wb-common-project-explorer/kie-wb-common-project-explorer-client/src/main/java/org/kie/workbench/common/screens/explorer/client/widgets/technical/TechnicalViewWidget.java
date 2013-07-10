@@ -257,7 +257,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     }
 
     private IsWidget makeProjectNavLink( final Project project ) {
-        final NavLink navLink = new NavLink( project.getTitle() );
+        final NavLink navLink = new NavLink( project.getProjectName() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
@@ -368,7 +368,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         if ( activeProject == null ) {
             return;
         }
-        final NavLink link = new NavLink( activeProject.getTitle() );
+        final NavLink link = new NavLink( activeProject.getProjectName() );
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {

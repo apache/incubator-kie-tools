@@ -261,18 +261,18 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
     @Override
     public void selectProject( final Project project ) {
-        ddProjects.setText( project.getTitle() );
+        ddProjects.setText( project.getProjectName() );
         ddProjects.getTriggerWidget().setEnabled( true );
         presenter.projectSelected( project );
     }
 
     private IsWidget makeProjectNavLink( final Project project ) {
-        final NavLink navLink = new NavLink( project.getTitle() );
+        final NavLink navLink = new NavLink( project.getProjectName() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                ddProjects.setText( project.getTitle() );
+                ddProjects.setText( project.getProjectName() );
                 presenter.projectSelected( project );
             }
         } );
