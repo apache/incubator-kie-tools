@@ -1,7 +1,9 @@
 package org.kie.workbench.common.services.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -9,6 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -171,13 +176,25 @@ public class ProjectResourceDispatcher {
                 return;
              }
 
-            buildService.build( project );
+            BuildResults buildResults = buildService.build( project );
 
-            // TODO: get BuildResults
-
+            result.setDetailedResult(buildResultsToDetailedStringMessages(buildResults));
             result.setStatus(JobRequest.Status.SUCCESS);
             jobResultEvent.fire(result);
         }
+    }
+    
+    private List<String> buildResultsToDetailedStringMessages(BuildResults buildResults) {
+    	List<String> result = new ArrayList<String>(buildResults.getMessages().size());
+    	for(BuildMessage message : buildResults.getMessages() ) {
+    		String detailedStringMessage = "artifactID:" + message.getArtifactID() +
+    				", level:" + message.getLevel() +
+    				", path:" + message.getPath() +
+    		        "text:" + message.getText();
+    		result.add(detailedStringMessage);
+    	}
+    	
+    	return result;
     }
     
     public void installProject(String jobId, String repositoryName, String projectName, BuildConfig mavenConfig ) {
@@ -202,13 +219,21 @@ public class ProjectResourceDispatcher {
                 return;
             }
 
-            buildService.buildAndDeploy( project );
+            DeployResult buildResults = buildService.buildAndDeploy( project );
 
-            //TODO: get BuildResults
-
+            result.setDetailedResult(deployResultToDetailedStringMessages(buildResults));
             result.setStatus(JobRequest.Status.SUCCESS);
             jobResultEvent.fire(result);
         }
+    }
+    
+    private List<String> deployResultToDetailedStringMessages(DeployResult deployResult) {
+    	List<String> result = new ArrayList<String>(1);
+    	String detailedStringMessage = "artifactID:" + deployResult.getArtifactId() +
+				", groupId:" + deployResult.getGroupId() +
+				", version:" + deployResult.getVersion();
+        result.add(detailedStringMessage);
+    	return result;
     }
     
     public void testProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {
@@ -265,10 +290,9 @@ public class ProjectResourceDispatcher {
                 return;
             }
 
-            buildService.buildAndDeploy( project );
+            DeployResult buildResults = buildService.buildAndDeploy( project );
 
-            //TODO: get BuildResults
-
+            result.setDetailedResult(deployResultToDetailedStringMessages(buildResults));
             result.setStatus(JobRequest.Status.SUCCESS);
             jobResultEvent.fire(result);
         }
