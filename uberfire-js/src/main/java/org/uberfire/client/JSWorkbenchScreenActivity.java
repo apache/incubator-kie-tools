@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.AcceptItem;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -42,7 +43,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
                         final Command callback ) {
         launch( place, callback );
         onStart( place );
-        acceptPanel.add( getTitle(), getTitleDecoration(), getWidget() );
+        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
 
         if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
             bind();
@@ -145,4 +146,8 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
         $wnd.angular.bootstrap($wnd.document, []);
     }-*/;
 
+    @Override
+    public String contextId() {
+        return nativePlugin.getContextId();
+    }
 }

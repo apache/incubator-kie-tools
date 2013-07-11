@@ -21,16 +21,26 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Dropdown;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.model.menu.BrandMenuItem;
+import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -49,11 +59,9 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
         void setBrandMenu( final BrandMenuItem brand );
 
-        void addMenuItem( final MenuItem menuItem );
-
-        void removeMenuItem( final MenuItem menuItem );
-
         void clear();
+
+        void addMenuItems( Menus menus );
     }
 
     private PlaceRequest activePlace;
@@ -64,55 +72,8 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private WorkbenchMenuBarPresenterUtils menuBarUtils;
-
-    //Items relating to the Workbench as a whole
-    private List<MenuItem> workbenchItems = new ArrayList<MenuItem>();
-
-    //Transient items relating to the current Workbench Perspective
-    private List<MenuItem> workbenchPerspectiveItems = new ArrayList<MenuItem>();
-    //Transient items relating to the current WorkbenchPart context
-    private List<MenuItem> workbenchContextItems = new ArrayList<MenuItem>();
-
     public IsWidget getView() {
         return this.view;
-    }
-
-    //Handle removing the WorkbenchPart menu items
-    void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
-        if ( event.getPlace().equals( activePlace ) ) {
-            clearContextMenus();
-        }
-    }
-
-    //Handle removing the WorkbenchPart menu items
-    void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
-        if ( event.getPlace().equals( activePlace ) ) {
-            clearContextMenus();
-        }
-    }
-
-    //Handle setting up the MenuBar for the specific WorkbenchPart selected
-    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
-        final Activity activity = placeManager.getActivity( event.getPlace() );
-        if ( activity == null ) {
-            return;
-        }
-        if ( !( activity instanceof WorkbenchActivity ) ) {
-            return;
-        }
-        final WorkbenchActivity wbActivity = (WorkbenchActivity) activity;
-
-        if ( !event.getPlace().equals( activePlace ) ) {
-
-            clearContextMenus();
-
-            //Add items for current WorkbenchPart
-            activePlace = event.getPlace();
-
-            aggregateContextMenus( wbActivity.getMenus() );
-        }
     }
 
     @Override
@@ -123,68 +84,15 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     }
 
     @Override
-    public void aggregateWorkbenchMenus( final Menus menus ) {
-        if ( menus != null ) {
-            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
-
-            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
-                workbenchItems.add( activeMenu );
-                view.addMenuItem( activeMenu );
-            }
+    public void addMenus( final Menus menus ) {
+        if ( menus != null && !menus.getItems().isEmpty() ) {
+            view.addMenuItems( menus );
         }
     }
 
     @Override
-    public void aggregatePerspectiveMenus( final Menus menus ) {
-        if ( menus != null ) {
-            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
-
-            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
-                workbenchPerspectiveItems.add( activeMenu );
-                view.addMenuItem( activeMenu );
-            }
-        }
-    }
-
-    private void aggregateContextMenus( final Menus menus ) {
-        if ( menus != null ) {
-            final Menus filteredMenus = menuBarUtils.filterMenus( menus );
-
-            for ( final MenuItem activeMenu : filteredMenus.getItems() ) {
-                workbenchContextItems.add( activeMenu );
-                view.addMenuItem( activeMenu );
-            }
-        }
-    }
-
-    @Override
-    public void clearWorkbenchMenus() {
+    public void clear() {
         view.clear();
-        workbenchItems.clear();
-        workbenchPerspectiveItems.clear();
-        workbenchContextItems.clear();
     }
 
-    @Override
-    public void clearPerspectiveMenus() {
-        if ( workbenchPerspectiveItems.isEmpty() ) {
-            return;
-        }
-        for ( MenuItem item : workbenchPerspectiveItems ) {
-            view.removeMenuItem( item );
-        }
-        workbenchPerspectiveItems.clear();
-
-    }
-
-    private void clearContextMenus() {
-        activePlace = null;
-        if ( workbenchContextItems.isEmpty() ) {
-            return;
-        }
-        for ( MenuItem item : workbenchContextItems ) {
-            view.removeMenuItem( item );
-        }
-        workbenchContextItems.clear();
-    }
 }

@@ -126,6 +126,7 @@ public class SimpleFocusedResizePanel
             final int width = getParent().getOffsetWidth();
             final int height = getParent().getOffsetHeight();
             setPixelSize( width, height );
+            header.setWidth( width + "px" );
 
             content.setPixelSize( width, height - title.getOffsetHeight() );
             if ( content.getWidget() != null ) {

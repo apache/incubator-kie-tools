@@ -53,4 +53,11 @@ public interface PerspectiveDefinition {
      */
     public PanelDefinition getRoot();
 
+    void setContextDefinition( final ContextDefinition contextDefinition );
+
+    ContextDefinition getContextDefinition();
+
+    ContextDisplayMode getContextDisplayMode();
+
+    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
 }

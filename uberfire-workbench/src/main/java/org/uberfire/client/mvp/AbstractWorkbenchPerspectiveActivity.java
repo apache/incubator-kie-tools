@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -44,9 +43,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     @Inject
     private PlaceManager placeManager;
-
-    @Inject
-    private WorkbenchMenuBar menuBar;
 
     @Inject
     private Caller<WorkbenchServices> wbServices;
@@ -80,7 +76,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     @Override
     public void onReveal() {
-        //Do nothing.  
     }
 
     @Override
@@ -108,8 +103,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     private void saveState() {
 
         onClose();
-
-        menuBar.clearPerspectiveMenus();
 
         final PerspectiveDefinition perspective = panelManager.getPerspective();
 
@@ -172,9 +165,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         }
         buildPerspective( panelManager.getRoot() );
 
-        //Set up Menu Bar for perspective
-        menuBar.aggregatePerspectiveMenus( getMenus() );
-
         onReveal();
     }
 
@@ -206,5 +196,4 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
         return clone;
     }
-
 }

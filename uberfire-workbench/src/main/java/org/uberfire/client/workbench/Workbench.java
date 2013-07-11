@@ -15,8 +15,10 @@
  */
 package org.uberfire.client.workbench;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Comparator;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -31,9 +33,9 @@ import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -43,7 +45,6 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.client.workbench.widgets.navbar.NavBar;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -51,6 +52,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.services.WorkbenchServices;
 
+import static java.util.Collections.*;
 import static org.uberfire.workbench.model.PanelType.*;
 
 @ApplicationScoped
@@ -58,7 +60,9 @@ public class Workbench
         extends Composite
         implements RequiresResize {
 
-    private final VerticalPanel container = new VerticalPanel();
+    private final FlowPanel container = new FlowPanel();
+
+    private final FlowPanel headers = new FlowPanel();
 
     private final SimplePanel workbench = new SimplePanel();
 
@@ -80,27 +84,51 @@ public class Workbench
     private WorkbenchPickupDragController dragController;
 
     @Inject
-    private NavBar navBar;
-
-    @Inject
     private Caller<WorkbenchServices> wbServices;
 
     @PostConstruct
     public void setup() {
+        initWidget( container );
+    }
+
+    private void setupHeaders() {
+        final Collection<IOCBeanDef<Header>> headerBeans = iocManager.lookupBeans( Header.class );
+        final List<Header> instances = new ArrayList<Header>();
+        for ( final IOCBeanDef<Header> headerBean : headerBeans ) {
+            instances.add( headerBean.getInstance() );
+        }
+
+        sort( instances, new Comparator<Header>() {
+            @Override
+            public int compare( final Header o1,
+                                final Header o2 ) {
+                if ( o1.getOrder() < o2.getOrder() ) {
+                    return 1;
+                } else if ( o1.getOrder() > o2.getOrder() ) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        } );
+
+        for ( final Header header : instances ) {
+            headers.add( header.asWidget() );
+        }
+
+        container.add( headers );
+    }
+
+    @SuppressWarnings("unused")
+    private void bootstrap( @Observes ApplicationReadyEvent event ) {
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            container.add( navBar );
+            setupHeaders();
         }
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
-
-        initWidget( container );
-    }
-
-    @SuppressWarnings("unused")
-    private void bootstrap( @Observes ApplicationReadyEvent event ) {
 
         //Clear environment
         workbench.clear();
@@ -171,9 +199,8 @@ public class Workbench
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
         final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
-        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-        while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
+
+        for ( final IOCBeanDef<PerspectiveActivity> perspective : perspectives ) {
             final PerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
                 defaultPerspective = instance;
@@ -188,16 +215,15 @@ public class Workbench
     public void onResize() {
         final int width = Window.getClientWidth();
         final int height = Window.getClientHeight();
-        doResizeWorkbenchContainer( width,
-                                    height );
+        doResizeWorkbenchContainer( width, height );
     }
 
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
-        final int navBarHeight = navBar.asWidget().getOffsetHeight();
+        final int headersHeight = headers.asWidget().getOffsetHeight();
         final int availableHeight;
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            availableHeight = height - navBarHeight;
+            availableHeight = height - headersHeight;
         } else {
             availableHeight = height;
         }

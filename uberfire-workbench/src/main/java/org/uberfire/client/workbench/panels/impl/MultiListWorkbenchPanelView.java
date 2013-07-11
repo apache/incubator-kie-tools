@@ -16,10 +16,18 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import org.uberfire.client.workbench.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
+import org.uberfire.client.workbench.panels.support.PanelHelper;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.Position;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -29,8 +37,36 @@ import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 public class MultiListWorkbenchPanelView
         extends BaseMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
 
+    @Inject
+    protected ListBarWidget listBar;
+
     @Override
     protected MultiPartWidget setupWidget() {
-        return new ListBarWidget();
+        if ( contextWidget != null ) {
+            listBar.setExpanderCommand( new Command() {
+                @Override
+                public void execute() {
+                    contextWidget.toogleDisplay();
+                }
+            } );
+        }
+
+        //When a tab is selected ensure content is resized and set focus
+        listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+            @Override
+            public void onSelection( SelectionEvent<PartDefinition> event ) {
+                presenter.onPartLostFocus();
+                presenter.onPartFocus( event.getSelectedItem() );
+            }
+        } );
+
+        listBar.addOnFocusHandler( new Command() {
+            @Override
+            public void execute() {
+                panelManager.onPanelFocus( presenter.getDefinition() );
+            }
+        } );
+
+        return listBar;
     }
 }

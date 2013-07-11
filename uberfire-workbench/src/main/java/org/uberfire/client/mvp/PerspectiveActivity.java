@@ -25,7 +25,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public interface PerspectiveActivity
         extends
-        Activity {
+        ContextSensitiveActivity {
 
     public void onStart();
 

@@ -213,6 +213,13 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
     
     </#if>
+    <#if getContextIdMethodName??>
+    @Override
+    public String contextId() {
+        return realPresenter.${getContextIdMethodName}();
+    }
+
+    </#if>
     @Override
     public Collection<String> getRoles() {
         return ROLES;

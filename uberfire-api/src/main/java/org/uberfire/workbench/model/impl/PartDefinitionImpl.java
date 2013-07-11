@@ -16,9 +16,13 @@
 package org.uberfire.workbench.model.impl;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.workbench.model.ContextDefinition;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.mvp.PlaceRequest;
+
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 /**
  * Default implementation of PartDefinition
@@ -33,6 +37,8 @@ public class PartDefinitionImpl
     private PanelDefinition parentPanel;
 
     private boolean isMinimized = false;
+    private ContextDefinition contextDefinition;
+    private ContextDisplayMode contextDisplayMode = SHOW;
 
     public PartDefinitionImpl() {
     }
@@ -87,6 +93,27 @@ public class PartDefinitionImpl
     public boolean isMaximized() {
         return false;
     }
+
+    @Override
+    public void setContextDefinition( final ContextDefinition contextDefinition ) {
+        this.contextDefinition = contextDefinition;
+    }
+
+    @Override
+    public ContextDefinition getContextDefinition() {
+        return contextDefinition;
+    }
+
+    @Override
+    public ContextDisplayMode getContextDisplayMode() {
+        return contextDisplayMode;
+    }
+
+    @Override
+    public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
+        this.contextDisplayMode = contextDisplayMode;
+    }
+
 
     @Override
     public int hashCode() {

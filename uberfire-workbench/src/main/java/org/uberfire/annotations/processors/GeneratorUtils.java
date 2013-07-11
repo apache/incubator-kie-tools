@@ -40,6 +40,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnContextAttach;
 import org.uberfire.client.annotations.OnFocus;
 import org.uberfire.client.annotations.OnLostFocus;
 import org.uberfire.client.annotations.OnMayClose;
@@ -47,6 +48,7 @@ import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
@@ -55,6 +57,7 @@ import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
+import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
 /**
@@ -110,6 +113,14 @@ public class GeneratorUtils {
                                   processingEnvironment,
                                   new String[]{ Path.class.getName(), PlaceRequest.class.getName() },
                                   OnStart.class );
+    }
+
+    public static String getOnContextAttachPanelDefinitionMethodName( final TypeElement classElement,
+                                                                      final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getVoidMethodName( classElement,
+                                  processingEnvironment,
+                                  new String[]{ PanelDefinition.class.getName() },
+                                  OnContextAttach.class );
     }
 
     /**
@@ -236,6 +247,13 @@ public class GeneratorUtils {
         return getStringMethodName( classElement,
                                     processingEnvironment,
                                     WorkbenchPartTitle.class );
+    }
+
+    public static String getContextIdMethodName( final TypeElement classElement,
+                                                 final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getStringMethodName( classElement,
+                                    processingEnvironment,
+                                    WorkbenchContextId.class );
     }
 
     /**

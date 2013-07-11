@@ -18,6 +18,7 @@ package org.uberfire.client;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.CoreResources;
+import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.client.resources.WizardResources;
 
 /**
@@ -29,8 +30,8 @@ public class CoreEntryPoint {
     @AfterInitialization
     public void startApp() {
         //Ensure CSS has been loaded
-        CoreResources.INSTANCE.CSS().ensureInjected();
         WizardResources.INSTANCE.css().ensureInjected();
+        NavigatorResources.INSTANCE.css().ensureInjected();
     }
 
 }

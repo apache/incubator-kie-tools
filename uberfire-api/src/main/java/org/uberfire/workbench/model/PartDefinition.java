@@ -26,42 +26,49 @@ public interface PartDefinition {
      * Get the PlaceRequest that this Part will contain.
      * @return the place
      */
-    public PlaceRequest getPlace();
+    PlaceRequest getPlace();
 
     /**
      * Set the PlaceRequest that this Part will contain.
      * @param place the place to set
      */
-    public void setPlace( final PlaceRequest place );
+    void setPlace( final PlaceRequest place );
 
     /**
      * Get the parent Panel containing this Part.
      * @return the parentPanel
      */
-    public PanelDefinition getParentPanel();
+    PanelDefinition getParentPanel();
 
     /**
      * Set the parent Panel containing this Part.
      * @param parentPanel the parentPanel to set
      */
-    public void setParentPanel( final PanelDefinition parentPanel );
+    void setParentPanel( final PanelDefinition parentPanel );
 
     /**
      * Set whether this Part is minimized or not.
      * @param isMinimized true if Part is minimized
      */
-    public void setMinimized( final boolean isMinimized );
+    void setMinimized( final boolean isMinimized );
 
     /**
      * Has the Part been collapsed to a minimal size.
      * @return true If minimized
      */
-    public boolean isMinimized();
+    boolean isMinimized();
 
     /**
      * Has the Part been expanded to a maximum size.
      * @return true If maximized
      */
-    public boolean isMaximized();
+    boolean isMaximized();
 
+    void setContextDefinition( final ContextDefinition contextDefinition );
+
+    ContextDefinition getContextDefinition();
+
+    ContextDisplayMode getContextDisplayMode();
+
+    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
 }

@@ -27,7 +27,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.kie.commons.data.Pair;
@@ -39,6 +38,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.workbench.events.ClosePlaceEvent;
+import org.uberfire.workbench.events.PerspectiveChange;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.events.SavePlaceEvent;
@@ -70,6 +70,9 @@ public class PlaceManagerImpl
 
     @Inject
     private Event<ClosePlaceEvent> workbenchPartCloseEvent;
+
+    @Inject
+    private Event<PerspectiveChange> perspectiveChangeEvent;
 
     @Inject
     private Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
@@ -327,16 +330,13 @@ public class PlaceManagerImpl
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
-            public void add( final String title,
-                             final IsWidget titleDecoration,
-                             final IsWidget widget ) {
+            public void add( final UIPart uiPart ) {
                 panelManager.addWorkbenchPart( place,
                                                part,
                                                panel,
                                                activity.getMenus(),
-                                               title,
-                                               titleDecoration,
-                                               widget );
+                                               uiPart,
+                                               activity.contextId());
             }
         }, place, callback );
     }
@@ -354,8 +354,8 @@ public class PlaceManagerImpl
     private void launchActivity( final PlaceRequest place,
                                  final PerspectiveActivity activity,
                                  final Command callback ) {
-        activity.launch( place,
-                         callback );
+        perspectiveChangeEvent.fire( new PerspectiveChange( activity.getPerspective(), activity.getMenus(), activity.getIdentifier() ) );
+        activity.launch( place, callback );
     }
 
     public void updateHistory( PlaceRequest request ) {

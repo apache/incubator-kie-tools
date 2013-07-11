@@ -24,9 +24,6 @@ public interface CoreResources
 
     CoreResources INSTANCE = GWT.create( CoreResources.class );
 
-    @Source("css/core.css")
-    CoreCss CSS();
-
     CoreImages images();
 
 }

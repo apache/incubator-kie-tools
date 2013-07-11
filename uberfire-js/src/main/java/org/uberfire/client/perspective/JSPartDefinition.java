@@ -15,4 +15,11 @@ public class JSPartDefinition extends JavaScriptObject {
         return this.parameters;
     }-*/;
 
+    public final native String getContextId()  /*-{
+        return this.context_id;
+    }-*/;
+
+    public final native String getContextDisplayModeAsString()  /*-{
+        return this.context_display_mode;
+    }-*/;
 }

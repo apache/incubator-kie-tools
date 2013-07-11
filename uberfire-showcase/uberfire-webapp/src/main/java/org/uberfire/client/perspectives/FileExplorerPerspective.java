@@ -29,12 +29,14 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.editors.repository.clone.CloneRepositoryForm;
 import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -53,6 +55,9 @@ import static org.uberfire.workbench.model.toolbar.IconType.*;
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "FileExplorerPerspective")
 public class FileExplorerPerspective {
+
+    @Inject
+    private PlaceManager placeManager;
 
     @Inject
     private IOCBeanManager iocManager;
@@ -104,15 +109,9 @@ public class FileExplorerPerspective {
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_LIST );
         p.setName( "File Explorer" );
+        p.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( "fileNavContext" ) ) );
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
-
-        final PanelDefinition west = new PanelDefinitionImpl( SIMPLE_DND );
-        west.setWidth( 200 );
-        west.setMinWidth( 150 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
-
-        p.getRoot().insertChild( Position.WEST, west );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileNavigator" ) ) );
 
         return p;
     }
@@ -130,16 +129,25 @@ public class FileExplorerPerspective {
     @WorkbenchMenu
     public Menus buildMenuBar() {
         return MenuFactory
+                .newTopLevelMenu( "Navigator" )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
+                            placeManager.goTo( new DefaultPlaceRequest( "FileNavigator" ) );
+                        }
+                    } )
+                .endMenu()
                 .newTopLevelMenu( "Repositories" )
-                .menus()
-                .menu( "Clone Repo" )
-                .respondsWith( cloneRepoCommand )
-                .endMenu()
-                .menu( "New Repo" )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( newRepoCommand )
-                .endMenu()
-                .endMenus().
-                        endMenu().build();
+                    .menus()
+                        .menu( "Clone Repo" )
+                            .respondsWith( cloneRepoCommand )
+                        .endMenu()
+                        .menu( "New Repo" )
+                            .withRoles( PERMISSIONS_ADMIN )
+                            .respondsWith( newRepoCommand )
+                        .endMenu()
+                    .endMenus().
+                endMenu()
+                .build();
     }
 }

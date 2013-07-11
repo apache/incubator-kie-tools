@@ -29,6 +29,6 @@ public enum Position {
     EAST, //East internal edge of a Parent panel
     WEST, //West internal edge of a Parent panel
     SELF, //Add to the Parent panel
-    ROOT; //Add to the Workbench root
+    ROOT //Add to the Workbench root
 
 }

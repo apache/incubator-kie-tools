@@ -1,6 +1,7 @@
 package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -28,9 +29,14 @@ public interface PanelManager {
                            final PartDefinition part,
                            final PanelDefinition panel,
                            final Menus menus,
-                           final String title,
-                           final IsWidget titleDecoration,
-                           final IsWidget partWidget );
+                           final UIPart uiPart );
+
+    void addWorkbenchPart( final PlaceRequest place,
+                           final PartDefinition part,
+                           final PanelDefinition panel,
+                           final Menus menus,
+                           final UIPart uiPart,
+                           final String contextId );
 
     PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                        final Position position );
@@ -55,4 +61,5 @@ public interface PanelManager {
     void onBeforePartClose( final PartDefinition part );
 
     WorkbenchPanelView getPanelView( final PanelDefinition panel );
+
 }

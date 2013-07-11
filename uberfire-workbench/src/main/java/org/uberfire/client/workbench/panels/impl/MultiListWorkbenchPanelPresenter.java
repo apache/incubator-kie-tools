@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.workbench.events.MaximizePlaceEvent;
 import org.uberfire.workbench.events.MinimizePlaceEvent;
@@ -32,10 +33,12 @@ public class MultiListWorkbenchPanelPresenter extends BaseMultiPartWorkbenchPane
 
     @Inject
     public MultiListWorkbenchPanelPresenter( @Named("MultiListWorkbenchPanelView") final MultiListWorkbenchPanelView view,
+                                             final ActivityManager activityManager,
                                              final PanelManager panelManager,
                                              final Event<MaximizePlaceEvent> maximizePanelEvent,
                                              final Event<MinimizePlaceEvent> minimizePanelEvent ) {
         this.view = view;
+        this.activityManager = activityManager;
         this.panelManager = panelManager;
         this.maximizePanelEvent = maximizePanelEvent;
         this.minimizePanelEvent = minimizePanelEvent;

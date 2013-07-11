@@ -15,11 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 public interface AcceptItem {
 
-    void add( final String title,
-              final IsWidget titleDecoration,
-              final IsWidget widget );
+    void add( final UIPart uiPart );
 }

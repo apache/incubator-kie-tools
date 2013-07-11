@@ -10,12 +10,8 @@ public interface WorkbenchMenuBar {
 
     void setBrandMenuItem( final BrandMenuItem brandMenuItem );
 
-    void aggregateWorkbenchMenus( final Menus menus );
+    void addMenus( final Menus menus );
 
-    void aggregatePerspectiveMenus( final Menus menus );
-
-    void clearWorkbenchMenus();
-
-    void clearPerspectiveMenus();
+    void clear();
 
 }

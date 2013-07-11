@@ -105,6 +105,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                                                                                  processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
+        final String getContextIdMethodName = GeneratorUtils.getContextIdMethodName( classElement,
+                                                                                     processingEnvironment );
         final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
                                                                                                 processingEnvironment );
         final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
@@ -131,6 +133,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
+        logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
         logger.debug( "Priority: " + priority );
         logger.debug( "Resource types: " + associatedResources );
         logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
@@ -185,6 +188,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "getContextIdMethodName",
+                  getContextIdMethodName );
         root.put( "priority",
                   priority.toString().replace( ",", "" ) );
         root.put( "associatedResources",

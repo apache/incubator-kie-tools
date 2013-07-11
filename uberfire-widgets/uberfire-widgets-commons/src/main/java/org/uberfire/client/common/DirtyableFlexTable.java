@@ -22,51 +22,39 @@ import java.util.List;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.commons.data.Pair;
 
 public class DirtyableFlexTable
         extends FlexTable
         implements DirtyableContainer {
-    
+
     private int length;
-    private List<Pair> list = new ArrayList<Pair>();
+    private List<Pair<Integer, Integer>> list = new ArrayList<Pair<Integer, Integer>>();
 
     public boolean hasDirty() {
-        for (Pair coord : list) {
-            Widget element = getWidget( coord.getRow(), coord.getColumn() );
-            if ((element instanceof DirtyableWidget && ((DirtyableWidget) element).isDirty()) ||
-                    (element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty()))
+        for ( final Pair<Integer, Integer> coord : list ) {
+            final Widget element = getWidget( coord.getK1(), coord.getK2() );
+            if ( ( element instanceof DirtyableWidget && ( (DirtyableWidget) element ).isDirty() ) ||
+                    ( element instanceof DirtyableContainer && ( (DirtyableContainer) element ).hasDirty() ) ) {
                 return true;
+            }
         }
         return false;
     }
-    
-    public void setWidget(int row, int column , Widget arg2) {
+
+    public void setWidget( int row,
+                           int column,
+                           Widget arg2 ) {
         super.setWidget( row, column, arg2 );
-        
-        if (arg2 instanceof IDirtyable) {
-            list.add(length++, new Pair(row, column));
+
+        if ( arg2 instanceof IDirtyable ) {
+            list.add( length++, Pair.newPair( row, column ) );
         }
     }
-    
-    public void setHorizontalAlignmentForFlexCellFormatter(int row, int column, HorizontalAlignmentConstant horizontalAlignmentConstant ){
-        getFlexCellFormatter().setHorizontalAlignment(row, column, horizontalAlignmentConstant);
-    }
-}
 
-class Pair {
-    private int row;
-    private int column;
-    
-    public Pair(int row, int column) {
-        this.row = row;
-        this.column = column;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public int getRow() {
-        return row;
+    public void setHorizontalAlignmentForFlexCellFormatter( int row,
+                                                            int column,
+                                                            HorizontalAlignmentConstant horizontalAlignmentConstant ) {
+        getFlexCellFormatter().setHorizontalAlignment( row, column, horizontalAlignmentConstant );
     }
 }

@@ -25,6 +25,9 @@ public interface ActivityManager {
 
     Set<Activity> getActivities( final PlaceRequest placeRequest );
 
+    <T extends Activity> T getActivity( final Class<T> clazz,
+                                        final PlaceRequest placeRequest );
+
     void destroyActivity( final Activity activity );
 
 }

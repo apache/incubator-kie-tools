@@ -18,9 +18,16 @@ package org.uberfire.client.screens.multipage;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.common.MultiPageEditor;
+import org.uberfire.client.navigator.FileNavigator;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -29,6 +36,12 @@ import org.uberfire.client.common.MultiPageEditor;
 public class MultiPageView extends MultiPageEditor
         implements
         MultiPagePresenter.View {
+
+    @Inject
+    private Caller<VFSService> vfsServices;
+
+    @Inject
+    private FileNavigator fileNavigator;
 
     private MultiPagePresenter presenter;
 
@@ -39,9 +52,19 @@ public class MultiPageView extends MultiPageEditor
 
     @PostConstruct
     public void init() {
-        for ( int i = 0; i < 10; i++ ) {
-            addWidget( new Button( "My Button " + i ), "Page " + i );
-        }
+        vfsServices.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path o ) {
+                for ( int i = 0; i < 10; i++ ) {
+                    if ( i == 0 ) {
+                        fileNavigator.loadContent( o );
+                        addWidget( fileNavigator, "Cool!" );
+                    } else {
+                        addWidget( new Button( "My Button " + i ), "Page " + i );
+                    }
+                }
+            }
+        } ).get( "default://uf-playground/" );
     }
 
 }

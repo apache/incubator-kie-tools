@@ -32,7 +32,6 @@
   <description>UberFire Backend Server</description>
 
   <dependencies>
-
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -47,6 +46,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-api</artifactId>
+    </dependency>
+
+    <!-- Formatting -->
+    <dependency>
+      <groupId>org.ocpsoft.prettytime</groupId>
+      <artifactId>prettytime</artifactId>
     </dependency>
 
     <!-- KIE Commons IO -->

@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -34,6 +35,7 @@ import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.events.DropPlaceEvent;
 import org.uberfire.workbench.events.MinimizePlaceEvent;
+import org.uberfire.workbench.events.PanelFocusEvent;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.events.RestorePlaceEvent;
@@ -59,6 +61,9 @@ public class PanelManagerImpl implements PanelManager {
 
     @Inject
     private Event<PlaceLostFocusEvent> placeLostFocusEvent;
+
+    @Inject
+    private Event<PanelFocusEvent> panelFocusEvent;
 
     @Inject
     private Event<SelectPlaceEvent> selectPlaceEvent;
@@ -153,18 +158,26 @@ public class PanelManagerImpl implements PanelManager {
         onPanelFocus( panel );
     }
 
+    public void addWorkbenchPart( final PlaceRequest place,
+                                  final PartDefinition part,
+                                  final PanelDefinition panel,
+                                  final Menus menus,
+                                  final UIPart uiPart ) {
+        addWorkbenchPart( place, part, panel, menus, uiPart, null );
+    }
+
     @Override
     public void addWorkbenchPart( final PlaceRequest place,
                                   final PartDefinition part,
                                   final PanelDefinition panel,
                                   final Menus menus,
-                                  final String title,
-                                  final IsWidget titleDecoration,
-                                  final IsWidget partWidget ) {
+                                  final UIPart uiPart,
+                                  final String contextId ) {
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
-            partPresenter = factory.newWorkbenchPart( menus, title, titleDecoration, part );
-            partPresenter.setWrappedWidget( partWidget );
+            partPresenter = factory.newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), part );
+            partPresenter.setWrappedWidget( uiPart.getWidget() );
+            partPresenter.setContextId( contextId );
             mapPartDefinitionToPresenter.put( part, partPresenter );
         }
 
@@ -265,6 +278,7 @@ public class PanelManagerImpl implements PanelManager {
     @Override
     public void onPartFocus( final PartDefinition part ) {
         activePart = part;
+        panelFocusEvent.fire( new PanelFocusEvent( part.getParentPanel() ) );
         placeGainFocusEvent.fire( new PlaceGainFocusEvent( part.getPlace() ) );
     }
 
@@ -376,9 +390,7 @@ public class PanelManagerImpl implements PanelManager {
                           partToRestore,
                           panelToRestore,
                           presenter.getMenus(),
-                          presenter.getTitle(),
-                          presenter.getTitleDecoration(),
-                          presenter.getPartView() );
+                          new UIPart( presenter.getTitle(), presenter.getTitleDecoration(), presenter.getPartView() ) );
     }
 
     private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,

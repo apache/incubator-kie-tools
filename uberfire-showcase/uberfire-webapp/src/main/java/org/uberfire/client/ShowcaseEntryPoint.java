@@ -36,7 +36,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -48,7 +47,6 @@ import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuSearchItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
@@ -97,8 +95,6 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupMenu( @Observes final ApplicationReadyEvent event ) {
-        menubar.clearWorkbenchMenus();
-
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
@@ -115,12 +111,13 @@ public class ShowcaseEntryPoint {
                         } )
                         .endMenu()
                         .newTopLevelMenu( "Perspectives" )
-                        .withItems( getPerspectives() )
+                            .withItems( getPerspectives() )
                         .endMenu()
                         .newTopLevelMenu( "Screens" )
-                        .withItems( getScreens() )
+                            .withItems( getScreens() )
                         .endMenu()
                         .newTopLevelMenu( "Logout" )
+                            .position( MenuPosition.RIGHT )
                         .respondsWith( new Command() {
                             @Override
                             public void execute() {
@@ -128,18 +125,9 @@ public class ShowcaseEntryPoint {
                             }
                         } )
                         .endMenu()
-                        .newSearchItem( "search" )
-                        .position( MenuPosition.RIGHT )
-                        .respondsWith( new MenuSearchItem.SearchCommand() {
-                            @Override
-                            public void execute( final String term ) {
-                                Window.alert( "Search:" + term );
-                            }
-                        } )
-                        .endMenu()
                         .build();
 
-        menubar.aggregateWorkbenchMenus( menus );
+        menubar.addMenus( menus );
     }
 
     private List<MenuItem> getScreens() {

@@ -27,7 +27,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public interface WorkbenchActivity
         extends
-        Activity {
+        ContextSensitiveActivity {
 
     public void launch( final AcceptItem acceptItem,
                         final PlaceRequest place,
@@ -53,4 +53,5 @@ public interface WorkbenchActivity
 
     public ToolBar getToolBar();
 
+    String contextId();
 }

@@ -4,11 +4,14 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface RepositoryService {
 
     Repository getRepository( final String alias );
+
+    Repository getRepository( final Path root );
 
     Collection<Repository> getRepositories();
 
@@ -21,7 +24,7 @@ public interface RepositoryService {
 
     void removeRole( final Repository repository,
                      final String role );
-    
-    void removeRepository(final String alias);
+
+    void removeRepository( final String alias );
 
 }

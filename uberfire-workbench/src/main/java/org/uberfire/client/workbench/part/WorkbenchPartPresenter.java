@@ -47,6 +47,8 @@ public class WorkbenchPartPresenter {
 
     private String title;
 
+    private String contextId;
+
     private Menus menus;
 
     private IsWidget titleDecoration;
@@ -102,5 +104,13 @@ public class WorkbenchPartPresenter {
 
     public void setTitleDecoration( final IsWidget titleDecoration ) {
         this.titleDecoration = titleDecoration;
+    }
+
+    public String getContextId() {
+        return contextId;
+    }
+
+    public void setContextId( String contextId ) {
+        this.contextId = contextId;
     }
 }

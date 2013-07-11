@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
  * A mock Workbench Part view.
  */
 public class MockWorkbenchPartView
-    implements
-    WorkbenchPartPresenter.View {
+        implements
+        WorkbenchPartPresenter.View {
 
     @Override
     public Widget asWidget() {
@@ -37,7 +37,7 @@ public class MockWorkbenchPartView
     }
 
     @Override
-    public void init(WorkbenchPartPresenter presenter) {
+    public void init( WorkbenchPartPresenter presenter ) {
     }
 
     @Override
@@ -46,12 +46,11 @@ public class MockWorkbenchPartView
     }
 
     @Override
-    public void setWrappedWidget(IsWidget widget) {
+    public void setWrappedWidget( IsWidget widget ) {
     }
 
     @Override
     public IsWidget getWrappedWidget() {
         return null;
     }
-
 }

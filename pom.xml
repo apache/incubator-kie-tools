@@ -106,6 +106,12 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.4-20130702.002149-509</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.jboss.errai</groupId>
           <artifactId>jacoco-gwt-maven-plugin</artifactId>
           <version>0.5.4.201202141554</version>
@@ -392,6 +398,13 @@
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-backend-server</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <!-- Formatting -->
+      <dependency>
+        <groupId>org.ocpsoft.prettytime</groupId>
+        <artifactId>prettytime</artifactId>
+        <version>3.0.2.Final</version>
       </dependency>
 
       <!-- Widgets -->

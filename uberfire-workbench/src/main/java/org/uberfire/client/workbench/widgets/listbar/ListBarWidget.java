@@ -15,9 +15,12 @@
  */
 package org.uberfire.client.workbench.widgets.listbar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonGroup;
@@ -30,13 +33,17 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -48,6 +55,8 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
+import org.uberfire.security.Identity;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -65,14 +74,26 @@ public class ListBarWidget
 
     interface ListBarWidgetBinder
             extends
-            UiBinder<FlowPanel, ListBarWidget> {
+            UiBinder<FocusPanel, ListBarWidget> {
 
     }
 
     private static ListBarWidgetBinder uiBinder = GWT.create( ListBarWidgetBinder.class );
 
+    @Inject
+    private RuntimeAuthorizationManager authzManager;
+
+    @Inject
+    private Identity identity;
+
+    @UiField
+    FocusPanel container;
+
     @UiField
     SimplePanel title;
+
+    @UiField
+    Button contextDisplay;
 
     @UiField
     FlowPanel header;
@@ -111,6 +132,24 @@ public class ListBarWidget
                 if ( currentPart != null ) {
                     presenter.onBeforePartClose( currentPart.getK1() );
                 }
+            }
+        } );
+
+        container.addFocusHandler( new FocusHandler() {
+            @Override
+            public void onFocus( FocusEvent event ) {
+                if ( currentPart != null && currentPart.getK1() != null ) {
+                    SelectionEvent.fire( ListBarWidget.this, currentPart.getK1() );
+                }
+            }
+        } );
+    }
+
+    public void setExpanderCommand( final Command command ) {
+        contextDisplay.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                command.execute();
             }
         } );
     }
@@ -254,17 +293,17 @@ public class ListBarWidget
 
     @Override
     public HandlerRegistration addSelectionHandler( final SelectionHandler<PartDefinition> handler ) {
-        return null;
+        return addHandler( handler, SelectionEvent.getType() );
     }
 
     @Override
     public void onResize() {
         final Widget parent = getParent();
         if ( parent != null ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            setPixelSize( width, height );
+            final int width = parent.getParent().getOffsetWidth();
+            final int height = parent.getParent().getOffsetHeight();
             content.setPixelSize( width, height );
+            header.setWidth( width + "px" );
 
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
                 final Widget widget = content.getWidget( i );
@@ -300,6 +339,10 @@ public class ListBarWidget
 
     private Widget makeItem( final MenuItem item,
                              boolean isRoot ) {
+        if ( !authzManager.authorize( item, identity ) ) {
+            return null;
+        }
+
         if ( item instanceof MenuItemCommand ) {
             final MenuItemCommand cmdItem = (MenuItemCommand) item;
             final Widget gwtItem;
@@ -344,16 +387,40 @@ public class ListBarWidget
             final MenuGroup groups = (MenuGroup) item;
             final Widget gwtItem;
             if ( isRoot ) {
+                final List<Widget> widgetList = new ArrayList<Widget>();
+                for ( final MenuItem _item : groups.getItems() ) {
+                    final Widget widget = makeItem( _item, false );
+                    if ( widget != null ) {
+                        widgetList.add( widget );
+                    }
+                }
+
+                if ( widgetList.isEmpty() ) {
+                    return null;
+                }
+
                 gwtItem = new DropdownButton( groups.getCaption() ) {{
                     setSize( MINI );
-                    for ( final MenuItem _item : groups.getItems() ) {
-                        add( makeItem( _item, false ) );
+                    for ( final Widget _item : widgetList ) {
+                        add( _item );
                     }
                 }};
             } else {
+                final List<Widget> widgetList = new ArrayList<Widget>();
+                for ( final MenuItem _item : groups.getItems() ) {
+                    final Widget result = makeItem( _item, false );
+                    if ( result != null ) {
+                        widgetList.add( result );
+                    }
+                }
+
+                if ( widgetList.isEmpty() ) {
+                    return null;
+                }
+
                 gwtItem = new Dropdown( groups.getCaption() ) {{
-                    for ( final MenuItem _item : groups.getItems() ) {
-                        add( makeItem( _item, false ) );
+                    for ( final Widget widget : widgetList ) {
+                        add( widget );
                     }
                 }};
             }

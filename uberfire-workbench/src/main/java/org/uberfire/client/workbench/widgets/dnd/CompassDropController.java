@@ -24,6 +24,7 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
@@ -90,9 +91,8 @@ public class CompassDropController
         //Move Part from source to target 
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final Menus menus = workbenchContext.getMenus();
-        final String title = workbenchContext.getTitle();
-        final IsWidget titleDecoration = workbenchContext.getTitleDecoration();
-        final IsWidget widget = workbenchContext.getWidget();
+
+        final UIPart uiPart = workbenchContext.getUiPart();
         final PlaceRequest place = workbenchContext.getPlace();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
@@ -126,9 +126,7 @@ public class CompassDropController
                                        sourcePart,
                                        targetPanel,
                                        menus,
-                                       title,
-                                       titleDecoration,
-                                       widget );
+                                       uiPart );
     }
 
     @Override

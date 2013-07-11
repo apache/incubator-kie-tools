@@ -59,6 +59,7 @@ public class MultiPagePresenter {
                 .newTopLevelMenu( "My Context" )
                     .menus()
                         .menu( "New Menu" )
+                            .withRoles( "ADMIN" )
                             .respondsWith( new Command() {
                                 @Override
                                 public void execute() {

@@ -71,6 +71,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                                                                  processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
+        final String getContextIdMethodName = GeneratorUtils.getContextIdMethodName( classElement,
+                                                                                     processingEnvironment );
         final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
                                                                                                 processingEnvironment );
         final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
@@ -93,6 +95,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
+        logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
         logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
         logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
@@ -143,6 +146,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "getContextIdMethodName",
+                  getContextIdMethodName );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStart0ParameterMethodName",

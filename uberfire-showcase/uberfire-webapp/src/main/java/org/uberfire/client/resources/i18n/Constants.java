@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.i18n;
+package org.uberfire.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;

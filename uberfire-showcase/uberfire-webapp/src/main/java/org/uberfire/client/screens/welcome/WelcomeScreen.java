@@ -3,6 +3,7 @@ package org.uberfire.client.screens.welcome;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
@@ -19,6 +20,7 @@ public class WelcomeScreen
     interface ViewBinder
             extends
             UiBinder<Widget, WelcomeScreen> {
+
     }
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
@@ -31,6 +33,11 @@ public class WelcomeScreen
     @WorkbenchPartTitle
     public String getTitle() {
         return "Welcome";
+    }
+
+    @WorkbenchContextId
+    public String getMyContextRef() {
+        return "welcomeContext";
     }
 
 }

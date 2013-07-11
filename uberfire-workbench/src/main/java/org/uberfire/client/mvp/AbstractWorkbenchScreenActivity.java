@@ -15,8 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.HashMap;
+
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ContextUpdateEvent;
 
 /**
  * Base class for Screen Activities
@@ -35,7 +38,7 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
                         final Command callback ) {
         super.launch( place, callback );
         onStart( place );
-        acceptPanel.add( getTitle(), getTitleDecoration(), getWidget() );
+        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
         onReveal();
     }
 
@@ -49,4 +52,10 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
         //Do nothing.  
     }
 
+    @Override
+    protected void fireContextUpdateEvent() {
+        contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
+            put( "place", place );
+        }} ) );
+    }
 }

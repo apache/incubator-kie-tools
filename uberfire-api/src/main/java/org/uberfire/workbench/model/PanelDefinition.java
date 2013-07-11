@@ -162,4 +162,12 @@ public interface PanelDefinition {
      */
     public boolean isMaximized();
 
+    void setContextDefinition( final ContextDefinition contextDefinition );
+
+    ContextDefinition getContextDefinition();
+
+    ContextDisplayMode getContextDisplayMode();
+
+    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
+
 }

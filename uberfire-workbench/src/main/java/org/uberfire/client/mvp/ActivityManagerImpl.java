@@ -35,9 +35,7 @@ import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import static java.util.Collections.*;
 
 @ApplicationScoped
-public class ActivityManagerImpl
-        implements
-        ActivityManager {
+public class ActivityManagerImpl implements ActivityManager {
 
     @Inject
     private IOCBeanManager iocManager;
@@ -67,6 +65,19 @@ public class ActivityManagerImpl
         }
 
         return secure( beans );
+    }
+
+    @Override
+    public <T extends Activity> T getActivity( final Class<T> clazz,
+                                               final PlaceRequest placeRequest ) {
+        final Set<Activity> activities = getActivities( placeRequest );
+        if ( activities.size() == 0 ) {
+            return null;
+        }
+
+        final Activity activity = activities.iterator().next();
+
+        return (T) activity;
     }
 
     @Override

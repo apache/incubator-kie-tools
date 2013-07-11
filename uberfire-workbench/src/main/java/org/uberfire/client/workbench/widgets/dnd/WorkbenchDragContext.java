@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -29,10 +30,8 @@ public class WorkbenchDragContext {
     private final PlaceRequest place;
     private final PartDefinition sourcePart;
     private final PanelDefinition sourcePanel;
-    private final String title;
-    private final IsWidget titleDecoration;
     private final Menus menus;
-    private final IsWidget widget;
+    private final UIPart uiPart;
 
     private Integer height;
     private Integer width;
@@ -54,9 +53,7 @@ public class WorkbenchDragContext {
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
         this.menus = menus;
-        this.title = title;
-        this.titleDecoration = titleDecoration;
-        this.widget = widget;
+        this.uiPart = new UIPart( title, titleDecoration, widget );
         this.height = height;
         this.width = width;
         this.minHeight = minHeight;
@@ -84,19 +81,8 @@ public class WorkbenchDragContext {
         return sourcePanel;
     }
 
-    /**
-     * @return the title decoration widget
-     */
-    public IsWidget getTitleDecoration() {
-        return titleDecoration;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public IsWidget getWidget() {
-        return widget;
+    public UIPart getUiPart() {
+        return uiPart;
     }
 
     public final Integer getHeight() {

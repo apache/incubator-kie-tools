@@ -41,4 +41,6 @@ public interface WorkbenchCss
     @ClassName("uf-listbar")
     String listbar();
 
+    @ClassName("show-context")
+    String showContext();
 }

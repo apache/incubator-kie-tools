@@ -15,6 +15,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.sun.tools.hat.internal.model.Root;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
@@ -26,6 +27,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
@@ -48,6 +50,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     private Event<NewRepositoryEvent> event;
 
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
+    private Map<Path, Repository> rootToRepo = new HashMap<Path, Repository>();
 
     @SuppressWarnings("unchecked")
     @PostConstruct
@@ -56,8 +59,8 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( !( repoConfigs == null || repoConfigs.isEmpty() ) ) {
             for ( final ConfigGroup config : repoConfigs ) {
                 final Repository repository = repositoryFactory.newRepository( config );
-                configuredRepositories.put( repository.getAlias(),
-                                            repository );
+                configuredRepositories.put( repository.getAlias(), repository );
+                rootToRepo.put( repository.getRoot(), repository );
             }
         }
 
@@ -78,6 +81,11 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public Repository getRepository( final String alias ) {
         return configuredRepositories.get( alias );
+    }
+
+    @Override
+    public Repository getRepository( final Path root ) {
+        return rootToRepo.get( root );
     }
 
     @Override
@@ -123,6 +131,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         configurationService.addConfiguration( repositoryConfig );
         configuredRepositories.put( repository.getAlias(),
                                     repository );
+        rootToRepo.put( repository.getRoot(), repository );
         return repository;
     }
 
@@ -140,6 +149,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
             configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
+            rootToRepo.put( updatedRepo.getRoot(), updatedRepo );
         } else {
             throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
@@ -159,6 +169,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
             configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
+            rootToRepo.put( updatedRepo.getRoot(), updatedRepo );
         } else {
             throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
@@ -182,7 +193,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         if ( thisRepositoryConfig != null ) {
             configurationService.removeConfiguration( thisRepositoryConfig );
-            configuredRepositories.remove( alias );
+            final Repository repo = configuredRepositories.remove( alias );
+            if ( repo != null ) {
+                rootToRepo.remove( repo.getRoot() );
+            }
         }
 
     }

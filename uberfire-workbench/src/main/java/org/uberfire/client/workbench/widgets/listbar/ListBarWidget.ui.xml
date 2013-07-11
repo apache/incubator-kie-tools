@@ -37,22 +37,31 @@
     .pull-right {
       float: right;
     }
+
+    .inline {
+      display: inline-block;
+    }
   </ui:style>
 
-  <g:FlowPanel>
-    <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
-      <g:SimplePanel styleName="{style.title} {style.pull-left}" ui:field="title"/>
-      <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
-        <tb:ButtonGroup ui:field="contextMenu"/>
-        <tb:ButtonGroup>
-          <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
-        </tb:ButtonGroup>
-        <tb:ButtonGroup>
-          <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
-        </tb:ButtonGroup>
+  <g:FocusPanel ui:field="container">
+    <g:FlowPanel>
+      <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
+        <g:FlowPanel styleName="{style.inline}">
+          <tb:Button ui:field="contextDisplay" size="MINI" icon="REORDER" styleName="{style.pull-left}"/>
+          <g:SimplePanel styleName="{style.inline} {style.title}" ui:field="title"/>
+        </g:FlowPanel>
+        <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
+          <tb:ButtonGroup ui:field="contextMenu"/>
+          <tb:ButtonGroup>
+            <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
+          </tb:ButtonGroup>
+          <tb:ButtonGroup>
+            <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+          </tb:ButtonGroup>
+        </g:FlowPanel>
       </g:FlowPanel>
+      <g:FlowPanel ui:field="content"/>
     </g:FlowPanel>
-    <g:FlowPanel ui:field="content"/>
-  </g:FlowPanel>
+  </g:FocusPanel>
 
 </ui:UiBinder> 

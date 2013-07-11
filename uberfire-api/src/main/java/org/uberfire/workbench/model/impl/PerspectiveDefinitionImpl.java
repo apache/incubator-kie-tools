@@ -16,11 +16,14 @@
 package org.uberfire.workbench.model.impl;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.workbench.model.ContextDefinition;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 import static org.uberfire.workbench.model.impl.PanelTypeHelper.isRoot;
 
 /**
@@ -36,6 +39,8 @@ public class PerspectiveDefinitionImpl
     private boolean isTransient = false;
 
     private PanelDefinition root;
+    private ContextDefinition contextDefinition;
+    private ContextDisplayMode contextDisplayMode = SHOW;
 
     public PerspectiveDefinitionImpl() {
     }
@@ -74,4 +79,23 @@ public class PerspectiveDefinitionImpl
         return root;
     }
 
+    @Override
+    public void setContextDefinition( final ContextDefinition contextDefinition ) {
+        this.contextDefinition = contextDefinition;
+    }
+
+    @Override
+    public ContextDefinition getContextDefinition() {
+        return contextDefinition;
+    }
+
+    @Override
+    public ContextDisplayMode getContextDisplayMode() {
+        return contextDisplayMode;
+    }
+
+    @Override
+    public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
+        this.contextDisplayMode = contextDisplayMode;
+    }
 }

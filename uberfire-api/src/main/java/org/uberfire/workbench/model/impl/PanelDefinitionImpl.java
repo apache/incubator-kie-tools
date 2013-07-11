@@ -23,11 +23,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.workbench.model.ContextDefinition;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 /**
@@ -53,6 +56,8 @@ public class PanelDefinitionImpl
     private PanelType panelType;
     private PanelType defaultChildPanelType;
     private boolean isRoot;
+    private ContextDefinition contextDefinition;
+    private ContextDisplayMode contextDisplayMode = SHOW;
 
     public PanelDefinitionImpl() {
     }
@@ -235,6 +240,26 @@ public class PanelDefinitionImpl
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public void setContextDefinition( final ContextDefinition contextDefinition ) {
+        this.contextDefinition = contextDefinition;
+    }
+
+    @Override
+    public ContextDefinition getContextDefinition() {
+        return contextDefinition;
+    }
+
+    @Override
+    public ContextDisplayMode getContextDisplayMode() {
+        return contextDisplayMode;
+    }
+
+    @Override
+    public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
+        this.contextDisplayMode = contextDisplayMode;
     }
 
     private void checkPosition( final Position position ) {

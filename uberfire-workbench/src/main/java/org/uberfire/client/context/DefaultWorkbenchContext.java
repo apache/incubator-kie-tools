@@ -24,8 +24,10 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.PanelFocusEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
+import org.uberfire.workbench.model.PanelDefinition;
 
 /**
  * Container for the context of the Workbench
@@ -36,6 +38,7 @@ public class DefaultWorkbenchContext implements WorkbenchContext {
     private Group activeGroup;
     private Repository activeRepository;
     private Path activePath;
+    private PanelDefinition activePanel;
 
     public void setActiveGroup( @Observes final GroupChangeEvent event ) {
         final Group activeGroup = event.getGroup();
@@ -55,8 +58,7 @@ public class DefaultWorkbenchContext implements WorkbenchContext {
         setActivePath( activePath );
     }
 
-    @Override
-    public void setActiveGroup( final Group activeGroup ) {
+    private void setActiveGroup( final Group activeGroup ) {
         this.activeGroup = activeGroup;
     }
 
@@ -65,8 +67,7 @@ public class DefaultWorkbenchContext implements WorkbenchContext {
         return this.activeGroup;
     }
 
-    @Override
-    public void setActiveRepository( final Repository activeRepository ) {
+    private void setActiveRepository( final Repository activeRepository ) {
         this.activeRepository = activeRepository;
     }
 
@@ -75,12 +76,21 @@ public class DefaultWorkbenchContext implements WorkbenchContext {
         return this.activeRepository;
     }
 
-    public void setActivePath( final Path activePath ) {
+    private void setActivePath( final Path activePath ) {
         this.activePath = activePath;
     }
 
+    @Override
     public Path getActivePath() {
         return this.activePath;
     }
 
+    @Override
+    public PanelDefinition getActivePanel() {
+        return activePanel;
+    }
+
+    private void setActivePanel( @Observes final PanelFocusEvent panelFocusEvent ) {
+        this.activePanel = panelFocusEvent.getPanel();
+    }
 }

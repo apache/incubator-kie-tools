@@ -13,3 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.uberfire.client.mvp;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+
+/**
+ * Pop-up Activity life-cycles
+ */
+public interface ContextActivity
+        extends
+        Activity {
+
+    void onAttach( final PanelDefinition definition );
+
+    public String getTitle();
+
+    public IsWidget getTitleDecoration();
+
+    public IsWidget getWidget();
+
+}

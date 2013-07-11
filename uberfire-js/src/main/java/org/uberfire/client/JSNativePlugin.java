@@ -43,6 +43,18 @@ public class JSNativePlugin {
         return element;
     }
 
+    public String getContextId() {
+        String contextId = null;
+
+        if ( hasMethod( obj, "context_id" ) ) {
+            contextId = getContextIdFunctionResult( obj );
+        } else if ( hasStringProperty( obj, "context_id" ) ) {
+            contextId = getContextId( obj );
+        }
+
+        return contextId;
+    }
+
     public String getTitle() {
         String title = null;
 
@@ -182,8 +194,8 @@ public class JSNativePlugin {
         return null;
     }-*/;
 
-    private static native String getTitleFunctionResult( final JavaScriptObject o ) /*-{
-        var result = o.title();
+    private static native String getContextIdFunctionResult( final JavaScriptObject o ) /*-{
+        var result = o.context_Id();
         if (typeof result === "string") {
             return result;
         }
@@ -192,6 +204,14 @@ public class JSNativePlugin {
 
     private static native String getTypeFunctionResult( final JavaScriptObject o ) /*-{
         var result = o.type();
+        if (typeof result === "string") {
+            return result;
+        }
+        return null;
+    }-*/;
+
+    private static native String getTitleFunctionResult( final JavaScriptObject o ) /*-{
+        var result = o.title();
         if (typeof result === "string") {
             return result;
         }
@@ -230,6 +250,10 @@ public class JSNativePlugin {
         return o.title;
     }-*/;
 
+    private static native String getContextId( final JavaScriptObject o ) /*-{
+        return o.context_id;
+    }-*/;
+
     private static native String getTemplate( final JavaScriptObject o ) /*-{
         return o.template;
     }-*/;
@@ -245,4 +269,5 @@ public class JSNativePlugin {
     public void onStart( PlaceRequest place ) {
         //To change body of created methods use File | Settings | File Templates.
     }
+
 }

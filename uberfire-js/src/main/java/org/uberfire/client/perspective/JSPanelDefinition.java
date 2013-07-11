@@ -45,7 +45,6 @@ public class JSPanelDefinition extends JavaScriptObject {
         return this.panel_type;
     }-*/;
 
-
     public final native JsArray<JSPartDefinition> getParts() /*-{
         return this.parts;
     }-*/;
@@ -53,5 +52,14 @@ public class JSPanelDefinition extends JavaScriptObject {
     public final native JsArray<JSPanelDefinition> getChildren() /*-{
         return this.panels;
     }-*/;
+
+    public final native String getContextId()  /*-{
+        return this.context_id;
+    }-*/;
+
+    public final native String getContextDisplayModeAsString()  /*-{
+        return this.context_display_mode;
+    }-*/;
+
 
 }

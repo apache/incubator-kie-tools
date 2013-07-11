@@ -15,10 +15,13 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.HashMap;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.ContextUpdateEvent;
 
 /**
  * Base class for Editor Activities
@@ -26,6 +29,8 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity
         implements
         WorkbenchEditorActivity {
+
+    protected Path path;
 
     public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -41,20 +46,37 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
         onStart( pathPlace.getPath(), place );
 
-        acceptPanel.add( getTitle(), getTitleDecoration(), getWidget() );
+        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
 
         onReveal();
     }
 
+    protected void fireContextUpdateEvent() {
+        if ( lastContextUpdate == null ) {
+            contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
+                put( "path", path );
+                put( "place", place );
+            }} ) );
+            return;
+        }
+        if ( !path.equals( lastContextUpdate.getData().get( "path" ) )
+                && !place.equals( lastContextUpdate.getData().get( "place" ) ) ) {
+            contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
+                put( "path", path );
+                put( "place", place );
+            }} ) );
+        }
+    }
+
     @Override
     public void onStart( final Path path ) {
-        //Do nothing.  
+        this.path = path;
     }
 
     @Override
     public void onStart( final Path path,
                          final PlaceRequest place ) {
-        //Do nothing.  
+        this.path = path;
     }
 
     @Override

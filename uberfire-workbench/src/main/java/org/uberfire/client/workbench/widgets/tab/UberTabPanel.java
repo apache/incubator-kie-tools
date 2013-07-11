@@ -378,9 +378,8 @@ public class UberTabPanel
     public void onResize() {
         final Widget parent = getParent();
         if ( parent != null ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            setPixelSize( width, height );
+            final int width = parent.getParent().getOffsetWidth();
+            final int height = parent.getParent().getOffsetHeight();
 
             final ComplexPanel content = getTabContent();
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {

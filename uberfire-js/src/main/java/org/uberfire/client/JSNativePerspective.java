@@ -15,10 +15,12 @@ import org.uberfire.client.perspective.JSPartDefinition;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -64,6 +66,14 @@ public class JSNativePerspective {
         return this.@org.uberfire.client.JSNativePerspective::obj.panel_type;
     }-*/;
 
+    private native String getContextDisplayModeAsString()  /*-{
+        return this.@org.uberfire.client.JSNativePerspective::obj.context_display_mode;
+    }-*/;
+
+    private native String getContextId()  /*-{
+        return this.@org.uberfire.client.JSNativePerspective::obj.context_id;
+    }-*/;
+
     public void onReveal() {
         if ( JSNativePlugin.hasMethod( obj, "on_reveal" ) ) {
             executeOnReveal( obj );
@@ -87,6 +97,11 @@ public class JSNativePerspective {
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( getDefaultPanelType() );
         perspectiveDefinition.setName( getId() );
+        final String contextId = getContextId();
+        if ( contextId != null ) {
+            perspectiveDefinition.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( contextId ) ) );
+        }
+        perspectiveDefinition.setContextDisplayMode( getContextDisplayMode() );
 
         final JSPanelDefinition view = getView( obj );
         final boolean isSerializable = getIsSerializable( obj );
@@ -106,6 +121,23 @@ public class JSNativePerspective {
 
     private PanelType getDefaultPanelType() {
         return getPanelType( getPanelTypeAsString(), PanelType.ROOT_TAB );
+    }
+
+    private ContextDisplayMode getContextDisplayMode() {
+        return getContextDisplayMode( getContextDisplayModeAsString(), ContextDisplayMode.SHOW );
+    }
+
+    private ContextDisplayMode getContextDisplayMode( final String contextDisplayMode,
+                                                      final ContextDisplayMode defaultType ) {
+        if ( contextDisplayMode == null ) {
+            return defaultType;
+        }
+
+        try {
+            return ContextDisplayMode.valueOf( contextDisplayMode.toUpperCase() );
+        } catch ( Exception ex ) {
+            return defaultType;
+        }
     }
 
     private PanelType getPanelType( final String panelType,
@@ -135,7 +167,12 @@ public class JSNativePerspective {
                     }
                 }
 
-                panel.addPart( new PartDefinitionImpl( placeRequest ) );
+                panel.addPart( new PartDefinitionImpl( placeRequest ) {{
+                    setContextDisplayMode( JSNativePerspective.this.getContextDisplayMode( part.getContextDisplayModeAsString(), ContextDisplayMode.SHOW ) );
+                    if ( part.getContextId() != null ) {
+                        setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( part.getContextId() ) ) );
+                    }
+                }} );
             }
         }
     }
@@ -147,6 +184,12 @@ public class JSNativePerspective {
                 final JSPanelDefinition activePanelDef = panels.get( i );
 
                 final PanelDefinition newPanel = new PanelDefinitionImpl( getPanelType( activePanelDef.getPanelTypeAsString(), PanelType.MULTI_TAB ) );
+
+                newPanel.setContextDisplayMode( JSNativePerspective.this.getContextDisplayMode( activePanelDef.getContextDisplayModeAsString(), ContextDisplayMode.SHOW ) );
+                if ( activePanelDef.getContextId() != null ) {
+                    newPanel.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( activePanelDef.getContextId() ) ) );
+                }
+
                 if ( activePanelDef.getWidth() > 0 ) {
                     newPanel.setWidth( activePanelDef.getWidth() );
                 }

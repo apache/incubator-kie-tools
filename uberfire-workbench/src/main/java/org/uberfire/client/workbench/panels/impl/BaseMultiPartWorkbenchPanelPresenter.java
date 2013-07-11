@@ -15,19 +15,29 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.ContextActivity;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.MaximizePlaceEvent;
 import org.uberfire.workbench.events.MinimizePlaceEvent;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
@@ -35,15 +45,31 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     protected PanelManager panelManager;
 
+    protected ActivityManager activityManager;
+
     protected PanelDefinition definition;
 
     protected Event<MaximizePlaceEvent> maximizePanelEvent;
 
     protected Event<MinimizePlaceEvent> minimizePanelEvent;
 
+    private ContextActivity perspectiveContext = null;
+    private ContextActivity panelContext = null;
+    private Map<PartDefinition, ContextActivity> partMap = new HashMap<PartDefinition, ContextActivity>();
+
     @PostConstruct
     private void init() {
+        buildPerspectiveContext();
         view.init( this );
+    }
+
+    private void buildPerspectiveContext() {
+        if ( panelManager.getPerspective().getContextDefinition() != null && panelManager.getPerspective().getContextDisplayMode() == SHOW ) {
+            final ContextActivity activity = activityManager.getActivity( ContextActivity.class, panelManager.getPerspective().getContextDefinition().getPlace() );
+            if ( activity != null ) {
+                perspectiveContext = activity;
+            }
+        }
     }
 
     @Override
@@ -54,16 +80,39 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
     @Override
     public void setDefinition( final PanelDefinition definition ) {
         this.definition = definition;
+
+        if ( definition.getContextDefinition() != null
+                && panelManager.getPerspective().getContextDisplayMode() == SHOW
+                && definition.getContextDisplayMode() == SHOW ) {
+            final ContextActivity activity = activityManager.getActivity( ContextActivity.class, definition.getContextDefinition().getPlace() );
+            if ( activity != null ) {
+                panelContext = activity;
+            }
+        }
     }
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         getPanelView().addPart( view );
+        if ( panelManager.getPerspective().getContextDisplayMode() == SHOW
+                && definition.getContextDisplayMode() == SHOW
+                && view.getPresenter().getDefinition().getContextDisplayMode() == SHOW ) {
+            ContextActivity activity = null;
+            if ( view.getPresenter().getDefinition().getContextDefinition() != null ) {
+                activity = activityManager.getActivity( ContextActivity.class, view.getPresenter().getDefinition().getContextDefinition().getPlace() );
+            } else if ( view.getPresenter().getContextId() != null ) {
+                activity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( view.getPresenter().getContextId() ) );
+            }
+            if ( activity != null ) {
+                partMap.put( view.getPresenter().getDefinition(), activity );
+            }
+        }
     }
 
     @Override
     public void removePart( final PartDefinition part ) {
         view.removePart( part );
+        partMap.remove( partMap );
     }
 
     @Override
@@ -156,4 +205,17 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
         getDefinition().setHeight( height == 0 ? null : height );
     }
 
+    public ContextActivity resolveContext( final PartDefinition part ) {
+        ContextActivity result = null;
+        if ( part != null ) {
+            result = partMap.get( part );
+        }
+        if ( result == null ) {
+            result = panelContext;
+        }
+        if ( result == null ) {
+            result = perspectiveContext;
+        }
+        return result;
+    }
 }

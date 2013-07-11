@@ -19,22 +19,19 @@ package org.uberfire.client.workbench.context;
 import org.uberfire.backend.group.Group;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.model.PanelDefinition;
 
 /**
  * Container for the context of the Workbench
  */
 public interface WorkbenchContext {
 
-    void setActiveGroup( final Group activeGroup );
-
     Group getActiveGroup();
-
-    void setActiveRepository( final Repository activeRepository );
 
     Repository getActiveRepository();
 
-    void setActivePath( final Path activePath );
-
     Path getActivePath();
+
+    PanelDefinition getActivePanel();
 
 }
