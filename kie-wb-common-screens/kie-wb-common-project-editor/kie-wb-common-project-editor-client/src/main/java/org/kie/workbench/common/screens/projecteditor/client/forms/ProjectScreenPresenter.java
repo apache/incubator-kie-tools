@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -42,6 +43,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
+
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -167,9 +169,9 @@ public class ProjectScreenPresenter
     }
 
     private RemoteCallback getBuildSuccessCallback() {
-        return new RemoteCallback<Void>() {
+        return new RemoteCallback<DeployResult>() {
             @Override
-            public void callback( final Void v ) {
+            public void callback( final DeployResult r ) {
                 view.hideBusyIndicator();
             }
         };
