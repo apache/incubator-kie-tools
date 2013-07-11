@@ -102,11 +102,13 @@ public class StaticWorkbenchPanelView
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        final int width = parent.getOffsetWidth();
-        final int height = parent.getOffsetHeight();
-        setPixelSize( width, height );
-        presenter.onResize( width, height );
-        panel.setPixelSize( width, height );
-        super.onResize();
+        if ( parent != null ) {
+            final int width = parent.getOffsetWidth();
+            final int height = parent.getOffsetHeight();
+            setPixelSize( width, height );
+            presenter.onResize( width, height );
+            panel.setPixelSize( width, height );
+            super.onResize();
+        }
     }
 }
