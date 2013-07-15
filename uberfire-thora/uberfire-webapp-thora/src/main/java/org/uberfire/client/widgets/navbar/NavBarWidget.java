@@ -8,7 +8,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.i18n.shared.SafeHtmlBidiFormatter;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -23,13 +22,13 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.widgets.gravatar.GravatarImage;
-import org.uberfire.client.workbench.widgets.navbar.NavBar;
+import org.uberfire.client.workbench.Header;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Identity;
 
 @Templated("navbar.html")
 @ApplicationScoped
-public class NavBarWidget extends Composite implements NavBar {
+public class NavBarWidget extends Composite implements Header {
 
     @Inject
     private PlaceManager placeManager;
@@ -98,4 +97,8 @@ public class NavBarWidget extends Composite implements NavBar {
         $wnd.location = url;
     }-*/;
 
+    @Override
+    public int getOrder() {
+        return 1;
+    }
 }
