@@ -277,7 +277,6 @@ public class ProjectResource {
         return jobRequest;
     }
 
-    @GET
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -303,7 +302,6 @@ public class ProjectResource {
         return jobRequest;
     }
 
-    @GET
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -328,7 +326,6 @@ public class ProjectResource {
         return jobRequest;
     }
 
-    @GET
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
