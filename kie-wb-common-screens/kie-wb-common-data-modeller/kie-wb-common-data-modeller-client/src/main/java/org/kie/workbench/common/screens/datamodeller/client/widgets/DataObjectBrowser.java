@@ -45,10 +45,7 @@ import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyC
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.*;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.uberfire.client.common.ErrorPopup;
 
 import javax.annotation.PostConstruct;
@@ -163,6 +160,26 @@ public class DataObjectBrowser extends Composite {
 
         dataObjectPropertiesTable.addColumn(deletePropertyColumnImg);
         dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 20, Style.Unit.PX);
+
+        //Init position column
+
+        final TextColumn<ObjectPropertyTO> propertyPositionColumn = new TextColumn<ObjectPropertyTO>() {
+
+            @Override
+            public String getValue( final ObjectPropertyTO objectProperty) {
+                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "");
+            }
+        };
+
+
+        propertyPositionColumn.setSortable(true);
+        dataObjectPropertiesTable.addColumn(propertyPositionColumn, Constants.INSTANCE.objectBrowser_columnPosition());
+        //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
+
+
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyPositionColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
+        propertyPositionColHandler.setComparator(propertyPositionColumn, new ObjectPropertyComparator("position"));
+        dataObjectPropertiesTable.addColumnSortHandler(propertyPositionColHandler);
 
 
         //Init property name column
@@ -419,6 +436,10 @@ public class DataObjectBrowser extends Composite {
                                 if (propertyLabel != null && !"".equals(propertyLabel)) {
                                     property.addAnnotation( getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
+
+                                Integer position = DataModelerUtils.getInstance().getMaxPosition(getDataObject()) + 1;
+                                property.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATON), AnnotationDefinitionTO.VALUE_PARAM, position.toString());
+
                                 addDataObjectProperty(property);
                                 resetInput();
                             } else {
@@ -464,7 +485,7 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesProvider.flush();
         dataObjectPropertiesProvider.refresh();
 
-        dataObjectPropertiesTable.getColumnSortList().push(new ColumnSortList.ColumnSortInfo(dataObjectPropertiesTable.getColumn(1), true));
+        dataObjectPropertiesTable.getColumnSortList().push(new ColumnSortList.ColumnSortInfo(dataObjectPropertiesTable.getColumn(2), true));
 
         if (dataObjectProperties.size() > 0) {
             dataObjectPropertiesTable.setKeyboardSelectedRow(0);

@@ -19,10 +19,12 @@ package org.kie.workbench.common.services.datamodeller.codegen;
 import org.apache.commons.lang.StringUtils;
 import org.kie.workbench.common.services.datamodeller.annotations.Equals;
 import org.kie.workbench.common.services.datamodeller.core.*;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.EqualsAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper tools to generate names and other stuff easily from code generation engine.
@@ -291,5 +293,111 @@ public class GenerationTools {
         } else {
             return "";
         }
+    }
+
+    public String resolveAllFieldsConstructor(DataObject dataObject, String indent) {
+        if (!dataObject.getProperties().isEmpty()) {
+            List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+            sortedProperties.addAll(dataObject.getProperties().values());
+            return resolveConstructor(dataObject, sortByPosition(sortedProperties), indent);
+        }
+        return "";
+    }
+
+    public String resolveKeyFieldsConstructor(DataObject dataObject, String indent) {
+        if (!dataObject.getProperties().isEmpty()) {
+            List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+            for (ObjectProperty property : dataObject.getProperties().values()) {
+                if (property.getAnnotation(EqualsAnnotationDefinition.getInstance().getClassName()) != null) {
+                    //the property is marked as key.
+                    sortedProperties.add(property);
+                }
+            }
+            if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
+                return resolveConstructor(dataObject, sortByPosition(sortedProperties), indent);
+            }
+        }
+        return "";
+    }
+
+    private List<ObjectProperty> sortByPosition(List<ObjectProperty> properties) {
+        Collections.sort(properties, new Comparator<ObjectProperty>() {
+            public int compare(ObjectProperty o1, ObjectProperty o2) {
+
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null && o2 != null) return -1;
+                if (o1 != null && o2 == null) return 1;
+
+                Comparable key1 = null;
+                Comparable key2 = null;
+
+                Annotation position1 = o1.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
+                if (position1 != null) {
+                    try {
+                        key1 = new Integer((String)position1.getValue("value"));
+                    } catch (NumberFormatException e) {
+                        key1 = null;
+                    }
+                }
+                
+                Annotation position2 = o2.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
+                if (position2 != null) {
+                    try {
+                        key2 = new Integer((String)position2.getValue("value"));
+                    } catch (NumberFormatException e) {
+                        key2 = null;
+                    }
+                }
+
+                if (key1 == null && key2 == null) return 0;
+                if (key1 != null && key2 != null) return key1.compareTo(key2);
+
+                if (key1 == null && key2 != null) return -1;
+
+                //if (key1 != null && key2 == null) return 1;
+                return 1;
+            }
+        } );
+        return properties;
+    }
+
+    public String resolveConstructor(DataObject dataObject, List<ObjectProperty> properties, String indent) {
+
+        StringBuilder head = new StringBuilder();
+        StringBuilder body = new StringBuilder();
+
+        head.append(indent + "public " + dataObject.getName() + "(");
+
+        if (properties != null && properties.size() > 0) {
+            boolean isFirst = true;
+            String propertyName;
+            for (ObjectProperty property : properties) {
+                if (!isFirst) {
+                    head.append(", ");
+                    body.append(EOL);
+                }
+                propertyName = toJavaVar(property.getName());
+                head.append(resolveAttributeType(property));
+                head.append(" ");
+                head.append(propertyName);
+
+                body.append(indent);
+                body.append(indent);
+                body.append("this.");
+                body.append(propertyName);
+                body.append(" = ");
+                body.append(propertyName);
+                body.append(";");
+
+                isFirst = false;
+            }
+            body.append(EOL);
+        }
+
+        head.append(") {" + EOL);
+        head.append(body);
+        head.append(indent + "}");
+
+        return head.toString();
     }
 }

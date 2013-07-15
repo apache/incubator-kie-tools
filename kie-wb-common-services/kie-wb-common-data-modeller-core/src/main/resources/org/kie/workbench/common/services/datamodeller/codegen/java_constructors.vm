@@ -1,0 +1,14 @@
+##
+## Generate default constructor
+##
+$nameTool.resolveConstructor($context.currentDataObject, null, "    ")
+##
+## Generate all fields constructor
+##
+
+$nameTool.resolveAllFieldsConstructor($context.currentDataObject, "    ")
+##
+## Generate constructor for @Key marked fields
+##
+
+$nameTool.resolveKeyFieldsConstructor($context.currentDataObject, "    ")

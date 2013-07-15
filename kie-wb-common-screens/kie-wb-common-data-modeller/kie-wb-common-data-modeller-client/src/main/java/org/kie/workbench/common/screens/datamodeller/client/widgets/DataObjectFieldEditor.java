@@ -87,6 +87,9 @@ public class DataObjectFieldEditor extends Composite {
     @UiField
     TextBox positionText;
 
+    @UiField
+    ListBox positionSelector;
+
     @Inject
     Event<DataModelerEvent> dataModelerEventEvent;
 
@@ -110,6 +113,12 @@ public class DataObjectFieldEditor extends Composite {
             @Override
             public void onChange(ChangeEvent event) {
                 typeChanged(event);
+            }
+        });
+
+        positionSelector.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                positionChanged(event);
             }
         });
 
@@ -215,6 +224,8 @@ public class DataObjectFieldEditor extends Composite {
             setDataObject(dataObject);
             setObjectField(objectField);
 
+            initPositions();
+
             name.setText(getObjectField().getName());
 
             AnnotationTO annotation = objectField.getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
@@ -236,7 +247,9 @@ public class DataObjectFieldEditor extends Composite {
 
             annotation = objectField.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
             if (annotation != null) {
-                positionText.setText( (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM));
+                String position = (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
+                positionText.setText(position);
+                positionSelector.setSelectedValue(position);
             }
         }
     }
@@ -368,6 +381,10 @@ public class DataObjectFieldEditor extends Composite {
         notifyFieldChange(AnnotationDefinitionTO.EQUALS_ANNOTATION, oldEquals, setEquals);
     }
 
+    void positionChanged(ChangeEvent event) {
+
+    }
+
     @UiHandler("positionText")
     void positionChanged(final ValueChangeEvent<String> event) {
         if (getObjectField() == null) return;
@@ -452,6 +469,29 @@ public class DataObjectFieldEditor extends Composite {
         typeSelector.setSelectedValue(type);
     }
 
+    private void initPositions() {
+        positionSelector.clear();
+        List<ObjectPropertyTO> properties = null;
+        if (getDataModel() != null && getDataObject() != null && (properties = getDataObject().getProperties()) != null && properties.size() > 0) {
+            SortedMap<Integer, String> positions = new TreeMap<Integer, String>();
+            String positionValue;
+            Integer positionIntValue;
+            for (ObjectPropertyTO propertyTO : properties) {
+                positionValue = AnnotationValueHandler.getInstance().getStringValue(propertyTO, AnnotationDefinitionTO.POSITION_ANNOTATON, "value");
+                if (positionValue != null) {
+                    try {
+                        positionIntValue = new Integer(positionValue);
+                        positions.put(positionIntValue, positionValue);
+                    } catch (NumberFormatException e) {
+                    }
+                }
+            }
+            for (Map.Entry<Integer, String> position : positions.entrySet()) {
+                positionSelector.addItem(position.getValue(), position.getValue());
+            }
+        }
+    }
+
     private void clean() {
         titleLabel.setStyleName(null);
         name.setText(null);
@@ -461,6 +501,7 @@ public class DataObjectFieldEditor extends Composite {
         equalsSelector.setValue(Boolean.FALSE);
         positionLabel.setStyleName(null);
         positionText.setText(null);
+        positionSelector.clear();
     }
 
     // TODO extract this to parent widget to avoid duplicate code

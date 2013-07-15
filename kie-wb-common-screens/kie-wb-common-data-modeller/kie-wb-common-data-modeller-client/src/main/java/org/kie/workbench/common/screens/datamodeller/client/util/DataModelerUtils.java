@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+
+import java.util.List;
 
 public class DataModelerUtils {
 
@@ -116,5 +120,22 @@ public class DataModelerUtils {
                 .append(Character.toLowerCase(str.charAt(0)))
                 .append(str.substring(1))
                 .toString();
+    }
+    
+    public Integer getMaxPosition(DataObjectTO dataObjectTO) {
+        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
+        Integer maxPosition = -1;
+        Integer currentPosition;
+        if (properties != null && properties.size() > 0) {
+            for (ObjectPropertyTO property : properties) {
+                try {
+                    currentPosition = new Integer( AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, "value", "-1") );
+                } catch (Exception e) {
+                    currentPosition = -1;
+                }
+                if (currentPosition > maxPosition) maxPosition = currentPosition;
+            }
+        }
+        return maxPosition;
     }
 }

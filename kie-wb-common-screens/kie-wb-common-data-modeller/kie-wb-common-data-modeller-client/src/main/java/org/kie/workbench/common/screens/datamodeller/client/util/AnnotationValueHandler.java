@@ -13,10 +13,14 @@ public class AnnotationValueHandler {
         return new AnnotationValueHandler();
     }
 
-    public String getStringValue(ObjectPropertyTO propertyTO, String annotationClassName, String memberValue) {
-        return getStringValue(propertyTO.getAnnotation(annotationClassName), memberValue);
+    public String getStringValue(ObjectPropertyTO propertyTO, String annotationClassName, String memberValue, String defaultValue) {
+        return getStringValue(propertyTO.getAnnotation(annotationClassName), memberValue, defaultValue);
     }
 
+    public String getStringValue(ObjectPropertyTO propertyTO, String annotationClassName, String memberValue) {
+        return getStringValue(propertyTO, annotationClassName, memberValue, null);
+    }
+    
     public String getStringValue(AnnotationTO annotationTO, String memberName) {
         return getStringValue(annotationTO, memberName, null);
     }

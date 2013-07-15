@@ -29,11 +29,9 @@ static final long serialVersionUID = 1L;
 #end
 
 ##
-## Generate default constructor
+## Generate constructors
 ##
-    public $className() {
-
-    }
+$engine.generateConstructors($context, "java_constructors")
 ##
 ## Generate getters and setters
 ##

@@ -35,8 +35,8 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
         if (o1 == null && o2 != null) return -1;
         if (o1 != null && o2 == null) return 1;
 
-        String key1 = null;
-        String key2 = null;
+        Comparable key1 = null;
+        Comparable key2 = null;
 
         if ("className".equals(field)) {
             key1 = o1.getClassName();
@@ -48,6 +48,23 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
         } else if ("label".equals(field)) {
             key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
             key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+        } else if ("position".equals(field)) {
+            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM);
+            if (key1 != null) {
+                try {
+                    key1 = new Integer(key1.toString());
+                } catch (NumberFormatException e) {
+                    key1 = null;
+                }
+            }
+            if (key2 != null) {
+                try {
+                    key2 = new Integer(key2.toString());
+                } catch (NumberFormatException e) {
+                    key2 = null;
+                }
+            }
         }
 
         if (key1 == null && key2 == null) return 0;

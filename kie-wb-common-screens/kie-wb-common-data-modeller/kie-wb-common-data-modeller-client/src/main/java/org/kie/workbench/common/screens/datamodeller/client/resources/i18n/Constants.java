@@ -79,6 +79,8 @@ public interface Constants extends Messages {
 
     public String modelBrowser_action_deleteDataObject();
 
+    public String objectBrowser_columnPosition();
+
     public String modelBrowser_columnName();
 
     public String objectBrowser_createProperty();

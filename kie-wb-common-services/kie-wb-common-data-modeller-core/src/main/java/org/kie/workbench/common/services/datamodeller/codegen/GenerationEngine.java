@@ -156,6 +156,10 @@ public class GenerationEngine {
         }
     }
 
+    public void generateConstructors(GenerationContext generationContext, String template) throws Exception {
+        generateSubTemplate(generationContext, template);
+    }
+
     public void generateAttribute(GenerationContext generationContext, ObjectProperty attribute, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
