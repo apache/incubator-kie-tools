@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.client.resources.i18n.Constants;
+import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.inbox.client.InboxPresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
@@ -28,11 +28,14 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -42,8 +45,6 @@ import org.uberfire.workbench.model.toolbar.IconType;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 /**
  * A Perspective for Rule authors
@@ -65,8 +66,8 @@ public class AuthoringPerspective {
     private PlaceManager placeManager;
 
     private PerspectiveDefinition perspective;
-    private Menus                 menus;
-    private ToolBar               toolBar;
+    private Menus menus;
+    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
@@ -91,72 +92,73 @@ public class AuthoringPerspective {
     }
 
     private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl();
+        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
         this.perspective.setName( "Author" );
 
-        final PanelDefinition west = new PanelDefinitionImpl();
+        final PanelDefinition west = new PanelDefinitionImpl( PanelType.MULTI_LIST );
         west.setWidth( 300 );
         west.setMinWidth( 200 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "org.kie.guvnor.explorer" ) ) );
 
-        this.perspective.getRoot().insertChild( Position.WEST, west );
+        this.perspective.getRoot().insertChild( Position.WEST,
+                                                west );
     }
 
     private void buildMenuBar() {
         this.menus = MenuFactory
                 .newTopLevelMenu( "Explore" )
-                    .menus()
-                        .menu( "Projects" )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    placeManager.goTo( "org.kie.guvnor.explorer" );
-                                }
-                            }  )
-                        .endMenu()
-                        .menu( "Incoming Changes" )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    //PlaceRequest p = new PathPlaceRequest("Inbox");
-                                    //p.addParameter("inboxname", InboxPresenter.INCOMING_ID);
-                                    placeManager.goTo( "Inbox" );
-                                }
-                            }  )
-                        .endMenu()
-                        .menu( "Recently Edited" )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
-                                    p.addParameter( "inboxname", InboxPresenter.RECENT_EDITED_ID );
-                                    placeManager.goTo( p );
-                                }
-                            }  )
-                        .endMenu()
-                        .menu( "Recently Opened" )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
-                                    p.addParameter( "inboxname", InboxPresenter.RECENT_VIEWED_ID );
-                                    placeManager.goTo( p );
-                                }
-                            }  )
-                        .endMenu()
-                    .endMenus()
+                .menus()
+                .menu( "Projects" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "org.kie.guvnor.explorer" );
+                    }
+                } )
+                .endMenu()
+                .menu( "Incoming Changes" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        //PlaceRequest p = new PathPlaceRequest("Inbox");
+                        //p.addParameter("inboxname", InboxPresenter.INCOMING_ID);
+                        placeManager.goTo( "Inbox" );
+                    }
+                } )
+                .endMenu()
+                .menu( "Recently Edited" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
+                        p.addParameter( "inboxname", InboxPresenter.RECENT_EDITED_ID );
+                        placeManager.goTo( p );
+                    }
+                } )
+                .endMenu()
+                .menu( "Recently Opened" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
+                        p.addParameter( "inboxname", InboxPresenter.RECENT_VIEWED_ID );
+                        placeManager.goTo( p );
+                    }
+                } )
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .newTopLevelMenu( "New" )
-                    .withItems( newResourcesMenu.getMenuItems() )
+                .withItems( newResourcesMenu.getMenuItems() )
                 .endMenu()
                 .newTopLevelMenu( "Tools" )
-                    .withItems( toolsMenu.getMenuItems() )
+                .withItems( toolsMenu.getMenuItems() )
                 .endMenu().build();
     }
 
     private void buildToolBar() {
         this.toolBar = new DefaultToolBar( "guvnor.new.item" );
-        final String tooltip = Constants.INSTANCE.newItem();
+        final String tooltip = AppConstants.INSTANCE.newItem();
         final Command command = new Command() {
             @Override
             public void execute() {

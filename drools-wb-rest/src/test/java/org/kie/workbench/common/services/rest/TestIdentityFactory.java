@@ -25,6 +25,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 @Alternative
@@ -36,16 +37,39 @@ public class TestIdentityFactory {
     public void onStartup() {
         identity = new Identity() {
 
+            @Override
             public String getName() {
-                return "jcr2vfs-migration";
+                return "userName";
             }
 
+            @Override
             public List<Role> getRoles() {
                 return Collections.emptyList();
             }
 
+            @Override
             public boolean hasRole( Role role ) {
                 return true;
+            }
+
+            @Override
+            public Map<String, String> getProperties() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public void aggregateProperty( String name,
+                                           String value ) {
+            }
+
+            @Override
+            public void removeProperty( String name ) {
+            }
+
+            @Override
+            public String getProperty( String name,
+                                       String defaultValue ) {
+                return null;
             }
 
         };

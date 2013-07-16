@@ -137,7 +137,7 @@ public class DroolsWorkbenchEntryPoint {
                 .endMenu()
                 .build();
 
-        menubar.aggregateWorkbenchMenus( menus );
+        menubar.addMenus( menus );
     }
 
     private List<MenuItem> getPerspectives() {

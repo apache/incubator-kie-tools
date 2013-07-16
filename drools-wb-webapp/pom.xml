@@ -396,6 +396,11 @@
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-js</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-api</artifactId>
     </dependency>
 
@@ -577,7 +582,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
-          <logLevel>INFO</logLevel>
+          <logLevel>DEBUG</logLevel>
           <compileSourcesArtifacts>
 
             <!-- Guvnor -->
@@ -655,6 +660,7 @@
             <compileSourcesArtifact>org.kie.commons:kie-nio2-model</compileSourcesArtifact>
 
             <!-- UberFire -->
+            <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
@@ -664,7 +670,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</runTarget>
-          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m</extraJvmArgs>
+          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xss1M</extraJvmArgs>
           <!--<logLevel>DEBUG</logLevel>-->
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->

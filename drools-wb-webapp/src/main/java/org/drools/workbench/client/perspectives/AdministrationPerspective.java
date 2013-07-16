@@ -15,6 +15,10 @@
  */
 package org.drools.workbench.client.perspectives;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -26,11 +30,13 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.editors.repository.clone.CloneRepositoryForm;
 import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
-import org.uberfire.mvp.Command;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -39,14 +45,8 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import static org.uberfire.workbench.model.toolbar.IconType.DOWNLOAD_ALT;
-import static org.uberfire.workbench.model.toolbar.IconType.FOLDER_CLOSE_ALT;
+import static org.uberfire.workbench.model.toolbar.IconType.*;
 
 /**
  * A Perspective for Administrators
@@ -66,12 +66,12 @@ public class AdministrationPerspective {
     @Inject
     private IOCBeanManager iocManager;
 
-    private Command newRepoCommand   = null;
+    private Command newRepoCommand = null;
     private Command cloneRepoCommand = null;
 
     private PerspectiveDefinition perspective;
-    private Menus                 menus;
-    private ToolBar               toolBar;
+    private Menus menus;
+    private ToolBar toolBar;
 
     @PostConstruct
     public void init() {
@@ -133,45 +133,46 @@ public class AdministrationPerspective {
     }
 
     private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl();
+        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
         this.perspective.setName( "Administration" );
 
         this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
-        final PanelDefinition west = new PanelDefinitionImpl();
+        final PanelDefinition west = new PanelDefinitionImpl( PanelType.MULTI_LIST );
         west.setWidth( 300 );
         west.setMinWidth( 200 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
 
-        this.perspective.getRoot().insertChild( Position.WEST, west );
+        this.perspective.getRoot().insertChild( Position.WEST,
+                                                west );
     }
 
     private void buildMenuBar() {
         this.menus = MenuFactory
                 .newTopLevelMenu( "Explore" )
-                    .menus()
-                        .menu( "Files" )
-                            .withRoles( PERMISSIONS_ADMIN )
-                            .respondsWith( new Command() {
-                                @Override
-                                public void execute() {
-                                    placeManager.goTo( "FileExplorer" );
-                                }
-                            }  )
-                        .endMenu()
-                    .endMenus()
+                .menus()
+                .menu( "Files" )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "FileExplorer" );
+                    }
+                } )
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .newTopLevelMenu( "Repositories" )
-                    .menus()
-                        .menu( "Clone Repo" )
-                            .withRoles( PERMISSIONS_ADMIN )
-                            .respondsWith( cloneRepoCommand  )
-                        .endMenu()
-                        .menu( "New Repo" )
-                            .withRoles( PERMISSIONS_ADMIN )
-                            .respondsWith( newRepoCommand  )
-                        .endMenu()
-                    .endMenus()
+                .menus()
+                .menu( "Clone Repo" )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( cloneRepoCommand )
+                .endMenu()
+                .menu( "New Repo" )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( newRepoCommand )
+                .endMenu()
+                .endMenus()
                 .endMenu().build();
     }
 
