@@ -254,6 +254,11 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public void runAllScenarios( final Path testResourcePath ) {
+    	runAllScenarios(testResourcePath, testResultMessageEvent);
+    }
+    
+    //@Override
+    public void runAllScenarios( final Path testResourcePath, Event<TestResultMessage> customTestResultEvent ) {
         try {
             final Project project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
@@ -271,7 +276,7 @@ public class ScenarioTestEditorServiceImpl
             throw ExceptionUtilities.handleException( e );
         }
     }
-
+    
     public List<Path> loadScenarioPaths( final Path path ) {
         try {
             // Check Path exists

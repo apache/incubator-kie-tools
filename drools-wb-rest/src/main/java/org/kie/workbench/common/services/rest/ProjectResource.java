@@ -67,9 +67,6 @@ import org.uberfire.backend.server.util.Paths;
 @GZIP
 @ApplicationScoped
 public class ProjectResource {
-
-    private HttpHeaders headers;
-
     @Context
     protected UriInfo uriInfo;
 
@@ -95,7 +92,7 @@ public class ProjectResource {
     @Inject
     RepositoryService repositoryService;
 
-	private static class Cache extends LinkedHashMap<String, JobRequest> {
+	private static class Cache extends LinkedHashMap<String, JobResult> {
 		private int maxSize = 1000;
 
 		public Cache(int maxSize) {
@@ -103,7 +100,7 @@ public class ProjectResource {
 		}
 
 		@Override
-		protected boolean removeEldestEntry(Map.Entry<String, JobRequest> stringFutureEntry) {
+		protected boolean removeEldestEntry(Map.Entry<String, JobResult> stringFutureEntry) {
 			return size() > maxSize;
 		}
 
@@ -112,7 +109,7 @@ public class ProjectResource {
 		}
 	}
     private Cache cache;
-	private Map<String, JobRequest> jobs;
+	private Map<String, JobResult> jobs;
     private AtomicLong counter = new AtomicLong(0);
    
     private int maxCacheSize = 10000;
@@ -138,34 +135,28 @@ public class ProjectResource {
     	jobs = Collections.synchronizedMap(cache);
     }
     
-    @Context
-    public void setHttpHeaders( HttpHeaders theHeaders ) {
-        headers = theHeaders;
-    }
-    
     public void onUpateJobStatus( final @Observes JobResult jobResult ) {
-    	JobRequest job = jobs.get(jobResult.getJodId());
+    	JobResult job = jobs.get(jobResult.getJodId());
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
         	return;
         }
 
-        job.setStatus(jobResult.getStatus());
-        job.setResult(jobResult.getResult());
+        jobs.put(jobResult.getJodId(), job);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
-    public JobRequest getJobStatus( @PathParam("jobId") String jobId ) {
+    public JobResult getJobStatus( @PathParam("jobId") String jobId ) {
         System.out.println( "-----getJobStatus--- , jobId:" + jobId );
         
-    	JobRequest job = jobs.get(jobId);
+        JobResult job = jobs.get(jobId);
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
-        	job = new JobRequest();
+        	job = new JobResult();
         	job.setStatus(JobRequest.Status.GONE);
         	return job;
         }
@@ -176,14 +167,14 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
-    public JobRequest removeJob( @PathParam("jobId") String jobId ) {
+    public JobResult removeJob( @PathParam("jobId") String jobId ) {
         System.out.println( "-----queryJobStatus--- , jobId:" + jobId );
         
-    	JobRequest job = jobs.get(jobId);
+        JobResult job = jobs.get(jobId);
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
-        	job = new JobRequest();
+        	job = new JobResult();
         	job.setStatus(JobRequest.Status.GONE);
         	return job;
         }
@@ -207,7 +198,11 @@ public class ProjectResource {
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepository(repository);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         cloneJobRequestEvent.fire(jobRequest);
         
@@ -223,12 +218,18 @@ public class ProjectResource {
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         
-        //TODO:
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
+        
+        //TODO: Delete repository
+        
         return jobRequest;
     }
 
@@ -248,7 +249,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(project.getName());
         jobRequest.setDescription(project.getDescription());
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         createProjectRequestEvent.fire(jobRequest);
         
@@ -269,7 +274,11 @@ public class ProjectResource {
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(projectName);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         //TODO: Delete project. ProjectService does not have a removeProject method yet.
         //createProjectRequestEvent.fire(jobRequest);
@@ -295,7 +304,10 @@ public class ProjectResource {
         jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
 
-        jobs.put(id, jobRequest);
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         compileProjectRequestEvent.fire(jobRequest);
         
@@ -319,7 +331,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         installProjectRequestEvent.fire(jobRequest);
         
@@ -343,7 +359,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         testProjectRequestEvent.fire(jobRequest);
         
@@ -367,7 +387,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(projectName);
         jobRequest.setBuildConfig(mavenConfig);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         deployProjectRequestEvent.fire(jobRequest);
         
@@ -387,7 +411,11 @@ public class ProjectResource {
         jobRequest.setJodId(id);
         jobRequest.setGroupName(group.getName());
         jobRequest.setOwnder(group.getOwner());
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         createGroupRequestEvent.fire(jobRequest);
         
@@ -399,16 +427,17 @@ public class ProjectResource {
     @Path("/groups/{groupName}")
     public JobRequest deleteGroup( @PathParam("groupName") String groupName ) {
         System.out.println( "-----deleteGroup--- , Group name:" + groupName );
-
-        //TODO:GroupService does not have removeGroup method yet
-        //groupService.removeGroup(groupName);
         
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateGroupRequest jobRequest = new CreateGroupRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setGroupName(groupName);
-        jobs.put(id, jobRequest);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
         
         //TODO:GroupService does not have removeGroup method yet
         //groupService.removeGroup(groupName);

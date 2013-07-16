@@ -1,5 +1,6 @@
 package org.kie.workbench.common.services.rest;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,9 +8,14 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.screens.testscenario.model.Failure;
+import org.drools.workbench.screens.testscenario.model.Success;
+import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -238,7 +244,7 @@ public class ProjectResourceDispatcher {
     
     public void testProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {
         System.out.println( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
-        JobResult result = new JobResult();
+        final JobResult result = new JobResult();
         result.setJodId(jobId);
 
         org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
@@ -259,14 +265,47 @@ public class ProjectResourceDispatcher {
             }
 
             //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath() );
+            scenarioTestEditorService.runAllScenarios( project.getPomXMLPath(), new Event<TestResultMessage>() {
+				@Override
+				public void fire(TestResultMessage event) {
+					result.setDetailedResult(testResultMessageToDetailedStringMessages(event));
+					result.setStatus(event.wasSuccessful() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL);
+			        jobResultEvent.fire(result);					
+				}
 
-            //TODO: Get test result. We need a sync version of runAllScenarios (instead of listening for test result using event listeners).
+				//@Override
+				public Event<TestResultMessage> select(Annotation... qualifiers) {
+					// TODO Auto-generated method stub
+					return null;
+				}
 
-            result.setStatus(JobRequest.Status.SUCCESS);
-            jobResultEvent.fire(result);
+				//@Override
+				public <U extends TestResultMessage> Event<U> select(
+						Class<U> subtype, Annotation... qualifiers) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				//@Override
+				public <U extends TestResultMessage> Event<U> select(
+						TypeLiteral<U> subtype, Annotation... qualifiers) {
+					// TODO Auto-generated method stub
+					return null;
+				}            	
+            });
         }
     }   
+    
+    private List<String> testResultMessageToDetailedStringMessages(TestResultMessage message) {
+    	List<String> result = new ArrayList<String>();
+    	result.add("wasSuccessuful: " + message.wasSuccessful());
+    	result.add("RunCoun: " + message.getRunCount());    	
+    	result.add("FailureCount: " + message.getFailureCount());
+    	for (Failure failure : message.getFailures()) {
+        	result.add("Failure: " + failure.getMessage());    		
+    	}
+    	return result;
+    }
     
     public void deployProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {        
         System.out.println( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );

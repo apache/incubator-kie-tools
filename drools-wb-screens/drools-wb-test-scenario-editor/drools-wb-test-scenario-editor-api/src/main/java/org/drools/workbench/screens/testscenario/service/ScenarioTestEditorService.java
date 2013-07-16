@@ -16,7 +16,10 @@
 
 package org.drools.workbench.screens.testscenario.service;
 
+import javax.enterprise.event.Event;
+
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
@@ -46,4 +49,6 @@ public interface ScenarioTestEditorService
                       Scenario scenario );
 
     void runAllScenarios( Path path );
+    
+    void runAllScenarios( Path path, Event<TestResultMessage> customTestResultEvent );
 }
