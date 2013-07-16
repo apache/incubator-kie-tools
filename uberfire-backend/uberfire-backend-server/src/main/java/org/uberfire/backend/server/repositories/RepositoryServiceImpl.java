@@ -1,21 +1,16 @@
 package org.uberfire.backend.server.repositories;
 
-import static org.uberfire.backend.server.config.ConfigType.REPOSITORY;
-import static org.uberfire.backend.server.repositories.EnvironmentParameters.SCHEME;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.sun.tools.hat.internal.model.Root;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
@@ -28,6 +23,9 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.vfs.Path;
+
+import static org.uberfire.backend.server.config.ConfigType.*;
+import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
 
 @Service
 @ApplicationScoped
