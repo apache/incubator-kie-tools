@@ -53,6 +53,7 @@ public class TestScenarioMigrater {
         
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);        
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        ioService.createFile( nioPath );
 
         Map<String, Object> attrs;
         try {

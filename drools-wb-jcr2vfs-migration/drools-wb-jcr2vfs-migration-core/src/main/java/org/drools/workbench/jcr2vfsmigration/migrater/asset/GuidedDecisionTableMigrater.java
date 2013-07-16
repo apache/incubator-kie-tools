@@ -1,7 +1,5 @@
 package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,7 +20,6 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -61,19 +58,13 @@ public class GuidedDecisionTableMigrater {
     public void migrate( Module jcrModule,
                          AssetItem jcrAssetItem ) {
         if ( !AssetFormats.DECISION_TABLE_GUIDED.equals( jcrAssetItem.getFormat() ) ) {
-            throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName()
-                                                        + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
+            throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName() + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
         }
 
-        Path path = migrationPathManager.generatePathForAsset( jcrModule, jcrAssetItem );
+        Path path = migrationPathManager.generatePathForAsset( jcrModule,
+                                                               jcrAssetItem );
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-
-        Map<String, Object> attrs;
-        try {
-            attrs = ioService.readAttributes( nioPath );
-        } catch ( final NoSuchFileException ex ) {
-            attrs = new HashMap<String, Object>();
-        }
+        ioService.createFile( nioPath );
 
         String content = jcrAssetItem.getContent();
         
@@ -81,7 +72,8 @@ public class GuidedDecisionTableMigrater {
             content  = content.replaceAll(content.substring(content.indexOf("<auditLog>"), content.indexOf("</auditLog>")+11), "");
         }
         */
-        content = content.replaceAll( "org.drools.guvnor.client.modeldriven.dt52.Pattern52", "Pattern52" );
+        content = content.replaceAll( "org.drools.guvnor.client.modeldriven.dt52.Pattern52",
+                                      "Pattern52" );
 
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
@@ -110,6 +102,11 @@ public class GuidedDecisionTableMigrater {
         //String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
         //sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
 
-        ioService.write( nioPath, sourceContent, attrs, new CommentedOption( jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ) );
+        ioService.write( nioPath,
+                         sourceContent,
+                         new CommentedOption( jcrAssetItem.getLastContributor(),
+                                              null,
+                                              jcrAssetItem.getCheckinComment(),
+                                              jcrAssetItem.getLastModified().getTime() ) );
     }
 }
