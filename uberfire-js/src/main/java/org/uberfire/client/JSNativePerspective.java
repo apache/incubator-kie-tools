@@ -18,6 +18,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
@@ -167,12 +168,13 @@ public class JSNativePerspective {
                     }
                 }
 
-                panel.addPart( new PartDefinitionImpl( placeRequest ) {{
-                    setContextDisplayMode( JSNativePerspective.this.getContextDisplayMode( part.getContextDisplayModeAsString(), ContextDisplayMode.SHOW ) );
-                    if ( part.getContextId() != null ) {
-                        setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( part.getContextId() ) ) );
-                    }
-                }} );
+                final PartDefinition partDefinition = new PartDefinitionImpl( placeRequest );
+                partDefinition.setContextDisplayMode( JSNativePerspective.this.getContextDisplayMode( part.getContextDisplayModeAsString(), ContextDisplayMode.SHOW ) );
+                if ( part.getContextId() != null ) {
+                    partDefinition.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( part.getContextId() ) ) );
+                }
+
+                panel.addPart( partDefinition );
             }
         }
     }
