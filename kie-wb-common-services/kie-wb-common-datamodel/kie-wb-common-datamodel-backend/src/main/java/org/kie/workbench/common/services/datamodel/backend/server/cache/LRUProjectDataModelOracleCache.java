@@ -2,7 +2,6 @@ package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,19 +13,20 @@ import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.builder.Builder;
 import org.guvnor.common.services.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -36,6 +36,8 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 @Named("ProjectDataModelOracleCache")
 public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDataModelOracle> {
+
+    private static final Logger log = LoggerFactory.getLogger( LRUProjectDataModelOracleCache.class );
 
     private static final String ERROR_CLASS_NOT_FOUND = "Class not found";
 
@@ -56,9 +58,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
 
     @Inject
     private LRUBuilderCache cache;
-
-    @Inject
-    private Event<BuildResults> buildResultsEvent;
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
@@ -88,7 +87,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final Builder builder = cache.assertBuilder( project );
 
         //Create the ProjectOracle...
-        final BuildResults results = builder.build();
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
@@ -105,8 +103,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                                         typeMetaInfo.isEvent(),
                                         typeSource );
                 } catch ( IOException ioe ) {
-                    results.addBuildMessage( makeMessage( ERROR_IO,
-                                                          ioe ) );
+                    log.error( ioe.getMessage() );
                 }
             }
         }
@@ -123,18 +120,11 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
                     //This should not happen as Builder would have failed to load them and failed fast.
-                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
-                                                          cnfe ) );
+                    log.error( cnfe.getMessage() );
                 } catch ( IOException ioe ) {
-                    results.addBuildMessage( makeMessage( ERROR_IO,
-                                                          ioe ) );
+                    log.error( ioe.getMessage() );
                 }
             }
-        }
-
-        //Report any errors to the user
-        if ( !results.getMessages().isEmpty() ) {
-            buildResultsEvent.fire( results );
         }
 
         return pdBuilder.build();

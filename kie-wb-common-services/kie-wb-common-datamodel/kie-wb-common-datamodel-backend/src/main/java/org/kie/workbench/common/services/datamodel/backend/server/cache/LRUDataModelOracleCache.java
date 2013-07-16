@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,11 +13,10 @@ import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.validation.PortablePreconditions;
@@ -57,9 +55,6 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
 
     public synchronized void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
@@ -137,16 +132,6 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
         //Add Globals
         loadGlobalsForPackage( dmoBuilder,
                                pkg );
-
-        //Report any incremental Build errors to Users
-        if ( !dmoBuilder.getErrors().isEmpty() ) {
-            final IncrementalBuildResults results = new IncrementalBuildResults();
-            final List<String> errors = dmoBuilder.getErrors();
-            for ( final String error : errors ) {
-                results.addAddedMessage( makeMessage( error ) );
-            }
-            incrementalBuildResultsEvent.fire( results );
-        }
 
         return dmoBuilder.build();
     }

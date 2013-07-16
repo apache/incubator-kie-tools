@@ -21,8 +21,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
-import org.guvnor.common.services.shared.validation.model.BuilderResultLine;
+import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.shared.builder.BuildResults;
 import org.kie.workbench.common.widgets.errors.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.errors.client.resources.i18n.Constants;
 import org.uberfire.client.common.FormStylePopup;
@@ -30,9 +30,9 @@ import org.uberfire.client.common.SmallLabel;
 
 public class ShowBuilderErrorsWidget extends FormStylePopup {
 
-    public ShowBuilderErrorsWidget( final BuilderResult result ) {
+    public ShowBuilderErrorsWidget( final BuildResults result ) {
         super();
-        if ( result == null || result.getLines() == null || result.getLines().size() == 0 ) {
+        if ( result == null || result.getMessages() == null || result.getMessages().size() == 0 ) {
             setWidth( 200 + "px" );
             setTitle( Constants.INSTANCE.ValidationResultsDotDot() );
             final HorizontalPanel h = new HorizontalPanel();
@@ -44,15 +44,15 @@ public class ShowBuilderErrorsWidget extends FormStylePopup {
 
             final FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
-            for ( int i = 0; i < result.getLines().size(); i++ ) {
+            for ( int i = 0; i < result.getMessages().size(); i++ ) {
                 int row = i;
-                final BuilderResultLine res = result.getLines().get( i );
+                final BuildMessage res = result.getMessages().get( i );
                 errTable.setWidget( row,
                                     0,
                                     new Image( ImageResources.INSTANCE.error() ) );
                 errTable.setText( row,
                                   1,
-                                  "[" + res.getResourceName() + "] " + res.getMessage() );
+                                  "[" + res.getPath() + "] " + res.getText() );
             }
             final ScrollPanel scroll = new ScrollPanel( errTable );
             scroll.setWidth( "100%" );

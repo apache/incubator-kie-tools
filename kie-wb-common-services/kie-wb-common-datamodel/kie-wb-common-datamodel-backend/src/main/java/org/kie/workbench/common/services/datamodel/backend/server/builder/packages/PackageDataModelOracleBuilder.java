@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
-import org.drools.compiler.lang.dsl.DSLMappingParseException;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.kie.commons.data.Pair;
@@ -18,11 +17,15 @@ import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builder for PackageDataModelOracle
  */
 public final class PackageDataModelOracleBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger( PackageDataModelOracleBuilder.class );
 
     private final String packageName;
 
@@ -38,8 +41,6 @@ public final class PackageDataModelOracleBuilder {
 
     // Package-level map of Globals (name is key) and their type (value).
     private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
-
-    private List<String> errors = new ArrayList<String>();
 
     public static PackageDataModelOracleBuilder newPackageOracleBuilder() {
         return new PackageDataModelOracleBuilder( "" );
@@ -74,15 +75,9 @@ public final class PackageDataModelOracleBuilder {
 
     private void parseEnumDefinition( final String enumDefinition ) {
         final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition );
-        if ( enumLoader.hasErrors() ) {
-            logEnumErrors( enumLoader );
-        } else {
+        if ( !enumLoader.hasErrors() ) {
             factFieldEnums.putAll( enumLoader.getData() );
         }
-    }
-
-    private void logEnumErrors( final DataEnumLoader enumLoader ) {
-        errors.addAll( enumLoader.getErrors() );
     }
 
     public PackageDataModelOracleBuilder addDsl( final String dslDefinition ) {
@@ -95,11 +90,9 @@ public final class PackageDataModelOracleBuilder {
         try {
             if ( dslLoader.parseAndLoad( new StringReader( dslDefinition ) ) ) {
                 populateDSLSentences( dslLoader );
-            } else {
-                logDslErrors( dslLoader );
             }
         } catch ( IOException e ) {
-            errors.add( e.getMessage() );
+            log.error( e.getMessage() );
         }
     }
 
@@ -141,20 +134,6 @@ public final class PackageDataModelOracleBuilder {
         this.dslAnyScopeItems.add( sentence );
     }
 
-    private void logDslErrors( final DSLTokenizedMappingFile dslLoader ) {
-        for ( final Object o : dslLoader.getErrors() ) {
-            if ( o instanceof DSLMappingParseException ) {
-                final DSLMappingParseException dslMappingParseException = (DSLMappingParseException) o;
-                errors.add( "Line " + dslMappingParseException.getLine() + " : " + dslMappingParseException.getMessage() );
-            } else if ( o instanceof Exception ) {
-                final Exception excp = (Exception) o;
-                errors.add( "Exception " + excp.getClass() + " " + excp.getMessage() + " " + excp.getCause() );
-            } else {
-                errors.add( "Uncategorized error " + o );
-            }
-        }
-    }
-
     public PackageDataModelOracleBuilder addGlobals( final String definition ) {
         List<Pair<String, String>> globals = GlobalsParser.parseGlobals( definition );
         for ( Pair<String, String> g : globals ) {
@@ -185,10 +164,6 @@ public final class PackageDataModelOracleBuilder {
         loadProjectOracle();
 
         return packageOracle;
-    }
-
-    public List<String> getErrors() {
-        return errors;
     }
 
     private void loadProjectOracle() {
