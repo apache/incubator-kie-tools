@@ -123,14 +123,17 @@ public class SimpleFocusedResizePanel
     @Override
     public void onResize() {
         if ( isAttached() ) {
-            final int width = getParent().getOffsetWidth();
-            final int height = getParent().getOffsetHeight();
+            final int width = getParent().getParent().getOffsetWidth();
+            final int height = getParent().getParent().getOffsetHeight();
             setPixelSize( width, height );
             header.setWidth( width + "px" );
 
             content.setPixelSize( width, height - title.getOffsetHeight() );
             if ( content.getWidget() != null ) {
                 content.getWidget().setPixelSize( width, height - title.getOffsetHeight() );
+                if ( content.getWidget() instanceof RequiresResize ) {
+                    ( (RequiresResize) content.getWidget() ).onResize();
+                }
             }
         }
     }

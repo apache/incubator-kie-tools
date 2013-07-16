@@ -14,7 +14,7 @@ $registerPerspective({
                 width: 600,
                 min_width: 300,
                 position: "west",
-                panel_type: "static",
+                panel_type: "simple",
                 parts: [
                     {
                         place: "MarkdownLiveEditor",

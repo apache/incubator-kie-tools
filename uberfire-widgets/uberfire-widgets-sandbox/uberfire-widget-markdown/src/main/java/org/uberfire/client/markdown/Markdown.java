@@ -21,6 +21,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,27 +35,31 @@ public class Markdown extends Composite
 
     }
 
-    private static MarkdownBinder uiBinder = GWT.create(MarkdownBinder.class);
+    private static MarkdownBinder uiBinder = GWT.create( MarkdownBinder.class );
 
     @UiField
-    protected HTML htmlContent;
+    HTMLPanel htmlContent;
+
+    HTML content;
 
     public Markdown() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
+        content = new HTML();
+        htmlContent.add( content );
     }
 
-    public void setContent(final String content) {
-        htmlContent.setHTML(toHTML(content));
+    public void setContent( final String content ) {
+        this.content.setHTML( toHTML( content ) );
     }
 
     @Override
     public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize(width, height);
+//        int height = getParent().getOffsetHeight();
+//        int width = getParent().getOffsetWidth();
+//        setPixelSize( width, height );
     }
 
-    public native String toHTML(final String text) /*-{
+    public native String toHTML( final String text ) /*-{
         var converter = new $wnd.Showdown.converter();
         return converter.makeHtml(text);
     }-*/;

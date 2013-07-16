@@ -212,13 +212,14 @@ public class UberTabPanel
     }
 
     private void scheduleResize( final Widget widget ) {
+        final int width = getParent().getParent().getParent().getOffsetWidth();
+        final int height = getParent().getParent().getParent().getOffsetHeight();
+        widget.setPixelSize( width, height - getTabHeight() );
         if ( widget instanceof RequiresResize ) {
             Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
                 @Override
                 public void execute() {
-                    final int width = getParent().getParent().getParent().getOffsetWidth();
-                    final int height = getParent().getParent().getParent().getOffsetHeight();
-                    widget.setPixelSize( width, height - getTabHeight() );
+                    ( (RequiresResize) widget ).onResize();
                 }
             } );
         }
@@ -387,6 +388,7 @@ public class UberTabPanel
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
                 final Widget widget = content.getWidget( i );
                 ( (TabPane) widget ).getWidget( 0 ).setPixelSize( width, height - getTabHeight() );
+                scheduleResize( ( (TabPane) widget ).getWidget( 0 ) );
             }
 
             final ComplexPanel tabs = getTabs();

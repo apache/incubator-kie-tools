@@ -308,6 +308,11 @@ public class ListBarWidget
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
                 final Widget widget = content.getWidget( i );
                 ( (FlowPanel) widget ).getWidget( 0 ).setPixelSize( width, height - getHeaderHeight() );
+                if ( ( (FlowPanel) widget ).getWidget( 0 ) instanceof RequiresResize ) {
+                    ( (RequiresResize) ( (FlowPanel) widget ).getWidget( 0 ) ).onResize();
+                }
+
+                //scheduleResize( ( (FlowPanel) widget ).getWidget( 0 ) );
             }
         }
     }
@@ -326,13 +331,14 @@ public class ListBarWidget
     }
 
     private void scheduleResize( final Widget widget ) {
+        final int width = getParent().getParent().getParent().getOffsetWidth();
+        final int height = getParent().getParent().getParent().getOffsetHeight();
+        widget.setPixelSize( width, height );
         if ( widget instanceof RequiresResize ) {
             Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
                 @Override
                 public void execute() {
-                    final int width = getParent().getParent().getParent().getOffsetWidth();
-                    final int height = getParent().getParent().getParent().getOffsetHeight();
-                    widget.setPixelSize( width, height );
+                    ( (RequiresResize) widget ).onResize();
                 }
             } );
         }
