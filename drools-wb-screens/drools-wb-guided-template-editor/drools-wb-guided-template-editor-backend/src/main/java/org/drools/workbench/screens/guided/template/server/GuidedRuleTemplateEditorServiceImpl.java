@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.template.server;
 
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,16 +27,17 @@ import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
+import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -95,6 +97,9 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
     public Path create( final Path context,
                         final String fileName,
@@ -229,17 +234,22 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final TemplateModel content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
     }
 
     @Override
-    public boolean isValid( final Path path,
-                            final TemplateModel content ) {
-        return !validate( path,
-                          content ).hasLines();
+    public List<BuildMessage> validate( final Path path ) {
+        final TemplateModel content = load( path );
+        return validate( path,
+                         content );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final TemplateModel content ) {
+        //TODO {manstis} - Need to implement
+        return null;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

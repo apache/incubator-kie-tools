@@ -20,14 +20,12 @@ import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionRes
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsDelete;
 import org.guvnor.common.services.shared.file.SupportsRename;
-import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DecisionTableXLSService
-        extends ValidationService<String>,
-                SupportsDelete,
+        extends SupportsDelete,
                 SupportsCopy,
                 SupportsRename {
 

@@ -27,15 +27,15 @@ import javax.inject.Named;
 import org.drools.workbench.screens.enums.model.EnumModel;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
+import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
-import org.guvnor.common.services.shared.validation.model.BuilderResultLine;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -53,8 +53,6 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @Service
 @ApplicationScoped
 public class EnumServiceImpl implements EnumService {
-
-    private static final String FORMAT = "enumeration";
 
     @Inject
     @Named("ioStrategy")
@@ -89,6 +87,9 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private EnumResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -206,36 +207,40 @@ public class EnumServiceImpl implements EnumService {
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final String content ) {
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path ) {
+        final String content = load( path );
+        return validate( path,
+                         content );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final String content ) {
         try {
             final DataEnumLoader loader = new DataEnumLoader( content );
             if ( !loader.hasErrors() ) {
-                return new BuilderResult();
+                return new ArrayList<BuildMessage>();
             } else {
-                final List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                final List<BuildMessage> errors = new ArrayList<BuildMessage>();
                 final List<String> errs = loader.getErrors();
 
                 for ( final String message : errs ) {
-                    final BuilderResultLine result = new BuilderResultLine().setResourceName( path.getFileName() ).setResourceFormat( FORMAT ).setResourceId( path.toURI() ).setMessage( message );
+                    final BuildMessage result = new BuildMessage();
+                    result.setPath( path );
+                    result.setText( message );
                     errors.add( result );
                 }
-
-                final BuilderResult result = new BuilderResult();
-                result.addLines( errors );
-
-                return result;
+                return errors;
             }
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    @Override
-    public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path, content ).hasLines();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

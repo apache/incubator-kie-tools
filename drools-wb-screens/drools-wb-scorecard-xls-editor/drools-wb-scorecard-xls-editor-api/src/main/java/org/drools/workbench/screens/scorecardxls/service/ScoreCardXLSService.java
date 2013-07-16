@@ -19,13 +19,11 @@ package org.drools.workbench.screens.scorecardxls.service;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsDelete;
 import org.guvnor.common.services.shared.file.SupportsRename;
-import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface ScoreCardXLSService
-        extends ValidationService<String>,
-                SupportsDelete,
+        extends SupportsDelete,
                 SupportsCopy,
                 SupportsRename {
 

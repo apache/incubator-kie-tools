@@ -24,7 +24,6 @@ import org.guvnor.common.services.shared.file.SupportsDelete;
 import org.guvnor.common.services.shared.file.SupportsRead;
 import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
-import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
 import org.uberfire.backend.vfs.Path;
@@ -36,7 +35,6 @@ import org.uberfire.backend.vfs.Path;
 public interface GlobalsEditorService
         extends
         ViewSourceService<GlobalsModel>,
-        ValidationService<GlobalsModel>,
         SupportsCreate<GlobalsModel>,
         SupportsRead<GlobalsModel>,
         SupportsUpdate<GlobalsModel>,

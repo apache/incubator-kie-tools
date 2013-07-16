@@ -16,7 +16,9 @@
 
 package org.drools.workbench.screens.guided.scorecard.backend.server;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -29,17 +31,17 @@ import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
-import org.guvnor.common.services.shared.validation.model.BuilderResultLine;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -100,7 +102,8 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     @Inject
     private ProjectService projectService;
 
-    private static final String RESOURCE_EXTENSION = "scgd";
+    @Inject
+    private GuidedScoreCardResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -228,11 +231,13 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     public String toSource( final Path path,
                             final ScoreCardModel model ) {
         try {
-            final BuilderResult result = validateScoreCard( model );
-            if ( !result.hasLines() ) {
-                return toDRL( path, model );
+            final List<BuildMessage> results = validateScoreCard( path,
+                                                                  model );
+            if ( !results.isEmpty() ) {
+                return toDRL( path,
+                              model );
             }
-            return toDRL( result );
+            return toDRL( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -240,10 +245,22 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final ScoreCardModel model ) {
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path ) {
+        //TODO {manstis} - Need to implement
+        return null;
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final ScoreCardModel content ) {
         try {
-            final BuilderResult result = validateScoreCard( model );
+            final List<BuildMessage> result = validateScoreCard( path,
+                                                                 content );
             return result;
 
         } catch ( Exception e ) {
@@ -251,95 +268,84 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         }
     }
 
-    @Override
-    public boolean isValid( final Path path,
-                            final ScoreCardModel model ) {
-        try {
-            return !validate( path,
-                              model ).hasLines();
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
-    }
-
-    private String toDRL( Path path,
+    private String toDRL( final Path path,
                           final ScoreCardModel model ) {
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
-    private String toDRL( final BuilderResult result ) {
+    private String toDRL( final List<BuildMessage> results ) {
         final StringBuilder drl = new StringBuilder();
-        for ( final BuilderResultLine msg : result.getLines() ) {
-            drl.append( "//" ).append( msg.getMessage() ).append( "\n" );
+        for ( final BuildMessage msg : results ) {
+            drl.append( "//" ).append( msg.getText() ).append( "\n" );
         }
         return drl.toString();
     }
 
-    private BuilderResult validateScoreCard( final ScoreCardModel model ) {
-        final BuilderResult builderResult = new BuilderResult();
+    private List<BuildMessage> validateScoreCard( final Path path,
+                                                  final ScoreCardModel model ) {
+        final List<BuildMessage> results = new ArrayList<BuildMessage>();
         if ( StringUtils.isBlank( model.getFactName() ) ) {
-            builderResult.addLine( createBuilderResultLine( "Fact Name is empty.",
-                                                            "Setup Parameters" ) );
+            results.add( createBuilderResultLine( "Fact Name is empty.",
+                                                  path ) );
         }
         if ( StringUtils.isBlank( model.getFieldName() ) ) {
-            builderResult.addLine( createBuilderResultLine( "Resultant Score Field is empty.",
-                                                            "Setup Parameters" ) );
+            results.add( createBuilderResultLine( "Resultant Score Field is empty.",
+                                                  path ) );
         }
         if ( model.getCharacteristics().size() == 0 ) {
-            builderResult.addLine( createBuilderResultLine( "No Characteristics Found.",
-                                                            "Characteristics" ) );
+            results.add( createBuilderResultLine( "No Characteristics Found.",
+                                                  path ) );
         }
         int ctr = 1;
         for ( final Characteristic c : model.getCharacteristics() ) {
             String characteristicName = "Characteristic ('#" + ctr + "')";
             if ( StringUtils.isBlank( c.getName() ) ) {
-                builderResult.addLine( createBuilderResultLine( "Name is empty.",
-                                                                characteristicName ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "' is empty.",
+                                                      path ) );
             } else {
                 characteristicName = "Characteristic ('" + c.getName() + "')";
             }
             if ( StringUtils.isBlank( c.getFact() ) ) {
-                builderResult.addLine( createBuilderResultLine( "Fact is empty.",
-                                                                characteristicName ) );
+                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Fact is empty.",
+                                                      path ) );
             }
             if ( StringUtils.isBlank( c.getField() ) ) {
-                builderResult.addLine( createBuilderResultLine( "Characteristic Field is empty.",
-                                                                characteristicName ) );
+                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Characteristic Field is empty.",
+                                                      path ) );
             } else if ( StringUtils.isBlank( c.getDataType() ) ) {
-                builderResult.addLine( createBuilderResultLine( "Internal Error (missing datatype).",
-                                                                characteristicName ) );
+                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Internal Error (missing datatype).",
+                                                      path ) );
             }
             if ( c.getAttributes().size() == 0 ) {
-                builderResult.addLine( createBuilderResultLine( "No Attributes Found.",
-                                                                characteristicName ) );
+                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. No Attributes Found.",
+                                                      path ) );
             }
             if ( model.isUseReasonCodes() ) {
                 if ( StringUtils.isBlank( model.getReasonCodeField() ) ) {
-                    builderResult.addLine( createBuilderResultLine( "Resultant Reason Codes Field is empty.",
-                                                                    characteristicName ) );
+                    results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Resultant Reason Codes Field is empty.",
+                                                          path ) );
                 }
                 if ( !"none".equalsIgnoreCase( model.getReasonCodesAlgorithm() ) ) {
-                    builderResult.addLine( createBuilderResultLine( "Baseline Score is not specified.",
-                                                                    characteristicName ) );
+                    results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Baseline Score is not specified.",
+                                                          path ) );
                 }
             }
             int attrCtr = 1;
             for ( final Attribute attribute : c.getAttributes() ) {
                 final String attributeName = "Attribute ('#" + attrCtr + "')";
                 if ( StringUtils.isBlank( attribute.getOperator() ) ) {
-                    builderResult.addLine( createBuilderResultLine( "Attribute Operator is empty.",
-                                                                    attributeName ) );
+                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Operator is empty.",
+                                                          path ) );
                 }
                 if ( StringUtils.isBlank( attribute.getValue() ) ) {
-                    builderResult.addLine( createBuilderResultLine( "Attribute Value is empty.",
-                                                                    attributeName ) );
+                    results.add( createBuilderResultLine( "Attribute Name '\"+attributeName+\"'. Attribute Value is empty.",
+                                                          path ) );
                 }
                 if ( model.isUseReasonCodes() ) {
                     if ( StringUtils.isBlank( c.getReasonCode() ) ) {
                         if ( StringUtils.isBlank( attribute.getReasonCode() ) ) {
-                            builderResult.addLine( createBuilderResultLine( "Reason Code must be set at either attribute or characteristic.",
-                                                                            attributeName ) );
+                            results.add( createBuilderResultLine( "Attribute Name '\"+attributeName+\"'. Reason Code must be set at either attribute or characteristic.",
+                                                                  path ) );
                         }
                     }
                 }
@@ -347,12 +353,15 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
             }
             ctr++;
         }
-        return builderResult;
+        return results;
     }
 
-    private BuilderResultLine createBuilderResultLine( final String msg,
-                                                       final String name ) {
-        return new BuilderResultLine().setMessage( msg ).setResourceFormat( RESOURCE_EXTENSION ).setResourceName( name );
+    private BuildMessage createBuilderResultLine( final String message,
+                                                  final Path path ) {
+        final BuildMessage msg = new BuildMessage();
+        msg.setText( message );
+        msg.setPath( path );
+        return msg;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

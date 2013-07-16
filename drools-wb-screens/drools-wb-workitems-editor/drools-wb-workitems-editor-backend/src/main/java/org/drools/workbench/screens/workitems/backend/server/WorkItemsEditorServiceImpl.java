@@ -48,16 +48,17 @@ import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefiniti
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.drools.workbench.screens.workitems.type.WorkItemsTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionsFilter;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.commons.io.IOService;
@@ -126,6 +127,9 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private WorkItemsTypeDefinition resourceTypeDefinition;
 
     private WorkItemDefinitionElements workItemDefinitionElements;
     private FileExtensionsFilter imageFilter = new FileExtensionsFilter( new String[]{ "png", "gif", "jpg" } );
@@ -297,16 +301,22 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final String content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
     }
 
     @Override
-    public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path, content ).hasLines();
+    public List<BuildMessage> validate( final Path path ) {
+        final String content = load( path );
+        return validate( path,
+                         content );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final String content ) {
+        //TODO {manstis} - Need to implement
+        return null;
     }
 
     @Override

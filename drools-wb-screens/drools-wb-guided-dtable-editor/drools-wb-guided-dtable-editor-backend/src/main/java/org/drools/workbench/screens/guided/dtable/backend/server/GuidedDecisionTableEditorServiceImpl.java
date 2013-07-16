@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -28,17 +29,18 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -101,6 +103,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GuidedDTableResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -240,17 +245,22 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final GuidedDecisionTable52 content ) {
-        //TODO {manstis} validate
-        return new BuilderResult();
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
     }
 
     @Override
-    public boolean isValid( final Path path,
-                            final GuidedDecisionTable52 content ) {
-        return !validate( path,
-                          content ).hasLines();
+    public List<BuildMessage> validate( final Path path ) {
+        final GuidedDecisionTable52 content = load( path );
+        return validate( path,
+                         content );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final GuidedDecisionTable52 content ) {
+        //TODO {manstis} - Need to implement
+        return null;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

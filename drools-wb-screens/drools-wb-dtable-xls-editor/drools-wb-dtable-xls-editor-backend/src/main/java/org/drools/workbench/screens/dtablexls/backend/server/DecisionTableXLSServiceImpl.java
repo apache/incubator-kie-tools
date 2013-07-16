@@ -34,7 +34,6 @@ import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -223,19 +222,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    @Override
-    public BuilderResult validate( final Path path,
-                                   final String content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
-    }
-
-    @Override
-    public boolean isValid( final Path path,
-                            final String content ) {
-        return !validate( path, content ).hasLines();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

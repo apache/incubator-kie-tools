@@ -37,12 +37,12 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.BuilderResult;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -107,7 +107,7 @@ public class FactModelServiceImpl implements FactModelService {
     private ProjectService projectService;
 
     @Inject
-    private FactModelResourceTypeDefinition typeDefinition;
+    private FactModelResourceTypeDefinition resourceTypeDefinition;
 
     @Inject
     private FileDiscoveryService fileDiscoveryService;
@@ -181,7 +181,7 @@ public class FactModelServiceImpl implements FactModelService {
         final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
         final org.kie.commons.java.nio.file.Path nioSrcRoot = nioProjectRoot.resolve( "src/main/resources" );
         final Collection<org.kie.commons.java.nio.file.Path> modelNioPaths = fileDiscoveryService.discoverFiles( nioSrcRoot,
-                                                                                                                 new FileExtensionFilter( typeDefinition.getSuffix() ),
+                                                                                                                 new FileExtensionFilter( resourceTypeDefinition.getSuffix() ),
                                                                                                                  true );
         for ( org.kie.commons.java.nio.file.Path modelNioPath : modelNioPaths ) {
             final Path modelPath = paths.convert( modelNioPath );
@@ -276,16 +276,22 @@ public class FactModelServiceImpl implements FactModelService {
     }
 
     @Override
-    public BuilderResult validate( final Path path,
-                                   final FactModels content ) {
-        //TODO {porcelli} validate
-        return new BuilderResult();
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
     }
 
     @Override
-    public boolean isValid( Path path,
-                            FactModels content ) {
-        return !validate( path, content ).hasLines();
+    public List<BuildMessage> validate( final Path path ) {
+        final FactModels content = load( path );
+        return validate( path,
+                         content );
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path path,
+                                        final FactModels content ) {
+        //TODO {manstis} - Need to implement
+        return null;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
