@@ -35,6 +35,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -288,7 +289,7 @@ public class ListBarWidget
 
     @Override
     public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<PartDefinition> handler ) {
-        return null;
+        return addHandler( handler, BeforeSelectionEvent.getType() );
     }
 
     @Override
@@ -311,8 +312,6 @@ public class ListBarWidget
                 if ( ( (FlowPanel) widget ).getWidget( 0 ) instanceof RequiresResize ) {
                     ( (RequiresResize) ( (FlowPanel) widget ).getWidget( 0 ) ).onResize();
                 }
-
-                //scheduleResize( ( (FlowPanel) widget ).getWidget( 0 ) );
             }
         }
     }
@@ -328,20 +327,6 @@ public class ListBarWidget
                 onResize();
             }
         } );
-    }
-
-    private void scheduleResize( final Widget widget ) {
-        final int width = getParent().getParent().getParent().getOffsetWidth();
-        final int height = getParent().getParent().getParent().getOffsetHeight();
-        widget.setPixelSize( width, height );
-        if ( widget instanceof RequiresResize ) {
-            Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-                @Override
-                public void execute() {
-                    ( (RequiresResize) widget ).onResize();
-                }
-            } );
-        }
     }
 
     private Widget makeItem( final MenuItem item,
