@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.enums.service;
 
 import org.drools.workbench.screens.enums.model.EnumModelContent;
+import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
 import org.guvnor.common.services.shared.file.SupportsDelete;
@@ -30,6 +31,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface EnumService
         extends
+        BuildValidationHelper,
         ValidationService<String>,
         SupportsCreate<String>,
         SupportsRead<String>,

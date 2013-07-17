@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,8 +30,6 @@ import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
-import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
-import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
@@ -110,12 +109,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     @Inject
     private SourceServices sourceServices;
-
-    @Inject
-    private GuidedRuleDRLResourceTypeDefinition drlResourceTypeDefinition;
-
-    @Inject
-    private GuidedRuleDSLRResourceTypeDefinition dslrResourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -285,22 +278,14 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return drlResourceTypeDefinition.accept( path ) || dslrResourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        final RuleModel content = load( path );
-        return validate( path,
-                         content );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final RuleModel content ) {
+    public List<BuildMessage> validate( final RuleModel content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final RuleModel content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

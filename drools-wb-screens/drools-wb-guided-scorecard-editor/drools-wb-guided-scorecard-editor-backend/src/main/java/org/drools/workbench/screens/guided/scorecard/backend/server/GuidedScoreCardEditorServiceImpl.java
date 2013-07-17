@@ -31,7 +31,6 @@ import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -101,9 +100,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private GuidedScoreCardResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -231,37 +227,12 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     public String toSource( final Path path,
                             final ScoreCardModel model ) {
         try {
-            final List<BuildMessage> results = validateScoreCard( path,
-                                                                  model );
-            if ( !results.isEmpty() ) {
+            final List<BuildMessage> results = validateScoreCard( model );
+            if ( results.isEmpty() ) {
                 return toDRL( path,
                               model );
             }
-            return toDRL( results );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
-    }
-
-    @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        //TODO {manstis} - Need to implement
-        return null;
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final ScoreCardModel content ) {
-        try {
-            final List<BuildMessage> result = validateScoreCard( path,
-                                                                 content );
-            return result;
+            return toValidationErrors( results );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -273,7 +244,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
-    private String toDRL( final List<BuildMessage> results ) {
+    private String toValidationErrors( final List<BuildMessage> results ) {
         final StringBuilder drl = new StringBuilder();
         for ( final BuildMessage msg : results ) {
             drl.append( "//" ).append( msg.getText() ).append( "\n" );
@@ -281,71 +252,73 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return drl.toString();
     }
 
-    private List<BuildMessage> validateScoreCard( final Path path,
-                                                  final ScoreCardModel model ) {
+    @Override
+    public List<BuildMessage> validate( final ScoreCardModel content ) {
+        try {
+            final List<BuildMessage> result = validateScoreCard( content );
+            return result;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public boolean isValid( final ScoreCardModel content ) {
+        return validate( content ).isEmpty();
+    }
+
+    private List<BuildMessage> validateScoreCard( final ScoreCardModel model ) {
         final List<BuildMessage> results = new ArrayList<BuildMessage>();
         if ( StringUtils.isBlank( model.getFactName() ) ) {
-            results.add( createBuilderResultLine( "Fact Name is empty.",
-                                                  path ) );
+            results.add( createBuilderResultLine( "Fact Name is empty." ) );
         }
         if ( StringUtils.isBlank( model.getFieldName() ) ) {
-            results.add( createBuilderResultLine( "Resultant Score Field is empty.",
-                                                  path ) );
+            results.add( createBuilderResultLine( "Resultant Score Field is empty." ) );
         }
         if ( model.getCharacteristics().size() == 0 ) {
-            results.add( createBuilderResultLine( "No Characteristics Found.",
-                                                  path ) );
+            results.add( createBuilderResultLine( "No Characteristics Found." ) );
         }
         int ctr = 1;
         for ( final Characteristic c : model.getCharacteristics() ) {
             String characteristicName = "Characteristic ('#" + ctr + "')";
             if ( StringUtils.isBlank( c.getName() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "' is empty.",
-                                                      path ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "' is empty." ) );
             } else {
                 characteristicName = "Characteristic ('" + c.getName() + "')";
             }
             if ( StringUtils.isBlank( c.getFact() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Fact is empty.",
-                                                      path ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Fact is empty." ) );
             }
             if ( StringUtils.isBlank( c.getField() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Characteristic Field is empty.",
-                                                      path ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Characteristic Field is empty." ) );
             } else if ( StringUtils.isBlank( c.getDataType() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Internal Error (missing datatype).",
-                                                      path ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Internal Error (missing datatype)." ) );
             }
             if ( c.getAttributes().size() == 0 ) {
-                results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. No Attributes Found.",
-                                                      path ) );
+                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. No Attributes Found." ) );
             }
             if ( model.isUseReasonCodes() ) {
                 if ( StringUtils.isBlank( model.getReasonCodeField() ) ) {
-                    results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Resultant Reason Codes Field is empty.",
-                                                          path ) );
+                    results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Resultant Reason Codes Field is empty." ) );
                 }
                 if ( !"none".equalsIgnoreCase( model.getReasonCodesAlgorithm() ) ) {
-                    results.add( createBuilderResultLine( "Characteristic Name '\"+characteristicName+\"'. Baseline Score is not specified.",
-                                                          path ) );
+                    results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Baseline Score is not specified." ) );
                 }
             }
             int attrCtr = 1;
             for ( final Attribute attribute : c.getAttributes() ) {
                 final String attributeName = "Attribute ('#" + attrCtr + "')";
                 if ( StringUtils.isBlank( attribute.getOperator() ) ) {
-                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Operator is empty.",
-                                                          path ) );
+                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Operator is empty." ) );
                 }
                 if ( StringUtils.isBlank( attribute.getValue() ) ) {
-                    results.add( createBuilderResultLine( "Attribute Name '\"+attributeName+\"'. Attribute Value is empty.",
-                                                          path ) );
+                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Value is empty." ) );
                 }
                 if ( model.isUseReasonCodes() ) {
                     if ( StringUtils.isBlank( c.getReasonCode() ) ) {
                         if ( StringUtils.isBlank( attribute.getReasonCode() ) ) {
-                            results.add( createBuilderResultLine( "Attribute Name '\"+attributeName+\"'. Reason Code must be set at either attribute or characteristic.",
-                                                                  path ) );
+                            results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Reason Code must be set at either attribute or characteristic." ) );
                         }
                     }
                 }
@@ -356,11 +329,9 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return results;
     }
 
-    private BuildMessage createBuilderResultLine( final String message,
-                                                  final Path path ) {
+    private BuildMessage createBuilderResultLine( final String message ) {
         final BuildMessage msg = new BuildMessage();
         msg.setText( message );
-        msg.setPath( path );
         return msg;
     }
 

@@ -213,29 +213,46 @@ public class EnumServiceImpl implements EnumService {
 
     @Override
     public List<BuildMessage> validate( final Path path ) {
-        final String content = load( path );
-        return validate( path,
-                         content );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
+            final List<BuildMessage> messages = doValidation( content );
+            for ( BuildMessage msg : messages ) {
+                msg.setPath( path );
+            }
+            return messages;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final String content ) {
+    public List<BuildMessage> validate( final String content ) {
+        final List<BuildMessage> messages = doValidation( content );
+        return messages;
+    }
+
+    @Override
+    public boolean isValid( final String content ) {
+        return validate( content ).isEmpty();
+    }
+
+    private List<BuildMessage> doValidation( final String content ) {
         try {
             final DataEnumLoader loader = new DataEnumLoader( content );
             if ( !loader.hasErrors() ) {
                 return new ArrayList<BuildMessage>();
             } else {
-                final List<BuildMessage> errors = new ArrayList<BuildMessage>();
-                final List<String> errs = loader.getErrors();
+                final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+                final List<String> loaderErrors = loader.getErrors();
 
-                for ( final String message : errs ) {
-                    final BuildMessage result = new BuildMessage();
-                    result.setPath( path );
-                    result.setText( message );
-                    errors.add( result );
+                for ( final String message : loaderErrors ) {
+                    final BuildMessage msg = new BuildMessage();
+                    msg.setLevel( BuildMessage.Level.ERROR );
+                    msg.setText( message );
+                    messages.add( msg );
                 }
-                return errors;
+                return messages;
             }
 
         } catch ( Exception e ) {

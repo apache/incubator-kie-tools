@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.dsltext.service;
 
+import org.guvnor.common.services.shared.builder.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
 import org.guvnor.common.services.shared.file.SupportsDelete;
@@ -28,6 +29,7 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface DSLTextEditorService
         extends
+        BuildValidationHelper,
         ValidationService<String>,
         SupportsCreate<String>,
         SupportsRead<String>,

@@ -19,7 +19,9 @@ package org.drools.workbench.screens.dtablexls.backend.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionRes
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -222,6 +225,17 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public List<BuildMessage> validate( final Path content ) {
+        //TODO {manstis} - Need to implement
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final Path content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

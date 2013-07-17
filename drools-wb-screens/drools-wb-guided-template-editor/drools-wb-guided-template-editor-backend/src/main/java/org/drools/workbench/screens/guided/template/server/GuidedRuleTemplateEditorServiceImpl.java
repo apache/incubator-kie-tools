@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.template.server;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,7 +28,6 @@ import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
-import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -97,9 +97,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
     public Path create( final Path context,
                         final String fileName,
@@ -223,7 +220,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public String toSource( Path path,
+    public String toSource( final Path path,
                             final TemplateModel model ) {
         try {
             return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
@@ -234,22 +231,14 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        final TemplateModel content = load( path );
-        return validate( path,
-                         content );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final TemplateModel content ) {
+    public List<BuildMessage> validate( final TemplateModel content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final TemplateModel content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

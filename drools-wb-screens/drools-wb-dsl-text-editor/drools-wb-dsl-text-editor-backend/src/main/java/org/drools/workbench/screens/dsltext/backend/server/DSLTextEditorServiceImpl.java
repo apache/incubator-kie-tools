@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.dsltext.backend.server;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -23,6 +26,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.compiler.lang.dsl.DSLMappingParseException;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -196,16 +201,78 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
 
     @Override
     public List<BuildMessage> validate( final Path path ) {
-        final String content = load( path );
-        return validate( path,
-                         content );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
+            final List<BuildMessage> messages = doValidation( content );
+            for ( BuildMessage msg : messages ) {
+                msg.setPath( path );
+            }
+            return messages;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final String content ) {
-        //TODO {manstis} - Need to implement
-        return null;
+    public List<BuildMessage> validate( final String content ) {
+        return doValidation( content );
+    }
+
+    private List<BuildMessage> doValidation( final String content ) {
+        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+        final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
+        try {
+            if ( !dslLoader.parseAndLoad( new StringReader( content ) ) ) {
+                messages.addAll( makeValidationMessages( dslLoader ) );
+            }
+            return messages;
+
+        } catch ( IOException e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    private List<BuildMessage> makeValidationMessages( final DSLTokenizedMappingFile dslLoader ) {
+        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+        for ( final Object o : dslLoader.getErrors() ) {
+            if ( o instanceof DSLMappingParseException ) {
+                final DSLMappingParseException dslMappingParseException = (DSLMappingParseException) o;
+                messages.add( makeNewValidationMessage( dslMappingParseException ) );
+            } else if ( o instanceof Exception ) {
+                final Exception e = (Exception) o;
+                messages.add( makeNewValidationMessage( e ) );
+            } else {
+                messages.add( makeNewValidationMessage( o ) );
+            }
+        }
+        return messages;
+    }
+
+    private BuildMessage makeNewValidationMessage( final DSLMappingParseException e ) {
+        final BuildMessage msg = new BuildMessage();
+        msg.setLevel( BuildMessage.Level.ERROR );
+        msg.setText( "Line " + e.getLine() + " : " + e.getMessage() );
+        return msg;
+    }
+
+    private BuildMessage makeNewValidationMessage( final Exception e ) {
+        final BuildMessage msg = new BuildMessage();
+        msg.setLevel( BuildMessage.Level.ERROR );
+        msg.setText( "Exception " + e.getClass() + " " + e.getMessage() + " " + e.getCause() );
+        return msg;
+    }
+
+    private BuildMessage makeNewValidationMessage( final Object o ) {
+        final BuildMessage msg = new BuildMessage();
+        msg.setLevel( BuildMessage.Level.ERROR );
+        msg.setText( "Uncategorized error " + o );
+        return msg;
+    }
+
+    @Override
+    public boolean isValid( final String content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

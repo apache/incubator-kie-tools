@@ -16,7 +16,9 @@
 
 package org.drools.workbench.screens.globals.backend.server;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -233,6 +236,17 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public List<BuildMessage> validate( final GlobalsModel content ) {
+        //TODO {manstis} - Need to implement
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final GlobalsModel content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

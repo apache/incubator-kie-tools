@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,6 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
@@ -103,9 +103,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private GuidedDTableResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -245,22 +242,14 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        final GuidedDecisionTable52 content = load( path );
-        return validate( path,
-                         content );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final GuidedDecisionTable52 content ) {
+    public List<BuildMessage> validate( final GuidedDecisionTable52 content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final GuidedDecisionTable52 content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

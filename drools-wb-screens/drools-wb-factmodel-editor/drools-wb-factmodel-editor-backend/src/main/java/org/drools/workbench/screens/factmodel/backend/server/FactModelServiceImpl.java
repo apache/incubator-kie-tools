@@ -18,6 +18,7 @@ package org.drools.workbench.screens.factmodel.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -276,22 +277,14 @@ public class FactModelServiceImpl implements FactModelService {
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        final FactModels content = load( path );
-        return validate( path,
-                         content );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final FactModels content ) {
+    public List<BuildMessage> validate( final FactModels content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final FactModels content ) {
+        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.drltext.backend.server;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -28,7 +29,6 @@ import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.commons.shared.packages.HasPackageName;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
-import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -94,9 +94,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private DRLResourceTypeDefinition resourceTypeDefinition;
 
     @Override
     public Path create( final Path context,
@@ -224,22 +221,14 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path ) {
-        final String content = load( path );
-        return validate( path,
-                         content );
-    }
-
-    @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final String content ) {
+    public List<BuildMessage> validate( final String content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final String content ) {
+        return validate( content ).isEmpty();
     }
 
     //Check if the DRL contains a Package declaration, appending one if it does not exist

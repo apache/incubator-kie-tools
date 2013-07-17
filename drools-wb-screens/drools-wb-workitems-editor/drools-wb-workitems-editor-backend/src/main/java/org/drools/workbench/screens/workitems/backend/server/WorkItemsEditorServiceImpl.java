@@ -18,6 +18,7 @@ package org.drools.workbench.screens.workitems.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -308,15 +309,26 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     @Override
     public List<BuildMessage> validate( final Path path ) {
         final String content = load( path );
-        return validate( path,
-                         content );
+        final List<BuildMessage> messages = doValidation( content );
+        for ( BuildMessage msg : messages ) {
+            msg.setPath( path );
+        }
+        return messages;
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path,
-                                        final String content ) {
+    public List<BuildMessage> validate( final String content ) {
+        return doValidation( content );
+    }
+
+    private List<BuildMessage> doValidation( final String content ) {
         //TODO {manstis} - Need to implement
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isValid( final String content ) {
+        return validate( content ).isEmpty();
     }
 
     @Override
