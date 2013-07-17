@@ -38,7 +38,7 @@ $registerPerspective({
             {
                 height: 400,
                 position: "south",
-                panel_type: "multi_list",
+                panel_type: "multi_tab",
                 parts: [
                     {
                         place: "YouTubeScreen",

@@ -107,7 +107,7 @@ public class FileExplorerPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_LIST );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
         p.setName( "File Explorer" );
         p.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( "fileNavContext" ) ) );
 
@@ -130,24 +130,24 @@ public class FileExplorerPerspective {
     public Menus buildMenuBar() {
         return MenuFactory
                 .newTopLevelMenu( "Navigator" )
-                    .respondsWith( new Command() {
-                        @Override
-                        public void execute() {
-                            placeManager.goTo( new DefaultPlaceRequest( "FileNavigator" ) );
-                        }
-                    } )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( new DefaultPlaceRequest( "FileNavigator" ) );
+                    }
+                } )
                 .endMenu()
                 .newTopLevelMenu( "Repositories" )
-                    .menus()
-                        .menu( "Clone Repo" )
-                            .respondsWith( cloneRepoCommand )
-                        .endMenu()
-                        .menu( "New Repo" )
-                            .withRoles( PERMISSIONS_ADMIN )
-                            .respondsWith( newRepoCommand )
-                        .endMenu()
-                    .endMenus().
-                endMenu()
+                .menus()
+                .menu( "Clone Repo" )
+                .respondsWith( cloneRepoCommand )
+                .endMenu()
+                .menu( "New Repo" )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( newRepoCommand )
+                .endMenu()
+                .endMenus().
+                        endMenu()
                 .build();
     }
 }

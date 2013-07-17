@@ -43,6 +43,7 @@ public class PerspectiveDefinitionImpl
     private ContextDisplayMode contextDisplayMode = SHOW;
 
     public PerspectiveDefinitionImpl() {
+        this.root = new PanelDefinitionImpl( PanelType.ROOT_TAB );
     }
 
     public PerspectiveDefinitionImpl( final PanelType type ) {

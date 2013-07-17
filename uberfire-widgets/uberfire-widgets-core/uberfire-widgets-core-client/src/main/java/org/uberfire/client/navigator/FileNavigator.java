@@ -55,13 +55,14 @@ public class FileNavigator extends Composite {
     }
 
     public void loadContent( final Path path ) {
-        container.clear();
-        navigator = new FlexTable();
-        navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
         if ( path == null && options.listRepositories() ) {
             navigatorService.call( new RemoteCallback<List<Repository>>() {
                 @Override
                 public void callback( final List<Repository> response ) {
+                    container.clear();
+                    navigator = new FlexTable();
+                    navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
+
                     isListingRepos = true;
                     setupContent( response );
                 }
@@ -70,6 +71,10 @@ public class FileNavigator extends Composite {
             navigatorService.call( new RemoteCallback<NavigatorContent>() {
                 @Override
                 public void callback( final NavigatorContent response ) {
+
+                    container.clear();
+                    navigator = new FlexTable();
+                    navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
 
                     isListingRepos = false;
                     setupBreadcrumb( response, path );
