@@ -381,8 +381,20 @@ public class UberTabPanel
     public void onResize() {
         final Widget parent = getParent();
         if ( parent != null ) {
-            final int width = parent.getParent().getParent().getOffsetWidth();
-            final int height = parent.getParent().getParent().getOffsetHeight();
+            final int width;
+            final int height;
+            if ( parent.getParent() != null ) {
+                if ( parent.getParent().getParent() != null ) {
+                    width = parent.getParent().getParent().getOffsetWidth();
+                    height = parent.getParent().getParent().getOffsetHeight();
+                } else {
+                    width = parent.getParent().getOffsetWidth();
+                    height = parent.getParent().getOffsetHeight();
+                }
+            } else {
+                width = parent.getOffsetWidth();
+                height = parent.getOffsetHeight();
+            }
 
             final ComplexPanel content = getTabContent();
             for ( int i = 0; i < content.getWidgetCount(); i++ ) {
