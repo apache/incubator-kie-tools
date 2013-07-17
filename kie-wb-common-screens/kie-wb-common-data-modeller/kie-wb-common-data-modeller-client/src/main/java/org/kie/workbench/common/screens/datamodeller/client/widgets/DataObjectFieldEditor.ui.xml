@@ -88,7 +88,6 @@
                     <gwt:Label ui:field="positionLabel" text="{i18n.objectFieldEditor_positionLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <b:TextBox ui:field="positionText" styleName="span10"></b:TextBox>
                     <b:ListBox ui:field="positionSelector" styleName="span10"></b:ListBox>
                     <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectFieldEditor_positionLabel}" text="{i18n.objectFieldEditor_positionHelp}">
                         <b:Icon ui:field="positionHelpIcon" type="QUESTION_SIGN"></b:Icon>

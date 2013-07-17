@@ -306,7 +306,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         for ( DataObjectTO dataObject : dataModelTO.getDataObjects() ) {
             newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint( dataObject.getStringId() );
             if ( newFingerPrint.equals( dataObject.getFingerPrint() ) ) {
-                System.out.println( "XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified" );
+                logger.debug( "XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified" );
                 dataModelDomain.removeDataObject( dataObject.getClassName() );
             }
         }

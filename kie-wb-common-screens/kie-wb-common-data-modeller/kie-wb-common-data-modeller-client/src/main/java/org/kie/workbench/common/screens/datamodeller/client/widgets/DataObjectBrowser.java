@@ -516,11 +516,22 @@ public class DataObjectBrowser extends Composite {
         if (dataObject != null) {
             dataObject.getProperties().remove(objectProperty);
 
-            getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(), dataObject.getClassName());
-
             dataObjectPropertiesProvider.getList().remove(index);
             dataObjectPropertiesProvider.flush();
             dataObjectPropertiesProvider.refresh();
+
+            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1");
+            if (sPosRemoved != null && sPosRemoved.length() > 0) {
+                Integer posRemoved = Integer.parseInt(sPosRemoved);
+                DataModelerUtils.getInstance().recalculatePositions(dataObject, posRemoved);
+            }
+
+//            List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
+//            for (int i = posRemoved; i < props.size(); i++) {
+//                dataObjectPropertiesTable.redrawRow(i);
+//            }
+
+            getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(), dataObject.getClassName());
             notifyFieldDeleted(objectProperty);
         }
     }
@@ -630,9 +641,9 @@ public class DataObjectBrowser extends Composite {
 
     private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
         if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) ||
-                "className".equals(event.getPropertyName()) ||
-                "label".equals(event.getPropertyName())) {
+            if ( "name".equals(event.getPropertyName()) ||
+                 "className".equals(event.getPropertyName()) ||
+                 "label".equals(event.getPropertyName()) ) {
 
                 List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
                 for (int i = 0; i < props.size(); i++) {
@@ -641,6 +652,9 @@ public class DataObjectBrowser extends Composite {
                         break;
                     }
                 }
+            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATON.equals(event.getPropertyName()) ) {
+                // TODO redraw only affected rows
+                dataObjectPropertiesTable.redraw();
             }
         }
     }

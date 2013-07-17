@@ -85,9 +85,6 @@ public class DataObjectFieldEditor extends Composite {
     Icon positionHelpIcon;
 
     @UiField
-    TextBox positionText;
-
-    @UiField
     ListBox positionSelector;
 
     @Inject
@@ -165,7 +162,7 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     // Event observers
-    private void onFieldSelected(@Observes DataObjectFieldSelectedEvent event) {
+    private void onDataObjectFieldSelected(@Observes DataObjectFieldSelectedEvent event) {
         if (event.isFrom(getDataModel())) {
             loadDataObjectField(event.getCurrentDataObject(), event.getCurrentField());
         }
@@ -248,7 +245,6 @@ public class DataObjectFieldEditor extends Composite {
             annotation = objectField.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
             if (annotation != null) {
                 String position = (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
-                positionText.setText(position);
                 positionSelector.setSelectedValue(position);
             }
         }
@@ -382,48 +378,15 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     void positionChanged(ChangeEvent event) {
-
-    }
-
-    @UiHandler("positionText")
-    void positionChanged(final ValueChangeEvent<String> event) {
         if (getObjectField() == null) return;
 
-        // Set widgets to errorpopup for styling purposes etc.
-        ep.setTitleWidget(positionLabel);
-        ep.setValueWidget(positionText);
-
         AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
-        final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "";
-        final String newPosition = positionText.getValue();
+        final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "-1";
+        final String newPosition = positionSelector.getValue();
 
-        // In case an invalid position (entered before), was corrected to the original value, don't do anything but reset the label style
-        if (oldPosition.equalsIgnoreCase(newPosition)) {
-            positionLabel.setStyleName(null);
-            return;
-        }
+        DataModelerUtils.getInstance().recalculatePositions(getDataObject(), Integer.parseInt(oldPosition, 10), Integer.parseInt(newPosition, 10));
 
-        validatorService.isValidPosition(newPosition, new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                ep.showMessage(Constants.INSTANCE.validation_error_invalid_position());
-            }
-
-            @Override
-            public void onSuccess() {
-                AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
-
-                if (annotation != null) {
-                    if ( newPosition != null && !"".equals(newPosition) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition);
-                    else getObjectField().removeAnnotation(annotation);
-                } else {
-                    if ( newPosition != null && !"".equals(newPosition) ) {
-                        getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATON), AnnotationDefinitionTO.VALUE_PARAM, newPosition );
-                    }
-                }
-                notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATON, oldPosition, newPosition);
-            }
-        });
+        notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATON, oldPosition, newPosition);
     }
 
     private void initTypeList() {
@@ -500,7 +463,6 @@ public class DataObjectFieldEditor extends Composite {
         typeSelector.setSelectedValue(null);
         equalsSelector.setValue(Boolean.FALSE);
         positionLabel.setStyleName(null);
-        positionText.setText(null);
         positionSelector.clear();
     }
 

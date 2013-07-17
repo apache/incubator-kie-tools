@@ -138,4 +138,69 @@ public class DataModelerUtils {
         }
         return maxPosition;
     }
+
+    public void recalculatePositions(DataObjectTO dataObjectTO, Integer positionRemoved) {
+        if (dataObjectTO == null || positionRemoved < 0) return;
+        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
+
+        if (properties != null && properties.size() > 0) {
+            for (ObjectPropertyTO property : properties) {
+                Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
+                if (pos > positionRemoved) {
+                    property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
+                }
+            }
+        }
+    }
+
+    /**
+     * Recalculates the positions among the object's attributes, according to the following:
+     *
+     * Example 1:
+     * fieldPositions: 1 - 2 - 3 - 4 - 5
+     *                     +------>     oldPosition = 2, newPosition = 4 (nP > oP)
+     * implies: fieldPos 4 becomes 3    or:   when oP < fP <= nP --> fP = fP - 1
+     *          fieldPos 3 becomes 2
+     *
+     *          fieldPos 2 becomes 4    or:   when fP == oP --> fP = nP
+     *
+     * Example 2:
+     * fieldPositions: 1 - 2 - 3 - 4 - 5
+     *                      <------+    oldPosition = 4 | newPosition = 2 (nP < oP)
+     * implies: fieldPos 2 becomes 3    or:   when nP <= fP < oP --> fP = fP + 1
+     *          fieldPos 3 becomes 4
+     *
+     *          fieldPos 4 becomes 2    or:   when fP == oP --> fP = nP
+     */
+    public void recalculatePositions(DataObjectTO dataObjectTO, Integer oldPosition, Integer newPosition) {
+        if (dataObjectTO == null || oldPosition == -1 || newPosition.equals(oldPosition)) return;
+        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
+
+        if (properties != null && properties.size() > 0) {
+            for (ObjectPropertyTO property : properties) {
+                String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1");
+                if (sfieldPos != null && sfieldPos.length() > 0) {
+                    Integer fieldPos = Integer.parseInt(sfieldPos, 10);
+
+                    if (newPosition < oldPosition) {
+                        if (fieldPos >= newPosition && fieldPos < oldPosition) {
+                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos + 1 ).toString());
+                        }
+                    } else {
+                        if (fieldPos <= newPosition && fieldPos > oldPosition) {
+                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos - 1 ).toString());
+                        }
+                    }
+
+                    if (fieldPos == oldPosition)
+                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                                .setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition.toString());
+
+                }
+            }
+        }
+    }
+
 }
