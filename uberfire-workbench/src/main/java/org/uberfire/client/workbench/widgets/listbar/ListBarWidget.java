@@ -114,6 +114,8 @@ public class ListBarWidget
     @UiField
     FlowPanel menuArea;
 
+    private CustomList customList = null;
+
     private WorkbenchPanelPresenter presenter;
     private WorkbenchDragAndDropManager dndManager;
 
@@ -176,6 +178,7 @@ public class ListBarWidget
         partContentView.clear();
         partTitle.clear();
         currentPart = null;
+        customList.clear();
     }
 
     @Override
@@ -221,7 +224,13 @@ public class ListBarWidget
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
-
+        final Widget _title = buildTitle( title );
+        partTitle.put( part, _title );
+        dndManager.makeDraggable( partContentView.get( part ), _title );
+        setupDropdown();
+        if ( currentPart != null && currentPart.getK1().equals( part ) ) {
+            updateBreadcrumb( part );
+        }
     }
 
     @Override
@@ -241,12 +250,17 @@ public class ListBarWidget
         updateBreadcrumb( part );
         parts.remove( currentPart.getK1() );
 
-        dropdownCaret.setRightDropdown( true );
-        dropdownCaret.clear();
-        dropdownCaret.add( new CustomList() );
+        setupDropdown();
         setupContextMenu();
 
         scheduleResize();
+    }
+
+    private void setupDropdown() {
+        dropdownCaret.setRightDropdown( true );
+        dropdownCaret.clear();
+        customList = new CustomList();
+        dropdownCaret.add( customList );
     }
 
     private void setupContextMenu() {
@@ -277,6 +291,7 @@ public class ListBarWidget
         parts.remove( part );
         partContentView.remove( part );
         partTitle.remove( part );
+        setupDropdown();
     }
 
     @Override
@@ -312,6 +327,10 @@ public class ListBarWidget
                 if ( ( (FlowPanel) widget ).getWidget( 0 ) instanceof RequiresResize ) {
                     ( (RequiresResize) ( (FlowPanel) widget ).getWidget( 0 ) ).onResize();
                 }
+            }
+
+            if ( customList != null ) {
+                customList.onResize();
             }
         }
     }
@@ -423,38 +442,47 @@ public class ListBarWidget
         return null;
     }
 
-    class CustomList extends Composite {
+    class CustomList extends Composite implements RequiresResize {
 
         final FlowPanel panel = new FlowPanel();
 
         CustomList() {
             initWidget( panel );
-            if ( content.getOffsetWidth() < 10 ) {
-                return;
-            }
-            final String ctitle = ( (WorkbenchPartPresenter.View) partContentView.get( currentPart.getK1() ).getWidget( 0 ) ).getPresenter().getTitle();
-            panel.add( new NavLink( ctitle ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                    }
-                } );
-            }} );
-
-            for ( final PartDefinition part : parts ) {
-                final String title = ( (WorkbenchPartPresenter.View) partContentView.get( part ).getWidget( 0 ) ).getPresenter().getTitle();
-                panel.add( new NavLink( title ) {{
+            if ( currentPart != null ) {
+                final String ctitle = ( (WorkbenchPartPresenter.View) partContentView.get( currentPart.getK1() ).getWidget( 0 ) ).getPresenter().getTitle();
+                panel.add( new NavLink( ctitle ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( final ClickEvent event ) {
-                            selectPart( part );
                         }
                     } );
                 }} );
+
+                for ( final PartDefinition part : parts ) {
+                    final String title = ( (WorkbenchPartPresenter.View) partContentView.get( part ).getWidget( 0 ) ).getPresenter().getTitle();
+                    panel.add( new NavLink( title ) {{
+                        addClickHandler( new ClickHandler() {
+                            @Override
+                            public void onClick( final ClickEvent event ) {
+                                selectPart( part );
+                            }
+                        } );
+                    }} );
+                }
             }
-            int width = content.getOffsetWidth() - 10;
-            setWidth( width + "px" );
+            onResize();
         }
 
+        @Override
+        public void onResize() {
+            int width = content.getOffsetWidth() - 10;
+            if ( width > 0 ) {
+                setWidth( width + "px" );
+            }
+        }
+
+        public void clear() {
+            panel.clear();
+        }
     }
 }

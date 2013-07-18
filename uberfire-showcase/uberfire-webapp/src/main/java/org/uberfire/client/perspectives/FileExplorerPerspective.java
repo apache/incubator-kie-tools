@@ -107,7 +107,7 @@ public class FileExplorerPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl();
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_LIST );
         p.setName( "File Explorer" );
         p.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( "fileNavContext" ) ) );
 
