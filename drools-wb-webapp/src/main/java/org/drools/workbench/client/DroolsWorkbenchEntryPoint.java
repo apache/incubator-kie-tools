@@ -48,7 +48,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuSearchItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
@@ -123,15 +122,6 @@ public class DroolsWorkbenchEntryPoint {
                     @Override
                     public void execute() {
                         placeManager.goTo( "FindForm" );
-                    }
-                } )
-                .endMenu()
-                .newSearchItem( "Search..." )
-                .position( MenuPosition.RIGHT )
-                .respondsWith( new MenuSearchItem.SearchCommand() {
-                    @Override
-                    public void execute( final String term ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "FullTextSearchForm" ).addParameter( "term", term ) );
                     }
                 } )
                 .endMenu()
