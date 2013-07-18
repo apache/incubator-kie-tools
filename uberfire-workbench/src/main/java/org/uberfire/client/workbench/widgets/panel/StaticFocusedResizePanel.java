@@ -26,7 +26,9 @@ public class StaticFocusedResizePanel
         container.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                SelectionEvent.fire( StaticFocusedResizePanel.this, partDefinition );
+                if ( partDefinition != null ) {
+                    SelectionEvent.fire( StaticFocusedResizePanel.this, partDefinition );
+                }
             }
         } );
     }
@@ -66,7 +68,7 @@ public class StaticFocusedResizePanel
             setPixelSize( width, height );
 
             container.setPixelSize( width, height );
-            if (container.getWidget() != null){
+            if ( container.getWidget() != null ) {
                 container.getWidget().setPixelSize( width, height );
             }
         }
