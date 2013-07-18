@@ -16,13 +16,16 @@
 
 package org.kie.workbench.common.services.shared.rest;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Group extends Entity {
     
     String owner;
-
+    List<String> repositories;
+    
     public String getOwner() {
         return owner;
     }
@@ -30,6 +33,14 @@ public class Group extends Entity {
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+	public List<String> getRepositories() {
+		return repositories;
+	}
+
+	public void setRepositories(List<String> repositories) {
+		this.repositories = repositories;
+	} 
 
  
 }

@@ -16,9 +16,8 @@ public class JobRequest {
         DENIED
     }
     private String jodId;
-
     private Status status;
-    private String result;
+
     
     public String getJodId() {
         return jodId;
@@ -31,12 +30,6 @@ public class JobRequest {
 	}
 	public void setStatus(Status status) {
 		this.status = status;
-	}
-	public String getResult() {
-		return result;
-	}
-	public void setResult(String result) {
-		this.result = result;
 	}
 
 }
