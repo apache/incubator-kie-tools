@@ -17,16 +17,15 @@
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 
-import org.kie.workbench.common.services.datamodeller.annotations.Equals;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 
-public class EqualsAnnotationDefinition extends AbstractAnnotationDefinition {
+public class KeyAnnotationDefinition extends AbstractAnnotationDefinition {
 
-    public EqualsAnnotationDefinition() {
-        super("@Equals", Equals.class.getName(), "Equals", "Equals annotation", false, true);
+    public KeyAnnotationDefinition() {
+        super("@Key", org.kie.api.definition.type.Key.class.getName(), "Equals", "Equals annotation", false, true);
     }
 
-    public static EqualsAnnotationDefinition getInstance() {
-        return new EqualsAnnotationDefinition();
+    public static KeyAnnotationDefinition getInstance() {
+        return new KeyAnnotationDefinition();
     }
 }

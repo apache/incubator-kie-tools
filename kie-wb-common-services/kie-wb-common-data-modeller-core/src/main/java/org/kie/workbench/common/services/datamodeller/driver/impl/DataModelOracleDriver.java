@@ -42,11 +42,8 @@ import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.DescriptionAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.EqualsAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.LabelAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.RoleAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +65,7 @@ public class DataModelOracleDriver implements ModelDriver {
         configuredAnnotations.add(annotationDefinition);
         annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
 
-        annotationDefinition = EqualsAnnotationDefinition.getInstance();
+        annotationDefinition = KeyAnnotationDefinition.getInstance();
         configuredAnnotations.add(annotationDefinition);
         annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
 

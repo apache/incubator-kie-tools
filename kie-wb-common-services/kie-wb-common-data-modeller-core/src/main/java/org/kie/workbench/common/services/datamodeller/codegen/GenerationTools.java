@@ -17,9 +17,8 @@
 package org.kie.workbench.common.services.datamodeller.codegen;
 
 import org.apache.commons.lang.StringUtils;
-import org.kie.workbench.common.services.datamodeller.annotations.Equals;
 import org.kie.workbench.common.services.datamodeller.core.*;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.EqualsAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,7 +235,7 @@ public class GenerationTools {
             for(String propName : props.keySet()) {
                 ObjectProperty prop = props.get(propName);
                 String _propName = toJavaVar(propName);
-                if (prop.getAnnotation(Equals.class.getName()) != null) {
+                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
                     // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
                     sb.append(indent + TAB + "if (");
                     sb.append(_propName).append(" != null ? !").append(_propName).append(".equals(that.").append(_propName).append(")");
@@ -276,7 +275,7 @@ public class GenerationTools {
             for(String propName : props.keySet()) {
                 ObjectProperty prop = props.get(propName);
                 String _propName = toJavaVar(propName);
-                if (prop.getAnnotation(Equals.class.getName()) != null) {
+                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
                     // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
                     sb.append(indent + TAB + "result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
                     sb.append(EOL);
@@ -308,7 +307,7 @@ public class GenerationTools {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             for (ObjectProperty property : dataObject.getProperties().values()) {
-                if (property.getAnnotation(EqualsAnnotationDefinition.getInstance().getClassName()) != null) {
+                if (property.getAnnotation(KeyAnnotationDefinition.getInstance().getClassName()) != null) {
                     //the property is marked as key.
                     sortedProperties.add(property);
                 }

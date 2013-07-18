@@ -21,7 +21,7 @@ import java.util.List;
 public interface AnnotationDefinition extends HasClassName {
 
     /**
-     * Annotation name e.g. @DataObject, @Equals, @Entity, @Column
+     * Annotation name e.g. @DataObject, @Key, @Entity, @Column
      *
      * @return
      */

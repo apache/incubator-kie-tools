@@ -237,7 +237,7 @@ public class DataObjectFieldEditor extends Composite {
 
             setSelectedType();
 
-            annotation = objectField.getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
+            annotation = objectField.getAnnotation(AnnotationDefinitionTO.KEY_ANNOTATION);
             if (annotation != null) {
                 equalsSelector.setValue(Boolean.TRUE);
             }
@@ -365,7 +365,7 @@ public class DataObjectFieldEditor extends Composite {
         if (getObjectField() == null) return;
 
         Boolean oldEquals = null;
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.EQUALS_ANNOTATION);
+        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.KEY_ANNOTATION);
         if (annotation != null) {
             Object annotationValue = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
             oldEquals = annotationValue != null ? (Boolean) annotationValue : Boolean.FALSE;
@@ -373,8 +373,8 @@ public class DataObjectFieldEditor extends Composite {
         final Boolean setEquals = equalsSelector.getValue();
 
         if (annotation != null && !setEquals) getObjectField().removeAnnotation(annotation);
-        else if (annotation == null && setEquals) getObjectField().addAnnotation(new AnnotationTO(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.EQUALS_ANNOTATION)));
-        notifyFieldChange(AnnotationDefinitionTO.EQUALS_ANNOTATION, oldEquals, setEquals);
+        else if (annotation == null && setEquals) getObjectField().addAnnotation(new AnnotationTO(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.KEY_ANNOTATION)));
+        notifyFieldChange(AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals);
     }
 
     void positionChanged(ChangeEvent event) {

@@ -47,7 +47,7 @@ public class AnnotationDefinitionTO {
 
     public static final String DESCRIPTION_ANNOTATION = "org.kie.workbench.common.services.datamodeller.annotations.Description";
 
-    public static final String EQUALS_ANNOTATION = "org.kie.workbench.common.services.datamodeller.annotations.Equals";
+    public static final String KEY_ANNOTATION = "org.kie.api.definition.type.Key";
     
     public static final String VALUE_PARAM = "value";
 
