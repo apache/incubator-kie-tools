@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -87,6 +88,7 @@ public class StaticWorkbenchPanelView
 
     @Override
     public void selectPart( final PartDefinition part ) {
+        scheduleResize();
     }
 
     @Override
@@ -97,6 +99,15 @@ public class StaticWorkbenchPanelView
     @Override
     public void setFocus( boolean hasFocus ) {
         panel.setFocus( hasFocus );
+    }
+
+    private void scheduleResize() {
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                onResize();
+            }
+        } );
     }
 
     @Override
