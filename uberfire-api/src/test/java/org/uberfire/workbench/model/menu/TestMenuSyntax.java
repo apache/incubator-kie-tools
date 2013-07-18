@@ -51,13 +51,6 @@ public class TestMenuSyntax {
                 .newTopLevelMenu("xx")
                     .respondsWith( null )
                 .endMenu()
-                .newSearchItem( "search" )
-                    .respondsWith( new MenuSearchItem.SearchCommand() {
-                        @Override
-                        public void execute( final String term ) {
-                        }
-                    } )
-                .endMenu()
                 .newTopLevelMenu( "xx" )
                     .withItems( null )
                 .endMenu()

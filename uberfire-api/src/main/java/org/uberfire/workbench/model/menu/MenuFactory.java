@@ -20,10 +20,6 @@ public final class MenuFactory {
         return new MenuBuilderImpl( CONTRIBUTED, caption );
     }
 
-    public static SearchMenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newSearchItem( final String caption ) {
-        return new MenuBuilderImpl( SEARCH, caption );
-    }
-
     public static MenuBuilder<Builder> newSimpleItem( final String caption ) {
         return new MenuBuilderImpl( REGULAR, caption );
     }
@@ -35,9 +31,6 @@ public final class MenuFactory {
         TerminalMenu<TopLevelMenusBuilder<T>> newTopLevelMenu( final MenuItem menu );
 
         MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu( final String caption );
-
-        SearchMenuBuilder<TopLevelMenusBuilder<T>> newSearchItem( final String caption );
-
     }
 
     public interface Builder {
@@ -64,19 +57,6 @@ public final class MenuFactory {
         TerminalMenu<T> respondsWith( final Command command );
 
         T endMenu();
-    }
-
-    public interface SearchMenuBuilder<T> {
-
-        TerminalMenu<T> respondsWith( final MenuSearchItem.SearchCommand command );
-
-        SearchMenuBuilder<T> withRole( final String role );
-
-        SearchMenuBuilder<T> withRoles( final String... roles );
-
-        SearchMenuBuilder<T> order( final int order );
-
-        SearchMenuBuilder<T> position( final MenuPosition position );
     }
 
     public interface SubMenuBuilder<T>

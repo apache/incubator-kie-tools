@@ -16,17 +16,12 @@
 package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Brand;
 import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.Nav;
 import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.NavSearch;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,13 +32,11 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.model.menu.BrandMenuItem;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuSearchItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -68,9 +61,6 @@ public class WorkbenchMenuBarView extends Composite
     private Identity identity;
 
     @UiField
-    public Brand brand;
-
-    @UiField
     public Nav menuBarLeft;
 
     @UiField
@@ -81,11 +71,6 @@ public class WorkbenchMenuBarView extends Composite
 
     public WorkbenchMenuBarView() {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    @Override
-    public void setBrandMenu( final BrandMenuItem brand ) {
-        this.brand.setText( brand.getCaption() );
     }
 
     /**
@@ -158,7 +143,17 @@ public class WorkbenchMenuBarView extends Composite
             }};
         }
 
-        return null;
+        final NavLink gwtItem = new NavLink( item.getCaption() ) {{
+            setDisabled( !item.isEnabled() );
+        }};
+        item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+            @Override
+            public void enabledStateChanged( final boolean enabled ) {
+                gwtItem.setDisabled( !enabled );
+            }
+        } );
+
+        return gwtItem;
     }
 
     @Override

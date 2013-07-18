@@ -14,7 +14,6 @@ import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuSearchItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.Collections.*;
@@ -28,108 +27,35 @@ public final class MenuBuilderImpl
                    MenuFactory.ContributedMenuBuilder,
                    MenuFactory.TopLevelMenusBuilder,
                    MenuFactory.SubMenuBuilder,
-                   MenuFactory.SearchMenuBuilder,
                    MenuFactory.SubMenusBuilder,
                    MenuFactory.TerminalMenu {
 
     public enum MenuType {
-        TOP_LEVEL, CONTRIBUTED, SEARCH, REGULAR, GROUP;
+        TOP_LEVEL, CONTRIBUTED, REGULAR, GROUP
     }
 
-    final List<MenuItem>        menuItems = new ArrayList<MenuItem>();
-    final Stack<CurrentContext> context   = new Stack<CurrentContext>();
+    final List<MenuItem> menuItems = new ArrayList<MenuItem>();
+    final Stack<CurrentContext> context = new Stack<CurrentContext>();
 
     private static class CurrentContext {
 
         MenuItem menu = null;
 
-        int                          order             = 0;
-        MenuType                     menuType          = MenuType.REGULAR;
-        String                       caption           = null;
-        Set<String>                  roles             = new HashSet<String>();
-        MenuPosition                 position          = MenuPosition.LEFT;
-        String                       contributionPoint = null;
-        Command                      command           = null;
-        MenuSearchItem.SearchCommand searchCommand     = null;
-        List<MenuItem>               menuItems         = new ArrayList<MenuItem>();
-        Stack<CurrentContext>        menuRawItems      = new Stack<CurrentContext>();
+        int order = 0;
+        MenuType menuType = MenuType.REGULAR;
+        String caption = null;
+        Set<String> roles = new HashSet<String>();
+        MenuPosition position = MenuPosition.LEFT;
+        String contributionPoint = null;
+        Command command = null;
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        Stack<CurrentContext> menuRawItems = new Stack<CurrentContext>();
 
         MenuItem build() {
             if ( menu != null ) {
                 return menu;
             }
-            if ( menuType.equals( MenuType.SEARCH ) ) {
-                return new MenuSearchItem() {
-                    private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
-                    private boolean isEnabled = true;
-
-                    @Override
-                    public SearchCommand getCommand() {
-                        return searchCommand;
-                    }
-
-                    @Override
-                    public String getContributionPoint() {
-                        return contributionPoint;
-                    }
-
-                    @Override
-                    public String getCaption() {
-                        return caption;
-                    }
-
-                    @Override
-                    public MenuPosition getPosition() {
-                        return position;
-                    }
-
-                    @Override
-                    public int getOrder() {
-                        return order;
-                    }
-
-                    @Override
-                    public boolean isEnabled() {
-                        return isEnabled;
-                    }
-
-                    @Override
-                    public void setEnabled( final boolean enabled ) {
-                        this.isEnabled = enabled;
-                        notifyListeners( enabled );
-                    }
-
-                    @Override
-                    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
-                        enabledStateChangeListeners.add( listener );
-                    }
-
-                    @Override
-                    public String getSignatureId() {
-                        if ( contributionPoint != null ) {
-                            return getClass().getName() + "#" + contributionPoint + "#" + caption;
-
-                        }
-                        return getClass().getName() + "#" + caption;
-                    }
-
-                    @Override
-                    public Collection<String> getRoles() {
-                        return roles;
-                    }
-
-                    @Override
-                    public Collection<String> getTraits() {
-                        return emptyList();
-                    }
-
-                    private void notifyListeners( final boolean enabled ) {
-                        for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
-                            listener.enabledStateChanged( enabled );
-                        }
-                    }
-                };
-            } else if ( menuItems.size() > 0 || menuRawItems.size() > 0 ) {
+            if ( menuItems.size() > 0 || menuRawItems.size() > 0 ) {
                 if ( menuRawItems.size() > 0 ) {
                     for ( final CurrentContext current : menuRawItems ) {
                         menuItems.add( current.build() );
@@ -385,16 +311,6 @@ public final class MenuBuilderImpl
     }
 
     @Override
-    public MenuBuilderImpl newSearchItem( final String caption ) {
-        final CurrentContext currentContext = new CurrentContext();
-        currentContext.caption = checkNotEmpty( "caption", caption );
-        currentContext.menuType = MenuType.SEARCH;
-        context.push( currentContext );
-
-        return this;
-    }
-
-    @Override
     public MenuBuilderImpl menu( final String caption ) {
         final CurrentContext currentContext = new CurrentContext();
         currentContext.caption = checkNotEmpty( "caption", caption );
@@ -436,13 +352,6 @@ public final class MenuBuilderImpl
     @Override
     public MenuBuilderImpl respondsWith( final Command command ) {
         context.peek().command = checkNotNull( "command", command );
-
-        return this;
-    }
-
-    @Override
-    public MenuBuilderImpl respondsWith( final MenuSearchItem.SearchCommand command ) {
-        context.peek().searchCommand = checkNotNull( "command", command );
 
         return this;
     }

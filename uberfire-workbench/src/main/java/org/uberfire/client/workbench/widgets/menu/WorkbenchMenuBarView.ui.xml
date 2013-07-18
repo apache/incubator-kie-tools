@@ -19,7 +19,6 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <b:ResponsiveNavbar position="TOP" inverse="true">
-    <b:Brand ui:field="brand"/>
     <b:NavCollapse>
       <b:Nav alignment="LEFT" ui:field="menuBarLeft">
       </b:Nav>

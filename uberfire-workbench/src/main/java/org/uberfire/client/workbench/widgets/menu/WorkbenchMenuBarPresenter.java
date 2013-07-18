@@ -15,32 +15,12 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.ClosePlaceEvent;
-import org.uberfire.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.workbench.model.menu.BrandMenuItem;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -57,8 +37,6 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             extends
             IsWidget {
 
-        void setBrandMenu( final BrandMenuItem brand );
-
         void clear();
 
         void addMenuItems( Menus menus );
@@ -74,13 +52,6 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     public IsWidget getView() {
         return this.view;
-    }
-
-    @Override
-    public void setBrandMenuItem( final BrandMenuItem brandMenuItem ) {
-        if ( brandMenuItem != null ) {
-            view.setBrandMenu( brandMenuItem );
-        }
     }
 
     @Override
