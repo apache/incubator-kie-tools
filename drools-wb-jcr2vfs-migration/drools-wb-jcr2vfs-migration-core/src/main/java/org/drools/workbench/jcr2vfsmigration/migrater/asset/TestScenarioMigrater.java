@@ -18,6 +18,7 @@ import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.NoSuchFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,46 +28,49 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class TestScenarioMigrater {
 
-    protected static final Logger logger = LoggerFactory.getLogger(TestScenarioMigrater.class);
+    protected static final Logger logger = LoggerFactory.getLogger( TestScenarioMigrater.class );
 
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
     protected MigrationPathManager migrationPathManager;
-    
+
     @Inject
     private Paths paths;
-    
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-    
+
     @Inject
     protected PackageImportHelper packageImportHelper;
 
-    public void migrate(Module jcrModule,  AssetItem jcrAssetItem) {      
-        if (!AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
-            throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
-                    + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
+    public void migrate( Module jcrModule,
+                         AssetItem jcrAssetItem ) {
+        if ( !AssetFormats.TEST_SCENARIO.equals( jcrAssetItem.getFormat() ) ) {
+            throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName()
+                                                        + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
         }
-        
-        Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);        
+
+        Path path = migrationPathManager.generatePathForAsset( jcrModule, jcrAssetItem );
         final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-        ioService.createFile( nioPath );
+        if ( !Files.exists( nioPath ) ) {
+            ioService.createFile( nioPath );
+        }
 
         Map<String, Object> attrs;
         try {
             attrs = ioService.readAttributes( nioPath );
         } catch ( final NoSuchFileException ex ) {
             attrs = new HashMap<String, Object>();
-        }        
-        
-        String content = jcrAssetItem.getContent();
-        
-        String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(content, path);
-        sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
+        }
 
-        ioService.write( nioPath, content, attrs, new CommentedOption(jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ));
+        String content = jcrAssetItem.getContent();
+
+        String sourceContentWithPackage = packageImportHelper.assertPackageNameXML( content, path );
+        sourceContentWithPackage = packageImportHelper.assertPackageImportXML( sourceContentWithPackage, path );
+
+        ioService.write( nioPath, content, attrs, new CommentedOption( jcrAssetItem.getLastContributor(), null, jcrAssetItem.getCheckinComment(), jcrAssetItem.getLastModified().getTime() ) );
     }
 }

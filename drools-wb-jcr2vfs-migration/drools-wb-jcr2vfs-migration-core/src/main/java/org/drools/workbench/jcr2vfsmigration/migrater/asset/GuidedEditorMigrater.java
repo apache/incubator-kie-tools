@@ -23,6 +23,7 @@ import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -82,7 +83,9 @@ public class GuidedEditorMigrater {
             }
 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
-            ioService.createFile( nioPath );
+            if ( !Files.exists( nioPath ) ) {
+                ioService.createFile( nioPath );
+            }
 
             StringBuilder sb = new StringBuilder();
             BRMSPackageBuilder builder = new BRMSPackageBuilder( rulesRepository.loadModuleByUUID( jcrModule.getUuid() ) );

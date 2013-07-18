@@ -181,7 +181,7 @@ public class FactModelsMigrater {
     		} else if("Position".equals(name)) {
                 dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.POSITION_ANNOTATON), key, value);
 	   		} else if("Equals".equals(name)) {
-                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.EQUALS_ANNOTATION), key, value);	
+                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.KEY_ANNOTATION), key, value);
     		}
     	}    		
     }
