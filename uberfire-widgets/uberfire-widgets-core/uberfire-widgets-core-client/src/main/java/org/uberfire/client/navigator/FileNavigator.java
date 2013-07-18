@@ -1,6 +1,5 @@
 package org.uberfire.client.navigator;
 
-import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.NavigatorResources;
@@ -45,6 +43,7 @@ public class FileNavigator extends Composite {
     private FlexTable navigator = null;
     private NavigatorOptions options = NavigatorOptions.DEFAULT;
     private boolean isListingRepos = false;
+    private ParameterizedCommand<Path> fileActionCommand = null;
 
     public FileNavigator() {
         initWidget( container );
@@ -52,6 +51,10 @@ public class FileNavigator extends Composite {
 
     public void setOptions( final NavigatorOptions options ) {
         this.options = options;
+    }
+
+    public void setFileActionCommand( final ParameterizedCommand<Path> fileActionCommand ) {
+        this.fileActionCommand = fileActionCommand;
     }
 
     public void loadContent( final Path path ) {
@@ -167,7 +170,11 @@ public class FileNavigator extends Composite {
         createElement( row, dataContent, IconType.FILE_ALT, new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new PathPlaceRequest( dataContent.getPath() ) );
+                if ( fileActionCommand != null ) {
+                    fileActionCommand.execute( dataContent.getPath() );
+                } else {
+                    placeManager.goTo( new PathPlaceRequest( dataContent.getPath() ) );
+                }
             }
         } );
     }

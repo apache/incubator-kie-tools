@@ -34,9 +34,6 @@ public interface PlaceManager {
     void goTo( final PlaceRequest place,
                final Command callback );
 
-    void goTo( final PartDefinition part,
-               final PanelDefinition panel );
-
     void goTo( final Path path );
 
     void goTo( final Path path,
@@ -44,6 +41,34 @@ public interface PlaceManager {
 
     void goTo( final Path path,
                final Command callback );
+
+    void goTo( final PartDefinition part,
+               final PanelDefinition panel );
+
+    void goTo( final String identifier,
+               final PanelDefinition panel );
+
+    void goTo( final String identifier,
+               final Command callback,
+               final PanelDefinition panel );
+
+    void goTo( final PlaceRequest place,
+               final PanelDefinition panel );
+
+    void goTo( final PlaceRequest place,
+               final Command callback,
+               final PanelDefinition panel );
+
+    void goTo( final Path path,
+               final PanelDefinition panel );
+
+    void goTo( final Path path,
+               final PlaceRequest place,
+               final PanelDefinition panel );
+
+    void goTo( final Path path,
+               final Command callback,
+               final PanelDefinition panel );
 
     public Activity getActivity( final PlaceRequest place );
 

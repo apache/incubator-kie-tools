@@ -59,7 +59,6 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     @PostConstruct
     private void init() {
-        buildPerspectiveContext();
         view.init( this );
     }
 
@@ -89,6 +88,7 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
                 panelContext = activity;
             }
         }
+        buildPerspectiveContext();
     }
 
     @Override

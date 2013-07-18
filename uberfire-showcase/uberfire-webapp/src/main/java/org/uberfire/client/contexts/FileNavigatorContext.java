@@ -2,31 +2,31 @@ package org.uberfire.client.contexts;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.OnContextAttach;
-import org.uberfire.client.annotations.OnReveal;
 import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.navigator.FileNavigator;
 import org.uberfire.client.navigator.NavigatorOptions;
-import org.uberfire.workbench.events.ContextUpdateEvent;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PanelDefinition;
 
 @Dependent
 @WorkbenchContext(identifier = "fileNavContext")
 public class FileNavigatorContext extends Composite {
+
+    @Inject
+    private PlaceManager placeManager;
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -109,17 +109,15 @@ public class FileNavigatorContext extends Composite {
         fileNavigator.loadContent( null );
     }
 
-    //    public void onContextUpdateEvent( @Observes final ContextUpdateEvent event ) {
-//        if ( event.getPanel().equals( panel ) && event.getData().containsKey( "path" ) ) {
-//            container.clear();
-//            container.add( fileNavigator );
-//            fileNavigator.loadContent( (Path) event.getData().get( "path" ) );
-//        }
-//    }
-//
     @OnContextAttach
     public void onAttach( final PanelDefinition panel ) {
         this.panel = panel;
+        fileNavigator.setFileActionCommand( new ParameterizedCommand<Path>() {
+            @Override
+            public void execute( final Path path ) {
+                placeManager.goTo( path, panel );
+            }
+        } );
     }
 
     @WorkbenchPartTitle

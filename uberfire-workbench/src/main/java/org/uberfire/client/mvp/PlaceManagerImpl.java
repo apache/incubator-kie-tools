@@ -52,8 +52,7 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class PlaceManagerImpl
-        implements
-        PlaceManager {
+        implements PlaceManager {
 
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
@@ -104,26 +103,91 @@ public class PlaceManagerImpl
     }
 
     @Override
+    public void goTo( final String identifier,
+                      final PanelDefinition panel ) {
+        final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
+        goTo( place, null, panel );
+    }
+
+    @Override
     public void goTo( final String identifier ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
-        goTo( place, null );
+        goTo( place, null, null );
+    }
+
+    @Override
+    public void goTo( final String identifier,
+                      final Command callback,
+                      final PanelDefinition panel ) {
+        final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
+        goTo( place, callback, panel );
     }
 
     @Override
     public void goTo( final String identifier,
                       final Command callback ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
-        goTo( place, callback );
+        goTo( place, callback, null );
+    }
+
+    @Override
+    public void goTo( final PlaceRequest place,
+                      final PanelDefinition panel ) {
+        goTo( place, null, panel );
     }
 
     @Override
     public void goTo( PlaceRequest place ) {
-        goTo( place, null );
+        goTo( place, null, null );
+    }
+
+    @Override
+    public void goTo( final Path path,
+                      final PanelDefinition panel ) {
+        goTo( getPlace( path ), null, panel );
+    }
+
+    @Override
+    public void goTo( final Path path ) {
+        goTo( getPlace( path ), null, null );
+    }
+
+    @Override
+    public void goTo( final Path path,
+                      final PlaceRequest placeRequest,
+                      final PanelDefinition panel ) {
+        goTo( getPlace( path, placeRequest ), null, panel );
+    }
+
+    @Override
+    public void goTo( final Path path,
+                      final PlaceRequest placeRequest ) {
+        goTo( getPlace( path, placeRequest ), null, null );
+    }
+
+    @Override
+    public void goTo( final Path path,
+                      final Command callback,
+                      final PanelDefinition panel ) {
+        goTo( getPlace( path ), callback, panel );
+    }
+
+    @Override
+    public void goTo( Path path,
+                      Command callback ) {
+        goTo( getPlace( path ), callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
                       final Command callback ) {
+        goTo( place, callback, null );
+    }
+
+    @Override
+    public void goTo( PlaceRequest place,
+                      Command callback,
+                      PanelDefinition panel ) {
         if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
             return;
         }
@@ -136,6 +200,7 @@ public class PlaceManagerImpl
                 launchActivity( place,
                                 workbenchActivity,
                                 workbenchActivity.getDefaultPosition(),
+                                panel,
                                 callback );
             } else if ( activity instanceof PopupActivity ) {
                 launchActivity( place,
@@ -147,7 +212,7 @@ public class PlaceManagerImpl
                                 callback );
             }
         } else {
-            goTo( requestPair.getK2() );
+            goTo( requestPair.getK2(), panel );
         }
     }
 
@@ -205,23 +270,6 @@ public class PlaceManagerImpl
         } else {
             goTo( requestPair.getK2() );
         }
-    }
-
-    @Override
-    public void goTo( final Path path ) {
-        goTo( getPlace( path ) );
-    }
-
-    @Override
-    public void goTo( final Path path,
-                      final PlaceRequest placeRequest ) {
-        goTo( getPlace( path, placeRequest ) );
-    }
-
-    @Override
-    public void goTo( Path path,
-                      Command callback ) {
-        goTo( getPlace( path ), callback );
     }
 
     private PlaceRequest getPlace( final Path path,
@@ -296,6 +344,7 @@ public class PlaceManagerImpl
     private void launchActivity( final PlaceRequest place,
                                  final WorkbenchActivity activity,
                                  final Position position,
+                                 final PanelDefinition _panel,
                                  final Command callback ) {
 
         //If we're already showing this place exit.
@@ -305,8 +354,13 @@ public class PlaceManagerImpl
         }
 
         final PartDefinition part = new PartDefinitionImpl( place );
-        final PanelDefinition panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
-                                                                      position );
+        final PanelDefinition panel;
+        if ( _panel != null ) {
+            panel = _panel;
+        } else {
+            panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
+                                                    position );
+        }
 
         launchActivity( place,
                         activity,
@@ -336,7 +390,7 @@ public class PlaceManagerImpl
                                                panel,
                                                activity.getMenus(),
                                                uiPart,
-                                               activity.contextId());
+                                               activity.contextId() );
             }
         }, place, callback );
     }
