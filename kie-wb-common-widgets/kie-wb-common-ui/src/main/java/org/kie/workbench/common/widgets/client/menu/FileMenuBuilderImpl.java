@@ -223,51 +223,61 @@ public class FileMenuBuilderImpl
 
     @Override
     public Menus build() {
-        return MenuFactory
-                .newTopLevelMenu( CommonConstants.INSTANCE.File() )
-                .withItems( getItems() )
-                .endMenu().build();
-    }
-
-    private List<MenuItem> getItems() {
         final List<MenuItem> menuItems = new ArrayList<MenuItem>();
         if ( saveCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Save() )
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
                                    .respondsWith( saveCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
         }
 
         if ( deleteCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Delete() )
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
                                    .respondsWith( deleteCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
         }
 
         if ( renameCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Rename() )
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
                                    .respondsWith( renameCommand )
                                    .endMenu().build().getItems().get( 0 ) );
         }
 
         if ( copyCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Copy() )
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
                                    .respondsWith( copyCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
         }
 
         if ( restoreCommand != null ) {
-            menuItems.add( newSimpleItem( CommonConstants.INSTANCE.Restore() )
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
                                    .respondsWith( restoreCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
         }
 
-        for ( Pair<String, Command> other : otherCommands ) {
-            menuItems.add( newSimpleItem( other.getK1() )
-                                   .respondsWith( other.getK2() )
-                                   .endMenu().build().getItems().get( 0 ) );
+        if ( !( otherCommands == null || otherCommands.isEmpty() ) ) {
+            final List<MenuItem> otherMenuItems = new ArrayList<MenuItem>();
+            for ( Pair<String, Command> other : otherCommands ) {
+                otherMenuItems.add( newSimpleItem( other.getK1() )
+                                            .respondsWith( other.getK2() )
+                                            .endMenu().build().getItems().get( 0 ) );
+            }
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Other() )
+                                   .withItems( otherMenuItems )
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
         }
 
-        return menuItems;
+        return new Menus() {
+
+            @Override
+            public List<MenuItem> getItems() {
+                return menuItems;
+            }
+        };
     }
 
 }

@@ -70,6 +70,8 @@ public interface CommonConstants
 
     String File();
 
+    String Other();
+
     String Save();
 
     String Validate();
