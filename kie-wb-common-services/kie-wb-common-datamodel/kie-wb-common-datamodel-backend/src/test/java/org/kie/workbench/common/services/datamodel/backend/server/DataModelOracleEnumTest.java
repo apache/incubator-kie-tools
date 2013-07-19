@@ -30,11 +30,13 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "sex",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -42,6 +44,7 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "sex",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -94,11 +97,13 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -106,6 +111,7 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "sex",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -148,11 +154,13 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "type",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "value",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -214,21 +222,25 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field3",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field4",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -284,11 +296,13 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "type",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "value",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -343,11 +357,13 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -374,16 +390,19 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2suffixed",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -415,21 +434,25 @@ public class DataModelOracleEnumTest {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field3",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field4",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()

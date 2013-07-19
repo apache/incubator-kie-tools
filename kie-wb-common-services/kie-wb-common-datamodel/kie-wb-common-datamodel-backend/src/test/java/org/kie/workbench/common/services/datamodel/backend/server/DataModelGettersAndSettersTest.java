@@ -36,11 +36,13 @@ public class DataModelGettersAndSettersTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "sex",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()

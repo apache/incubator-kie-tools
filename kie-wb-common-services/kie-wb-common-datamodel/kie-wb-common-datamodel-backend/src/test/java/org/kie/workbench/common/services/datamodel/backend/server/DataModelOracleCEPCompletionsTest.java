@@ -27,6 +27,7 @@ public class DataModelOracleCEPCompletionsTest {
                 .addField( new ModelField( "dateField",
                                            Date.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -35,11 +36,13 @@ public class DataModelOracleCEPCompletionsTest {
                 .addField( new ModelField( "this",
                                            Object.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.SELF,
                                            FieldAccessorsAndMutators.BOTH,
                                            "AnEvent" ) )
                 .addField( new ModelField( "dateField",
                                            Date.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()

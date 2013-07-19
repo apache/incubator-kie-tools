@@ -330,6 +330,7 @@ public class PackageDataModelOracleUtils {
             correctedModelFields.add( new ModelField( mf.getName(),
                                                       mfClassName,
                                                       mf.getClassType(),
+                                                      mf.getOrigin(),
                                                       mf.getAccessorsAndMutators(),
                                                       mfType ) );
         }

@@ -6,14 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.guvnor.common.services.project.builder.model.TypeSource;
@@ -150,6 +143,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                     addField( new ModelField( fieldName,
                                               returnType.getName(),
                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                              ModelField.FIELD_ORIGIN.DELEGATED,
                                               methodSignatures.get( qualifiedName ).accessorAndMutator,
                                               genericReturnType ) );
 
@@ -166,12 +160,16 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                            fieldName,
                                            field.getGenericType() );
 
+                Field[] _declaredClassFields = clazz.getDeclaredFields();
+                Collection declaredClassFields = _declaredClassFields != null ? Arrays.asList(_declaredClassFields) : Collections.EMPTY_LIST;
+
                 final Class<?> returnType = field.getType();
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
                 addField( new ModelField( fieldName,
                                           returnType.getName(),
                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                          declaredClassFields.contains(field) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
                                           methodSignatures.get( qualifiedName ).accessorAndMutator,
                                           genericReturnType ) );
 

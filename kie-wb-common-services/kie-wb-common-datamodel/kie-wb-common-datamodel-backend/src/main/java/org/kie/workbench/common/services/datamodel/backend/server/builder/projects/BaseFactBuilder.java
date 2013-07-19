@@ -39,6 +39,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
         addField( new ModelField( DataType.TYPE_THIS,
                                   type,
                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                  ModelField.FIELD_ORIGIN.SELF,
                                   FieldAccessorsAndMutators.ACCESSOR,
                                   DataType.TYPE_THIS ) );
     }
@@ -57,6 +58,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
         addField( new ModelField( DataType.TYPE_THIS,
                                   type,
                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                  ModelField.FIELD_ORIGIN.SELF,
                                   FieldAccessorsAndMutators.ACCESSOR,
                                   DataType.TYPE_THIS ) );
     }

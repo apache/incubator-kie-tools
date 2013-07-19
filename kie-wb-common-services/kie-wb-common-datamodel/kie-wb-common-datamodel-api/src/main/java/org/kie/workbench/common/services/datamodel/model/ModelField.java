@@ -27,6 +27,14 @@ public class ModelField {
         TYPE_DECLARATION_CLASS
     }
 
+    @Portable
+    public static enum FIELD_ORIGIN {
+        SELF,
+        DECLARED,
+        DELEGATED,
+        INHERITED
+    }
+
     private String name;
     private String className;
     private FieldAccessorsAndMutators accessorsAndMutators;
@@ -37,6 +45,8 @@ public class ModelField {
     private String type;
 
     private FIELD_CLASS_TYPE classType;
+
+    private FIELD_ORIGIN fieldOrigin;
 
     public ModelField() {
     }
@@ -53,10 +63,12 @@ public class ModelField {
     public ModelField( final String name,
                        final String clazz,
                        final FIELD_CLASS_TYPE fieldClassType,
+                       final FIELD_ORIGIN fieldOrigin,
                        final FieldAccessorsAndMutators accessorsAndMutators,
                        final String type ) {
         this.name = name;
         this.classType = fieldClassType;
+        this.fieldOrigin = fieldOrigin;
         this.className = clazz;
         this.accessorsAndMutators = accessorsAndMutators;
         this.type = type;
@@ -78,6 +90,10 @@ public class ModelField {
         return classType;
     }
 
+    public FIELD_ORIGIN getOrigin() {
+        return fieldOrigin;
+    }
+
     public FieldAccessorsAndMutators getAccessorsAndMutators() {
         return accessorsAndMutators;
     }
@@ -88,6 +104,7 @@ public class ModelField {
                 + ", name=" + name
                 + ", type=" + type
                 + ", className=" + className
+                + ", origin=" + fieldOrigin
                 + ", accessorsAndMutators=" + accessorsAndMutators
                 + "]";
     }

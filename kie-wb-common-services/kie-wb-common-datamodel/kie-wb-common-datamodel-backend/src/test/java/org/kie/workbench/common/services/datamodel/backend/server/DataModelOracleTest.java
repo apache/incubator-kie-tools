@@ -11,6 +11,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Te
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.TestDelegatedClass;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.TestSubClass;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.TestSuperClass;
+import org.kie.workbench.common.services.datamodel.model.ModelField;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 
@@ -181,6 +182,15 @@ public class DataModelOracleTest {
         assertEquals( String.class.getName(),
                       dmo.getParametricFieldType( TestSubClass.class.getSimpleName(),
                                                   "list" ) );
+
+        ModelField[] fields = dmo.getModelFields().get(TestSubClass.class.getSimpleName());
+        for (ModelField field : fields) {
+            if ("this".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.SELF, field.getOrigin());
+            else if ("field1".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.INHERITED, field.getOrigin());
+            else if ("field2".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DECLARED, field.getOrigin());
+            // TODO this last case is arguable : should be inherited, but is cualified as delegated, probably needs to be looked at
+            // else if ("list".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DELEGATED, field.getOrigin());
+        }
     }
 
     @Test
@@ -220,6 +230,13 @@ public class DataModelOracleTest {
         assertEquals( String.class.getName(),
                       dmo.getParametricFieldType( TestDelegatedClass.class.getSimpleName(),
                                                   "list" ) );
+
+        ModelField[] fields = dmo.getModelFields().get(TestDelegatedClass.class.getSimpleName());
+        for (ModelField field : fields) {
+            if ("this".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.SELF, field.getOrigin());
+            else if ("field1".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DELEGATED, field.getOrigin());
+            else if ("list".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DELEGATED, field.getOrigin());
+        }
     }
 
 }
