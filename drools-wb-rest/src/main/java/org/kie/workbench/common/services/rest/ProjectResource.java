@@ -48,9 +48,9 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToGroupRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
-import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
 import org.kie.workbench.common.services.shared.rest.CreateGroupRequest;
+import org.kie.workbench.common.services.shared.rest.CreateOrCloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
 import org.kie.workbench.common.services.shared.rest.DeployProjectRequest;
 import org.kie.workbench.common.services.shared.rest.Entity;
@@ -118,7 +118,7 @@ public class ProjectResource {
     private int maxCacheSize = 10000;
     
     @Inject
-    private Event<CloneRepositoryRequest> cloneJobRequestEvent;     
+    private Event<CreateOrCloneRepositoryRequest> createOrCloneJobRequestEvent;     
     @Inject
     private Event<CreateProjectRequest> createProjectRequestEvent; 
     @Inject
@@ -147,10 +147,11 @@ public class ProjectResource {
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
+            System.out.println( "-----onUpateJobStatus--- , can not find jobId:" + jobResult.getJodId() + ", the job has gone probably because its done and has been removed.");
         	return;
         }
 
-        jobs.put(jobResult.getJodId(), job);
+        jobs.put(jobResult.getJodId(), jobResult);
     }
 
     @GET
@@ -163,6 +164,7 @@ public class ProjectResource {
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
+            System.out.println( "-----getJobStatus--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed.");
         	job = new JobResult();
         	job.setStatus(JobRequest.Status.GONE);
         	return job;
@@ -175,12 +177,13 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
     public JobResult removeJob( @PathParam("jobId") String jobId ) {
-        System.out.println( "-----queryJobStatus--- , jobId:" + jobId );
+        System.out.println( "-----removeJob--- , jobId:" + jobId );
         
         JobResult job = jobs.get(jobId);
 
         if (job == null) {
             //the job has gone probably because its done and has been removed.
+            System.out.println( "-----removeJob--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed.");
         	job = new JobResult();
         	job.setStatus(JobRequest.Status.GONE);
         	return job;
@@ -201,7 +204,7 @@ public class ProjectResource {
         System.out.println( "-----createOrCloneRepository--- , repository name:" + repository.getName() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
-        CloneRepositoryRequest jobRequest = new CloneRepositoryRequest();
+        CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepository(repository);
@@ -211,7 +214,7 @@ public class ProjectResource {
         jobResult.setStatus(JobRequest.Status.ACCEPTED);
         jobs.put(id, jobResult);
         
-        cloneJobRequestEvent.fire(jobRequest);
+        createOrCloneJobRequestEvent.fire(jobRequest);
         
         return jobRequest;   
     }
@@ -234,8 +237,6 @@ public class ProjectResource {
         jobResult.setJodId(id);
         jobResult.setStatus(JobRequest.Status.ACCEPTED);
         jobs.put(id, jobResult);
-        
-        //TODO: Delete repository
         
         return jobRequest;
     }

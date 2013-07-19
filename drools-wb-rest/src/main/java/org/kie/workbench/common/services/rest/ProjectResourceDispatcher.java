@@ -67,8 +67,8 @@ public class ProjectResourceDispatcher {
     @Inject
     protected ScenarioTestEditorService scenarioTestEditorService;
 
-    public void cloneRepository(String jobId, Repository repository) {
-        System.out.println("-----KieSessionAsyncJobRequestObserver:createOrCloneRepository--- , repository name:" + repository.getName());
+    public void createOrCloneRepository(String jobId, Repository repository) {
+        System.out.println("-----ProjectResourceDispatcher:createOrCloneRepository--- , repository name:" + repository.getName());
 
         JobResult result = new JobResult();
         result.setJodId(jobId);
@@ -119,7 +119,7 @@ public class ProjectResourceDispatcher {
     }
 
     public void createProject(String jobId, String repositoryName, String projectName) {
-        System.out.println("-----KieSessionAsyncJobRequestObserver:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
+        System.out.println("-----ProjectResourceDispatcher:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -164,7 +164,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void compileProject(String jobId, String repositoryName, String projectName, BuildConfig mavenConfig ) {
-        System.out.println( "-----KieSessionAsyncJobRequestObserver:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        System.out.println( "-----ProjectResourceDispatcher:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -206,7 +206,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void installProject(String jobId, String repositoryName, String projectName, BuildConfig mavenConfig ) {
-        System.out.println( "-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        System.out.println( "-----ProjectResourceDispatcher:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -245,7 +245,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void testProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {
-        System.out.println( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        System.out.println( "-----ProjectResourceDispatcher:testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         final JobResult result = new JobResult();
         result.setJodId(jobId);
 
@@ -310,7 +310,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void deployProject(String jobId, String repositoryName, String projectName, BuildConfig config ) {        
-        System.out.println( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        System.out.println( "-----ProjectResourceDispatcher:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -340,7 +340,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void createGroup(String jobId,  String groupName, String groupOwer, List<String> repositoryNameList ) {
-        System.out.println( "-----createGroup--- , Group name:" + groupName + ", Group owner:" + groupOwer );
+        System.out.println( "-----ProjectResourceDispatcher:createGroup--- , Group name:" + groupName + ", Group owner:" + groupOwer );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -367,7 +367,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void addRepositoryToGroup(String jobId,  String groupName, String repositoryName ) {
-        System.out.println( "-----addRepositoryToGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+        System.out.println( "-----ProjectResourceDispatcher:addRepositoryToGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
@@ -387,7 +387,7 @@ public class ProjectResourceDispatcher {
     }
     
     public void removeRepositoryFromGroup(String jobId,  String groupName, String repositoryName ) {
-        System.out.println( "-----removeRepositoryFromGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+        System.out.println( "-----ProjectResourceDispatcher:removeRepositoryFromGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         

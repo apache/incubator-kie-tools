@@ -6,9 +6,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToGroupRequest;
-import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
 import org.kie.workbench.common.services.shared.rest.CreateGroupRequest;
+import org.kie.workbench.common.services.shared.rest.CreateOrCloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
 import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
@@ -27,11 +27,11 @@ public class KieSessionAsyncJobRequestObserver {
     @Inject
     private Event<JobResult> jobResultEvent;
     
-    public void onCloneRepositoryRequest( final @Observes CloneRepositoryRequest jobRequest ) {
+    public void onCloneRepositoryRequest( final @Observes CreateOrCloneRepositoryRequest jobRequest ) {
         if(!approveRequest(jobRequest)) {
             return;
         }
-        projectResourceDispatcher.cloneRepository(jobRequest.getJodId(), jobRequest.getRepository());
+        projectResourceDispatcher.createOrCloneRepository(jobRequest.getJodId(), jobRequest.getRepository());
     }
     
     public void onCreateProjectRequest( final @Observes CreateProjectRequest jobRequest ) {
