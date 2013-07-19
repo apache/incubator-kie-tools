@@ -81,9 +81,9 @@ public class StaticWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     }
 
     @Override
-    public void addPart( WorkbenchPartPresenter.View view,
-                         String contextId ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void addPart( final WorkbenchPartPresenter.View view,
+                         final String contextId ) {
+        getPanelView().addPart( view );
     }
 
     @Override

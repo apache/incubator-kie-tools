@@ -87,7 +87,7 @@ public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
     @Override
     public void addPart( WorkbenchPartPresenter.View view,
                          String contextId ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        getPanelView().addPart( view );
     }
 
     @Override
