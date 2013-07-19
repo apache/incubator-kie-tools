@@ -18,7 +18,6 @@ package org.drools.workbench.screens.workitems.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +63,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -308,12 +308,17 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     @Override
     public List<BuildMessage> validate( final Path path ) {
-        final String content = load( path );
-        final List<BuildMessage> messages = doValidation( content );
-        for ( BuildMessage msg : messages ) {
-            msg.setPath( path );
+        try {
+            final String content = ioService.readAllString( paths.convert( path ) );
+            final List<BuildMessage> messages = doValidation( content );
+            for ( BuildMessage msg : messages ) {
+                msg.setPath( path );
+            }
+            return messages;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
-        return messages;
     }
 
     @Override
@@ -322,8 +327,17 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     }
 
     private List<BuildMessage> doValidation( final String content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
+        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+        try {
+            MVEL.eval( content,
+                       new HashMap() );
+        } catch ( Exception e ) {
+            final BuildMessage msg = new BuildMessage();
+            msg.setLevel( BuildMessage.Level.ERROR );
+            msg.setText( e.getMessage() );
+            messages.add( msg );
+        }
+        return messages;
     }
 
     @Override
