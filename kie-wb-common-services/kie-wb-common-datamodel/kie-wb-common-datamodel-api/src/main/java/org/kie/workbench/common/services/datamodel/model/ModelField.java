@@ -57,6 +57,7 @@ public class ModelField {
      * @param clazz the class of the field. For fields defined as a type declaration
      * @param fieldClassType tells if this is a field for a regular POJO class or for a object type declaration
      * this clazz should be null.
+     * @param fieldOrigin gives info about this field's origin
      * @param accessorsAndMutators Whether the field has an Accessor, Mutator or both
      * @param type the type of the clazz.
      */
