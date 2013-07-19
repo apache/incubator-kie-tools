@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DataModelOracleDriver implements ModelDriver {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(DataModelOracleDriver.class);
 
     private List<AnnotationDefinition> configuredAnnotations = new ArrayList<AnnotationDefinition>();
@@ -80,7 +80,7 @@ public class DataModelOracleDriver implements ModelDriver {
         annotationDefinition = PositionAnnotationDefinition.getInstance();
         configuredAnnotations.add(annotationDefinition);
         annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
-                
+
     }
 
     @Override
@@ -123,7 +123,7 @@ public class DataModelOracleDriver implements ModelDriver {
         DataModel dataModel = createModel();
 
         logger.debug("Adding oracleDataModel: " + oracleDataModel + " to dataModel: " + dataModel);
-        
+
         String[] factTypes = oracleDataModel.getFactTypes();
         ObjectSource source = null;
 
@@ -158,7 +158,7 @@ public class DataModelOracleDriver implements ModelDriver {
                 addFactTypeAnnotation(dataObject, annotation);
             }
         }
-        
+
         Map<String, ModelField[]> fields = oracleDataModel.getModelFields();
         if (fields != null) {
             ModelField[] factFields = fields.get(factType);
@@ -170,7 +170,7 @@ public class DataModelOracleDriver implements ModelDriver {
                 for (int j = 0; j < factFields.length ; j++) {
                     field = factFields[j];
                     if (isLoadableField(field)) {
-                        
+
                         if (field.getType().equals("Collection")) {
                             //particular processing for collection types
                             //read the correction bag and item classes.
@@ -245,19 +245,18 @@ public class DataModelOracleDriver implements ModelDriver {
         return null;
     }
 
-
     /**
      * Indicates if this field should be loaded or not.
      * Some fields like a filed with name "this" shouldn't be loaded.
      */
     private boolean isLoadableField(ModelField field) {
-        return !"this".equals(field.getName());
+        return ( field.getOrigin().equals(ModelField.FIELD_ORIGIN.DECLARED) );
     }
 
     static class OracleGenerationListener implements GenerationListener {
 
         org.kie.commons.java.nio.file.Path output;
-        
+
         IOService ioService;
 
         List<FileChangeDescriptor> fileChanges = new ArrayList<FileChangeDescriptor>();
