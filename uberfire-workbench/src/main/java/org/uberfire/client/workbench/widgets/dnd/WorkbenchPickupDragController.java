@@ -58,6 +58,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final PlaceRequest place = sourcePart.getPlace();
         final String title = sourceView.getPresenter().getTitle();
         final IsWidget titleDecoration = sourceView.getPresenter().getTitleDecoration();
+        final String contextId = sourceView.getPresenter().getContextId();
         final IsWidget widget = sourceView.getPresenter().getPartView().getWrappedWidget();
         final Integer height = sourcePanel.getHeight();
         final Integer width = sourcePanel.getWidth();
@@ -70,6 +71,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
                                                                        title,
                                                                        titleDecoration,
                                                                        widget,
+                                                                       contextId,
                                                                        height,
                                                                        width,
                                                                        minHeight,

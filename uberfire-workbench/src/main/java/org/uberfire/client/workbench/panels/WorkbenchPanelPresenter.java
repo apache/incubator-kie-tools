@@ -32,6 +32,9 @@ public interface WorkbenchPanelPresenter {
 
     public void addPart( final WorkbenchPartPresenter.View view );
 
+    public void addPart( final WorkbenchPartPresenter.View view,
+                         final String contextId );
+
     public void removePart( final PartDefinition part );
 
     public void addPanel( final PanelDefinition panel,

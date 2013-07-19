@@ -32,6 +32,7 @@ public class WorkbenchDragContext {
     private final PanelDefinition sourcePanel;
     private final Menus menus;
     private final UIPart uiPart;
+    private final String contextId;
 
     private Integer height;
     private Integer width;
@@ -45,6 +46,7 @@ public class WorkbenchDragContext {
                                  final String title,
                                  final IsWidget titleDecoration,
                                  final IsWidget widget,
+                                 final String contextId,
                                  final Integer height,
                                  final Integer width,
                                  final Integer minHeight,
@@ -54,6 +56,7 @@ public class WorkbenchDragContext {
         this.sourcePanel = sourcePanel;
         this.menus = menus;
         this.uiPart = new UIPart( title, titleDecoration, widget );
+        this.contextId = contextId;
         this.height = height;
         this.width = width;
         this.minHeight = minHeight;
@@ -103,5 +106,9 @@ public class WorkbenchDragContext {
 
     public Menus getMenus() {
         return menus;
+    }
+
+    public String getContextId() {
+        return contextId;
     }
 }

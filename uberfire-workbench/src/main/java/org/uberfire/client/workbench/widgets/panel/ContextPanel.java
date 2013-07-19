@@ -44,6 +44,11 @@ public class ContextPanel extends Composite {
             this.style = this.widget.getElement().getClassName();
             container.clear();
             container.add( widget );
+        } else {
+            this.uiPart = null;
+            this.widget = null;
+            this.style = null;
+            container.clear();
         }
     }
 

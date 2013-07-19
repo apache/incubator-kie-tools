@@ -189,7 +189,7 @@ public class PanelManagerImpl implements PanelManager {
                 throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
             }
 
-            panelPresenter.addPart( partPresenter.getPartView() );
+            panelPresenter.addPart( partPresenter.getPartView(), contextId );
         }
 
         //The model for a Perspective is already fully populated. Don't go adding duplicates.

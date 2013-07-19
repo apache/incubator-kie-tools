@@ -33,4 +33,6 @@ public interface MultiPartWidget extends IsWidget,
     void setFocus( final boolean hasFocus );
 
     void addOnFocusHandler( final Command command );
+
+    int getPartsSize();
 }

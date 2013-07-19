@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -80,6 +81,9 @@ public class ListBarWidget
     }
 
     private static ListBarWidgetBinder uiBinder = GWT.create( ListBarWidgetBinder.class );
+
+    @Inject
+    private PanelManager panelManager;
 
     @Inject
     private RuntimeAuthorizationManager authzManager;
@@ -282,7 +286,7 @@ public class ListBarWidget
     public void remove( final PartDefinition part ) {
         if ( currentPart.getK1().equals( part ) ) {
             if ( parts.size() > 0 ) {
-                selectPart( parts.iterator().next() );
+                presenter.selectPart( parts.iterator().next() );
             } else {
                 clear();
             }
@@ -300,6 +304,14 @@ public class ListBarWidget
 
     @Override
     public void addOnFocusHandler( final Command command ) {
+    }
+
+    @Override
+    public int getPartsSize() {
+        if ( currentPart == null ) {
+            return 0;
+        }
+        return parts.size() + 1;
     }
 
     @Override
@@ -464,7 +476,7 @@ public class ListBarWidget
                         addClickHandler( new ClickHandler() {
                             @Override
                             public void onClick( final ClickEvent event ) {
-                                selectPart( part );
+                                presenter.selectPart( part );
                             }
                         } );
                     }} );

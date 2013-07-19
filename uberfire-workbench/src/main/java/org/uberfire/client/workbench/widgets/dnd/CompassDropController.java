@@ -126,7 +126,8 @@ public class CompassDropController
                                        sourcePart,
                                        targetPanel,
                                        menus,
-                                       uiPart );
+                                       uiPart,
+                                       workbenchContext.getContextId() );
     }
 
     @Override

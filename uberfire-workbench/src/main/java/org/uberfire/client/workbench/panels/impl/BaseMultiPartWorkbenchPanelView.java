@@ -75,12 +75,17 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
                 context.onAttach( presenter.getDefinition() );
                 contextWidget.setUiPart( contextUiPart );
             }
+        } else {
+            contextWidget.setUiPart( null );
         }
     }
 
     @Override
     public void removePart( final PartDefinition part ) {
         widget.remove( part );
+        if ( widget.getPartsSize() == 0 ) {
+            setupContext( null );
+        }
     }
 
     @Override

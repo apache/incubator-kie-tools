@@ -519,4 +519,9 @@ public class UberTabPanel
     public void addOnFocusHandler( final Command command ) {
         this.addOnFocusHandler = command;
     }
+
+    @Override
+    public int getPartsSize() {
+        return partTabIndex.size();
+    }
 }

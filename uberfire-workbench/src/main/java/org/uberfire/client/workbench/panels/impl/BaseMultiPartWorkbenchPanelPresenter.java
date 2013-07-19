@@ -92,13 +92,21 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
+    public void addPart( WorkbenchPartPresenter.View view ) {
+        addPart( view, null );
+    }
+
+    @Override
+    public void addPart( final WorkbenchPartPresenter.View view,
+                         final String contextId ) {
         getPanelView().addPart( view );
         if ( panelManager.getPerspective().getContextDisplayMode() == SHOW
                 && definition.getContextDisplayMode() == SHOW
                 && view.getPresenter().getDefinition().getContextDisplayMode() == SHOW ) {
             ContextActivity activity = null;
-            if ( view.getPresenter().getDefinition().getContextDefinition() != null ) {
+            if ( contextId != null ) {
+                activity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( contextId ) );
+            } else if ( view.getPresenter().getDefinition().getContextDefinition() != null ) {
                 activity = activityManager.getActivity( ContextActivity.class, view.getPresenter().getDefinition().getContextDefinition().getPlace() );
             } else if ( view.getPresenter().getContextId() != null ) {
                 activity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( view.getPresenter().getContextId() ) );
@@ -206,15 +214,12 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
     }
 
     public ContextActivity resolveContext( final PartDefinition part ) {
-        ContextActivity result = null;
-        if ( part != null ) {
-            result = partMap.get( part );
-        }
-        if ( result == null ) {
+        ContextActivity result = perspectiveContext;
+        if ( panelContext != null ) {
             result = panelContext;
         }
-        if ( result == null ) {
-            result = perspectiveContext;
+        if ( partMap.containsKey( part ) ) {
+            result = partMap.get( part );
         }
         return result;
     }
