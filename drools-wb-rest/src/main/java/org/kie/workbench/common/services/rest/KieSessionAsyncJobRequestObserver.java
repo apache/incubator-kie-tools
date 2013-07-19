@@ -5,12 +5,15 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.services.shared.rest.AddRepositoryToGroupRequest;
 import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
+import org.kie.workbench.common.services.shared.rest.CreateGroupRequest;
 import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
 import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromGroupRequest;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 
 
@@ -57,6 +60,27 @@ public class KieSessionAsyncJobRequestObserver {
             return;
         }
         projectResourceDispatcher.testProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
+    }
+    
+    public void onCreateGroupRequest( final @Observes CreateGroupRequest jobRequest) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.createGroup(jobRequest.getJodId(), jobRequest.getGroupName(), jobRequest.getOwnder(), jobRequest.getRepositories());
+    }
+    
+    public void onAddRepositoryToGroupRequest( final @Observes AddRepositoryToGroupRequest jobRequest) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.addRepositoryToGroup(jobRequest.getJodId(), jobRequest.getGroupName(), jobRequest.getRepositoryName());
+    }
+    
+    public void onAddRepositoryToGroupRequest( final @Observes RemoveRepositoryFromGroupRequest jobRequest) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.removeRepositoryFromGroup(jobRequest.getJodId(), jobRequest.getGroupName(), jobRequest.getRepositoryName());
     }
     
     //Commented out for the time being, due to kssion problem.

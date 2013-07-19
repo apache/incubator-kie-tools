@@ -35,9 +35,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -45,6 +46,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
+import org.kie.workbench.common.services.shared.rest.AddRepositoryToGroupRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.CloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
@@ -56,6 +58,7 @@ import org.kie.workbench.common.services.shared.rest.Group;
 import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromGroupRequest;
 import org.kie.workbench.common.services.shared.rest.Repository;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.uberfire.backend.group.GroupService;
@@ -128,7 +131,11 @@ public class ProjectResource {
     private Event<DeployProjectRequest> deployProjectRequestEvent; 
     @Inject
     private Event<CreateGroupRequest> createGroupRequestEvent; 
-    
+    @Inject
+    private Event<AddRepositoryToGroupRequest> addRepositoryToGroupRequest; 
+    @Inject
+    private Event<RemoveRepositoryFromGroupRequest> removeRepositoryFromGroupRequest; 
+
     @PostConstruct
     public void start() {
     	cache = new Cache(maxCacheSize);
@@ -268,7 +275,10 @@ public class ProjectResource {
             @PathParam("projectName") String projectName ) {
         System.out.println( "-----deleteProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE)
+                .entity("UNIMPLEMENTED").build());
+        
+/*        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
@@ -283,7 +293,7 @@ public class ProjectResource {
         //TODO: Delete project. ProjectService does not have a removeProject method yet.
         //createProjectRequestEvent.fire(jobRequest);
         
-        return jobRequest;
+        return jobRequest;*/
     }
 
     @POST
@@ -411,6 +421,7 @@ public class ProjectResource {
         jobRequest.setJodId(id);
         jobRequest.setGroupName(group.getName());
         jobRequest.setOwnder(group.getOwner());
+        jobRequest.setRepositories(group.getRepositories());
         
         JobResult jobResult = new JobResult();
         jobResult.setJodId(id);
@@ -422,13 +433,65 @@ public class ProjectResource {
         return jobRequest;
     }
 
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/groups/{groupName}/{repositoryName}")
+    public JobRequest addRepositoryToGroup( @PathParam("groupName") String groupName, @PathParam("repositoryName") String repositoryName) {
+        System.out.println( "-----addRepositoryToGroup--- , Group name:" + groupName + ", Repository name:" + repositoryName );
+
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        AddRepositoryToGroupRequest jobRequest = new AddRepositoryToGroupRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setGroupName(groupName);
+        jobRequest.setRepositoryName(repositoryName);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
+        
+        addRepositoryToGroupRequest.fire(jobRequest);
+        
+        return jobRequest;
+    }
+    
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/groups/{groupName}/{repositoryName}")
+    public JobRequest removeRepositoryFromGroup( @PathParam("groupName") String groupName,  @PathParam("repositoryName") String repositoryName) {
+        System.out.println( "-----removeRepositoryFromGroup--- , Group name:" + groupName + ", Repository name:" + repositoryName );
+
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        RemoveRepositoryFromGroupRequest jobRequest = new RemoveRepositoryFromGroupRequest();
+        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
+        jobRequest.setJodId(id);
+        jobRequest.setGroupName(groupName);
+        jobRequest.setRepositoryName(repositoryName);
+        
+        JobResult jobResult = new JobResult();
+        jobResult.setJodId(id);
+        jobResult.setStatus(JobRequest.Status.ACCEPTED);
+        jobs.put(id, jobResult);
+        
+        removeRepositoryFromGroupRequest.fire(jobRequest);
+        
+        return jobRequest;
+    }
+    
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/groups/{groupName}")
     public JobRequest deleteGroup( @PathParam("groupName") String groupName ) {
         System.out.println( "-----deleteGroup--- , Group name:" + groupName );
+           
+        throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE)
+                .entity("UNIMPLEMENTED").build());
         
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        //TODO:GroupService does not have removeGroup method yet
+        //groupService.removeGroup(groupName);
+        //createGroupRequestEvent.fire(jobRequest);             
+/*        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateGroupRequest jobRequest = new CreateGroupRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
@@ -439,11 +502,9 @@ public class ProjectResource {
         jobResult.setStatus(JobRequest.Status.ACCEPTED);
         jobs.put(id, jobResult);
         
-        //TODO:GroupService does not have removeGroup method yet
-        //groupService.removeGroup(groupName);
-        //createGroupRequestEvent.fire(jobRequest);
+
         
-        return jobRequest;
+        return jobRequest;*/
     }
 
     public org.kie.commons.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {

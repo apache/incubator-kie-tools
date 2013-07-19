@@ -2,6 +2,7 @@ package org.kie.workbench.common.services.rest;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.Repository;
 import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.group.impl.GroupImpl;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
@@ -337,19 +339,68 @@ public class ProjectResourceDispatcher {
         }
     }
     
-    public void createGroup(String jobId,  Group group ) {
-        System.out.println( "-----createGroup--- , Group name:" + group.getName() + ", Group owner:" + group.getOwner() );
+    public void createGroup(String jobId,  String groupName, String groupOwer, List<String> repositoryNameList ) {
+        System.out.println( "-----createGroup--- , Group name:" + groupName + ", Group owner:" + groupOwer );
         JobResult result = new JobResult();
         result.setJodId(jobId);
         
-        if ( group.getName() == null || group.getOwner() == null ) {
-            result.setStatus(JobRequest.Status.RESOURCE_NOT_EXIST);
+        if ( groupName == null || groupOwer == null ) {
+            result.setStatus(JobRequest.Status.BAD_REQUEST);
             result.setResult("Group name and owner must be provided");  
             jobResultEvent.fire(result);
             return;
         }
 
-        groupService.createGroup( group.getName(), group.getOwner() );
+        List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
+        if(repositoryNameList != null && repositoryNameList.size() > 0) {
+        	for(String repoName : repositoryNameList) {
+        		GitRepository repo = new GitRepository(repoName);
+        		repositories.add(repo);
+        	}
+            groupService.createGroup( groupName, groupOwer, repositories );
+        } else {
+            groupService.createGroup( groupName, groupOwer );
+        }
+        
+        result.setStatus(JobRequest.Status.SUCCESS);
+        jobResultEvent.fire(result);
+    }
+    
+    public void addRepositoryToGroup(String jobId,  String groupName, String repositoryName ) {
+        System.out.println( "-----addRepositoryToGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+        JobResult result = new JobResult();
+        result.setJodId(jobId);
+        
+        if ( groupName == null || repositoryName == null ) {
+            result.setStatus(JobRequest.Status.BAD_REQUEST);
+            result.setResult("Group name and repository name must be provided");  
+            jobResultEvent.fire(result);
+            return;
+        }
+
+        GroupImpl group = new GroupImpl(groupName, null);
+        GitRepository repo = new GitRepository(repositoryName);
+        groupService.addRepository(group, repo);
+        
+        result.setStatus(JobRequest.Status.SUCCESS);
+        jobResultEvent.fire(result);
+    }
+    
+    public void removeRepositoryFromGroup(String jobId,  String groupName, String repositoryName ) {
+        System.out.println( "-----removeRepositoryFromGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+        JobResult result = new JobResult();
+        result.setJodId(jobId);
+        
+        if ( groupName == null || repositoryName == null ) {
+            result.setStatus(JobRequest.Status.BAD_REQUEST);
+            result.setResult("Group name and repository name must be provided");  
+            jobResultEvent.fire(result);
+            return;
+        }
+
+        GroupImpl group = new GroupImpl(groupName, null);
+        GitRepository repo = new GitRepository(repositoryName);
+        groupService.removeRepository(group, repo);
         
         result.setStatus(JobRequest.Status.SUCCESS);
         jobResultEvent.fire(result);
