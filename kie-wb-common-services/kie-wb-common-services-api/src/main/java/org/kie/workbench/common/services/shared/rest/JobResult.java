@@ -12,7 +12,7 @@ public class JobResult {
     private Status status;
     private String jodId;
     private String result;
-    private Date completedTime;
+    private long lastModified;
     private List<String> detailedResult;
     
     public Status getStatus() {
@@ -33,11 +33,11 @@ public class JobResult {
 	public void setResult(String result) {
 		this.result = result;
 	}
-    public Date getCompletedTime() {
-        return completedTime;
+    public long getLastModified() {
+        return lastModified;
     }
-    public void setCompletedTime(Date completedTime) {
-        this.completedTime = completedTime;
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
     }
 	public List<String> getDetailedResult() {
 		return detailedResult;
