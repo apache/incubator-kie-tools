@@ -187,7 +187,7 @@ public class ProjectResourceDispatcher {
             BuildResults buildResults = buildService.build( project );
 
             result.setDetailedResult(buildResultsToDetailedStringMessages(buildResults));
-            result.setStatus(JobRequest.Status.SUCCESS);
+            result.setStatus(buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL);
             jobResultEvent.fire(result);
         }
     }
@@ -198,7 +198,7 @@ public class ProjectResourceDispatcher {
     		String detailedStringMessage = "artifactID:" + message.getArtifactID() +
     				", level:" + message.getLevel() +
     				", path:" + message.getPath() +
-    		        "text:" + message.getText();
+    		        ", text:" + message.getText();
     		result.add(detailedStringMessage);
     	}
     	
@@ -229,7 +229,7 @@ public class ProjectResourceDispatcher {
 
             DeployResult buildResults = buildService.buildAndDeploy( project );
 
-            result.setDetailedResult(deployResultToDetailedStringMessages(buildResults));
+            result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
             result.setStatus(JobRequest.Status.SUCCESS);
             jobResultEvent.fire(result);
         }

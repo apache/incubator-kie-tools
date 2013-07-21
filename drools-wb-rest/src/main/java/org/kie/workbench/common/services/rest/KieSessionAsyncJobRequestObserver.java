@@ -10,6 +10,7 @@ import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
 import org.kie.workbench.common.services.shared.rest.CreateGroupRequest;
 import org.kie.workbench.common.services.shared.rest.CreateOrCloneRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
+import org.kie.workbench.common.services.shared.rest.DeployProjectRequest;
 import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
@@ -61,6 +62,13 @@ public class KieSessionAsyncJobRequestObserver {
         }
         projectResourceDispatcher.testProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
     }
+    
+    public void onDeployProjectRequest( final @Observes DeployProjectRequest jobRequest) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.installProject(jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig());
+    }  
     
     public void onCreateGroupRequest( final @Observes CreateGroupRequest jobRequest) {
         if(!approveRequest(jobRequest)) {

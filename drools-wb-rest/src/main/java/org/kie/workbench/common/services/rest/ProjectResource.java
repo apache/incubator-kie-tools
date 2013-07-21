@@ -151,6 +151,7 @@ public class ProjectResource {
         	return;
         }
 
+        jobResult.setLastModified(System.currentTimeMillis());
         jobs.put(jobResult.getJodId(), jobResult);
     }
 
