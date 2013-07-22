@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.services.rest;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -223,6 +224,15 @@ public class ProjectResource {
         return jobRequest;   
     }
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("repositories")
+    public Collection<org.uberfire.backend.repositories.Repository> getRepositories() {
+        System.out.println( "-----getRepositories--- " );
+
+        return repositoryService.getRepositories(); 
+    }
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}")
@@ -273,7 +283,7 @@ public class ProjectResource {
         
         return jobRequest;
     }
-
+    
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}/projects/{projectName}")
