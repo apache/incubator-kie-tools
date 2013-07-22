@@ -18,13 +18,13 @@ package org.kie.workbench.common.widgets.client.popups.validation;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 /**
  * A cell to render the BuildMessage.Level
  */
-public class BuildMessageLevelCell extends AbstractCell<BuildMessage.Level> {
+public class ValidationMessageLevelCell extends AbstractCell<ValidationMessage.Level> {
 
     private static String htmlErrorImageHtml = AbstractImagePrototype.create( CommonImages.INSTANCE.error() ).getHTML();
     private static String htmlInformationImageHtml = AbstractImagePrototype.create( CommonImages.INSTANCE.information() ).getHTML();
@@ -32,7 +32,7 @@ public class BuildMessageLevelCell extends AbstractCell<BuildMessage.Level> {
 
     @Override
     public void render( final Context context,
-                        final BuildMessage.Level value,
+                        final ValidationMessage.Level value,
                         final SafeHtmlBuilder sb ) {
         if ( value == null ) {
             return;

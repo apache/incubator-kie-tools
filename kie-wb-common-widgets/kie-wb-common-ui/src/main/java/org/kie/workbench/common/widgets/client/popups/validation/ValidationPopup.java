@@ -27,7 +27,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
@@ -47,7 +47,7 @@ public class ValidationPopup extends Modal {
     private static ValidationPopup instance = new ValidationPopup();
 
     @UiField
-    protected CellTable<BuildMessage> table;
+    protected CellTable<ValidationMessage> table;
 
     private ValidationPopup() {
         setTitle( CommonConstants.INSTANCE.ValidationErrors() );
@@ -66,27 +66,27 @@ public class ValidationPopup extends Modal {
             }
         } ) );
 
-        table.addColumn( new BuildMessageLevelColumn() {
+        table.addColumn( new ValidationMessageLevelColumn() {
 
             @Override
-            public BuildMessage.Level getValue( final BuildMessage msg ) {
+            public ValidationMessage.Level getValue( final ValidationMessage msg ) {
                 return msg.getLevel();
             }
         } );
-        table.addColumn( new TextColumn<BuildMessage>() {
+        table.addColumn( new TextColumn<ValidationMessage>() {
 
             @Override
-            public String getValue( final BuildMessage msg ) {
+            public String getValue( final ValidationMessage msg ) {
                 return msg.getText();
             }
         } );
     }
 
-    private void setMessages( final List<BuildMessage> messages ) {
+    private void setMessages( final List<ValidationMessage> messages ) {
         this.table.setRowData( messages );
     }
 
-    public static void showMessages( final List<BuildMessage> messages ) {
+    public static void showMessages( final List<ValidationMessage> messages ) {
         instance.setMessages( messages );
         instance.show();
     }

@@ -16,19 +16,19 @@
 package org.kie.workbench.common.widgets.client.popups.validation;
 
 import com.google.gwt.user.cellview.client.Column;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 
 /**
  * A column for the BuildMessage.Level
  */
-public class BuildMessageLevelColumn extends Column<BuildMessage, BuildMessage.Level> {
+public class ValidationMessageLevelColumn extends Column<ValidationMessage, ValidationMessage.Level> {
 
-    public BuildMessageLevelColumn() {
-        super( new BuildMessageLevelCell() );
+    public ValidationMessageLevelColumn() {
+        super( new ValidationMessageLevelCell() );
     }
 
     @Override
-    public BuildMessage.Level getValue( final BuildMessage msg ) {
+    public ValidationMessage.Level getValue( final ValidationMessage msg ) {
         return msg.getLevel();
     }
 
