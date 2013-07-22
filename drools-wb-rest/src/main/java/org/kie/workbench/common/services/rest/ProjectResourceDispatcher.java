@@ -93,8 +93,12 @@ public class ProjectResourceDispatcher {
 
             // username and password are optional
             final Map<String, Object> env = new HashMap<String, Object>(3);
-            env.put("username", repository.getUserName());
-            env.put("crypt:password", repository.getPassword());
+            if(repository.getUserName() != null && !"".equals(repository.getUserName())) {
+                env.put("username", repository.getUserName());            	
+            }
+            if(repository.getPassword() != null && !"".equals(repository.getPassword())) {
+                env.put("crypt:password", repository.getPassword());            	
+            }            
             env.put("init", true);
 
             repositoryService.createRepository(scheme, repository.getName(), env);
@@ -106,9 +110,14 @@ public class ProjectResourceDispatcher {
                 result.setResult("Repository name and GitURL must be provided");
             }
 
+            // username and password are optional
             final Map<String, Object> env = new HashMap<String, Object>(3);
-            env.put("username", repository.getUserName());
-            env.put("crypt:password", repository.getPassword());
+            if(repository.getUserName() != null && !"".equals(repository.getUserName())) {
+                env.put("username", repository.getUserName());            	
+            }
+            if(repository.getPassword() != null && !"".equals(repository.getPassword())) {
+                env.put("crypt:password", repository.getPassword());            	
+            }  
             env.put("origin", repository.getGitURL());
 
             repositoryService.createRepository(scheme, repository.getName(), env);
