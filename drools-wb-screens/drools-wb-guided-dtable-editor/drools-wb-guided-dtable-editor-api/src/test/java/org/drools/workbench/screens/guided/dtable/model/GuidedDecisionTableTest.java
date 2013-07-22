@@ -272,11 +272,13 @@ public class GuidedDecisionTableTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -377,21 +379,25 @@ public class GuidedDecisionTableTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "date",
                                            Date.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "approved",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
@@ -536,11 +542,13 @@ public class GuidedDecisionTableTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -646,11 +654,13 @@ public class GuidedDecisionTableTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -690,11 +700,13 @@ public class GuidedDecisionTableTest {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()

@@ -51,21 +51,25 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "approved",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
@@ -166,21 +170,25 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "approved",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
@@ -311,21 +319,25 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "approved",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
@@ -458,11 +470,13 @@ public class RowExpanderTests {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -636,11 +650,13 @@ public class RowExpanderTests {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -770,11 +786,13 @@ public class RowExpanderTests {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -882,11 +900,13 @@ public class RowExpanderTests {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -988,16 +1008,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field2",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "field3",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -1181,6 +1204,7 @@ public class RowExpanderTests {
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -1237,6 +1261,7 @@ public class RowExpanderTests {
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -1299,11 +1324,13 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
@@ -1395,16 +1422,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -1514,16 +1544,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -1640,16 +1673,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -1720,16 +1756,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -1823,16 +1862,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -1946,16 +1988,19 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .end()
@@ -2075,21 +2120,25 @@ public class RowExpanderTests {
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateOfBirth",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "approved",
                                            Boolean.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )
                 .end()
@@ -2244,6 +2293,7 @@ public class RowExpanderTests {
                 .addField( new ModelField( "gender",
                                            String.class.getName(),
                                            ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
