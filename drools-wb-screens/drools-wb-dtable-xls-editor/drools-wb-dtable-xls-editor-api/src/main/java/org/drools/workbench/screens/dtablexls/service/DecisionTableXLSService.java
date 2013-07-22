@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.dtablexls.service;
 
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsDelete;
 import org.guvnor.common.services.shared.file.SupportsRename;

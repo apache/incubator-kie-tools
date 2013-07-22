@@ -14,31 +14,37 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scorecardxls.client.editor;
+package org.drools.workbench.screens.dsltext.client.editor;
 
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
-import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
-import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
+import org.drools.workbench.screens.dsltext.client.resources.i18n.DSLTextEditorConstants;
+import org.drools.workbench.screens.dsltext.client.type.DSLResourceType;
+import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.IsDirty;
 import org.uberfire.client.annotations.OnClose;
+import org.uberfire.client.annotations.OnMayClose;
+import org.uberfire.client.annotations.OnSave;
 import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -52,12 +58,15 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+/**
+ * DSL Editor Presenter.
+ */
 @Dependent
-@WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = { ScoreCardXLSResourceType.class })
-public class ScoreCardXLSEditorPresenter {
+@WorkbenchEditor(identifier = "DSLEditor", supportedTypes = { DSLResourceType.class })
+public class DSLEditorPresenter {
 
     @Inject
-    private Caller<ScoreCardXLSService> scoreCardXLSService;
+    private Caller<DSLTextEditorService> dslTextEditorService;
 
     @Inject
     private Caller<MetadataService> metadataService;
@@ -69,16 +78,13 @@ public class ScoreCardXLSEditorPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private ScoreCardXLSEditorView view;
+    private DSLEditorView view;
 
     @Inject
     private MetadataWidget metadataWidget;
 
     @Inject
     private MultiPageEditor multiPage;
-
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
 
     @Inject
     @New
@@ -97,8 +103,10 @@ public class ScoreCardXLSEditorPresenter {
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         makeMenuBar();
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         multiPage.addWidget( view,
-                             ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
+                             DSLTextEditorConstants.INSTANCE.DSL() );
 
         multiPage.addPage( new Page( metadataWidget,
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
@@ -116,8 +124,12 @@ public class ScoreCardXLSEditorPresenter {
             }
         } );
 
-        view.setPath( path );
-        view.setReadOnly( isReadOnly );
+        loadContent();
+    }
+
+    private void loadContent() {
+        dslTextEditorService.call( getModelSuccessCallback(),
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private void makeMenuBar() {
@@ -125,6 +137,12 @@ public class ScoreCardXLSEditorPresenter {
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
+                    .addSave( new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    } )
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
@@ -133,11 +151,22 @@ public class ScoreCardXLSEditorPresenter {
         }
     }
 
+    private RemoteCallback<String> getModelSuccessCallback() {
+        return new RemoteCallback<String>() {
+
+            @Override
+            public void callback( final String dsl ) {
+                view.setContent( dsl );
+                view.hideBusyIndicator();
+            }
+        };
+    }
+
     private Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                scoreCardXLSService.call( new RemoteCallback<List<BuildMessage>>() {
+                dslTextEditorService.call( new RemoteCallback<List<BuildMessage>>() {
                     @Override
                     public void callback( final List<BuildMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
@@ -147,9 +176,48 @@ public class ScoreCardXLSEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path );
+                } ).validate( view.getContent() );
             }
         };
+    }
+
+    @OnSave
+    public void onSave() {
+        if ( isReadOnly ) {
+            view.alertReadOnly();
+            return;
+        }
+
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 dslTextEditorService.call( getSaveSuccessCallback(),
+                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                                     view.getContent(),
+                                                                                                                                     metadataWidget.getContent(),
+                                                                                                                                     commitMessage );
+                                             }
+                                         } );
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                metadataWidget.resetDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
+    }
+
+    @IsDirty
+    public boolean isDirty() {
+        return view.isDirty();
     }
 
     @OnClose
@@ -157,9 +225,17 @@ public class ScoreCardXLSEditorPresenter {
         this.path = null;
     }
 
+    @OnMayClose
+    public boolean checkIfDirty() {
+        if ( isDirty() ) {
+            return view.confirmClose();
+        }
+        return true;
+    }
+
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Score Card Editor [" + path.getFileName() + "]";
+        return "DRL Editor [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView
@@ -170,6 +246,16 @@ public class ScoreCardXLSEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
+            return;
+        }
+        if ( path.equals( restore.getPath() ) ) {
+            loadContent();
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        }
     }
 
 }

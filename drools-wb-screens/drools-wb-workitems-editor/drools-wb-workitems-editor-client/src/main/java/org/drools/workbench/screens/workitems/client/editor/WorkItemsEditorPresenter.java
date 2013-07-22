@@ -28,6 +28,7 @@ import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEdi
 import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
@@ -145,6 +147,7 @@ public class WorkItemsEditorPresenter {
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
+                    .addValidate( onValidate() )
                     .build();
         }
     }
@@ -159,6 +162,25 @@ public class WorkItemsEditorPresenter {
                 view.setContent( definition,
                                  workItemImages );
                 view.hideBusyIndicator();
+            }
+        };
+    }
+
+    private Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                workItemsService.call( new RemoteCallback<List<BuildMessage>>() {
+                    @Override
+                    public void callback( final List<BuildMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                        } else {
+                            ValidationPopup.showMessages( results );
+                        }
+                    }
+                } ).validate( view.getContent() );
             }
         };
     }

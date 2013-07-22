@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.dtablexls.client.editor;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -29,11 +30,13 @@ import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResour
 import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
@@ -129,6 +132,7 @@ public class DecisionTableXLSEditorPresenter {
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
+                    .addValidate( onValidate() )
                     .addCommand( DecisionTableXLSEditorConstants.INSTANCE.Convert(),
                                  new Command() {
 
@@ -139,6 +143,25 @@ public class DecisionTableXLSEditorPresenter {
                                  } )
                     .build();
         }
+    }
+
+    private Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                decisionTableXLSService.call( new RemoteCallback<List<BuildMessage>>() {
+                    @Override
+                    public void callback( final List<BuildMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                        } else {
+                            ValidationPopup.showMessages( results );
+                        }
+                    }
+                } ).validate( path );
+            }
+        };
     }
 
     @OnClose

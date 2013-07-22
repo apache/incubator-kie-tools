@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.enums.client.editor;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -34,6 +36,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
@@ -160,6 +163,7 @@ public class EnumEditorPresenter {
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
+                    .addValidate( onValidate() )
                     .build();
         }
     }
@@ -171,6 +175,25 @@ public class EnumEditorPresenter {
             public void callback( final EnumModelContent response ) {
                 view.setContent( response.getModel().getDRL() );
                 view.hideBusyIndicator();
+            }
+        };
+    }
+
+    private Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                enumService.call( new RemoteCallback<List<BuildMessage>>() {
+                    @Override
+                    public void callback( final List<BuildMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                        } else {
+                            ValidationPopup.showMessages( results );
+                        }
+                    }
+                } ).validate( view.getContent() );
             }
         };
     }

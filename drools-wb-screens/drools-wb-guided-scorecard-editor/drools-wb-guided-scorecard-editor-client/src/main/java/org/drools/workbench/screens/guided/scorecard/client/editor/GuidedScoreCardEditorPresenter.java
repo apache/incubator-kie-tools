@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.scorecard.client.editor;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -27,6 +28,7 @@ import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
@@ -171,6 +174,7 @@ public class GuidedScoreCardEditorPresenter {
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
+                    .addValidate( onValidate() )
                     .build();
         }
     }
@@ -196,6 +200,25 @@ public class GuidedScoreCardEditorPresenter {
                                           isReadOnly );
 
                 view.hideBusyIndicator();
+            }
+        };
+    }
+
+    private Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                scoreCardEditorService.call( new RemoteCallback<List<BuildMessage>>() {
+                    @Override
+                    public void callback( final List<BuildMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                        } else {
+                            ValidationPopup.showMessages( results );
+                        }
+                    }
+                } ).validate( view.getModel() );
             }
         };
     }

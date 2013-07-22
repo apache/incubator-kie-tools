@@ -228,14 +228,14 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     }
 
     @Override
-    public List<BuildMessage> validate( final Path content ) {
+    public List<BuildMessage> validate( final Path path ) {
         //TODO {manstis} - Need to implement
         return Collections.emptyList();
     }
 
     @Override
-    public boolean isValid( final Path content ) {
-        return validate( content ).isEmpty();
+    public boolean isValid( final Path path ) {
+        return validate( path ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
