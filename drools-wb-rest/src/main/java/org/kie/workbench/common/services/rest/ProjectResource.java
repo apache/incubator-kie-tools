@@ -59,6 +59,7 @@ import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromGroupRequest;
+import org.kie.workbench.common.services.shared.rest.RemoveRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.Repository;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.uberfire.backend.group.GroupService;
@@ -119,6 +120,8 @@ public class ProjectResource {
     
     @Inject
     private Event<CreateOrCloneRepositoryRequest> createOrCloneJobRequestEvent;     
+    @Inject
+    private Event<RemoveRepositoryRequest> removeRepositoryRequestEvent;     
     @Inject
     private Event<CreateProjectRequest> createProjectRequestEvent; 
     @Inject
@@ -223,13 +226,13 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories/{repositoryName}")
-    public JobRequest deleteRepository(
+    public JobRequest removeRepository(
             @PathParam("repositoryName") String repositoryName ) {
-        System.out.println( "-----deleteRepository--- , repositoryName:" + repositoryName );
+        System.out.println( "-----removeRepository--- , repositoryName:" + repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         
-        CreateProjectRequest jobRequest = new CreateProjectRequest();
+        RemoveRepositoryRequest jobRequest = new RemoveRepositoryRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
         jobRequest.setJodId(id);
         jobRequest.setRepositoryName(repositoryName);
@@ -239,6 +242,8 @@ public class ProjectResource {
         jobResult.setStatus(JobRequest.Status.ACCEPTED);
         jobs.put(id, jobResult);
         
+        removeRepositoryRequestEvent.fire(jobRequest);
+
         return jobRequest;
     }
 

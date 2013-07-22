@@ -15,6 +15,7 @@ import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromGroupRequest;
+import org.kie.workbench.common.services.shared.rest.RemoveRepositoryRequest;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 
 
@@ -28,11 +29,18 @@ public class KieSessionAsyncJobRequestObserver {
     @Inject
     private Event<JobResult> jobResultEvent;
     
-    public void onCloneRepositoryRequest( final @Observes CreateOrCloneRepositoryRequest jobRequest ) {
+    public void onCreateOrCloneRepositoryRequest( final @Observes CreateOrCloneRepositoryRequest jobRequest ) {
         if(!approveRequest(jobRequest)) {
             return;
         }
         projectResourceDispatcher.createOrCloneRepository(jobRequest.getJodId(), jobRequest.getRepository());
+    }
+    
+    public void onRemoveRepositoryRequest( final @Observes RemoveRepositoryRequest jobRequest ) {
+        if(!approveRequest(jobRequest)) {
+            return;
+        }
+        projectResourceDispatcher.removeRepository(jobRequest.getJodId(), jobRequest.getRepositoryName());
     }
     
     public void onCreateProjectRequest( final @Observes CreateProjectRequest jobRequest ) {

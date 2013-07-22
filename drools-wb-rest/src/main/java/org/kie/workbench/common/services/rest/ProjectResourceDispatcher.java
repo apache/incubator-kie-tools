@@ -126,6 +126,23 @@ public class ProjectResourceDispatcher {
         result.setStatus(JobRequest.Status.SUCCESS);
         jobResultEvent.fire(result);
     }
+    
+    public void removeRepository(String jobId, String repositoryName) {
+        System.out.println("-----removeRepository--- , repository name:" + repositoryName);
+
+        JobResult result = new JobResult();
+        result.setJodId(jobId);
+
+		if (repositoryName == null || "".equals(repositoryName)) {
+			result.setStatus(JobRequest.Status.BAD_REQUEST);
+			result.setResult("Repository name must be provided");
+		}
+
+		repositoryService.removeRepository(repositoryName);
+
+		result.setStatus(JobRequest.Status.SUCCESS);
+		jobResultEvent.fire(result);
+    }
 
     public void createProject(String jobId, String repositoryName, String projectName) {
         System.out.println("-----ProjectResourceDispatcher:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName);
