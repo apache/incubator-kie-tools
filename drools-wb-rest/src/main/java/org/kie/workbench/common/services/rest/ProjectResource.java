@@ -437,7 +437,7 @@ public class ProjectResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/groups/{groupName}/{repositoryName}")
+    @Path("/groups/{groupName}/repositories/{repositoryName}")
     public JobRequest addRepositoryToGroup( @PathParam("groupName") String groupName, @PathParam("repositoryName") String repositoryName) {
         System.out.println( "-----addRepositoryToGroup--- , Group name:" + groupName + ", Repository name:" + repositoryName );
 
@@ -460,7 +460,7 @@ public class ProjectResource {
     
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/groups/{groupName}/{repositoryName}")
+    @Path("/groups/{groupName}/repositories/{repositoryName}")
     public JobRequest removeRepositoryFromGroup( @PathParam("groupName") String groupName,  @PathParam("repositoryName") String repositoryName) {
         System.out.println( "-----removeRepositoryFromGroup--- , Group name:" + groupName + ", Repository name:" + repositoryName );
 
