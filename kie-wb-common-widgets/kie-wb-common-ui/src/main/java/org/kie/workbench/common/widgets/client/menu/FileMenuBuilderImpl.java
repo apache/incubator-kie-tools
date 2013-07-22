@@ -80,6 +80,7 @@ public class FileMenuBuilderImpl
     private Command deleteCommand = null;
     private Command renameCommand = null;
     private Command copyCommand = null;
+    private Command validateCommand = null;
     private Command restoreCommand = null;
     private List<Pair<String, Command>> otherCommands = new ArrayList<Pair<String, Command>>();
 
@@ -208,6 +209,12 @@ public class FileMenuBuilderImpl
     }
 
     @Override
+    public FileMenuBuilder addValidate( final Command validateCommand ) {
+        this.validateCommand = validateCommand;
+        return this;
+    }
+
+    @Override
     public FileMenuBuilder addRestoreVersion( final Path path ) {
         this.restoreCommand = restoreVersionCommandProvider.getCommand( path );
         return this;
@@ -247,6 +254,13 @@ public class FileMenuBuilderImpl
         if ( copyCommand != null ) {
             menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
                                    .respondsWith( copyCommand )
+                                   .endMenu()
+                                   .build().getItems().get( 0 ) );
+        }
+
+        if ( validateCommand != null ) {
+            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Validate() )
+                                   .respondsWith( validateCommand )
                                    .endMenu()
                                    .build().getItems().get( 0 ) );
         }

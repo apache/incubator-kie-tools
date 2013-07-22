@@ -76,6 +76,8 @@ public interface CommonConstants
 
     String Validate();
 
+    String ValidationErrors();
+
     String Restore();
 
     String Copy();
@@ -117,6 +119,8 @@ public interface CommonConstants
     String ItemCopiedSuccessfully();
 
     String ItemMovedSuccessfully();
+
+    String ItemValidatedSuccessfully();
 
     String ItemPathSubheading();
 

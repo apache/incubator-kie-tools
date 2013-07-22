@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.widgets.client.popups.errors;
+package org.kie.workbench.common.widgets.client.popups.validation;
+
+import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
@@ -24,31 +26,31 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
- * A popup that shows an error message
+ * A popup that can contain a list of items
  */
-public class ErrorPopup extends Modal {
+public class ValidationPopup extends Modal {
 
-    interface ErrorPopupWidgetBinder
+    interface ValidationPopupWidgetBinder
             extends
-            UiBinder<Widget, ErrorPopup> {
+            UiBinder<Widget, ValidationPopup> {
 
     }
 
-    private static ErrorPopupWidgetBinder uiBinder = GWT.create( ErrorPopupWidgetBinder.class );
+    private static ValidationPopupWidgetBinder uiBinder = GWT.create( ValidationPopupWidgetBinder.class );
 
-    private static ErrorPopup instance = new ErrorPopup();
-
+    private static ValidationPopup instance = new ValidationPopup();
 
     @UiField
     protected Label message;
 
-    private ErrorPopup() {
-        setTitle( CommonConstants.INSTANCE.Error() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+    private ValidationPopup() {
+        setTitle( CommonConstants.INSTANCE.ValidationErrors() );
+        setMaxHeigth( ( Window.getClientHeight() * 0.50 ) + "px" );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
@@ -64,12 +66,12 @@ public class ErrorPopup extends Modal {
         } ) );
     }
 
-    public void setMessage( final String message ) {
-        this.message.setText( message );
+    private void setMessages( final List<BuildMessage> messages ) {
+        this.message.setText( messages.toString() );
     }
 
-    public static void showMessage( String message ) {
-        instance.setMessage( message );
+    public static void showMessages( final List<BuildMessage> messages ) {
+        instance.setMessages( messages );
         instance.show();
     }
 

@@ -37,6 +37,8 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addCopy( final Path path );
 
+    FileMenuBuilder addValidate( final Command command );
+
     FileMenuBuilder addRestoreVersion( final Path path );
 
     FileMenuBuilder addCommand( final String caption,
