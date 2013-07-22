@@ -18,4 +18,6 @@ package org.uberfire.security;
 
 public interface Identity extends Subject {
 
+    public static final String ANONYMOUS = "Anonymous";
+
 }

@@ -36,11 +36,11 @@ import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
 import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.security.Identity.*;
 
 @EntryPoint
 public class SecurityEntryPoint {
 
-    private static final String ANONYMOUS = "Anonymous";
     private Identity currentIdentity = null;
 
     @Inject
@@ -152,7 +152,7 @@ public class SecurityEntryPoint {
         } );
     }
 
-    public static final native JSONSubject loadCurrentSubject() /*-{
+    public static native JSONSubject loadCurrentSubject() /*-{
         return $wnd.current_user;
     }-*/;
 
