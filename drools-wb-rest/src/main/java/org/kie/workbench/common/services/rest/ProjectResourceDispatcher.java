@@ -101,7 +101,13 @@ public class ProjectResourceDispatcher {
             }            
             env.put("init", true);
 
-            repositoryService.createRepository(scheme, repository.getName(), env);
+            org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(scheme, repository.getName(), env);
+            if(newlyCreatedRepo != null) {
+                result.setStatus(JobRequest.Status.SUCCESS);
+                result.setResult("Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri());
+            } else {
+                result.setStatus(JobRequest.Status.FAIL);           	
+            }
 
         } else if ("clone".equals(repository.getRequestType())) {
             if (repository.getName() == null || "".equals(repository.getName()) || repository.getGitURL() == null
@@ -120,10 +126,15 @@ public class ProjectResourceDispatcher {
             }  
             env.put("origin", repository.getGitURL());
 
-            repositoryService.createRepository(scheme, repository.getName(), env);
+            org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(scheme, repository.getName(), env);
+            if(newlyCreatedRepo != null) {
+                result.setStatus(JobRequest.Status.SUCCESS);
+                result.setResult("Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri());
+            } else {
+                result.setStatus(JobRequest.Status.FAIL);           	
+            }
         }
 
-        result.setStatus(JobRequest.Status.SUCCESS);
         jobResultEvent.fire(result);
     }
     
@@ -433,31 +444,6 @@ public class ProjectResourceDispatcher {
     }
     
     public org.kie.commons.java.nio.file.Path getRepositoryRootPath(String repositoryName) {
-        org.kie.commons.java.nio.file.Path repositoryRootPath = null;
-
-        final Iterator<FileSystem> fsIterator = ioSystemService.getFileSystems().iterator();
-        
-        if ( fsIterator.hasNext() ) {
-            final FileSystem fileSystem = fsIterator.next();
-            System.out.println("-----FileSystem id--- :" + ((org.kie.commons.java.nio.base.FileSystemId) fileSystem).id());
-            
-            if (repositoryName.equalsIgnoreCase(((org.kie.commons.java.nio.base.FileSystemId) fileSystem).id())) {
-                 final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = fileSystem.getRootDirectories().iterator();
-                 if (rootIterator.hasNext()) {
-                     repositoryRootPath = rootIterator.next();
-                     System.out.println("-----rootPath--- :" + repositoryRootPath);
-
-                     org.kie.commons.java.nio.file.DirectoryStream<org.kie.commons.java.nio.file.Path> paths = ioSystemService
-                             .newDirectoryStream(repositoryRootPath);
-                     for (final org.kie.commons.java.nio.file.Path child : paths) {
-                         System.out.println("-----child--- :" + child);
-                     }
-                     
-                     return repositoryRootPath;
-                 }
-             }
-        }
-
-        return repositoryRootPath;
+    	return paths.convert( repositoryService.getRepository( repositoryName ).getRoot() );
     }
 }
