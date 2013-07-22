@@ -21,7 +21,7 @@
 
   <b:Well>
     <g:ScrollPanel width="100%" height="200px">
-      <g:Label ui:field="message"/>
+      <b:CellTable ui:field="table"/>
     </g:ScrollPanel>
   </b:Well>
 

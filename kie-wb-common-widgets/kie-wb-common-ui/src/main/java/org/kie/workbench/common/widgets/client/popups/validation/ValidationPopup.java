@@ -17,21 +17,22 @@ package org.kie.workbench.common.widgets.client.popups.validation;
 
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
- * A popup that can contain a list of items
+ * A popup that lists BuildMessages
  */
 public class ValidationPopup extends Modal {
 
@@ -46,7 +47,7 @@ public class ValidationPopup extends Modal {
     private static ValidationPopup instance = new ValidationPopup();
 
     @UiField
-    protected Label message;
+    protected CellTable<BuildMessage> table;
 
     private ValidationPopup() {
         setTitle( CommonConstants.INSTANCE.ValidationErrors() );
@@ -64,10 +65,25 @@ public class ValidationPopup extends Modal {
                 hide();
             }
         } ) );
+
+        table.addColumn( new BuildMessageLevelColumn() {
+
+            @Override
+            public BuildMessage.Level getValue( final BuildMessage msg ) {
+                return msg.getLevel();
+            }
+        } );
+        table.addColumn( new TextColumn<BuildMessage>() {
+
+            @Override
+            public String getValue( final BuildMessage msg ) {
+                return msg.getText();
+            }
+        } );
     }
 
     private void setMessages( final List<BuildMessage> messages ) {
-        this.message.setText( messages.toString() );
+        this.table.setRowData( messages );
     }
 
     public static void showMessages( final List<BuildMessage> messages ) {
