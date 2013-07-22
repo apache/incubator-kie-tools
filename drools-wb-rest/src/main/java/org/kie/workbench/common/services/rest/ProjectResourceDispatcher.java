@@ -193,7 +193,7 @@ public class ProjectResourceDispatcher {
     }
     
     private List<String> buildResultsToDetailedStringMessages(BuildResults buildResults) {
-    	List<String> result = new ArrayList<String>(buildResults.getMessages().size());
+    	List<String> result = new ArrayList<String>();
     	for(BuildMessage message : buildResults.getMessages() ) {
     		String detailedStringMessage = "artifactID:" + message.getArtifactID() +
     				", level:" + message.getLevel() +
@@ -230,13 +230,13 @@ public class ProjectResourceDispatcher {
             DeployResult buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
-            result.setStatus(JobRequest.Status.SUCCESS);
+            result.setStatus(buildResults.getBuildResults().getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL);
             jobResultEvent.fire(result);
         }
     }
     
     private List<String> deployResultToDetailedStringMessages(DeployResult deployResult) {
-    	List<String> result = new ArrayList<String>(1);
+    	List<String> result = buildResultsToDetailedStringMessages(deployResult.getBuildResults());
     	String detailedStringMessage = "artifactID:" + deployResult.getArtifactId() +
 				", groupId:" + deployResult.getGroupId() +
 				", version:" + deployResult.getVersion();
@@ -333,8 +333,8 @@ public class ProjectResourceDispatcher {
 
             DeployResult buildResults = buildService.buildAndDeploy( project );
 
-            result.setDetailedResult(deployResultToDetailedStringMessages(buildResults));
-            result.setStatus(JobRequest.Status.SUCCESS);
+            result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
+            result.setStatus(buildResults.getBuildResults().getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL);
             jobResultEvent.fire(result);
         }
     }
