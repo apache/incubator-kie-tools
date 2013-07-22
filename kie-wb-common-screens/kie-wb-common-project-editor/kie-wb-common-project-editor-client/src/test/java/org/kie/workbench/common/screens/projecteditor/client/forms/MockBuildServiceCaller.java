@@ -18,10 +18,11 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.Set;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.shared.builder.BuildResults;
 import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -42,14 +43,14 @@ public class MockBuildServiceCaller
             public BuildResults build( Project project ) {
                 callback.callback( null );
                 buildWasCalled = true;
-                return new BuildResults();
+                return new BuildResults( new GAV() );
             }
 
             @Override
             public DeployResult buildAndDeploy( Project project ) {
                 callback.callback( null );
                 buildWasCalled = true;
-                return new DeployResult();
+                return new DeployResult( new GAV() );
             }
 
             @Override

@@ -16,7 +16,7 @@
 package org.kie.workbench.common.widgets.client.popups.validation;
 
 import com.google.gwt.user.cellview.client.Column;
-import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 
 /**
  * A column for the BuildMessage.Level

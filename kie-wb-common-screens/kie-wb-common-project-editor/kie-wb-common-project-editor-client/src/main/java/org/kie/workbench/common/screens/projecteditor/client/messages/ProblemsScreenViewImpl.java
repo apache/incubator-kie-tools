@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.mvp.PlaceManager;
@@ -43,9 +43,9 @@ import org.uberfire.client.mvp.PlaceManager;
 public class ProblemsScreenViewImpl
         extends Composite
         implements ProblemsScreenView,
-        RequiresResize {
+                   RequiresResize {
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
     private Presenter presenter;
     private final PlaceManager placeManager;
 
@@ -61,32 +61,33 @@ public class ProblemsScreenViewImpl
 
     public static final ProvidesKey<BuildMessage> KEY_PROVIDER = new ProvidesKey<BuildMessage>() {
         @Override
-        public Object getKey(BuildMessage item) {
+        public Object getKey( BuildMessage item ) {
             return item == null ? null : item.getId();
         }
     };
 
     @Inject
-    public ProblemsScreenViewImpl(ProblemsService problemsService, PlaceManager placeManager) {
+    public ProblemsScreenViewImpl( ProblemsService problemsService,
+                                   PlaceManager placeManager ) {
         this.placeManager = placeManager;
-        dataGrid = new DataGrid<BuildMessage>(KEY_PROVIDER);
-        dataGrid.setWidth("100%");
+        dataGrid = new DataGrid<BuildMessage>( KEY_PROVIDER );
+        dataGrid.setWidth( "100%" );
 
-        dataGrid.setAutoHeaderRefreshDisabled(true);
+        dataGrid.setAutoHeaderRefreshDisabled( true );
 
-        dataGrid.setEmptyTableWidget(new Label("---"));
+        dataGrid.setEmptyTableWidget( new Label( "---" ) );
 
         setUpColumns();
 
-        problemsService.addDataDisplay(dataGrid);
+        problemsService.addDataDisplay( dataGrid );
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
     public void onResize() {
-        dataGrid.setPixelSize(getParent().getOffsetWidth(),
-                getParent().getOffsetHeight());
+        dataGrid.setPixelSize( getParent().getOffsetWidth(),
+                               getParent().getOffsetHeight() );
         dataGrid.onResize();
     }
 
@@ -94,83 +95,73 @@ public class ProblemsScreenViewImpl
         addLevelColumn();
         addTextColumn();
         addFileNameColumn();
-        addArtifactIDColumn();
         addColumnColumn();
         addLineColumn();
     }
 
     private void addLineColumn() {
-        Column<BuildMessage, String> lineColumn = new Column<BuildMessage, String>(new TextCell()) {
+        Column<BuildMessage, String> lineColumn = new Column<BuildMessage, String>( new TextCell() ) {
             @Override
-            public String getValue(BuildMessage message) {
-                return Integer.toString(message.getLine());
+            public String getValue( BuildMessage message ) {
+                return Integer.toString( message.getLine() );
             }
         };
-        dataGrid.addColumn(lineColumn, ProjectEditorConstants.INSTANCE.Line());
-        dataGrid.setColumnWidth(lineColumn, 60, Style.Unit.PCT);
+        dataGrid.addColumn( lineColumn, ProjectEditorConstants.INSTANCE.Line() );
+        dataGrid.setColumnWidth( lineColumn, 60, Style.Unit.PCT );
     }
 
     private void addColumnColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new TextCell() ) {
             @Override
-            public String getValue(BuildMessage message) {
-                return Integer.toString(message.getColumn());
+            public String getValue( BuildMessage message ) {
+                return Integer.toString( message.getColumn() );
             }
         };
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Column());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Column() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     private void addTextColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new TextCell() ) {
             @Override
-            public String getValue(BuildMessage message) {
+            public String getValue( BuildMessage message ) {
                 return message.getText();
             }
         };
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Text());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Text() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     private void addFileNameColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new ClickableTextCell()) {
+        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new ClickableTextCell() ) {
             @Override
-            public String getValue(BuildMessage message) {
-                if (message.getPath() != null) {
+            public String getValue( BuildMessage message ) {
+                if ( message.getPath() != null ) {
                     return message.getPath().getFileName();
                 } else {
                     return "-";
                 }
             }
         };
-        column.setFieldUpdater(new FieldUpdater<BuildMessage, String>() {
+        column.setFieldUpdater( new FieldUpdater<BuildMessage, String>() {
             @Override
-            public void update(int index, BuildMessage buildMessage, String value) {
-                if ( buildMessage.getPath() != null) {
-                    placeManager.goTo( buildMessage.getPath());
+            public void update( int index,
+                                BuildMessage buildMessage,
+                                String value ) {
+                if ( buildMessage.getPath() != null ) {
+                    placeManager.goTo( buildMessage.getPath() );
                 }
             }
-        });
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.FileName());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
-    }
-
-    private void addArtifactIDColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>(new TextCell()) {
-            @Override
-            public String getValue(BuildMessage message) {
-                return message.getArtifactID();
-            }
-        };
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.ArtifactID());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+        } );
+        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.FileName() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     private void addLevelColumn() {
-        Column<BuildMessage, ImageResource> column = new Column<BuildMessage, ImageResource>(new ImageResourceCell()) {
+        Column<BuildMessage, ImageResource> column = new Column<BuildMessage, ImageResource>( new ImageResourceCell() ) {
             @Override
-            public ImageResource getValue(BuildMessage message) {
-                switch (message.getLevel()) {
+            public ImageResource getValue( BuildMessage message ) {
+                switch ( message.getLevel() ) {
                     case ERROR:
                         return ProjectEditorResources.INSTANCE.Error();
 
@@ -182,12 +173,12 @@ public class ProblemsScreenViewImpl
                 }
             }
         };
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.Level());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Level() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 }

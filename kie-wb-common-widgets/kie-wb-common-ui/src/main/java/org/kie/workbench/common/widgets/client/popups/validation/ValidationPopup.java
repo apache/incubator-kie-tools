@@ -27,7 +27,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 

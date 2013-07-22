@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.popups.validation;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.guvnor.common.services.shared.builder.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 /**
