@@ -444,6 +444,10 @@ public class ProjectResourceDispatcher {
     }
     
     public org.kie.commons.java.nio.file.Path getRepositoryRootPath(String repositoryName) {
-    	return paths.convert( repositoryService.getRepository( repositoryName ).getRoot() );
+    	org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository( repositoryName );
+        if ( repo == null) {           
+            return null;
+        }
+    	return paths.convert( repo.getRoot() );
     }
 }
