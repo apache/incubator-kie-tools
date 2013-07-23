@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.dsltext.service;
 
-import org.guvnor.common.services.shared.builder.BuildValidationHelper;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
 import org.guvnor.common.services.shared.file.SupportsDelete;

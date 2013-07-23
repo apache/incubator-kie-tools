@@ -32,12 +32,14 @@ import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -203,8 +205,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     public List<BuildMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            final List<BuildMessage> messages = doValidation( content );
-            for ( BuildMessage msg : messages ) {
+            final List<ValidationMessage> validationMessages = doValidation( content );
+            for ( ValidationMessage msg : messages ) {
                 msg.setPath( path );
             }
             return messages;
@@ -215,12 +217,12 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     }
 
     @Override
-    public List<BuildMessage> validate( final String content ) {
+    public List<ValidationMessage> validate( final String content ) {
         return doValidation( content );
     }
 
-    private List<BuildMessage> doValidation( final String content ) {
-        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+    private List<ValidationMessage> doValidation( final String content ) {
+        final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
         final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
         try {
             if ( !dslLoader.parseAndLoad( new StringReader( content ) ) ) {
@@ -233,8 +235,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
         }
     }
 
-    private List<BuildMessage> makeValidationMessages( final DSLTokenizedMappingFile dslLoader ) {
-        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+    private List<ValidationMessage> makeValidationMessages( final DSLTokenizedMappingFile dslLoader ) {
+        final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
         for ( final Object o : dslLoader.getErrors() ) {
             if ( o instanceof DSLMappingParseException ) {
                 final DSLMappingParseException dslMappingParseException = (DSLMappingParseException) o;
@@ -249,23 +251,23 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
         return messages;
     }
 
-    private BuildMessage makeNewValidationMessage( final DSLMappingParseException e ) {
-        final BuildMessage msg = new BuildMessage();
-        msg.setLevel( BuildMessage.Level.ERROR );
+    private ValidationMessage makeNewValidationMessage( final DSLMappingParseException e ) {
+        final ValidationMessage msg = new ValidationMessage();
+        msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( "Line " + e.getLine() + " : " + e.getMessage() );
         return msg;
     }
 
-    private BuildMessage makeNewValidationMessage( final Exception e ) {
-        final BuildMessage msg = new BuildMessage();
-        msg.setLevel( BuildMessage.Level.ERROR );
+    private ValidationMessage makeNewValidationMessage( final Exception e ) {
+        final ValidationMessage msg = new ValidationMessage();
+        msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( "Exception " + e.getClass() + " " + e.getMessage() + " " + e.getCause() );
         return msg;
     }
 
-    private BuildMessage makeNewValidationMessage( final Object o ) {
-        final BuildMessage msg = new BuildMessage();
-        msg.setLevel( BuildMessage.Level.ERROR );
+    private ValidationMessage makeNewValidationMessage( final Object o ) {
+        final ValidationMessage msg = new ValidationMessage();
+        msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( "Uncategorized error " + o );
         return msg;
     }
