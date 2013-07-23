@@ -1,5 +1,6 @@
 package org.drools.workbench.screens.factmodel.backend.server.util;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +117,8 @@ public class FactModelPersistence {
             throw new DroolsParserException( "Using advanced editor" );
         }
         final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( drl );
+        final StringReader reader = new StringReader( drl );
+        final PackageDescr pkg = parser.parse( reader );
         if ( parser.hasErrors() ) {
             throw new DroolsParserException( "The model drl " + drl + " is not valid" );
         }
