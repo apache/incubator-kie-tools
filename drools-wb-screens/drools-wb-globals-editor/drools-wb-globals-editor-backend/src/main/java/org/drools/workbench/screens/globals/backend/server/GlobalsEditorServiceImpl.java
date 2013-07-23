@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.globals.backend.server;
 
-import java.util.Collections;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,6 +29,8 @@ import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -97,6 +99,9 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     @Override
     public Path create( final Path context,
@@ -239,14 +244,16 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final GlobalsModel content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final GlobalsModel content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( GlobalsPersistence.getInstance().marshal( content ).getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final GlobalsModel content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

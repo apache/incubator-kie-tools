@@ -19,7 +19,6 @@ package org.drools.workbench.screens.scorecardxls.backend.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +29,8 @@ import javax.inject.Named;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -87,6 +88,9 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     public InputStream load( final Path path ) {
         try {
@@ -213,14 +217,18 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final Path resource ) {
+        try {
+            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+                                                                      StandardOpenOption.READ );
+            return genericValidator.validate( path,
+                                              inputStream,
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final Path content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

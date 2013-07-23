@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.template.server;
 
-import java.util.Collections;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,6 +29,8 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -97,6 +99,9 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     public Path create( final Path context,
                         final String fileName,
@@ -231,14 +236,17 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public List<ValidationMessage> validate( final TemplateModel content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final TemplateModel content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( toSource( path,
+                                                                                  content ).getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final TemplateModel content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

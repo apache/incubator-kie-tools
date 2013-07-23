@@ -218,7 +218,8 @@ public class GuidedScoreCardEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( view.getModel() );
+                } ).validate( path,
+                              view.getModel() );
             }
         };
     }

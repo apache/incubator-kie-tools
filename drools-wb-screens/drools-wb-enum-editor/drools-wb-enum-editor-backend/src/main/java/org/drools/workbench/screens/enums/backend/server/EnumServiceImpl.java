@@ -216,7 +216,8 @@ public class EnumServiceImpl implements EnumService {
     public List<ValidationMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            return validate( content );
+            return validate( path,
+                             content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -224,13 +225,9 @@ public class EnumServiceImpl implements EnumService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final String content ) {
+    public List<ValidationMessage> validate( final Path path,
+                                             final String content ) {
         return doValidation( content );
-    }
-
-    @Override
-    public boolean isValid( final String content ) {
-        return validate( content ).isEmpty();
     }
 
     private List<ValidationMessage> doValidation( final String content ) {

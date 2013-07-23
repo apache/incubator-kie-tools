@@ -203,7 +203,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     public List<ValidationMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            return validate( content );
+            return validate( path,
+                             content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -211,7 +212,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final String content ) {
+    public List<ValidationMessage> validate( final Path path,
+                                             final String content ) {
         return doValidation( content );
     }
 
@@ -265,11 +267,6 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
         msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( "Uncategorized error " + o );
         return msg;
-    }
-
-    @Override
-    public boolean isValid( final String content ) {
-        return validate( content ).isEmpty();
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

@@ -258,7 +258,8 @@ public class GuidedRuleTemplateEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( view.getContent() );
+                } ).validate( path,
+                              view.getContent() );
             }
         };
     }

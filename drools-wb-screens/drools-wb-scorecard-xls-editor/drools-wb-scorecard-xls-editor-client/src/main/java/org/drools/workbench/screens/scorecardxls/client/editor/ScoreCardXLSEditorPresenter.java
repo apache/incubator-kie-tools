@@ -147,7 +147,8 @@ public class ScoreCardXLSEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path );
+                } ).validate( path,
+                              path );
             }
         };
     }

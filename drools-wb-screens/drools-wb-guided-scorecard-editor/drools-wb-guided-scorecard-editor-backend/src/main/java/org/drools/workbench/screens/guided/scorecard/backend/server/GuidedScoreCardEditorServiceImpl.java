@@ -253,18 +253,14 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     }
 
     @Override
-    public List<ValidationMessage> validate( final ScoreCardModel content ) {
+    public List<ValidationMessage> validate( final Path path,
+                                             final ScoreCardModel content ) {
         try {
             return doValidation( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    @Override
-    public boolean isValid( final ScoreCardModel content ) {
-        return validate( content ).isEmpty();
     }
 
     private List<ValidationMessage> doValidation( final ScoreCardModel model ) {

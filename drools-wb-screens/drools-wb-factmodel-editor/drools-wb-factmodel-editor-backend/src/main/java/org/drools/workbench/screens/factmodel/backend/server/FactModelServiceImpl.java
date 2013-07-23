@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.factmodel.backend.server;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -35,6 +35,8 @@ import org.drools.workbench.screens.factmodel.type.FactModelResourceTypeDefiniti
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -112,6 +114,9 @@ public class FactModelServiceImpl implements FactModelService {
 
     @Inject
     private FileDiscoveryService fileDiscoveryService;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     @Override
     public Path create( final Path context,
@@ -277,14 +282,16 @@ public class FactModelServiceImpl implements FactModelService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final FactModels content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final FactModels content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( FactModelPersistence.marshal( content ).getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final FactModels content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

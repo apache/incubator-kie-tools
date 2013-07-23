@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,6 +33,8 @@ import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -109,6 +111,9 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     @Inject
     private SourceServices sourceServices;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     @Override
     public Path create( final Path context,
@@ -278,14 +283,17 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final RuleModel content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final RuleModel content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( toSource( path,
+                                                                                  content ).getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final RuleModel content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

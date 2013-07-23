@@ -239,7 +239,8 @@ public class GuidedRuleEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( view.getContent() );
+                } ).validate( path,
+                              view.getContent() );
             }
         };
     }

@@ -199,7 +199,8 @@ public class GlobalsEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( model );
+                } ).validate( path,
+                              model );
             }
         };
     }

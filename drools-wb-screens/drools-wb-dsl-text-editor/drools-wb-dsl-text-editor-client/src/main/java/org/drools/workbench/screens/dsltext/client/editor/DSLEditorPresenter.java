@@ -176,7 +176,8 @@ public class DSLEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( view.getContent() );
+                } ).validate( path,
+                              view.getContent() );
             }
         };
     }

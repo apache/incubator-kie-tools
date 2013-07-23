@@ -159,7 +159,8 @@ public class DecisionTableXLSEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path );
+                } ).validate( path,
+                              path );
             }
         };
     }

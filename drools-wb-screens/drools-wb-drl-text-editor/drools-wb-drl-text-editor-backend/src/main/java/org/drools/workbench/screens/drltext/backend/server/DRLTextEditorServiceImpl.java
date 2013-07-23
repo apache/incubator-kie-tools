@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.drltext.backend.server;
 
-import java.util.Collections;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +30,8 @@ import org.drools.workbench.models.commons.shared.packages.HasPackageName;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -94,6 +96,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     @Override
     public Path create( final Path context,
@@ -221,14 +226,16 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final String content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final String content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( content.getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final String content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     //Check if the DRL contains a Package declaration, appending one if it does not exist

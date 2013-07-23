@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
-import java.util.Collections;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +32,8 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -103,6 +105,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private GenericValidator genericValidator;
 
     @Override
     public Path create( final Path context,
@@ -242,14 +247,16 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     }
 
     @Override
-    public List<ValidationMessage> validate( final GuidedDecisionTable52 content ) {
-        //TODO {manstis} - Need to implement
-        return Collections.emptyList();
-    }
+    public List<ValidationMessage> validate( final Path path,
+                                             final GuidedDecisionTable52 content ) {
+        try {
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( GuidedDTXMLPersistence.getInstance().marshal( content ).getBytes() ),
+                                              new JavaFileFilter() );
 
-    @Override
-    public boolean isValid( final GuidedDecisionTable52 content ) {
-        return validate( content ).isEmpty();
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
