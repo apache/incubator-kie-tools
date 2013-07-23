@@ -169,6 +169,7 @@ public class ProjectResourceDispatcher {
             return;
         } else {
             POM pom = new POM();
+            pom.getGav().setArtifactId( projectName );
             
             try {
                 Project project = projectService.newProject( makeRepository( paths.convert( repositoryPath,
