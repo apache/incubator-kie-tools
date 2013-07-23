@@ -388,18 +388,24 @@ public class ProjectResourceDispatcher {
             return;
         }
 
+        org.uberfire.backend.group.Group group = null;
         List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
         if(repositoryNameList != null && repositoryNameList.size() > 0) {
         	for(String repoName : repositoryNameList) {
         		GitRepository repo = new GitRepository(repoName);
         		repositories.add(repo);
         	}
-            groupService.createGroup( groupName, groupOwer, repositories );
+        	group = groupService.createGroup( groupName, groupOwer, repositories );
         } else {
-            groupService.createGroup( groupName, groupOwer );
+        	group = groupService.createGroup( groupName, groupOwer );
         }
         
-        result.setStatus(JobRequest.Status.SUCCESS);
+        if(group != null) {
+            result.setResult("Group " + group.getName() + " is created successfully.");
+            result.setStatus(JobRequest.Status.SUCCESS);
+        } else {
+            result.setStatus(JobRequest.Status.FAIL);       	
+        }
         jobResultEvent.fire(result);
     }
     
@@ -417,7 +423,15 @@ public class ProjectResourceDispatcher {
 
         GroupImpl group = new GroupImpl(groupName, null);
         GitRepository repo = new GitRepository(repositoryName);
-        groupService.addRepository(group, repo);
+        
+        try {
+            groupService.addRepository(group, repo);
+        } catch (IllegalArgumentException e) {
+            result.setStatus(JobRequest.Status.BAD_REQUEST);
+            result.setResult("Group " + group.getName() + " not found" );  
+            jobResultEvent.fire(result);
+            return;       	
+        }
         
         result.setStatus(JobRequest.Status.SUCCESS);
         jobResultEvent.fire(result);
@@ -437,7 +451,14 @@ public class ProjectResourceDispatcher {
 
         GroupImpl group = new GroupImpl(groupName, null);
         GitRepository repo = new GitRepository(repositoryName);
-        groupService.removeRepository(group, repo);
+        try {
+            groupService.addRepository(group, repo);
+        } catch (IllegalArgumentException e) {
+            result.setStatus(JobRequest.Status.BAD_REQUEST);
+            result.setResult("Group " + group.getName() + " not found" );  
+            jobResultEvent.fire(result);
+            return;       	
+        }
         
         result.setStatus(JobRequest.Status.SUCCESS);
         jobResultEvent.fire(result);
