@@ -53,12 +53,12 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionsFilter;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.commons.io.IOService;
@@ -307,14 +307,10 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            final List<BuildMessage> messages = doValidation( content );
-            for ( BuildMessage msg : messages ) {
-                msg.setPath( path );
-            }
-            return messages;
+            return validate( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -322,22 +318,22 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     }
 
     @Override
-    public List<BuildMessage> validate( final String content ) {
+    public List<ValidationMessage> validate( final String content ) {
         return doValidation( content );
     }
 
-    private List<BuildMessage> doValidation( final String content ) {
-        final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+    private List<ValidationMessage> doValidation( final String content ) {
+        final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         try {
             MVEL.eval( content,
                        new HashMap() );
         } catch ( Exception e ) {
-            final BuildMessage msg = new BuildMessage();
-            msg.setLevel( BuildMessage.Level.ERROR );
+            final ValidationMessage msg = new ValidationMessage();
+            msg.setLevel( ValidationMessage.Level.ERROR );
             msg.setText( e.getMessage() );
-            messages.add( msg );
+            validationMessages.add( msg );
         }
-        return messages;
+        return validationMessages;
     }
 
     @Override

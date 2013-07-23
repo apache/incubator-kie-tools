@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -183,9 +183,9 @@ public class EnumEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                enumService.call( new RemoteCallback<List<BuildMessage>>() {
+                enumService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<BuildMessage> results ) {
+                    public void callback( final List<ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );

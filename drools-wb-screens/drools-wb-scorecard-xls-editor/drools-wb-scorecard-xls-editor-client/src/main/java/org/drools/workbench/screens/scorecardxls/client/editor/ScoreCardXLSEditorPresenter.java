@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -137,9 +137,9 @@ public class ScoreCardXLSEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                scoreCardXLSService.call( new RemoteCallback<List<BuildMessage>>() {
+                scoreCardXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<BuildMessage> results ) {
+                    public void callback( final List<ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );

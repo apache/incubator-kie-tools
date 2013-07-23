@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.enums.backend.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -30,12 +31,12 @@ import org.drools.workbench.screens.enums.service.EnumService;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -212,14 +213,10 @@ public class EnumServiceImpl implements EnumService {
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            final List<BuildMessage> messages = doValidation( content );
-            for ( BuildMessage msg : messages ) {
-                msg.setPath( path );
-            }
-            return messages;
+            return validate( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -227,9 +224,8 @@ public class EnumServiceImpl implements EnumService {
     }
 
     @Override
-    public List<BuildMessage> validate( final String content ) {
-        final List<BuildMessage> messages = doValidation( content );
-        return messages;
+    public List<ValidationMessage> validate( final String content ) {
+        return doValidation( content );
     }
 
     @Override
@@ -237,27 +233,31 @@ public class EnumServiceImpl implements EnumService {
         return validate( content ).isEmpty();
     }
 
-    private List<BuildMessage> doValidation( final String content ) {
+    private List<ValidationMessage> doValidation( final String content ) {
         try {
             final DataEnumLoader loader = new DataEnumLoader( content );
             if ( !loader.hasErrors() ) {
-                return new ArrayList<BuildMessage>();
+                return Collections.emptyList();
             } else {
-                final List<BuildMessage> messages = new ArrayList<BuildMessage>();
+                final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
                 final List<String> loaderErrors = loader.getErrors();
 
                 for ( final String message : loaderErrors ) {
-                    final BuildMessage msg = new BuildMessage();
-                    msg.setLevel( BuildMessage.Level.ERROR );
-                    msg.setText( message );
-                    messages.add( msg );
+                    validationMessages.add( makeValidationMessages( message ) );
                 }
-                return messages;
+                return validationMessages;
             }
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private ValidationMessage makeValidationMessages( final String message ) {
+        final ValidationMessage msg = new ValidationMessage();
+        msg.setLevel( ValidationMessage.Level.ERROR );
+        msg.setText( message );
+        return msg;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

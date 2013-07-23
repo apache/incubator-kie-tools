@@ -30,8 +30,8 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
@@ -248,9 +248,9 @@ public class GuidedRuleTemplateEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                service.call( new RemoteCallback<List<BuildMessage>>() {
+                service.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<BuildMessage> results ) {
+                    public void callback( final List<ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );

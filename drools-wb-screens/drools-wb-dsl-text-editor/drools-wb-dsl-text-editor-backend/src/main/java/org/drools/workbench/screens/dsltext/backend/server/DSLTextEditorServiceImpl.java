@@ -32,8 +32,6 @@ import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -202,14 +200,10 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     }
 
     @Override
-    public List<BuildMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate( final Path path ) {
         try {
             final String content = ioService.readAllString( paths.convert( path ) );
-            final List<ValidationMessage> validationMessages = doValidation( content );
-            for ( ValidationMessage msg : messages ) {
-                msg.setPath( path );
-            }
-            return messages;
+            return validate( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -222,13 +216,13 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     }
 
     private List<ValidationMessage> doValidation( final String content ) {
-        final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+        final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
         try {
             if ( !dslLoader.parseAndLoad( new StringReader( content ) ) ) {
-                messages.addAll( makeValidationMessages( dslLoader ) );
+                validationMessages.addAll( makeValidationMessages( dslLoader ) );
             }
-            return messages;
+            return validationMessages;
 
         } catch ( IOException e ) {
             throw ExceptionUtilities.handleException( e );
@@ -254,7 +248,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     private ValidationMessage makeNewValidationMessage( final DSLMappingParseException e ) {
         final ValidationMessage msg = new ValidationMessage();
         msg.setLevel( ValidationMessage.Level.ERROR );
-        msg.setText( "Line " + e.getLine() + " : " + e.getMessage() );
+        msg.setLine( e.getLine() );
+        msg.setText( e.getMessage() );
         return msg;
     }
 

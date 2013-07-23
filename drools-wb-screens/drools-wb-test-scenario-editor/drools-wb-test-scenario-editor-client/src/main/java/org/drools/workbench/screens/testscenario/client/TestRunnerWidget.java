@@ -38,8 +38,8 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.kie.workbench.common.widgets.errors.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.SmallLabel;
@@ -89,7 +89,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
             final BuilderResultLine res = rs.get( i );
             errTable.setWidget( row,
                                 0,
-                                new Image( ImageResources.INSTANCE.error() ) );
+                                new Image( CommonImages.INSTANCE.error() ) );
             if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,

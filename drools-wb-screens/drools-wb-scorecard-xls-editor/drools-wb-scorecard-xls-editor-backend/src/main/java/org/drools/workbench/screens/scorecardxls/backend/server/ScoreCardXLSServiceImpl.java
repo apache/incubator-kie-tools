@@ -30,11 +30,11 @@ import javax.inject.Named;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -213,7 +213,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     }
 
     @Override
-    public List<BuildMessage> validate( final Path content ) {
+    public List<ValidationMessage> validate( final Path content ) {
         //TODO {manstis} - Need to implement
         return Collections.emptyList();
     }

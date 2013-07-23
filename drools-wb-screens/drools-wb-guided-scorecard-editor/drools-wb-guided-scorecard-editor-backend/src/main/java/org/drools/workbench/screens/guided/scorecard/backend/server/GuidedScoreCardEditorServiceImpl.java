@@ -35,12 +35,12 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
@@ -227,7 +227,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     public String toSource( final Path path,
                             final ScoreCardModel model ) {
         try {
-            final List<BuildMessage> results = validateScoreCard( model );
+            final List<ValidationMessage> results = doValidation( model );
             if ( results.isEmpty() ) {
                 return toDRL( path,
                               model );
@@ -244,19 +244,18 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
     }
 
-    private String toValidationErrors( final List<BuildMessage> results ) {
+    private String toValidationErrors( final List<ValidationMessage> results ) {
         final StringBuilder drl = new StringBuilder();
-        for ( final BuildMessage msg : results ) {
+        for ( final ValidationMessage msg : results ) {
             drl.append( "//" ).append( msg.getText() ).append( "\n" );
         }
         return drl.toString();
     }
 
     @Override
-    public List<BuildMessage> validate( final ScoreCardModel content ) {
+    public List<ValidationMessage> validate( final ScoreCardModel content ) {
         try {
-            final List<BuildMessage> result = validateScoreCard( content );
-            return result;
+            return doValidation( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -268,57 +267,57 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return validate( content ).isEmpty();
     }
 
-    private List<BuildMessage> validateScoreCard( final ScoreCardModel model ) {
-        final List<BuildMessage> results = new ArrayList<BuildMessage>();
+    private List<ValidationMessage> doValidation( final ScoreCardModel model ) {
+        final List<ValidationMessage> results = new ArrayList<ValidationMessage>();
         if ( StringUtils.isBlank( model.getFactName() ) ) {
-            results.add( createBuilderResultLine( "Fact Name is empty." ) );
+            results.add( makeValidationMessages( "Fact Name is empty." ) );
         }
         if ( StringUtils.isBlank( model.getFieldName() ) ) {
-            results.add( createBuilderResultLine( "Resultant Score Field is empty." ) );
+            results.add( makeValidationMessages( "Resultant Score Field is empty." ) );
         }
         if ( model.getCharacteristics().size() == 0 ) {
-            results.add( createBuilderResultLine( "No Characteristics Found." ) );
+            results.add( makeValidationMessages( "No Characteristics Found." ) );
         }
         int ctr = 1;
         for ( final Characteristic c : model.getCharacteristics() ) {
             String characteristicName = "Characteristic ('#" + ctr + "')";
             if ( StringUtils.isBlank( c.getName() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "' is empty." ) );
+                results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "' is empty." ) );
             } else {
                 characteristicName = "Characteristic ('" + c.getName() + "')";
             }
             if ( StringUtils.isBlank( c.getFact() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Fact is empty." ) );
+                results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Fact is empty." ) );
             }
             if ( StringUtils.isBlank( c.getField() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Characteristic Field is empty." ) );
+                results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Characteristic Field is empty." ) );
             } else if ( StringUtils.isBlank( c.getDataType() ) ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Internal Error (missing datatype)." ) );
+                results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Internal Error (missing datatype)." ) );
             }
             if ( c.getAttributes().size() == 0 ) {
-                results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. No Attributes Found." ) );
+                results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. No Attributes Found." ) );
             }
             if ( model.isUseReasonCodes() ) {
                 if ( StringUtils.isBlank( model.getReasonCodeField() ) ) {
-                    results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Resultant Reason Codes Field is empty." ) );
+                    results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Resultant Reason Codes Field is empty." ) );
                 }
                 if ( !"none".equalsIgnoreCase( model.getReasonCodesAlgorithm() ) ) {
-                    results.add( createBuilderResultLine( "Characteristic Name '" + characteristicName + "'. Baseline Score is not specified." ) );
+                    results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Baseline Score is not specified." ) );
                 }
             }
             int attrCtr = 1;
             for ( final Attribute attribute : c.getAttributes() ) {
                 final String attributeName = "Attribute ('#" + attrCtr + "')";
                 if ( StringUtils.isBlank( attribute.getOperator() ) ) {
-                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Operator is empty." ) );
+                    results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Attribute Operator is empty." ) );
                 }
                 if ( StringUtils.isBlank( attribute.getValue() ) ) {
-                    results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Attribute Value is empty." ) );
+                    results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Attribute Value is empty." ) );
                 }
                 if ( model.isUseReasonCodes() ) {
                     if ( StringUtils.isBlank( c.getReasonCode() ) ) {
                         if ( StringUtils.isBlank( attribute.getReasonCode() ) ) {
-                            results.add( createBuilderResultLine( "Attribute Name '" + attributeName + "'. Reason Code must be set at either attribute or characteristic." ) );
+                            results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Reason Code must be set at either attribute or characteristic." ) );
                         }
                     }
                 }
@@ -329,8 +328,8 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         return results;
     }
 
-    private BuildMessage createBuilderResultLine( final String message ) {
-        final BuildMessage msg = new BuildMessage();
+    private ValidationMessage makeValidationMessages( final String message ) {
+        final ValidationMessage msg = new ValidationMessage();
         msg.setText( message );
         return msg;
     }

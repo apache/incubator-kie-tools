@@ -30,8 +30,8 @@ import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResour
 import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -149,9 +149,9 @@ public class DecisionTableXLSEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                decisionTableXLSService.call( new RemoteCallback<List<BuildMessage>>() {
+                decisionTableXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<BuildMessage> results ) {
+                    public void callback( final List<ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );

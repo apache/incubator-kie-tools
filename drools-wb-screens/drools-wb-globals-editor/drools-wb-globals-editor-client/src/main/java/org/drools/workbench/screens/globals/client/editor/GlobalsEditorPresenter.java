@@ -12,8 +12,8 @@ import org.drools.workbench.screens.globals.client.type.GlobalResourceType;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
-import org.guvnor.common.services.shared.builder.BuildMessage;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -189,9 +189,9 @@ public class GlobalsEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                globalsEditorService.call( new RemoteCallback<List<BuildMessage>>() {
+                globalsEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<BuildMessage> results ) {
+                    public void callback( final List<ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );

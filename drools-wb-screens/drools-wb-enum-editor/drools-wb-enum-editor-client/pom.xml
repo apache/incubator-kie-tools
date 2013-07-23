@@ -42,11 +42,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-error-messages-widget</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
