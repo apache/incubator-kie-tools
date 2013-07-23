@@ -21,12 +21,13 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
@@ -66,7 +67,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     private Caller<ExplorerService> explorerService;
 
     @Inject
-    private Caller<ProjectService> projectService2;
+    private Caller<BuildService> buildService;
 
     @Inject
     private PlaceManager placeManager;
@@ -112,7 +113,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
         if ( activeFolderListing != null ) {
             loadFilesAndFolders( activeFolderListing.getPath() );
-            
+
         } else if ( activePackage != null ) {
             loadFilesAndFolders( activePackage.getProjectRootPath() );
             packageChangeEvent.fire( new PackageChangeEvent() );
@@ -260,6 +261,14 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         final Project project = event.getProject();
         selectProject( project );
+
+        //Build project
+        buildService.call( new RemoteCallback<BuildResults>() {
+            @Override
+            public void callback( final BuildResults results ) {
+                //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+            }
+        } ).build( project );
     }
 
     @Override

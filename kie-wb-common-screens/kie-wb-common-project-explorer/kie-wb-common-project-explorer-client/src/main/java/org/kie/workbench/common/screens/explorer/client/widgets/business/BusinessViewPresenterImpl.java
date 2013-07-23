@@ -21,6 +21,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
@@ -65,6 +67,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Inject
     private Caller<ExplorerService> explorerService;
+
+    @Inject
+    private Caller<BuildService> buildService;
 
     @Inject
     private PlaceManager placeManager;
@@ -223,6 +228,14 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Project project = event.getProject();
         view.selectProject( project );
+
+        //Build project
+        buildService.call( new RemoteCallback<BuildResults>() {
+            @Override
+            public void callback( final BuildResults results ) {
+                //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+            }
+        } ).build( project );
     }
 
     private void doProjectChanged( final Project project ) {
