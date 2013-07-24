@@ -48,6 +48,8 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
@@ -286,10 +288,13 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public List<ValidationMessage> validate( final Path path,
                                              final RuleModel content ) {
         try {
+            final String source = toSource( path,
+                                            content );
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( toSource( path,
-                                                                                  content ).getBytes() ),
-                                              new JavaFileFilter() );
+                                              new ByteArrayInputStream( source.getBytes() ),
+                                              new JavaFileFilter(),
+                                              new GlobalsFileFilter(),
+                                              new DslFileFilter() );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

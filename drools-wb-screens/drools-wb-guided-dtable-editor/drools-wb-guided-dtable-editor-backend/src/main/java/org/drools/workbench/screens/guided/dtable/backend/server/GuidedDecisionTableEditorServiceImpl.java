@@ -46,6 +46,8 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
@@ -252,7 +254,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
         try {
             return genericValidator.validate( path,
                                               new ByteArrayInputStream( GuidedDTXMLPersistence.getInstance().marshal( content ).getBytes() ),
-                                              new JavaFileFilter() );
+                                              new JavaFileFilter(),
+                                              new GlobalsFileFilter(),
+                                              new DslFileFilter() );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
