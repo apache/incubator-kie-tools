@@ -59,6 +59,9 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
     protected Map<String, Boolean> projectCollectionTypes = new HashMap<String, Boolean>();
 
+    // List of available rule names
+    private List<String> ruleNames = new ArrayList<String>();
+
     // This is used to calculate what fields an enum list may depend on.
     private transient Map<String, Object> enumLookupFields;
 
@@ -770,5 +773,13 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         return this.projectCollectionTypes;
     }
 
+    public void addRuleNames(List<String> ruleNames) {
+        this.ruleNames.addAll(ruleNames);
+    }
+
+    @Override
+    public List<String> getRuleNames() {
+        return ruleNames;
+    }
 }
 

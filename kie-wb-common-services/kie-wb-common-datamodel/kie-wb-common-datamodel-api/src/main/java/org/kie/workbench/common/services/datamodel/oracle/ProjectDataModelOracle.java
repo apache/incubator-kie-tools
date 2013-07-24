@@ -32,6 +32,8 @@ public interface ProjectDataModelOracle {
     //Fact and Field related methods
     String[] getFactTypes();
 
+    List<String> getRuleNames();
+
     String getFactNameFromType( final String classType );
 
     boolean isFactTypeRecognized( final String factType );

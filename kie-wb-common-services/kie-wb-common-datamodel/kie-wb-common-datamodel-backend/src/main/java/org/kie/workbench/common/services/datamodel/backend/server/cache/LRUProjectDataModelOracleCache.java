@@ -87,6 +87,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final Builder builder = cache.assertBuilder( project );
 
         //Create the ProjectOracle...
+        final BuildResults results = builder.build();
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
@@ -103,7 +104,8 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                                         typeMetaInfo.isEvent(),
                                         typeSource );
                 } catch ( IOException ioe ) {
-                    log.error( ioe.getMessage() );
+                    results.addBuildMessage( makeMessage( ERROR_IO,
+                                                          ioe ) );
                 }
             }
         }
@@ -120,14 +122,37 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
                     //This should not happen as Builder would have failed to load them and failed fast.
-                    log.error( cnfe.getMessage() );
+                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
+                                                          cnfe ) );
                 } catch ( IOException ioe ) {
-                    log.error( ioe.getMessage() );
+                    results.addBuildMessage( makeMessage( ERROR_IO,
+                                                          ioe ) );
                 }
             }
         }
 
+        addAllRuleNames( builder, pdBuilder );
+
+        //Report any errors to the user
+        if ( !results.getMessages().isEmpty() ) {
+            buildResultsEvent.fire( results );
+        }
+
         return pdBuilder.build();
+    }
+
+    private void addAllRuleNames(Builder builder, ProjectDataModelOracleBuilder pdBuilder) {
+
+        List<String> ruleNames = new ArrayList<String>();
+
+        for (KiePackage kiePackage : builder.getKieContainer().getKieBase().getKiePackages()) {
+            for (Rule rule : kiePackage.getRules()) {
+                ruleNames.add(rule.getName());
+            }
+        }
+
+        pdBuilder.addRuleNames(ruleNames);
+
     }
 
     private BuildMessage makeMessage( final String prefix,
