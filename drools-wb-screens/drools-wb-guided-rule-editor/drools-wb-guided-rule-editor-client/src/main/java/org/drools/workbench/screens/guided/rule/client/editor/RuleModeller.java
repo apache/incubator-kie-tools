@@ -20,16 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
@@ -173,13 +172,7 @@ public class RuleModeller extends DirtyableComposite
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
 
-        layout.setWidget( currentLayoutRow,
-                0,
-                new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
-        layout.setWidget( currentLayoutRow,
-                1,
-                new RuleSelectorDropdown(dataModel));
-        currentLayoutRow++;
+        addExtendedRuleDropdown();
 
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
@@ -254,6 +247,36 @@ public class RuleModeller extends DirtyableComposite
         layout.getCellFormatter().setHeight( currentLayoutRow + 1,
                                              3,
                                              "100%" );
+    }
+
+    private void addExtendedRuleDropdown() {
+        layout.setWidget( currentLayoutRow,
+                0,
+                new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
+
+
+        HorizontalPanel panel = new HorizontalPanel();
+        final InlineLabel ruleNamePanel = new InlineLabel();
+        if (model.parentName != null && !model.parentName.isEmpty()) {
+            ruleNamePanel.setText(model.parentName);
+        }
+        panel.add(ruleNamePanel);
+
+        RuleSelectorDropdown ruleSelectorDropdown = new RuleSelectorDropdown(dataModel);
+        ruleSelectorDropdown.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                model.parentName = event.getValue();
+                ruleNamePanel.setText(model.parentName);
+            }
+        });
+
+        panel.add(ruleSelectorDropdown);
+
+        layout.setWidget( currentLayoutRow,
+                3,
+                panel);
+        currentLayoutRow++;
     }
 
     private void renderOptions( final int optionsRowIndex ) {
