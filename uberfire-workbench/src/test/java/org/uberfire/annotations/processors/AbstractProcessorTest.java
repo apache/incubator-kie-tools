@@ -172,7 +172,7 @@ public abstract class AbstractProcessorTest {
                                         final String message ) {
         final List<String> messages = getMessages( diagnostics,
                                                    Kind.ERROR );
-        assertTrue( messages.contains( "error: " + message ) );
+        assertTrue( messages.contains( "error: " + message ) || messages.contains( message ) );
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class AbstractProcessorTest {
                                           final String message ) {
         final List<String> messages = getMessages( diagnostics,
                                                    Kind.WARNING );
-        assertTrue( messages.contains( "warning: " + message ) );
+        assertTrue( messages.contains( "warning: " + message ) || messages.contains( message ) );
     }
 
     private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,
