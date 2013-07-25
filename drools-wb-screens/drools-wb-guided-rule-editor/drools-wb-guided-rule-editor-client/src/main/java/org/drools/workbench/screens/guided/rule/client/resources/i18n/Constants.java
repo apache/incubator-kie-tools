@@ -319,4 +319,5 @@ public interface Constants
 
     String UseDSL();
 
+    String EXTENDS();
 }

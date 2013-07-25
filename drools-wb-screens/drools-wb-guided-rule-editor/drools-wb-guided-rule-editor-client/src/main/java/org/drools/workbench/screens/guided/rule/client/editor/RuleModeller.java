@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -37,6 +38,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
+import org.drools.workbench.screens.guided.rule.client.widget.RuleSelectorDropdown;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.security.UserCapabilities;
@@ -170,6 +172,14 @@ public class RuleModeller extends DirtyableComposite
                                               "48px" );
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
+
+        layout.setWidget( currentLayoutRow,
+                0,
+                new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
+        layout.setWidget( currentLayoutRow,
+                1,
+                new RuleSelectorDropdown(dataModel));
+        currentLayoutRow++;
 
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
