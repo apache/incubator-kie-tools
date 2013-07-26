@@ -33,55 +33,58 @@ import org.uberfire.security.crypt.CryptProvider;
 
 public class DefaultCryptProvider implements CryptProvider {
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = Charset.forName( "UTF-8" );
     private static final Base64 BASE64 = new Base64();
     private static final String HASH_FUNCTION = "SHA-256";
     private static final String KEY = "UFG00D3N0U6HT";
 
     @Override
-    public String encrypt(final String content, final Object salt) {
+    public String encrypt( final String content,
+                           final Object salt ) {
         try {
-            final Cipher cipher = buildCipher(salt, Cipher.ENCRYPT_MODE);
+            final Cipher cipher = buildCipher( salt, Cipher.ENCRYPT_MODE );
 
-            final byte[] plainTextBytes = content.getBytes(UTF8);
-            final byte[] cipherText = cipher.doFinal(plainTextBytes);
+            final byte[] plainTextBytes = content.getBytes( UTF8 );
+            final byte[] cipherText = cipher.doFinal( plainTextBytes );
 
-            return BASE64.encodeAsString(cipherText);
-        } catch (final Exception e) {
-            throw new RuntimeException("Failed to encrypt", e);
+            return BASE64.encodeToString( cipherText );
+        } catch ( final Exception e ) {
+            throw new RuntimeException( "Failed to encrypt", e );
         }
     }
 
     @Override
-    public String decrypt(final String content, final Object salt) {
+    public String decrypt( final String content,
+                           final Object salt ) {
         try {
-            final Cipher decipher = buildCipher(salt, Cipher.DECRYPT_MODE);
+            final Cipher decipher = buildCipher( salt, Cipher.DECRYPT_MODE );
 
-            final byte[] plainText = decipher.doFinal(BASE64.decode(content));
+            final byte[] plainText = decipher.doFinal( BASE64.decode( content ) );
 
-            return new String(plainText, UTF8);
-        } catch (final Exception e) {
+            return new String( plainText, UTF8 );
+        } catch ( final Exception e ) {
             return null;
         }
     }
 
-    private Cipher buildCipher(final Object salt, final int mode)
+    private Cipher buildCipher( final Object salt,
+                                final int mode )
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        final MessageDigest md = MessageDigest.getInstance(HASH_FUNCTION);
-        if (salt != null) {
-            md.update(salt.toString().getBytes(UTF8));
+        final MessageDigest md = MessageDigest.getInstance( HASH_FUNCTION );
+        if ( salt != null ) {
+            md.update( salt.toString().getBytes( UTF8 ) );
         }
-        final byte[] digestOfPassword = md.digest(KEY.getBytes(UTF8));
-        final byte[] keyBytes = Arrays.copyOf(digestOfPassword, 24);
-        for (int j = 0, k = 16; j < 8; ) {
-            keyBytes[k++] = keyBytes[j++];
+        final byte[] digestOfPassword = md.digest( KEY.getBytes( UTF8 ) );
+        final byte[] keyBytes = Arrays.copyOf( digestOfPassword, 24 );
+        for ( int j = 0, k = 16; j < 8; ) {
+            keyBytes[ k++ ] = keyBytes[ j++ ];
         }
 
-        final SecretKey key = new SecretKeySpec(keyBytes, "DESede");
-        final IvParameterSpec iv = new IvParameterSpec(new byte[8]);
-        final Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
+        final SecretKey key = new SecretKeySpec( keyBytes, "DESede" );
+        final IvParameterSpec iv = new IvParameterSpec( new byte[ 8 ] );
+        final Cipher cipher = Cipher.getInstance( "DESede/CBC/PKCS5Padding" );
 
-        cipher.init(mode, key, iv);
+        cipher.init( mode, key, iv );
 
         return cipher;
     }

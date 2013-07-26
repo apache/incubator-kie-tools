@@ -67,11 +67,11 @@
     <errai.version>2.3.2.Final</errai.version>
 
     <commons-httpclient.version>3.1</commons-httpclient.version>
-    <commons-io.version>2.4</commons-io.version>
-    <commons-codec.version>1.5</commons-codec.version>
+    <commons-io.version>2.1</commons-io.version>
+    <commons-codec.version>1.4</commons-codec.version>
 
     <xstream.version>1.4.3</xstream.version>
-    <snakeyaml.version>1.10</snakeyaml.version>
+    <snakeyaml.version>1.8</snakeyaml.version>
     <freemarker.version>2.3.19</freemarker.version>
 
     <mvel.version>2.1.Beta8</mvel.version>

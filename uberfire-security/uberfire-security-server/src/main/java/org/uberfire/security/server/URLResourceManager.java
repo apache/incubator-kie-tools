@@ -66,9 +66,9 @@ public class URLResourceManager implements ResourceManager {
         final InputStream stream = URLResourceManager.class.getClassLoader().getResourceAsStream( this.configFile );
         final Map result;
         if ( stream != null ) {
-            result = yaml.loadAs( stream, Map.class );
+            result = (Map) yaml.load( stream );
         } else {
-            result = yaml.loadAs( DEFAULT_CONFIG, Map.class );
+            result = (Map) yaml.load( DEFAULT_CONFIG );
         }
         return new Resources( result );
     }
