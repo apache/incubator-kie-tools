@@ -1,6 +1,8 @@
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -19,6 +21,8 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
@@ -61,7 +65,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
-                                            event );
+                event );
         final Path resourcePath = event.getResourcePath();
         final Project project = projectService.resolveProject( resourcePath );
 
@@ -77,7 +81,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         if ( projectOracle == null ) {
             projectOracle = makeProjectOracle( project );
             setEntry( project,
-                      projectOracle );
+                    projectOracle );
         }
         return projectOracle;
     }
@@ -87,7 +91,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final Builder builder = cache.assertBuilder( project );
 
         //Create the ProjectOracle...
-        final BuildResults results = builder.build();
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
@@ -95,17 +98,16 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         for ( final String packageName : metaData.getPackages() ) {
             for ( final String className : metaData.getClasses( packageName ) ) {
                 final Class clazz = metaData.getClass( packageName,
-                                                       className );
+                        className );
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 final TypeSource typeSource = builder.getClassSource( metaData,
-                                                                      clazz );
+                        clazz );
                 try {
                     pdBuilder.addClass( clazz,
-                                        typeMetaInfo.isEvent(),
-                                        typeSource );
+                            typeMetaInfo.isEvent(),
+                            typeSource );
                 } catch ( IOException ioe ) {
-                    results.addBuildMessage( makeMessage( ERROR_IO,
-                                                          ioe ) );
+                    log.error( ioe.getMessage() );
                 }
             }
         }
@@ -122,21 +124,14 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                     pdBuilder.addClass( clazz );
                 } catch ( ClassNotFoundException cnfe ) {
                     //This should not happen as Builder would have failed to load them and failed fast.
-                    results.addBuildMessage( makeMessage( ERROR_CLASS_NOT_FOUND,
-                                                          cnfe ) );
+                    log.error( cnfe.getMessage() );
                 } catch ( IOException ioe ) {
-                    results.addBuildMessage( makeMessage( ERROR_IO,
-                                                          ioe ) );
+                    log.error( ioe.getMessage() );
                 }
             }
         }
 
         addAllRuleNames( builder, pdBuilder );
-
-        //Report any errors to the user
-        if ( !results.getMessages().isEmpty() ) {
-            buildResultsEvent.fire( results );
-        }
 
         return pdBuilder.build();
     }
@@ -154,13 +149,5 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         pdBuilder.addRuleNames(ruleNames);
 
     }
-
-    private BuildMessage makeMessage( final String prefix,
-                                      final Exception e ) {
-        final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel( BuildMessage.Level.ERROR );
-        buildMessage.setText( prefix + ": " + e.getMessage() );
-        return buildMessage;
-    }
-
 }
+

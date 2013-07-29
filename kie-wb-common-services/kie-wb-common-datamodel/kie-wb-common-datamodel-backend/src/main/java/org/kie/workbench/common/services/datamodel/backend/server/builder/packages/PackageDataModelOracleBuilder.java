@@ -156,6 +156,7 @@ public final class PackageDataModelOracleBuilder {
         packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
         packageOracle.addTypeAnnotations( pd.getTypeAnnotations() );
         packageOracle.addTypeFieldsAnnotations( pd.getTypeFieldsAnnotations() );
+        packageOracle.addRuleNames( pd.getRuleNames() );
 
         //Add Package DMO specifics
         loadEnums();
