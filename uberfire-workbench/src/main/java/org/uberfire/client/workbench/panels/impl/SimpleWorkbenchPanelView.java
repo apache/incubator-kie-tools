@@ -19,14 +19,16 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.panel.SimpleFocusedResizePanel;
+import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
+import org.uberfire.client.workbench.widgets.panel.ContextPanel;
+import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
 /**
@@ -37,36 +39,41 @@ import org.uberfire.workbench.model.PartDefinition;
 public class SimpleWorkbenchPanelView
         extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
-    private SimpleFocusedResizePanel panel = new SimpleFocusedResizePanel();
+    protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
+    protected ContextPanel contextWidget = new ContextPanel();
+    protected ListBarWidget listBar = new ListBarWidget( false, false );
 
     public SimpleWorkbenchPanelView() {
 
-        panel.addFocusHandler( new FocusHandler() {
-            @Override
-            public void onFocus( final FocusEvent event ) {
-                panelManager.onPanelFocus( presenter.getDefinition() );
-            }
-        } );
-
         //When a tab is selected ensure content is resized and set focus
-        panel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+        listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
-            public void onSelection( final SelectionEvent<PartDefinition> event ) {
+            public void onSelection( SelectionEvent<PartDefinition> event ) {
                 presenter.onPartLostFocus();
                 presenter.onPartFocus( event.getSelectedItem() );
             }
         } );
 
-        initWidget( panel );
+        listBar.addOnFocusHandler( new Command() {
+            @Override
+            public void execute() {
+                panelManager.onPanelFocus( presenter.getDefinition() );
+            }
+        } );
+        listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
+
+        container.add( contextWidget );
+        container.add( listBar );
+        initWidget( container );
     }
 
     @PostConstruct
     private void setupDragAndDrop() {
-        panel.setDndManager( dndManager );
+        listBar.setDndManager( dndManager );
     }
 
     public void enableDnd() {
-        panel.enableDnd();
+        listBar.enableDnd();
     }
 
     @Override
@@ -81,33 +88,34 @@ public class SimpleWorkbenchPanelView
 
     @Override
     public void clear() {
-        panel.clear();
+        listBar.clear();
     }
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-        panel.setPart( view );
+        listBar.addPart( view );
     }
 
     @Override
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
-        panel.changeTitle( title, titleDecoration );
+        listBar.changeTitle( part, title, titleDecoration );
     }
 
     @Override
     public void selectPart( final PartDefinition part ) {
+        listBar.selectPart( part );
     }
 
     @Override
     public void removePart( final PartDefinition part ) {
-        panel.clear();
+        listBar.clear();
     }
 
     @Override
     public void setFocus( boolean hasFocus ) {
-        panel.setFocus( hasFocus );
+        listBar.setFocus( hasFocus );
     }
 
     @Override
@@ -118,7 +126,9 @@ public class SimpleWorkbenchPanelView
             final int height = parent.getOffsetHeight();
             setPixelSize( width, height );
             presenter.onResize( width, height );
-            panel.setPixelSize( width, height );
+
+            listBar.onResize();
+
             super.onResize();
         }
     }

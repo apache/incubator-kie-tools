@@ -3,15 +3,14 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
+import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
 public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWorkbenchPanelPresenter>
@@ -102,21 +101,6 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
             presenter.onResize( width, height );
             widget.onResize();
             super.onResize();
-        }
-    }
-
-    public class RequiresResizeFlowPanel
-            extends FlowPanel
-            implements RequiresResize {
-
-        @Override
-        public void onResize() {
-            for ( int i = 0; i < getWidgetCount(); i++ ) {
-                final Widget activeWidget = getWidget( i );
-                if ( activeWidget instanceof RequiresResize ) {
-                    ( (RequiresResize) activeWidget ).onResize();
-                }
-            }
         }
     }
 

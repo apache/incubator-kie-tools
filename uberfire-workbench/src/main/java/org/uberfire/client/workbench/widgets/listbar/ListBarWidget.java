@@ -127,20 +127,34 @@ public class ListBarWidget
     private final Map<PartDefinition, Widget> partTitle = new HashMap<PartDefinition, Widget>();
     private LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
 
+    private boolean isMultiPart = true;
+    private boolean isDndEnabled = true;
     private Pair<PartDefinition, FlowPanel> currentPart;
 
     public ListBarWidget() {
+        this( true, true );
+    }
+
+    public ListBarWidget( boolean isMultiPart,
+                          boolean isDndEnabled ) {
+        this.isMultiPart = isMultiPart;
+        this.isDndEnabled = isDndEnabled;
         initWidget( uiBinder.createAndBindUi( this ) );
         menuArea.setVisible( false );
 
-        closeButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                if ( currentPart != null ) {
-                    presenter.onBeforePartClose( currentPart.getK1() );
+        if ( isMultiPart ) {
+            closeButton.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    if ( currentPart != null ) {
+                        presenter.onBeforePartClose( currentPart.getK1() );
+                    }
                 }
-            }
-        } );
+            } );
+        } else {
+            closeButton.setVisible( false );
+            dropdownCaret.setVisible( false );
+        }
 
         container.addFocusHandler( new FocusHandler() {
             @Override
@@ -150,6 +164,10 @@ public class ListBarWidget
                 }
             }
         } );
+    }
+
+    public void enableDnd() {
+        this.isDndEnabled = true;
     }
 
     public void setExpanderCommand( final Command command ) {
@@ -182,7 +200,9 @@ public class ListBarWidget
         partContentView.clear();
         partTitle.clear();
         currentPart = null;
-        customList.clear();
+        if ( customList != null ) {
+            customList.clear();
+        }
     }
 
     @Override
@@ -193,7 +213,9 @@ public class ListBarWidget
             return;
         }
 
-        menuArea.setVisible( true );
+        if ( isMultiPart ) {
+            menuArea.setVisible( true );
+        }
 
         parts.add( partDefinition );
 
@@ -205,7 +227,9 @@ public class ListBarWidget
         final Widget title = buildTitle( view.getPresenter().getTitle() );
         partTitle.put( partDefinition, title );
 
-        dndManager.makeDraggable( view, title );
+        if ( isDndEnabled ) {
+            dndManager.makeDraggable( view, title );
+        }
     }
 
     private void updateBreadcrumb( final PartDefinition partDefinition ) {
@@ -230,7 +254,9 @@ public class ListBarWidget
                              final IsWidget titleDecoration ) {
         final Widget _title = buildTitle( title );
         partTitle.put( part, _title );
-        dndManager.makeDraggable( partContentView.get( part ), _title );
+        if ( isDndEnabled ) {
+            dndManager.makeDraggable( partContentView.get( part ), _title );
+        }
         setupDropdown();
         if ( currentPart != null && currentPart.getK1().equals( part ) ) {
             updateBreadcrumb( part );
