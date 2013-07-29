@@ -305,7 +305,7 @@ public class ScenarioEditorViewImpl
     public void setScenario( String packageName,
                              Scenario scenario,
                              PackageDataModelOracle dmo ) {
-        String[] availableRules = { }; // TODO: Load available rules -Rikkola-
+        String[] availableRules = dmo.getRuleNames().toArray(new String[dmo.getRuleNames().size()]);
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( packageName, this, dmo, availableRules );
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
