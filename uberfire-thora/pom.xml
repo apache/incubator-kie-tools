@@ -20,12 +20,12 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-thora</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire Thora</name>
