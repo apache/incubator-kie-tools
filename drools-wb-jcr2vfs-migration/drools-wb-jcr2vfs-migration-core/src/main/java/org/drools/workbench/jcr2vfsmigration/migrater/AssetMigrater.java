@@ -182,6 +182,8 @@ public class AssetMigrater {
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||"png".equals(jcrAssetItem.getFormat())
+                 ||"gif".equals(jcrAssetItem.getFormat())
+                 ||"jpg".equals(jcrAssetItem.getFormat())
                  ||"pdf".equals(jcrAssetItem.getFormat())
                  ||"doc".equals(jcrAssetItem.getFormat())
                  ||"odt".equals(jcrAssetItem.getFormat())) {
