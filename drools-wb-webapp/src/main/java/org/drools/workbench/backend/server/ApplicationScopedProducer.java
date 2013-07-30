@@ -88,6 +88,7 @@ public class ApplicationScopedProducer {
     @PreDestroy
     private void cleanup() {
         luceneSetup.dispose();
+        ioService.dispose();
     }
 
     @Produces
