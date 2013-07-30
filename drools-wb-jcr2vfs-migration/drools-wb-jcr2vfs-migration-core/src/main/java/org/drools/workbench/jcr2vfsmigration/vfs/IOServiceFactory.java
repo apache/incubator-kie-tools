@@ -20,9 +20,9 @@ import java.net.URI;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.kie.commons.io.FileSystemType;
 import org.kie.commons.io.IOService;
@@ -33,7 +33,7 @@ import org.uberfire.backend.server.repositories.SystemRepository;
 
 import static org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
 
-@Singleton
+@ApplicationScoped
 public class IOServiceFactory {
 
     private final IOService ioService = new IOServiceDotFileImpl();
