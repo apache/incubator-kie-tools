@@ -2,6 +2,8 @@ package org.uberfire.backend.server.repositories.git;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -66,9 +68,12 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         FileSystem fs = null;
         URI uri = null;
         try {
-            uri = new URI( repo.getUri() );
-            fs = ioService.newFileSystem( uri, repo.getEnvironment() );
-        } catch ( URISyntaxException e ) {
+            uri = URI.create( repo.getUri() );
+            fs = ioService.newFileSystem( uri, new HashMap<String, Object>( repo.getEnvironment() ) {{
+                if ( !repo.getEnvironment().containsKey( "origin" ) ) {
+                    put( "init", true );
+                }
+            }} );
         } catch ( final FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( uri );
         }

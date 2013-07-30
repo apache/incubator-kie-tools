@@ -174,8 +174,6 @@ public class CreateRepositoryForm
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
         env.put( "username", username );
         env.put( "crypt:password", password );
-        env.put( "init", true );
-
 
         repositoryService.call( new RemoteCallback<Repository>() {
                                     @Override
