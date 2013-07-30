@@ -19,10 +19,6 @@ import org.uberfire.backend.plugin.RuntimePluginsService;
 @ApplicationScoped
 public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
 
-    public static void main( String... args ) {
-        System.out.println( URI.create( "file://" + "c:\\xx\\xx".replaceAll( "\\\\", "/" ) + "/framework" ) );
-    }
-
     @Inject
     @Named("uf")
     private ServletContext servletContext;
