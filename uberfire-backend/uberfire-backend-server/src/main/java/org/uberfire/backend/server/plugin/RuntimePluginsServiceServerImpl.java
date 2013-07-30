@@ -19,6 +19,10 @@ import org.uberfire.backend.plugin.RuntimePluginsService;
 @ApplicationScoped
 public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
 
+    public static void main( String... args ) {
+        System.out.println( URI.create( "file://" + "c:\\xx\\xx".replaceAll( "\\\\", "/" ) + "/framework" ) );
+    }
+
     @Inject
     @Named("uf")
     private ServletContext servletContext;
@@ -37,9 +41,9 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
     public String getTemplateContent( String url ) {
         final Path template;
         if ( url.startsWith( "/" ) ) {
-            template = Paths.get( URI.create( "file://" + servletContext.getRealPath( "plugins" ) + url ) );
+            template = Paths.get( URI.create( "file://" + getRealPath( "plugins" ) + url ) );
         } else {
-            template = Paths.get( URI.create( "file://" + servletContext.getRealPath( "plugins" ) + "/" + url ) );
+            template = Paths.get( URI.create( "file://" + getRealPath( "plugins" ) + "/" + url ) );
         }
 
         if ( Files.isRegularFile( template ) ) {
@@ -52,7 +56,7 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
                                                  final String glob ) {
         final Collection<String> result = new ArrayList<String>();
 
-        final Path pluginsRootPath = Paths.get( URI.create( "file://" + servletContext.getRealPath( directory ) ) );
+        final Path pluginsRootPath = Paths.get( URI.create( "file://" + getRealPath( directory ) ) );
 
         if ( Files.isDirectory( pluginsRootPath ) ) {
             final DirectoryStream<Path> stream = Files.newDirectoryStream( pluginsRootPath, glob );
@@ -63,6 +67,10 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
         }
 
         return result;
+    }
+
+    private String getRealPath( final String path ) {
+        return servletContext.getRealPath( path ).replaceAll( "\\\\", "/" );
     }
 
 }
