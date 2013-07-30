@@ -19,6 +19,7 @@ package org.drools.workbench.jcr2vfsmigration.vfs;
 import java.net.URI;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -31,10 +32,6 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.SystemRepository;
 
 import static org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory.Migration.*;
-
-//import org.kie.workbench.io.FileSystemType;
-//import org.kie.workbench.io.IOService;
-//import org.kie.workbench.java.nio.file.FileSystem;
 
 @Singleton
 public class IOServiceFactory {
@@ -57,6 +54,11 @@ public class IOServiceFactory {
     public void onStartup() {
         URI uri = URI.create( "git://" + DEFAULT_MIGRATION_FILE_SYSTEM );
         this.fs = ioService.newFileSystem( uri, new HashMap<String, Object>(), MIGRATION_INSTANCE );
+    }
+
+    @PreDestroy
+    public void onShutdown() {
+        ioService.dispose();
     }
 
     @Produces
