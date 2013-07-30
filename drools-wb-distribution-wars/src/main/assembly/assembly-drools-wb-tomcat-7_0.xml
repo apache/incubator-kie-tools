@@ -69,7 +69,6 @@
           <exclude>WEB-INF/lib/drools-wb-dsl-text-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/drools-wb-dtable-xls-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/drools-wb-enum-editor-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/drools-wb-factmodel-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/drools-wb-globals-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/drools-wb-guided-dtable-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/drools-wb-guided-rule-editor-client-*.jar</exclude>
