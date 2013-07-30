@@ -60,6 +60,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
     private ExecutorService executorService;
+    private CheckConfigurationUpdates configUpdates;
 
     @PostConstruct
     public void setup() {
@@ -73,12 +74,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(new CheckConfigurationUpdates());
+            configUpdates = new CheckConfigurationUpdates();
+            executorService.execute( configUpdates );
         }
     }
 
     @PreDestroy
     public void shutdown() {
+        if ( configUpdates != null ) {
+            configUpdates.deactivate();
+        }
         if ( this.executorService != null ) {
             this.executorService.shutdownNow();
         }
@@ -136,13 +141,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     @Override
-    public boolean updateConfiguration(ConfigGroup configGroup) {
+    public boolean updateConfiguration( ConfigGroup configGroup ) {
         String filename = configGroup.getName().replaceAll( INVALID_FILENAME_CHARS, "_" );
 
         final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
-                "Updated config " + filePath.getFileName() );
+                                                                     "Updated config " + filePath.getFileName() );
         ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
         //Invalidate cache if a new item has been created; otherwise cached value is stale
