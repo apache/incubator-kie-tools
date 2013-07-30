@@ -33,17 +33,22 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-factmodel-editor-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-wb-globals-editor-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-factmodel-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-backend</artifactId>
     </dependency>
 
     <dependency>

@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,18 +39,29 @@ import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
-import org.drools.workbench.screens.factmodel.type.FactModelResourceTypeDefinition;
+import org.drools.workbench.screens.factmodel.backend.server.util.FactModelPersistence;
+import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
+import org.drools.workbench.screens.factmodel.model.FactMetaModel;
+import org.drools.workbench.screens.factmodel.model.FactModels;
+import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.Identity;
@@ -97,12 +111,26 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private DRLResourceTypeDefinition drlType;
 
     @Inject
-    //Type Definition to ensure new files have correct extension
-    private FactModelResourceTypeDefinition modelType;
+    private DataModelerService modellerService;
 
     @Inject
     //Type Definition to ensure new files have correct extension
     private GlobalResourceTypeDefinition globalsType;
+
+    private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
+    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+
+    @PostConstruct
+    public void initialiseTypeConversionMetaData() {
+        final List<PropertyTypeTO> baseTypes = modellerService.getBasePropertyTypes();
+        if ( baseTypes != null ) {
+            for ( PropertyTypeTO type : baseTypes ) {
+                orderedBaseTypes.put( type.getName(), type.getClassName() );
+            }
+        }
+
+        annotationDefinitions = modellerService.getAnnotationDefinitions();
+    }
 
     @Override
     public ConversionResult convert( final Path path ) {
@@ -135,10 +163,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                           listener.getImports(),
                           listener.getQueries(),
                           result );
-        createNewDeclarativeTypes( context,
-                                   listener.getImports(),
-                                   listener.getTypeDeclarations(),
-                                   result );
+        makeNewJavaTypes( context,
+                          listener.getTypeDeclarations(),
+                          result );
         createNewGlobals( context,
                           listener.getGlobals(),
                           result );
@@ -225,28 +252,87 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         }
     }
 
-    private void createNewDeclarativeTypes( final Path context,
-                                            final List<Import> imports,
-                                            final List<String> declaredTypes,
-                                            final ConversionResult result ) {
-        if ( declaredTypes == null || declaredTypes.isEmpty() ) {
-            return;
+    private void makeNewJavaTypes( final Path context,
+                                   final List<String> declaredTypes,
+                                   final ConversionResult result ) {
+        final Project project = projectService.resolveProject( context );
+
+        for ( String declaredType : declaredTypes ) {
+            final FactModels factModels = FactModelPersistence.unmarshal( declaredType );
+            final String packageName = factModels.getPackageName();
+            final DataModelTO dataModelTO = new DataModelTO();
+
+            for ( FactMetaModel factMetaModel : factModels.getModels() ) {
+                final DataObjectTO dataObjectTO = new DataObjectTO( factMetaModel.getName(),
+                                                                    packageName,
+                                                                    factMetaModel.getSuperType() );
+                final List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();
+                addAnnotations( dataObjectTO,
+                                annotationMetaModel );
+
+                final List<FieldMetaModel> fields = factMetaModel.getFields();
+
+                for ( FieldMetaModel fieldMetaModel : fields ) {
+                    final String fieldName = fieldMetaModel.name;
+                    final String fieldType = fieldMetaModel.type;
+                    //Guvnor 5.5 (and earlier) does not have MultipleType
+                    boolean isMultiple = false;
+                    boolean isBaseType = orderedBaseTypes.containsValue( fieldType );
+                    ObjectPropertyTO property = new ObjectPropertyTO( fieldName,
+                                                                      fieldType,
+                                                                      isMultiple,
+                                                                      isBaseType );
+                    //field has no annotation in Guvnor 5.5 (and earlier)
+                    dataObjectTO.getProperties().add( property );
+
+                    result.addMessage( "Created Java Type " + getJavaTypeFQCN( dataObjectTO ),
+                                       ConversionMessageType.INFO );
+                }
+
+                dataModelTO.getDataObjects().add( dataObjectTO );
+            }
+
+            modellerService.saveModel( dataModelTO,
+                                       project );
         }
+    }
 
-        //Create new assets for Declarative Types
-        for ( int iCounter = 0; iCounter < declaredTypes.size(); iCounter++ ) {
+    private String getJavaTypeFQCN( final DataObjectTO dataObjectTO ) {
+        final String packageName = dataObjectTO.getPackageName();
+        final String className = dataObjectTO.getClassName();
+        if ( packageName == null || packageName.equals( "" ) ) {
+            return className;
+        }
+        return packageName + "." + className;
+    }
 
-            final String assetName = makeNewAssetName( "Model " + ( iCounter + 1 ),
-                                                       modelType );
-            final String drl = makeDRL( imports,
-                                        declaredTypes.get( iCounter ) );
-            drlService.create( context,
-                               assetName,
-                               drl,
-                               "Converted from XLS Decision Table" );
+    private void addAnnotations( final DataObjectTO dataObject,
+                                 final List<AnnotationMetaModel> annotationMetaModelList ) {
+        for ( AnnotationMetaModel annotationMetaModel : annotationMetaModelList ) {
+            final String name = annotationMetaModel.name;
+            final Map<String, String> values = annotationMetaModel.values;
 
-            result.addMessage( "Created Declarative Model '" + assetName + "'",
-                               ConversionMessageType.INFO );
+            String key = AnnotationDefinitionTO.VALUE_PARAM;
+            String value = "";
+
+            if ( values.size() > 0 ) {
+                key = values.keySet().iterator().next();
+                value = values.values().iterator().next();
+            }
+
+            if ( "Role".equals( name ) ) {
+                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ),
+                                          key,
+                                          value );
+            } else if ( "Position".equals( name ) ) {
+                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATON ),
+                                          key,
+                                          value );
+            } else if ( "Equals".equals( name ) ) {
+                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.KEY_ANNOTATION ),
+                                          key,
+                                          value );
+            }
         }
     }
 
@@ -329,7 +415,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         if ( isModified ) {
             final Metadata metadata = metadataService.getMetadata( context );
             projectService.save( externalImportsPath,
-                    projectImports,
+                                 projectImports,
                                  metadata,
                                  "Imports added during XLS conversion" );
         }

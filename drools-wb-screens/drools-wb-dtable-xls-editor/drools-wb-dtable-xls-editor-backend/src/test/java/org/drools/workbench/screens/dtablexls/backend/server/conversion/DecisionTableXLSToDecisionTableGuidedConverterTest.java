@@ -52,7 +52,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for the conversion of XLS Decision Tables to Guided Decision Tables
  */
-public class DecisionTableXLSToDecisionTableGuidedConverterTests {
+public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testAttributes() {

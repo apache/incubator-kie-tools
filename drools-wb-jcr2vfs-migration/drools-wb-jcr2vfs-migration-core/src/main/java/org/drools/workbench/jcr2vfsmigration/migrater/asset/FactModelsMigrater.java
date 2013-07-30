@@ -19,7 +19,6 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.drools.workbench.screens.factmodel.service.FactModelService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.commons.io.IOService;
@@ -41,9 +40,6 @@ public class FactModelsMigrater {
 
     @Inject
     protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
-    protected FactModelService vfsFactModelService;
 
     @Inject
     protected MigrationPathManager migrationPathManager;

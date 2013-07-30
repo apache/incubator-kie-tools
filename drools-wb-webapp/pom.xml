@@ -320,11 +320,6 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-factmodel-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-wb-factmodel-editor-backend</artifactId>
     </dependency>
 
@@ -631,7 +626,6 @@
             <compileSourcesArtifact>org.drools:drools-wb-drl-text-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-drl-text-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-factmodel-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-wb-factmodel-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-rule-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-rule-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-template-editor-api</compileSourcesArtifact>

@@ -33,7 +33,6 @@
 
   <modules>
     <module>drools-wb-factmodel-editor-api</module>
-    <module>drools-wb-factmodel-editor-client</module>
     <module>drools-wb-factmodel-editor-backend</module>
   </modules>
 
