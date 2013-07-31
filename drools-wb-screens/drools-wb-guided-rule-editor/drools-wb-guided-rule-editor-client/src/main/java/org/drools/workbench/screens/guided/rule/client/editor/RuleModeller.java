@@ -19,8 +19,6 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,7 +35,6 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.drools.workbench.screens.guided.rule.client.widget.RuleSelectorDropdown;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.security.UserCapabilities;
@@ -255,27 +252,18 @@ public class RuleModeller extends DirtyableComposite
                 new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
 
 
-        HorizontalPanel panel = new HorizontalPanel();
-        final InlineLabel ruleNamePanel = new InlineLabel();
-        if (model.parentName != null && !model.parentName.isEmpty()) {
-            ruleNamePanel.setText(model.parentName);
-        }
-        panel.add(ruleNamePanel);
-
-        RuleSelectorDropdown ruleSelectorDropdown = new RuleSelectorDropdown(dataModel);
-        ruleSelectorDropdown.addValueChangeHandler(new ValueChangeHandler<String>() {
+        RuleSelector ruleSelector = new RuleSelector(dataModel);
+        ruleSelector.setRuleName(model.parentName);
+        ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 model.parentName = event.getValue();
-                ruleNamePanel.setText(model.parentName);
             }
         });
 
-        panel.add(ruleSelectorDropdown);
-
         layout.setWidget( currentLayoutRow,
                 3,
-                panel);
+                ruleSelector);
         currentLayoutRow++;
     }
 

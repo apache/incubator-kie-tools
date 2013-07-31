@@ -26,6 +26,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -73,12 +75,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCondit
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
+import org.kie.workbench.common.widgets.client.ruleselector.RuleSelectorDropdown;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
@@ -210,6 +213,15 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
+        RuleSelector ruleSelector = new RuleSelector(oracle);
+        ruleSelector.setRuleName(model.getParentName());
+        ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                model.setParentName(event.getValue());
+            }
+        });
+        layout.add(ruleSelector);
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtableContainer );
