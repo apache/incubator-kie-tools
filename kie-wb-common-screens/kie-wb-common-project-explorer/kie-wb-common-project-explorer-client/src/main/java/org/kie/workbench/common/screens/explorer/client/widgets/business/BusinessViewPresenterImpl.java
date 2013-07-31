@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.events.NewPackageEvent;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -228,22 +230,22 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Project project = event.getProject();
         view.selectProject( project );
-
-        //Build project
-        buildService.call( new RemoteCallback<BuildResults>() {
-            @Override
-            public void callback( final BuildResults results ) {
-                //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
-            }
-        } ).build( project );
     }
 
     private void doProjectChanged( final Project project ) {
-        //Check cache
         if ( project != null ) {
+
+            //Build project
+            buildService.call( new RemoteCallback<BuildResults>() {
+                @Override
+                public void callback( final BuildResults results ) {
+                    //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+                }
+            } ).build( project );
+
+            //Check cache
             final Collection<Package> packages = packageCache.getEntry( project );
             if ( packages != null ) {
-                view.selectProject( project );
                 view.setPackages( packages,
                                   activePackage );
                 return;
@@ -349,6 +351,33 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
     }
 
+    public void onProjectAdded( @Observes final NewProjectEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Project project = event.getProject();
+        if ( project == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( project,
+                                             identity ) ) {
+            view.addProject( project );
+        }
+    }
+
+    public void onPackageAdded( @Observes final NewPackageEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Package pkg = event.getPackage();
+        if ( pkg == null ) {
+            return;
+        }
+        view.addPackage( pkg );
+    }
+
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
         if ( !view.isVisible() ) {
@@ -363,36 +392,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
             @Override
             public void callback( final ResourceContext context ) {
                 final Project project = context.getProject();
-                if ( project == null ) {
-                    return;
-                }
-                //Is the new resource a Project root
-                if ( project.getRootPath().equals( resource ) ) {
-                    addProjectResource( project );
-                    return;
-                }
-                //Otherwise it's a file inside a package
                 final Package pkg = context.getPackage();
-                if ( pkg == null ) {
+                if ( project == null || pkg == null ) {
                     return;
                 }
                 itemCache.invalidateCache( pkg );
-                if ( Utils.isPackagePath( resource,
-                                          pkg ) ) {
-                    view.addPackage( pkg );
-                } else if ( isInActivePackage( resource ) ) {
+                if ( isInActivePackage( resource ) ) {
                     view.addItem( Utils.makeFileItem( resource ) );
-                }
-            }
-
-            private void addProjectResource( final Project project ) {
-                //Projects are not cached so no need to do anything if this presenter is not active
-                if ( !view.isVisible() ) {
-                    return;
-                }
-                if ( authorizationManager.authorize( project,
-                                                     identity ) ) {
-                    view.addProject( project );
                 }
             }
 

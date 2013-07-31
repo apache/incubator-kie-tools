@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.events.NewPackageEvent;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -378,6 +380,46 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
     }
 
+    public void onProjectAdded( @Observes final NewProjectEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Project project = event.getProject();
+        if ( project == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( project,
+                                             identity ) ) {
+            view.addProject( project );
+        }
+    }
+
+    public void onPackageAdded( @Observes final NewPackageEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final Package pkg = event.getPackage();
+        if ( pkg == null ) {
+            return;
+        }
+        final Path mainSrcPath = pkg.getPackageMainSrcPath();
+        final Path testSrcPath = pkg.getPackageTestSrcPath();
+        final Path mainResourcesPath = pkg.getPackageMainResourcesPath();
+        final Path testResourcesPath = pkg.getPackageTestResourcesPath();
+
+        if ( isInActiveFolderListing( mainSrcPath ) ) {
+            view.addItem( Utils.makeFolderItem( mainSrcPath ) );
+        } else if ( isInActiveFolderListing( testSrcPath ) ) {
+            view.addItem( Utils.makeFolderItem( testSrcPath ) );
+        } else if ( isInActiveFolderListing( mainResourcesPath ) ) {
+            view.addItem( Utils.makeFolderItem( mainResourcesPath ) );
+        } else if ( isInActiveFolderListing( testResourcesPath ) ) {
+            view.addItem( Utils.makeFolderItem( testResourcesPath ) );
+        }
+    }
+
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
         if ( !view.isVisible() ) {
@@ -387,41 +429,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
-
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                if ( project == null ) {
-                    return;
-                }
-                //Is the new resource a Project root
-                if ( project.getRootPath().equals( resource ) ) {
-                    addProjectResource( project );
-                    return;
-                }
-                //Otherwise it's a file inside a package
-                final Package pkg = context.getPackage();
-                if ( pkg == null ) {
-                    return;
-                }
-                if ( isInActiveFolderListing( resource ) ) {
-                    view.addItem( Utils.makeFileItem( resource ) );
-                }
-            }
-
-            private void addProjectResource( final Project project ) {
-                //Projects are not cached so no need to do anything if this presenter is not active
-                if ( !view.isVisible() ) {
-                    return;
-                }
-                if ( authorizationManager.authorize( project,
-                                                     identity ) ) {
-                    view.addProject( project );
-                }
-
-            }
-        } ).resolveResourceContext( resource );
+        if ( isInActiveFolderListing( resource ) ) {
+            view.addItem( Utils.makeFileItem( resource ) );
+        }
     }
 
     private boolean isInActiveFolderListing( final Path resource ) {

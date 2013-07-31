@@ -109,26 +109,6 @@ public class Utils {
     }
 
     /**
-     * Check whether a Path represents a Package
-     * @param resource
-     * @param pkg
-     * @return
-     */
-    public static boolean isPackagePath( final Path resource,
-                                         final Package pkg ) {
-        if ( pkg.getPackageMainSrcPath().equals( resource ) ) {
-            return true;
-        } else if ( pkg.getPackageTestSrcPath().equals( resource ) ) {
-            return true;
-        } else if ( pkg.getPackageMainResourcesPath().equals( resource ) ) {
-            return true;
-        } else if ( pkg.getPackageTestResourcesPath().equals( resource ) ) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Make a Folder Item representing a File
      * @param path
      * @return
@@ -137,6 +117,17 @@ public class Utils {
         return new FolderItem( path,
                                path.getFileName(),
                                FolderItemType.FILE );
+    }
+
+    /**
+     * Make a Folder Item representing a Folder
+     * @param path
+     * @return
+     */
+    public static FolderItem makeFolderItem( final Path path ) {
+        return new FolderItem( path,
+                               path.getFileName(),
+                               FolderItemType.FOLDER );
     }
 
     /**
