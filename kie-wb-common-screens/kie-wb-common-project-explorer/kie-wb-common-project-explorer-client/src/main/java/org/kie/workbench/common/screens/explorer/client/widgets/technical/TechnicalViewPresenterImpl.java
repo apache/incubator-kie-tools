@@ -389,6 +389,11 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( project == null ) {
             return;
         }
+        if ( !Utils.isInRepository( activeRepository,
+                                    project ) ) {
+            return;
+        }
+
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
             view.addProject( project );

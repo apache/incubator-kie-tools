@@ -131,7 +131,101 @@ public class Utils {
     }
 
     /**
-     * Check whether the child is is the immediate leaf of the parent. This method is really dirty as it depends
+     * Check whether the Project is contained within the Repository
+     * @param repository
+     * @param project
+     * @return
+     */
+    public static boolean isInRepository( final Repository repository,
+                                          final Project project ) {
+        if ( repository == null ) {
+            return false;
+        }
+        //Check Project path starts with the active repository path
+        final Path projectRootPath = project.getRootPath();
+        final Path repositoryRootPath = repository.getRoot();
+        if ( Utils.isLeaf( projectRootPath,
+                           repositoryRootPath ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check whether the Package is contained within the Project
+     * @param project
+     * @param pkg
+     * @return
+     */
+    public static boolean isInProject( final Project project,
+                                       final Package pkg ) {
+        if ( project == null ) {
+            return false;
+        }
+        //Check Package path is within the active Project path
+        final Path projectRootPath = project.getRootPath();
+        final Path pkgMainSrcPath = pkg.getPackageMainSrcPath();
+        final Path pkgTestSrcPath = pkg.getPackageTestSrcPath();
+        final Path pkgMainResourcesPath = pkg.getPackageMainResourcesPath();
+        final Path pkgTestResourcesPath = pkg.getPackageTestResourcesPath();
+
+        if ( Utils.isSibling( pkgMainSrcPath,
+                              projectRootPath ) ) {
+            return true;
+        }
+        if ( Utils.isSibling( pkgTestSrcPath,
+                              projectRootPath ) ) {
+            return true;
+        }
+        if ( Utils.isSibling( pkgMainResourcesPath,
+                              projectRootPath ) ) {
+            return true;
+        }
+        if ( Utils.isSibling( pkgTestResourcesPath,
+                              projectRootPath ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check whether the Resource is contained within the Package
+     * @param pkg
+     * @param resource
+     * @return
+     */
+    public static boolean isInPackage( final Package pkg,
+                                       final Path resource ) {
+        if ( pkg == null ) {
+            return false;
+        }
+        //Check resource path starts with the active folder list path
+        final Path pkgMainSrcPath = pkg.getPackageMainSrcPath();
+        final Path pkgTestSrcPath = pkg.getPackageTestSrcPath();
+        final Path pkgMainResourcesPath = pkg.getPackageMainResourcesPath();
+        final Path pkgTestResourcesPath = pkg.getPackageTestResourcesPath();
+
+        if ( Utils.isLeaf( resource,
+                           pkgMainSrcPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                           pkgTestSrcPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                           pkgMainResourcesPath ) ) {
+            return true;
+        }
+        if ( Utils.isLeaf( resource,
+                           pkgTestResourcesPath ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check whether the child is the immediate leaf of the parent. This method is really dirty as it depends
      * upon String manipulation to determine whether the child is the immediate leaf of the parent. This was originally
      * performed server-side using NIO2 Path semantics however problems occur when trying to determine whether a Path
      * is a file or folder when the Path does not exist.
@@ -151,6 +245,20 @@ public class Utils {
                                     1 ) == -1;
         }
         return false;
+    }
+
+    /**
+     * Check whether the child is a sibling of the parent. This method is really dirty as it depends
+     * upon String manipulation to determine whether the child is the immediate leaf of the parent.
+     * @param child
+     * @param parent
+     * @return
+     */
+    public static boolean isSibling( final Path child,
+                                     final Path parent ) {
+        final String childUri = child.toURI();
+        final String parentUri = parent.toURI();
+        return childUri.startsWith( parentUri );
     }
 
     /**

@@ -360,6 +360,10 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( project == null ) {
             return;
         }
+        if ( !Utils.isInRepository( displayedRepository,
+                                    project ) ) {
+            return;
+        }
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
             view.addProject( project );
@@ -373,6 +377,10 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Package pkg = event.getPackage();
         if ( pkg == null ) {
+            return;
+        }
+        if ( !Utils.isInProject( displayedProject,
+                                 pkg ) ) {
             return;
         }
         view.addPackage( pkg );
@@ -397,41 +405,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                     return;
                 }
                 itemCache.invalidateCache( pkg );
-                if ( isInActivePackage( resource ) ) {
+                if ( Utils.isInPackage( displayedPackage,
+                                        resource ) ) {
                     view.addItem( Utils.makeFileItem( resource ) );
                 }
             }
 
         } ).resolveResourceContext( resource );
-    }
-
-    private boolean isInActivePackage( final Path resource ) {
-        if ( displayedPackage == null ) {
-            return false;
-        }
-        //Check resource path starts with the active folder list path
-        final Path pkgMainSrcPath = displayedPackage.getPackageMainSrcPath();
-        final Path pkgTestSrcPath = displayedPackage.getPackageTestSrcPath();
-        final Path pkgMainResourcesPath = displayedPackage.getPackageMainResourcesPath();
-        final Path pkgTestResourcesPath = displayedPackage.getPackageTestResourcesPath();
-
-        if ( Utils.isLeaf( resource,
-                           pkgMainSrcPath ) ) {
-            return true;
-        }
-        if ( Utils.isLeaf( resource,
-                           pkgTestSrcPath ) ) {
-            return true;
-        }
-        if ( Utils.isLeaf( resource,
-                           pkgMainResourcesPath ) ) {
-            return true;
-        }
-        if ( Utils.isLeaf( resource,
-                           pkgTestResourcesPath ) ) {
-            return true;
-        }
-        return false;
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -443,7 +423,8 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( isInActivePackage( resource ) ) {
+        if ( Utils.isInPackage( displayedPackage,
+                                resource ) ) {
             view.removeItem( Utils.makeFileItem( resource ) );
         }
     }
@@ -457,7 +438,8 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( isInActivePackage( resource ) ) {
+        if ( Utils.isInPackage( displayedPackage,
+                                resource ) ) {
             view.addItem( Utils.makeFileItem( resource ) );
         }
     }
@@ -469,10 +451,12 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Path sourcePath = event.getSourcePath();
         final Path destinationPath = event.getDestinationPath();
-        if ( isInActivePackage( sourcePath ) ) {
+        if ( Utils.isInPackage( displayedPackage,
+                                sourcePath ) ) {
             view.removeItem( Utils.makeFileItem( sourcePath ) );
         }
-        if ( isInActivePackage( destinationPath ) ) {
+        if ( Utils.isInPackage( displayedPackage,
+                                destinationPath ) ) {
             view.addItem( Utils.makeFileItem( destinationPath ) );
         }
     }
