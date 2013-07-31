@@ -29,10 +29,10 @@
       <b:ControlGroup ui:field="fileNameGroup">
         <b:ControlLabel for="fileName">
           <font color="red">*</font>
-          File Name
+          Resource Name
         </b:ControlLabel>
         <b:Controls>
-          <b:TextBox b:id="fileName" ui:field="fileNameTextBox" placeholder="file name..."/>
+          <b:TextBox b:id="fileName" ui:field="fileNameTextBox" placeholder="resource name..."/>
           <b:HelpInline ui:field="fileNameHelpInline"/>
         </b:Controls>
       </b:ControlGroup>
