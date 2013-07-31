@@ -103,6 +103,9 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     @Inject
     private LRUItemCache itemCache;
 
+    @Inject
+    private Event<BuildResults> buildResultsEvent;
+
     //Active context
     private Group activeGroup = null;
     private Repository activeRepository = null;
@@ -239,7 +242,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
             buildService.call( new RemoteCallback<BuildResults>() {
                 @Override
                 public void callback( final BuildResults results ) {
-                    //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+                    buildResultsEvent.fire( results );
                 }
             } ).build( project );
 
@@ -423,10 +426,23 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( Utils.isInPackage( displayedPackage,
-                                resource ) ) {
-            view.removeItem( Utils.makeFileItem( resource ) );
-        }
+        explorerService.call( new RemoteCallback<ResourceContext>() {
+
+            @Override
+            public void callback( final ResourceContext context ) {
+                final Project project = context.getProject();
+                final Package pkg = context.getPackage();
+                if ( project == null || pkg == null ) {
+                    return;
+                }
+                itemCache.invalidateCache( pkg );
+                if ( Utils.isInPackage( displayedPackage,
+                                        resource ) ) {
+                    view.removeItem( Utils.makeFileItem( resource ) );
+                }
+            }
+
+        } ).resolveResourceContext( resource );
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
@@ -438,10 +454,23 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( Utils.isInPackage( displayedPackage,
-                                resource ) ) {
-            view.addItem( Utils.makeFileItem( resource ) );
-        }
+        explorerService.call( new RemoteCallback<ResourceContext>() {
+
+            @Override
+            public void callback( final ResourceContext context ) {
+                final Project project = context.getProject();
+                final Package pkg = context.getPackage();
+                if ( project == null || pkg == null ) {
+                    return;
+                }
+                itemCache.invalidateCache( pkg );
+                if ( Utils.isInPackage( displayedPackage,
+                                        resource ) ) {
+                    view.addItem( Utils.makeFileItem( resource ) );
+                }
+            }
+
+        } ).resolveResourceContext( resource );
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
@@ -451,14 +480,41 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Path sourcePath = event.getSourcePath();
         final Path destinationPath = event.getDestinationPath();
-        if ( Utils.isInPackage( displayedPackage,
-                                sourcePath ) ) {
-            view.removeItem( Utils.makeFileItem( sourcePath ) );
-        }
-        if ( Utils.isInPackage( displayedPackage,
-                                destinationPath ) ) {
-            view.addItem( Utils.makeFileItem( destinationPath ) );
-        }
+        explorerService.call( new RemoteCallback<ResourceContext>() {
+
+            @Override
+            public void callback( final ResourceContext context ) {
+                final Project project = context.getProject();
+                final Package pkg = context.getPackage();
+                if ( project == null || pkg == null ) {
+                    return;
+                }
+                itemCache.invalidateCache( pkg );
+                if ( Utils.isInPackage( displayedPackage,
+                                        sourcePath ) ) {
+                    view.removeItem( Utils.makeFileItem( sourcePath ) );
+                }
+            }
+
+        } ).resolveResourceContext( sourcePath );
+
+        explorerService.call( new RemoteCallback<ResourceContext>() {
+
+            @Override
+            public void callback( final ResourceContext context ) {
+                final Project project = context.getProject();
+                final Package pkg = context.getPackage();
+                if ( project == null || pkg == null ) {
+                    return;
+                }
+                itemCache.invalidateCache( pkg );
+                if ( Utils.isInPackage( displayedPackage,
+                                        destinationPath ) ) {
+                    view.addItem( Utils.makeFileItem( destinationPath ) );
+                }
+            }
+
+        } ).resolveResourceContext( destinationPath );
     }
 
     // Refresh when a batch Resource change has occurred. Simply refresh everything.

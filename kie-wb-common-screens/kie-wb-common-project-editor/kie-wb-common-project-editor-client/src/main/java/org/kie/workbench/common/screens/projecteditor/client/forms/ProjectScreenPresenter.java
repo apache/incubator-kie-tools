@@ -16,16 +16,17 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -41,9 +42,9 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -58,6 +59,8 @@ public class ProjectScreenPresenter
     private Path pathToPomXML;
     private SaveOperationService saveOperationService;
 
+    private Event<NotificationEvent> notificationEvent;
+
     private Menus menus;
     private ProjectScreenModel model;
 
@@ -69,14 +72,15 @@ public class ProjectScreenPresenter
                                    ProjectContext workbenchContext,
                                    Caller<ProjectScreenService> projectScreenService,
                                    Caller<BuildService> buildServiceCaller,
-                                   SaveOperationService saveOperationService ) {
+                                   SaveOperationService saveOperationService,
+                                   Event<NotificationEvent> notificationEvent ) {
         this.view = view;
         view.setPresenter( this );
 
         this.projectScreenService = projectScreenService;
-
         this.buildServiceCaller = buildServiceCaller;
         this.saveOperationService = saveOperationService;
+        this.notificationEvent = notificationEvent;
 
         showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
 
@@ -171,7 +175,10 @@ public class ProjectScreenPresenter
     private RemoteCallback getBuildSuccessCallback() {
         return new RemoteCallback<DeployResult>() {
             @Override
-            public void callback( final DeployResult r ) {
+            public void callback( final DeployResult result ) {
+                if ( result.getMessages().isEmpty() ) {
+                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildSuccessful() ) );
+                }
                 view.hideBusyIndicator();
             }
         };

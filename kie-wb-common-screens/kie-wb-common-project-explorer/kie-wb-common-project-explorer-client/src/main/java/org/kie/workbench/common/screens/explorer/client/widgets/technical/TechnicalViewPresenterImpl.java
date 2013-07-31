@@ -95,6 +95,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Inject
     private TechnicalView view;
 
+    @Inject
+    private Event<BuildResults> buildResultsEvent;
+
     //Active context
     private Group activeGroup = null;
     private Repository activeRepository = null;
@@ -274,7 +277,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
             buildService.call( new RemoteCallback<BuildResults>() {
                 @Override
                 public void callback( final BuildResults results ) {
-                    //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+                    buildResultsEvent.fire( results );
                 }
             } ).build( project );
         }

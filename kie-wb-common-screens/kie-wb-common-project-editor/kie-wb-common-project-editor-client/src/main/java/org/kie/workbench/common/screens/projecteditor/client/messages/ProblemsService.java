@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.messages;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -26,9 +25,9 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -38,32 +37,27 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class ProblemsService {
 
     private final PlaceManager placeManager;
-
     private final ListDataProvider<BuildMessage> dataProvider = new ListDataProvider<BuildMessage>();
-    private final Event<NotificationEvent> notificationEvent;
-    private final ProblemsServiceView view;
 
     @Inject
-    public ProblemsService( ProblemsServiceView view,
-                            PlaceManager placeManager,
-                            Event<NotificationEvent> notificationEvent ) {
-        this.view = view;
+    public ProblemsService( PlaceManager placeManager ) {
         this.placeManager = placeManager;
-        this.notificationEvent = notificationEvent;
     }
 
     public void addBuildMessages( final @Observes BuildResults results ) {
-        final List<BuildMessage> messages = results.getMessages();
-        if ( messages.isEmpty() ) {
-            notificationEvent.fire( new NotificationEvent( view.showBuildSuccessful() ) );
-        }
+        showProblemsPanel( results.getMessages() );
+    }
 
+    public void addDeployMessages( final @Observes DeployResult results ) {
+        showProblemsPanel( results.getMessages() );
+    }
+
+    private void showProblemsPanel( final List<BuildMessage> messages ) {
         List<BuildMessage> list = dataProvider.getList();
         list.clear();
         for ( BuildMessage buildMessage : messages ) {
             list.add( buildMessage );
         }
-
         placeManager.goTo( "org.kie.guvnor.Problems" );
     }
 
@@ -78,7 +72,6 @@ public class ProblemsService {
         for ( BuildMessage buildMessage : addedMessages ) {
             list.add( buildMessage );
         }
-
         placeManager.goTo( "org.kie.guvnor.Problems" );
     }
 

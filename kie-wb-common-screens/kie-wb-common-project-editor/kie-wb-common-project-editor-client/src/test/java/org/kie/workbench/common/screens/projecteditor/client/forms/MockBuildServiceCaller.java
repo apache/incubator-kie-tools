@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.DeployResult;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
@@ -54,24 +55,29 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public void addPackageResource( Path resource ) {
+            public boolean isBuilt( Project project ) {
+                return false;
             }
 
             @Override
-            public void deletePackageResource( Path resource ) {
+            public IncrementalBuildResults addPackageResource( Path resource ) {
+                return new IncrementalBuildResults();
             }
 
             @Override
-            public void updatePackageResource( Path resource ) {
+            public IncrementalBuildResults deletePackageResource( Path resource ) {
+                return new IncrementalBuildResults();
             }
 
             @Override
-            public void updateProjectResource( Path resource ) {
+            public IncrementalBuildResults updatePackageResource( Path resource ) {
+                return new IncrementalBuildResults();
             }
 
             @Override
-            public void applyBatchResourceChanges( Project project,
-                                                   Set<ResourceChange> changes ) {
+            public IncrementalBuildResults applyBatchResourceChanges( Project project,
+                                                                      Set<ResourceChange> changes ) {
+                return new IncrementalBuildResults();
             }
         };
     }
