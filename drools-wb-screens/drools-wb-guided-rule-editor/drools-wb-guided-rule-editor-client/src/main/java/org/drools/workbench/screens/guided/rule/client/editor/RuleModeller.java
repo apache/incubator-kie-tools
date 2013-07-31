@@ -40,6 +40,7 @@ import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
+import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableComposite;

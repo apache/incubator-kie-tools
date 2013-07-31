@@ -213,6 +213,19 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
+        layout.add( getRuleInheritancePanel(oracle, model) );
+        layout.add( disclosurePanel );
+        layout.add( configureColumnsNote );
+        layout.add( dtableContainer );
+
+        initWidget( layout );
+    }
+
+    private Widget getRuleInheritancePanel(PackageDataModelOracle oracle, final GuidedDecisionTable52 model) {
+
+        HorizontalPanel result = new HorizontalPanel();
+        result.add(new Label(GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit()));
+
         RuleSelector ruleSelector = new RuleSelector(oracle);
         ruleSelector.setRuleName(model.getParentName());
         ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -221,12 +234,10 @@ public class GuidedDecisionTableWidget extends Composite
                 model.setParentName(event.getValue());
             }
         });
-        layout.add(ruleSelector);
-        layout.add( disclosurePanel );
-        layout.add( configureColumnsNote );
-        layout.add( dtableContainer );
 
-        initWidget( layout );
+        result.add(ruleSelector);
+
+        return result;
     }
 
     private Widget getActions() {

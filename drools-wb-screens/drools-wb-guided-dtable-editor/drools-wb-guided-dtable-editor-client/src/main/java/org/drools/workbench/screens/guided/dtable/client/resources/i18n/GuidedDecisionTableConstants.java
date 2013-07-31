@@ -429,4 +429,5 @@ public interface GuidedDecisionTableConstants
     //NewResourceHandler
     String NewGuidedDecisionTableDescription();
 
+    String AllTheRulesInherit();
 }
