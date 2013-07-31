@@ -222,4 +222,7 @@ public interface CommonConstants
 
     String DeletePopupRenameNamePrompt();
 
+    String NoneSelected();
+
+    String LineNoneLine();
 }
