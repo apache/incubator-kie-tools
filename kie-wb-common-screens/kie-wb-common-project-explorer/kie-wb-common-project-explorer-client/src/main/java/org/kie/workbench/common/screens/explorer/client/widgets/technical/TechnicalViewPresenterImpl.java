@@ -248,11 +248,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                                       activeProject ) ) {
             activeProject = project;
             projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-            if ( project == null ) {
-                loadProjects( activeRepository );
-            } else {
-                loadFilesAndFolders( project.getRootPath() );
-            }
+            doProjectChanged( project );
         }
     }
 
@@ -263,14 +259,25 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         final Project project = event.getProject();
         selectProject( project );
+    }
 
-        //Build project
-        buildService.call( new RemoteCallback<BuildResults>() {
-            @Override
-            public void callback( final BuildResults results ) {
-                //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
-            }
-        } ).build( project );
+    private void doProjectChanged( final Project project ) {
+        if ( project == null ) {
+            //If Project is null, then no Project has been selected
+            loadProjects( activeRepository );
+
+        } else {
+            //Otherwise show Files and Folders for Project
+            loadFilesAndFolders( project.getRootPath() );
+
+            //Build Project
+            buildService.call( new RemoteCallback<BuildResults>() {
+                @Override
+                public void callback( final BuildResults results ) {
+                    //Do nothing. BuildServiceImpl raises an event with the results to populate the UI
+                }
+            } ).build( project );
+        }
     }
 
     @Override
