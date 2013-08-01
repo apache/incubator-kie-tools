@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 

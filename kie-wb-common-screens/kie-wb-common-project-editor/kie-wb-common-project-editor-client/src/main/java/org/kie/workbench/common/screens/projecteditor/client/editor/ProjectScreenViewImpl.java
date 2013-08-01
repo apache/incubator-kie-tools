@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.forms;
+package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -34,6 +34,9 @@ import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
+import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
+import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
