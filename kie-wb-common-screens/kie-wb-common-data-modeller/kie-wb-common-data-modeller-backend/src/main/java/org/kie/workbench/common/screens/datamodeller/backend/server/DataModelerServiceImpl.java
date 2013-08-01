@@ -168,7 +168,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             notifyFileChanges( deleteableFiles, driverChanges );
 
-            cleanupEmptyDirs( javaPath );
+            //cleanupEmptyDirs( javaPath );
             //after file cleaning we must ensure again that the java path exists
             javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
