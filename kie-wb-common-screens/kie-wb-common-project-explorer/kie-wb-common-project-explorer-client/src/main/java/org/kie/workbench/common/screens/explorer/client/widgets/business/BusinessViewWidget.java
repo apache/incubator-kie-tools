@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
@@ -357,6 +358,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
             for ( Map.Entry<ClientResourceType, Collection<FolderItem>> e : sortedResourceTypeGroups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
+                group.getWidget( 0 ).addStyleName(ProjectExplorerResources.INSTANCE.CSS().groupHeader() );
                 group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
                 final NavList itemsNavList = new NavList();
                 group.add( itemsNavList );

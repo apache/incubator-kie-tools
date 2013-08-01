@@ -33,4 +33,6 @@ public interface StylesCss
 
     String breadCrumbs();
 
+    String groupHeader();
+
 }
