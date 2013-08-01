@@ -22,7 +22,7 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.builder.model.DeployResult;
+import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
@@ -59,6 +59,7 @@ public class ProjectScreenPresenter
     private Path pathToPomXML;
     private SaveOperationService saveOperationService;
 
+    private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
 
     private Menus menus;
@@ -73,6 +74,7 @@ public class ProjectScreenPresenter
                                    Caller<ProjectScreenService> projectScreenService,
                                    Caller<BuildService> buildServiceCaller,
                                    SaveOperationService saveOperationService,
+                                   Event<BuildResults> buildResultsEvent,
                                    Event<NotificationEvent> notificationEvent ) {
         this.view = view;
         view.setPresenter( this );
@@ -80,6 +82,7 @@ public class ProjectScreenPresenter
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
         this.saveOperationService = saveOperationService;
+        this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
 
         showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
@@ -173,12 +176,13 @@ public class ProjectScreenPresenter
     }
 
     private RemoteCallback getBuildSuccessCallback() {
-        return new RemoteCallback<DeployResult>() {
+        return new RemoteCallback<BuildResults>() {
             @Override
-            public void callback( final DeployResult result ) {
+            public void callback( final BuildResults result ) {
                 if ( result.getMessages().isEmpty() ) {
                     notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildSuccessful() ) );
                 }
+                buildResultsEvent.fire( result );
                 view.hideBusyIndicator();
             }
         };

@@ -19,7 +19,6 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.GAV;
@@ -48,10 +47,10 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public DeployResult buildAndDeploy( Project project ) {
+            public BuildResults buildAndDeploy( Project project ) {
                 callback.callback( null );
                 buildWasCalled = true;
-                return new DeployResult( new GAV() );
+                return new BuildResults( new GAV() );
             }
 
             @Override

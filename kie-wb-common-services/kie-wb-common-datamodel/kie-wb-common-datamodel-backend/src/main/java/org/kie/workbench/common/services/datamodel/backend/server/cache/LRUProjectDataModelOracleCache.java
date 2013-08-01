@@ -15,7 +15,6 @@ import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.builder.Builder;
 import org.guvnor.common.services.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -23,6 +22,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.KieContainer;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.validation.PortablePreconditions;
@@ -43,10 +43,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
 
     private static final Logger log = LoggerFactory.getLogger( LRUProjectDataModelOracleCache.class );
 
-    private static final String ERROR_CLASS_NOT_FOUND = "Class not found";
-
-    private static final String ERROR_IO = "IO Error";
-
     @Inject
     private Paths paths;
 
@@ -65,7 +61,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
-                event );
+                                            event );
         final Path resourcePath = event.getResourcePath();
         final Project project = projectService.resolveProject( resourcePath );
 
@@ -81,7 +77,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         if ( projectOracle == null ) {
             projectOracle = makeProjectOracle( project );
             setEntry( project,
-                    projectOracle );
+                      projectOracle );
         }
         return projectOracle;
     }
@@ -98,14 +94,14 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         for ( final String packageName : metaData.getPackages() ) {
             for ( final String className : metaData.getClasses( packageName ) ) {
                 final Class clazz = metaData.getClass( packageName,
-                        className );
+                                                       className );
                 final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
                 final TypeSource typeSource = builder.getClassSource( metaData,
-                        clazz );
+                                                                      clazz );
                 try {
                     pdBuilder.addClass( clazz,
-                            typeMetaInfo.isEvent(),
-                            typeSource );
+                                        typeMetaInfo.isEvent(),
+                                        typeSource );
                 } catch ( IOException ioe ) {
                     log.error( ioe.getMessage() );
                 }
@@ -136,17 +132,23 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         return pdBuilder.build();
     }
 
-    private void addAllRuleNames(Builder builder, ProjectDataModelOracleBuilder pdBuilder) {
+    private void addAllRuleNames( Builder builder,
+                                  ProjectDataModelOracleBuilder pdBuilder ) {
 
-        List<String> ruleNames = new ArrayList<String>();
+        //TODO We can't retrieve a KieContainer if the KieModule has errors, so there is no way to get the Rule Names
+        final KieContainer kieContainer = builder.getKieContainer();
+        if ( kieContainer == null ) {
+            return;
+        }
 
-        for (KiePackage kiePackage : builder.getKieContainer().getKieBase().getKiePackages()) {
-            for (Rule rule : kiePackage.getRules()) {
-                ruleNames.add(rule.getName());
+        final List<String> ruleNames = new ArrayList<String>();
+        for ( KiePackage kiePackage : builder.getKieContainer().getKieBase().getKiePackages() ) {
+            for ( Rule rule : kiePackage.getRules() ) {
+                ruleNames.add( rule.getName() );
             }
         }
 
-        pdBuilder.addRuleNames(ruleNames);
+        pdBuilder.addRuleNames( ruleNames );
 
     }
 }

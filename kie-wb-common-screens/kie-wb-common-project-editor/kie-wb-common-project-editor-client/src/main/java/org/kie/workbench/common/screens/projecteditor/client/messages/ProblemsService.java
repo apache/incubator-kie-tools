@@ -25,7 +25,6 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -45,17 +44,9 @@ public class ProblemsService {
     }
 
     public void addBuildMessages( final @Observes BuildResults results ) {
-        showProblemsPanel( results.getMessages() );
-    }
-
-    public void addDeployMessages( final @Observes DeployResult results ) {
-        showProblemsPanel( results.getMessages() );
-    }
-
-    private void showProblemsPanel( final List<BuildMessage> messages ) {
         List<BuildMessage> list = dataProvider.getList();
         list.clear();
-        for ( BuildMessage buildMessage : messages ) {
+        for ( BuildMessage buildMessage : results.getMessages() ) {
             list.add( buildMessage );
         }
         placeManager.goTo( "org.kie.guvnor.Problems" );
