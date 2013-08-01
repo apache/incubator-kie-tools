@@ -16,7 +16,6 @@ import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.DeployResult;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -171,7 +170,7 @@ public class ProjectResourceDispatcher {
             pom.getGav().setArtifactId( projectName );
             pom.getGav().setGroupId( projectName );
             pom.getGav().setVersion( "1.0" );
-            
+
             try {
                 Project project = projectService.newProject( makeRepository( paths.convert( repositoryPath,
                                                                                             false ) ),
@@ -271,7 +270,7 @@ public class ProjectResourceDispatcher {
                 return;
             }
 
-            DeployResult buildResults = buildService.buildAndDeploy( project );
+            BuildResults buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
             result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
@@ -279,7 +278,7 @@ public class ProjectResourceDispatcher {
         }
     }
 
-    private List<String> deployResultToDetailedStringMessages( DeployResult deployResult ) {
+    private List<String> deployResultToDetailedStringMessages( BuildResults deployResult ) {
         GAV gav = deployResult.getGAV();
         List<String> result = buildResultsToDetailedStringMessages( deployResult.getMessages() );
         String detailedStringMessage = "artifactID:" + gav.getArtifactId() +
@@ -384,7 +383,7 @@ public class ProjectResourceDispatcher {
                 return;
             }
 
-            DeployResult buildResults = buildService.buildAndDeploy( project );
+            BuildResults buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
             result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
