@@ -180,7 +180,11 @@ public class ProjectScreenPresenter
             @Override
             public void callback( final BuildResults result ) {
                 if ( result.getMessages().isEmpty() ) {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildSuccessful() ) );
+                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildSuccessful(),
+                                                                   NotificationEvent.NotificationType.SUCCESS ) );
+                } else {
+                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildFailed(),
+                                                                   NotificationEvent.NotificationType.ERROR ) );
                 }
                 buildResultsEvent.fire( result );
                 view.hideBusyIndicator();

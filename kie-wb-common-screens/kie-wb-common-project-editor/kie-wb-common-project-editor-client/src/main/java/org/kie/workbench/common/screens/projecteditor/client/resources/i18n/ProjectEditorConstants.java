@@ -87,6 +87,8 @@ public interface ProjectEditorConstants
 
     String BuildSuccessful();
 
+    String BuildFailed();
+
     String EnableKieProject();
 
     String KBases();
