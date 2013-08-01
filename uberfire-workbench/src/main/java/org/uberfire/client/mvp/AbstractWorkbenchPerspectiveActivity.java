@@ -188,12 +188,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
-        final PlaceRequest clone = _place.clone();
-
-        for ( Map.Entry<String, String> parameter : this.place.getParameters().entrySet() ) {
-            clone.addParameter( parameter.getKey(), parameter.getValue() );
-        }
-
-        return clone;
+        return  _place.clone();
     }
 }

@@ -76,4 +76,31 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
         return new PathPlaceRequest( path, identifier, parameters );
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        PathPlaceRequest that = (PathPlaceRequest) o;
+
+        if ( !path.equals( that.path ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + path.hashCode();
+        return result;
+    }
 }

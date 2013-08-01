@@ -119,21 +119,26 @@ public class DefaultPlaceRequest
         if ( this == o ) {
             return true;
         }
-        if ( o == null ) {
-            return false;
-        }
-        if ( !( o instanceof PlaceRequest ) ) {
+        if ( !( o instanceof DefaultPlaceRequest ) ) {
             return false;
         }
 
-        PlaceRequest that = (PlaceRequest) o;
-        return this.getFullIdentifier().equals( that.getFullIdentifier() );
+        DefaultPlaceRequest that = (DefaultPlaceRequest) o;
+
+        if ( !identifier.equals( that.identifier ) ) {
+            return false;
+        }
+        if ( !parameters.equals( that.parameters ) ) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        final String fullIdentifier = getFullIdentifier();
-        return fullIdentifier != null ? fullIdentifier.hashCode() : 0;
+        int result = identifier.hashCode();
+        result = 31 * result + parameters.hashCode();
+        return result;
     }
-
 }
