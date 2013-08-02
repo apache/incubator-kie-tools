@@ -1,33 +1,46 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.List;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.uberfire.client.mvp.UberView;
 
 public interface ImportsWidgetView
-        extends IsWidget {
+        extends HasBusyIndicator,
+                UberView<ImportsWidgetView.Presenter> {
 
     interface Presenter {
-
-        void onAddImport();
-
-        void onRemoveImport();
 
         void setContent( final PackageDataModelOracle oracle,
                          final Imports resourceImports,
                          final boolean isReadOnly );
 
+        void onAddImport( final Import importType );
+
+        void onRemoveImport( final Import importType );
+
+        Widget asWidget();
+
+        boolean isDirty();
+
+        void setNotDirty();
+
     }
 
-    void addImport( final String type );
+    void setContent( final List<Import> allAvailableImportTypes,
+                     final List<Import> importTypes,
+                     final boolean isReadOnly );
 
-    String getSelected();
+    boolean isDirty();
 
-    void removeImport( final String selected );
+    void setNotDirty();
 
-    void setReadOnly( final boolean isReadOnly );
+    boolean confirmClose();
 
-    void setPresenter( final Presenter presenter );
+    void alertReadOnly();
 
-    void showPleaseSelectAnImport();
 }

@@ -25,18 +25,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
 import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.popups.list.FormListPopup;
-import org.kie.workbench.common.widgets.client.popups.list.PopupItemSelectedCommand;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
-public class ImportsWidgetPresenter
-        implements ImportsWidgetView.Presenter,
-                   IsWidget {
+public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
+                                               IsWidget {
 
     private ImportsWidgetView view;
     private FormListPopup addImportPopup;
@@ -46,10 +43,9 @@ public class ImportsWidgetPresenter
 
     private PackageDataModelOracle oracle;
     private Imports resourceImports;
-    private List<Pair<String, String>> imports;
-    
-    public ImportsWidgetPresenter( ) {
-    } 
+
+    public ImportsWidgetPresenter() {
+    }
 
     @Inject
     public ImportsWidgetPresenter( final ImportsWidgetView view,
@@ -60,7 +56,7 @@ public class ImportsWidgetPresenter
         this.addImportPopup = addImportPopup;
         this.importAddedEvent = importAddedEvent;
         this.importRemovedEvent = importRemovedEvent;
-        view.setPresenter( this );
+        view.init( this );
     }
 
     @Override
@@ -72,58 +68,35 @@ public class ImportsWidgetPresenter
         this.resourceImports = checkNotNull( "resourceImports",
                                              resourceImports );
 
-        view.setReadOnly( isReadOnly );
-
-        //Add existing imports to view
-        for ( Import item : resourceImports.getImports() ) {
-            view.addImport( item.getType() );
-        }
-
         //Get list of potential imports
-        imports = new ArrayList<Pair<String, String>>();
-        for ( String item : oracle.getExternalFactTypes() ) {
-            Pair<String, String> pair = new Pair( item,
-                                                  item );
-            imports.add( pair );
+        final List<Import> allAvailableImportTypes = new ArrayList<Import>();
+        for ( String importType : oracle.getExternalFactTypes() ) {
+            allAvailableImportTypes.add( new Import(importType) );
         }
+
+        view.setContent( allAvailableImportTypes,
+                         resourceImports.getImports(),
+                         isReadOnly );
     }
 
     @Override
-    public void onAddImport() {
-        addImportPopup.show( imports,
-                             new PopupItemSelectedCommand() {
+    public void onAddImport( final Import importType ) {
+        //resourceImports.getImports().add( importType );
+        oracle.filter();
 
-                                 @Override
-                                 public void setSelectedItem( final Pair<String, String> selectedItem ) {
-                                     final String importClassName = selectedItem.getK1();
-                                     final Import item = new Import( importClassName );
-                                     view.addImport( importClassName );
-                                     resourceImports.getImports().add( item );
-                                     oracle.filter();
-
-                                     //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-                                     importAddedEvent.fire( new ImportAddedEvent( oracle,
-                                                                                  item ) );
-                                 }
-
-                             } );
+        //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
+        importAddedEvent.fire( new ImportAddedEvent( oracle,
+                                                     importType ) );
     }
 
     @Override
-    public void onRemoveImport() {
-        String selected = view.getSelected();
-        if ( selected == null ) {
-            view.showPleaseSelectAnImport();
-        } else {
-            final Import item = new Import( selected );
-            view.removeImport( selected );
-            resourceImports.removeImport( item );
-            oracle.filter();
+    public void onRemoveImport( final Import importType ) {
+        //resourceImports.removeImport( importType );
+        oracle.filter();
 
-            //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-            importRemovedEvent.fire( new ImportRemovedEvent( oracle,
-                                                             item ) );
-        }
+        //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
+        importRemovedEvent.fire( new ImportRemovedEvent( oracle,
+                                                         importType ) );
     }
 
     @Override
@@ -131,13 +104,14 @@ public class ImportsWidgetPresenter
         return view.asWidget();
     }
 
+    @Override
     public boolean isDirty() {
-        return false; // TODO: -Rikkola-
+        return view.isDirty();
     }
 
-
+    @Override
     public void setNotDirty() {
-        // TODO: -Rikkola-
+        view.setNotDirty();
     }
 
 }

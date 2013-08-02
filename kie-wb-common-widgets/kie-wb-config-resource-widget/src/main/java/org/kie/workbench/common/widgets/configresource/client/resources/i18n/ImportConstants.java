@@ -72,4 +72,17 @@ public interface ImportConstants extends
     String PleaseSetAName();
 
     String Imports();
+
+    String addImportPopupTitle();
+
+    String importTypeIsMandatory();
+
+    String noImportsDefined();
+
+    String remove();
+
+    String promptForRemovalOfImport0(String importType);
+
+    String importType();
+
 }
