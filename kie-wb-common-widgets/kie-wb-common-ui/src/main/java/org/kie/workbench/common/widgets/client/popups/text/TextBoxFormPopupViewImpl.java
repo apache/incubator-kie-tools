@@ -28,16 +28,16 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
 
-public class FormPopupViewImpl
+public class TextBoxFormPopupViewImpl
         extends Popup
-        implements FormPopupView {
+        implements TextBoxFormPopupView {
 
     private final Widget widget;
     private Presenter presenter;
 
     interface AddNewKBasePopupViewImplBinder
             extends
-            UiBinder<Widget, FormPopupViewImpl> {
+            UiBinder<Widget, TextBoxFormPopupViewImpl> {
 
     }
 
@@ -52,7 +52,7 @@ public class FormPopupViewImpl
     @UiField
     Button cancelButton;
 
-    public FormPopupViewImpl() {
+    public TextBoxFormPopupViewImpl() {
         widget = uiBinder.createAndBindUi( this );
         setTitle( CommonConstants.INSTANCE.New() );
     }

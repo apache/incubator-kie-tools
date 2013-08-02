@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.*;
@@ -35,13 +36,13 @@ public class KSessionsPanelTest {
     private KSessionsPanelView view;
     private KSessionsPanel kSessionsPanel;
     private ListFormComboPanelView.Presenter presenter;
-    private FormPopup namePopup;
+    private TextBoxFormPopup namePopup;
     private KSessionForm form;
 
     @Before
     public void setUp() throws Exception {
         view = mock(KSessionsPanelView.class);
-        namePopup = mock(FormPopup.class);
+        namePopup = mock(TextBoxFormPopup.class);
         form = mock(KSessionForm.class);
         kSessionsPanel = new KSessionsPanel(view, form, namePopup);
         presenter = kSessionsPanel;

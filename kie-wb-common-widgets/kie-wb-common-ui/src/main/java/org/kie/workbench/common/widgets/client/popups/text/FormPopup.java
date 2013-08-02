@@ -16,16 +16,14 @@
 
 package org.kie.workbench.common.widgets.client.popups.text;
 
-import javax.inject.Inject;
 
-public class FormPopup
+public abstract class FormPopup
         implements FormPopupView.Presenter {
 
     private PopupSetFieldCommand command;
 
     protected final FormPopupView view;
 
-    @Inject
     public FormPopup(FormPopupView view) {
         this.view = view;
         view.setPresenter(this);

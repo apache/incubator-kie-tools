@@ -17,7 +17,7 @@ public class KModuleEditorPanel
 
     @Inject
     public KModuleEditorPanel(KBaseForm form,
-                              FormPopup namePopup,
+                              PackageNameFormPopup namePopup,
                               KModuleEditorPanelView view) {
         super(view, form, namePopup);
 

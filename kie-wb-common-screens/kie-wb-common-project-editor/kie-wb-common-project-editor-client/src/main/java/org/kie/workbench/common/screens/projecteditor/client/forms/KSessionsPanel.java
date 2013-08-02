@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 public class KSessionsPanel
         extends ListFormComboPanel<KSessionModel> {
@@ -29,7 +30,7 @@ public class KSessionsPanel
     @Inject
     public KSessionsPanel(KSessionsPanelView view,
                           KSessionForm form,
-                          FormPopup namePopup) {
+                          TextBoxFormPopup namePopup) {
         super(view, form, namePopup);
     }
 

@@ -34,14 +34,14 @@ public class KModuleEditorPanelTest {
     private KModuleEditorPanelView view;
     private KModuleEditorPanel screenK;
     private ListFormComboPanelView.Presenter presenter;
-    private FormPopup nameNamePopup;
+    private PackageNameFormPopup nameNamePopup;
     private KBaseForm form;
 
     @Before
     public void setUp() throws Exception {
         view = mock(KModuleEditorPanelView.class);
 
-        nameNamePopup = mock(FormPopup.class);
+        nameNamePopup = mock(PackageNameFormPopup.class);
         form = mock(KBaseForm.class);
         screenK = new KModuleEditorPanel( form, nameNamePopup, view);
         presenter = screenK;
