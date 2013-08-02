@@ -28,7 +28,6 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
 import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.popups.list.FormListPopup;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
@@ -36,24 +35,20 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                                                IsWidget {
 
     private ImportsWidgetView view;
-    private FormListPopup addImportPopup;
 
     private Event<ImportAddedEvent> importAddedEvent;
     private Event<ImportRemovedEvent> importRemovedEvent;
 
     private PackageDataModelOracle oracle;
-    private Imports resourceImports;
 
     public ImportsWidgetPresenter() {
     }
 
     @Inject
     public ImportsWidgetPresenter( final ImportsWidgetView view,
-                                   final FormListPopup addImportPopup,
                                    final Event<ImportAddedEvent> importAddedEvent,
                                    final Event<ImportRemovedEvent> importRemovedEvent ) {
         this.view = view;
-        this.addImportPopup = addImportPopup;
         this.importAddedEvent = importAddedEvent;
         this.importRemovedEvent = importRemovedEvent;
         view.init( this );
@@ -61,21 +56,21 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
 
     @Override
     public void setContent( final PackageDataModelOracle oracle,
-                            final Imports resourceImports,
+                            final Imports importTypes,
                             final boolean isReadOnly ) {
         this.oracle = checkNotNull( "oracle",
                                     oracle );
-        this.resourceImports = checkNotNull( "resourceImports",
-                                             resourceImports );
+        checkNotNull( "importTypes",
+                      importTypes );
 
         //Get list of potential imports
         final List<Import> allAvailableImportTypes = new ArrayList<Import>();
         for ( String importType : oracle.getExternalFactTypes() ) {
-            allAvailableImportTypes.add( new Import(importType) );
+            allAvailableImportTypes.add( new Import( importType ) );
         }
 
         view.setContent( allAvailableImportTypes,
-                         resourceImports.getImports(),
+                         importTypes.getImports(),
                          isReadOnly );
     }
 

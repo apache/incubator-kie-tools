@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.configresource.client.widget.bound;
-
-import java.util.List;
+package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.imports.Import;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 
@@ -47,7 +46,10 @@ public class AddImportPopup extends Modal {
     ControlGroup importTypeGroup;
 
     @UiField
-    ListBox importTypeListBox;
+    TextBox importTypeTextBox;
+
+    @UiField
+    HelpInline importTypeHelpInline;
 
     private Command callbackCommand;
 
@@ -78,17 +80,29 @@ public class AddImportPopup extends Modal {
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
 
-        importTypeListBox.addChangeHandler( new ChangeHandler() {
-
+        importTypeTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
-                final boolean enable = importTypeListBox.getSelectedIndex() > 0;
-                footer.enableOkButton( enable );
+            public void onKeyPress( final KeyPressEvent event ) {
+                importTypeGroup.setType( ControlGroupType.NONE );
+                importTypeHelpInline.setText( "" );
             }
         } );
     }
 
     private void onOKButtonClick() {
+        boolean hasError = false;
+        if ( importTypeTextBox.getText() == null || importTypeTextBox.getText().trim().isEmpty() ) {
+            importTypeGroup.setType( ControlGroupType.ERROR );
+            importTypeHelpInline.setText( ImportConstants.INSTANCE.importTypeIsMandatory() );
+            hasError = true;
+        } else {
+            importTypeGroup.setType( ControlGroupType.NONE );
+        }
+
+        if ( hasError ) {
+            return;
+        }
+
         if ( callbackCommand != null ) {
             callbackCommand.execute();
         }
@@ -96,30 +110,19 @@ public class AddImportPopup extends Modal {
     }
 
     public String getImportType() {
-        return importTypeListBox.getValue();
+        return importTypeTextBox.getValue();
     }
 
-    public void setContent( final Command callbackCommand,
-                            final List<Import> allAvailableImportTypes ) {
+    public void setCommand( final Command callbackCommand ) {
         this.callbackCommand = callbackCommand;
-        this.importTypeListBox.clear();
+    }
 
-        if ( allAvailableImportTypes.size() > 0 ) {
-            importTypeListBox.addItem( ImportConstants.INSTANCE.ChooseAFactType() );
-            for ( Import importType : allAvailableImportTypes ) {
-                importTypeListBox.addItem( importType.getType() );
-            }
-            footer.enableOkButton( false );
-            importTypeListBox.setSelectedIndex( 0 );
-            importTypeListBox.setEnabled( true );
-
-        } else {
-            importTypeListBox.addItem( ImportConstants.INSTANCE.noTypesAvailable() );
-            footer.enableOkButton( false );
-            importTypeListBox.setSelectedIndex( 0 );
-            importTypeListBox.setEnabled( false );
-        }
-
+    @Override
+    public void show() {
+        importTypeTextBox.setText( "" );
+        importTypeGroup.setType( ControlGroupType.NONE );
+        importTypeHelpInline.setText( "" );
+        super.show();
     }
 
 }

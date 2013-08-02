@@ -189,7 +189,7 @@ public class ProjectScreenViewImpl
 
     @Override
     public void setImports(ProjectImports projectImports) {
-        importsWidgetPresenter.setData(projectImports, false);
+        importsWidgetPresenter.setContent(projectImports, false);
     }
 
     @Override

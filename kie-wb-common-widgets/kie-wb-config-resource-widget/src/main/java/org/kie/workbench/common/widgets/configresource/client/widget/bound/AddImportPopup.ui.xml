@@ -20,17 +20,12 @@
 
   <b:Well>
     <b:Fieldset>
-      <b:Legend>Import Information
-        <small>* is required</small>
-      </b:Legend>
       <b:ControlGroup ui:field="importTypeGroup">
         <b:ControlLabel for="importType">
-          <font color="red">*</font>
           Import
         </b:ControlLabel>
         <b:Controls>
           <b:ListBox b:id="importType" ui:field="importTypeListBox" />
-          <b:HelpInline ui:field="importTypeHelpInline"/>
         </b:Controls>
       </b:ControlGroup>
     </b:Fieldset>

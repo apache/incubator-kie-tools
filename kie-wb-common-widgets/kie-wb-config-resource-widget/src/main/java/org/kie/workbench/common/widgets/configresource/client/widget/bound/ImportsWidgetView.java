@@ -39,8 +39,4 @@ public interface ImportsWidgetView
 
     void setNotDirty();
 
-    boolean confirmClose();
-
-    void alertReadOnly();
-
 }

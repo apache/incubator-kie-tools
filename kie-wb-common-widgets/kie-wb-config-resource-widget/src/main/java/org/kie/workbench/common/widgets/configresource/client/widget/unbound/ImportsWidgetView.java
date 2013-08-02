@@ -1,32 +1,35 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.List;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.commons.shared.imports.Import;
+import org.guvnor.common.services.project.model.ProjectImports;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.uberfire.client.mvp.UberView;
 
 public interface ImportsWidgetView
-        extends IsWidget, HasBusyIndicator {
+        extends HasBusyIndicator,
+                UberView<ImportsWidgetView.Presenter> {
 
     interface Presenter {
 
-        void onAddImport();
+        void setContent( final ProjectImports importTypes,
+                         final boolean isReadOnly );
 
-        void onRemoveImport();
+        Widget asWidget();
+
+        boolean isDirty();
+
+        void setNotDirty();
 
     }
 
-    void addImport(final String type);
+    void setContent( final List<Import> importTypes,
+                     final boolean isReadOnly );
 
-    String getSelected();
+    boolean isDirty();
 
-    void removeImport(final String selected);
+    void setNotDirty();
 
-    void setReadOnly(final boolean isReadOnly);
-
-    void setPresenter(final Presenter presenter);
-
-    void showPleaseSelectAnImport();
-
-    void showBusyIndicator(String text);
-
-    void hideBusyIndicator();
 }

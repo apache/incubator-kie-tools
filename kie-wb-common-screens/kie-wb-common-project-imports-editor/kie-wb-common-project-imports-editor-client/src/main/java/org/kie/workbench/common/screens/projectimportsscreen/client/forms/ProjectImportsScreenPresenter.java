@@ -99,7 +99,7 @@ public class ProjectImportsScreenPresenter
 
             @Override
             public void callback(final ProjectImports projectImports) {
-               importsWidget.setData(projectImports, false);
+               importsWidget.setContent(projectImports, false);
             }
         };
     }

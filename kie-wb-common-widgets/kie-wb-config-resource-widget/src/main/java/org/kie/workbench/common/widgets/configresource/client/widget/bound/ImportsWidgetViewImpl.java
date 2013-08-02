@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.commons.shared.imports.Import;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.uberfire.client.common.BusyPopup;
 
@@ -159,16 +158,6 @@ public class ImportsWidgetViewImpl
     @Override
     public void setNotDirty() {
         isDirty = false;
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     @UiHandler("addImportButton")
