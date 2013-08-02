@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.screen.source.EditorTextContentChanged;
@@ -36,8 +36,8 @@ public class HTMLPreview
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         final String content = placeRequest.getParameter( "content", null );
         htmlContent.setHTML( content );
     }

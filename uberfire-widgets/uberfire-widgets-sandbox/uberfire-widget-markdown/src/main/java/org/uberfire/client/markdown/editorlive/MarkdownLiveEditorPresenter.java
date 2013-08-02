@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -39,8 +39,8 @@ public class MarkdownLiveEditorPresenter {
     @Inject
     public View view;
 
-    @OnStart
-    public void onStart() {
+    @OnStartup
+    public void onStartup() {
         view.setContent("");
     }
 

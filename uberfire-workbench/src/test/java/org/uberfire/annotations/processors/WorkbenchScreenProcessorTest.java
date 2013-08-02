@@ -299,7 +299,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchScreen has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence." );
+                                  "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

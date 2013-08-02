@@ -30,7 +30,7 @@ import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -66,8 +66,8 @@ public class RepositoriesPresenter {
     public RepositoriesPresenter() {
     }
 
-    @OnStart
-    public void onStart() {
+    @OnStartup
+    public void onStartup() {
 
         view.clear();
 

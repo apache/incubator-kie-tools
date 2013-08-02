@@ -25,8 +25,8 @@ public class AbstractPopupActivityTest {
 //        Command revealCallback = mock(Command.class);
 //
 //        verify(activity, never()).getPopupPanel();
-//        verify(activity, never()).onStart();
-//        verify(activity, never()).onStart(any(PlaceRequest.class));
+//        verify(activity, never()).onStartup();
+//        verify(activity, never()).onStartup(any(PlaceRequest.class));
 //
 //        activity.launch(placeRequest, revealCallback);
 
@@ -52,14 +52,14 @@ public class AbstractPopupActivityTest {
 //            }
 //
 //            @Override
-//            public void onStart() {
-//                // onStart should not be called before getPopupPanel()
+//            public void onStartup() {
+//                // onStartup should not be called before getPopupPanel()
 //                verify(activity, never()).getPopupPanel();
 //            }
 //
 //            @Override
-//            public void onStart(final PlaceRequest place) {
-//                // onStart should not be called before getPopupPanel()
+//            public void onStartup(final PlaceRequest place) {
+//                // onStartup should not be called before getPopupPanel()
 //                verify(activity, never()).getPopupPanel();
 //            }
 //

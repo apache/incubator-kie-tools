@@ -24,8 +24,8 @@ public interface WorkbenchScreenActivity
     extends
     WorkbenchActivity {
 
-    public void onStart();
+    public void onStartup();
 
-    public void onStart(final PlaceRequest place);
+    public void onStartup( final PlaceRequest place );
 
 }

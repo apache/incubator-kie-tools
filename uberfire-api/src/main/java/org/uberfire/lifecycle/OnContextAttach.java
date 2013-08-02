@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -22,12 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with this are called by the Workbench to save the
- * WorkbenchPart's state. The method should take zero arguments and return void.
+ * Methods annotated with this will be called by the Workbench when a
+ * WorkbenchPart is closed. WorkbenchParts can perform any clean-up tasks in the
+ * annotated method. The method should take zero arguments and return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface OnSave {
+@Target({ ElementType.METHOD })
+public @interface OnContextAttach {
 
 }

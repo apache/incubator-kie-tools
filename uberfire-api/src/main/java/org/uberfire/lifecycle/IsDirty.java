@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -22,14 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with this will be called by the Workbench before the
- * WorkbenchPart is closed. The method should take zero arguments and return a
- * boolean indicating whether the WorkbenchPart can be closed (true, it can be
- * closed; false it cannot be closed).
+ * Methods marked with this annotation will be called by the Workbench to check
+ * whether their content "is dirty", i.e. contains unsaved state. The method
+ * should take zero arguments and return boolean (true, the content "is dirty";
+ * false the content is not dirty).
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface OnMayClose {
+public @interface IsDirty {
 
 }

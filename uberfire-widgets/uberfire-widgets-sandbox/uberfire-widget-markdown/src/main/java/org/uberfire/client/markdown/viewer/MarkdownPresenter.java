@@ -24,7 +24,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -48,8 +48,8 @@ public class MarkdownPresenter {
 
     private String path;
 
-    @OnStart
-    public void onStart( final Path path ) {
+    @OnStartup
+    public void onStartup( final Path path ) {
         this.path = path.getFileName();
         vfsServices.call( new RemoteCallback<String>() {
             @Override

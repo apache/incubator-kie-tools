@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -22,27 +22,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Classes annotated with this are considered Perspective providers.
  * <p>
- * Developers will need to provide a zero-argument method annotated with
- * {@code @Perspective} with return type
- * {@code org.uberfire.client.workbench.model.PerspectiveDefinition}.
+ * Methods annotated with this are called by the Workbench before methods
+ * annotated with {@code @OnOpen}. WorkbenchParts should perform any
+ * initialisation activities here (for example load their content from a
+ * persistent store).
  * </p>
  * <p>
- * WorkbenchPerspectives can receive the following life-cycle calls:
- * <ul>
- * <li>{@code @OnClose}</li>
- * <li>{@code @OnStartup}</li>
- * <li>{@code @OnOpen}</li>
+ * For {@code @WorkbenchEditor}'s the method should take a single argument of
+ * type {@code org.drools.guvnor.vfs.Path}. The Path specifies the URI for the
+ * resource to be edited. For {@code @WorkbenchScreen} 's the method should have
+ * zero arguments. The method should return void.
  * </p>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface WorkbenchPerspective {
-
-    String identifier();
-
-    boolean isDefault() default false;
+@Target({ElementType.METHOD})
+public @interface OnStartup {
 
 }

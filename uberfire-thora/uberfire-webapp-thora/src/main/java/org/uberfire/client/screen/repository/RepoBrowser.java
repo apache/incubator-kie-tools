@@ -12,7 +12,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -22,7 +21,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
@@ -88,8 +87,8 @@ public class RepoBrowser extends Composite {
         glueCopy( myGitCopyButton.getElement() );
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         this.repo = placeRequest.getParameter( "repo", null );
         repositoryAppService.call( new RemoteCallback<RepositoryInfo>() {
             @Override

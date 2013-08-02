@@ -1,7 +1,6 @@
 package org.uberfire.client;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -35,13 +34,13 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void onStart() {
-        nativePerspective.onStart();
+    public void onStartup() {
+        nativePerspective.onStartup();
     }
 
     @Override
-    public void onStart( final PlaceRequest place ) {
-        nativePerspective.onStart( place );
+    public void onStartup( final PlaceRequest place ) {
+        nativePerspective.onStartup( place );
     }
 
     @Override
@@ -75,8 +74,8 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void onReveal() {
-        nativePerspective.onReveal();
+    public void onOpen() {
+        nativePerspective.onOpen();
     }
 
     @Override
@@ -148,7 +147,7 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective( final PerspectiveDefinition perspective ) {
 
-        onStart( place );
+        onStartup( place );
 
         nativePerspective.getPanelManager().setPerspective( perspective );
 
@@ -160,7 +159,7 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
         }
         buildPerspective( nativePerspective.getPanelManager().getRoot() );
 
-        onReveal();
+        onOpen();
     }
 
     private void buildPerspective( final PanelDefinition panel ) {

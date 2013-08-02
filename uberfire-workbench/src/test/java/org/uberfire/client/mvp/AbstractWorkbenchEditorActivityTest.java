@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
     @Test
-    //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
+    //Reveal a Place once. It should be launched, OnStartup and OnOpen called once.
     public void testGoToOnePlace() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PlaceRequest somewhere = new PathPlaceRequest( new Path() {
@@ -65,9 +65,9 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         verify( spy ).launch( any( AcceptItem.class ),
                               eq( somewhere ),
                               isNull( Command.class ) );
-        verify( spy ).onStart( argThat( new EqualPaths( path ) ),
-                               eq( somewhere ) );
-        verify( spy ).onReveal();
+        verify( spy ).onStartup( argThat( new EqualPaths( path ) ),
+                                 eq( somewhere ) );
+        verify( spy ).onOpen();
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
@@ -78,7 +78,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
     }
 
     @Test
-    //Reveal the same Place twice. It should be launched, OnStart and OnReveal called once.
+    //Reveal the same Place twice. It should be launched, OnStartup and OnOpen called once.
     public void testGoToOnePlaceTwice() throws Exception {
         final String uri = "a/path/to/somewhere";
         final PlaceRequest somewhere = new PathPlaceRequest( new Path() {
@@ -125,10 +125,10 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( spy,
-                times( 1 ) ).onStart( argThat( new EqualPaths( path ) ),
-                                      eq( somewhere ) );
+                times( 1 ) ).onStartup( argThat( new EqualPaths( path ) ),
+                                        eq( somewhere ) );
         verify( spy,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
@@ -136,7 +136,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
     }
 
     @Test
-    //Reveal two different Places. Each should be launched, OnStart and OnReveal called once.
+    //Reveal two different Places. Each should be launched, OnStartup and OnOpen called once.
     public void testGoToTwoDifferentPlaces() throws Exception {
         final String uri1 = "a/path/to/somewhere";
         final String uri2 = "a/path/to/somewhere/else";
@@ -211,20 +211,20 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( spy1,
-                times( 1 ) ).onStart( argThat( new EqualPaths( path1 ) ),
-                                      eq( somewhere ) );
+                times( 1 ) ).onStartup( argThat( new EqualPaths( path1 ) ),
+                                        eq( somewhere ) );
         verify( spy1,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( spy2,
                 times( 1 ) ).launch( any( AcceptItem.class ),
                                      eq( somewhereElse ),
                                      isNull( Command.class ) );
         verify( spy2,
-                times( 1 ) ).onStart( argThat( new EqualPaths( path2 ) ),
-                                      eq( somewhereElse ) );
+                times( 1 ) ).onStartup( argThat( new EqualPaths( path2 ) ),
+                                        eq( somewhereElse ) );
         verify( spy2,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectPlaceEvent.class ) );

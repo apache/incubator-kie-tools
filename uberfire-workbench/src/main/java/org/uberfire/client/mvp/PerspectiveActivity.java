@@ -27,9 +27,9 @@ public interface PerspectiveActivity
         extends
         ContextSensitiveActivity {
 
-    public void onStart();
+    public void onStartup();
 
-    public void onStart( final PlaceRequest place );
+    public void onStartup( final PlaceRequest place );
 
     public void onClose();
 

@@ -42,24 +42,24 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
                         final PlaceRequest place,
                         final Command callback ) {
         launch( place, callback );
-        onStart( place );
+        onStartup( place );
         acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
 
         if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
             bind();
         }
 
-        onReveal();
+        onOpen();
     }
 
     @Override
-    public void onStart() {
-        nativePlugin.onStart();
+    public void onStartup() {
+        nativePlugin.onStartup();
     }
 
     @Override
-    public void onStart( final PlaceRequest place ) {
-        nativePlugin.onStart( place );
+    public void onStartup( final PlaceRequest place ) {
+        nativePlugin.onStartup( place );
     }
 
     @Override
@@ -113,8 +113,8 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
-    public void onReveal() {
-        nativePlugin.onReveal();
+    public void onOpen() {
+        nativePlugin.onOpen();
 
         executeOnRevealCallback();
     }

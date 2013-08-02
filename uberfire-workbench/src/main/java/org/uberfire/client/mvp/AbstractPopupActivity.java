@@ -53,7 +53,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         super.launch( place,
                       callback );
 
-        onStart( place );
+        onStartup( place );
 
         final IsWidget widget = getWidget();
 
@@ -61,7 +61,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         popup.setTitle( getTitle() );
         popup.show();
 
-        onReveal();
+        onOpen();
     }
 
     @Override
@@ -76,12 +76,12 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     public abstract IsWidget getWidget();
 
     @Override
-    public void onStart() {
+    public void onStartup() {
         //Do nothing.  
     }
 
     @Override
-    public void onStart( final PlaceRequest place ) {
+    public void onStartup( final PlaceRequest place ) {
         //Do nothing.  
     }
 

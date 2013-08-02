@@ -19,7 +19,7 @@ package org.uberfire.client.screens.miscfeatures;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -54,8 +54,8 @@ public class MiscFeaturesPresenter {
 
     private PlaceRequest placeRequest;
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
     }
 

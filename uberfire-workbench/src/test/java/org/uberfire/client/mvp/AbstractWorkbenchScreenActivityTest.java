@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
     @Test
-    //Reveal a Place once. It should be launched, OnStart and OnReveal called once.
+    //Reveal a Place once. It should be launched, OnStartup and OnOpen called once.
     public void testGoToOnePlace() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
@@ -38,8 +38,8 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         verify( spy ).launch( any( AcceptItem.class ),
                               eq( somewhere ),
                               isNull( Command.class ) );
-        verify( spy ).onStart( eq( somewhere ) );
-        verify( spy ).onReveal();
+        verify( spy ).onStartup( eq( somewhere ) );
+        verify( spy ).onOpen();
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
@@ -50,7 +50,7 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
     }
 
     @Test
-    //Reveal the same Place twice. It should be launched, OnStart and OnReveal called once.
+    //Reveal the same Place twice. It should be launched, OnStartup and OnOpen called once.
     public void testGoToOnePlaceTwice() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
@@ -70,9 +70,9 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( spy,
-                times( 1 ) ).onStart( eq( somewhere ) );
+                times( 1 ) ).onStartup( eq( somewhere ) );
         verify( spy,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
@@ -80,7 +80,7 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
     }
 
     @Test
-    //Reveal two different Places. Each should be launched, OnStart and OnReveal called once.
+    //Reveal two different Places. Each should be launched, OnStartup and OnOpen called once.
     public void testGoToTwoDifferentPlaces() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
         final PlaceRequest somewhereElse = new DefaultPlaceRequest( "SomewhereElse" );
@@ -108,18 +108,18 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
                                      eq( somewhere ),
                                      isNull( Command.class ) );
         verify( spy1,
-                times( 1 ) ).onStart( eq( somewhere ) );
+                times( 1 ) ).onStartup( eq( somewhere ) );
         verify( spy1,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( spy2,
                 times( 1 ) ).launch( any( AcceptItem.class ),
                                      eq( somewhereElse ),
                                      isNull( Command.class ) );
         verify( spy2,
-                times( 1 ) ).onStart( eq( somewhereElse ) );
+                times( 1 ) ).onStartup( eq( somewhereElse ) );
         verify( spy2,
-                times( 1 ) ).onReveal();
+                times( 1 ) ).onOpen();
 
         verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectPlaceEvent.class ) );

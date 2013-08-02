@@ -44,11 +44,11 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
         final PathPlaceRequest pathPlace = (PathPlaceRequest) place;
 
-        onStart( pathPlace.getPath(), place );
+        onStartup( pathPlace.getPath(), place );
 
         acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
 
-        onReveal();
+        onOpen();
     }
 
     protected void fireContextUpdateEvent() {
@@ -69,13 +69,13 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     }
 
     @Override
-    public void onStart( final Path path ) {
+    public void onStartup( final Path path ) {
         this.path = path;
     }
 
     @Override
-    public void onStart( final Path path,
-                         final PlaceRequest place ) {
+    public void onStartup( final Path path,
+                           final PlaceRequest place ) {
         this.path = path;
     }
 

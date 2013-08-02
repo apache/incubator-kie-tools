@@ -74,15 +74,15 @@ public class ${className} extends AbstractPopupActivity {
     </#if>
     <#if onStart1ParameterMethodName??>
     @Override
-    public void onStart(final PlaceRequest place) {
-        super.onStart( place );
+    public void onStartup(final PlaceRequest place) {
+        super.onStartup( place );
         realPresenter.${onStart1ParameterMethodName}( place );
     }
 
     <#elseif onStart0ParameterMethodName??>
     @Override
-    public void onStart(final PlaceRequest place) {
-        super.onStart();
+    public void onStartup(final PlaceRequest place) {
+        super.onStartup();
         realPresenter.${onStart0ParameterMethodName}();
     }
 
@@ -104,8 +104,8 @@ public class ${className} extends AbstractPopupActivity {
     </#if>
     <#if onRevealMethodName??>
     @Override
-    public void onReveal() {
-        super.onReveal();
+    public void onOpen() {
+        super.onOpen();
         realPresenter.${onRevealMethodName}();
     }
 

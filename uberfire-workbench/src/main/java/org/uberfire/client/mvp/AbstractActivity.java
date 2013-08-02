@@ -54,7 +54,7 @@ public abstract class AbstractActivity
     }
 
     @Override
-    public void onReveal() {
+    public void onOpen() {
         executeOnRevealCallback();
         placeManager.executeOnRevealCallback( this.place );
     }

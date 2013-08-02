@@ -62,10 +62,10 @@ public class WorkbenchEditorTest12Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public void onStart(final Path path, 
+    public void onStartup(final Path path,
                         final PlaceRequest place) {
-        super.onStart( path, place );
-        realPresenter.onStart( path, place );
+        super.onStartup( path, place );
+        realPresenter.onStartup( path, place );
     }
 
     @Override

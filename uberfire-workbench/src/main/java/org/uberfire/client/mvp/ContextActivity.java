@@ -16,8 +16,6 @@
 package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 
 /**

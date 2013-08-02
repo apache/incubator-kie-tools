@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -23,13 +23,13 @@ import java.lang.annotation.Target;
 
 /**
  * Methods annotated with this are called by the Workbench when a WorkbenchPart
- * is displayed. OnReveal annotated methods are called after the WorkbenchPart's
- * OnStart annotated method. The method should take zero arguments and return
+ * is displayed. OnOpen annotated methods are called after the WorkbenchPart's
+ * OnStartup annotated method. The method should take zero arguments and return
  * void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface OnReveal {
+public @interface OnOpen {
 
 }

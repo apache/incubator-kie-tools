@@ -96,17 +96,17 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     </#if>
     <#if onStart2ParametersMethodName??>
     @Override
-    public void onStart(final Path path, 
+    public void onStartup(final Path path,
                         final PlaceRequest place) {
-        super.onStart( path, place );
+        super.onStartup( path, place );
         realPresenter.${onStart2ParametersMethodName}( path, place );
     }
 
     <#elseif onStart1ParameterMethodName??>
     @Override
-    public void onStart(final Path path,
+    public void onStartup(final Path path,
                         final PlaceRequest place) {
-        super.onStart( path );
+        super.onStartup( path );
         realPresenter.${onStart1ParameterMethodName}( path );
     }
 
@@ -128,8 +128,8 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     </#if>
     <#if onRevealMethodName??>
     @Override
-    public void onReveal() {
-        super.onReveal();
+    public void onOpen() {
+        super.onOpen();
         realPresenter.${onRevealMethodName}();
     }
 

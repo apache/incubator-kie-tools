@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -22,22 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>
- * Methods annotated with this are called by the Workbench before methods
- * annotated with {@code @OnReveal}. WorkbenchParts should perform any
- * initialisation activities here (for example load their content from a
- * persistent store).
- * </p>
- * <p>
- * For {@code @WorkbenchEditor}'s the method should take a single argument of
- * type {@code org.drools.guvnor.vfs.Path}. The Path specifies the URI for the
- * resource to be edited. For {@code @WorkbenchScreen} 's the method should have
- * zero arguments. The method should return void.
- * </p>
+ * Methods annotated with this will be called when the WorkbenchPart receives
+ * the focus. A WorkbenchPart receives the focus when it's tab is clicked. The
+ * method should take zero arguments and return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface OnStart {
+public @interface OnFocus {
 
 }

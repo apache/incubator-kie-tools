@@ -24,7 +24,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
@@ -117,8 +117,8 @@ public class UserProfile extends Composite {
         return "User Profile: " + currentUser;
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         final String userEmailParam = placeRequest.getParameter( "user_email", null );
         final String userNameParam = placeRequest.getParameter( "user_name", null );
 

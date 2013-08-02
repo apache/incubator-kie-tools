@@ -53,9 +53,9 @@ public class WorkbenchPopupTest8Activity extends AbstractPopupActivity {
     }
 
     @Override
-    public void onStart(final PlaceRequest place) {
-        super.onStart( place );
-        realPresenter.onStart( place );
+    public void onStartup(final PlaceRequest place) {
+        super.onStartup( place );
+        realPresenter.onStartup( place );
     }
 
     @Override

@@ -127,7 +127,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Validate onStart0ParameterMethodName and onStart1ParameterMethodName
         if ( onStart0ParameterMethodName != null && onStart1ParameterMethodName != null ) {
-            final String msg = "The WorkbenchScreen has methods for both @OnStart() and @OnStart(Place). Method @OnStart(Place) will take precedence.";
+            final String msg = "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
             logger.warn( msg );

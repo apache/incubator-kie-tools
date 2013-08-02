@@ -19,8 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
@@ -55,13 +55,13 @@ public class ActivityNotFoundPresenter {
 
     private PlaceRequest place;
 
-    @OnStart
-    public void onStart( final PlaceRequest place ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
 
-    @OnReveal
-    public void onReveal() {
+    @OnOpen
+    public void onOpen() {
         final String identifier = place.getParameter( "requestedPlaceIdentifier", null );
         view.setRequestedPlaceIdentifier( identifier );
     }

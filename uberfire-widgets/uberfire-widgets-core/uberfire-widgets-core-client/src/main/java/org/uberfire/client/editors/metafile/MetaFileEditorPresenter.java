@@ -8,11 +8,11 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -31,8 +31,8 @@ public class MetaFileEditorPresenter {
 
     private Path path;
 
-    @OnStart
-    public void onStart( final Path path ) {
+    @OnStartup
+    public void onStartup( final Path path ) {
         this.path = path;
         vfsServices.call( new RemoteCallback<String>() {
             @Override
@@ -66,8 +66,8 @@ public class MetaFileEditorPresenter {
         this.path = null;
     }
 
-    @OnReveal
-    public void onReveal() {
+    @OnOpen
+    public void onOpen() {
         view.setFocus();
     }
 

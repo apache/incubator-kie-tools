@@ -59,12 +59,12 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void onStart() {
+    public void onStartup() {
         //Do nothing.  
     }
 
     @Override
-    public void onStart( final PlaceRequest place ) {
+    public void onStartup( final PlaceRequest place ) {
         //Do nothing.  
     }
 
@@ -74,7 +74,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void onReveal() {
+    public void onOpen() {
     }
 
     @Override
@@ -129,8 +129,8 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
     private void loadState() {
 
-        //Call OnStart before getting the Perspective definition in case any setup is required by @WorkbenchPerspective's
-        onStart( place );
+        //Call OnStartup before getting the Perspective definition in case any setup is required by @WorkbenchPerspective's
+        onStartup( place );
 
         final PerspectiveDefinition perspective = getPerspective();
 
@@ -166,7 +166,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         }
         buildPerspective( panelManager.getRoot() );
 
-        onReveal();
+        onOpen();
     }
 
     private void buildPerspective( final PanelDefinition panel ) {

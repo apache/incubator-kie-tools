@@ -87,7 +87,7 @@ public class JSNativePlugin {
         return type;
     }
 
-    public void onReveal() {
+    public void onOpen() {
         if ( hasMethod( obj, "on_reveal" ) ) {
             executeOnReveal( obj );
         }
@@ -262,11 +262,11 @@ public class JSNativePlugin {
         return o.templateUrl;
     }-*/;
 
-    public void onStart() {
+    public void onStartup() {
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void onStart( PlaceRequest place ) {
+    public void onStartup( PlaceRequest place ) {
         //To change body of created methods use File | Settings | File Templates.
     }
 

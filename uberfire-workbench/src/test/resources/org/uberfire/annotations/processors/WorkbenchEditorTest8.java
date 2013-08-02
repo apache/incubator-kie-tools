@@ -1,12 +1,12 @@
 package org.uberfire.annotations.processors;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnFocus;
-import org.uberfire.client.annotations.OnLostFocus;
-import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnLostFocus;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -28,8 +28,8 @@ public class WorkbenchEditorTest8 {
         return "title";
     }
 
-    @OnStart
-    public void onStart(final Path path) {
+    @OnStartup
+    public void onStartup(final Path path) {
     }
 
     @OnMayClose
@@ -41,8 +41,8 @@ public class WorkbenchEditorTest8 {
     public void onClose() {
     }
 
-    @OnReveal
-    public void onReveal() {
+    @OnOpen
+    public void onOpen() {
     }
 
     @OnLostFocus

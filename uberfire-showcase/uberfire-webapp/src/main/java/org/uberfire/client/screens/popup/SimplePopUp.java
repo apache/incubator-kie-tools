@@ -4,12 +4,10 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
@@ -27,8 +25,8 @@ public class SimplePopUp {
 
     private PlaceRequest place;
 
-    @OnStart
-    public void onStart( final PlaceRequest place ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
 

@@ -75,7 +75,7 @@ public class JSNativePerspective {
         return this.@org.uberfire.client.JSNativePerspective::obj.context_id;
     }-*/;
 
-    public void onReveal() {
+    public void onOpen() {
         if ( JSNativePlugin.hasMethod( obj, "on_reveal" ) ) {
             executeOnReveal( obj );
         }
@@ -236,11 +236,11 @@ public class JSNativePerspective {
         o.on_close();
     }-*/;
 
-    public void onStart() {
+    public void onStartup() {
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void onStart( final PlaceRequest place ) {
+    public void onStartup( final PlaceRequest place ) {
         //To change body of created methods use File | Settings | File Templates.
     }
 

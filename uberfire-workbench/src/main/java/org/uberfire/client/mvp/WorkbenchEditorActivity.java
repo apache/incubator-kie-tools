@@ -25,10 +25,10 @@ public interface WorkbenchEditorActivity
         extends
         WorkbenchActivity {
 
-    public void onStart( final Path path );
+    public void onStartup( final Path path );
 
-    public void onStart( final Path path,
-                         final PlaceRequest place );
+    public void onStartup( final Path path,
+                           final PlaceRequest place );
 
     public void onSave();
 

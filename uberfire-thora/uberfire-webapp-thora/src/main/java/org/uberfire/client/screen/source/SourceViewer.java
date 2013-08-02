@@ -17,7 +17,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
@@ -59,8 +59,8 @@ public class SourceViewer extends Composite {
     @Inject
     private Button editButton;
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         this.path = ( (PathPlaceRequest) placeRequest ).getPath();
         this.repo = placeRequest.getParameter( "repo", "" );
 

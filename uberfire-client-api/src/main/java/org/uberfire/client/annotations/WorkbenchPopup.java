@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <p>
  * At its simplest form the Class should extend
  * {@code com.google.gwt.user.client.ui.PopupPanel} and provide a method
- * annotated with {@code @OnReveal}.
+ * annotated with {@code @OnOpen}.
  * </p>
  * <p>
  * Developers wishing to separate view from logic (perhaps by implementing the
@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  * <p>
  * WorkbechPopups can receive the following life-cycle calls:
  * <ul>
- * <li>{@code @OnReveal}</li>
+ * <li>{@code @OnOpen}</li>
  * </p>
  */
 @Inherited

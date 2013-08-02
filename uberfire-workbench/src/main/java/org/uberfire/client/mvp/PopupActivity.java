@@ -25,9 +25,9 @@ public interface PopupActivity
         extends
         Activity {
 
-    public void onStart();
+    public void onStartup();
 
-    public void onStart( final PlaceRequest place );
+    public void onStartup( final PlaceRequest place );
 
     public String getTitle();
 

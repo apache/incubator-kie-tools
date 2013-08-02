@@ -322,7 +322,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchEditor has methods for both @OnStart(Path) and @OnStart(Path, Place). Method @OnStart(Path, Place) will take precedence." );
+                                  "The WorkbenchEditor has methods for both @OnStartup(Path) and @OnStartup(Path, Place). Method @OnStartup(Path, Place) will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

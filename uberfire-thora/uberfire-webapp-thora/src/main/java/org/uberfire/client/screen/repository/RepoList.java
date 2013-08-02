@@ -15,7 +15,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
@@ -47,7 +47,7 @@ public class RepoList extends Composite {
         return "Home";
     }
 
-    @OnStart
+    @OnStartup
     public void setup() {
         repositoryAppService.call( new RemoteCallback<List<RepositoryInfo>>() {
             @Override

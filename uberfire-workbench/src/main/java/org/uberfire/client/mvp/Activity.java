@@ -29,6 +29,6 @@ public interface Activity
     public void launch( final PlaceRequest place,
                         final Command callback );
 
-    public void onReveal();
+    public void onOpen();
 
 }

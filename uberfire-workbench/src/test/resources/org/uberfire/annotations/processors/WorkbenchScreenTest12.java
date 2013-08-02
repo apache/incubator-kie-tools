@@ -1,6 +1,6 @@
 package org.uberfire.annotations.processors;
 
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -20,8 +20,8 @@ public class WorkbenchScreenTest12 {
         return "title";
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest place ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
     }
 
 }

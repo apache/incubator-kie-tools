@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.annotations;
+package org.uberfire.lifecycle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -21,15 +21,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Methods annotated with this will be called when the WorkbenchPart looses the
- * focus. A WorkbenchPart looses the focus when another WorkbenchPart gains the
- * focus by it's tab being clicked. The method should take zero arguments and
- * return void.
- */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface OnLostFocus {
+@Target({ ElementType.METHOD })
+public @interface OnShutdown {
 
 }

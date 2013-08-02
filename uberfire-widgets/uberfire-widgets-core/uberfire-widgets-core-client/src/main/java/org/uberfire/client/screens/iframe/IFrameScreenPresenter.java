@@ -4,23 +4,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
-import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
@@ -37,8 +24,8 @@ public class IFrameScreenPresenter {
     @Inject
     public IFrameScreenPresenter.View view;
 
-    @OnStart
-    public void onStart( final PlaceRequest placeRequest ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
         this.view.setURL( placeRequest.getParameter( "url", "none" ) );
         this.title = placeRequest.getParameter( "title", "iframe" );
     }

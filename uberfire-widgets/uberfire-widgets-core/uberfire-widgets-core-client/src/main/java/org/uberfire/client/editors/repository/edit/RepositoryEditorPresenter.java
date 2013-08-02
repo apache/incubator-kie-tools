@@ -24,7 +24,7 @@ import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -57,8 +57,8 @@ public class RepositoryEditorPresenter {
     public RepositoryEditorPresenter() {
     }
 
-    @OnStart
-    public void onStart( final PlaceRequest place ) {
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
         this.alias = place.getParameters().get( "alias" );
 
         repositoryService.call( new RemoteCallback<Repository>() {

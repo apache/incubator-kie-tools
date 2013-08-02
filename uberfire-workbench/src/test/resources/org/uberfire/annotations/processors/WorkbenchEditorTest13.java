@@ -1,7 +1,7 @@
 package org.uberfire.annotations.processors;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -24,8 +24,8 @@ public class WorkbenchEditorTest13 {
         return "title";
     }
 
-    @OnStart
-    public void onStart(final PlaceRequest place,
+    @OnStartup
+    public void onStartup(final PlaceRequest place,
                         final Path path) {
     }
 

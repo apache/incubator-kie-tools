@@ -37,7 +37,7 @@ public abstract class AbstractWorkbenchContextActivity
     public void launch( final PlaceRequest place,
                         final Command callback ) {
         super.launch( place, callback );
-        onReveal();
+        onOpen();
     }
 
     @Override

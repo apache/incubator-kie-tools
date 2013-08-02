@@ -19,6 +19,7 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <source path='lifecycle'/>
   <source path='navigator'/>
   <source path='mvp'/>
   <source path='paging'/>

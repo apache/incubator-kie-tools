@@ -62,10 +62,10 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     }
 
     @Override
-    public void onStart(final Path path,
+    public void onStartup(final Path path,
                         final PlaceRequest place) {
-        super.onStart( path );
-        realPresenter.onStart( path );
+        super.onStartup( path );
+        realPresenter.onStartup( path );
     }
 
     @Override
@@ -80,9 +80,9 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     }
 
     @Override
-    public void onReveal() {
-        super.onReveal();
-        realPresenter.onReveal();
+    public void onOpen() {
+        super.onOpen();
+        realPresenter.onOpen();
     }
 
     @Override

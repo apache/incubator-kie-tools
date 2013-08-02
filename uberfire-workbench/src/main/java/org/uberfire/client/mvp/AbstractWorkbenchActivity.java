@@ -18,7 +18,6 @@ package org.uberfire.client.mvp;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ContextUpdateEvent;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;

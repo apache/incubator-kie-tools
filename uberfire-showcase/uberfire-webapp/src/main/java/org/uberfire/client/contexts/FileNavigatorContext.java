@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.OnContextAttach;
+import org.uberfire.lifecycle.OnContextAttach;
 import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.mvp.PlaceManager;

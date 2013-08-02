@@ -51,8 +51,8 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  * <li>{@code @OnLostFocus}</li>
  * <li>{@code @OnMayClose}</li>
  * <li>{@code @OnSave}</li>
- * <li>{@code @OnStart(org.drools.guvnor.vfs.Path)}</li>
- * <li>{@code @OnReveal}</li>
+ * <li>{@code @OnStartup(org.drools.guvnor.vfs.Path)}</li>
+ * <li>{@code @OnOpen}</li>
  * </p>
  */
 @Inherited

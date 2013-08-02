@@ -38,15 +38,15 @@ import javax.lang.model.util.Types;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnContextAttach;
-import org.uberfire.client.annotations.OnFocus;
-import org.uberfire.client.annotations.OnLostFocus;
-import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnContextAttach;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnLostFocus;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -66,7 +66,7 @@ import org.uberfire.workbench.model.Position;
 public class GeneratorUtils {
 
     /**
-     * Get the method name annotated with {@code @OnStart}. The method must be
+     * Get the method name annotated with {@code @OnStartup}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
      * @param classElement
      * @param processingEnvironment
@@ -77,11 +77,11 @@ public class GeneratorUtils {
                                                             final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnStart.class );
+                                  OnStartup.class );
     }
 
     /**
-     * Get the method name annotated with {@code @OnStart}. The method must be
+     * Get the method name annotated with {@code @OnStartup}. The method must be
      * public, non-static, have a return-type of void and take one parameter of
      * type {@code org.drools.guvnor.vfs.Path}.
      * @param classElement
@@ -94,11 +94,11 @@ public class GeneratorUtils {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{ Path.class.getName() },
-                                  OnStart.class );
+                                  OnStartup.class );
     }
 
     /**
-     * Get the method name annotated with {@code @OnStart}. The method must be
+     * Get the method name annotated with {@code @OnStartup}. The method must be
      * public, non-static, have a return-type of void and take two parameters;
      * the first of type {@code org.drools.guvnor.vfs.Path} and the second of
      * type {@code org.uberfire.shared.mvp.PlaceRequest}.
@@ -112,7 +112,7 @@ public class GeneratorUtils {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{ Path.class.getName(), PlaceRequest.class.getName() },
-                                  OnStart.class );
+                                  OnStartup.class );
     }
 
     public static String getOnContextAttachPanelDefinitionMethodName( final TypeElement classElement,
@@ -124,7 +124,7 @@ public class GeneratorUtils {
     }
 
     /**
-     * Get the method name annotated with {@code @OnStart}. The method must be
+     * Get the method name annotated with {@code @OnStartup}. The method must be
      * public, non-static, have a return-type of void and take one parameter of
      * type {@code org.uberfire.shared.mvp.PlaceRequest}.
      * @param classElement
@@ -137,7 +137,7 @@ public class GeneratorUtils {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{ PlaceRequest.class.getName() },
-                                  OnStart.class );
+                                  OnStartup.class );
     }
 
     /**
@@ -172,7 +172,7 @@ public class GeneratorUtils {
     }
 
     /**
-     * Get the method name annotated with {@code @OnReveal}. The method must be
+     * Get the method name annotated with {@code @OnOpen}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
      * @param classElement
      * @param processingEnvironment
@@ -183,7 +183,7 @@ public class GeneratorUtils {
                                                 final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnReveal.class );
+                                  OnOpen.class );
     }
 
     /**

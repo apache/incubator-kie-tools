@@ -1,6 +1,6 @@
 package org.uberfire.annotations.processors;
 
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
@@ -20,8 +20,8 @@ public class WorkbenchPopupTest7 {
         return new PopupPanel();
     }
 
-    @OnStart
-    public void onStart() {
+    @OnStartup
+    public void onStartup() {
     }
 
 }

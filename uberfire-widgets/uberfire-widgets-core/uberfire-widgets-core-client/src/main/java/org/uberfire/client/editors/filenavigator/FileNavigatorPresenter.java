@@ -16,45 +16,16 @@
 
 package org.uberfire.client.editors.filenavigator;
 
-import java.util.Collection;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.vfs.AttrsUtil;
-import org.uberfire.backend.vfs.BasicFileAttributes;
-import org.uberfire.backend.vfs.DirectoryStream;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.OnFocus;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnStart;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
-import org.uberfire.workbench.events.ResourceCopiedEvent;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceRenamedEvent;
-import org.uberfire.workbench.model.Position;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileNavigator")

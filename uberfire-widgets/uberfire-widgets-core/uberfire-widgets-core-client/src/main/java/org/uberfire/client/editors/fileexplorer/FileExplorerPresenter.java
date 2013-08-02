@@ -37,9 +37,9 @@ import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.OnFocus;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -103,8 +103,8 @@ public class FileExplorerPresenter {
         broadcastPathChange( null );
     }
 
-    @OnStart
-    public void onStart() {
+    @OnStartup
+    public void onStartup() {
 
         view.reset();
 
@@ -148,8 +148,8 @@ public class FileExplorerPresenter {
         } ).newDirectoryStream( path );
     }
 
-    @OnReveal
-    public void onReveal() {
+    @OnOpen
+    public void onOpen() {
         view.setFocus();
     }
 
@@ -213,27 +213,27 @@ public class FileExplorerPresenter {
 
     // Refresh when a Resource has been added
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        onStart();
+        onStartup();
     }
 
     // Refresh when a Resource has been deleted
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        onStart();
+        onStartup();
     }
 
     // Refresh when a Resource has been copied
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
-        onStart();
+        onStartup();
     }
 
     // Refresh when a Resource has been renamed
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        onStart();
+        onStartup();
     }
 
     // Refresh when a batch Resource change has occurred
     public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
-        onStart();
+        onStartup();
     }
 
 }

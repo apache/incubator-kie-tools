@@ -48,8 +48,8 @@ import java.lang.annotation.Target;
  * <li>{@code @OnFocus}</li>
  * <li>{@code @OnLostFocus}</li>
  * <li>{@code @OnMayClose}</li>
- * <li>{@code @OnStart}</li>
- * <li>{@code @OnReveal}</li>
+ * <li>{@code @OnStartup}</li>
+ * <li>{@code @OnOpen}</li>
  * </p>
  */
 @Inherited
