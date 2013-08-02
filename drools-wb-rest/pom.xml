@@ -133,16 +133,12 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-jgit</artifactId>
-      <scope>test</scope>
-    </dependency>
-<!--     <dependency>
+<!--<dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-backend</artifactId>
       <scope>test</scope>
-    </dependency>    -->
+    </dependency>
+    -->
     
   </dependencies>
 
