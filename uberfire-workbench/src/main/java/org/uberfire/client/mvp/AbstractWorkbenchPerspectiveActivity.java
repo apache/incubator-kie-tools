@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 
@@ -129,6 +128,10 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
     private void loadState() {
+
+        //Call OnStart before getting the Perspective definition in case any setup is required by @WorkbenchPerspective's
+        onStart( place );
+
         final PerspectiveDefinition perspective = getPerspective();
 
         if ( perspective.isTransient() ) {
@@ -152,8 +155,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective( final PerspectiveDefinition perspective ) {
-
-        onStart( place );
 
         panelManager.setPerspective( perspective );
 
