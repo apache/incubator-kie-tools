@@ -706,27 +706,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>jacoco-gwt-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jacoco-gwt-prepare-agent</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-gwt-report</id>
-            <phase>site</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
@@ -761,19 +740,6 @@
                   </pluginExecutionFilter>
                   <action>
                     <execute/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jboss.errai</groupId>
-                    <artifactId>jacoco-gwt-maven-plugin</artifactId>
-                    <versionRange>[0.0,)</versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
