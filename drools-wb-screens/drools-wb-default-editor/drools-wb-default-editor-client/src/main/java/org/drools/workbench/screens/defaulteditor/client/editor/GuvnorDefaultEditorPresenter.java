@@ -35,11 +35,11 @@ import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnReveal;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -87,10 +87,10 @@ public class GuvnorDefaultEditorPresenter
     private boolean isReadOnly;
     private Path path;
 
-    @OnStart
-    public void onStart( final Path path,
+    @OnStartup
+    public void onStartup( final Path path,
                          final PlaceRequest place ) {
-        super.onStart( path );
+        super.onStartup( path );
 
         this.path = path;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
@@ -178,9 +178,9 @@ public class GuvnorDefaultEditorPresenter
         super.onClose();
     }
 
-    @OnReveal
-    public void onReveal() {
-        super.onReveal();
+    @OnOpen
+    public void onOpen() {
+        super.onOpen();
     }
 
     @WorkbenchPartTitle

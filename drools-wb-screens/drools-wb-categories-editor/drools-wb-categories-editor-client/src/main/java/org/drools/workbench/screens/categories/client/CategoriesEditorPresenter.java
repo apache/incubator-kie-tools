@@ -32,11 +32,11 @@ import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnSave;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -68,8 +68,8 @@ public class CategoriesEditorPresenter {
 
     private Menus menus;
 
-    @OnStart
-    public void onStart( final Path path ) {
+    @OnStartup
+    public void onStartup( final Path path ) {
         this.path = path;
         makeMenuBar();
 
