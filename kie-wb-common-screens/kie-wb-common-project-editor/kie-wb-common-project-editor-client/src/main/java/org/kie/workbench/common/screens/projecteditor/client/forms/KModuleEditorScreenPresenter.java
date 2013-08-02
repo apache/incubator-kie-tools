@@ -12,7 +12,7 @@ import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourc
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -42,7 +42,7 @@ public class KModuleEditorScreenPresenter {
         this.projectEditorService = projectEditorService;
     }
 
-    @OnStart
+    @OnStartup
     public void init( final Path path,
                       final PlaceRequest request ) {
         this.path = path;

@@ -40,10 +40,10 @@ import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.IsDirty;
-import org.uberfire.client.annotations.OnClose;
-import org.uberfire.client.annotations.OnMayClose;
-import org.uberfire.client.annotations.OnStart;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -120,8 +120,8 @@ public class DataModelerScreenPresenter {
         return view;
     }
 
-    @OnStart
-    public void onStart() {
+    @OnStartup
+    public void onStartup() {
         makeMenuBar();
         makeToolBar();
         initContext();
