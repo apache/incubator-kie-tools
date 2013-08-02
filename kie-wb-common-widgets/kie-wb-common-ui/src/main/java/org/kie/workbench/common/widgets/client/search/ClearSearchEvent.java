@@ -21,7 +21,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author salaboy
  */
-@Portable
 public class ClearSearchEvent {
     
 }
