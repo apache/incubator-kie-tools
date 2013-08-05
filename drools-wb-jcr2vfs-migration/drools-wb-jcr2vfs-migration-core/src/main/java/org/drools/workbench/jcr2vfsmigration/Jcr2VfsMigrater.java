@@ -171,6 +171,8 @@ public class Jcr2VfsMigrater {
                     "The unnestedVersionDir (" + unnestedVersionDir.getAbsolutePath()
                     + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");*/
         }
+        return inputJcrRepository.getAbsolutePath();
+        
     }
 
     protected void startContexts() {
