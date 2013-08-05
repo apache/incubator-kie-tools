@@ -166,9 +166,10 @@ public class Jcr2VfsMigrater {
             }
             return inputJcrRepository.getAbsolutePath() + "/repository";
         } else {
-            throw new IllegalStateException(
+        	//the "version" dir does not exist if JCR is not using embedded db.  
+/*            throw new IllegalStateException(
                     "The unnestedVersionDir (" + unnestedVersionDir.getAbsolutePath()
-                    + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");
+                    + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");*/
         }
     }
 
