@@ -67,30 +67,45 @@ public class Jcr2VfsMigrater {
     public void migrateAll() {
     	System.out.format("Migration started: Reading from inputJcrRepository ({%s}).\n",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
-        setupDirectories();
-        startContexts();
+    	
+        try {
+            setupDirectories();
+            startContexts();
         
-        //TO-DO-LIST:
-        //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
-        //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
-        //2. Migrate categories
-        //3. Migrate state
-        //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
-        //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
+            //TO-DO-LIST:
+            //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
+            //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
+            //2. Migrate categories
+            //3. Migrate state
+            //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
+            //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
-        moduleMigrater.migrateAll();
-        assetMigrater.migrateAll();
-        categoryMigrater.migrateAll();
-        
-        // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
-        endContexts();
-        System.out.format("Migration ended: Written into outputVfsRepository ({%s}).\n",
-                migrationConfig.getOutputVfsRepository().getAbsolutePath());
+            moduleMigrater.migrateAll();
+            assetMigrater.migrateAll();
+            categoryMigrater.migrateAll();
+
+            // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
+            endContexts();
+        } catch (Throwable t) {
+        	//We print out whatever unexpected exceptions we got here 
+        	Jcr2VfsMigrationApp.hasErrors = true;
+        	t.printStackTrace();
+        }
+                
+        if (Jcr2VfsMigrationApp.hasWarnings) {
+            System.out.format("Migration ended with warnings: Written into outputVfsRepository ({%s}).\n",
+                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
+        } else if (Jcr2VfsMigrationApp.hasErrors) {
+            System.out.format("Migration ended with errors: Written into outputVfsRepository ({%s}).\n",
+                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	       	
+        } else {
+            System.out.format("Migration ended: Written into outputVfsRepository ({%s}).\n",
+                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
+        }
     }
 
     protected void setupDirectories() {
-        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",
-                determineJcrRepositoryRootDirectory());
+        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",  determineJcrRepositoryRootDirectory());
         System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
     }
 

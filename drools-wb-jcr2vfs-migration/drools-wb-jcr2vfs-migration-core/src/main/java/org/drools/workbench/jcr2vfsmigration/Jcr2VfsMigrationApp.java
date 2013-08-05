@@ -20,7 +20,9 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
 public class Jcr2VfsMigrationApp {
-
+    public static boolean hasErrors = false;
+    public static boolean hasWarnings = false;
+    
     /**
      * To run this in development:
      * Either use the unit test Jcr2VfsMigrationAppTest (recommended): it sets up the input and output dirs for you.
@@ -37,6 +39,7 @@ public class Jcr2VfsMigrationApp {
         }
 
         weld.shutdown();
+        System.exit(hasErrors ? -1 : 0);
     }
 
 }

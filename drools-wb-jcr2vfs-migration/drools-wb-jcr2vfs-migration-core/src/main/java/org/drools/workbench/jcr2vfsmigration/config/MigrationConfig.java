@@ -89,7 +89,8 @@ public class MigrationConfig {
         try {
             inputJcrRepository = inputJcrRepository.getCanonicalFile();
         } catch (IOException e) {
-            throw new IllegalArgumentException("The inputJcrRepository (" + inputJcrRepository + ") has issues.", e);
+        	System.out.println("The inputJcrRepository (" + inputJcrRepository + ") has issues: " + e);
+        	return false;
         }
         
         return true;
@@ -103,19 +104,19 @@ public class MigrationConfig {
                 try {
                     FileUtils.deleteDirectory(outputVfsRepository);
                 } catch (IOException e) {
-                    throw new IllegalStateException("Force deleting outputVfsRepository ("
-                            + outputVfsRepository.getAbsolutePath() + ") failed.", e);
+                	System.out.println("Force deleting outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") failed: " + e);
+                	return false;
                 }
             } else {
-            	System.out.println("The outputVfsRepository (" + outputVfsRepository.getAbsolutePath()
-                        + ") already exists.");
+            	System.out.println("The outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") already exists.");
             	return false;
             }
         }
         try {
             outputVfsRepository = outputVfsRepository.getCanonicalFile();
         } catch (IOException e) {
-            throw new IllegalArgumentException("The outputVfsRepository (" + outputVfsRepository + ") has issues.", e);
+        	System.out.println("The outputVfsRepository (" + outputVfsRepository + ") has issues: " + e);
+        	return false;
         }
         outputVfsRepository.mkdirs();
         
