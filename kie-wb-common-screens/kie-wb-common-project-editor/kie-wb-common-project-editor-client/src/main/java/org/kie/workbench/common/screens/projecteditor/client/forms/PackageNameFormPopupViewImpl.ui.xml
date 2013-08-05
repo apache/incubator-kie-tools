@@ -24,18 +24,17 @@
   <ui:with field="resources" type="org.kie.workbench.common.widgets.client.resources.CommonsResources"/>
 
   <gwt:HTMLPanel width="100%">
-    <div style='float:left'>
-      <div style='float:left;'>
+    <bootstrap:Row>
+      <bootstrap:Column size="1">
         <gwt:Label text="{i18n.Name}"/>
-      </div>
-      <div style='float:left;'>
-        <bootstrap:TextBox ui:field="nameTextBox"/>
-      </div>
-      <div style='float:left;'>
+      </bootstrap:Column>
+      <bootstrap:Column size="1">
+        <gwt:TextBox ui:field="selectedNameTextBox" enabled="false" width="90px"/>
+      </bootstrap:Column>
+      <bootstrap:Column size="1">
         <bootstrap:Dropdown ui:field="nameDropDown"/>
-      </div>
-      <div style='clear:both;'/>
-    </div>
+      </bootstrap:Column>
+    </bootstrap:Row>
     <bootstrap:Button ui:field="okButton" text='{i18n.OK}'/>
     <bootstrap:Button ui:field="cancelButton" text='{i18n.Cancel}'/>
   </gwt:HTMLPanel>

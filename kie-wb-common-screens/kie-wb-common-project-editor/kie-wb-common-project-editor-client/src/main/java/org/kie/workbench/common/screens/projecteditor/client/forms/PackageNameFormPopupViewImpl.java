@@ -3,12 +3,14 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ErrorPopup;
@@ -30,7 +32,7 @@ public class PackageNameFormPopupViewImpl
     private static PackageNameFormPopupViewImplBinder uiBinder = GWT.create(PackageNameFormPopupViewImplBinder.class);
 
     @UiField
-    TextBox nameTextBox;
+    TextBox selectedNameTextBox;
 
     @UiField
     Dropdown nameDropDown;
@@ -57,17 +59,24 @@ public class PackageNameFormPopupViewImpl
 
     @Override
     public String getName() {
-        return nameTextBox.getText();
+        return selectedNameTextBox.getText();
     }
 
     @Override
-    public void addItem(String packageName) {
-        nameDropDown.add(new NavLink(packageName));
+    public void addItem(final String packageName) {
+        NavLink navLink = new NavLink(packageName);
+        navLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                selectedNameTextBox.setText(packageName);
+            }
+        });
+        nameDropDown.add(navLink);
     }
 
     @Override
     public void setName(String name) {
-        nameTextBox.setText(name);
+        selectedNameTextBox.setText(name);
     }
 
     @UiHandler("okButton")

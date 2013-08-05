@@ -13,7 +13,8 @@ public class PackageNameFormPopup
         super(view);
 
         view.setName("A");
-        view.setName("B");
-        view.setName("C");
+        view.addItem("A");
+        view.addItem("B");
+        view.addItem("C");
     }
 }
