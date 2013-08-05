@@ -17,7 +17,7 @@ public class WorkItemsResourceType
 
     @Override
     public IsWidget getIcon() {
-        return IMAGE;
+        return null;
     }
 
 }
