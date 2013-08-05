@@ -65,7 +65,7 @@ public class Jcr2VfsMigrater {
     }
 
     public void migrateAll() {
-    	System.out.format("Migration started: Reading from inputJcrRepository ({%s}).\n",
+    	System.out.format("Migration started. Reading from inputJcrRepository ({%s}).\n",
                 migrationConfig.getInputJcrRepository().getAbsolutePath());
     	
         try {
@@ -93,13 +93,13 @@ public class Jcr2VfsMigrater {
         }
                 
         if (Jcr2VfsMigrationApp.hasWarnings) {
-            System.out.format("Migration ended with warnings: Written into outputVfsRepository ({%s}).\n",
+            System.out.format("Migration ended with warnings. Written into outputVfsRepository ({%s}).\n",
                     migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
         } else if (Jcr2VfsMigrationApp.hasErrors) {
-            System.out.format("Migration ended with errors: Written into outputVfsRepository ({%s}).\n",
+            System.out.format("Migration ended with errors. Written into outputVfsRepository ({%s}).\n",
                     migrationConfig.getOutputVfsRepository().getAbsolutePath());  	       	
         } else {
-            System.out.format("Migration ended: Written into outputVfsRepository ({%s}).\n",
+            System.out.format("Migration ended. Written into outputVfsRepository ({%s}).\n",
                     migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
         }
     }

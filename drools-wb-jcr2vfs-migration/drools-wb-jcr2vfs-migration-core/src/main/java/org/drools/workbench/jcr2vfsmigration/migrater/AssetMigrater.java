@@ -126,7 +126,7 @@ public class AssetMigrater {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {     
                         AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
-                        System.out.format("    Asset ({%s}) with format ({%s}) is being migrated...",
+                        System.out.format("    Asset [%s] with format [%s] is being migrated...",
                                 assetItemJCR.getName(), assetItemJCR.getFormat());
                         //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                         //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
@@ -205,8 +205,8 @@ public class AssetMigrater {
         } else if ("package".equals(jcrAssetItem.getFormat())) {
             //Ignore
         } else {
-            // TODO REPLACE ME WITH ACTUAL CODE
-        	System.out.format("    WARNING: TODO migrate asset ({%s}) with format({%s}).", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+        	Jcr2VfsMigrationApp.hasWarnings = true;
+        	System.out.format("    WARNING: asset [%s] with format[%s] is not supported by migration tool.", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }
