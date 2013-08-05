@@ -25,7 +25,7 @@ import org.kie.commons.io.IOService;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
-import org.kie.workbench.common.services.shared.rest.Repository;
+import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.group.impl.GroupImpl;
 import org.uberfire.backend.repositories.RepositoryService;
@@ -62,7 +62,7 @@ public class ProjectResourceDispatcher {
     protected ScenarioTestEditorService scenarioTestEditorService;
 
     public void createOrCloneRepository( String jobId,
-                                         Repository repository ) {
+    		                             RepositoryRequest repository ) {
         System.out.println( "-----ProjectResourceDispatcher:createOrCloneRepository--- , repository name:" + repository.getName() );
 
         JobResult result = new JobResult();

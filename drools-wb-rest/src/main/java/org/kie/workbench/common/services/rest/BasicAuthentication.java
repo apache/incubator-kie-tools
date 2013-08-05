@@ -27,8 +27,8 @@ public class BasicAuthentication implements PreProcessInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(BasicAuthentication.class);
 
-    @Inject
-    protected SecurityManager securityManager;
+/*    @Inject
+    protected SecurityManager securityManager;*/
 
     @Override
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException {
@@ -52,7 +52,8 @@ public class BasicAuthentication implements PreProcessInterceptor {
             }*/
         }
 
-        ServerResponse response = new ServerResponse();
+        return null;
+/*        ServerResponse response = new ServerResponse();
         response.setStatus(HttpResponseCodes.SC_UNAUTHORIZED);
         Headers headers = new Headers();
         headers.add("Content-Type", "text/plain");
@@ -60,7 +61,7 @@ public class BasicAuthentication implements PreProcessInterceptor {
         response.setMetadata(headers);
         response.setEntity("Error 401 Unauthorized: "
                 + request.getPreprocessedPath());
-        return response;
+        return response;*/
     }
     
     public static String substringAfter(String str, String separator) {

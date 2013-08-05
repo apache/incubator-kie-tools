@@ -17,10 +17,12 @@
 
 package org.kie.workbench.common.services.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.PostConstruct;
@@ -61,7 +63,8 @@ import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromGroupRequest;
 import org.kie.workbench.common.services.shared.rest.RemoveRepositoryRequest;
-import org.kie.workbench.common.services.shared.rest.Repository;
+import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
+import org.kie.workbench.common.services.shared.rest.RepositoryResponse;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.uberfire.backend.group.GroupService;
 import org.uberfire.backend.repositories.RepositoryService;
@@ -205,7 +208,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories")
-    public JobRequest createOrCloneRepository( Repository repository ) {
+    public JobRequest createOrCloneRepository( RepositoryRequest repository ) {
         System.out.println( "-----createOrCloneRepository--- , repository name:" + repository.getName() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -227,11 +230,19 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("repositories")
-    public Collection<org.uberfire.backend.repositories.Repository> getRepositories() {
+    public Collection<RepositoryResponse> getRepositories() {
         System.out.println( "-----getRepositories--- " );
 
-        return repositoryService.getRepositories(); 
-    }
+        Collection<org.uberfire.backend.repositories.Repository> repos = repositoryService.getRepositories();
+        List<RepositoryResponse> result = new ArrayList<RepositoryResponse>();
+        for(org.uberfire.backend.repositories.Repository r : repos) {
+        	RepositoryResponse repo = new RepositoryResponse();
+            repo.setGitURL(r.getUri());
+            repo.setName(r.getAlias());
+            result.add(repo);
+        }
+        return result;
+    } 
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
