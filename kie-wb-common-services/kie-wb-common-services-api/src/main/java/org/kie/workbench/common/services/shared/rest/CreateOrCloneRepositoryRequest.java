@@ -4,13 +4,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class CreateOrCloneRepositoryRequest extends JobRequest {
-    private Repository repository;
+    private RepositoryRequest repository;
 
-    public Repository getRepository() {
+    public RepositoryRequest getRepository() {
         return repository;
     }
 
-    public void setRepository(Repository repository) {
+    public void setRepository(RepositoryRequest repository) {
         this.repository = repository;
     }   
 

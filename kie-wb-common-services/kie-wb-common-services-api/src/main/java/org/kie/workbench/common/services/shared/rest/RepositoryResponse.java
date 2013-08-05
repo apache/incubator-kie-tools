@@ -19,7 +19,7 @@ package org.kie.workbench.common.services.shared.rest;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class Repository extends Entity {
+public class RepositoryResponse extends Entity {
 
     String userName;
     String password;
