@@ -73,6 +73,11 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
+    public void onShutdown() {
+        nativePlugin.onShutdown();
+    }
+
+    @Override
     public Position getDefaultPosition() {
         return Position.ROOT;
     }
@@ -116,7 +121,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     public void onOpen() {
         nativePlugin.onOpen();
 
-        executeOnRevealCallback();
+        executeOnOpenCallback();
     }
 
     @Override
@@ -134,11 +139,11 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
         return nativePlugin.getTraits();
     }
 
-    private void executeOnRevealCallback() {
+    private void executeOnOpenCallback() {
         if ( callback != null ) {
             callback.execute();
         }
-        placeManager.executeOnRevealCallback( this.place );
+        placeManager.executeOnOpenCallback( this.place );
     }
 
     // Alias registerPlugin with a global JS function.

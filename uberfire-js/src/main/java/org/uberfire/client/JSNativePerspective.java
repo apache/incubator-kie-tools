@@ -76,14 +76,20 @@ public class JSNativePerspective {
     }-*/;
 
     public void onOpen() {
-        if ( JSNativePlugin.hasMethod( obj, "on_reveal" ) ) {
-            executeOnReveal( obj );
+        if ( JSNativePlugin.hasMethod( obj, "on_open" ) ) {
+            executeOnOpen( obj );
         }
     }
 
     public void onClose() {
         if ( JSNativePlugin.hasMethod( obj, "on_close" ) ) {
             executeOnClose( obj );
+        }
+    }
+
+    public void onShutdown() {
+        if ( JSNativePlugin.hasMethod( obj, "on_shutdown" ) ) {
+            executeOnShutdown( obj );
         }
     }
 
@@ -228,12 +234,16 @@ public class JSNativePerspective {
         return o.view;
     }-*/;
 
-    private static native void executeOnReveal( final JavaScriptObject o ) /*-{
-        o.on_reveal();
+    private static native void executeOnOpen( final JavaScriptObject o ) /*-{
+        o.on_open();
     }-*/;
 
     private static native void executeOnClose( final JavaScriptObject o ) /*-{
         o.on_close();
+    }-*/;
+
+    private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
+        o.on_shutdown();
     }-*/;
 
     public void onStartup() {

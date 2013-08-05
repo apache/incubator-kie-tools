@@ -53,8 +53,8 @@ public class ContextActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         final WorkbenchContext wbw = classElement.getAnnotation( WorkbenchContext.class );
         final String identifier = wbw.identifier();
-        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
-                                                                                processingEnvironment );
+        final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
+                                                                            processingEnvironment );
         final String getOnContextAttachPanelDefinitionMethodName = GeneratorUtils.getOnContextAttachPanelDefinitionMethodName( classElement,
                                                                                                                                processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
@@ -76,7 +76,7 @@ public class ContextActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
-        logger.debug( "onRevealMethodName: " + onRevealMethodName );
+        logger.debug( "onOpenMethodName: " + onOpenMethodName );
         logger.debug( "getOnContextAttachPanelDefinitionMethodName: " + getOnContextAttachPanelDefinitionMethodName );
         logger.debug( "getTitleMethodName: " + getTitleMethodName );
         logger.debug( "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
@@ -112,8 +112,8 @@ public class ContextActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onRevealMethodName",
-                  onRevealMethodName );
+        root.put( "onOpenMethodName",
+                  onOpenMethodName );
         root.put( "getOnContextAttachPanelDefinitionMethodName",
                   getOnContextAttachPanelDefinitionMethodName );
         root.put( "getTitleMethodName",

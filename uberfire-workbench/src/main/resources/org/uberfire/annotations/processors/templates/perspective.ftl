@@ -79,18 +79,18 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     }
 
     </#if>
-    <#if onStart1ParameterMethodName??>
+    <#if onStartup1ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
-        realPresenter.${onStart1ParameterMethodName}( place );
+        realPresenter.${onStartup1ParameterMethodName}( place );
     }
 
-    <#elseif onStart0ParameterMethodName??>
+    <#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup();
-        realPresenter.${onStart0ParameterMethodName}();
+        realPresenter.${onStartup0ParameterMethodName}();
     }
 
     </#if>
@@ -102,11 +102,19 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     }
 
     </#if>
-    <#if onRevealMethodName??>
+    <#if onShutdownMethodName??>
+    @Override
+    public void onShutdown() {
+        super.onShutdown();
+        realPresenter.${onShutdownMethodName}();
+    }
+
+    </#if>
+    <#if onOpenMethodName??>
     @Override
     public void onOpen() {
         super.onOpen();
-        realPresenter.${onRevealMethodName}();
+        realPresenter.${onOpenMethodName}();
     }
 
     </#if>

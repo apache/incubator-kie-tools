@@ -55,11 +55,11 @@ public abstract class AbstractActivity
 
     @Override
     public void onOpen() {
-        executeOnRevealCallback();
-        placeManager.executeOnRevealCallback( this.place );
+        executeOnOpenCallback();
+        placeManager.executeOnOpenCallback( this.place );
     }
 
-    private void executeOnRevealCallback() {
+    private void executeOnOpenCallback() {
         if ( callback != null ) {
             callback.execute();
         }

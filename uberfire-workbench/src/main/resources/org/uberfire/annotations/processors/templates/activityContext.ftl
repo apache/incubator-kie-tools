@@ -72,11 +72,11 @@ public class ${className} extends AbstractWorkbenchContextActivity {
     }
 
     </#if>
-    <#if onRevealMethodName??>
+    <#if onOpenMethodName??>
     @Override
     public void onOpen() {
         super.onOpen();
-        realPresenter.${onRevealMethodName}();
+        realPresenter.${onOpenMethodName}();
     }
 
     </#if>

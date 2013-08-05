@@ -74,6 +74,11 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
+    public void onShutdown() {
+        //Do nothing.
+    }
+
+    @Override
     public void onOpen() {
     }
 

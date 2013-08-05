@@ -94,20 +94,20 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
-    <#if onStart2ParametersMethodName??>
+    <#if onStartup2ParametersMethodName??>
     @Override
     public void onStartup(final Path path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
-        realPresenter.${onStart2ParametersMethodName}( path, place );
+        realPresenter.${onStartup2ParametersMethodName}( path, place );
     }
 
-    <#elseif onStart1ParameterMethodName??>
+    <#elseif onStartup1ParameterMethodName??>
     @Override
     public void onStartup(final Path path,
                         final PlaceRequest place) {
         super.onStartup( path );
-        realPresenter.${onStart1ParameterMethodName}( path );
+        realPresenter.${onStartup1ParameterMethodName}( path );
     }
 
     </#if>
@@ -126,11 +126,19 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
-    <#if onRevealMethodName??>
+    <#if onShutdownMethodName??>
+    @Override
+    public void onShutdown() {
+        super.onShutdown();
+        realPresenter.${onShutdownMethodName}();
+    }
+
+    </#if>
+    <#if onOpenMethodName??>
     @Override
     public void onOpen() {
         super.onOpen();
-        realPresenter.${onRevealMethodName}();
+        realPresenter.${onOpenMethodName}();
     }
 
     </#if>

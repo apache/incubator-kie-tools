@@ -27,10 +27,10 @@ public interface ContextActivity
 
     void onAttach( final PanelDefinition definition );
 
-    public String getTitle();
+    String getTitle();
 
-    public IsWidget getTitleDecoration();
+    IsWidget getTitleDecoration();
 
-    public IsWidget getWidget();
+    IsWidget getWidget();
 
 }

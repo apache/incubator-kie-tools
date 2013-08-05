@@ -88,8 +88,8 @@ public class JSNativePlugin {
     }
 
     public void onOpen() {
-        if ( hasMethod( obj, "on_reveal" ) ) {
-            executeOnReveal( obj );
+        if ( hasMethod( obj, "on_open" ) ) {
+            executeOnOpen( obj );
         }
     }
 
@@ -218,12 +218,16 @@ public class JSNativePlugin {
         return null;
     }-*/;
 
-    private static native void executeOnReveal( final JavaScriptObject o ) /*-{
-        o.on_reveal();
+    private static native void executeOnOpen( final JavaScriptObject o ) /*-{
+        o.on_open();
     }-*/;
 
     private static native void executeOnClose( final JavaScriptObject o ) /*-{
         o.on_close();
+    }-*/;
+
+    private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
+        o.on_shutdown();
     }-*/;
 
     private static native void executeOnFocus( final JavaScriptObject o ) /*-{
@@ -270,4 +274,9 @@ public class JSNativePlugin {
         //To change body of created methods use File | Settings | File Templates.
     }
 
+    public void onShutdown() {
+        if ( hasMethod( obj, "on_shutdown" ) ) {
+            executeOnShutdown( obj );
+        }
+    }
 }

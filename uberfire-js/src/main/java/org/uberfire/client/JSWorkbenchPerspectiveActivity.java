@@ -49,6 +49,11 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
+    public void onShutdown() {
+        nativePerspective.onShutdown();
+    }
+
+    @Override
     public PerspectiveDefinition getPerspective() {
         return nativePerspective.buildPerspective();
     }
@@ -182,6 +187,6 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
-        return  _place.clone();
+        return _place.clone();
     }
 }

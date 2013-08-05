@@ -29,29 +29,31 @@ public interface WorkbenchActivity
         extends
         ContextSensitiveActivity {
 
-    public void launch( final AcceptItem acceptItem,
-                        final PlaceRequest place,
-                        final Command callback );
+    void launch( final AcceptItem acceptItem,
+                 final PlaceRequest place,
+                 final Command callback );
 
-    public boolean onMayClose();
+    boolean onMayClose();
 
-    public void onClose();
+    void onClose();
 
-    public Position getDefaultPosition();
+    void onShutdown();
 
-    public void onFocus();
+    Position getDefaultPosition();
 
-    public void onLostFocus();
+    void onFocus();
 
-    public String getTitle();
+    void onLostFocus();
 
-    public IsWidget getTitleDecoration();
+    String getTitle();
 
-    public IsWidget getWidget();
+    IsWidget getTitleDecoration();
 
-    public Menus getMenus();
+    IsWidget getWidget();
 
-    public ToolBar getToolBar();
+    Menus getMenus();
+
+    ToolBar getToolBar();
 
     String contextId();
 }

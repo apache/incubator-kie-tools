@@ -87,16 +87,18 @@ public class EditorActivityGenerator extends AbstractGenerator {
             }
         }
 
-        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPathParameterMethodName( classElement,
-                                                                                                     processingEnvironment );
-        final String onStart2ParametersMethodName = GeneratorUtils.getOnStartPathPlaceRequestParametersMethodName( classElement,
-                                                                                                                   processingEnvironment );
+        final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartupPathParameterMethodName( classElement,
+                                                                                                         processingEnvironment );
+        final String onStartup2ParametersMethodName = GeneratorUtils.getOnStartupPathPlaceRequestParametersMethodName( classElement,
+                                                                                                                       processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
                                                                               processingEnvironment );
-        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
-                                                                                processingEnvironment );
+        final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName( classElement,
+                                                                                    processingEnvironment );
+        final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
+                                                                            processingEnvironment );
         final String onLostFocusMethodName = GeneratorUtils.getOnLostFocusMethodName( classElement,
                                                                                       processingEnvironment );
         final String onFocusMethodName = GeneratorUtils.getOnFocusMethodName( classElement,
@@ -136,11 +138,12 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
         logger.debug( "Priority: " + priority );
         logger.debug( "Resource types: " + associatedResources );
-        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
-        logger.debug( "onStart2ParametersMethodName: " + onStart2ParametersMethodName );
+        logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
+        logger.debug( "onStartup2ParametersMethodName: " + onStartup2ParametersMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
-        logger.debug( "onRevealMethodName: " + onRevealMethodName );
+        logger.debug( "onShutdownMethodName: " + onShutdownMethodName );
+        logger.debug( "onOpenMethodName: " + onOpenMethodName );
         logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
         logger.debug( "onFocusMethodName: " + onFocusMethodName );
         logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
@@ -167,8 +170,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
             logger.warn( msg );
         }
 
-        //Validate onStart1ParameterMethodName and onStart2ParametersMethodName
-        if ( onStart1ParameterMethodName != null && onStart2ParametersMethodName != null ) {
+        //Validate onStartup1ParameterMethodName and onStartup2ParametersMethodName
+        if ( onStartup1ParameterMethodName != null && onStartup2ParametersMethodName != null ) {
             final String msg = "The WorkbenchEditor has methods for both @OnStartup(Path) and @OnStartup(Path, Place). Method @OnStartup(Path, Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
@@ -196,16 +199,18 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   GeneratorUtils.formatAssociatedResources( associatedResources ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onStart1ParameterMethodName",
-                  onStart1ParameterMethodName );
-        root.put( "onStart2ParametersMethodName",
-                  onStart2ParametersMethodName );
+        root.put( "onStartup1ParameterMethodName",
+                  onStartup1ParameterMethodName );
+        root.put( "onStartup2ParametersMethodName",
+                  onStartup2ParametersMethodName );
         root.put( "onMayCloseMethodName",
                   onMayCloseMethodName );
         root.put( "onCloseMethodName",
                   onCloseMethodName );
-        root.put( "onRevealMethodName",
-                  onRevealMethodName );
+        root.put( "onShutdownMethodName",
+                  onShutdownMethodName );
+        root.put( "onOpenMethodName",
+                  onOpenMethodName );
         root.put( "onLostFocusMethodName",
                   onLostFocusMethodName );
         root.put( "onFocusMethodName",

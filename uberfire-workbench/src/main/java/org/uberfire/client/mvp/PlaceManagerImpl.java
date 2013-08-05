@@ -56,7 +56,7 @@ public class PlaceManagerImpl
 
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
-    private final Map<PlaceRequest, Command> onRevealCallbacks = new HashMap<PlaceRequest, Command>();
+    private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
 
     private final ActivityManager activityManager;
 
@@ -318,24 +318,24 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void registerOnRevealCallback( final PlaceRequest place,
-                                          final Command command ) {
+    public void registerOnOpenCallback( final PlaceRequest place,
+                                        final Command command ) {
         checkNotNull( "place", place );
         checkNotNull( "command", command );
-        this.onRevealCallbacks.put( place,
-                                    command );
+        this.onOpenCallbacks.put( place,
+                                  command );
     }
 
     @Override
-    public void unregisterOnRevealCallback( final PlaceRequest place ) {
+    public void unregisterOnOpenCallback( final PlaceRequest place ) {
         checkNotNull( "place", place );
-        this.onRevealCallbacks.remove( place );
+        this.onOpenCallbacks.remove( place );
     }
 
     @Override
-    public void executeOnRevealCallback( final PlaceRequest place ) {
+    public void executeOnOpenCallback( final PlaceRequest place ) {
         checkNotNull( "place", place );
-        final Command callback = this.onRevealCallbacks.get( place );
+        final Command callback = this.onOpenCallbacks.get( place );
         if ( callback != null ) {
             callback.execute();
         }
@@ -453,6 +453,14 @@ public class PlaceManagerImpl
         final PlaceRequest place = event.getPlace();
         final Activity activity = existingWorkbenchActivities.remove( place );
         existingWorkbenchParts.remove( place );
+
+        if ( activity instanceof PopupActivity ) {
+            ( (PopupActivity) activity ).onShutdown();
+        } else if ( activity instanceof WorkbenchActivity ) {
+            ( (WorkbenchActivity) activity ).onShutdown();
+        } else if ( activity instanceof PerspectiveActivity ) {
+            ( (PerspectiveActivity) activity ).onShutdown();
+        }
 
         Scheduler.get().scheduleFinally( new Scheduler.ScheduledCommand() {
 

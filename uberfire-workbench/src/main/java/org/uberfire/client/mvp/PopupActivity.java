@@ -25,18 +25,20 @@ public interface PopupActivity
         extends
         Activity {
 
-    public void onStartup();
+    void onStartup();
 
-    public void onStartup( final PlaceRequest place );
+    void onStartup( final PlaceRequest place );
 
-    public String getTitle();
+    String getTitle();
 
-    public IsWidget getTitleDecoration();
+    IsWidget getTitleDecoration();
 
-    public IsWidget getWidget();
+    IsWidget getWidget();
 
-    public boolean onMayClose();
+    boolean onMayClose();
 
-    public void onClose();
+    void onClose();
+
+    void onShutdown();
 
 }

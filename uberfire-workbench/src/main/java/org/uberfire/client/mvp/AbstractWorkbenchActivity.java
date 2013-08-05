@@ -52,6 +52,11 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
     }
 
     @Override
+    public void onShutdown() {
+        //Do nothing.
+    }
+
+    @Override
     public abstract String getTitle();
 
     @Override

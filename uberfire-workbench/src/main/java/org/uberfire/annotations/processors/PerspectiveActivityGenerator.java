@@ -53,14 +53,16 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         final WorkbenchPerspective wbp = classElement.getAnnotation( WorkbenchPerspective.class );
         final String identifier = wbp.identifier();
         final boolean isDefault = wbp.isDefault();
-        final String onStart0ParameterMethodName = GeneratorUtils.getOnStartZeroParameterMethodName( classElement,
-                                                                                                     processingEnvironment );
-        final String onStart1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
+        final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
+                                                                                                         processingEnvironment );
+        final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
                                                                                                              processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
                                                                               processingEnvironment );
-        final String onRevealMethodName = GeneratorUtils.getOnRevealMethodName( classElement,
-                                                                                processingEnvironment );
+        final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName( classElement,
+                                                                                    processingEnvironment );
+        final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
+                                                                              processingEnvironment );
         final String getPerspectiveMethodName = GeneratorUtils.getPerspectiveMethodName( classElement,
                                                                                          processingEnvironment );
         final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
@@ -74,18 +76,19 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
         logger.debug( "isDefault: " + isDefault );
-        logger.debug( "onStart0ParameterMethodName: " + onStart0ParameterMethodName );
-        logger.debug( "onStart1ParameterMethodName: " + onStart1ParameterMethodName );
+        logger.debug( "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
+        logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
-        logger.debug( "onRevealMethodName: " + onRevealMethodName );
+        logger.debug( "onShutdownMethodName: " + onShutdownMethodName );
+        logger.debug( "onOpenMethodName: " + onOpenMethodName );
         logger.debug( "getPerspectiveMethodName: " + getPerspectiveMethodName );
         logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
         logger.debug( "getToolBarMethodName: " + getToolBarMethodName );
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
 
-        //Validate onStart0ParameterMethodName and onStart1ParameterMethodName
-        if ( onStart0ParameterMethodName != null && onStart1ParameterMethodName != null ) {
+        //Validate onStartup0ParameterMethodName and onStartup1ParameterMethodName
+        if ( onStartup0ParameterMethodName != null && onStartup1ParameterMethodName != null ) {
             final String msg = "The WorkbenchPerspective has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
@@ -109,14 +112,16 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   isDefault );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
-        root.put( "onStart0ParameterMethodName",
-                  onStart0ParameterMethodName );
-        root.put( "onStart1ParameterMethodName",
-                  onStart1ParameterMethodName );
+        root.put( "onStartup0ParameterMethodName",
+                  onStartup0ParameterMethodName );
+        root.put( "onStartup1ParameterMethodName",
+                  onStartup1ParameterMethodName );
         root.put( "onCloseMethodName",
                   onCloseMethodName );
-        root.put( "onRevealMethodName",
-                  onRevealMethodName );
+        root.put( "onShutdownMethodName",
+                  onShutdownMethodName );
+        root.put( "onOpenMethodName",
+                  onOpenMethodName );
         root.put( "getPerspectiveMethodName",
                   getPerspectiveMethodName );
         root.put( "getMenuBarMethodName",

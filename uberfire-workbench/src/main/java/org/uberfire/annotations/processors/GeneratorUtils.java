@@ -46,6 +46,7 @@ import org.uberfire.lifecycle.OnLostFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchContextId;
@@ -73,8 +74,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getOnStartZeroParameterMethodName( final TypeElement classElement,
-                                                            final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public static String getOnStartupZeroParameterMethodName( final TypeElement classElement,
+                                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   OnStartup.class );
@@ -89,8 +90,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getOnStartPathParameterMethodName( final TypeElement classElement,
-                                                            final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public static String getOnStartupPathParameterMethodName( final TypeElement classElement,
+                                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{ Path.class.getName() },
@@ -107,8 +108,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getOnStartPathPlaceRequestParametersMethodName( final TypeElement classElement,
-                                                                         final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public static String getOnStartupPathPlaceRequestParametersMethodName( final TypeElement classElement,
+                                                                           final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   new String[]{ Path.class.getName(), PlaceRequest.class.getName() },
@@ -172,6 +173,21 @@ public class GeneratorUtils {
     }
 
     /**
+     * Get the method name annotated with {@code @OnShutdown}. The method must be
+     * public, non-static, have a return-type of void and take zero parameters.
+     * @param classElement
+     * @param processingEnvironment
+     * @return null if none found
+     * @throws GenerationException
+     */
+    public static String getOnShutdownMethodName( final TypeElement classElement,
+                                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getVoidMethodName( classElement,
+                                  processingEnvironment,
+                                  OnShutdown.class );
+    }
+
+    /**
      * Get the method name annotated with {@code @OnOpen}. The method must be
      * public, non-static, have a return-type of void and take zero parameters.
      * @param classElement
@@ -179,8 +195,8 @@ public class GeneratorUtils {
      * @return null if none found
      * @throws GenerationException
      */
-    public static String getOnRevealMethodName( final TypeElement classElement,
-                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public static String getOnOpenMethodName( final TypeElement classElement,
+                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
                                   OnOpen.class );

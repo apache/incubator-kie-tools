@@ -95,6 +95,11 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         //Do nothing.
     }
 
+    @Override
+    public void onShutdown() {
+        //Do nothing.
+    }
+
     @SuppressWarnings("unused")
     private void onClose( @Observes ClosePlaceEvent event ) {
         final PlaceRequest place = event.getPlace();

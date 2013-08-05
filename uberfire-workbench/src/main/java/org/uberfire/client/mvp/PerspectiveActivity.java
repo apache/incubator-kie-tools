@@ -27,20 +27,22 @@ public interface PerspectiveActivity
         extends
         ContextSensitiveActivity {
 
-    public void onStartup();
+    void onStartup();
 
-    public void onStartup( final PlaceRequest place );
+    void onStartup( final PlaceRequest place );
 
-    public void onClose();
+    void onClose();
 
-    public PerspectiveDefinition getPerspective();
+    void onShutdown();
 
-    public String getIdentifier();
+    PerspectiveDefinition getPerspective();
 
-    public boolean isDefault();
+    String getIdentifier();
 
-    public Menus getMenus();
+    boolean isDefault();
 
-    public ToolBar getToolBar();
+    Menus getMenus();
+
+    ToolBar getToolBar();
 
 }

@@ -76,11 +76,11 @@ public interface PlaceManager {
 
     public void closeAllPlaces();
 
-    public void registerOnRevealCallback( final PlaceRequest place,
-                                          final Command command );
+    public void registerOnOpenCallback( final PlaceRequest place,
+                                        final Command command );
 
-    public void unregisterOnRevealCallback( final PlaceRequest place );
+    public void unregisterOnOpenCallback( final PlaceRequest place );
 
-    public void executeOnRevealCallback( final PlaceRequest place );
+    public void executeOnOpenCallback( final PlaceRequest place );
 
 }

@@ -26,9 +26,9 @@ public interface Activity
         extends
         RuntimeResource {
 
-    public void launch( final PlaceRequest place,
-                        final Command callback );
+    void launch( final PlaceRequest place,
+                 final Command callback );
 
-    public void onOpen();
+    void onOpen();
 
 }
