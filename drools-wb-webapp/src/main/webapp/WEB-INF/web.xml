@@ -44,36 +44,20 @@
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>resteasy.providers</param-name>
+    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider,org.drools.guvnor.server.security.BasicAuthentication</param-value>
+  </context-param>
+  
   <!-- enable the Asynchronous Job Service -->
   <context-param>
     <param-name>resteasy.async.job.service.enabled</param-name>
     <param-value>true</param-value>
   </context-param>
 
-  <!-- The next context parameters are all optional.
-       Their default values are shown as example param-values -->
-
-  <!-- How many jobs results can be held in memory at once? -->
   <context-param>
-    <param-name>resteasy.async.job.service.max.job.results</param-name>
-    <param-value>100</param-value>
-  </context-param>
-
-  <!-- Maximum wait time on a job when a client is querying for it -->
-  <context-param>
-    <param-name>resteasy.async.job.service.max.wait</param-name>
-    <param-value>300000</param-value>
-  </context-param>
-
-  <!-- Thread pool size of background threads that run the job -->
-  <context-param>
-    <param-name>resteasy.async.job.service.thread.pool.size</param-name>
-    <param-value>100</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>resteasy.async.job.service.base.path</param-name>
-    <param-value>/asynch/jobs</param-value>
+    <param-name>resteasy.providers</param-name>
+    <param-value>org.kie.workbench.common.services.rest.BasicAuthentication</param-value>
   </context-param>
 
   <servlet>
