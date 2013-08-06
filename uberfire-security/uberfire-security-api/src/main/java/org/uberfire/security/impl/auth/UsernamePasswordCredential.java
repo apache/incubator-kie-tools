@@ -16,8 +16,6 @@
 
 package org.uberfire.security.impl.auth;
 
-import org.uberfire.security.auth.Credential;
-
 public class UsernamePasswordCredential extends UserNameCredential {
 
     private final Object passwd;

@@ -30,27 +30,28 @@ public class RememberMeCookieAuthScheme implements AuthenticationScheme {
 
     final CookieStorage cookieStorage;
 
-    public RememberMeCookieAuthScheme(final CookieStorage cookieStorage) {
-        this.cookieStorage = checkNotNull("cookieStorage", cookieStorage);
+    public RememberMeCookieAuthScheme( final CookieStorage cookieStorage ) {
+        this.cookieStorage = checkNotNull( "cookieStorage", cookieStorage );
     }
 
-    public boolean isAuthenticationRequest(final SecurityContext context) {
-        return true;
+    public boolean isAuthenticationRequest( final SecurityContext context ) {
+        final HttpSecurityContext httpSecurityContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
+        return cookieStorage.load( httpSecurityContext ) != null;
     }
 
     @Override
-    public void challengeClient(final SecurityContext context) {
+    public void challengeClient( final SecurityContext context ) {
     }
 
-    public Credential buildCredential(final SecurityContext context) {
-        final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
-        final Principal principal = cookieStorage.load(httpSecurityContext);
+    public Credential buildCredential( final SecurityContext context ) {
+        final HttpSecurityContext httpSecurityContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
+        final Principal principal = cookieStorage.load( httpSecurityContext );
 
-        if (principal == null) {
+        if ( principal == null ) {
             return null;
         }
 
-        return new RememberMeCredential(TRUE.toString(), principal.getName());
+        return new RememberMeCredential( TRUE.toString(), principal.getName() );
     }
 
     static class RememberMeCredential implements Credential {
@@ -58,11 +59,12 @@ public class RememberMeCookieAuthScheme implements AuthenticationScheme {
         private final String userId;
         private final boolean rememberForLater;
 
-        public RememberMeCredential(final String rememberForLater, final String userId) {
-            if (rememberForLater == null) {
+        public RememberMeCredential( final String rememberForLater,
+                                     final String userId ) {
+            if ( rememberForLater == null ) {
                 this.rememberForLater = false;
             } else {
-                this.rememberForLater = Boolean.valueOf(rememberForLater);
+                this.rememberForLater = Boolean.valueOf( rememberForLater );
             }
 
             this.userId = userId;

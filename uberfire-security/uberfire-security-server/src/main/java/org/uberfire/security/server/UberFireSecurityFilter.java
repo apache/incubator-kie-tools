@@ -48,6 +48,7 @@ import org.uberfire.security.authz.VotingStrategy;
 import org.uberfire.security.impl.authz.ConsensusBasedVoter;
 import org.uberfire.security.server.auth.CookieStorage;
 import org.uberfire.security.server.auth.FormAuthenticationScheme;
+import org.uberfire.security.server.auth.HttpBasicAuthenticationScheme;
 import org.uberfire.security.server.auth.HttpSessionStorage;
 import org.uberfire.security.server.auth.RememberMeCookieAuthScheme;
 import org.uberfire.security.server.cdi.SecurityFactory;
@@ -68,6 +69,7 @@ public class UberFireSecurityFilter implements Filter {
 
         final CookieStorage cookieStorage = getCookieStorage( options );
         final AuthenticationScheme rememberMeAuthScheme = new RememberMeCookieAuthScheme( cookieStorage );
+        final AuthenticationScheme basicAuthScheme = new HttpBasicAuthenticationScheme();
         final AuthenticationScheme authScheme = getAuthenticationScheme( options );
         final AuthenticationManager authManager = getAuthenticationManager( options );
         final AuthenticationProvider authProvider = getAuthenticationProvider( options );
@@ -81,6 +83,7 @@ public class UberFireSecurityFilter implements Filter {
 
         this.securityManager = HttpSecurityManagerImpl.newBuilder()
                 .addAuthManager( authManager )
+                .addAuthScheme( basicAuthScheme )
                 .addAuthScheme( rememberMeAuthScheme )
                 .addAuthScheme( authScheme )
                 .addAuthProvider( authProvider )

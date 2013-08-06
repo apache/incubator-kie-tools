@@ -25,7 +25,6 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.java.nio.file.StandardOpenOption;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.security.Identity;
 

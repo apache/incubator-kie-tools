@@ -97,7 +97,9 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
         if ( principal == null ) {
             for ( final AuthenticationScheme authScheme : authSchemes ) {
-                if ( !authScheme.isAuthenticationRequest( httpContext ) && requiresAuthentication ) {
+                if ( authScheme.isAuthenticationRequest( httpContext ) ) {
+                    break;
+                } else if ( requiresAuthentication ) {
                     requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
                     authScheme.challengeClient( httpContext );
                 }
