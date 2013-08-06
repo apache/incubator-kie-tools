@@ -46,17 +46,6 @@
 
   <context-param>
     <param-name>resteasy.providers</param-name>
-    <param-value>org.drools.guvnor.server.jaxrs.providers.atom.AtomEntryProvider,org.drools.guvnor.server.jaxrs.providers.atom.AtomFeedProvider,org.drools.guvnor.server.security.BasicAuthentication</param-value>
-  </context-param>
-  
-  <!-- enable the Asynchronous Job Service -->
-  <context-param>
-    <param-name>resteasy.async.job.service.enabled</param-name>
-    <param-value>true</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>resteasy.providers</param-name>
     <param-value>org.kie.workbench.common.services.rest.BasicAuthentication</param-value>
   </context-param>
 
