@@ -1,9 +1,5 @@
 filter:
-   - pattern: /admin/**
-     access: ADMIN
-   - pattern: /config/**
-     access: ADMIN, USER
-   - pattern: /private/**
+   - pattern: /rest/**
 
 exclude:
    - /*.ico
