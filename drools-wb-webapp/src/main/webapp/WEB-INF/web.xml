@@ -44,11 +44,6 @@
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
   </context-param>
 
-  <context-param>
-    <param-name>resteasy.providers</param-name>
-    <param-value>org.kie.workbench.common.services.rest.BasicAuthentication</param-value>
-  </context-param>
-
   <servlet>
     <servlet-name>Resteasy</servlet-name>
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
