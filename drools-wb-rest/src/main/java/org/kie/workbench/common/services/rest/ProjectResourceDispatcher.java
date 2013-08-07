@@ -474,7 +474,7 @@ public class ProjectResourceDispatcher {
         GroupImpl group = new GroupImpl( groupName, null );
         GitRepository repo = new GitRepository( repositoryName );
         try {
-            groupService.addRepository( group, repo );
+            groupService.removeRepository( group, repo );
         } catch ( IllegalArgumentException e ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
             result.setResult( "Group " + group.getName() + " not found" );
