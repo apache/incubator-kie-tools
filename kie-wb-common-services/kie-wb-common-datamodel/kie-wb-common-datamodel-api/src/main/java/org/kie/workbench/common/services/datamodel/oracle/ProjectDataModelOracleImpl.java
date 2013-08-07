@@ -62,6 +62,9 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     // List of available rule names
     private List<String> ruleNames = new ArrayList<String>();
 
+    // List of available package names
+    private List<String> packageNames = new ArrayList<String>();
+
     // This is used to calculate what fields an enum list may depend on.
     private transient Map<String, Object> enumLookupFields;
 
@@ -780,6 +783,15 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public List<String> getRuleNames() {
         return ruleNames;
+    }
+
+    public void addPackageNames(List<String> packageNames) {
+        this.packageNames.addAll(packageNames);
+    }
+
+    @Override
+    public List<String> getPackageNames() {
+        return packageNames;
     }
 }
 

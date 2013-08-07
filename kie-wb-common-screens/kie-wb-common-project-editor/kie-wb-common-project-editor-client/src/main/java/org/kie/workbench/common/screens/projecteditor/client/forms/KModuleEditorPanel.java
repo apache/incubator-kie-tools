@@ -5,11 +5,14 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
 
+    private final TextBoxFormPopup namePopup;
     private KModuleModel model;
 
     private final KModuleEditorPanelView view;
@@ -17,9 +20,11 @@ public class KModuleEditorPanel
 
     @Inject
     public KModuleEditorPanel(KBaseForm form,
-                              PackageNameFormPopup namePopup,
+                              TextBoxFormPopup namePopup,
                               KModuleEditorPanelView view) {
         super(view, form, namePopup);
+
+        this.namePopup = namePopup;
 
         this.view = view;
     }
@@ -44,5 +49,9 @@ public class KModuleEditorPanel
 
     public boolean hasBeenInitialized() {
         return hasBeenInitialized;
+    }
+
+    public void setProjectDataModelOracle(ProjectDataModelOracle projectDataModelOracle) {
+//        namePopup.setPackageNames(projectDataModelOracle.getPackageNames());
     }
 }

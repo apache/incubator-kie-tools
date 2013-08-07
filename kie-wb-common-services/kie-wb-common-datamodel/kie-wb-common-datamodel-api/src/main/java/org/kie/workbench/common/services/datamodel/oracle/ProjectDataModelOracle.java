@@ -101,4 +101,5 @@ public interface ProjectDataModelOracle {
                            final String factField,
                            final Map<String, String> currentValueMap );
 
+    List<String> getPackageNames();
 }

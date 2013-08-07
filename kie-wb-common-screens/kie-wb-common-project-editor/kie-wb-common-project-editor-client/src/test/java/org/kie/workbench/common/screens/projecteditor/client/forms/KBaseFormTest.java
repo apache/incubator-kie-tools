@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.*;
@@ -39,7 +40,8 @@ public class KBaseFormTest {
     @Before
     public void setUp() throws Exception {
         view = mock(KBaseFormView.class);
-        form = new KBaseForm(view);
+        TextBoxFormPopup textBoxFormPopup = mock(TextBoxFormPopup.class);
+        form = new KBaseForm(view, textBoxFormPopup);
         presenter = form;
     }
 

@@ -5,6 +5,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 
 @Portable
 public class ProjectScreenModel {
@@ -15,6 +16,7 @@ public class ProjectScreenModel {
     private Metadata KModuleMetaData;
     private ProjectImports projectImports;
     private Metadata projectImportsMetaData;
+    private ProjectDataModelOracle projectDataModelOracle;
 
     public POM getPOM() {
         return pom;
@@ -62,5 +64,13 @@ public class ProjectScreenModel {
 
     public Metadata getProjectImportsMetaData() {
         return projectImportsMetaData;
+    }
+
+    public ProjectDataModelOracle getProjectDataModelOracle() {
+        return projectDataModelOracle;
+    }
+
+    public void setProjectDataModelOracle(ProjectDataModelOracle projectDataModelOracle) {
+        this.projectDataModelOracle = projectDataModelOracle;
     }
 }

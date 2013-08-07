@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import java.util.Map;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PageHeader;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,6 +29,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.Map;
 
 public class KBaseFormViewImpl
         extends Composite
@@ -45,6 +47,9 @@ public class KBaseFormViewImpl
     }
 
     private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
+
+    @UiField
+    ListBox packagesListBox;
 
     @UiField
     PageHeader nameLabel;
@@ -84,6 +89,20 @@ public class KBaseFormViewImpl
     @Override
     public void setName(String name) {
         nameLabel.setText(name);
+    }
+
+    @Override
+    public String getSelectedPackageName() {
+        return packagesListBox.getValue(packagesListBox.getSelectedIndex());
+    }
+
+    @Override
+    public void removePackageName(String selectedPackageName) {
+        for (int i = 0; i < packagesListBox.getItemCount(); i++) {
+            if (packagesListBox.getValue(i).equals(selectedPackageName)) {
+                packagesListBox.removeItem(i);
+            }
+        }
     }
 
     @Override
@@ -133,6 +152,21 @@ public class KBaseFormViewImpl
         eventProcessingModeCloud.setEnabled(false);
         statefulSessionsPanel.makeReadOnly();
         statelessSessionsPanel.makeReadOnly();
+    }
+
+    @Override
+    public void addPackageName(String name) {
+        packagesListBox.addItem(name);
+    }
+
+    @UiHandler("addButton")
+    public void onAdd(ClickEvent clickEvent) {
+        presenter.onAddPackage();
+    }
+
+    @UiHandler("deleteButton")
+    public void onDelete(ClickEvent clickEvent) {
+        presenter.onDeletePackage();
     }
 
     @UiHandler("equalsBehaviorIdentity")

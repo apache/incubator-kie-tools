@@ -87,16 +87,25 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final Builder builder = cache.assertBuilder( project );
 
         //Create the ProjectOracle...
-        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModuleIgnoringErrors() );
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
+        // Add all packages
+        // XXX: For Testing
+        ArrayList<String> temp = new ArrayList<String>();
+        temp.add("A.B.C");
+        temp.add("B.C.D");
+        temp.add("C.D.E");
+        pdBuilder.addPackages(temp);
+//        pdBuilder.addPackages(kieModuleMetaData.getPackages());
+
         //Add all classes from the KieModule metaData
-        for ( final String packageName : metaData.getPackages() ) {
-            for ( final String className : metaData.getClasses( packageName ) ) {
-                final Class clazz = metaData.getClass( packageName,
+        for ( final String packageName : kieModuleMetaData.getPackages() ) {
+            for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
+                final Class clazz = kieModuleMetaData.getClass( packageName,
                                                        className );
-                final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
-                final TypeSource typeSource = builder.getClassSource( metaData,
+                final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
+                final TypeSource typeSource = builder.getClassSource( kieModuleMetaData,
                                                                       clazz );
                 try {
                     pdBuilder.addClass( clazz,

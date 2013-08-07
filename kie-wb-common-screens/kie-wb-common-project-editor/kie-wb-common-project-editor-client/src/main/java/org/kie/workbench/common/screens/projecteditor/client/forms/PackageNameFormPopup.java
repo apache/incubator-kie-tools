@@ -4,17 +4,23 @@ import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopupView;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class PackageNameFormPopup
         extends FormPopup {
+
+    private final PackageNameFormPopupView view;
 
     @Inject
     public PackageNameFormPopup(PackageNameFormPopupView view) {
         super(view);
 
-        view.setName("A");
-        view.addItem("A");
-        view.addItem("B");
-        view.addItem("C");
+        this.view = view;
+    }
+
+    public void setPackageNames(List<String> packageNames) {
+        for(String packageName:packageNames){
+            view.addItem(packageName);
+        }
     }
 }

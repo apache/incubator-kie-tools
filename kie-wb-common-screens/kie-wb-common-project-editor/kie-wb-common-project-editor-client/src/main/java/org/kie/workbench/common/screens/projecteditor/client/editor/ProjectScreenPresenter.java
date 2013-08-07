@@ -119,7 +119,9 @@ public class ProjectScreenPresenter
                         view.setKModuleMetadata( model.getKModuleMetaData() );
 
                         view.setImports( model.getProjectImports() );
-                        view.setImportsMetadata( model.getProjectImportsMetaData() );
+                        view.setImportsMetadata(model.getProjectImportsMetaData());
+
+                        view.setProjectDataModelOracle(model.getProjectDataModelOracle());
 
                         view.hideBusyIndicator();
                     }

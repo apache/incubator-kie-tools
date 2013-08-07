@@ -1,10 +1,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.guvnor.common.services.project.builder.model.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
@@ -21,6 +18,7 @@ public final class ProjectDataModelOracleBuilder {
     private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
     private List<String> ruleNames = new ArrayList<String>();
+    private List<String> packageNames = new ArrayList<String>();
 
     private List<String> errors = new ArrayList<String>();
 
@@ -108,11 +106,17 @@ public final class ProjectDataModelOracleBuilder {
         loadFactTypes();
         loadEnums();
         loadRuleNames();
+        loadPackageNames();
+
         return oracle;
     }
 
     private void loadRuleNames() {
         oracle.addRuleNames(ruleNames);
+    }
+
+    private void loadPackageNames() {
+        oracle.addPackageNames(packageNames);
     }
 
     private void loadFactTypes() {
@@ -133,5 +137,10 @@ public final class ProjectDataModelOracleBuilder {
 
     public void addRuleNames(List<String> ruleNames) {
         this.ruleNames.addAll(ruleNames);
+    }
+
+
+    public void addPackages(Collection<String> packageNames) {
+        this.packageNames.addAll(packageNames);
     }
 }

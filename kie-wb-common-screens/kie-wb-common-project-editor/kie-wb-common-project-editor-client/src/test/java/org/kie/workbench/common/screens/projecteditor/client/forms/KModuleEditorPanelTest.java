@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.*;
@@ -34,14 +35,14 @@ public class KModuleEditorPanelTest {
     private KModuleEditorPanelView view;
     private KModuleEditorPanel screenK;
     private ListFormComboPanelView.Presenter presenter;
-    private PackageNameFormPopup nameNamePopup;
+    private TextBoxFormPopup nameNamePopup;
     private KBaseForm form;
 
     @Before
     public void setUp() throws Exception {
         view = mock(KModuleEditorPanelView.class);
 
-        nameNamePopup = mock(PackageNameFormPopup.class);
+        nameNamePopup = mock(TextBoxFormPopup.class);
         form = mock(KBaseForm.class);
         screenK = new KModuleEditorPanel( form, nameNamePopup, view);
         presenter = screenK;

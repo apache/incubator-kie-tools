@@ -16,23 +16,28 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.AssertBehaviorOption;
 import org.guvnor.common.services.project.model.EventProcessingOption;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
+import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
+
+import javax.inject.Inject;
 
 public class KBaseForm
         implements Form<KBaseModel>, KBaseFormView.Presenter {
 
     private final KBaseFormView view;
+    private TextBoxFormPopup newPackagePopup;
     private KBaseModel model;
 
     @Inject
-    public KBaseForm(KBaseFormView view) {
+    public KBaseForm(KBaseFormView view,
+                     TextBoxFormPopup newPackagePopup) {
         this.view = view;
+        this.newPackagePopup = newPackagePopup;
         view.setPresenter(this);
     }
 
@@ -43,6 +48,10 @@ public class KBaseForm
 
         view.setName(knowledgeBaseConfiguration.getName());
         view.setDefault(knowledgeBaseConfiguration.isDefault());
+
+        for (String packageName : model.getPackages()) {
+            view.addPackageName(packageName);
+        }
 
         setEqualsBehaviour(knowledgeBaseConfiguration);
 
@@ -92,7 +101,7 @@ public class KBaseForm
 
     @Override
     public void onEqualsBehaviorEqualitySelect() {
-        model.setEqualsBehavior( AssertBehaviorOption.EQUALITY);
+        model.setEqualsBehavior(AssertBehaviorOption.EQUALITY);
     }
 
     @Override
@@ -102,11 +111,30 @@ public class KBaseForm
 
     @Override
     public void onEventProcessingModeStreamSelect() {
-        model.setEventProcessingMode( EventProcessingOption.STREAM);
+        model.setEventProcessingMode(EventProcessingOption.STREAM);
     }
 
     @Override
     public void onEventProcessingModeCloudSelect() {
         model.setEventProcessingMode(EventProcessingOption.CLOUD);
+    }
+
+    @Override
+    public void onAddPackage() {
+        newPackagePopup.show(new PopupSetFieldCommand() {
+            @Override
+            public void setName(String name) {
+                model.addPackage(name);
+                view.addPackageName(name);
+            }
+        });
+    }
+
+    @Override
+    public void onDeletePackage() {
+        if (view.getSelectedPackageName() != null) {
+            model.getPackages().remove(view.getSelectedPackageName());
+            view.removePackageName(view.getSelectedPackageName());
+        }
     }
 }

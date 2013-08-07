@@ -35,13 +35,23 @@ public interface KBaseFormView
 
         void onEventProcessingModeCloudSelect();
 
+        void onAddPackage();
+
+        void onDeletePackage();
+
     }
 
     void setPresenter( Presenter presenter );
 
     void setName( String name );
 
+    String getSelectedPackageName();
+
+    void removePackageName(String selectedPackageName);
+
     void setDefault(boolean aDefault);
+
+    void addPackageName(String name);
 
     void setEqualsBehaviorEquality();
 
