@@ -22,6 +22,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.backend.server.config.ConfigType.*;
@@ -34,6 +35,9 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private Paths paths;
 
     @Inject
     private ConfigurationService configurationService;
@@ -194,6 +198,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             final Repository repo = configuredRepositories.remove( alias );
             if ( repo != null ) {
                 rootToRepo.remove( repo.getRoot() );
+                ioService.delete( paths.convert( repo.getRoot() ).getFileSystem().getPath( null ) );
             }
         }
 
