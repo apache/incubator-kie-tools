@@ -48,14 +48,6 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>2.3.0</version>
-        <configuration>
-          <excludes>**/ErraiApp.properties</excludes> 
-          <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-          <srcDir>src/main/resources/</srcDir>
-          <transDir>src/main/resources/</transDir>
-          <includes>**/*Constants.properties</includes>
-        </configuration>
       </plugin> 
 
       <!-- Tests that use a M2 Repository create their files in different places depending on how they are ran - IDE or CLI -->
