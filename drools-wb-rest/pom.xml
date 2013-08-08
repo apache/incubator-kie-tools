@@ -109,15 +109,13 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>2.3.2.Final</version>
     </dependency>
     
     <!-- The jackson version included by RESTEasy is way too old -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
-      <version>2.3.2.Final</version>     
-    </dependency>           
+    </dependency>
     
     
     <!-- Weld Modules. For tests only -->

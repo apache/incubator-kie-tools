@@ -15,7 +15,7 @@
   <description>Migrates the data of Guvnor 5 to Drools Workbench 6</description>
 
   <properties>
-    <jcrGuvnor.version>5.5.1-SNAPSHOT</jcrGuvnor.version>
+    <version.org.drools.jcrGuvnor>5.5.1-SNAPSHOT</version.org.drools.jcrGuvnor>
   </properties>
 
   <modules>

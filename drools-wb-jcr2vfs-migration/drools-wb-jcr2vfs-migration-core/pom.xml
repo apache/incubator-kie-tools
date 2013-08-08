@@ -15,35 +15,35 @@
 
   <properties>
     <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
-    <lucene.version>2.4.1</lucene.version>
+    <version.org.apache.lucene>2.4.1</version.org.apache.lucene>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
       <classifier>jars-as-uberjar</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-scorecards</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
     </dependency>    
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
-      <version>${jcrGuvnor.version}</version>
+      <version>${version.org.drools.jcrGuvnor}</version>
       <classifier>war-as-jar</classifier>
       <exclusions>
         <exclusion>
