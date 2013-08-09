@@ -32,6 +32,8 @@
       <ui:text from="{i18n.Packages}"/>
     </bootstrap:Heading>
 
+    <editor:CRUDListBox></editor:CRUDListBox>
+
     <bootstrap:Row>
       <bootstrap:ButtonGroup>
         <bootstrap:Button text="{i18n.Add}" ui:field="addButton"/>
