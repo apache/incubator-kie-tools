@@ -9,6 +9,7 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.ArtifactIdCha
 import org.kie.workbench.common.screens.projecteditor.client.forms.GAVEditor;
 import org.kie.workbench.common.screens.projecteditor.client.forms.GroupIdChangeHandler;
 import org.kie.workbench.common.screens.projecteditor.client.forms.VersionChangeHandler;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -54,7 +55,7 @@ public class GAVWizardPage
 
     @Override
     public String getTitle() {
-        return "GAV"; // TODO: i18n -Rikkola-
+        return ProjectEditorConstants.INSTANCE.NewProjectWizard();
     }
 
     @Override

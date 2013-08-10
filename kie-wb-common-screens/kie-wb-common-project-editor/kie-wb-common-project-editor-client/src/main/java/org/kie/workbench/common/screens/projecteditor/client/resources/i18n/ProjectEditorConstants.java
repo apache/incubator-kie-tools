@@ -164,4 +164,6 @@ public interface ProjectEditorConstants
     String BracketDefaultBracket();
 
     String Packages();
+
+    String NewProjectWizard();
 }
