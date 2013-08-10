@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
@@ -25,10 +26,12 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Repository, Package, Folder and File explorer
  */
+@Dependent
 @WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
 public class ExplorerPresenterImpl implements ExplorerPresenter {
 
@@ -41,7 +44,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     private TechnicalViewPresenter technicalViewPresenter;
 
-    @PostConstruct
+    @AfterInitialization
     public void init() {
         selectBusinessView();
     }
@@ -54,6 +57,15 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         return ProjectExplorerConstants.INSTANCE.explorerTitle();
+    }
+
+    @OnOpen
+    public void onOpen() {
+        if ( businessViewPresenter.isVisible() ) {
+            businessViewPresenter.reloadActiveProject();
+        } else {
+            technicalViewPresenter.reloadActiveProject();
+        }
     }
 
     @Override

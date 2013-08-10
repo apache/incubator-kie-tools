@@ -144,9 +144,11 @@ public class BusinessViewWidget extends Composite implements BusinessView {
 
     @Override
     public void selectGroup( final Group group ) {
-        ddGroups.setText( group.getName() );
-        ddGroups.getTriggerWidget().setEnabled( true );
-        presenter.groupSelected( group );
+        if ( group != null ) {
+            ddGroups.setText( group.getName() );
+            ddGroups.getTriggerWidget().setEnabled( true );
+            presenter.groupSelected( group );
+        }
     }
 
     private IsWidget makeGroupNavLink( final Group group ) {
@@ -358,7 +360,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
             for ( Map.Entry<ClientResourceType, Collection<FolderItem>> e : sortedResourceTypeGroups.entrySet() ) {
                 final AccordionGroup group = new AccordionGroup();
-                group.getWidget( 0 ).addStyleName(ProjectExplorerResources.INSTANCE.CSS().groupHeader() );
+                group.getWidget( 0 ).addStyleName( ProjectExplorerResources.INSTANCE.CSS().groupHeader() );
                 group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
                 final NavList itemsNavList = new NavList();
                 group.add( itemsNavList );

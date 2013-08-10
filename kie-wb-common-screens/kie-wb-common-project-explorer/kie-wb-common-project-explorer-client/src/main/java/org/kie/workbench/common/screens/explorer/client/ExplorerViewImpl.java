@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.explorer.client;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -34,6 +35,7 @@ import org.uberfire.client.common.BusyPopup;
 /**
  * The Explorer's view implementation
  */
+@ApplicationScoped
 public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     interface ExplorerViewImplBinder

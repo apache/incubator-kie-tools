@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.RemoteCallback;
@@ -14,6 +15,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -59,5 +61,15 @@ public class ToolsMenu {
                 dataModelerScreen.setEnabled( project != null );
             }
         } ).resolveProject( event.getPath() );
+    }
+
+    public void selectedPathChanged( @Observes final ProjectChangeEvent event ) {
+        projectScreen.setEnabled( event.getProject() != null );
+        dataModelerScreen.setEnabled( event.getProject() != null );
+    }
+
+    public void selectedPathChanged( @Observes final RepositoryChangeEvent event ) {
+        projectScreen.setEnabled( false );
+        dataModelerScreen.setEnabled( false );
     }
 }

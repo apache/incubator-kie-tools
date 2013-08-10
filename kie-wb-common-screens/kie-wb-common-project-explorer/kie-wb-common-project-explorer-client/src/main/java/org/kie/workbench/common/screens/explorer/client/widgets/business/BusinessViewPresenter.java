@@ -31,6 +31,8 @@ public interface BusinessViewPresenter extends BaseViewPresenter {
 
     void repositorySelected( final Repository repository );
 
+    void reloadActiveProject();
+
     void projectSelected( final Project project );
 
     void packageSelected( final Package pkg );

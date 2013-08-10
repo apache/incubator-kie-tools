@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -59,6 +60,7 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 /**
  * Repository, Package, Folder and File explorer
  */
+@ApplicationScoped
 public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Inject
@@ -193,6 +195,20 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
     }
 
+    @Override
+    public void reloadActiveProject() {
+        if ( activeProject != null ) {
+            forceSelectProject( activeProject );
+        }
+    }
+
+    private void forceSelectProject( Project project ) {
+        activeProject = project;
+        displayedProject = project;
+        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        doProjectChanged( project );
+    }
+
     public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
         //Don't process event if the view is not visible. State is synchronized when made visible.
         if ( !view.isVisible() ) {
@@ -219,10 +235,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       displayedProject ) ) {
-            activeProject = project;
-            displayedProject = project;
-            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-            doProjectChanged( project );
+            forceSelectProject( project );
         }
     }
 

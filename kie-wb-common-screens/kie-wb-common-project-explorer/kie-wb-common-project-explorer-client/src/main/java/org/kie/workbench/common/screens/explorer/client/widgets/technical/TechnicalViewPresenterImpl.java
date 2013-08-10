@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import java.util.Collection;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -57,6 +58,7 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 /**
  * Repository, Package, Folder and File explorer
  */
+@ApplicationScoped
 public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Inject
@@ -249,9 +251,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     public void selectProject( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeProject ) ) {
-            activeProject = project;
-            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-            doProjectChanged( project );
+            forceSelectProject( project );
         }
     }
 
@@ -359,6 +359,20 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Override
     public FolderListing getActiveFolderListing() {
         return activeFolderListing;
+    }
+
+    @Override
+    public void reloadActiveProject() {
+        if ( activeProject != null ) {
+            forceSelectProject( activeProject );
+        }
+    }
+
+    private void forceSelectProject( final Project project ) {
+        activeProject = project;
+        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+        doProjectChanged( project );
+
     }
 
     @Override
