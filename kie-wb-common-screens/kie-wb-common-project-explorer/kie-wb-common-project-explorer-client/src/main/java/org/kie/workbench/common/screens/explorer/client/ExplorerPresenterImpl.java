@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.annotation.PostConstruct;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
@@ -44,7 +45,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     private TechnicalViewPresenter technicalViewPresenter;
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         selectBusinessView();
     }
