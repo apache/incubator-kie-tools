@@ -23,12 +23,11 @@
 
   <g:HTMLPanel>
     <div class="container">
-      <c:CarouselWidget ui:field="carousel"/>
-      <h2 ui:field="title"/>
-      <p></p>
-      <hr/>
-      <g:HorizontalPanel ui:field="columns"/>
-    </div>
+     <h2 ui:field="title"/>
+     <hr/>
+     <p></p>
+     <g:HorizontalPanel width="100%"  ui:field="columns"/>
+     <c:CarouselWidget ui:field="carousel"/>
+     </div>
   </g:HTMLPanel>
-
 </ui:UiBinder>

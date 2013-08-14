@@ -42,6 +42,8 @@ import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
+import java.util.Iterator;
+
 public class HomeViewImpl extends Composite
         implements
         HomePresenter.HomeView {
@@ -110,8 +112,19 @@ public class HomeViewImpl extends Composite
                     vs.add( makeSectionEntry( sectionEntry.getCaption(),
                                               sectionEntry.getOnClickCommand() ) );
                 }
+                vs.addStyleName("well");
                 this.columns.add( vs );
             }
+        }
+
+        int cols = columns.getWidgetCount();
+        int colSize = (1170 / cols);
+
+        int index = 0;
+        for (Iterator<Widget> it = columns.iterator(); it.hasNext();) {
+            Widget widget = it.next();
+            widget.setWidth((index < cols -1 ? colSize - 4 : colSize) + "px");
+            index ++;
         }
     }
 
