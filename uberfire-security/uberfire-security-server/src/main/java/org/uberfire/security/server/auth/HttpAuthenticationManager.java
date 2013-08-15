@@ -100,7 +100,9 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                 if ( authScheme.isAuthenticationRequest( httpContext ) ) {
                     break;
                 } else if ( requiresAuthentication ) {
-                    requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                    if ( !requestCache.containsKey( httpContext.getRequest().getSession().getId() ) ) {
+                        requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                    }
                     authScheme.challengeClient( httpContext );
                 }
             }
