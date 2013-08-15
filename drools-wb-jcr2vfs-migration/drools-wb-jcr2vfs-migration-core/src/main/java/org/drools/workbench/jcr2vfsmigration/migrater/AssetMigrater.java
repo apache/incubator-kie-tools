@@ -86,8 +86,12 @@ public class AssetMigrater {
     
     public void migrateAll() {
         System.out.println("  Asset migration started");
-        Module[] jcrModules = jcrRepositoryModuleService.listModules();
-        for (Module jcrModule : jcrModules) {
+        Module[] jcrModules = jcrRepositoryModuleService.listModules();        
+        List<Module> modules = new ArrayList<Module>(Arrays.asList(jcrModules));
+        Module globalModule = jcrRepositoryModuleService.loadGlobalModule();
+        modules.add(globalModule);
+        
+        for (Module jcrModule : modules) {
             
             //Load drools.package first if it exists            
             try {
@@ -126,7 +130,7 @@ public class AssetMigrater {
                     response = jcrRepositoryAssetService.findAssetPage(request);
                     for (AssetPageRow row : response.getPageRowList()) {     
                         AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
-                        System.out.format("    Asset [%s] with format [%s] is being migrated...",
+                        System.out.format("    Asset [%s] with format [%s] is being migrated... \n",
                                 assetItemJCR.getName(), assetItemJCR.getFormat());
                         //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                         //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
@@ -206,7 +210,7 @@ public class AssetMigrater {
             //Ignore
         } else {
         	Jcr2VfsMigrationApp.hasWarnings = true;
-        	System.out.format("    WARNING: asset [%s] with format[%s] is not supported by migration tool.", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+        	System.out.format("    WARNING: asset [%s] with format[%s] is not supported by migration tool. \n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }

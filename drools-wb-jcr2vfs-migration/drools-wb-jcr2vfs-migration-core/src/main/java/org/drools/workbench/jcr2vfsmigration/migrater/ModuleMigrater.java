@@ -29,13 +29,18 @@ public class ModuleMigrater {
     protected ProjectService projectService;
     
     public void migrateAll() {
-        logger.info( "  Module migration started" );
+        System.out.println( "  Module migration started" );
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
         for ( Module jcrModule : jcrModules ) {
             migrate( jcrModule );
-            logger.debug( "    Module ({}) migrated.", jcrModule.getName() );
+            System.out.format( "    Module [%s] migrated. \n", jcrModule.getName() );
         }
-        logger.info( "  Module migration ended" );
+        
+        Module globalModule = jcrRepositoryModuleService.loadGlobalModule();
+        migrate( globalModule );
+        System.out.println( "    Global migrated.");        
+        
+        System.out.println( "  Module migration ended" );
     }
 
     private void migrate( Module jcrModule ) {
