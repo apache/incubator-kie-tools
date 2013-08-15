@@ -16,7 +16,7 @@ public class JACCAuthenticationScheme extends FormAuthenticationScheme implement
     }
 
     @Override
-    public Credential buildCredential(SecurityContext context) {
+    public Credential buildCredential( SecurityContext context) {
 
         final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
