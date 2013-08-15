@@ -68,8 +68,8 @@ public class UberFireSecurityFilter implements Filter {
         final Map<String, String> options = buildOptions( filterConfig );
 
         final CookieStorage cookieStorage = getCookieStorage( options );
-        final AuthenticationScheme rememberMeAuthScheme = new RememberMeCookieAuthScheme( cookieStorage );
         final AuthenticationScheme basicAuthScheme = new HttpBasicAuthenticationScheme();
+        final AuthenticationScheme rememberMeAuthScheme = getRememberMeAuthScheme( options, cookieStorage );
         final AuthenticationScheme authScheme = getAuthenticationScheme( options );
         final AuthenticationManager authManager = getAuthenticationManager( options );
         final AuthenticationProvider authProvider = getAuthenticationProvider( options );
@@ -102,6 +102,21 @@ public class UberFireSecurityFilter implements Filter {
         securityManager.start();
     }
 
+    private AuthenticationScheme getRememberMeAuthScheme( final Map<String, String> options,
+                                                          final CookieStorage cookieStorage ) {
+        if ( hasRememerMe( options ) ) {
+            return new RememberMeCookieAuthScheme( cookieStorage );
+        }
+
+        return null;
+    }
+
+    private boolean hasRememerMe( final Map<String, String> options ) {
+        final String rememberMe = options.get( AUTH_REMEMBER_ME_SCHEME_KEY );
+
+        return rememberMe == null || rememberMe.trim().equalsIgnoreCase( "enabled" );
+    }
+
     private Map<String, String> buildOptions( FilterConfig filterConfig ) {
         final Map<String, String> result = new HashMap<String, String>();
 
@@ -127,11 +142,14 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private CookieStorage getCookieStorage( final Map<String, String> options ) {
-        final String cookieName = options.get( COOKIE_NAME_KEY );
-        if ( cookieName == null || cookieName.trim().isEmpty() ) {
-            throw new RuntimeException( "Can't find cookie id." );
+        if ( hasRememerMe( options ) ) {
+            final String cookieName = options.get( COOKIE_NAME_KEY );
+            if ( cookieName == null || cookieName.trim().isEmpty() ) {
+                throw new RuntimeException( "Can't find cookie id." );
+            }
+            return new CookieStorage( cookieName );
         }
-        return new CookieStorage( cookieName );
+        return null;
     }
 
     private RoleProvider getRoleProvider( final Map<String, String> options ) {
