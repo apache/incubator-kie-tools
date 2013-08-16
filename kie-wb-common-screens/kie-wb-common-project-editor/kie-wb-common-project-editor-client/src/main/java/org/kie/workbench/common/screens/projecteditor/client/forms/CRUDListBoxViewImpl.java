@@ -10,6 +10,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+@ApplicationScoped
 public class CRUDListBoxViewImpl
         extends Composite
         implements CRUDListBoxView {
@@ -27,7 +31,7 @@ public class CRUDListBoxViewImpl
     @UiField
     ListBox listBox;
 
-
+    @Inject
     public CRUDListBoxViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }

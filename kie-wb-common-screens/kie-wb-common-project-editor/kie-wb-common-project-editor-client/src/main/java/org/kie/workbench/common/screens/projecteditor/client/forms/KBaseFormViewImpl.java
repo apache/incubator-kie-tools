@@ -48,8 +48,8 @@ public class KBaseFormViewImpl
 
     private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
 
-    @UiField
-    ListBox packagesListBox;
+    @UiField(provided = true)
+    CRUDListBox packagesListBox;
 
     @UiField
     PageHeader nameLabel;
@@ -74,9 +74,11 @@ public class KBaseFormViewImpl
 
     @Inject
     public KBaseFormViewImpl(@New KSessionsPanel statefulSessionsPanel,
-                             @New KSessionsPanel statelessSessionsPanel) {
+                             @New KSessionsPanel statelessSessionsPanel,
+                             CRUDListBox packagesListBox) {
         this.statefulSessionsPanel = statefulSessionsPanel;
         this.statelessSessionsPanel = statelessSessionsPanel;
+        this.packagesListBox = packagesListBox;
 
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -93,16 +95,17 @@ public class KBaseFormViewImpl
 
     @Override
     public String getSelectedPackageName() {
-        return packagesListBox.getValue(packagesListBox.getSelectedIndex());
+        return null;
+//                packagesListBox.getValue(packagesListBox.getSelectedIndex());
     }
 
     @Override
     public void removePackageName(String selectedPackageName) {
-        for (int i = 0; i < packagesListBox.getItemCount(); i++) {
-            if (packagesListBox.getValue(i).equals(selectedPackageName)) {
-                packagesListBox.removeItem(i);
-            }
-        }
+//        for (int i = 0; i < packagesListBox.getItemCount(); i++) {
+//            if (packagesListBox.getValue(i).equals(selectedPackageName)) {
+//                packagesListBox.removeItem(i);
+//            }
+//        }
     }
 
     @Override
@@ -156,7 +159,7 @@ public class KBaseFormViewImpl
 
     @Override
     public void addPackageName(String name) {
-        packagesListBox.addItem(name);
+//        packagesListBox.addItem(name);
     }
 
     @UiHandler("addButton")

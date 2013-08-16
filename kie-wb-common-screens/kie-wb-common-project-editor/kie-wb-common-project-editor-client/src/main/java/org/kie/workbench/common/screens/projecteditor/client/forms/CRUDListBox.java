@@ -3,9 +3,12 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
+
+import javax.inject.Inject;
 
 public class CRUDListBox
         implements HasRemoveItemHandlers,
@@ -18,6 +21,7 @@ public class CRUDListBox
     public CRUDListBox() {
     }
 
+    @Inject
     public CRUDListBox(final CRUDListBoxView view,
                        TextBoxFormPopup newItemPopup) {
         this.view = view;
