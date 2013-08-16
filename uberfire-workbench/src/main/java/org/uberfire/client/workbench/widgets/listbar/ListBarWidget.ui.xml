@@ -46,10 +46,12 @@
   <g:FocusPanel ui:field="container">
     <g:FlowPanel>
       <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
-        <g:FlowPanel styleName="{style.inline}">
-          <tb:Button ui:field="contextDisplay" size="MINI" icon="REORDER" styleName="{style.pull-left}"/>
+
+        <g:FlowPanel styleName="{style.inline} {style.pull-left}">
+          <tb:Button ui:field="contextDisplay" size="MINI" icon="REORDER" />
           <g:SimplePanel styleName="{style.inline} {style.title}" ui:field="title"/>
         </g:FlowPanel>
+
         <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
           <tb:ButtonGroup ui:field="contextMenu"/>
           <tb:ButtonGroup>
