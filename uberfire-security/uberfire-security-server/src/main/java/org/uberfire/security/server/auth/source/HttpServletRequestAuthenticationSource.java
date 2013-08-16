@@ -1,5 +1,6 @@
 package org.uberfire.security.server.auth.source;
 
+import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,11 +22,15 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
     }
 
     @Override
-    public boolean authenticate( Credential credential ) {
+    public boolean authenticate( final Credential credential ) {
         try {
             final UserNameCredential userNameCredential = checkInstanceOf( "credential", credential, UserNameCredential.class );
-            if ( userNameCredential instanceof UsernamePasswordCredential ) {
+            Subject subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+            if ( subject != null ) {
+                return super.authenticate( credential );
+            }
 
+            if ( userNameCredential instanceof UsernamePasswordCredential ) {
                 final HttpServletRequest request = (HttpServletRequest) PolicyContext.getContext( "javax.servlet.http.HttpServletRequest" );
                 try {
                     request.login( userNameCredential.getUserName(), ( (UsernamePasswordCredential) userNameCredential ).getPassword().toString() );
