@@ -144,17 +144,11 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
     private void addAllRuleNames( Builder builder,
                                   ProjectDataModelOracleBuilder pdBuilder ) {
 
-        //TODO We can't retrieve a KieContainer if the KieModule has errors, so there is no way to get the Rule Names
-        final KieContainer kieContainer = builder.getKieContainer();
-        if ( kieContainer == null ) {
-            return;
-        }
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(builder.getKieModuleIgnoringErrors());
 
         final List<String> ruleNames = new ArrayList<String>();
-        for ( KiePackage kiePackage : builder.getKieContainer().getKieBase().getKiePackages() ) {
-            for ( Rule rule : kiePackage.getRules() ) {
-                ruleNames.add( rule.getName() );
-            }
+        for (String packageName : kieModuleMetaData.getPackages()) {
+            ruleNames.addAll(kieModuleMetaData.getRuleNames(packageName));
         }
 
         pdBuilder.addRuleNames( ruleNames );
