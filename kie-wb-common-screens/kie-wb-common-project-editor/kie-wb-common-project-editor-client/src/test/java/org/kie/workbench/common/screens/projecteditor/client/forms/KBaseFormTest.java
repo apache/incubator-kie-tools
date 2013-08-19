@@ -40,8 +40,7 @@ public class KBaseFormTest {
     @Before
     public void setUp() throws Exception {
         view = mock(KBaseFormView.class);
-        TextBoxFormPopup textBoxFormPopup = mock(TextBoxFormPopup.class);
-        form = new KBaseForm(view, textBoxFormPopup);
+        form = new KBaseForm(view);
         presenter = form;
     }
 

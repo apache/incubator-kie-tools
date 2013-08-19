@@ -30,14 +30,11 @@ public class KBaseForm
         implements Form<KBaseModel>, KBaseFormView.Presenter {
 
     private final KBaseFormView view;
-    private TextBoxFormPopup newPackagePopup;
     private KBaseModel model;
 
     @Inject
-    public KBaseForm(KBaseFormView view,
-                     TextBoxFormPopup newPackagePopup) {
+    public KBaseForm(KBaseFormView view) {
         this.view = view;
-        this.newPackagePopup = newPackagePopup;
         view.setPresenter(this);
     }
 
@@ -120,21 +117,12 @@ public class KBaseForm
     }
 
     @Override
-    public void onAddPackage() {
-        newPackagePopup.show(new PopupSetFieldCommand() {
-            @Override
-            public void setName(String name) {
-                model.addPackage(name);
-                view.addPackageName(name);
-            }
-        });
+    public void onDeletePackage(String itemName) {
+        model.getPackages().remove(itemName);
     }
 
     @Override
-    public void onDeletePackage() {
-        if (view.getSelectedPackageName() != null) {
-            model.getPackages().remove(view.getSelectedPackageName());
-            view.removePackageName(view.getSelectedPackageName());
-        }
+    public void onAddPackage(String packageName) {
+        model.getPackages().add(packageName);
     }
 }

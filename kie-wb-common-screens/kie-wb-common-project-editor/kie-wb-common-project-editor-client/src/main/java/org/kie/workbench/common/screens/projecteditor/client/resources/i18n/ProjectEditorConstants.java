@@ -166,4 +166,7 @@ public interface ProjectEditorConstants
     String Packages();
 
     String NewProjectWizard();
+
+    String AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne();
+
 }

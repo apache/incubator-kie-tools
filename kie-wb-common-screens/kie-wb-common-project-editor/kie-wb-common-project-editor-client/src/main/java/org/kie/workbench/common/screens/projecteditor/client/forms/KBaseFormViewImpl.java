@@ -80,6 +80,20 @@ public class KBaseFormViewImpl
         this.statelessSessionsPanel = statelessSessionsPanel;
         this.packagesListBox = packagesListBox;
 
+        packagesListBox.addRemoveItemHandler(new RemoveItemHandler() {
+            @Override
+            public void onRemoveItem(RemoveItemEvent event) {
+                presenter.onDeletePackage(event.getItemName());
+            }
+        });
+
+        packagesListBox.addAddItemHandler(new AddItemHandler() {
+            @Override
+            public void onAddItem(AddItemEvent event) {
+                presenter.onAddPackage(event.getItemName());
+            }
+        });
+
         initWidget(uiBinder.createAndBindUi(this));
     }
 
@@ -91,21 +105,6 @@ public class KBaseFormViewImpl
     @Override
     public void setName(String name) {
         nameLabel.setText(name);
-    }
-
-    @Override
-    public String getSelectedPackageName() {
-        return null;
-//                packagesListBox.getValue(packagesListBox.getSelectedIndex());
-    }
-
-    @Override
-    public void removePackageName(String selectedPackageName) {
-//        for (int i = 0; i < packagesListBox.getItemCount(); i++) {
-//            if (packagesListBox.getValue(i).equals(selectedPackageName)) {
-//                packagesListBox.removeItem(i);
-//            }
-//        }
     }
 
     @Override
@@ -159,18 +158,9 @@ public class KBaseFormViewImpl
 
     @Override
     public void addPackageName(String name) {
-//        packagesListBox.addItem(name);
+        packagesListBox.addPackageName(name);
     }
 
-    @UiHandler("addButton")
-    public void onAdd(ClickEvent clickEvent) {
-        presenter.onAddPackage();
-    }
-
-    @UiHandler("deleteButton")
-    public void onDelete(ClickEvent clickEvent) {
-        presenter.onDeletePackage();
-    }
 
     @UiHandler("equalsBehaviorIdentity")
     public void onEqualsBehaviorIdentityChange(ValueChangeEvent<Boolean> valueChangeEvent) {

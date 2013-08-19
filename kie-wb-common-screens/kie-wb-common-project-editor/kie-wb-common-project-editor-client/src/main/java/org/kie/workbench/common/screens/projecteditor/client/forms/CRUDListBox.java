@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 public class CRUDListBox
         implements HasRemoveItemHandlers,
+        HasAddItemHandlers,
         IsWidget,
         CRUDListBoxView.Presenter {
 
@@ -26,6 +27,7 @@ public class CRUDListBox
                        TextBoxFormPopup newItemPopup) {
         this.view = view;
         this.newItemPopup = newItemPopup;
+        view.setPresenter(this);
     }
 
     @Override
@@ -58,5 +60,14 @@ public class CRUDListBox
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    public void addPackageName(String name) {
+        view.addItem(name);
+    }
+
+    @Override
+    public HandlerRegistration addAddItemHandler(AddItemHandler handler) {
+        return view.addAddItemHandler(handler);
     }
 }

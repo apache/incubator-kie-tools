@@ -7,12 +7,15 @@ public interface CRUDListBoxView
         HasAddItemHandlers,
         IsWidget {
 
+
     public interface Presenter {
 
         void onAdd();
 
         void onDelete();
     }
+
+    void setPresenter(Presenter presenter);
 
     void addItem(String name);
 

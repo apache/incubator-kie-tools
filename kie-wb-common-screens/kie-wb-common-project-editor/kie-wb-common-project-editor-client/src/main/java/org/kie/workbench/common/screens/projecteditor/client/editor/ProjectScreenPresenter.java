@@ -30,6 +30,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -41,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -158,21 +160,27 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                saveOperationService.save( pathToPomXML,
-                                           new CommandWithCommitMessage() {
-                                               @Override
-                                               public void execute( final String comment ) {
-                                                   view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                                   projectScreenService.call( new RemoteCallback<Void>() {
-                                                       @Override
-                                                       public void callback( Void v ) {
-                                                           view.hideBusyIndicator();
-                                                       }
-                                                   } ).save( pathToPomXML, model, comment );
+                if (KModuleValidator.isValid(model.getKModule())) {
+                    saveOperationService.save(pathToPomXML,
+                            new CommandWithCommitMessage() {
+                                @Override
+                                public void execute(final String comment) {
 
-                                               }
-                                           } );
+                                    view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+
+                                    projectScreenService.call(new RemoteCallback<Void>() {
+                                        @Override
+                                        public void callback(Void v) {
+                                            view.hideBusyIndicator();
+                                        }
+                                    }).save(pathToPomXML, model, comment);
+
+                                }
+                            });
+                } else {
+                    ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne());
+                }
             }
         };
     }

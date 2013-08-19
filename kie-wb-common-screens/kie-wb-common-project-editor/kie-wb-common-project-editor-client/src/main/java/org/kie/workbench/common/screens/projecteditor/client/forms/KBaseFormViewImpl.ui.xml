@@ -34,13 +34,6 @@
 
     <editor:CRUDListBox ui:field="packagesListBox"></editor:CRUDListBox>
 
-    <bootstrap:Row>
-      <bootstrap:ButtonGroup>
-        <bootstrap:Button text="{i18n.Add}" ui:field="addButton"/>
-        <bootstrap:Button text="{i18n.Delete}" ui:field="deleteButton"/>
-      </bootstrap:ButtonGroup>
-    </bootstrap:Row>
-
     <bootstrap:Heading size="4">
       <ui:text from="{i18n.EqualsBehavior}"/>
     </bootstrap:Heading>

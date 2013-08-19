@@ -13,7 +13,6 @@ import com.google.gwt.user.client.ui.Widget;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@ApplicationScoped
 public class CRUDListBoxViewImpl
         extends Composite
         implements CRUDListBoxView {
@@ -36,6 +35,7 @@ public class CRUDListBoxViewImpl
         initWidget(uiBinder.createAndBindUi(this));
     }
 
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
