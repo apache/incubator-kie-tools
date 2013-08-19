@@ -6,3 +6,4 @@ exclude:
    - /org.drools.workbench.DroolsWorkbench/images/**
    - /org.drools.workbench.DroolsWorkbench/css/**
    - /css/**
+   - /images/**
