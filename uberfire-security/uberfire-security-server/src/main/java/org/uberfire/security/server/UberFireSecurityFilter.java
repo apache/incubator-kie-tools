@@ -255,7 +255,7 @@ public class UberFireSecurityFilter implements Filter {
             }
         } catch ( AuthenticationException e ) {
             if ( !response.isCommitted() ) {
-                throw new ServletException( e );
+                ( (HttpServletResponse) response ).sendError( 401, e.getMessage() );
             }
         }
     }

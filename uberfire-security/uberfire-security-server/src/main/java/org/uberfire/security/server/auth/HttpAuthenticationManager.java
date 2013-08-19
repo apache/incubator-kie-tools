@@ -122,6 +122,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                 for ( final AuthenticationProvider authProvider : authProviders ) {
                     final AuthenticationResult result = authProvider.authenticate( credential );
                     if ( result.getStatus().equals( FAILED ) ) {
+                        authScheme.challengeClient( httpContext );
                         throw new AuthenticationException( "Invalid credentials." );
                     } else if ( result.getStatus().equals( SUCCESS ) ) {
                         principal = result.getPrincipal();
