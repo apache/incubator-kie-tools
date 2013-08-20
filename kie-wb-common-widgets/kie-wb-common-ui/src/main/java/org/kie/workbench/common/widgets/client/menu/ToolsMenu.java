@@ -6,15 +6,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.events.PathChangeEvent;
+import org.uberfire.workbench.events.GroupChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -27,6 +28,9 @@ public class ToolsMenu {
 
     @Inject
     protected Caller<ProjectService> projectService;
+
+    @Inject
+    protected ProjectContext context;
 
     private MenuItem projectScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectEditor() ).respondsWith(
             new Command() {
@@ -53,23 +57,26 @@ public class ToolsMenu {
         return menuItems;
     }
 
-    public void selectedPathChanged( @Observes final PathChangeEvent event ) {
-        projectService.call( new RemoteCallback<Project>() {
-            @Override
-            public void callback( final Project project ) {
-                projectScreen.setEnabled( project != null );
-                dataModelerScreen.setEnabled( project != null );
-            }
-        } ).resolveProject( event.getPath() );
+    public void selectedGroupChanged( @Observes final GroupChangeEvent event ) {
+        enableToolsMenuItems( context.getActiveProject() );
     }
 
-    public void selectedPathChanged( @Observes final ProjectChangeEvent event ) {
-        projectScreen.setEnabled( event.getProject() != null );
-        dataModelerScreen.setEnabled( event.getProject() != null );
+    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
+        enableToolsMenuItems( context.getActiveProject() );
     }
 
-    public void selectedPathChanged( @Observes final RepositoryChangeEvent event ) {
-        projectScreen.setEnabled( false );
-        dataModelerScreen.setEnabled( false );
+    public void selectedProjectChanged( @Observes final ProjectChangeEvent event ) {
+        enableToolsMenuItems( context.getActiveProject() );
     }
+
+    public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
+        enableToolsMenuItems( context.getActiveProject() );
+    }
+
+    private void enableToolsMenuItems( final Project project ) {
+        final boolean enabled = ( project != null );
+        projectScreen.setEnabled( enabled );
+        dataModelerScreen.setEnabled( enabled );
+    }
+
 }
