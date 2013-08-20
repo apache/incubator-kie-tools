@@ -27,11 +27,11 @@ import org.uberfire.backend.repositories.Repository;
  */
 public interface BusinessViewPresenter extends BaseViewPresenter {
 
+    void initialiseViewForActiveContext();
+
     void groupSelected( final Group group );
 
     void repositorySelected( final Repository repository );
-
-    void reloadActiveProject();
 
     void projectSelected( final Project project );
 

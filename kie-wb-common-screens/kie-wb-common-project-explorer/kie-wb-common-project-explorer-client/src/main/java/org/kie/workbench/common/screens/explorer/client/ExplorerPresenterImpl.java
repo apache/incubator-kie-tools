@@ -15,11 +15,10 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.annotation.PostConstruct;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
@@ -63,9 +62,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @OnOpen
     public void onOpen() {
         if ( businessViewPresenter.isVisible() ) {
-            businessViewPresenter.reloadActiveProject();
+            businessViewPresenter.initialiseViewForActiveContext();
         } else {
-            technicalViewPresenter.reloadActiveProject();
+            technicalViewPresenter.initialiseViewForActiveContext();
         }
     }
 

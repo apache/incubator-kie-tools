@@ -112,7 +112,8 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         this.view.init( this );
     }
 
-    private void initialiseViewForActiveContext() {
+    @Override
+    public void initialiseViewForActiveContext() {
         activeGroup = context.getActiveGroup();
         activeRepository = context.getActiveRepository();
         activeProject = context.getActiveProject();
@@ -251,7 +252,9 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     public void selectProject( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeProject ) ) {
-            forceSelectProject( project );
+            activeProject = project;
+            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+            doProjectChanged( project );
         }
     }
 
@@ -359,20 +362,6 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     @Override
     public FolderListing getActiveFolderListing() {
         return activeFolderListing;
-    }
-
-    @Override
-    public void reloadActiveProject() {
-        if ( activeProject != null ) {
-            forceSelectProject( activeProject );
-        }
-    }
-
-    private void forceSelectProject( final Project project ) {
-        activeProject = project;
-        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-        doProjectChanged( project );
-
     }
 
     @Override

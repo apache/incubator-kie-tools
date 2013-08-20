@@ -125,7 +125,8 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         this.view.init( this );
     }
 
-    private void initialiseViewForActiveContext() {
+    @Override
+    public void initialiseViewForActiveContext() {
         //Store active context as it changes during population of the view
         activeGroup = context.getActiveGroup();
         activeRepository = context.getActiveRepository();
@@ -195,20 +196,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
     }
 
-    @Override
-    public void reloadActiveProject() {
-        if ( activeProject != null ) {
-            forceSelectProject( activeProject );
-        }
-    }
-
-    private void forceSelectProject( Project project ) {
-        activeProject = project;
-        displayedProject = project;
-        projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-        doProjectChanged( project );
-    }
-
     public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
         //Don't process event if the view is not visible. State is synchronized when made visible.
         if ( !view.isVisible() ) {
@@ -235,7 +222,10 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       displayedProject ) ) {
-            forceSelectProject( project );
+            activeProject = project;
+            displayedProject = project;
+            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+            doProjectChanged( project );
         }
     }
 

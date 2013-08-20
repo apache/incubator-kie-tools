@@ -27,6 +27,8 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface TechnicalViewPresenter extends BaseViewPresenter {
 
+    void initialiseViewForActiveContext();
+
     void selectGroup( final Group group );
 
     void selectRepository( final Repository repository );
@@ -49,5 +51,4 @@ public interface TechnicalViewPresenter extends BaseViewPresenter {
 
     FolderListing getActiveFolderListing();
 
-    void reloadActiveProject();
 }
