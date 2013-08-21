@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.Proj
 import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -105,31 +106,29 @@ public class ProjectScreenPresenter
     }
 
     private void init() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
-                    public void callback( ProjectScreenModel model ) {
+                    public void callback(ProjectScreenModel model) {
                         ProjectScreenPresenter.this.model = model;
 
-                        view.setPOM( model.getPOM() );
-                        view.setDependencies( model.getPOM().getDependencies() );
-                        view.setPomMetadata( model.getPOMMetaData() );
+                        view.setPOM(model.getPOM());
+                        view.setDependencies(model.getPOM().getDependencies());
+                        view.setPomMetadata(model.getPOMMetaData());
 
-                        view.setKModule( model.getKModule() );
-                        view.setKModuleMetadata( model.getKModuleMetaData() );
+                        view.setKModule(model.getKModule());
+                        view.setKModuleMetadata(model.getKModuleMetaData());
 
-                        view.setImports( model.getProjectImports() );
+                        view.setImports(model.getProjectImports());
                         view.setImportsMetadata(model.getProjectImportsMetaData());
-
-                        view.setProjectDataModelOracle(model.getProjectDataModelOracle());
 
                         view.hideBusyIndicator();
                     }
-                }
-
-                                 ).load( pathToPomXML );
+                },
+                new DefaultErrorCallback()
+        ).load(pathToPomXML);
 
         view.showGAVPanel();
     }

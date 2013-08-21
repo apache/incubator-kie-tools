@@ -78,6 +78,4 @@ public interface ProjectScreenView
 
     void showKBaseMetadataPanel();
 
-    void setProjectDataModelOracle(ProjectDataModelOracle projectDataModelOracle);
-
 }

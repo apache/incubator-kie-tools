@@ -169,4 +169,5 @@ public interface ProjectEditorConstants
 
     String AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne();
 
+    String Includes();
 }

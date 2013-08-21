@@ -12,19 +12,15 @@ import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
 
-    private final TextBoxFormPopup namePopup;
     private KModuleModel model;
 
     private final KModuleEditorPanelView view;
-    private boolean hasBeenInitialized = false;
 
     @Inject
     public KModuleEditorPanel(KBaseForm form,
                               TextBoxFormPopup namePopup,
                               KModuleEditorPanelView view) {
         super(view, form, namePopup);
-
-        this.namePopup = namePopup;
 
         this.view = view;
     }
@@ -37,7 +33,6 @@ public class KModuleEditorPanel
         }
 
         setItems(model.getKBases());
-        hasBeenInitialized = true;
     }
 
     @Override
@@ -47,11 +42,4 @@ public class KModuleEditorPanel
         return model;
     }
 
-    public boolean hasBeenInitialized() {
-        return hasBeenInitialized;
-    }
-
-    public void setProjectDataModelOracle(ProjectDataModelOracle projectDataModelOracle) {
-//        namePopup.setPackageNames(projectDataModelOracle.getPackageNames());
-    }
 }

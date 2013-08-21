@@ -28,6 +28,13 @@
 
   <bootstrap:Container>
     <bootstrap:PageHeader ui:field="nameLabel"></bootstrap:PageHeader>
+
+    <bootstrap:Heading size="4">
+      <ui:text from="{i18n.Includes}"/>
+    </bootstrap:Heading>
+
+    <editor:CRUDListBox ui:field="includesListBox"></editor:CRUDListBox>
+
     <bootstrap:Heading size="4">
       <ui:text from="{i18n.Packages}"/>
     </bootstrap:Heading>

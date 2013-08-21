@@ -46,6 +46,11 @@ public class KBaseForm
         view.setName(knowledgeBaseConfiguration.getName());
         view.setDefault(knowledgeBaseConfiguration.isDefault());
 
+
+        for (String include : model.getIncludes()) {
+            view.addIncludedKBase(include);
+        }
+
         for (String packageName : model.getPackages()) {
             view.addPackageName(packageName);
         }
@@ -124,5 +129,15 @@ public class KBaseForm
     @Override
     public void onAddPackage(String packageName) {
         model.getPackages().add(packageName);
+    }
+
+    @Override
+    public void onDeleteIncludedKBase(String itemName) {
+        model.getIncludes().remove(itemName);
+    }
+
+    @Override
+    public void onAddIncludedKBase(String itemName) {
+        model.getIncludes().add(itemName);
     }
 }

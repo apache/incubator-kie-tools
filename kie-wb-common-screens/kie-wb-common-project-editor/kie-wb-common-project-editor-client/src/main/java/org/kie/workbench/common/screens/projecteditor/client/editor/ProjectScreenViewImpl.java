@@ -285,8 +285,4 @@ public class ProjectScreenViewImpl
         kModuleMetaDataPanel.setContent(kModuleMetaData, false);
     }
 
-    @Override
-    public void setProjectDataModelOracle(ProjectDataModelOracle projectDataModelOracle) {
-        kModuleEditorPanel.setProjectDataModelOracle(projectDataModelOracle);
-    }
 }

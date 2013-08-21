@@ -39,6 +39,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.group.Group;
@@ -242,12 +243,15 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( project != null ) {
 
             //Build project
-            buildService.call( new RemoteCallback<BuildResults>() {
-                @Override
-                public void callback( final BuildResults results ) {
-                    buildResultsEvent.fire( results );
-                }
-            } ).build( project );
+            buildService.call(
+                    new RemoteCallback<BuildResults>() {
+                        @Override
+                        public void callback(final BuildResults results) {
+                            buildResultsEvent.fire(results);
+                        }
+                    },
+                    new DefaultErrorCallback()
+            ).build(project);
 
             //Check cache
             final Collection<Package> packages = packageCache.getEntry( project );

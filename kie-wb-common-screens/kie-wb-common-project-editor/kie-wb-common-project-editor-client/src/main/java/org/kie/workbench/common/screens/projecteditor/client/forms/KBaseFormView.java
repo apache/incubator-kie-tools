@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.model.KSessionModel;
 public interface KBaseFormView
         extends IsWidget {
 
+
     interface Presenter
             extends IsWidget {
 
@@ -38,6 +39,10 @@ public interface KBaseFormView
         void onDeletePackage(String itemName);
 
         void onAddPackage(String packageName);
+
+        void onDeleteIncludedKBase(String itemName);
+
+        void onAddIncludedKBase(String itemName);
     }
 
     void setPresenter( Presenter presenter );
@@ -47,6 +52,8 @@ public interface KBaseFormView
     void setDefault(boolean aDefault);
 
     void addPackageName(String name);
+
+    void addIncludedKBase(String name);
 
     void setEqualsBehaviorEquality();
 

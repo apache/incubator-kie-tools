@@ -16,11 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PageHeader;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -49,6 +47,9 @@ public class KBaseFormViewImpl
     private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
 
     @UiField(provided = true)
+    CRUDListBox includesListBox;
+
+    @UiField(provided = true)
     CRUDListBox packagesListBox;
 
     @UiField
@@ -75,9 +76,11 @@ public class KBaseFormViewImpl
     @Inject
     public KBaseFormViewImpl(@New KSessionsPanel statefulSessionsPanel,
                              @New KSessionsPanel statelessSessionsPanel,
-                             CRUDListBox packagesListBox) {
+                             @New CRUDListBox includesListBox,
+                             @New CRUDListBox packagesListBox) {
         this.statefulSessionsPanel = statefulSessionsPanel;
         this.statelessSessionsPanel = statelessSessionsPanel;
+        this.includesListBox = includesListBox;
         this.packagesListBox = packagesListBox;
 
         packagesListBox.addRemoveItemHandler(new RemoveItemHandler() {
@@ -91,6 +94,20 @@ public class KBaseFormViewImpl
             @Override
             public void onAddItem(AddItemEvent event) {
                 presenter.onAddPackage(event.getItemName());
+            }
+        });
+
+        includesListBox.addRemoveItemHandler(new RemoveItemHandler() {
+            @Override
+            public void onRemoveItem(RemoveItemEvent event) {
+                presenter.onDeleteIncludedKBase(event.getItemName());
+            }
+        });
+
+        includesListBox.addAddItemHandler(new AddItemHandler() {
+            @Override
+            public void onAddItem(AddItemEvent event) {
+                presenter.onAddIncludedKBase(event.getItemName());
             }
         });
 
@@ -154,13 +171,19 @@ public class KBaseFormViewImpl
         eventProcessingModeCloud.setEnabled(false);
         statefulSessionsPanel.makeReadOnly();
         statelessSessionsPanel.makeReadOnly();
+        includesListBox.makeReadOnly();
+        packagesListBox.makeReadOnly();
     }
 
     @Override
     public void addPackageName(String name) {
-        packagesListBox.addPackageName(name);
+        packagesListBox.addItem(name);
     }
 
+    @Override
+    public void addIncludedKBase(String name) {
+        includesListBox.addItem(name);
+    }
 
     @UiHandler("equalsBehaviorIdentity")
     public void onEqualsBehaviorIdentityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
