@@ -23,6 +23,7 @@
     <module>kie-wb-common-search-screen</module>
     <module>kie-wb-common-data-modeller</module>
     <module>kie-wb-common-home</module>
+    <module>kie-wb-common-group-manager</module>
   </modules>
 
   <build>

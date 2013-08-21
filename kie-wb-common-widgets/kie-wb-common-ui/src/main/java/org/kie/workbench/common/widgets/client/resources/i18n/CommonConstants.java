@@ -68,6 +68,8 @@ public interface CommonConstants
 
     String WaitWhileValidating();
 
+    String Wait();
+
     String File();
 
     String Other();
