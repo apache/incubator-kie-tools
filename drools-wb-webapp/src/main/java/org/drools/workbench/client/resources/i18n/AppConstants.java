@@ -40,4 +40,20 @@ public interface AppConstants
 
     String newItem();
 
+    String AdministrationPerspectiveName();
+
+    String MenuExplore();
+
+    String MenuExploreFiles();
+
+    String MenuRepositories();
+
+    String MenuCloneRepository();
+
+    String MenuNewRepository();
+
+    String MenuGroups();
+
+    String MenuManageGroups();
+
 }

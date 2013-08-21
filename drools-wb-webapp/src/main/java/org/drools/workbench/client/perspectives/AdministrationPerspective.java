@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
+import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.annotations.Perspective;
@@ -130,11 +131,12 @@ public class AdministrationPerspective {
                 newRepositoryWizard.show();
             }
         };
+
     }
 
     private void buildPerspective() {
         this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
-        this.perspective.setName( "Administration" );
+        this.perspective.setName( AppConstants.INSTANCE.AdministrationPerspectiveName() );
 
         this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
 
@@ -149,9 +151,9 @@ public class AdministrationPerspective {
 
     private void buildMenuBar() {
         this.menus = MenuFactory
-                .newTopLevelMenu( "Explore" )
+                .newTopLevelMenu( AppConstants.INSTANCE.MenuExplore() )
                 .menus()
-                .menu( "Files" )
+                .menu( AppConstants.INSTANCE.MenuExploreFiles() )
                 .withRoles( PERMISSIONS_ADMIN )
                 .respondsWith( new Command() {
                     @Override
@@ -162,27 +164,41 @@ public class AdministrationPerspective {
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( "Repositories" )
+                .newTopLevelMenu( AppConstants.INSTANCE.MenuGroups() )
                 .menus()
-                .menu( "Clone Repo" )
+                .menu( AppConstants.INSTANCE.MenuManageGroups() )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "org.kie.workbench.common.screens.group.manager.GroupManager" );
+                    }
+                } )
+                .endMenu()
+                .endMenus()
+                .endMenu()
+                .newTopLevelMenu( AppConstants.INSTANCE.MenuRepositories() )
+                .menus()
+                .menu( AppConstants.INSTANCE.MenuCloneRepository() )
                 .withRoles( PERMISSIONS_ADMIN )
                 .respondsWith( cloneRepoCommand )
                 .endMenu()
-                .menu( "New Repo" )
+                .menu( AppConstants.INSTANCE.MenuNewRepository() )
                 .withRoles( PERMISSIONS_ADMIN )
                 .respondsWith( newRepoCommand )
                 .endMenu()
                 .endMenus()
-                .endMenu().build();
+                .endMenu()
+                .build();
     }
 
     private void buildToolBar() {
         this.toolBar = new DefaultToolBar( "file.explorer" );
         final DefaultToolBarItem i1 = new DefaultToolBarItem( FOLDER_CLOSE_ALT,
-                                                              "New Repository",
+                                                              AppConstants.INSTANCE.MenuNewRepository(),
                                                               newRepoCommand );
         final DefaultToolBarItem i2 = new DefaultToolBarItem( DOWNLOAD_ALT,
-                                                              "Clone Repository",
+                                                              AppConstants.INSTANCE.MenuCloneRepository(),
                                                               cloneRepoCommand );
         i1.setRoles( PERMISSIONS_ADMIN );
         i2.setRoles( PERMISSIONS_ADMIN );
