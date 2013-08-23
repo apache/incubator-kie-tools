@@ -148,7 +148,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
 
         final List<String> ruleNames = new ArrayList<String>();
         for (String packageName : kieModuleMetaData.getPackages()) {
-            ruleNames.addAll(kieModuleMetaData.getRuleNames(packageName));
+            ruleNames.addAll(kieModuleMetaData.getRuleNamesInPackage(packageName));
         }
 
         pdBuilder.addRuleNames( ruleNames );
