@@ -125,9 +125,9 @@ public class KSessionsPanelViewImpl
         Column<KSessionModel, String> column = new Column<KSessionModel, String>(new SelectionCell(options)) {
             @Override
             public String getValue(KSessionModel kSessionModel) {
-                if(kSessionModel.getType()==null){
+                if (kSessionModel.getType() == null) {
                     return ProjectEditorConstants.INSTANCE.Stateful();
-                }   else if (kSessionModel.getType().equals("stateful")) {
+                } else if (kSessionModel.getType().equals("stateful")) {
                     return ProjectEditorConstants.INSTANCE.Stateful();
                 } else if (kSessionModel.getType().equals("stateless")) {
                     return ProjectEditorConstants.INSTANCE.Stateless();
@@ -153,7 +153,14 @@ public class KSessionsPanelViewImpl
 
     @Override
     public void makeReadOnly() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        addButton.setEnabled(false);
+        removeButton.setEnabled(false);
+    }
+
+    @Override
+    public void makeEditable() {
+        addButton.setEnabled(true);
+        removeButton.setEnabled(true);
     }
 
     @Override

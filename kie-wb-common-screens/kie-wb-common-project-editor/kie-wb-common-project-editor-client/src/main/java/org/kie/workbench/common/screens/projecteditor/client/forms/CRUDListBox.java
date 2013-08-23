@@ -92,4 +92,8 @@ public class CRUDListBox
     public void makeReadOnly() {
         view.makeReadOnly();
     }
+
+    public void makeEditable() {
+        view.makeEditable();
+    }
 }

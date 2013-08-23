@@ -26,6 +26,7 @@ public interface KSessionsPanelView
 
     void refresh();
 
+
     public interface Presenter {
 
         void onAdd();
@@ -36,6 +37,8 @@ public interface KSessionsPanelView
     }
 
     void makeReadOnly();
+
+    void makeEditable();
 
     void setPresenter(Presenter presenter);
 

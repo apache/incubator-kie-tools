@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
@@ -26,9 +28,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 public class CRUDListBoxViewImpl
         extends Composite
@@ -88,6 +87,12 @@ public class CRUDListBoxViewImpl
     public void makeReadOnly() {
         addButton.setEnabled(false);
         deleteButton.setEnabled(false);
+    }
+
+    @Override
+    public void makeEditable() {
+        addButton.setEnabled(true);
+        deleteButton.setEnabled(true);
     }
 
     @Override

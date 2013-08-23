@@ -67,4 +67,7 @@ public interface KBaseFormView
     void setStatefulSessions( List<KSessionModel> items );
 
     void setReadOnly();
+
+    void makeEditable();
+
 }

@@ -167,6 +167,17 @@ public class KBaseFormViewImpl
     }
 
     @Override
+    public void makeEditable() {
+        equalsBehaviorIdentity.setEnabled(true);
+        equalsBehaviorEquality.setEnabled(true);
+        eventProcessingModeStream.setEnabled(true);
+        eventProcessingModeCloud.setEnabled(true);
+        statefulSessionsPanel.makeEditable();
+        includesListBox.makeEditable();
+        packagesListBox.makeEditable();
+    }
+
+    @Override
     public void addPackageName(String name) {
         packagesListBox.addItem(name);
     }

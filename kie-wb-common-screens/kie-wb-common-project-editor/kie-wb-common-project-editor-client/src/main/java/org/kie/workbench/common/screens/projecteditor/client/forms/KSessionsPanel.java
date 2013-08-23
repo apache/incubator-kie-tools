@@ -90,4 +90,8 @@ public class KSessionsPanel
     public Widget asWidget() {
         return view.asWidget();
     }
+
+    public void makeEditable() {
+        view.makeEditable();
+    }
 }

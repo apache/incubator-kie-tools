@@ -24,7 +24,6 @@ public interface CRUDListBoxView
         IsWidget {
 
 
-
     public interface Presenter {
 
         void onAdd();
@@ -43,4 +42,6 @@ public interface CRUDListBoxView
     void addItemAndFireEvent(String name);
 
     void makeReadOnly();
+
+    void makeEditable();
 }

@@ -34,10 +34,13 @@ public class KBaseForm
     public KBaseForm(KBaseFormView view) {
         this.view = view;
         view.setPresenter(this);
+        view.setReadOnly();
     }
 
     @Override
     public void setModel(KBaseModel knowledgeBaseConfiguration) {
+
+        view.makeEditable();
 
         this.model = knowledgeBaseConfiguration;
 
