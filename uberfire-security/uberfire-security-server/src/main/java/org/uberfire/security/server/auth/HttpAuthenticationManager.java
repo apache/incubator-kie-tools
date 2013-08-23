@@ -58,15 +58,18 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
     private final ResourceManager resourceManager;
     private final Map<String, String> requestCache = new HashMap<String, String>();
+    private final String forceURL;
 
     //if System.getProperty("java.security.auth.login.config") != null => create a JAASProvider
 
     public HttpAuthenticationManager( final List<AuthenticationScheme> authScheme,
+                                      final String forceURL,
                                       final List<AuthenticationProvider> authProviders,
                                       final List<RoleProvider> roleProviders,
                                       final List<SubjectPropertiesProvider> subjectPropertiesProviders,
                                       final List<AuthenticatedStorageProvider> authStorageProviders,
                                       final ResourceManager resourceManager ) {
+        this.forceURL = forceURL;
         this.authSchemes = checkNotEmpty( "authScheme", authScheme );
         this.authProviders = checkNotEmpty( "authProviders", authProviders );
         this.roleProviders = checkNotEmpty( "roleProviders", roleProviders );
@@ -101,7 +104,11 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                     break;
                 } else if ( requiresAuthentication ) {
                     if ( !requestCache.containsKey( httpContext.getRequest().getSession().getId() ) ) {
-                        requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                        if ( forceURL != null ) {
+                            requestCache.put( httpContext.getRequest().getSession().getId(), forceURL );
+                        } else {
+                            requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                        }
                     }
                     authScheme.challengeClient( httpContext );
                 }

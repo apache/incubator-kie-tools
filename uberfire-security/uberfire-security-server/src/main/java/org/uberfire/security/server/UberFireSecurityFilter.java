@@ -70,6 +70,7 @@ public class UberFireSecurityFilter implements Filter {
         final CookieStorage cookieStorage = getCookieStorage( options );
         final AuthenticationScheme basicAuthScheme = new HttpBasicAuthenticationScheme();
         final AuthenticationScheme rememberMeAuthScheme = getRememberMeAuthScheme( options, cookieStorage );
+        final String forceURL = getForceURL( options );
         final AuthenticationScheme authScheme = getAuthenticationScheme( options );
         final AuthenticationManager authManager = getAuthenticationManager( options );
         final AuthenticationProvider authProvider = getAuthenticationProvider( options );
@@ -86,6 +87,7 @@ public class UberFireSecurityFilter implements Filter {
                 .addAuthScheme( basicAuthScheme )
                 .addAuthScheme( rememberMeAuthScheme )
                 .addAuthScheme( authScheme )
+                .addForceURL( forceURL )
                 .addAuthProvider( authProvider )
                 .addAuthenticatedStorageProvider( new HttpSessionStorage() )
                 .addAuthenticatedStorageProvider( cookieStorage )
@@ -115,6 +117,16 @@ public class UberFireSecurityFilter implements Filter {
         final String rememberMe = options.get( AUTH_REMEMBER_ME_SCHEME_KEY );
 
         return rememberMe == null || rememberMe.trim().equalsIgnoreCase( "enabled" );
+    }
+
+    private String getForceURL( final Map<String, String> options ) {
+        final String redirectURL = options.get( AUTH_FORCE_URL );
+
+        if ( redirectURL == null ) {
+            return null;
+        }
+
+        return redirectURL.trim();
     }
 
     private Map<String, String> buildOptions( FilterConfig filterConfig ) {

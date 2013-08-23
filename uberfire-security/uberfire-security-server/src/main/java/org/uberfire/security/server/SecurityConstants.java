@@ -38,6 +38,8 @@ public interface SecurityConstants {
 
     final String AUTH_REMEMBER_ME_SCHEME_KEY = "org.uberfire.auth.rememberme";
 
+    final String AUTH_FORCE_URL = "org.uberfire.auth.force.url";
+
     final String RESOURCE_MANAGER_KEY = "org.uberfire.resource.manager";
 
     final String RESOURCE_MANAGER_CONFIG_KEY = "org.uberfire.resource.manager.config";

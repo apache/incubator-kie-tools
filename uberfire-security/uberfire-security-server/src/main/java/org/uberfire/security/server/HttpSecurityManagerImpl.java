@@ -61,6 +61,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
 
     private HttpSecurityManagerImpl( final AuthenticationManager authManager,
                                      final List<AuthenticationScheme> authSchemes,
+                                     final String forceURL,
                                      final List<AuthenticationProvider> authProviders,
                                      final List<RoleProvider> roleProviders,
                                      final List<SubjectPropertiesProvider> subjectPropertiesProviders,
@@ -71,7 +72,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
                                      final VotingStrategy votingStrategy,
                                      final RoleDecisionManager roleDecisionManager ) {
         if ( authManager == null ) {
-            this.authManager = new HttpAuthenticationManager( authSchemes, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders, resourceManager );
+            this.authManager = new HttpAuthenticationManager( authSchemes, forceURL, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders, resourceManager );
         } else {
             this.authManager = authManager;
 
@@ -250,8 +251,8 @@ public class HttpSecurityManagerImpl implements SecurityManager {
         private RoleDecisionManager roleDecisionManager = null;
         private VotingStrategy votingStrategy = null;
         private ResourceManager resourceManager = null;
+        private String forceURL = null;
         private List<AuthorizationManager> authzManagers = new ArrayList<AuthorizationManager>();
-
         private List<AuthenticationScheme> authSchemes = new ArrayList<AuthenticationScheme>();
         private List<AuthenticationProvider> authProviders = new ArrayList<AuthenticationProvider>();
         private List<RoleProvider> roleProviders = new ArrayList<RoleProvider>();
@@ -267,7 +268,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
                 }
             }
 
-            return new HttpSecurityManagerImpl( authManager, authSchemes, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders,
+            return new HttpSecurityManagerImpl( authManager, authSchemes, forceURL, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders,
                                                 authzManagers, resourceManager, accessDecisionManagers, votingStrategy, roleDecisionManager );
         }
 
@@ -354,6 +355,10 @@ public class HttpSecurityManagerImpl implements SecurityManager {
             return this;
         }
 
+        HttpSecurityManagerBuilder addForceURL( String forceRedirectURL ) {
+            this.forceURL = forceRedirectURL;
+            return this;
+        }
     }
 
 }
