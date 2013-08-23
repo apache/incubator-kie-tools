@@ -106,6 +106,7 @@
           <!-- General -->
           <exclude>WEB-INF/lib/*-sources.jar</exclude>
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-el-api_*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
 
           <!-- Exclude RESTeasy as it's bundled with jboss as7 -->
@@ -121,6 +122,7 @@
           <exclude>WEB-INF/lib/mail-*.jar</exclude>
           <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
           <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-servlet-api_*.jar</exclude>
 
           <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
           <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
