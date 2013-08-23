@@ -16,32 +16,78 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.KSessionModel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 public class KSessionsPanel
-        extends ListFormComboPanel<KSessionModel> {
+        implements KSessionsPanelView.Presenter,
+        IsWidget {
 
+    private final KSessionsPanelView view;
+    private final KSessionForm form;
+    private final TextBoxFormPopup namePopup;
+    private List<KSessionModel> items;
 
     @Inject
     public KSessionsPanel(KSessionsPanelView view,
-                          KSessionForm form,
-                          TextBoxFormPopup namePopup) {
-        super(view, form, namePopup);
-    }
+            KSessionForm form,
+            TextBoxFormPopup namePopup) {
+        this.view = view;
+        this.form = form;
+        this.namePopup = namePopup;
 
-    @Override
-    protected KSessionModel createNew(String name) {
-        KSessionModel kSessionModel = new KSessionModel();
-        kSessionModel.setName(name);
-        return kSessionModel;
+        view.setPresenter(this);
     }
+//
+//    @Override
+//    protected KSessionModel createNew(String name) {
+//        KSessionModel kSessionModel = new KSessionModel();
+//        kSessionModel.setName(name);
+//        return kSessionModel;
+//    }
 
     public void makeReadOnly() {
         view.makeReadOnly();
+    }
+
+    public void setItems(List<KSessionModel> items) {
+        this.items = items;
+        view.setItemList(items);
+    }
+
+    @Override
+    public void onAdd() {
+        namePopup.show(new PopupSetFieldCommand() {
+            @Override public void setName(String name) {
+                KSessionModel model = new KSessionModel();
+                model.setName(name);
+
+                items.add(model);
+                view.setItemList(items);
+
+                namePopup.setOldName("");
+            }
+        });
+    }
+
+    @Override
+    public void onSelect(String removeMe) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onRemove() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 }

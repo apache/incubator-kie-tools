@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
 import java.util.Map;
 
 import org.guvnor.common.services.project.model.AssertBehaviorOption;
@@ -24,7 +25,6 @@ import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.*;
@@ -50,11 +50,10 @@ public class KBaseFormTest {
         form.setModel(new KBaseModel());
         verify(view).setName(null);
 
-        ArgumentCaptor<Map> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        ArgumentCaptor<Map> statefulModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<List> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List> statefulModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
 
         verify(view).setStatefulSessions(statefulModelArgumentCaptor.capture());
-        verify(view).setStatelessSessions(statelessSessionModelArgumentCaptor.capture());
 
         verify(view).setEventProcessingModeStream();
         verify(view, never()).setEventProcessingModeCloud();
@@ -73,21 +72,20 @@ public class KBaseFormTest {
         config.setEqualsBehavior( AssertBehaviorOption.EQUALITY);
         config.setEventProcessingMode( EventProcessingOption.CLOUD);
 
-        config.getStatelessSessions().put("1", createStatelessKSession("1"));
-        config.getStatelessSessions().put("2", createStatelessKSession("2"));
-        config.getStatelessSessions().put("3", createStatelessKSession("3"));
+        config.getKSessions().add(createStatelessKSession("1"));
+        config.getKSessions().add(createStatelessKSession("2"));
+        config.getKSessions().add(createStatelessKSession("3"));
 
-        config.getStatefulSessions().put("4,", createStatefulKSession("4"));
-        config.getStatefulSessions().put("5,", createStatefulKSession("5"));
+        config.getKSessions().add(createStatefulKSession("4"));
+        config.getKSessions().add(createStatefulKSession("5"));
 
         form.setModel(config);
         verify(view).setName("Name");
 
-        ArgumentCaptor<Map> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        ArgumentCaptor<Map> statefulModelArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<List> statelessSessionModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List> statefulModelArgumentCaptor = ArgumentCaptor.forClass(List.class);
 
         verify(view).setStatefulSessions(statefulModelArgumentCaptor.capture());
-        verify(view).setStatelessSessions(statelessSessionModelArgumentCaptor.capture());
 
         verify(view, never()).setEventProcessingModeStream();
         verify(view).setEventProcessingModeCloud();

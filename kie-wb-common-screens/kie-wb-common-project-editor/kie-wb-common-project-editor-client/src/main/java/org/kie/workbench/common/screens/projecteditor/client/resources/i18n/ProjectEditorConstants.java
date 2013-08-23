@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.user.cellview.client.Header;
 
 public interface ProjectEditorConstants
         extends
@@ -170,4 +171,10 @@ public interface ProjectEditorConstants
     String AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne();
 
     String Includes();
+
+    String Stateful();
+
+    String Stateless();
+
+    String State();
 }

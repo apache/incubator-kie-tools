@@ -21,8 +21,6 @@ import org.guvnor.common.services.project.model.AssertBehaviorOption;
 import org.guvnor.common.services.project.model.EventProcessingOption;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
-import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 import javax.inject.Inject;
 
@@ -68,8 +66,7 @@ public class KBaseForm
     }
 
     private void setSessions(KBaseModel knowledgeBaseConfiguration) {
-        view.setStatefulSessions(knowledgeBaseConfiguration.getStatefulSessions());
-        view.setStatelessSessions(knowledgeBaseConfiguration.getStatelessSessions());
+        view.setStatefulSessions(knowledgeBaseConfiguration.getKSessions());
     }
 
     private void setEventProcessingMode(KBaseModel knowledgeBaseConfiguration) {

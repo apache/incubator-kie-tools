@@ -52,20 +52,7 @@
     <bootstrap:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
     <bootstrap:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
 
-    <gwt:TabLayoutPanel barHeight="50" barUnit="PX" height="400px" width="600px">
-      <gwt:tab>
-        <gwt:header>
-          <ui:text from="{i18n.StatefulKSessions}"/>
-        </gwt:header>
-        <editor:KSessionsPanel ui:field="statefulSessionsPanel"/>
-      </gwt:tab>
-      <gwt:tab>
-        <gwt:header>
-          <ui:text from="{i18n.StatelessKSessions}"/>
-        </gwt:header>
-        <editor:KSessionsPanel ui:field="statelessSessionsPanel"/>
-      </gwt:tab>
-    </gwt:TabLayoutPanel>
+    <editor:KSessionsPanel ui:field="statefulSessionsPanel"/>
   </bootstrap:Container>
 
 </ui:UiBinder>

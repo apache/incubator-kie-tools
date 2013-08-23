@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -63,9 +64,7 @@ public interface KBaseFormView
 
     void setEventProcessingModeCloud();
 
-    void setStatefulSessions( Map<String, KSessionModel> statefulSessions );
-
-    void setStatelessSessions( Map<String, KSessionModel> statelessSessions );
+    void setStatefulSessions( List<KSessionModel> items );
 
     void setReadOnly();
 }

@@ -16,8 +16,37 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
+import java.util.List;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.KSessionModel;
 
 public interface KSessionsPanelView
-        extends ListFormComboPanelView {
+        extends IsWidget {
+
+    void refresh();
+
+    public interface Presenter {
+
+        void onAdd();
+
+        void onSelect(String removeMe);
+
+        void onRemove();
+    }
+
+    void makeReadOnly();
+
+    void setPresenter(Presenter presenter);
+
+    void clearList();
+
+    void setItemList(List<KSessionModel> list);
+
+    void setSelected(String theOne);
+
+    void remove(String removeMe);
+
+    void showPleaseSelectAnItem();
+
 }

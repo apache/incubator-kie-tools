@@ -30,6 +30,8 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.Proj
 
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class KBaseFormViewImpl
@@ -70,16 +72,11 @@ public class KBaseFormViewImpl
     @UiField(provided = true)
     KSessionsPanel statefulSessionsPanel;
 
-    @UiField(provided = true)
-    KSessionsPanel statelessSessionsPanel;
-
     @Inject
-    public KBaseFormViewImpl(@New KSessionsPanel statefulSessionsPanel,
-                             @New KSessionsPanel statelessSessionsPanel,
-                             @New CRUDListBox includesListBox,
-                             @New CRUDListBox packagesListBox) {
+    public KBaseFormViewImpl(KSessionsPanel statefulSessionsPanel,
+                             CRUDListBox includesListBox,
+                             CRUDListBox packagesListBox) {
         this.statefulSessionsPanel = statefulSessionsPanel;
-        this.statelessSessionsPanel = statelessSessionsPanel;
         this.includesListBox = includesListBox;
         this.packagesListBox = packagesListBox;
 
@@ -154,13 +151,8 @@ public class KBaseFormViewImpl
     }
 
     @Override
-    public void setStatefulSessions(Map<String, KSessionModel> statefulSessions) {
-        statefulSessionsPanel.setItems(statefulSessions);
-    }
-
-    @Override
-    public void setStatelessSessions(Map<String, KSessionModel> statefulSessions) {
-        statelessSessionsPanel.setItems(statefulSessions);
+    public void setStatefulSessions(List<KSessionModel> items) {
+        statefulSessionsPanel.setItems(items);
     }
 
     @Override
@@ -170,7 +162,6 @@ public class KBaseFormViewImpl
         eventProcessingModeStream.setEnabled(false);
         eventProcessingModeCloud.setEnabled(false);
         statefulSessionsPanel.makeReadOnly();
-        statelessSessionsPanel.makeReadOnly();
         includesListBox.makeReadOnly();
         packagesListBox.makeReadOnly();
     }
