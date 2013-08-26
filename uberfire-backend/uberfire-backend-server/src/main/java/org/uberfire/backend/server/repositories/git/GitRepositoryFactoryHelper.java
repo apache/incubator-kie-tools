@@ -11,6 +11,7 @@ import javax.inject.Named;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
+import org.kie.commons.java.nio.file.Path;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -78,7 +79,15 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
             fs = ioService.getFileSystem( uri );
         }
 
-        repo.setRoot( paths.convert( fs.getRootDirectories().iterator().next() ) );
+        Path defaultRoot = fs.getRootDirectories().iterator().next();
+        for ( final Path path : fs.getRootDirectories() ) {
+            if ( path.toUri().toString().contains( "/master@" ) ) {
+                defaultRoot = path;
+                break;
+            }
+        }
+
+        repo.setRoot( paths.convert( defaultRoot ) );
         repo.setPublicUri( fs.toString() );
 
         return repo;
