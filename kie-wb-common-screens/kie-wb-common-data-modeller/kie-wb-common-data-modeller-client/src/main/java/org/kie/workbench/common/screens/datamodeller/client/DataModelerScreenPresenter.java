@@ -299,13 +299,6 @@ public class DataModelerScreenPresenter {
         getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
     }
 
-    private void makeMenuBar() {
-        menus = MenuFactory
-                .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_main() )
-                .withItems( getItems() )
-                .endMenu().build();
-    }
-
     private void makeToolBar() {
         toolBar = new DefaultToolBar( "dataModelerToolbar" );
 
@@ -331,9 +324,7 @@ public class DataModelerScreenPresenter {
 
     }
 
-    private List<MenuItem> getItems() {
-
-        final List<MenuItem> menuItems = new ArrayList<MenuItem>();
+    private void makeMenuBar() {
 
         org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
             @Override
@@ -349,19 +340,14 @@ public class DataModelerScreenPresenter {
             }
         };
 
-        if ( newDataObjectCommand != null ) {
-            menuItems.add( newSimpleItem( Constants.INSTANCE.modelEditor_menu_new_dataObject() )
-                                   .respondsWith( newDataObjectCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
-        }
-
-        if ( saveCommand != null ) {
-            menuItems.add( newSimpleItem( Constants.INSTANCE.modelEditor_menu_save() )
-                                   .respondsWith( saveCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
-        }
-
-        return menuItems;
+        menus = MenuFactory
+                .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_new_dataObject() )
+                .respondsWith( newDataObjectCommand )
+                .endMenu()
+                .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_save() )
+                .respondsWith( saveCommand )
+                .endMenu()
+                .build();
     }
 
     private void initContext() {
