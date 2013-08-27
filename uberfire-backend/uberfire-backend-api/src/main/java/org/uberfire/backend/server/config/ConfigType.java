@@ -4,7 +4,7 @@ public enum ConfigType {
 
     GLOBAL( ".global" ),
     REPOSITORY( ".repository" ),
-    GROUP( ".group" ),
+    ORGANIZATIONAL_UNIT( ".organizationalunit" ),
     PROJECT( ".project" ),
     EDITOR( ".editor" ),
     DEPLOYMENT( ".deployment" );

@@ -37,11 +37,11 @@
               <b:HelpInline ui:field="nameHelpInline" />
             </b:Controls>
           </b:ControlGroup>
-          <b:ControlGroup ui:field="groupGroup">
-            <b:ControlLabel>Group</b:ControlLabel>
+          <b:ControlGroup ui:field="organizationalUnitGroup">
+            <b:ControlLabel>Organizational Unit</b:ControlLabel>
             <b:Controls>
-              <b:ListBox ui:field="groupDropdown" />
-              <b:HelpInline ui:field="groupHelpInline" />
+              <b:ListBox ui:field="organizationalUnitDropdown" />
+              <b:HelpInline ui:field="organizationalUnitHelpInline" />
             </b:Controls>
           </b:ControlGroup>
           <b:ControlGroup>

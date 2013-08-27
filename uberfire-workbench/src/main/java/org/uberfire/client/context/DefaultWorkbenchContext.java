@@ -19,11 +19,11 @@ package org.uberfire.client.context;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.context.WorkbenchContext;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.PanelFocusEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
@@ -35,14 +35,14 @@ import org.uberfire.workbench.model.PanelDefinition;
 @ApplicationScoped
 public class DefaultWorkbenchContext implements WorkbenchContext {
 
-    private Group activeGroup;
+    private OrganizationalUnit activeOrganizationalUnit;
     private Repository activeRepository;
     private Path activePath;
     private PanelDefinition activePanel;
 
-    public void setActiveGroup( @Observes final GroupChangeEvent event ) {
-        final Group activeGroup = event.getGroup();
-        setActiveGroup( activeGroup );
+    public void setActiveOrganizationalUnit( @Observes final OrganizationalUnitChangeEvent event ) {
+        final OrganizationalUnit activeOrganizationalUnit = event.getOrganizationalUnit();
+        setActiveOrganizationalUnit( activeOrganizationalUnit );
         setActiveRepository( (Repository) null );
         setActivePath( (Path) null );
     }
@@ -58,13 +58,13 @@ public class DefaultWorkbenchContext implements WorkbenchContext {
         setActivePath( activePath );
     }
 
-    private void setActiveGroup( final Group activeGroup ) {
-        this.activeGroup = activeGroup;
+    private void setActiveOrganizationalUnit( final OrganizationalUnit activeOrganizationalUnit ) {
+        this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
     @Override
-    public Group getActiveGroup() {
-        return this.activeGroup;
+    public OrganizationalUnit getActiveOrganizationalUnit() {
+        return this.activeOrganizationalUnit;
     }
 
     private void setActiveRepository( final Repository activeRepository ) {

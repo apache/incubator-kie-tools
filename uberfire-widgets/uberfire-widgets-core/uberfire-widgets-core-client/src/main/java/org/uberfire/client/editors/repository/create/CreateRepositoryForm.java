@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -49,8 +48,8 @@ import org.jboss.errai.bus.client.api.ErrorCallback;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.Caller;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 
@@ -71,19 +70,19 @@ public class CreateRepositoryForm
     private Caller<RepositoryService> repositoryService;
 
     @Inject
-    private Caller<GroupService> groupService;
+    private Caller<OrganizationalUnitService> organizationalUnitService;
 
     @UiField
-    ControlGroup groupGroup;
+    ControlGroup organizationalUnitGroup;
 
     @UiField
-    HelpInline groupHelpInline;
+    HelpInline organizationalUnitHelpInline;
+
+    @UiField
+    ListBox organizationalUnitDropdown;
 
     @UiField
     ControlGroup nameGroup;
-
-    @UiField
-    ListBox groupDropdown;
 
     @UiField
     TextBox nameTextBox;
@@ -100,7 +99,7 @@ public class CreateRepositoryForm
     @UiField
     Modal popup;
 
-    private Map<String, Group> availableGroups = new HashMap<String, Group>();
+    private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
     @PostConstruct
     public void init() {
@@ -113,28 +112,31 @@ public class CreateRepositoryForm
                 nameHelpInline.setText( "" );
             }
         } );
-        //populate group list box
-        groupService.call(new RemoteCallback<Collection<Group>>() {
-                              @Override
-                              public void callback( Collection<Group> groups ) {
-                                  groupDropdown.addItem("-----select group-----");
-                                  if (groups != null && !groups.isEmpty()) {
-                                      for (Group group : groups) {
-                                          groupDropdown.addItem(group.getName(), group.getName());
-                                          availableGroups.put(group.getName(), group);
-                                      }
-                                  }
-                              }
-                          },
-                new ErrorCallback() {
-                    @Override
-                    public boolean error( final Message message,
-                            final Throwable throwable ) {
-                        Window.alert( "Can't load groups. \n" + message.toString() );
+        //populate Organizational Units list box
+        organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
+                                            @Override
+                                            public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
+                                                organizationalUnitDropdown.addItem( "--- Select ---" );
+                                                if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
+                                                    for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
+                                                        organizationalUnitDropdown.addItem( organizationalUnit.getName(),
+                                                                                            organizationalUnit.getName() );
+                                                        availableOrganizationalUnits.put( organizationalUnit.getName(),
+                                                                                          organizationalUnit );
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        new ErrorCallback() {
+                                            @Override
+                                            public boolean error( final Message message,
+                                                                  final Throwable throwable ) {
+                                                Window.alert( "Can't load Organizational Units. \n" + message.toString() );
 
-                        return false;
-                    }
-                }).getGroups();
+                                                return false;
+                                            }
+                                        }
+                                      ).getOrganizationalUnits();
     }
 
     @Override
@@ -154,13 +156,13 @@ public class CreateRepositoryForm
             nameGroup.setType( ControlGroupType.NONE );
         }
 
-        final String group = groupDropdown.getValue(groupDropdown.getSelectedIndex());
-        if ( !availableGroups.isEmpty() && !availableGroups.containsKey(group)) {
-            groupGroup.setType( ControlGroupType.ERROR );
-            groupHelpInline.setText( "Group is mandatory" );
+        final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
+        if ( !availableOrganizationalUnits.isEmpty() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
+            organizationalUnitGroup.setType( ControlGroupType.ERROR );
+            organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
             hasError = true;
         } else {
-            groupGroup.setType( ControlGroupType.NONE );
+            organizationalUnitGroup.setType( ControlGroupType.NONE );
         }
 
         if ( hasError ) {
@@ -179,26 +181,28 @@ public class CreateRepositoryForm
                                     @Override
                                     public void callback( Repository o ) {
                                         Window.alert( "The repository is created successfully" );
-                                        if (availableGroups.containsKey(group)) {
-                                            groupService.call(new RemoteCallback<Collection<Group>>() {
-                                                              @Override
-                                                              public void callback( Collection<Group> groups ) {
-                                                                  hide();
-                                                              }
-                                                          },
-                                                new ErrorCallback() {
-                                                    @Override
-                                                    public boolean error( final Message message,
-                                                            final Throwable throwable ) {
-                                                        Window.alert( "Can't add repository to a group. \n" + message.toString() );
+                                        if ( availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
+                                            organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
+                                                                                @Override
+                                                                                public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
+                                                                                    hide();
+                                                                                }
+                                                                            },
+                                                                            new ErrorCallback() {
+                                                                                @Override
+                                                                                public boolean error( final Message message,
+                                                                                                      final Throwable throwable ) {
+                                                                                    Window.alert( "Can't add repository to an Organizational Unit. \n" + message.toString() );
 
-                                                        return false;
-                                                    }
-                                                }).addRepository(availableGroups.get(group), o);
+                                                                                    return false;
+                                                                                }
+                                                                            }
+                                                                          ).addRepository( availableOrganizationalUnits.get( organizationalUnit ),
+                                                                                           o );
 
-                                            }  else {
-                                                hide();
-                                            }
+                                        } else {
+                                            hide();
+                                        }
                                     }
                                 },
                                 new ErrorCallback() {
@@ -211,9 +215,6 @@ public class CreateRepositoryForm
                                     }
                                 }
                               ).createRepository( scheme, alias, env );
-
-
-
     }
 
     @UiHandler("cancel")

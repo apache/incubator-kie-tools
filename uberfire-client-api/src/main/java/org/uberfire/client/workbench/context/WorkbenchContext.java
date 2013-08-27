@@ -16,7 +16,7 @@
 
 package org.uberfire.client.workbench.context;
 
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -26,7 +26,7 @@ import org.uberfire.workbench.model.PanelDefinition;
  */
 public interface WorkbenchContext {
 
-    Group getActiveGroup();
+    OrganizationalUnit getActiveOrganizationalUnit();
 
     Repository getActiveRepository();
 

@@ -15,25 +15,25 @@
  */
 package org.uberfire.workbench.events;
 
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 
 /**
- * An event raised when the Group in File Explorer (or any equivalent widget) changes
+ * An event raised when the OrganizationalUnit in File Explorer (or any equivalent widget) changes
  */
-public class GroupChangeEvent {
+public class OrganizationalUnitChangeEvent {
 
-    private final Group group;
+    private final OrganizationalUnit organizationalUnit;
 
-    public GroupChangeEvent() {
-        this.group = null;
+    public OrganizationalUnitChangeEvent() {
+        this.organizationalUnit = null;
     }
 
-    public GroupChangeEvent( final Group group ) {
-        this.group = group;
+    public OrganizationalUnitChangeEvent( final OrganizationalUnit organizationalUnit ) {
+        this.organizationalUnit = organizationalUnit;
     }
 
-    public Group getGroup() {
-        return group;
+    public OrganizationalUnit getOrganizationalUnit() {
+        return organizationalUnit;
     }
 
 }

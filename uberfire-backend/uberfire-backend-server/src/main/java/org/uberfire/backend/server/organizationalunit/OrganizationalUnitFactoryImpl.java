@@ -1,27 +1,28 @@
-package org.uberfire.backend.server.group;
+package org.uberfire.backend.server.organizationalunit;
 
 import java.util.List;
 import javax.inject.Inject;
 
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.group.impl.GroupImpl;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.impl.OrganizationalUnitImpl;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
 
-public class GroupFactoryImpl implements GroupFactory {
+public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
     @Inject
     private RepositoryService repositoryService;
 
     @Override
-    public Group newGroup( ConfigGroup groupConfig ) {
+    public OrganizationalUnit newOrganizationalUnit( ConfigGroup groupConfig ) {
 
-        GroupImpl group = new GroupImpl( groupConfig.getName(), groupConfig.getConfigItemValue( "owner" ) );
+        OrganizationalUnitImpl organizationalUnit = new OrganizationalUnitImpl( groupConfig.getName(),
+                                                                                groupConfig.getConfigItemValue( "owner" ) );
         ConfigItem<List<String>> repositories = groupConfig.getConfigItem( "repositories" );
         if ( repositories != null ) {
             for ( String alias : repositories.getValue() ) {
-                group.getRepositories().add( repositoryService.getRepository( alias ) );
+                organizationalUnit.getRepositories().add( repositoryService.getRepository( alias ) );
             }
         }
 
@@ -29,9 +30,9 @@ public class GroupFactoryImpl implements GroupFactory {
         ConfigItem<List<String>> roles = groupConfig.getConfigItem( "security:roles" );
         if ( roles != null ) {
             for ( String role : roles.getValue() ) {
-                group.getRoles().add( role );
+                organizationalUnit.getRoles().add( role );
             }
         }
-        return group;
+        return organizationalUnit;
     }
 }

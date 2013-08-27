@@ -36,7 +36,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -51,7 +51,7 @@ public class WorkbenchEntryPoint {
     private Caller<VFSService> vfsService;
 
     @Inject
-    private Event<GroupChangeEvent> groupChangedEvent;
+    private Event<OrganizationalUnitChangeEvent> groupChangedEvent;
 
     private final SimplePanel appWidget = new SimplePanel();
 
@@ -70,7 +70,7 @@ public class WorkbenchEntryPoint {
         }
 
         //No context by default.. Ensure dependent widgets know about it.
-        groupChangedEvent.fire( new GroupChangeEvent( null ) );
+        groupChangedEvent.fire( new OrganizationalUnitChangeEvent( null ) );
     }
 
     private void handleIntegration( final Map<String, List<String>> parameters ) {
