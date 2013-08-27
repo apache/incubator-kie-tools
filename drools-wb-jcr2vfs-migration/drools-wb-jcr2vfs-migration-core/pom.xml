@@ -13,11 +13,6 @@
   <name>Drools Workbench - JCR to UberFire VFS migration</name>
   <description>Migrates the data of Guvnor 5 to Drools Workbench 6</description>
 
-  <properties>
-    <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
-    <version.org.apache.lucene>2.4.1</version.org.apache.lucene>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -118,6 +113,13 @@
     <dependency><!-- This is an executable jar, so it needs a logging implementation -->
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.4.1</version>
     </dependency>
 
     <!-- jcr-guvnor dependencies -->
