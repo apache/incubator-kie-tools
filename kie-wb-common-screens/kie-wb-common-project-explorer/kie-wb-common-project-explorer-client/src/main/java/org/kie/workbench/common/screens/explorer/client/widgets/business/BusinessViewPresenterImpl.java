@@ -42,14 +42,14 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -80,7 +80,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<GroupChangeEvent> groupChangeEvent;
+    private Event<OrganizationalUnitChangeEvent> organizationalUnitChangeEvent;
 
     @Inject
     private Event<RepositoryChangeEvent> repositoryChangeEvent;
@@ -110,13 +110,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     private Event<BuildResults> buildResultsEvent;
 
     //Active context
-    private Group activeGroup = null;
+    private OrganizationalUnit activeOrganizationalUnit = null;
     private Repository activeRepository = null;
     private Project activeProject = null;
     private Package activePackage = null;
 
     //Displayed context
-    private Group displayedGroup = null;
+    private OrganizationalUnit displayedOrganizationalUnit = null;
     private Repository displayedRepository = null;
     private Project displayedProject = null;
     private Package displayedPackage = null;
@@ -129,51 +129,51 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     @Override
     public void initialiseViewForActiveContext() {
         //Store active context as it changes during population of the view
-        activeGroup = context.getActiveGroup();
+        activeOrganizationalUnit = context.getActiveOrganizationalUnit();
         activeRepository = context.getActiveRepository();
         activeProject = context.getActiveProject();
         activePackage = context.getActivePackage();
 
         //Invalidate the view so it is constructed from the active context
-        displayedGroup = null;
+        displayedOrganizationalUnit = null;
         displayedRepository = null;
         displayedProject = null;
         displayedPackage = null;
 
-        //Show busy popup. Groups cascade through Repositories, Projects, Packages and Items where it is closed
+        //Show busy popup. Organizational Units cascade through Repositories, Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Group>>() {
+        explorerService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
             @Override
-            public void callback( final Collection<Group> groups ) {
-                view.setGroups( groups,
-                                activeGroup );
+            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
+                view.setOrganizationalUnits( organizationalUnits,
+                                             activeOrganizationalUnit );
 
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
     }
 
     @Override
-    public void groupSelected( final Group group ) {
-        if ( Utils.hasGroupChanged( group,
-                                    displayedGroup ) ) {
-            activeGroup = group;
-            displayedGroup = group;
-            groupChangeEvent.fire( new GroupChangeEvent( group ) );
-            doGroupChanged( group );
+    public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
+        if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
+                                                 displayedOrganizationalUnit ) ) {
+            activeOrganizationalUnit = organizationalUnit;
+            displayedOrganizationalUnit = organizationalUnit;
+            organizationalUnitChangeEvent.fire( new OrganizationalUnitChangeEvent( organizationalUnit ) );
+            doOrganizationalUnitChanged( organizationalUnit );
         }
     }
 
-    public void onGroupChanged( final @Observes GroupChangeEvent event ) {
+    public void onOrganizationalUnitChanged( final @Observes OrganizationalUnitChangeEvent event ) {
         //Don't process event if the view is not visible. State is synchronized when made visible.
         if ( !view.isVisible() ) {
             return;
         }
-        final Group group = event.getGroup();
-        view.selectGroup( group );
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        view.selectOrganizationalUnit( organizationalUnit );
     }
 
-    private void doGroupChanged( final Group group ) {
+    private void doOrganizationalUnitChanged( final OrganizationalUnit organizationalUnit ) {
         //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
@@ -183,7 +183,7 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                                       activeRepository );
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( group );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( organizationalUnit );
     }
 
     @Override
@@ -246,12 +246,12 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
             buildService.call(
                     new RemoteCallback<BuildResults>() {
                         @Override
-                        public void callback(final BuildResults results) {
-                            buildResultsEvent.fire(results);
+                        public void callback( final BuildResults results ) {
+                            buildResultsEvent.fire( results );
                         }
                     },
                     new DefaultErrorCallback()
-            ).build(project);
+                             ).build( project );
 
             //Check cache
             final Collection<Package> packages = packageCache.getEntry( project );

@@ -15,7 +15,7 @@ import org.jboss.errai.ioc.client.api.Caller;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -57,7 +57,7 @@ public class ToolsMenu {
         return menuItems;
     }
 
-    public void selectedGroupChanged( @Observes final GroupChangeEvent event ) {
+    public void selectedGroupChanged( @Observes final OrganizationalUnitChangeEvent event ) {
         enableToolsMenuItems( context.getActiveProject() );
     }
 

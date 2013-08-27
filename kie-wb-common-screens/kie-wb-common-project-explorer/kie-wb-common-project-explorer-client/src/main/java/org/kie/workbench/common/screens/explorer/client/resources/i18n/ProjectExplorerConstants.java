@@ -38,7 +38,7 @@ public interface ProjectExplorerConstants
 
     public String technicalView();
 
-    public String groups();
+    public String organizationalUnits();
 
     public String repositories();
 

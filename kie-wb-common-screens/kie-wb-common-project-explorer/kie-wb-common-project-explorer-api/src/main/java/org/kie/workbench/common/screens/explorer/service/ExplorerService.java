@@ -24,7 +24,7 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 
@@ -34,9 +34,9 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ExplorerService {
 
-    Collection<Group> getGroups();
+    Collection<OrganizationalUnit> getOrganizationalUnits();
 
-    Collection<Repository> getRepositories( final Group group );
+    Collection<Repository> getRepositories( final OrganizationalUnit organizationalUnit );
 
     Collection<Project> getProjects( final Repository repository );
 

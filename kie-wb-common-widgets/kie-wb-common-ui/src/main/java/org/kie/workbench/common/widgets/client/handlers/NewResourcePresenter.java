@@ -35,7 +35,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 @ApplicationScoped
@@ -87,7 +87,7 @@ public class NewResourcePresenter {
         view.setHandlers( handlers );
     }
 
-    public void selectedGroupChanged( @Observes final GroupChangeEvent event ) {
+    public void selectedGroupChanged( @Observes final OrganizationalUnitChangeEvent event ) {
         enableNewResourceHandlers( context.getActivePackage() );
     }
 

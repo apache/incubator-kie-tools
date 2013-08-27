@@ -39,14 +39,14 @@ import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.GroupChangeEvent;
+import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -77,7 +77,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<GroupChangeEvent> groupChangeEvent;
+    private Event<OrganizationalUnitChangeEvent> organizationalUnitChangeEvent;
 
     @Inject
     private Event<RepositoryChangeEvent> repositoryChangeEvent;
@@ -101,7 +101,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     private Event<BuildResults> buildResultsEvent;
 
     //Active context
-    private Group activeGroup = null;
+    private OrganizationalUnit activeOrganizationalUnit = null;
     private Repository activeRepository = null;
     private Project activeProject = null;
     private Package activePackage = null;
@@ -114,7 +114,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void initialiseViewForActiveContext() {
-        activeGroup = context.getActiveGroup();
+        activeOrganizationalUnit = context.getActiveOrganizationalUnit();
         activeRepository = context.getActiveRepository();
         activeProject = context.getActiveProject();
         activePackage = context.getActivePackage();
@@ -132,33 +132,33 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         } else if ( activeRepository != null ) {
             loadProjects( activeRepository );
 
-        } else if ( activeGroup != null ) {
-            loadRepositories( activeGroup );
+        } else if ( activeOrganizationalUnit != null ) {
+            loadRepositories( activeOrganizationalUnit );
 
         } else {
-            loadGroups();
+            loadOrganizationalUnits();
         }
     }
 
-    private void loadGroups() {
-        activeGroup = null;
+    private void loadOrganizationalUnits() {
+        activeOrganizationalUnit = null;
         activeRepository = null;
         activeProject = null;
         activePackage = null;
         activeFolderListing = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Group>>() {
+        explorerService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
             @Override
-            public void callback( final Collection<Group> groups ) {
-                view.setGroups( groups );
+            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
+                view.setOrganizationalUnits( organizationalUnits );
                 view.hideBusyIndicator();
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getGroups();
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
     }
 
-    private void loadRepositories( final Group group ) {
-        activeGroup = group;
+    private void loadRepositories( final OrganizationalUnit organizationalUnit ) {
+        activeOrganizationalUnit = organizationalUnit;
         activeRepository = null;
         activeProject = null;
         activePackage = null;
@@ -171,7 +171,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                 view.hideBusyIndicator();
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( activeGroup );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( activeOrganizationalUnit );
     }
 
     private void loadProjects( final Repository repository ) {
@@ -203,26 +203,26 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     @Override
-    public void selectGroup( final Group group ) {
-        if ( Utils.hasGroupChanged( group,
-                                    activeGroup ) ) {
-            activeGroup = group;
-            groupChangeEvent.fire( new GroupChangeEvent( group ) );
-            if ( group == null ) {
-                loadGroups();
+    public void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
+                                                 activeOrganizationalUnit ) ) {
+            activeOrganizationalUnit = organizationalUnit;
+            organizationalUnitChangeEvent.fire( new OrganizationalUnitChangeEvent( organizationalUnit ) );
+            if ( organizationalUnit == null ) {
+                loadOrganizationalUnits();
             } else {
-                loadRepositories( group );
+                loadRepositories( organizationalUnit );
             }
         }
     }
 
-    public void onGroupChanged( final @Observes GroupChangeEvent event ) {
+    public void onOrganizationalUnitChanged( final @Observes OrganizationalUnitChangeEvent event ) {
         //Don't process event if the view is not visible. State is synchronized when made visible.
         if ( !view.isVisible() ) {
             return;
         }
-        final Group group = event.getGroup();
-        selectGroup( group );
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        selectOrganizationalUnit( organizationalUnit );
     }
 
     @Override
@@ -232,7 +232,7 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
             activeRepository = repository;
             repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
             if ( repository == null ) {
-                loadRepositories( activeGroup );
+                loadRepositories( activeOrganizationalUnit );
             } else {
                 loadProjects( repository );
             }
@@ -345,8 +345,8 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     @Override
-    public Group getActiveGroup() {
-        return activeGroup;
+    public OrganizationalUnit getActiveOrganizationalUnit() {
+        return activeOrganizationalUnit;
     }
 
     @Override

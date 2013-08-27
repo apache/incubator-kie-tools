@@ -49,7 +49,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.type.AnyResourceType;
@@ -75,7 +75,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     Well breadCrumbs;
 
     @UiField
-    SplitDropdownButton ddGroups;
+    SplitDropdownButton ddOrganizationalUnits;
 
     @UiField
     SplitDropdownButton ddRepositories;
@@ -93,7 +93,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     Classifier classifier;
 
     //TreeSet sorts members upon insertion
-    private final Set<Group> sortedGroups = new TreeSet<Group>( Sorters.GROUP_SORTER );
+    private final Set<OrganizationalUnit> sortedOrganizationalUnits = new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER );
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
     private final Set<Package> sortedPackages = new TreeSet<Package>( Sorters.PACKAGE_SORTER );
@@ -113,25 +113,25 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     }
 
     @Override
-    public void setGroups( final Collection<Group> groups,
-                           final Group activeGroup ) {
-        ddGroups.clear();
-        if ( !groups.isEmpty() ) {
-            sortedGroups.clear();
-            sortedGroups.addAll( groups );
+    public void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits,
+                                        final OrganizationalUnit activeOrganizationalUnit ) {
+        ddOrganizationalUnits.clear();
+        if ( !organizationalUnits.isEmpty() ) {
+            sortedOrganizationalUnits.clear();
+            sortedOrganizationalUnits.addAll( organizationalUnits );
 
-            for ( Group group : sortedGroups ) {
-                ddGroups.add( makeGroupNavLink( group ) );
+            for ( OrganizationalUnit organizationalUnit : sortedOrganizationalUnits ) {
+                ddOrganizationalUnits.add( makeOrganizationalUnitNavLink( organizationalUnit ) );
             }
 
-            final Group selectedGroup = getSelectedGroup( sortedGroups,
-                                                          activeGroup );
-            selectGroup( selectedGroup );
+            final OrganizationalUnit selectedOrganizationalUnit = getSelectedOrganizationalUnit( sortedOrganizationalUnits,
+                                                                                                 activeOrganizationalUnit );
+            selectOrganizationalUnit( selectedOrganizationalUnit );
 
         } else {
             setItems( Collections.EMPTY_LIST );
-            ddGroups.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddGroups.getTriggerWidget().setEnabled( false );
+            ddOrganizationalUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+            ddOrganizationalUnits.getTriggerWidget().setEnabled( false );
             ddRepositories.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddRepositories.getTriggerWidget().setEnabled( false );
             ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
@@ -143,36 +143,36 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     }
 
     @Override
-    public void selectGroup( final Group group ) {
-        if ( group != null ) {
-            ddGroups.setText( group.getName() );
-            ddGroups.getTriggerWidget().setEnabled( true );
-            presenter.groupSelected( group );
+    public void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        if ( organizationalUnit != null ) {
+            ddOrganizationalUnits.setText( organizationalUnit.getName() );
+            ddOrganizationalUnits.getTriggerWidget().setEnabled( true );
+            presenter.organizationalUnitSelected( organizationalUnit );
         }
     }
 
-    private IsWidget makeGroupNavLink( final Group group ) {
-        final NavLink navLink = new NavLink( group.getName() );
+    private IsWidget makeOrganizationalUnitNavLink( final OrganizationalUnit organizationalUnit ) {
+        final NavLink navLink = new NavLink( organizationalUnit.getName() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                ddGroups.setText( group.getName() );
-                presenter.groupSelected( group );
+                ddOrganizationalUnits.setText( organizationalUnit.getName() );
+                presenter.organizationalUnitSelected( organizationalUnit );
             }
         } );
         return navLink;
     }
 
-    private Group getSelectedGroup( final Collection<Group> groups,
-                                    final Group activeGroup ) {
+    private OrganizationalUnit getSelectedOrganizationalUnit( final Collection<OrganizationalUnit> organizationalUnits,
+                                                              final OrganizationalUnit activeOrganizationalUnit ) {
         //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
-        for ( Group group : groups ) {
-            if ( group.equals( activeGroup ) ) {
-                return activeGroup;
+        for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
+            if ( organizationalUnit.equals( activeOrganizationalUnit ) ) {
+                return activeOrganizationalUnit;
             }
         }
-        return groups.iterator().next();
+        return organizationalUnits.iterator().next();
     }
 
     @Override

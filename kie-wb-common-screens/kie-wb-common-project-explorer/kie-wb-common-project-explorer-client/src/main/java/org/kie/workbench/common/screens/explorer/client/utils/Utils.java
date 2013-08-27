@@ -19,7 +19,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 
@@ -29,23 +29,23 @@ import org.uberfire.backend.vfs.Path;
 public class Utils {
 
     /**
-     * A convenience method to compare two Groups avoiding cluttering code with null checks.
-     * @param group
-     * @param activeGroup
+     * A convenience method to compare two OrganizationalUnits avoiding cluttering code with null checks.
+     * @param organizationalUnit
+     * @param activeOrganizationalUnit
      * @return
      */
-    public static boolean hasGroupChanged( final Group group,
-                                           final Group activeGroup ) {
-        if ( group == null && activeGroup != null ) {
+    public static boolean hasOrganizationalUnitChanged( final OrganizationalUnit organizationalUnit,
+                                                        final OrganizationalUnit activeOrganizationalUnit ) {
+        if ( organizationalUnit == null && activeOrganizationalUnit != null ) {
             return true;
         }
-        if ( group != null && activeGroup == null ) {
+        if ( organizationalUnit != null && activeOrganizationalUnit == null ) {
             return true;
         }
-        if ( group == null && activeGroup == null ) {
+        if ( organizationalUnit == null && activeOrganizationalUnit == null ) {
             return false;
         }
-        return !group.equals( activeGroup );
+        return !organizationalUnit.equals( activeOrganizationalUnit );
     }
 
     /**

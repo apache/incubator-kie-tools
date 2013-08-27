@@ -19,7 +19,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 
 /**
@@ -29,7 +29,7 @@ public interface BusinessViewPresenter extends BaseViewPresenter {
 
     void initialiseViewForActiveContext();
 
-    void groupSelected( final Group group );
+    void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 
     void repositorySelected( final Repository repository );
 

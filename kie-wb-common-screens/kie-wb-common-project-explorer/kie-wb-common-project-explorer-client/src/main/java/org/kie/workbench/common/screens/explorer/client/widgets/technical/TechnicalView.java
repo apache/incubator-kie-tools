@@ -22,7 +22,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 
 /**
@@ -33,7 +33,7 @@ public interface TechnicalView extends HasBusyIndicator,
 
     void init( final TechnicalViewPresenter presenter );
 
-    void setGroups( final Collection<Group> groups );
+    void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits );
 
     void setRepositories( final Collection<Repository> repositories );
 

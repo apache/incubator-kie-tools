@@ -20,7 +20,7 @@ import java.util.Comparator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -31,12 +31,12 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 public class Sorters {
 
     /**
-     * A comparator to sort Groups alphabetically by group name.
+     * A comparator to sort OrganizationalUnits alphabetically by group name.
      */
-    public static Comparator<Group> GROUP_SORTER = new Comparator<Group>() {
+    public static Comparator<OrganizationalUnit> ORGANIZATIONAL_UNIT_SORTER = new Comparator<OrganizationalUnit>() {
         @Override
-        public int compare( final Group o1,
-                            final Group o2 ) {
+        public int compare( final OrganizationalUnit o1,
+                            final OrganizationalUnit o2 ) {
             return o1.getName().toLowerCase().compareTo( o2.getName().toLowerCase() );
         }
     };

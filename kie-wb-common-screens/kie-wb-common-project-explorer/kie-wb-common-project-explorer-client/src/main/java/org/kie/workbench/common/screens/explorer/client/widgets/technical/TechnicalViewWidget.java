@@ -40,7 +40,7 @@ import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectEx
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
@@ -66,20 +66,20 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     Breadcrumbs breadcrumbs;
 
     //TreeSet sorts members upon insertion
-    private final Set<Group> sortedGroups = new TreeSet<Group>( Sorters.GROUP_SORTER );
+    private final Set<OrganizationalUnit> sortedOrganizationalUnits = new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER );
     private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
     private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
     private final Set<FolderItem> sortedFolderListing = new TreeSet<FolderItem>( Sorters.FOLDER_LISTING_SORTER );
 
     //The view being displayed
     private enum Context {
-        GROUPS,
+        ORGANIZATIONAL_UNITS,
         REPOSITORIES,
         PROJECTS,
         PATHS
     }
 
-    private Context activeContext = Context.GROUPS;
+    private Context activeContext = Context.ORGANIZATIONAL_UNITS;
 
     private TechnicalViewPresenter presenter;
 
@@ -95,10 +95,10 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     }
 
     @Override
-    public void setGroups( final Collection<Group> groups ) {
-        sortedGroups.clear();
-        sortedGroups.addAll( groups );
-        activeContext = Context.GROUPS;
+    public void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits ) {
+        sortedOrganizationalUnits.clear();
+        sortedOrganizationalUnits.addAll( organizationalUnits );
+        activeContext = Context.ORGANIZATIONAL_UNITS;
         refresh();
     }
 
@@ -128,8 +128,8 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private void refresh() {
         switch ( activeContext ) {
-            case GROUPS:
-                populateGroupView();
+            case ORGANIZATIONAL_UNITS:
+                populateOrganizationalUnitView();
                 break;
             case REPOSITORIES:
                 populateRepositoryView();
@@ -146,9 +146,9 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private void refresh( final Context updatedContext ) {
         switch ( updatedContext ) {
-            case GROUPS:
+            case ORGANIZATIONAL_UNITS:
                 if ( activeContext.equals( updatedContext ) ) {
-                    populateGroupView();
+                    populateOrganizationalUnitView();
                 }
                 break;
             case REPOSITORIES:
@@ -170,25 +170,25 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         }
     }
 
-    private void populateGroupView() {
+    private void populateOrganizationalUnitView() {
         items.clear();
-        items.add( new NavHeader( ProjectExplorerConstants.INSTANCE.groups() ) );
-        if ( !sortedGroups.isEmpty() ) {
-            for ( Group group : sortedGroups ) {
-                items.add( makeGroupNavLink( group ) );
+        items.add( new NavHeader( ProjectExplorerConstants.INSTANCE.organizationalUnits() ) );
+        if ( !sortedOrganizationalUnits.isEmpty() ) {
+            for ( OrganizationalUnit organizationalUnit : sortedOrganizationalUnits ) {
+                items.add( makeOrganizationalUnitNavLink( organizationalUnit ) );
             }
         } else {
             items.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
         }
     }
 
-    private IsWidget makeGroupNavLink( final Group group ) {
-        final NavLink navLink = new NavLink( group.getName() );
+    private IsWidget makeOrganizationalUnitNavLink( final OrganizationalUnit organizationalUnit ) {
+        final NavLink navLink = new NavLink( organizationalUnit.getName() );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.selectGroup( group );
+                presenter.selectOrganizationalUnit( organizationalUnit );
             }
         } );
         return navLink;
@@ -197,7 +197,7 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
     private void populateRepositoryView() {
         items.clear();
         items.add( new NavHeader( ProjectExplorerConstants.INSTANCE.repositories() ) );
-        items.add( makeParentGroupNavLink() );
+        items.add( makeParentOrganizationalUnitNavLink() );
         if ( !sortedRepositories.isEmpty() ) {
             for ( Repository repository : sortedRepositories ) {
                 items.add( makeRepositoryNavLink( repository ) );
@@ -207,13 +207,13 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
         }
     }
 
-    private IsWidget makeParentGroupNavLink() {
+    private IsWidget makeParentOrganizationalUnitNavLink() {
         final NavLink navLink = new NavLink( ".." );
         navLink.addClickHandler( new ClickHandler() {
 
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.selectGroup( null );
+                presenter.selectOrganizationalUnit( null );
             }
         } );
         return navLink;
@@ -327,18 +327,18 @@ public class TechnicalViewWidget extends Composite implements TechnicalView {
 
     private void makeBreadCrumbs() {
         breadcrumbs.clear();
-        makeGroupBreadCrumb();
+        makeOrganizationalUnitBreadCrumb();
         makeRepositoryBreadCrumb();
         makeProjectBreadCrumb();
         makeFolderListingBreadCrumb();
     }
 
-    private void makeGroupBreadCrumb() {
-        final Group activeGroup = presenter.getActiveGroup();
-        if ( activeGroup == null ) {
+    private void makeOrganizationalUnitBreadCrumb() {
+        final OrganizationalUnit activeOrganizationalUnit = presenter.getActiveOrganizationalUnit();
+        if ( activeOrganizationalUnit == null ) {
             return;
         }
-        final NavLink link = new NavLink( activeGroup.getName() );
+        final NavLink link = new NavLink( activeOrganizationalUnit.getName() );
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {

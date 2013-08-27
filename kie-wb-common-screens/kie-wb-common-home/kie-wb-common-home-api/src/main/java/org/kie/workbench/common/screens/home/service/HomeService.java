@@ -3,7 +3,7 @@ package org.kie.workbench.common.screens.home.service;
 import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.group.Group;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 
 /**
  * Handy things the Home Page needs
@@ -12,9 +12,9 @@ import org.uberfire.backend.group.Group;
 public interface HomeService {
 
     /**
-     * Get a list of all Groups the User has access to
+     * Get a list of all OrganizationalUnits the User has access to
      * @return
      */
-    Collection<Group> getGroups();
+    Collection<OrganizationalUnit> getOrganizationalUnits();
 
 }

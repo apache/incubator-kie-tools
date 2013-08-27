@@ -40,8 +40,8 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -71,7 +71,7 @@ public class ExplorerServiceImpl
     private ProjectService projectService;
 
     @Inject
-    private GroupService groupService;
+    private OrganizationalUnitService organizationalUnitService;
 
     @Inject
     private AuthorizationManager authorizationManager;
@@ -90,38 +90,38 @@ public class ExplorerServiceImpl
     public ExplorerServiceImpl( final IOService ioService,
                                 final AuthorizationManager authorizationManager,
                                 final ProjectService projectService,
-                                final GroupService groupService,
+                                final OrganizationalUnitService organizationalUnitService,
                                 final Identity identity,
                                 final Paths paths ) {
         this.ioService = ioService;
         this.authorizationManager = authorizationManager;
         this.projectService = projectService;
-        this.groupService = groupService;
+        this.organizationalUnitService = organizationalUnitService;
         this.identity = identity;
         this.paths = paths;
     }
 
     @Override
-    public Collection<Group> getGroups() {
-        final Collection<Group> groups = groupService.getGroups();
-        final Collection<Group> authorizedGroups = new ArrayList<Group>();
-        for ( Group group : groups ) {
-            if ( authorizationManager.authorize( group,
+    public Collection<OrganizationalUnit> getOrganizationalUnits() {
+        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
+        final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
+        for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
+            if ( authorizationManager.authorize( organizationalUnit,
                                                  identity ) ) {
-                authorizedGroups.add( group );
+                authorizedOrganizationalUnits.add( organizationalUnit );
             }
         }
-        return authorizedGroups;
+        return authorizedOrganizationalUnits;
     }
 
     @Override
-    public Collection<Repository> getRepositories( final Group group ) {
+    public Collection<Repository> getRepositories( final OrganizationalUnit organizationalUnit ) {
         final Collection<Repository> authorizedRepositories = new HashSet<Repository>();
-        if ( group == null ) {
+        if ( organizationalUnit == null ) {
             return authorizedRepositories;
         }
-        //Reload Group as the group's repository list might have been changed server-side
-        final Collection<Repository> repositories = groupService.getGroup( group.getName() ).getRepositories();
+        //Reload OrganizationalUnit as the organizational unit's repository list might have been changed server-side
+        final Collection<Repository> repositories = organizationalUnitService.getOrganizationalUnit( organizationalUnit.getName() ).getRepositories();
         for ( Repository repository : repositories ) {
             if ( authorizationManager.authorize( repository,
                                                  identity ) ) {
