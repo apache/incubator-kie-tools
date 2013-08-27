@@ -164,14 +164,14 @@ public class AdministrationPerspective {
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuGroups() )
+                .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
                 .menus()
-                .menu( AppConstants.INSTANCE.MenuManageGroups() )
+                .menu( AppConstants.INSTANCE.MenuManageOrganizationalUnits() )
                 .withRoles( PERMISSIONS_ADMIN )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "org.kie.workbench.common.screens.group.manager.GroupManager" );
+                        placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
                     }
                 } )
                 .endMenu()

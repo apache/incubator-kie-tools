@@ -52,8 +52,8 @@ public interface AppConstants
 
     String MenuNewRepository();
 
-    String MenuGroups();
+    String MenuOrganizationalUnits();
 
-    String MenuManageGroups();
+    String MenuManageOrganizationalUnits();
 
 }

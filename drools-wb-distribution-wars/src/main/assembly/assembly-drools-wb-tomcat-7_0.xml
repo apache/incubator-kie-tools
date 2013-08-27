@@ -58,7 +58,7 @@
           <exclude>WEB-INF/lib/kie-wb-common-project-imports-editor-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-search-screen-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-home-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/kie-wb-common-group-manager-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-wb-common-organizationalunit-manager-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-config-resource-widget-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-decorated-grid-widget-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-metadata-widget-*.jar</exclude>

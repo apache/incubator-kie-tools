@@ -26,8 +26,8 @@ import javax.inject.Inject;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.commons.services.cdi.StartupType;
-import org.uberfire.backend.group.Group;
-import org.uberfire.backend.group.GroupService;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -43,8 +43,8 @@ import org.uberfire.backend.server.config.ConfigurationService;
 public class AppSetup {
 
     // default groups
-    private static final String DROOLS_WB_GROUP1 = "demo";
-    private static final String DROOLS_WB_GROUP1_OWNER = "demo@drools.org";
+    private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1 = "demo";
+    private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER = "demo@drools.org";
 
     // default repository section - start
     private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
@@ -60,7 +60,7 @@ public class AppSetup {
     private RepositoryService repositoryService;
 
     @Inject
-    private GroupService groupService;
+    private OrganizationalUnitService organizationalUnitService;
 
     @Inject
     private ConfigurationService configurationService;
@@ -81,14 +81,14 @@ public class AppSetup {
                                                               }} );
         }
 
-        // TODO in case groups are not defined
-        Group group1 = groupService.getGroup( DROOLS_WB_GROUP1 );
-        if ( group1 == null ) {
+        // TODO in case Organizational Units are not defined
+        OrganizationalUnit organizationalUnit1 = organizationalUnitService.getOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1 );
+        if ( organizationalUnit1 == null ) {
             final List<Repository> repositories = new ArrayList<Repository>();
             repositories.add( repository1 );
-            groupService.createGroup( DROOLS_WB_GROUP1,
-                                      DROOLS_WB_GROUP1_OWNER,
-                                      repositories );
+            organizationalUnitService.createOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1,
+                                                                DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
+                                                                repositories );
         }
 
         //Define mandatory properties

@@ -26,8 +26,9 @@ import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
-import org.uberfire.backend.group.GroupService;
-import org.uberfire.backend.group.impl.GroupImpl;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
+import org.uberfire.backend.organizationalunit.impl.OrganizationalUnitImpl;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
@@ -53,7 +54,7 @@ public class ProjectResourceDispatcher {
     protected BuildService buildService;
 
     @Inject
-    GroupService groupService;
+    OrganizationalUnitService organicationalUnitService;
 
     @Inject
     private Event<JobResult> jobResultEvent;
@@ -62,7 +63,7 @@ public class ProjectResourceDispatcher {
     protected ScenarioTestEditorService scenarioTestEditorService;
 
     public void createOrCloneRepository( String jobId,
-    		                             RepositoryRequest repository ) {
+                                         RepositoryRequest repository ) {
         System.out.println( "-----ProjectResourceDispatcher:createOrCloneRepository--- , repository name:" + repository.getName() );
 
         JobResult result = new JobResult();
@@ -391,35 +392,38 @@ public class ProjectResourceDispatcher {
         }
     }
 
-    public void createGroup( String jobId,
-                             String groupName,
-                             String groupOwer,
-                             List<String> repositoryNameList ) {
-        System.out.println( "-----ProjectResourceDispatcher:createGroup--- , Group name:" + groupName + ", Group owner:" + groupOwer );
+    public void createOrganizationalUnit( String jobId,
+                                          String organizationalUnitName,
+                                          String organizationalUnitOwner,
+                                          List<String> repositoryNameList ) {
+        System.out.println( "-----ProjectResourceDispatcher:createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", OrganizationalUnit owner:" + organizationalUnitOwner );
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        if ( groupName == null || groupOwer == null ) {
+        if ( organizationalUnitName == null || organizationalUnitName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
-            result.setResult( "Group name and owner must be provided" );
+            result.setResult( "OrganizationalUnit name and owner must be provided" );
             jobResultEvent.fire( result );
             return;
         }
 
-        org.uberfire.backend.group.Group group = null;
+        OrganizationalUnit organizationalUnit = null;
         List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
         if ( repositoryNameList != null && repositoryNameList.size() > 0 ) {
             for ( String repoName : repositoryNameList ) {
                 GitRepository repo = new GitRepository( repoName );
                 repositories.add( repo );
             }
-            group = groupService.createGroup( groupName, groupOwer, repositories );
+            organizationalUnit = organicationalUnitService.createOrganizationalUnit( organizationalUnitName,
+                                                                                     organizationalUnitOwner,
+                                                                                     repositories );
         } else {
-            group = groupService.createGroup( groupName, groupOwer );
+            organizationalUnit = organicationalUnitService.createOrganizationalUnit( organizationalUnitName,
+                                                                                     organizationalUnitOwner );
         }
 
-        if ( group != null ) {
-            result.setResult( "Group " + group.getName() + " is created successfully." );
+        if ( organizationalUnit != null ) {
+            result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " is created successfully." );
             result.setStatus( JobRequest.Status.SUCCESS );
         } else {
             result.setStatus( JobRequest.Status.FAIL );
@@ -427,28 +431,30 @@ public class ProjectResourceDispatcher {
         jobResultEvent.fire( result );
     }
 
-    public void addRepositoryToGroup( String jobId,
-                                      String groupName,
-                                      String repositoryName ) {
-        System.out.println( "-----ProjectResourceDispatcher:addRepositoryToGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+    public void addRepositoryToOrganizationalUnit( String jobId,
+                                                   String organizationalUnitName,
+                                                   String repositoryName ) {
+        System.out.println( "-----ProjectResourceDispatcher:addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        if ( groupName == null || repositoryName == null ) {
+        if ( organizationalUnitName == null || repositoryName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
-            result.setResult( "Group name and repository name must be provided" );
+            result.setResult( "OrganizationalUnit name and Repository name must be provided" );
             jobResultEvent.fire( result );
             return;
         }
 
-        GroupImpl group = new GroupImpl( groupName, null );
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName,
+                                                                            null );
         GitRepository repo = new GitRepository( repositoryName );
 
         try {
-            groupService.addRepository( group, repo );
+            organicationalUnitService.addRepository( organizationalUnit,
+                                                     repo );
         } catch ( IllegalArgumentException e ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
-            result.setResult( "Group " + group.getName() + " not found" );
+            result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
             jobResultEvent.fire( result );
             return;
         }
@@ -457,27 +463,28 @@ public class ProjectResourceDispatcher {
         jobResultEvent.fire( result );
     }
 
-    public void removeRepositoryFromGroup( String jobId,
-                                           String groupName,
-                                           String repositoryName ) {
-        System.out.println( "-----ProjectResourceDispatcher:removeRepositoryFromGroup--- , Group name:" + groupName + ", repository name:" + repositoryName );
+    public void removeRepositoryFromOrganizationalUnit( String jobId,
+                                                        String organizationalUnitName,
+                                                        String repositoryName ) {
+        System.out.println( "-----ProjectResourceDispatcher:removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        if ( groupName == null || repositoryName == null ) {
+        if ( organizationalUnitName == null || repositoryName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
-            result.setResult( "Group name and repository name must be provided" );
+            result.setResult( "OrganizationalUnit name and Repository name must be provided" );
             jobResultEvent.fire( result );
             return;
         }
 
-        GroupImpl group = new GroupImpl( groupName, null );
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName, null );
         GitRepository repo = new GitRepository( repositoryName );
         try {
-            groupService.removeRepository( group, repo );
+            organicationalUnitService.removeRepository( organizationalUnit,
+                                                        repo );
         } catch ( IllegalArgumentException e ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
-            result.setResult( "Group " + group.getName() + " not found" );
+            result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
             jobResultEvent.fire( result );
             return;
         }
