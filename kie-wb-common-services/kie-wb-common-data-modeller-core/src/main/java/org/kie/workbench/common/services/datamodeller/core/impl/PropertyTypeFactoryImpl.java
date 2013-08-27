@@ -4,6 +4,7 @@ import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.PropertyTypeFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,9 +28,11 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
 
         baseTypes.add(new PropertyTypeImpl(Date.class.getSimpleName(), Date.class.getName()));
 
-        baseTypes.add(new PropertyTypeImpl(String.class.getSimpleName(), String.class.getName()));
         baseTypes.add(new PropertyTypeImpl(Boolean.class.getSimpleName(), Boolean.class.getName()));
+        baseTypes.add(new PropertyTypeImpl(String.class.getSimpleName(), String.class.getName()));
+
         baseTypes.add(new PropertyTypeImpl(BigDecimal.class.getSimpleName(), BigDecimal.class.getName()));
+        baseTypes.add(new PropertyTypeImpl(BigInteger.class.getSimpleName(), BigInteger.class.getName()));
 
         for (PropertyType type : baseTypes) {
             baseTypesByClass.put(type.getClassName(), type);
