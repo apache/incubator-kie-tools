@@ -23,9 +23,9 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -82,6 +82,11 @@ public class MockBuildServiceCaller
     }
 
     @Override
+    public BuildService call() {
+        return service;
+    }
+
+    @Override
     public BuildService call( RemoteCallback<?> remoteCallback ) {
         callback = remoteCallback;
         return service;
@@ -89,7 +94,7 @@ public class MockBuildServiceCaller
 
     @Override
     public BuildService call( RemoteCallback<?> remoteCallback,
-                              ErrorCallback errorCallback ) {
+                              ErrorCallback<?> errorCallback ) {
         callback = remoteCallback;
         return service;
     }

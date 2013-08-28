@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;

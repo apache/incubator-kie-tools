@@ -30,9 +30,9 @@ import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
@@ -64,7 +64,7 @@ public class NewResourcePresenter {
     protected ProjectContext context;
 
     @Inject
-    private IOCBeanManager iocBeanManager;
+    private SyncBeanManager iocBeanManager;
 
     @Inject
     private Caller<ProjectService> projectService;

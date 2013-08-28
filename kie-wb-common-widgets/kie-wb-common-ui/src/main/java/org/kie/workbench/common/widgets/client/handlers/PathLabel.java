@@ -4,8 +4,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.AttrsUtil;
 import org.uberfire.backend.vfs.BasicFileAttributes;

@@ -1,14 +1,14 @@
 package org.kie.workbench.common.widgets.client.callbacks;
 
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
  * Default Error handler for all Portable Exceptions
  */
-public class DefaultErrorCallback implements ErrorCallback {
+public class DefaultErrorCallback implements ErrorCallback<Message> {
 
     @Override
     public boolean error( final Message message,

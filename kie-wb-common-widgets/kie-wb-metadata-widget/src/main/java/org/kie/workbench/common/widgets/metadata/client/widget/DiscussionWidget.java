@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.services.security.AppRoles;

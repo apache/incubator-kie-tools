@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.validation;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;

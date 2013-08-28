@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
 
 public class DependencySelectorPopup
         implements DependencySelectorPopupView.Presenter {

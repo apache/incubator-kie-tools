@@ -18,7 +18,7 @@ import org.guvnor.common.services.project.events.PackageChangeEvent;
 import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
@@ -36,7 +36,7 @@ public class NewResourcesMenu {
     private ProjectContext context;
 
     @Inject
-    private IOCBeanManager iocBeanManager;
+    private SyncBeanManager iocBeanManager;
 
     @Inject
     private NewResourcePresenter newResourcePresenter;

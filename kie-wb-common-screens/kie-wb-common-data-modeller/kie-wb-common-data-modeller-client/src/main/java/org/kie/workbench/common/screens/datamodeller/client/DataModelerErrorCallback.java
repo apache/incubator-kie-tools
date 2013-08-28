@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
-
 import org.uberfire.client.common.BusyPopup;
 
-public class DataModelerErrorCallback implements ErrorCallback {
+public class DataModelerErrorCallback implements ErrorCallback<Message> {
     
     String localMessage = "";
 

@@ -27,7 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -40,7 +40,7 @@ public class Classifier {
     private List<ClientResourceType> resourceTypes = new ArrayList<ClientResourceType>();
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @PostConstruct
     public void init() {

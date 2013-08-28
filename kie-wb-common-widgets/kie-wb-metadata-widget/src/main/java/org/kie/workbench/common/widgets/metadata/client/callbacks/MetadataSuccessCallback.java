@@ -1,7 +1,7 @@
 package org.kie.workbench.common.widgets.metadata.client.callbacks;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 
 /**

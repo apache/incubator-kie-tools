@@ -19,9 +19,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 
 public class MockProjectEditorServiceCaller
@@ -69,6 +69,11 @@ public class MockProjectEditorServiceCaller
     }
 
     @Override
+    public KModuleService call() {
+        return service;
+    }
+
+    @Override
     public KModuleService call( RemoteCallback<?> callback ) {
         this.callback = callback;
         return service;
@@ -76,7 +81,7 @@ public class MockProjectEditorServiceCaller
 
     @Override
     public KModuleService call( RemoteCallback<?> callback,
-                                ErrorCallback errorCallback ) {
+                                ErrorCallback<?> errorCallback ) {
         this.callback = callback;
         return service;
     }

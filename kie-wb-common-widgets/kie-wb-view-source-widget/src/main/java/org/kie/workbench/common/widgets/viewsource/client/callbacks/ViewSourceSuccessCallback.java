@@ -1,6 +1,6 @@
 package org.kie.workbench.common.widgets.viewsource.client.callbacks;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 
 /**

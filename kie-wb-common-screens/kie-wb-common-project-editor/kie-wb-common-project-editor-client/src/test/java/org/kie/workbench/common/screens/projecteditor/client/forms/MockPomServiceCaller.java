@@ -19,9 +19,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 
 public class MockPomServiceCaller
@@ -52,12 +52,19 @@ public class MockPomServiceCaller
             }
 
             @Override
-            public Path create(Path projectRoot, String baseURL, POM pom) {
+            public Path create( Path projectRoot,
+                                String baseURL,
+                                POM pom ) {
                 // TODO Auto-generated method stub
                 return null;
             }
 
         };
+    }
+
+    @Override
+    public POMService call() {
+        return service;
     }
 
     @Override
@@ -68,7 +75,7 @@ public class MockPomServiceCaller
 
     @Override
     public POMService call( RemoteCallback<?> remoteCallback,
-                            ErrorCallback errorCallback ) {
+                            ErrorCallback<?> errorCallback ) {
         callback = remoteCallback;
         return service;
     }
