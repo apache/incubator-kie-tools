@@ -16,10 +16,10 @@
 package org.kie.workbench.common.widgets.client.search;
 
 /**
- *
  * @author salaboy
  */
 public interface SearchBehavior {
-    void execute(String searchFilter);
-    
+
+    void execute( String searchFilter );
+
 }

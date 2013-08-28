@@ -15,16 +15,14 @@
  */
 package org.kie.workbench.common.widgets.client.search;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- *
  * @author salaboy
  */
 public class SetSearchTextEvent {
-     private String searchText;
 
-    public SetSearchTextEvent(String searchText) {
+    private String searchText;
+
+    public SetSearchTextEvent( String searchText ) {
         this.searchText = searchText;
     }
 
@@ -35,9 +33,8 @@ public class SetSearchTextEvent {
         return searchText;
     }
 
-    public void setSearchText(String searchText) {
+    public void setSearchText( String searchText ) {
         this.searchText = searchText;
     }
-     
-     
+
 }

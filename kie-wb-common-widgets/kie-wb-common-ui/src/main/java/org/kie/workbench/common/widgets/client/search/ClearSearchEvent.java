@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.widgets.client.search;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  *
  * @author salaboy

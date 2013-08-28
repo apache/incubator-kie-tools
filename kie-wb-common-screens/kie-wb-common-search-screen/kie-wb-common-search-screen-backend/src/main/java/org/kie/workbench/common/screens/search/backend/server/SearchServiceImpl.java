@@ -76,9 +76,9 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public PageResponse<SearchPageRow> fullTextSearch( final SearchTermPageRequest pageRequest ) {
         try {
-            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(), roots() );
+            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm() );
             if ( hits > 0 ) {
-                final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(), pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
+                final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(), pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
                 return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
             }
             return emptyResponse;
@@ -100,9 +100,9 @@ public class SearchServiceImpl implements SearchService {
                 attrs.put( "lastModifiedTime", toDateRange( pageRequest.getLastModifiedBefore(), pageRequest.getLastModifiedAfter() ) );
             }
 
-            final int hits = ioSearchService.searchByAttrsHits( attrs, roots() );
+            final int hits = ioSearchService.searchByAttrsHits( attrs );
             if ( hits > 0 ) {
-                final List<Path> pathResult = ioSearchService.searchByAttrs( attrs, pageRequest.getPageSize(), pageRequest.getStartRowIndex(), roots() );
+                final List<Path> pathResult = ioSearchService.searchByAttrs( attrs, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
                 return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
             }
             return emptyResponse;
@@ -142,16 +142,16 @@ public class SearchServiceImpl implements SearchService {
         return response;
     }
 
-    private Path[] roots() {
-        final Collection<Repository> repos = repositoryService.getRepositories();
-        final Path[] roots = new Path[ repos.size() ];
-        int i = 0;
-        for ( final Repository repo : repos ) {
-            roots[ i ] = paths.convert( repo.getRoot() );
-            i++;
-        }
-        return roots;
-    }
+//    private Path[] roots() {
+//        final Collection<Repository> repos = repositoryService.getRepositories();
+//        final Path[] roots = new Path[ repos.size() ];
+//        int i = 0;
+//        for ( final Repository repo : repos ) {
+//            roots[ i ] = paths.convert( repo.getRoot() );
+//            i++;
+//        }
+//        return roots;
+//    }
 
     private DateRange toDateRange( final Date before,
                                    final Date after ) {

@@ -16,22 +16,33 @@
 package org.kie.workbench.common.widgets.client.search;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+
+import org.uberfire.workbench.events.PerspectiveChange;
 
 /**
- *
  * @author salaboy
  */
 @ApplicationScoped
 public class ContextualSearch {
+
     private SearchBehavior searchBehavior;
+    private SearchBehavior defaultSearchBehavior;
 
     public SearchBehavior getSearchBehavior() {
         return searchBehavior;
     }
 
-    public void setSearchBehavior(SearchBehavior searchBehavior) {
+    public void setSearchBehavior( final SearchBehavior searchBehavior ) {
         this.searchBehavior = searchBehavior;
     }
-    
-    
+
+    public void setDefaultSearchBehavior( final SearchBehavior searchBehavior ) {
+        this.defaultSearchBehavior = searchBehavior;
+    }
+
+    public void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
+        this.searchBehavior = defaultSearchBehavior;
+    }
+
 }
