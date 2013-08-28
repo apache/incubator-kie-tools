@@ -7,12 +7,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -68,7 +69,7 @@ public class JSEntryPoint {
         final JavaScriptObject obj = (JavaScriptObject) _obj;
 
         if ( JSNativePlugin.hasStringProperty( obj, "id" ) && JSNativePlugin.hasTemplate( obj ) ) {
-            final IOCBeanManager beanManager = IOC.getBeanManager();
+            final SyncBeanManager beanManager = IOC.getBeanManager();
             final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
 
             final JSNativePlugin newNativePlugin = beanManager.lookupBean( JSNativePlugin.class ).getInstance();
@@ -76,9 +77,9 @@ public class JSEntryPoint {
 
             final JSWorkbenchScreenActivity activity = new JSWorkbenchScreenActivity( newNativePlugin, beanManager.lookupBean( PlaceManager.class ).getInstance() );
 
-            beanManager.addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            beanManager.addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            beanManager.addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
 
             activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
         }
@@ -88,7 +89,7 @@ public class JSEntryPoint {
         final JavaScriptObject obj = (JavaScriptObject) _obj;
 
         if ( JSNativePlugin.hasStringProperty( obj, "id" ) ) {
-            final IOCBeanManager beanManager = IOC.getBeanManager();
+            final SyncBeanManager beanManager = IOC.getBeanManager();
             final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
 
             final JSNativePerspective newNativePerspective = beanManager.lookupBean( JSNativePerspective.class ).getInstance();
@@ -96,14 +97,14 @@ public class JSEntryPoint {
 
             final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
 
-            beanManager.addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
 
             activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
         }
     }
 
     public static void goTo( final String place ) {
-        final IOCBeanManager beanManager = IOC.getBeanManager();
+        final SyncBeanManager beanManager = IOC.getBeanManager();
         final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
         placeManager.goTo( new DefaultPlaceRequest( place ) );
     }

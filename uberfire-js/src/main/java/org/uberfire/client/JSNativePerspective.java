@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;

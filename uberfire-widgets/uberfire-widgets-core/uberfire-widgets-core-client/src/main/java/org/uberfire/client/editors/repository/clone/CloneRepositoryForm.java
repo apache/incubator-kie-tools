@@ -40,10 +40,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
@@ -139,7 +139,7 @@ public class CloneRepositoryForm
                                                 }
                                             }
                                         },
-                                        new ErrorCallback() {
+                                        new ErrorCallback<Message>() {
                                             @Override
                                             public boolean error( final Message message,
                                                                   final Throwable throwable ) {
@@ -204,7 +204,7 @@ public class CloneRepositoryForm
                                                                                     hide();
                                                                                 }
                                                                             },
-                                                                            new ErrorCallback() {
+                                                                            new ErrorCallback<Message>() {
                                                                                 @Override
                                                                                 public boolean error( final Message message,
                                                                                                       final Throwable throwable ) {
@@ -220,7 +220,7 @@ public class CloneRepositoryForm
                                         }
                                     }
                                 },
-                                new ErrorCallback() {
+                                new ErrorCallback<Message>() {
                                     @Override
                                     public boolean error( final Message message,
                                                           final Throwable throwable ) {

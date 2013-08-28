@@ -18,8 +18,8 @@ package org.uberfire.client.mvp;
 import java.util.Set;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -194,6 +194,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
-        return  _place.clone();
+        return _place.clone();
     }
 }

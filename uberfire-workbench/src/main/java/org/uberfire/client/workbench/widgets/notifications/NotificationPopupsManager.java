@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.animations.LinearFadeOutAnimation;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -34,7 +34,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class NotificationPopupsManager {
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     //When true we are in the process of removing a notification message
     private boolean removing = false;

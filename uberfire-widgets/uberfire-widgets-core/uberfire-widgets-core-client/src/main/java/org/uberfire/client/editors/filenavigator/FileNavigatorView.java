@@ -28,7 +28,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;

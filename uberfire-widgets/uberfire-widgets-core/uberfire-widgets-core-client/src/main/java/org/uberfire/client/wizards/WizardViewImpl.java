@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.common.Popup;
 
 /**
@@ -44,7 +44,7 @@ public class WizardViewImpl extends Popup
         WizardView {
 
     @Inject
-    private IOCBeanManager iocBeanManager;
+    private SyncBeanManager iocBeanManager;
 
     @UiField
     protected VerticalPanel sideBar;
@@ -141,7 +141,7 @@ public class WizardViewImpl extends Popup
             return;
         }
         selectPage( pageNumber + 1 );
-        btnNext.setFocus(false);
+        btnNext.setFocus( false );
     }
 
     @UiHandler(value = "btnPrevious")
@@ -150,7 +150,7 @@ public class WizardViewImpl extends Popup
             return;
         }
         selectPage( pageNumber - 1 );
-        btnPrevious.setFocus(false);
+        btnPrevious.setFocus( false );
     }
 
     public void selectPage( final int pageNumber ) {
@@ -164,7 +164,7 @@ public class WizardViewImpl extends Popup
         }
         btnNext.setEnabled( pageNumber < pageNumberTotal - 1 );
         btnPrevious.setEnabled( pageNumber > 0 );
-        presenter.pageSelected(pageNumber);
+        presenter.pageSelected( pageNumber );
     }
 
     public void setBodyWidget( final Widget w ) {

@@ -37,10 +37,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
@@ -72,7 +72,7 @@ public class Workbench
     private PanelManager panelManager;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @Inject
     private WorkbenchDragAndDropManager dndManager;

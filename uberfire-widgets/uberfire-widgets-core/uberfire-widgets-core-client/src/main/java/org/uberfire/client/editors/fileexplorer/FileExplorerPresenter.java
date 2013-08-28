@@ -24,10 +24,10 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.ErrorCallback;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
@@ -37,14 +37,14 @@ import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.lifecycle.OnFocus;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PathChangeEvent;
 import org.uberfire.workbench.events.RepositoryChangeEvent;
@@ -116,10 +116,10 @@ public class FileExplorerPresenter {
                                             view.addNewRepository( root );
                                         }
                                     }
-                                }, new ErrorCallback() {
+                                }, new ErrorCallback<Message>() {
                                     @Override
-                                    public boolean error( Message message,
-                                                          Throwable throwable ) {
+                                    public boolean error( final Message o,
+                                                          final Throwable throwable ) {
                                         return false;
                                     }
                                 }

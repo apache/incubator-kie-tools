@@ -23,17 +23,17 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
@@ -46,7 +46,7 @@ public class RepositoriesPresenter {
     private Caller<RepositoryService> repositoryService;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     public interface View
             extends

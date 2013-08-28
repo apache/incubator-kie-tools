@@ -16,8 +16,8 @@
 
 package org.uberfire.backend.vfs.impl;
 
-import org.jboss.errai.bus.client.api.interceptor.RemoteCallContext;
 import org.jboss.errai.bus.client.api.interceptor.RpcInterceptor;
+import org.jboss.errai.common.client.api.interceptor.RemoteCallContext;
 import org.uberfire.backend.vfs.PathFactory;
 
 public class VFSCacheInterceptor implements RpcInterceptor {

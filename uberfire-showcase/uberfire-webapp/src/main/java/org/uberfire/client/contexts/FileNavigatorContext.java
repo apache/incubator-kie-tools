@@ -9,7 +9,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.lifecycle.OnContextAttach;

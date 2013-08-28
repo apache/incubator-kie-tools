@@ -20,7 +20,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -35,7 +35,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
         PopupActivity {
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;

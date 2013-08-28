@@ -26,7 +26,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Identity;
@@ -38,7 +38,7 @@ import static java.util.Collections.*;
 public class ActivityManagerImpl implements ActivityManager {
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @Inject
     private RuntimeAuthorizationManager authzManager;

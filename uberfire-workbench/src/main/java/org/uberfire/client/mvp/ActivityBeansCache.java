@@ -14,7 +14,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
@@ -32,7 +32,7 @@ import static java.util.Collections.*;
 public class ActivityBeansCache {
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @Inject
     private Event<NewPerspectiveEvent> newPerspectiveEventEvent;

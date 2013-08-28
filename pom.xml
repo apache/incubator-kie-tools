@@ -64,7 +64,7 @@
     <xml-apis.version>1.3.04</xml-apis.version>
 
     <kie-commons.version>6.1.0-SNAPSHOT</kie-commons.version>
-    <errai.version>2.3.2.Final</errai.version>
+    <errai.version>2.4.0.CR1</errai.version>
 
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-io.version>2.1</commons-io.version>
@@ -565,6 +565,13 @@
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>${cdi-api.version}</version>
+      </dependency>
+
+      <!-- Errai AS -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jboss-as-support</artifactId>
+        <version>${errai.version}</version>
       </dependency>
 
       <!-- Errai Core -->

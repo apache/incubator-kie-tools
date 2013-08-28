@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
@@ -44,7 +44,7 @@ public class DefaultBeanFactory
         BeanFactory {
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     @Override
     public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,

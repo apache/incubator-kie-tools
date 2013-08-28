@@ -9,7 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
@@ -21,10 +21,10 @@ public class ClientTypeRegistryImpl implements ClientTypeRegistry {
 
     private List<ClientResourceType> localResourceTypes = new ArrayList<ClientResourceType>();
 
-    private final IOCBeanManager iocManager;
+    private final SyncBeanManager iocManager;
 
     @Inject
-    public ClientTypeRegistryImpl( final IOCBeanManager iocManager ) {
+    public ClientTypeRegistryImpl( final SyncBeanManager iocManager ) {
         this.iocManager = iocManager;
     }
 

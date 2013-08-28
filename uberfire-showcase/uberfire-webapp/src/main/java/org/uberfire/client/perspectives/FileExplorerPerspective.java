@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -32,12 +32,8 @@ import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -60,7 +56,7 @@ public class FileExplorerPerspective {
     private PlaceManager placeManager;
 
     @Inject
-    private IOCBeanManager iocManager;
+    private SyncBeanManager iocManager;
 
     private Command newRepoCommand = null;
 

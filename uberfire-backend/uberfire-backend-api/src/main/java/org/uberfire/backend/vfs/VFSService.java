@@ -18,8 +18,8 @@ package org.uberfire.backend.vfs;
 
 import java.util.Map;
 
-import org.jboss.errai.bus.client.api.interceptor.InterceptedCall;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.jboss.errai.common.client.api.interceptor.InterceptedCall;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
 import org.kie.commons.java.nio.file.DirectoryNotEmptyException;

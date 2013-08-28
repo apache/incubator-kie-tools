@@ -35,7 +35,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCBeanManager;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -58,16 +58,13 @@ import static org.uberfire.workbench.model.menu.MenuFactory.*;
 public class ShowcaseEntryPoint {
 
     @Inject
-    private IOCBeanManager manager;
+    private SyncBeanManager manager;
 
     @Inject
     private WorkbenchMenuBar menubar;
 
     @Inject
     private PlaceManager placeManager;
-
-    @Inject
-    private IOCBeanManager iocManager;
 
     @Inject
     private ActivityManager activityManager;
@@ -184,7 +181,7 @@ public class ShowcaseEntryPoint {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
         final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
         while ( perspectivesIterator.hasNext() ) {
@@ -194,7 +191,7 @@ public class ShowcaseEntryPoint {
                 defaultPerspective = instance;
                 break;
             } else {
-                iocManager.destroyBean( instance );
+                manager.destroyBean( instance );
             }
         }
         return defaultPerspective;

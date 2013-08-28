@@ -9,8 +9,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
-import org.jboss.errai.bus.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.mvp.PlaceRequest;
 

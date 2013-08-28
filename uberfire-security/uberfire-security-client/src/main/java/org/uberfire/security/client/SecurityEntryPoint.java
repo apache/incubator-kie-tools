@@ -25,9 +25,9 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.json.client.JSONObject;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.MessageCallback;
-import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.bus.client.api.messaging.MessageBus;
+import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.security.Identity;

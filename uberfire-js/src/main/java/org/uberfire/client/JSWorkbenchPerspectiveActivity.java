@@ -3,7 +3,7 @@ package org.uberfire.client;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jboss.errai.bus.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
