@@ -47,15 +47,15 @@ public class KSessionsPanelTest {
         presenter = kSessionsPanel;
     }
 
-    @Test
-    public void testShowEmptyList() throws Exception {
-
-        kSessionsPanel.setItems(new ArrayList<KSessionModel>());
-
-        verify(view).setPresenter(kSessionsPanel);
-        verify(view).clearList();
-        verify(view, never()).setItemList(anyList());
-    }
+//    @Test
+//    public void testShowEmptyList() throws Exception {
+//
+//        kSessionsPanel.setItems(new ArrayList<KSessionModel>());
+//
+//        verify(view).setPresenter(kSessionsPanel);
+//        verify(view).clearList();
+//        verify(view, never()).setItemList(anyList());
+//    }
 
 //    @Test
 //    public void testAddKSession() throws Exception {
