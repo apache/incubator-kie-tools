@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,46 +16,22 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.KSessionModel;
 
-public interface KSessionsPanelView
+public interface ConsoleLoggerEditorView
         extends IsWidget {
 
+    interface Presenter {
 
-    public interface Presenter {
+        void onNameChange(String value);
 
-        void onAdd();
-
-        void onSelect(String removeMe);
-
-        void onRemove();
-
-        void onDefaultChanged(KSessionModel model);
-
-        void onOptionsSelectedForKSessions(KSessionModel kSessionModel);
     }
-
-    void makeReadOnly();
-
-    void makeEditable();
 
     void setPresenter(Presenter presenter);
 
-    void clearList();
+    void setName(String name);
 
-    void setItemList(List<KSessionModel> list);
+    void enableEditing();
 
-    void setSelected(String theOne);
-
-    void remove(String removeMe);
-
-    void showPleaseSelectAnItem();
-
-    void refresh();
-
-    void showOptionsPopUp(KSessionModel kSessionModel);
-
+    void disableEditing();
 }

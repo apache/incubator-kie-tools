@@ -91,6 +91,7 @@ public class DataModelServiceImpl
             return oracle;
 
         } catch ( Exception e ) {
+            e.printStackTrace();
             throw ExceptionUtilities.handleException( e );
         }
     }

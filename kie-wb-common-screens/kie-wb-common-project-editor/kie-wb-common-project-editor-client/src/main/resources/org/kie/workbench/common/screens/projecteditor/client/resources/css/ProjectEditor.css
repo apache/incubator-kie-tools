@@ -19,3 +19,12 @@
         padding: 3px 3px 3px 3px;
         margin: 3px 3px 3px 3px;
     }
+
+    .panelDisabled {
+        border: #000000 solid 1px;
+        background: lightgray;
+    }
+
+    .panelEnabled {
+        border: #000000 solid 1px;
+    }

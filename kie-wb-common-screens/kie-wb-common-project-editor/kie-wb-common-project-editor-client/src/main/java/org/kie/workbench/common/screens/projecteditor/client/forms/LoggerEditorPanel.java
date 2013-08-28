@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.resources.css;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ProjectEditorCss
-        extends
-        CssResource {
+public interface LoggerEditorPanel
+        extends IsWidget {
 
-    public String selectionBox();
-
-    public String panelDisabled();
-
-    public String panelEnabled();
-
+    void setEnabled(boolean b);
 }

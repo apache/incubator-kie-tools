@@ -87,6 +87,21 @@ public class KSessionsPanel
     }
 
     @Override
+    public void onDefaultChanged(KSessionModel modelThatChanged) {
+        for(KSessionModel model : items){
+            if(!model.equals(modelThatChanged)){
+                model.setDefault(false);
+            }
+        }
+        view.setItemList(items);
+    }
+
+    @Override
+    public void onOptionsSelectedForKSessions(KSessionModel kSessionModel) {
+        view.showOptionsPopUp(kSessionModel);
+    }
+
+    @Override
     public Widget asWidget() {
         return view.asWidget();
     }

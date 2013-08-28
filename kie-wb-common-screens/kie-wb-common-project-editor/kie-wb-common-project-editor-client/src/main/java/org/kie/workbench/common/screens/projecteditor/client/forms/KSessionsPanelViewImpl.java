@@ -22,21 +22,31 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.DataGrid;
+import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 
 public class KSessionsPanelViewImpl
         extends Composite
@@ -61,15 +71,20 @@ public class KSessionsPanelViewImpl
     @UiField
     Button removeButton;
 
+    private final KSessionModelOptionsPopUp kSessionModelOptionsPopUp;
+
     @Inject
-    public KSessionsPanelViewImpl() {
+    public KSessionsPanelViewImpl(KSessionModelOptionsPopUp kSessionModelOptionsPopUp) {
+        this.kSessionModelOptionsPopUp = kSessionModelOptionsPopUp;
         grid = new DataGrid<KSessionModel>();
 
         grid.setEmptyTableWidget(new Label("---"));
 
         setUpNameColumn();
-        setUpClockColumn();
+        setUpDefaultColumn();
         setUpStateColumn();
+        setUpClockColumn();
+//        setUpOptionsColumn();
 
         grid.setBordered(true);
 
@@ -151,6 +166,56 @@ public class KSessionsPanelViewImpl
         grid.addColumn(column, ProjectEditorConstants.INSTANCE.State());
     }
 
+    private void setUpDefaultColumn() {
+        Column<KSessionModel, Boolean> column = new Column<KSessionModel, Boolean>(new CheckboxCell()) {
+            @Override public Boolean getValue(KSessionModel model) {
+                return model.isDefault();
+            }
+        };
+
+        column.setFieldUpdater(new FieldUpdater<KSessionModel, Boolean>() {
+            @Override
+            public void update(int index, KSessionModel model, Boolean value) {
+                model.setDefault(value);
+                presenter.onDefaultChanged(model);
+            }
+        });
+
+        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Default());
+        grid.setColumnWidth(column, "80px");
+    }
+
+    private void setUpOptionsColumn() {
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
+        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
+        decorator.setText(ProjectEditorConstants.INSTANCE.Options());
+        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
+            @Override
+            public ImageResource getValue(KSessionModel model) {
+                return CommonImages.INSTANCE.edit();
+            }
+        };
+
+        column.setFieldUpdater(new FieldUpdater<KSessionModel, ImageResource>() {
+            @Override
+            public void update(int index, KSessionModel model, ImageResource value) {
+                presenter.onOptionsSelectedForKSessions(model);
+            }
+        });
+
+        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        grid.addColumn(column);
+        grid.setColumnWidth(column, "40px");
+    }
+
+    @Override
+    public void showOptionsPopUp(KSessionModel kSessionModel) {
+        kSessionModelOptionsPopUp.show(kSessionModel);
+    }
+
     @Override
     public void makeReadOnly() {
         addButton.setEnabled(false);
@@ -181,7 +246,9 @@ public class KSessionsPanelViewImpl
 
     @Override
     public void refresh() {
-        grid.redraw();
+//        grid.redraw();
+
+//        grid.clearTableWidth();
     }
 
     @Override

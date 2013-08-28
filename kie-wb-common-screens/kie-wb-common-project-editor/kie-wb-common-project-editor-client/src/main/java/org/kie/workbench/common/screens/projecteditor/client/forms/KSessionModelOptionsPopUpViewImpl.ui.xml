@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2013 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:bootstrapBase='urn:import:com.github.gwtbootstrap.client.ui.base' xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+
+
+  <ui:style>
+
+    .general {
+      text-align: left;
+    }
+
+  </ui:style>
+
+
+  <gwt:HTMLPanel styleName="{style.general}">
+    <bootstrap:Heading size="4">Logger</bootstrap:Heading>
+    <bootstrap:CheckBox ui:field="loggerCheckBox"></bootstrap:CheckBox>
+    <bootstrap:Container ui:field="loggerContainer" styleName="{resources.mainCss.panelDisabled}">
+      <bootstrapBase:InlineLabel text="Logger Type"/>
+      <bootstrap:ListBox ui:field="loggerTypeListBox" enabled="false" width="120px"/>
+      <bootstrap:Container ui:field="loggerEditorPanel"/>
+    </bootstrap:Container>
+
+    <!--<bootstrap:Row>-->
+    <!--<bootstrap:Heading size="4">Listeners</bootstrap:Heading>-->
+    <!--<bootstrap:CheckBox></bootstrap:CheckBox>-->
+    <!--<bootstrap:Container styleName="{resources.mainCss.panelDisabled}">-->
+    <!--<bootstrap:Label text="Some listener..."/>-->
+    <!--</bootstrap:Container>-->
+
+    <!--</bootstrap:Row>-->
+
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

@@ -177,4 +177,16 @@ public interface ProjectEditorConstants
     String Stateless();
 
     String State();
+
+    String WorkItemHandler();
+
+    String Default();
+
+    String Options();
+
+    String ConsoleLogger();
+
+    String FileLogger();
+
+    String Interval();
 }

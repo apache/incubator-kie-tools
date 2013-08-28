@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.resources.css;
+package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.google.gwt.resources.client.CssResource;
+public interface KSessionModelOptionsPopUpView {
 
-public interface ProjectEditorCss
-        extends
-        CssResource {
 
-    public String selectionBox();
+    interface Presenter {
 
-    public String panelDisabled();
+        void onToggleLoggerPanel(Boolean value);
 
-    public String panelEnabled();
+        void onConsoleLoggerSelected();
 
+        void onFileLoggerSelected();
+    }
+
+    void setPresenter(Presenter presenter);
+
+    void setLoggerEditor(LoggerEditorPanel loggerEditor);
+
+    void clearLoggerEditor();
+
+    void enableLoggerPanel();
+
+    void disableLoggerPanel();
+
+    void show();
 }
