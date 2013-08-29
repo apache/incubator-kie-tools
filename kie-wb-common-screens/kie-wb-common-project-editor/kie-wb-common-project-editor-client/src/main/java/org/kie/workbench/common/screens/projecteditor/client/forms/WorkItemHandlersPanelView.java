@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,29 +19,20 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.KSessionModel;
+import org.guvnor.common.services.project.model.ListenerModel;
+import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
-public interface KSessionsPanelView
+public interface WorkItemHandlersPanelView
         extends IsWidget {
 
-
-    public interface Presenter {
+    interface Presenter {
 
         void onAdd();
 
-        void onDefaultChanged(KSessionModel model);
-
-        void onOptionsSelectedForKSessions(KSessionModel kSessionModel);
+        void onDelete(WorkItemHandlerModel model);
     }
 
-    void makeReadOnly();
-
-    void makeEditable();
+    void setModels(List<WorkItemHandlerModel> handlerModels);
 
     void setPresenter(Presenter presenter);
-
-    void setItemList(List<KSessionModel> list);
-
-    void showOptionsPopUp(KSessionModel kSessionModel);
-
 }

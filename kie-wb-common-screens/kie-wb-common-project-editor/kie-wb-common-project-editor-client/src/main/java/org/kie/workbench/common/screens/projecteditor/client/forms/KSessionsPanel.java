@@ -77,16 +77,6 @@ public class KSessionsPanel
     }
 
     @Override
-    public void onSelect(String removeMe) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onRemove() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void onDefaultChanged(KSessionModel modelThatChanged) {
         for(KSessionModel model : items){
             if(!model.equals(modelThatChanged)){

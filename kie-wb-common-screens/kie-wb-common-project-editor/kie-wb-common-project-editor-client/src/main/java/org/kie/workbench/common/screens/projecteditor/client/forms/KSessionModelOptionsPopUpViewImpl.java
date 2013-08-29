@@ -16,19 +16,19 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Container;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
+import java.util.List;
+import javax.inject.Inject;
+
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.base.Style;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.ListenerModel;
+import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.Popup;
@@ -67,6 +67,15 @@ public class KSessionModelOptionsPopUpViewImpl
 
     private static Binder uiBinder = GWT.create(Binder.class);
 
+    @UiField(provided = true)
+    ListenersPanel listenersPanel;
+
+    @UiField(provided = true)
+    WorkItemHandlersPanel workItemHandlersPanel;
+
+    @UiField
+    Button closeButton;
+
     //    @UiField
 //    CheckBox loggerCheckBox;
 
@@ -79,23 +88,13 @@ public class KSessionModelOptionsPopUpViewImpl
     //    @UiField
 //    Container loggerContainer;
 
-    @UiField
-    CheckBox listenerCheckBox;
+    @Inject
+    public KSessionModelOptionsPopUpViewImpl(ListenersPanel listenersPanel,
+            WorkItemHandlersPanel workItemHandlersPanel) {
+        this.listenersPanel = listenersPanel;
+        this.workItemHandlersPanel = workItemHandlersPanel;
 
-    @UiField
-    ListBox listenerKindListBox;
-
-    @UiField
-    TextBox listenerTypeTextBox;
-
-    @UiField
-    Container listenerContainer;
-
-    public KSessionModelOptionsPopUpViewImpl() {
         content = uiBinder.createAndBindUi(this);
-        listenerKindListBox.addItem(WORKING_MEMORY_EVENT_LISTENER);
-        listenerKindListBox.addItem(AGENDA_EVENT_LISTENER);
-        listenerKindListBox.addItem(PROCESS_EVENT_LISTENER);
 
 //        loggerTypeListBox.addItem(CONSOLE_LOGGER);
 //        loggerTypeListBox.addItem(FILE_LOGGER);
@@ -152,60 +151,17 @@ public class KSessionModelOptionsPopUpViewImpl
 //    }
 
     @Override
-    public void enableListenerPanel() {
-        listenerCheckBox.setValue(true);
-        listenerKindListBox.setEnabled(true);
-        listenerTypeTextBox.setEnabled(true);
-        listenerContainer.setStyle(PANEL_ENABLED);
+    public void setListeners(List<ListenerModel> listeners) {
+        listenersPanel.setListeners(listeners);
     }
 
     @Override
-    public void disableListenerPanel() {
-        listenerCheckBox.setValue(false);
-        listenerKindListBox.setEnabled(false);
-        listenerTypeTextBox.setEnabled(false);
-        listenerContainer.setStyle(PANEL_DISABLED);
+    public void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels) {
+        workItemHandlersPanel.setHandlerModels(workItemHandlerModels);
     }
 
-    @UiHandler("listenerCheckBox")
-    public void onListenerPanelToggle(ValueChangeEvent<Boolean> event) {
-        presenter.onToggleListenerPanel(event.getValue());
-    }
-
-    @UiHandler("listenerKindListBox")
-    public void onListenerTypeSelected(ChangeEvent event) {
-
-        if (listenerKindListBox.getValue().equals(WORKING_MEMORY_EVENT_LISTENER)) {
-            presenter.onWorkingMemoryEventListenerSelected();
-        } else if (listenerKindListBox.getValue().equals(AGENDA_EVENT_LISTENER)) {
-            presenter.onAgendaEventListenerSelected();
-        } else if (listenerKindListBox.getValue().equals(PROCESS_EVENT_LISTENER)) {
-            presenter.onProcessEventListenerSelected();
-        }
-    }
-
-    @UiHandler("listenerTypeTextBox")
-    public void onListenerNameChange(KeyUpEvent event) {
-        presenter.onListenerNameChange(listenerTypeTextBox.getValue());
-    }
-
-    @Override
-    public void setListenerTypeName(String type) {
-        listenerTypeTextBox.setText(type);
-    }
-
-    @Override
-    public void selectWorkingMemoryEventListener() {
-        listenerKindListBox.setSelectedValue(WORKING_MEMORY_EVENT_LISTENER);
-    }
-
-    @Override
-    public void selectAgendaEventListener() {
-        listenerKindListBox.setSelectedValue(AGENDA_EVENT_LISTENER);
-    }
-
-    @Override
-    public void selectProcessEventListener() {
-        listenerKindListBox.setSelectedValue(PROCESS_EVENT_LISTENER);
+    @UiHandler("closeButton")
+    public void handleClick(ClickEvent event) {
+        hide();
     }
 }

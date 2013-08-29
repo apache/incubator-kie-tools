@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.List;
+
+import org.guvnor.common.services.project.model.ListenerModel;
+import org.guvnor.common.services.project.model.WorkItemHandlerModel;
+
 public interface KSessionModelOptionsPopUpView {
 
 
@@ -27,15 +32,6 @@ public interface KSessionModelOptionsPopUpView {
 
         void onFileLoggerSelected();
 
-        void onToggleListenerPanel(Boolean value);
-
-        void onWorkingMemoryEventListenerSelected();
-
-        void onAgendaEventListenerSelected();
-
-        void onProcessEventListenerSelected();
-
-        void onListenerNameChange(String value);
     }
 
     void setPresenter(Presenter presenter);
@@ -48,17 +44,9 @@ public interface KSessionModelOptionsPopUpView {
 
     void disableLoggerPanel();
 
-    void enableListenerPanel();
+    void setListeners(List<ListenerModel> listeners);
 
-    void disableListenerPanel();
-
-    void setListenerTypeName(String type);
-
-    void selectWorkingMemoryEventListener();
-
-    void selectAgendaEventListener();
-
-    void selectProcessEventListener();
+    void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels);
 
     void show();
 }

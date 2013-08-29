@@ -234,36 +234,8 @@ public class KSessionsPanelViewImpl
     }
 
     @Override
-    public void clearList() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void setItemList(List<KSessionModel> list) {
         grid.setRowData(list);
-        refresh();
-    }
-
-    @Override
-    public void refresh() {
-//        grid.redraw();
-
-//        grid.clearTableWidth();
-    }
-
-    @Override
-    public void setSelected(String theOne) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void remove(String removeMe) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void showPleaseSelectAnItem() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @UiHandler("addButton")
@@ -273,7 +245,7 @@ public class KSessionsPanelViewImpl
 
     @UiHandler("removeButton")
     public void onRemoveClicked(ClickEvent event) {
-        presenter.onRemove();
+//        presenter.onRemove();
     }
 
 }

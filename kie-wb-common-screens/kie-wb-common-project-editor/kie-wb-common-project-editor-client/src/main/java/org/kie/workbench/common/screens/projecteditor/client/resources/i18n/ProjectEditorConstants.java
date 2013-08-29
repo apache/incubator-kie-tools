@@ -195,4 +195,14 @@ public interface ProjectEditorConstants
     String AgendaEventListener();
 
     String ProcessEventListener();
+
+    String Kind();
+
+    String Type();
+
+    String Close();
+
+    String Listeners();
+
+    String WorkItemHandlers();
 }
