@@ -46,7 +46,7 @@ public class ResourceWorkDefinitionsLoader {
     @Inject
     private FileDiscoveryService fileDiscoveryService;
 
-    private FileExtensionFilter widFilter = new FileExtensionFilter( "wid" );
+    private FileExtensionFilter widFilter = new FileExtensionFilter( ".wid" );
 
     public Map<String, WorkDefinition> loadWorkDefinitions( final Path projectRoot ) {
         //Find all WID files in the project

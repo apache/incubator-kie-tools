@@ -78,52 +78,48 @@ public class WorkDefinitionsParser {
 
             final Serializable compiled = MVEL.compileExpression( workItemDefinition,
                                                                   context );
-            final List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.executeExpression( compiled,
-                                                                                                                     new HashMap() );
+            final Object result = MVEL.executeExpression( compiled,
+                                                          new HashMap() );
+            final Map<String, Object> workDefinitionMap = (Map<String, Object>) result;
 
             //Populate model
-            if ( workDefinitionsMap != null ) {
-                for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
-
-                    if ( workDefinitionMap != null ) {
-                        final WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
-                        workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
-                        workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
-                        workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-                        workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
-                        final Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-                        if ( workDefinitionMap.get( "parameters" ) != null ) {
-                            final Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
-                            if ( parameterMap != null ) {
-                                for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
-                                    parameters.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                                 entry.getValue() ) );
-                                }
-                            }
-                            workDefinition.setParameters( parameters );
+            if ( workDefinitionMap != null ) {
+                final WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
+                workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
+                workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
+                workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
+                workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
+                final Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+                if ( workDefinitionMap.get( "parameters" ) != null ) {
+                    final Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
+                    if ( parameterMap != null ) {
+                        for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
+                            parameters.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                         entry.getValue() ) );
                         }
-
-                        if ( workDefinitionMap.get( "results" ) != null ) {
-                            final Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-                            final Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
-                            if ( resultMap != null ) {
-                                for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
-                                    results.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                              entry.getValue() ) );
-                                }
-                            }
-                            workDefinition.setResults( results );
-                        }
-                        if ( workDefinitionMap.get( "defaultHandler" ) != null ) {
-                            workDefinition.setDefaultHandler( (String) workDefinitionMap.get( "defaultHandler" ) );
-                        }
-                        if ( workDefinitionMap.get( "dependencies" ) != null ) {
-                            workDefinition.setDependencies( ( (List<String>) workDefinitionMap.get( "dependencies" ) ).toArray( new String[ 0 ] ) );
-                        }
-                        workDefinitions.put( workDefinition.getName(),
-                                             workDefinition );
                     }
+                    workDefinition.setParameters( parameters );
                 }
+
+                if ( workDefinitionMap.get( "results" ) != null ) {
+                    final Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+                    final Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
+                    if ( resultMap != null ) {
+                        for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
+                            results.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                      entry.getValue() ) );
+                        }
+                    }
+                    workDefinition.setResults( results );
+                }
+                if ( workDefinitionMap.get( "defaultHandler" ) != null ) {
+                    workDefinition.setDefaultHandler( (String) workDefinitionMap.get( "defaultHandler" ) );
+                }
+                if ( workDefinitionMap.get( "dependencies" ) != null ) {
+                    workDefinition.setDependencies( ( (List<String>) workDefinitionMap.get( "dependencies" ) ).toArray( new String[ 0 ] ) );
+                }
+                workDefinitions.put( workDefinition.getName(),
+                                     workDefinition );
             }
         }
         return workDefinitions;
