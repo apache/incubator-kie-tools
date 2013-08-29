@@ -36,6 +36,15 @@ public class AttachmentFileWidget extends Composite {
     private final FormPanel form = new FormPanel();
     private final HorizontalPanel fields = new HorizontalPanel();
 
+    private final TextBox fieldFilePath = getHiddenField( FileManagerFields.FORM_FIELD_PATH,
+                                                          "" );
+    private final TextBox fieldFileName = getHiddenField( FileManagerFields.FORM_FIELD_NAME,
+                                                          "" );
+    private final TextBox fieldFileFullPath = getHiddenField( FileManagerFields.FORM_FIELD_FULL_PATH,
+                                                              "" );
+    private final TextBox fieldFileOperation = getHiddenField( FileManagerFields.FORM_FIELD_OPERATION,
+                                                               "" );
+
     private Command successCallback;
     private Command errorCallback;
 
@@ -47,6 +56,7 @@ public class AttachmentFileWidget extends Composite {
 
             @Override
             public void onSubmitComplete( final FormPanel.SubmitCompleteEvent event ) {
+                reset();
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     executeCallback( successCallback );
                     Window.alert( CommonConstants.INSTANCE.UploadSuccess() );
@@ -60,8 +70,13 @@ public class AttachmentFileWidget extends Composite {
 
         final FileUpload up = new FileUpload();
         up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
-
         fields.add( up );
+
+        fields.add( fieldFilePath );
+        fields.add( fieldFileName );
+        fields.add( fieldFileFullPath );
+        fields.add( fieldFileOperation );
+
         form.add( fields );
 
         initWidget( form );
@@ -85,12 +100,12 @@ public class AttachmentFileWidget extends Composite {
                         final Command errorCallback ) {
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
-        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_PATH,
-                                    context.toURI() ) );
-        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_NAME,
-                                    fileName ) );
-        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_OPERATION,
-                                    FileOperation.CREATE.toString() ) );
+
+        fieldFileName.setText( fileName );
+        fieldFilePath.setText( context.toURI() );
+        fieldFileOperation.setText( FileOperation.CREATE.toString() );
+        fieldFileFullPath.setText( "" );
+
         form.setAction( targetUrl );
         form.submit();
     }
@@ -101,10 +116,12 @@ public class AttachmentFileWidget extends Composite {
                         final Command errorCallback ) {
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
-        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_FULL_PATH,
-                                    path.toURI() ) );
-        fields.add( getHiddenField( FileManagerFields.FORM_FIELD_OPERATION,
-                                    FileOperation.UPDATE.toString() ) );
+
+        fieldFileOperation.setText( FileOperation.UPDATE.toString() );
+        fieldFileFullPath.setText( path.toURI() );
+        fieldFileName.setText( "" );
+        fieldFilePath.setText( "" );
+
         form.setAction( targetUrl );
         form.submit();
     }
