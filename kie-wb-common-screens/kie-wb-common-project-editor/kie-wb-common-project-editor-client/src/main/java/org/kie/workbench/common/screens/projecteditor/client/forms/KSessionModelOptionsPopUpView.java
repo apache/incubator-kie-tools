@@ -26,6 +26,16 @@ public interface KSessionModelOptionsPopUpView {
         void onConsoleLoggerSelected();
 
         void onFileLoggerSelected();
+
+        void onToggleListenerPanel(Boolean value);
+
+        void onWorkingMemoryEventListenerSelected();
+
+        void onAgendaEventListenerSelected();
+
+        void onProcessEventListenerSelected();
+
+        void onListenerNameChange(String value);
     }
 
     void setPresenter(Presenter presenter);
@@ -37,6 +47,18 @@ public interface KSessionModelOptionsPopUpView {
     void enableLoggerPanel();
 
     void disableLoggerPanel();
+
+    void enableListenerPanel();
+
+    void disableListenerPanel();
+
+    void setListenerTypeName(String type);
+
+    void selectWorkingMemoryEventListener();
+
+    void selectAgendaEventListener();
+
+    void selectProcessEventListener();
 
     void show();
 }

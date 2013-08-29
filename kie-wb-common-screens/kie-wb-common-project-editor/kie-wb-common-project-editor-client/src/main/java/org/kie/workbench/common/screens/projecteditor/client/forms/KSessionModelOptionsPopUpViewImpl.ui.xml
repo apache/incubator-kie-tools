@@ -35,22 +35,22 @@
 
 
   <gwt:HTMLPanel styleName="{style.general}">
-    <bootstrap:Heading size="4">Logger</bootstrap:Heading>
-    <bootstrap:CheckBox ui:field="loggerCheckBox"></bootstrap:CheckBox>
-    <bootstrap:Container ui:field="loggerContainer" styleName="{resources.mainCss.panelDisabled}">
-      <bootstrapBase:InlineLabel text="Logger Type"/>
-      <bootstrap:ListBox ui:field="loggerTypeListBox" enabled="false" width="120px"/>
-      <bootstrap:Container ui:field="loggerEditorPanel"/>
-    </bootstrap:Container>
-
-    <!--<bootstrap:Row>-->
-    <!--<bootstrap:Heading size="4">Listeners</bootstrap:Heading>-->
-    <!--<bootstrap:CheckBox></bootstrap:CheckBox>-->
-    <!--<bootstrap:Container styleName="{resources.mainCss.panelDisabled}">-->
-    <!--<bootstrap:Label text="Some listener..."/>-->
+    <!--<bootstrap:Heading size="4">Logger</bootstrap:Heading>-->
+    <!--<bootstrap:CheckBox ui:field="loggerCheckBox"></bootstrap:CheckBox>-->
+    <!--<bootstrap:Container ui:field="loggerContainer" styleName="{resources.mainCss.panelDisabled}">-->
+    <!--<bootstrapBase:InlineLabel text="Logger Type"/>-->
+    <!--<bootstrap:ListBox ui:field="loggerTypeListBox" enabled="false" width="120px"/>-->
+    <!--<bootstrap:Container ui:field="loggerEditorPanel"/>-->
     <!--</bootstrap:Container>-->
 
-    <!--</bootstrap:Row>-->
+    <bootstrap:Heading size="4">Listener</bootstrap:Heading>
+    <bootstrap:CheckBox ui:field="listenerCheckBox"></bootstrap:CheckBox>
+    <bootstrap:Container ui:field="listenerContainer" styleName="{resources.mainCss.panelDisabled}">
+      <bootstrapBase:InlineLabel text="Logger Type"/>
+      <bootstrap:ListBox ui:field="listenerKindListBox" enabled="false" width="230px"/>
+      <bootstrap:TextBox ui:field="listenerTypeTextBox" enabled="false"/>
+    </bootstrap:Container>
+
 
   </gwt:HTMLPanel>
 

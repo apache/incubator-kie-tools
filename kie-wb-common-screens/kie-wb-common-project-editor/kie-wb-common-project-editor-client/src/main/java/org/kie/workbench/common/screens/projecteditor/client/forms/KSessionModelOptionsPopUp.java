@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.ConsoleLogger;
 import org.guvnor.common.services.project.model.FileLogger;
 import org.guvnor.common.services.project.model.KSessionModel;
+import org.guvnor.common.services.project.model.ListenerModel;
 
 public class KSessionModelOptionsPopUp
         implements KSessionModelOptionsPopUpView.Presenter {
@@ -44,9 +45,24 @@ public class KSessionModelOptionsPopUp
     public void show(KSessionModel kSessionModel) {
         this.model = kSessionModel;
 
-        setUpLoggerPanel();
+//        setUpLoggerPanel();
+        setUpListenerPanel();
 
         view.show();
+    }
+
+    private void setUpListenerPanel() {
+        if (model.getListenerModel() != null) {
+            view.enableListenerPanel();
+            if (model.getListenerModel().getKind().equals(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
+                view.selectWorkingMemoryEventListener();
+            } else if (model.getListenerModel().getKind().equals(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
+                view.selectAgendaEventListener();
+            } else if (model.getListenerModel().getKind().equals(ListenerModel.Kind.PROCESS_EVENT_LISTENER)) {
+                view.selectProcessEventListener();
+            }
+            view.setListenerTypeName(model.getListenerModel().getType());
+        }
     }
 
     private void setUpLoggerPanel() {
@@ -88,4 +104,34 @@ public class KSessionModelOptionsPopUp
         view.setLoggerEditor(fileLoggerEditor);
     }
 
+    @Override
+    public void onToggleListenerPanel(Boolean value) {
+        if (value) {
+            model.setListenerModel(new ListenerModel());
+            view.enableListenerPanel();
+        } else {
+            model.setListenerModel(null);
+            view.disableListenerPanel();
+        }
+    }
+
+    @Override
+    public void onWorkingMemoryEventListenerSelected() {
+        model.getListenerModel().setKind(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER);
+    }
+
+    @Override
+    public void onAgendaEventListenerSelected() {
+        model.getListenerModel().setKind(ListenerModel.Kind.AGENDA_EVENT_LISTENER);
+    }
+
+    @Override
+    public void onProcessEventListenerSelected() {
+        model.getListenerModel().setKind(ListenerModel.Kind.PROCESS_EVENT_LISTENER);
+    }
+
+    @Override
+    public void onListenerNameChange(String value) {
+        model.getListenerModel().setType(value);
+    }
 }

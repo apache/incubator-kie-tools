@@ -189,4 +189,10 @@ public interface ProjectEditorConstants
     String FileLogger();
 
     String Interval();
+
+    String WorkingMemoryEventListener();
+
+    String AgendaEventListener();
+
+    String ProcessEventListener();
 }

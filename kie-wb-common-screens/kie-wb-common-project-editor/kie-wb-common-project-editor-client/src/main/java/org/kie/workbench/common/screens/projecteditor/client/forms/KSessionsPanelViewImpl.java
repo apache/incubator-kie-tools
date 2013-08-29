@@ -84,7 +84,7 @@ public class KSessionsPanelViewImpl
         setUpDefaultColumn();
         setUpStateColumn();
         setUpClockColumn();
-//        setUpOptionsColumn();
+        setUpOptionsColumn();
 
         grid.setBordered(true);
 
