@@ -110,6 +110,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             return inputStream;
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -138,13 +140,15 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             return newPath;
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
                 content.close();
             } catch ( IOException e ) {
-                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+                throw ExceptionUtilities.handleException( e );
             }
         }
     }
@@ -172,13 +176,15 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             return newPath;
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
 
         } finally {
             try {
                 content.close();
             } catch ( IOException e ) {
-                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+                throw ExceptionUtilities.handleException( e );
             }
         }
     }
@@ -191,6 +197,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                   comment );
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -205,6 +213,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                          comment );
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -219,6 +229,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                      comment );
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -229,6 +241,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             return conversionService.convert( path );
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -244,6 +258,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                               FILTER_JAVA );
 
         } catch ( Exception e ) {
+            log.error( e.getMessage(),
+                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }

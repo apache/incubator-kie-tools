@@ -255,6 +255,10 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private void makeNewJavaTypes( final Path context,
                                    final List<String> declaredTypes,
                                    final ConversionResult result ) {
+        if ( declaredTypes == null || declaredTypes.isEmpty() ) {
+            return;
+        }
+
         final Project project = projectService.resolveProject( context );
 
         for ( String declaredType : declaredTypes ) {
@@ -389,7 +393,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Load existing PackageImports
         ProjectImports projectImports = new ProjectImports();
         final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
-        final Path externalImportsPath = paths.convert( nioExternalImportsPath );
+        final Path externalImportsPath = paths.convert( nioExternalImportsPath,
+                                                        false );
         if ( Files.exists( nioExternalImportsPath ) ) {
             projectImports = projectService.load( externalImportsPath );
         }
