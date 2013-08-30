@@ -42,7 +42,7 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.images.Ima
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
-import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.*;

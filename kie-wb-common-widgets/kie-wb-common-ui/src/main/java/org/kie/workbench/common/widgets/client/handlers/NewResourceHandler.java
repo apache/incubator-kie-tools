@@ -6,6 +6,7 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -44,9 +45,11 @@ public interface NewResourceHandler {
 
     /**
      * Provide NewResourceHandlers with the ability to validate additional parameters before the creation of the new resource
-     * @return true if validation is successful
+     * @param fileName The file name for the new item
+     * @param callback Callback depending on validation result
      */
-    public boolean validate();
+    public void validate( final String fileName,
+                          final ValidatorWithReasonCallback callback );
 
     /**
      * Indicates if the NewResourceHandler can create a resource to this path

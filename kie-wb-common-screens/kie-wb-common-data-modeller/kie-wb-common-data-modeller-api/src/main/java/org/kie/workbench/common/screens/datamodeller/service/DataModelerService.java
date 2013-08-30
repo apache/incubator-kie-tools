@@ -40,8 +40,6 @@ public interface DataModelerService {
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
-    Map<String, Boolean> evaluateIdentifiers( final String[] identifiers );
-
     Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
 
 }

@@ -47,7 +47,7 @@ import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataObjectComparator;
-import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorCallback;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;

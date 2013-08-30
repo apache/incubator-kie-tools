@@ -8,14 +8,15 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
@@ -63,13 +64,14 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public boolean validate() {
-        boolean isValid = true;
+    public void validate( final String fileName,
+                          final ValidatorWithReasonCallback callback ) {
         if ( pathLabel.getPath() == null ) {
-            Window.alert( CommonConstants.INSTANCE.MissingPath() );
-            isValid = false;
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
+            callback.onFailure();
+            return;
         }
-        return isValid;
+        callback.onSuccess();
     }
 
     @Override

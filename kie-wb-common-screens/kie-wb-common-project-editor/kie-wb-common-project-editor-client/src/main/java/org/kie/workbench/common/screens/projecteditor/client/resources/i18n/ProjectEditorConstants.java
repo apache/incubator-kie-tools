@@ -205,4 +205,7 @@ public interface ProjectEditorConstants
     String Listeners();
 
     String WorkItemHandlers();
+
+    String InvalidPackageName(String packageName);
+
 }

@@ -33,6 +33,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
@@ -52,8 +53,6 @@ public class NewResourcePresenter {
         void setActiveHandler( final NewResourceHandler activeHandler );
 
         void setHandlers( final List<NewResourceHandler> handlers );
-
-        String getFileName();
 
         void enableHandler( final NewResourceHandler handler,
                             final boolean enabled );
@@ -143,13 +142,19 @@ public class NewResourcePresenter {
         activeHandler = handler;
     }
 
-    public void makeItem() {
+    public void validate( final String fileName,
+                          final ValidatorWithReasonCallback callback ) {
         if ( activeHandler != null ) {
-            if ( activeHandler.validate() ) {
-                activeHandler.create( context.getActivePackage(),
-                                      view.getFileName(),
-                                      NewResourcePresenter.this );
-            }
+            activeHandler.validate( fileName,
+                                    callback );
+        }
+    }
+
+    public void makeItem( final String fileName ) {
+        if ( activeHandler != null ) {
+            activeHandler.create( context.getActivePackage(),
+                                  fileName,
+                                  NewResourcePresenter.this );
         }
     }
 

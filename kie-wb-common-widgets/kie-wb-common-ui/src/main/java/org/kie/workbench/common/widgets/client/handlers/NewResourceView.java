@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
+import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 
@@ -132,6 +133,7 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
         //Clear previous resource name
         fileNameTextBox.setText( "" );
         fileNameGroup.setType( ControlGroupType.NONE );
+        fileNameHelpInline.setText( "" );
         super.show();
     }
 
@@ -177,11 +179,6 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     }
 
     @Override
-    public String getFileName() {
-        return fileNameTextBox.getText();
-    }
-
-    @Override
     public void enableHandler( final NewResourceHandler handler,
                                final boolean enabled ) {
         final RadioButton handlerOption = this.handlerToWidgetMap.get( handler );
@@ -214,20 +211,36 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     }
 
     private void onOKButtonClick() {
-        boolean hasError = false;
-        if ( fileNameTextBox.getText() == null || fileNameTextBox.getText().trim().isEmpty() ) {
+        //Generic validation
+        final String fileName = fileNameTextBox.getText();
+        if ( fileName == null || fileName.trim().isEmpty() ) {
             fileNameGroup.setType( ControlGroupType.ERROR );
             fileNameHelpInline.setText( NewItemPopupConstants.INSTANCE.fileNameIsMandatory() );
-            hasError = true;
-        } else {
-            fileNameGroup.setType( ControlGroupType.NONE );
-        }
-
-        if ( hasError ) {
             return;
         }
 
-        presenter.makeItem();
+        //Specialized validation
+        presenter.validate( fileName,
+                            new ValidatorWithReasonCallback() {
+
+                                @Override
+                                public void onSuccess() {
+                                    fileNameGroup.setType( ControlGroupType.NONE );
+                                    presenter.makeItem( fileName );
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    fileNameGroup.setType( ControlGroupType.ERROR );
+                                }
+
+                                @Override
+                                public void onFailure( final String reason ) {
+                                    fileNameGroup.setType( ControlGroupType.ERROR );
+                                    fileNameHelpInline.setText( reason );
+                                }
+
+                            } );
     }
 
 }

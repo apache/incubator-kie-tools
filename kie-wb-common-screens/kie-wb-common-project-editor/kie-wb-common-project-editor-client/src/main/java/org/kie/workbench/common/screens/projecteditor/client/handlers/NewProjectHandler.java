@@ -16,6 +16,7 @@ import org.kie.commons.data.Pair;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
+import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
@@ -86,8 +87,10 @@ public class NewProjectHandler
     }
 
     @Override
-    public boolean validate() {
-        return true;
+    public void validate( final String fileName,
+                          final ValidatorWithReasonCallback callback ) {
+        //Project names are always valid
+        callback.onSuccess();
     }
 
     public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {

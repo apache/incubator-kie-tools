@@ -48,7 +48,6 @@ import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescripto
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.datamodeller.validation.ValidationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -196,17 +195,6 @@ public class DataModelerServiceImpl implements DataModelerService {
             types.add( new PropertyTypeTO( baseType.getName(), baseType.getClassName() ) );
         }
         return types;
-    }
-
-    @Override
-    public Map<String, Boolean> evaluateIdentifiers( String[] identifiers ) {
-        Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
-        if ( identifiers != null && identifiers.length > 0 ) {
-            for ( String s : identifiers ) {
-                result.put( s, ValidationUtils.isJavaIdentifier( s ) );
-            }
-        }
-        return result;
     }
 
     @Override
