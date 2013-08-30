@@ -24,6 +24,7 @@
     <module>kie-wb-common-data-modeller</module>
     <module>kie-wb-common-home</module>
     <module>kie-wb-common-organizationalunit-manager</module>
+    <module>kie-wb-common-java-editor</module>
   </modules>
 
   <build>
