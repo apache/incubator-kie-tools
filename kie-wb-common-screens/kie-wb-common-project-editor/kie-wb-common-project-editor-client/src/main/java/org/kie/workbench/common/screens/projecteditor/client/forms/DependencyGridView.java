@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.model.Dependency;
 public interface DependencyGridView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onAddDependencyButton();
@@ -38,4 +39,6 @@ public interface DependencyGridView
     void setReadOnly();
 
     void setList(List<Dependency> dependencies);
+
+    void refresh();
 }

@@ -206,4 +206,9 @@ public class DependencyGridViewImpl
     void onAddDependencyFromRepository(ClickEvent event) {
         presenter.onAddDependencyFromRepositoryButton();
     }
+
+    @Override
+    public void refresh() {
+        dataGrid.redraw();
+    }
 }

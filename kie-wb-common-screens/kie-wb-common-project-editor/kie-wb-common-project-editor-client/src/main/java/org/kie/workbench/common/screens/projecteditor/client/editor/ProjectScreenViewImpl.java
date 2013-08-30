@@ -233,6 +233,7 @@ public class ProjectScreenViewImpl
     public void showDependenciesPanel() {
         dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies() + ": " + ProjectEditorConstants.INSTANCE.DependenciesList());
         deckPanel.showWidget(DEPENDENCY_PANEL_INDEX);
+        dependencyGrid.refresh();
 
     }
 

@@ -76,4 +76,8 @@ public class DependencyGrid
     public void setReadOnly() {
         view.setReadOnly();
     }
+
+    public void refresh() {
+        view.refresh();
+    }
 }
