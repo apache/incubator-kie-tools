@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
@@ -53,7 +52,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ConditionCol52FieldConstraintAdaptor;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
