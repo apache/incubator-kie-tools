@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
@@ -52,6 +53,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ConditionCol52FieldConstraintAdaptor;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
@@ -60,9 +62,9 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
@@ -393,9 +395,20 @@ public class ConditionPopup extends FormStylePopup {
                 }
 
                 //Check for unique binding
-                if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
-                    return;
+                if ( isNew ) {
+                    if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
+                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                        return;
+                    }
+                } else {
+                    if ( col.isBound() && editingCol.isBound() ) {
+                        if ( !col.getBinding().equals( editingCol.getBinding() ) ) {
+                            if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
+                                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                                return;
+                            }
+                        }
+                    }
                 }
 
                 //Check column header is unique
@@ -574,7 +587,7 @@ public class ConditionPopup extends FormStylePopup {
         } else if ( nil( editingCol.getOperator() ) ) {
             operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
         } else {
-            operatorLabel.setText( HumanReadable.getOperatorDisplayName(editingCol.getOperator()) );
+            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
     }
 
