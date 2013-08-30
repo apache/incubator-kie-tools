@@ -58,6 +58,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
     private static final Logger log = LoggerFactory.getLogger( ScoreCardXLSServiceImpl.class );
 
+    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -224,7 +226,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
                                                                       StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,
-                                              new JavaFileFilter() );
+                                              FILTER_JAVA );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

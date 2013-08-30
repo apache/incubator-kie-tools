@@ -57,6 +57,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @ApplicationScoped
 public class GlobalsEditorServiceImpl implements GlobalsEditorService {
 
+    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -249,7 +251,7 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
         try {
             return genericValidator.validate( path,
                                               new ByteArrayInputStream( GlobalsPersistence.getInstance().marshal( content ).getBytes() ),
-                                              new JavaFileFilter() );
+                                              FILTER_JAVA );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

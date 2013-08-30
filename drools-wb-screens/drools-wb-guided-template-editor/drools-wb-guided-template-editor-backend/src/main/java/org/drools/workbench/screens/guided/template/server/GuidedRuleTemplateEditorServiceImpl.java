@@ -59,6 +59,12 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @ApplicationScoped
 public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEditorService {
 
+    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
+
+    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
+
+    private static final GlobalsFileFilter FILTER_GLOBALS = new GlobalsFileFilter();
+
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -244,9 +250,9 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             return genericValidator.validate( path,
                                               new ByteArrayInputStream( toSource( path,
                                                                                   content ).getBytes() ),
-                                              new JavaFileFilter(),
-                                              new GlobalsFileFilter(),
-                                              new DslFileFilter() );
+                                              FILTER_JAVA,
+                                              FILTER_GLOBALS,
+                                              FILTER_DSLS );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
