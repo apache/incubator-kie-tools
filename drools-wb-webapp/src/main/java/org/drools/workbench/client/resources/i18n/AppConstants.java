@@ -18,6 +18,7 @@ package org.drools.workbench.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -56,4 +57,17 @@ public interface AppConstants
 
     String MenuManageOrganizationalUnits();
 
+    String Explore();
+
+    String Projects();
+
+    String IncomingChanges();
+
+    String RecentlyEdited();
+
+    String RecentlyOpened();
+
+    String New();
+
+    String Project();
 }

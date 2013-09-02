@@ -23,7 +23,7 @@ import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.inbox.client.InboxPresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
-import org.kie.workbench.common.widgets.client.menu.ToolsMenu;
+import org.kie.workbench.common.widgets.client.menu.ProjectMenu;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -60,7 +60,7 @@ public class AuthoringPerspective {
     private NewResourcesMenu newResourcesMenu;
 
     @Inject
-    private ToolsMenu toolsMenu;
+    private ProjectMenu projectMenu;
 
     @Inject
     private PlaceManager placeManager;
@@ -106,17 +106,17 @@ public class AuthoringPerspective {
 
     private void buildMenuBar() {
         this.menus = MenuFactory
-                .newTopLevelMenu( "Explore" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Explore() )
                 .menus()
-                .menu( "Projects" )
-                .respondsWith( new Command() {
+                .menu( AppConstants.INSTANCE.Projects() )
+                .respondsWith(new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "org.kie.guvnor.explorer" );
+                        placeManager.goTo("org.kie.guvnor.explorer");
                     }
-                } )
+                })
                 .endMenu()
-                .menu( "Incoming Changes" )
+                .menu( AppConstants.INSTANCE.IncomingChanges() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -126,7 +126,7 @@ public class AuthoringPerspective {
                     }
                 } )
                 .endMenu()
-                .menu( "Recently Edited" )
+                .menu( AppConstants.INSTANCE.RecentlyEdited() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -136,7 +136,7 @@ public class AuthoringPerspective {
                     }
                 } )
                 .endMenu()
-                .menu( "Recently Opened" )
+                .menu( AppConstants.INSTANCE.RecentlyOpened() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -148,11 +148,11 @@ public class AuthoringPerspective {
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( "New" )
-                .withItems( newResourcesMenu.getMenuItems() )
+                .newTopLevelMenu(AppConstants.INSTANCE.New())
+                .withItems(newResourcesMenu.getMenuItems())
                 .endMenu()
-                .newTopLevelMenu( "Tools" )
-                .withItems( toolsMenu.getMenuItems() )
+                .newTopLevelMenu( AppConstants.INSTANCE.Project() )
+                .withItems( projectMenu.getMenuItems() )
                 .endMenu().build();
     }
 
