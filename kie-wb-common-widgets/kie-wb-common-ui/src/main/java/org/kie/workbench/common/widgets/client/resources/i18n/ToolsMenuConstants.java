@@ -28,4 +28,10 @@ public interface ToolsMenuConstants
     String ProjectEditor();
     
     String DataModeller();
+
+    String RemoveProject();
+
+    String RenameProject();
+
+    String CopyProject();
 }
