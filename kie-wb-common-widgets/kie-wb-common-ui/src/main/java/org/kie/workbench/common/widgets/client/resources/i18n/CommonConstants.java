@@ -194,6 +194,8 @@ public interface CommonConstants
 
     String ExceptionGeneric0( final String message );
 
+    String InvalidFileName0( final String fileName );
+
     String NewName();
 
     String NewNameColon();

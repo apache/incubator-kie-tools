@@ -16,6 +16,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
@@ -40,6 +41,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Inject
     protected Caller<ProjectService> projectService;
+
+    @Inject
+    protected Caller<FileNameValidationService> fileNameValidationService;
 
     @Inject
     private PlaceManager placeManager;
@@ -71,7 +75,17 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
             callback.onFailure();
             return;
         }
-        callback.onSuccess();
+
+        fileNameValidationService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean response ) {
+                if ( Boolean.TRUE.equals( response ) ) {
+                    callback.onSuccess();
+                } else {
+                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( fileName ) );
+                }
+            }
+        } ).isFileNameValid( fileName );
     }
 
     @Override

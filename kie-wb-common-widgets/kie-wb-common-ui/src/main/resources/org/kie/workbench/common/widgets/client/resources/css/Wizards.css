@@ -124,6 +124,8 @@
     padding: 2px;
     margin-bottom: 3px;
     background-color: #990000;
+    border-collapse: separate;
+    padding-bottom: 0px;
 }
 
 .wizardDTableSummaryContainer {
