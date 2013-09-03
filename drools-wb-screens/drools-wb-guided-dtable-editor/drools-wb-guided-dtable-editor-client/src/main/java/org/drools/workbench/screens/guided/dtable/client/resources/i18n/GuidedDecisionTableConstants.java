@@ -386,7 +386,7 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableWizardIncompleteActions();
 
-    String DecisionTableWizardSummaryNameMissing();
+    String DecisionTableWizardSummaryInvalidName();
 
     String DecisionTableWizardColumnExpansion();
 

@@ -39,10 +39,10 @@ public interface SummaryPageView
 
     void setBaseFileName( String baseFileName );
 
+    void setValidBaseFileName( final boolean isValid );
+
     void setContextPath( Path contextPath );
 
     void setTableFormat( GuidedDecisionTable52.TableFormat tableFormat );
-
-    void setHasInvalidAssetName( boolean isInvalid );
 
 }

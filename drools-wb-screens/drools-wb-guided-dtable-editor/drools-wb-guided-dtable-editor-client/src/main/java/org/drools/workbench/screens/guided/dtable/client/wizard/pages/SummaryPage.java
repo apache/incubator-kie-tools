@@ -21,6 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -37,6 +40,11 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
 
+    @Inject
+    private Caller<FileNameValidationService> fileNameValidationService;
+
+    private boolean isBaseFileNameValid = false;
+
     @Override
     public String getTitle() {
         return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardSummary();
@@ -44,10 +52,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public boolean isComplete() {
-        String assetName = view.getBaseFileName();
-        boolean isValid = ( assetName != null && !assetName.equals( "" ) );
-        view.setHasInvalidAssetName( !isValid );
-        return isValid;
+        return isBaseFileNameValid;
     }
 
     @Override
@@ -57,6 +62,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         view.setContextPath( context.getContextPath() );
         view.setTableFormat( ( (NewGuidedDecisionTableAssetWizardContext) context ).getTableFormat() );
         content.setWidget( view );
+        stateChanged();
     }
 
     @Override
@@ -66,6 +72,17 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void stateChanged() {
+        fileNameValidationService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean response ) {
+                isBaseFileNameValid = Boolean.TRUE.equals( response );
+                view.setValidBaseFileName( isBaseFileNameValid );
+                fireEvent();
+            }
+        } ).isFileNameValid( view.getBaseFileName() );
+    }
+
+    private void fireEvent() {
         final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
         wizardPageStatusChangeEvent.fire( event );
     }

@@ -19,8 +19,8 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -74,24 +74,14 @@ public class SummaryPageViewImpl extends Composite
     }
 
     private void initialiseBaseFileName() {
-        txtBaseFileName.addValueChangeHandler( new ValueChangeHandler<String>() {
+        txtBaseFileName.addKeyUpHandler( new KeyUpHandler() {
 
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
+            public void onKeyUp( KeyUpEvent event ) {
                 baseFileName = txtBaseFileName.getText();
                 presenter.stateChanged();
-                validateBaseFileName();
             }
-
         } );
-    }
-
-    private void validateBaseFileName() {
-        if ( baseFileName != null && !baseFileName.equals( "" ) ) {
-            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
-        } else {
-            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
-        }
     }
 
     @Override
@@ -108,7 +98,16 @@ public class SummaryPageViewImpl extends Composite
     public void setBaseFileName( final String baseFileName ) {
         this.baseFileName = baseFileName;
         txtBaseFileName.setText( baseFileName );
-        validateBaseFileName();
+    }
+
+    @Override
+    public void setValidBaseFileName( final boolean isValid ) {
+        if ( isValid ) {
+            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+        } else {
+            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+        }
+        messages.setVisible( !isValid );
     }
 
     @Override
@@ -126,11 +125,6 @@ public class SummaryPageViewImpl extends Composite
                 lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatLimitedEntry() );
                 break;
         }
-    }
-
-    @Override
-    public void setHasInvalidAssetName( final boolean isInvalid ) {
-        messages.setVisible( isInvalid );
     }
 
 }

@@ -27,7 +27,7 @@
     <gwt:HorizontalPanel ui:field="messages" styleName="{res.css.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{ufImages.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardSummaryNameMissing}" styleName="{res.css.wizardDTableMessage}" />
+        <gwt:Label text="{i18n.DecisionTableWizardSummaryInvalidName}" styleName="{res.css.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
     <gwt:Label text="{i18n.DecisionTableWizardDescriptionSummaryPage}" styleName="{res.css.wizardDTableCaption}"/>
