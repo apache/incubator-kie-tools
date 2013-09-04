@@ -137,7 +137,7 @@ public class ScenarioEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return view.getTitle();
+        return view.getTitle(path.getFileName().substring(0, path.getFileName().indexOf(".scenario")));
     }
 
     @WorkbenchPartView

@@ -31,7 +31,7 @@ public interface ScenarioEditorView
 
     void showSaveSuccessful();
 
-    String getTitle();
+    String getTitle(String fileName);
 
     void initImportsTab( final PackageDataModelOracle dmo,
                          final Imports imports,

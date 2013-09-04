@@ -258,4 +258,5 @@ public interface TestScenarioConstants
    
     String RunAllScenarios();
 
+    String TestScenarioParamFileName(String fileName);
 }

@@ -105,8 +105,8 @@ public class ScenarioEditorViewImpl
 
     }
 
-    public String getTitle() {
-        return "Test Scenario";
+    public String getTitle(String fileName) {
+        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName(fileName);
     }
 
     @Override
