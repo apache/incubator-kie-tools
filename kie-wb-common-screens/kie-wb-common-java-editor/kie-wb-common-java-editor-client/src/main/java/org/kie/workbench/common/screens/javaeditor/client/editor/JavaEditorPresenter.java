@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.javaeditor.client.editor;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
@@ -34,14 +36,11 @@ import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 
-import javax.inject.Inject;
-
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = {JavaResourceType.class})
-public class JavaEditorPresenter extends TextEditorPresenter {
-
-    private Path path;
+public class JavaEditorPresenter
+        extends TextEditorPresenter {
 
     private boolean isReadOnly = true;
 
@@ -54,17 +53,18 @@ public class JavaEditorPresenter extends TextEditorPresenter {
     @Inject
     private MultiPageEditor multiPage;
 
-
     @OnStartup
     public void init(final Path path) {
         this.path = checkNotNull("path", path);
 
-        super.onStartup( path );
+        super.onStartup(path);
 
         this.path = path;
 
-        multiPage.addWidget( super.getWidget(),
-                CommonConstants.INSTANCE.EditTabTitle() );
+        IsWidget widget = super.getWidget();
+        multiPage.addWidget(
+                widget,
+                CommonConstants.INSTANCE.EditTabTitle());
 
         multiPage.addPage(new Page(metadataWidget,
                 CommonConstants.INSTANCE.MetadataTabTitle()) {
@@ -81,11 +81,6 @@ public class JavaEditorPresenter extends TextEditorPresenter {
                 //Nothing to do
             }
         });
-    }
-
-    @OnClose
-    public void onClose() {
-        super.onClose();
     }
 
     @WorkbenchPartTitle

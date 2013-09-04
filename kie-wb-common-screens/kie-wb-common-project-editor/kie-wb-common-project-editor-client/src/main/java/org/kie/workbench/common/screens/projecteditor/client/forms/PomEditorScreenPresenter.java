@@ -5,13 +5,15 @@ import org.kie.workbench.common.screens.defaulteditor.client.editor.GuvnorTextEd
 import org.kie.workbench.common.screens.projecteditor.client.type.POMResourceType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.Menus;
 
-//@WorkbenchEditor(identifier = "pomScreen", supportedTypes = {POMResourceType.class})
+@WorkbenchEditor(identifier = "pomScreen", supportedTypes = {POMResourceType.class})
 public class PomEditorScreenPresenter
         extends GuvnorTextEditorPresenter {
 
@@ -21,19 +23,23 @@ public class PomEditorScreenPresenter
         super.onStartup(path, place);
     }
 
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return super.getMenus();
+    }
+
+    @OnOpen
+    public void onOpen() {
+        super.onOpen();
+    }
+
     @WorkbenchPartTitle
     public String getTitle() {
-        return super.getTitle();
+        return "pom.xml";
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget() {
+    public IsWidget asWidget() {
         return super.getWidget();
     }
-
-    @OnClose
-    public void onClose() {
-        super.onClose();
-    }
-
 }

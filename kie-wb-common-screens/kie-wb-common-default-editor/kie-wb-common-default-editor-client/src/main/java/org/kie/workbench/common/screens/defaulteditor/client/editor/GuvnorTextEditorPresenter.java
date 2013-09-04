@@ -36,8 +36,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-@Dependent
-@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = {TextResourceType.class}, priority = -1)
 public class GuvnorTextEditorPresenter
         extends TextEditorPresenter {
 
@@ -64,10 +62,8 @@ public class GuvnorTextEditorPresenter
     private MetadataWidget metadataWidget;
 
     private boolean isReadOnly;
-    private Path path;
+    protected Path path;
 
-
-    @OnStartup
     public void onStartup(final Path path,
             final PlaceRequest place) {
         super.onStartup(path);
@@ -154,22 +150,6 @@ public class GuvnorTextEditorPresenter
         return super.isDirty();
     }
 
-    @OnClose
-    public void onClose() {
-        super.onClose();
-    }
-
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    @WorkbenchPartView
     public IsWidget getWidget() {
         return multiPage;
     }
