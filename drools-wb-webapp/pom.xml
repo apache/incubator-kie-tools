@@ -251,23 +251,23 @@
       <artifactId>kie-wb-common-java-editor-client</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-backend</artifactId>
+    </dependency>
+
     <!-- Drools Workbench REST -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-rest</artifactId>
     </dependency>
-    
+
     <!-- Drools Workbench Screens -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-default-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-default-editor-backend</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-categories-editor-client</artifactId>

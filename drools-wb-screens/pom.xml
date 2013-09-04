@@ -17,7 +17,6 @@
 
   <modules>
     <module>drools-wb-categories-editor</module>
-    <module>drools-wb-default-editor</module>
     <module>drools-wb-drl-text-editor</module>
     <module>drools-wb-dsl-text-editor</module>
     <module>drools-wb-dtable-xls-editor</module>
