@@ -223,6 +223,28 @@ public class Validator {
         return ( doesOperatorNeedValue && hasValue ) || ( !doesOperatorNeedValue && !hasValue );
     }
 
+    public boolean isTypeUsed( final String fqcn ) {
+        String simpleType = fqcn;
+        int dotIndex = simpleType.lastIndexOf( "." );
+        if ( dotIndex > 0 ) {
+            simpleType = simpleType.substring( dotIndex + 1 );
+        }
+        for ( CompositeColumn<? extends BaseColumn> cc : patternsConditions ) {
+            if ( cc instanceof Pattern52 ) {
+                Pattern52 p = (Pattern52) cc;
+                if ( p.getFactType().equals( simpleType ) ) {
+                    return true;
+                }
+            }
+        }
+        for ( Pattern52 p : patternsActions ) {
+            if ( p.getFactType().equals( simpleType ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean hasValue( LimitedEntryConditionCol52 lec ) {
         if ( lec.getValue() == null ) {
             return false;

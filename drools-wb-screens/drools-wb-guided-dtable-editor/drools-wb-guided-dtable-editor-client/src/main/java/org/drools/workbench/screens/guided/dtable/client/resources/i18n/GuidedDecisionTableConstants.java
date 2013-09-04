@@ -412,6 +412,20 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableWizardExpandInFull();
 
+    String DecisionTableWizardImports();
+
+    String DecisionTableWizardDescriptionImportsPage();
+
+    String DecisionTableWizardNoAvailableImports();
+
+    String DecisionTableWizardNoChosenImports();
+
+    String DecisionTableWizardAvailableImports();
+
+    String DecisionTableWizardChosenImports();
+
+    String DecisionTableWizardCannotRemoveImport();
+
     String BindingFact();
 
     String BindingDescription();

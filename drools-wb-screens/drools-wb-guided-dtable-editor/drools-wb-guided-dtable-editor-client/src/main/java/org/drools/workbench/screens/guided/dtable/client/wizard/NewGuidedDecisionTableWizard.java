@@ -36,6 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ActionSetF
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ColumnExpansionPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatternConstraintsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatternsPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ImportsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpander;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
@@ -51,6 +52,9 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
     @Inject
     private SummaryPage summaryPage;
+
+    @Inject
+    private ImportsPage importsPage;
 
     @Inject
     private ColumnExpansionPage columnExpansionPage;
@@ -80,6 +84,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
     @PostConstruct
     public void setupPages() {
         pages.add( summaryPage );
+        pages.add( importsPage );
         pages.add( factPatternsPage );
         pages.add( factPatternConstraintsPage );
         pages.add( actionSetFieldsPage );

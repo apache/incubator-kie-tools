@@ -36,6 +36,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
+import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
+import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -155,6 +157,22 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         actionInsertFactFieldsDefinedEvent.fire( eventFactFields );
 
         return arePatternBindingsUnique && areActionInsertFieldsDefined;
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
+        view.setAvailableFactTypes( availableTypes );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
+        view.setAvailableFactTypes( availableTypes );
     }
 
     public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
