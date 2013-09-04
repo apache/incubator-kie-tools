@@ -140,11 +140,6 @@ public class ProjectScreenViewImpl
         presenter.onGAVMetadataPanelSelected();
     }
 
-    @UiHandler(value = "gavSourceButton")
-    public void onGAVSourceButtonClick(ClickEvent clickEvent) {
-        setGAVDropboxTitle(ProjectEditorConstants.INSTANCE.Source());
-    }
-
     private void setGAVDropboxTitle(String subItem) {
         dropDownButton.setText(ProjectEditorConstants.INSTANCE.ProjectSettings() + ": " + subItem);
     }
@@ -174,11 +169,6 @@ public class ProjectScreenViewImpl
     public void showKBaseMetadataPanel() {
         deckPanel.showWidget(KBASE_METADATA_PANEL_INDEX);
         dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
-    }
-
-    @UiHandler(value = "kbaseSourceButton")
-    public void onKbaseSourceButtonClick(ClickEvent clickEvent) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.Source());
     }
 
     @UiHandler(value = "importsButton")

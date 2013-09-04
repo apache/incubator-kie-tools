@@ -38,9 +38,6 @@
           <bootstrap:NavLink ui:field="dependenciesButton">
             <ui:text from="{i18n.Dependencies}"/>
           </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="gavSourceButton">
-            <ui:text from="{i18n.Source}"/>
-          </bootstrap:NavLink>
           <bootstrap:NavLink ui:field="gavMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
           </bootstrap:NavLink>
@@ -49,9 +46,6 @@
           </bootstrap:NavHeader>
           <bootstrap:NavLink ui:field="kbaseButton">
             <ui:text from="{i18n.KnowledgeBasesAndSessions}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="kbaseSourceButton">
-            <ui:text from="{i18n.Source}"/>
           </bootstrap:NavLink>
           <bootstrap:NavLink ui:field="kbaseMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
