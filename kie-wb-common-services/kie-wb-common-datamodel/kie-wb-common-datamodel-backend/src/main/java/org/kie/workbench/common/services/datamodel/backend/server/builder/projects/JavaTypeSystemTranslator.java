@@ -33,8 +33,10 @@ public class JavaTypeSystemTranslator implements ClassToGenericClassConverter {
                     fieldType = DataType.TYPE_NUMERIC_SHORT;
                 } else if ( type == boolean.class ) {
                     fieldType = DataType.TYPE_BOOLEAN;
-                } else if(type==char.class) {
+                } else if ( type == char.class ) {
                     fieldType = DataType.TYPE_STRING;
+                } else if ( type == void.class ) {
+                    fieldType = DataType.TYPE_VOID;
                 }
             } else if ( BigDecimal.class.isAssignableFrom( type ) ) {
                 fieldType = DataType.TYPE_NUMERIC_BIGDECIMAL;
