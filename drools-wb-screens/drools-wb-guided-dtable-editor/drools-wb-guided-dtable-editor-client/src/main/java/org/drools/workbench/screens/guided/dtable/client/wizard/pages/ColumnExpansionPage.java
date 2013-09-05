@@ -39,7 +39,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     @Inject
     private ColumnExpansionPageView view;
 
-    private List<ConditionCol52> columnsToExpand = new ArrayList<ConditionCol52>();
+    private List<ConditionCol52> columnsToExpand = null;
 
     @Override
     public String getTitle() {
@@ -50,10 +50,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     public void initialise() {
         view.init( this );
         view.setValidator( getValidator() );
-        columnsToExpand.clear();
-
         view.setChosenColumns( new ArrayList<ConditionCol52>() );
-
         content.setWidget( view );
     }
 
