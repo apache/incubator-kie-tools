@@ -31,8 +31,10 @@ import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEdit
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
+import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -46,11 +48,6 @@ import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.workbench.common.widgets.viewsource.client.callbacks.ViewSourceSuccessCallback;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -58,6 +55,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -111,7 +113,7 @@ public class GuidedScoreCardEditorPresenter {
 
     @OnStartup
     public void onStartup( final Path path,
-                         final PlaceRequest place ) {
+                           final PlaceRequest place ) {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
@@ -202,6 +204,20 @@ public class GuidedScoreCardEditorPresenter {
                 view.hideBusyIndicator();
             }
         };
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refreshFactTypes();
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refreshFactTypes();
     }
 
     private Command onValidate() {

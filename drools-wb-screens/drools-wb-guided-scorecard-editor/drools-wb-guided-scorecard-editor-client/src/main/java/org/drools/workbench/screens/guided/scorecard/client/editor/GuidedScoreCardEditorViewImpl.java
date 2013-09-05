@@ -67,6 +67,11 @@ public class GuidedScoreCardEditorViewImpl
     }
 
     @Override
+    public void refreshFactTypes() {
+        editor.refreshFactTypes();
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
     }

@@ -21,4 +21,6 @@ public interface GuidedScoreCardEditorView extends HasBusyIndicator,
 
     void alertReadOnly();
 
+    void refreshFactTypes();
+
 }

@@ -69,8 +69,6 @@ public class GuidedScoreCardEditor extends Composite {
     private static final String[] booleanOperators = new String[]{ "false", "true" };
     private static final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<=" };
 
-    private Map<String, ModelField[]> oracleModelFields;
-
     private VerticalPanel container = new VerticalPanel();
 
     private Button btnAddCharacteristic;
@@ -84,6 +82,11 @@ public class GuidedScoreCardEditor extends Composite {
     private TextBox tbBaselineScore;
     private TextBox tbInitialScore;
     private Grid scorecardPropertiesGrid;
+
+    private ListBox dropDownFields = new ListBox();
+    private ListBox dropDownFacts = new ListBox();
+
+    private Map<String, ModelField[]> oracleModelFields;
 
     private ScoreCardModel model;
     private PackageDataModelOracle oracle;
@@ -225,6 +228,29 @@ public class GuidedScoreCardEditor extends Composite {
         return model;
     }
 
+    public void refreshFactTypes() {
+        dropDownFacts.clear();
+        final String[] eligibleFacts = oracle.getFactTypes();
+        for ( final String factType : eligibleFacts ) {
+            dropDownFacts.addItem( factType );
+        }
+
+        this.oracleModelFields = oracle.getModelFields();
+
+        String factName = model.getFactName();
+        // if fact is a fully qualified className, strip off the packageName
+        if ( factName.lastIndexOf( "." ) > -1 ) {
+            factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
+        }
+
+        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( factName );
+        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
+        scoreCardPropertyFactChanged( dropDownFacts,
+                                      dropDownFields );
+
+
+    }
+
     private Widget getScorecardProperties() {
 
         scorecardPropertiesGrid = new Grid( 4,
@@ -241,11 +267,6 @@ public class GuidedScoreCardEditor extends Composite {
             factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
         }
 
-        //Fields List Box
-        final ListBox dropDownFields = new ListBox();
-
-        //Facts List Box
-        final ListBox dropDownFacts = new ListBox();
         final String[] eligibleFacts = oracle.getFactTypes();
         for ( final String factType : eligibleFacts ) {
             dropDownFacts.addItem( factType );
@@ -357,10 +378,13 @@ public class GuidedScoreCardEditor extends Composite {
     private void scoreCardPropertyFactChanged( final ListBox dropDownFacts,
                                                final ListBox dropDownFields ) {
         final int selectedIndex = dropDownFacts.getSelectedIndex();
+        dropDownFields.clear();
+        if ( selectedIndex < 0 ) {
+            return;
+        }
         final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
         final String[] eligibleFieldsForSelectedFactType = getEligibleFields( selectedFactType,
                                                                               typesForScore );
-        dropDownFields.clear();
         for ( final String field : eligibleFieldsForSelectedFactType ) {
             dropDownFields.addItem( field );
         }

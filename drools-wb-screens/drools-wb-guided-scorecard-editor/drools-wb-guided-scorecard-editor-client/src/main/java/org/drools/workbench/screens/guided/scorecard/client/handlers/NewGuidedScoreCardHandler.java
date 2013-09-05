@@ -49,6 +49,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
                         final NewResourcePresenter presenter ) {
         final ScoreCardModel model = new ScoreCardModel();
         model.setName( baseFileName );
+        model.setPackageName( pkg.getPackageName() );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         scoreCardService.call( getSuccessCallback( presenter ),
                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
