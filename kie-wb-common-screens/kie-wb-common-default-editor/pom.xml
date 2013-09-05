@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-default-editor</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools Workbench - Default Editor</name>
-  <description>Drools Workbench - Default Editor</description>
+  <name>Kie Workbench - Common - Default Editor</name>
+  <description>Kie Workbench - Common - Default Editor</description>
 
   <modules>
     <module>kie-wb-common-default-editor-backend</module>

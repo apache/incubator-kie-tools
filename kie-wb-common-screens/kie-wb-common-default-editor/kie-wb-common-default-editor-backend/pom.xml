@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-default-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools Workbench - Default Editor - Backend</name>
-  <description>Drools Workbench - Default Editor - Backend</description>
+  <name>Kie Workbench - Common - Default Editor - Backend</name>
+  <description>Kie Workbench - Common - Default Editor - Backend</description>
 
   <dependencies>
 

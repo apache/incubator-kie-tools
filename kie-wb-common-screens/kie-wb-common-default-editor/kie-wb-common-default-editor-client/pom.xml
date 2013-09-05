@@ -12,8 +12,8 @@
   <artifactId>kie-wb-common-default-editor-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools Workbench - Default Editor - Client</name>
-  <description>Drools Workbench - Default Editor - Client</description>
+  <name>Kie Workbench - Common - Default Editor - Client</name>
+  <description>Kie Workbench - Common - Default Editor - Client</description>
 
   <dependencies>
 
