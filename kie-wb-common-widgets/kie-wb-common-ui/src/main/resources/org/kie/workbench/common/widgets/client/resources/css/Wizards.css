@@ -123,9 +123,8 @@
 .wizardDTableFieldContainerInvalid {
     padding: 2px;
     margin-bottom: 3px;
-    background-color: #990000;
+    background-color: #f0d0d0;
     border-collapse: separate;
-    padding-bottom: 0px;
 }
 
 .wizardDTableSummaryContainer {
