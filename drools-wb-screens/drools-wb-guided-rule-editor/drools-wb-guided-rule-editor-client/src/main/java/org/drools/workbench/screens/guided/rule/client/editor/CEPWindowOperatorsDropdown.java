@@ -55,7 +55,7 @@ public class CEPWindowOperatorsDropdown extends Composite
     protected HasCEPWindow hcw;
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters
-    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.rule.backend.server.util.CEPWindowOperatorParameterDRLBuilder";
+    private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder";
 
     public CEPWindowOperatorsDropdown() {
         windowContainer.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
