@@ -191,9 +191,9 @@ public class RuleAttributeWidget extends Composite {
                                    final boolean isReadOnly ) {
         final CheckBox box = new CheckBox();
         box.setEnabled( !isReadOnly );
-        if ( at.getValue() == null ) {
-            box.setValue( true );
-            at.setValue( TRUE_VALUE );
+        if ( at.getValue() == null || at.getValue().isEmpty() ) {
+            box.setValue( false );
+            at.setValue( FALSE_VALUE );
         } else {
             box.setValue( ( at.getValue().equals( TRUE_VALUE ) ) );
         }
