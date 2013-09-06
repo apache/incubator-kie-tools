@@ -134,7 +134,6 @@ public class RuleAttributeWidget extends Composite {
         list.addItem( DURATION_ATTR );
         list.addItem( TIMER_ATTR );
         list.addItem( CALENDARS_ATTR );
-        list.addItem( DURATION_ATTR );
         list.addItem( AUTO_FOCUS_ATTR );
         list.addItem( LOCK_ON_ACTIVE_ATTR );
         list.addItem( RULEFLOW_GROUP_ATTR );
