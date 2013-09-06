@@ -107,6 +107,20 @@ public class CEPOperatorsDropdown extends Composite
     }
 
     /**
+     * Insert ancillary items to drop-down
+     * @param item
+     * @param value
+     * @param index
+     */
+    public void insertItem( String item,
+                            String value,
+                            int index ) {
+        box.insertItem( item,
+                        value,
+                        index );
+    }
+
+    /**
      * Gets the index of the currently-selected item.
      * @return
      */

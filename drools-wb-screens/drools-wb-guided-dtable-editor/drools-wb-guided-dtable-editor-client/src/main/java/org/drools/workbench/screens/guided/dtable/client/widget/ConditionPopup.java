@@ -382,8 +382,9 @@ public class ConditionPopup extends FormStylePopup {
                     }
 
                     //Operator optional for Literals and Formulae
-                    if ( null == editingCol.getOperator() || "".equals( editingCol.getOperator() ) ) {
+                    if ( editingCol.getOperator() == null ) {
                         Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
+                        return;
                     }
 
                 } else {
@@ -548,8 +549,13 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doImageButtons() {
         int constraintType = editingCol.getConstraintValueType();
-        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
-        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
+        boolean enableField = !( nil( editingPattern.getFactType() ) || constraintType == BaseSingleFieldConstraint.TYPE_PREDICATE || isReadOnly );
+        boolean enableOp = !( nil( editingCol.getFactField() ) || constraintType == BaseSingleFieldConstraint.TYPE_PREDICATE || isReadOnly );
+        this.editField.setEnabled( enableField );
+        this.editOp.setEnabled( enableOp );
+
+//        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
+//        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
     }
 
     private boolean isBindingUnique( String binding ) {
@@ -724,8 +730,9 @@ public class ConditionPopup extends FormStylePopup {
         final CEPOperatorsDropdown box = new CEPOperatorsDropdown( displayOps,
                                                                    editingCol );
 
-        box.addItem( GuidedDecisionTableConstants.INSTANCE.noOperator(),
-                     "" );
+        box.insertItem( GuidedDecisionTableConstants.INSTANCE.noOperator(),
+                        "",
+                        1 );
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Operator(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
@@ -803,6 +810,7 @@ public class ConditionPopup extends FormStylePopup {
                 doPatternLabel();
                 doValueList();
                 doCalculationType();
+                doImageButtons();
 
                 pop.hide();
             }
@@ -864,6 +872,7 @@ public class ConditionPopup extends FormStylePopup {
                 makeLimitedValueWidget();
                 makeDefaultValueWidget();
                 doOperatorLabel();
+                doImageButtons();
 
                 pop.hide();
             }
