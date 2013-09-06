@@ -38,9 +38,9 @@
             </b:Controls>
           </b:ControlGroup>
           <b:ControlGroup ui:field="organizationalUnitGroup">
-            <b:ControlLabel>Organizational Unit</b:ControlLabel>
+            <b:ControlLabel for="ou" ui:field="ouLabel"></b:ControlLabel>
             <b:Controls>
-              <b:ListBox ui:field="organizationalUnitDropdown" />
+              <b:ListBox b:id="ou" ui:field="organizationalUnitDropdown" />
               <b:HelpInline ui:field="organizationalUnitHelpInline" />
             </b:Controls>
           </b:ControlGroup>
