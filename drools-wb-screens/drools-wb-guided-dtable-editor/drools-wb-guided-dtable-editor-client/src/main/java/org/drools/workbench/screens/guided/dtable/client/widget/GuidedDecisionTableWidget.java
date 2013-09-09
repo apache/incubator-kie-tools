@@ -213,7 +213,7 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
-        layout.add( getRuleInheritancePanel(oracle, model) );
+        layout.add( getRuleInheritancePanel( oracle, model ) );
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtableContainer );
@@ -221,21 +221,22 @@ public class GuidedDecisionTableWidget extends Composite
         initWidget( layout );
     }
 
-    private Widget getRuleInheritancePanel(PackageDataModelOracle oracle, final GuidedDecisionTable52 model) {
+    private Widget getRuleInheritancePanel( PackageDataModelOracle oracle,
+                                            final GuidedDecisionTable52 model ) {
 
         HorizontalPanel result = new HorizontalPanel();
-        result.add(new Label(GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit()));
+        result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
 
-        RuleSelector ruleSelector = new RuleSelector(oracle);
-        ruleSelector.setRuleName(model.getParentName());
-        ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
+        RuleSelector ruleSelector = new RuleSelector( oracle );
+        ruleSelector.setRuleName( model.getParentName() );
+        ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                model.setParentName(event.getValue());
+            public void onValueChange( ValueChangeEvent<String> event ) {
+                model.setParentName( event.getValue() );
             }
-        });
+        } );
 
-        result.add(ruleSelector);
+        result.add( ruleSelector );
 
         return result;
     }
@@ -659,6 +660,7 @@ public class GuidedDecisionTableWidget extends Composite
                 //List of basic column types
                 final ListBox choice = new ListBox();
                 choice.setVisibleItemCount( NewColumnTypes.values().length );
+                choice.setWidth( ( Window.getClientWidth() * 0.25 ) + "px" );
 
                 choice.addItem( GuidedDecisionTableConstants.INSTANCE.AddNewMetadataOrAttributeColumn(),
                                 NewColumnTypes.METADATA_ATTRIBUTE.name() );
