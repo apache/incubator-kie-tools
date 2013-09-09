@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.ControlLabel;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
@@ -99,6 +100,9 @@ public class CreateRepositoryForm
     @UiField
     Modal popup;
 
+    @UiField
+    ControlLabel ouLabel;
+
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
     @PostConstruct
@@ -112,12 +116,14 @@ public class CreateRepositoryForm
                 nameHelpInline.setText( "" );
             }
         } );
+        ouLabel.getElement().setInnerText("Organizational Unit");
         //populate Organizational Units list box
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
                                                 organizationalUnitDropdown.addItem( "--- Select ---" );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
+                                                    ouLabel.getElement().setInnerHTML("<font color=\"red\">*</font> Organizational Unit");
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
                                                                                             organizationalUnit.getName() );
