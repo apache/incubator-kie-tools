@@ -54,6 +54,7 @@ public abstract class Popup extends PopupPanel {
 
     public Popup() {
         setGlassEnabled( true );
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         container.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
 
