@@ -12,7 +12,6 @@ import java.util.Set;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.guvnor.common.services.project.builder.model.TypeSource;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.Annotation;
 import org.kie.workbench.common.services.datamodel.model.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
@@ -22,7 +21,6 @@ import org.kie.workbench.common.services.datamodel.model.ModelField;
 /**
  * Default implementation of DataModelOracle
  */
-@Portable
 public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
 
     //Project name

@@ -4,13 +4,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
 
 /**
  * Portable representation of an annotation
  */
-@Portable
 public class Annotation {
 
     private String qualifiedTypeName;

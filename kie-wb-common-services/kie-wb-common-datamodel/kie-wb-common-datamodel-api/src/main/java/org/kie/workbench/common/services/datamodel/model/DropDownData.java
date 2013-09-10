@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Used to drive drop downs.
  */
-@Portable
 public class DropDownData {
 
     /**

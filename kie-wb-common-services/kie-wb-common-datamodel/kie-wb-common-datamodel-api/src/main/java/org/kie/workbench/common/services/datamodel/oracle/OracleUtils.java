@@ -1,7 +1,5 @@
 package org.kie.workbench.common.services.datamodel.oracle;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +7,6 @@ import java.util.Set;
 /**
  * Utilities shared between the different Oracles
  */
-@Portable
 public class OracleUtils {
 
     /**

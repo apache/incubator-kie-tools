@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.Iterator;
 import java.util.List;
 
-@Portable
 public class MethodInfo {
 
     private String name;

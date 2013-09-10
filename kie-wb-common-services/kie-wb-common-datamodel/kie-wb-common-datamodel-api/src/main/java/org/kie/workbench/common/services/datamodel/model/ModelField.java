@@ -16,18 +16,13 @@
 
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public class ModelField {
 
-    @Portable
     public static enum FIELD_CLASS_TYPE {
         REGULAR_CLASS,
         TYPE_DECLARATION_CLASS
     }
 
-    @Portable
     public static enum FIELD_ORIGIN {
         SELF,
         DECLARED,

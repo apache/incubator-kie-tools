@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
 public enum FieldAccessorsAndMutators {
 
     MUTATOR,

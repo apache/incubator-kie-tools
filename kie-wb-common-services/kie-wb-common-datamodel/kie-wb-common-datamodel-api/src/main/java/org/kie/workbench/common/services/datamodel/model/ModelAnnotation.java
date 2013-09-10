@@ -15,15 +15,12 @@
  */
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * An annotation on a Fact type
  */
-@Portable
 public class ModelAnnotation {
 
     private String annotationName;
