@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -25,9 +26,9 @@ public interface WorkbenchEditorActivity
         extends
         WorkbenchActivity {
 
-    public void onStartup( final Path path );
+    public void onStartup( final ObservablePath path );
 
-    public void onStartup( final Path path,
+    public void onStartup( final ObservablePath path,
                            final PlaceRequest place );
 
     public void onSave();

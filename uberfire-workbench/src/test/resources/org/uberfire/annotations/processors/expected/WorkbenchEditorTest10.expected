@@ -34,7 +34,7 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
 
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

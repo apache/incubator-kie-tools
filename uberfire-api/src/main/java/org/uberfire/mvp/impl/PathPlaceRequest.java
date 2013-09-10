@@ -3,11 +3,11 @@ package org.uberfire.mvp.impl;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.util.URIEncoder;
-
-import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  *
@@ -15,14 +15,14 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 @Portable
 public class PathPlaceRequest extends DefaultPlaceRequest {
 
-    private Path path;
+    private ObservablePath path;
 
     public PathPlaceRequest() {
     }
 
     public PathPlaceRequest( final Path path ) {
-        super( checkNotNull( "path", path ).toURI() );
-        this.path = path;
+        super( path.toURI() );
+        this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
     }
 
     public PathPlaceRequest( final Path path,
@@ -34,7 +34,7 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     public PathPlaceRequest( final Path path,
                              final String id ) {
         super( id );
-        this.path = path;
+        this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
     }
 
     public PathPlaceRequest( final Path path,
@@ -44,7 +44,7 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
         this.parameters.putAll( parameters );
     }
 
-    public Path getPath() {
+    public ObservablePath getPath() {
         return path;
     }
 
@@ -88,13 +88,9 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
             return false;
         }
 
-        PathPlaceRequest that = (PathPlaceRequest) o;
+        final PathPlaceRequest that = (PathPlaceRequest) o;
 
-        if ( !path.equals( that.path ) ) {
-            return false;
-        }
-
-        return true;
+        return path.equals( that.path );
     }
 
     @Override

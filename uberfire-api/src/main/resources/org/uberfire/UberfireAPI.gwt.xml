@@ -23,6 +23,7 @@
   <source path='navigator'/>
   <source path='mvp'/>
   <source path='paging'/>
+  <source path='rpc'/>
   <source path='workbench'/>
 
   <super-source path="jre"/>

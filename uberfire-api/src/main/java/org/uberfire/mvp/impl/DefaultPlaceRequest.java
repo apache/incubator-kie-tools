@@ -123,16 +123,13 @@ public class DefaultPlaceRequest
             return false;
         }
 
-        DefaultPlaceRequest that = (DefaultPlaceRequest) o;
+        final DefaultPlaceRequest that = (DefaultPlaceRequest) o;
 
         if ( !identifier.equals( that.identifier ) ) {
             return false;
         }
-        if ( !parameters.equals( that.parameters ) ) {
-            return false;
-        }
 
-        return true;
+        return parameters.equals( that.parameters );
     }
 
     @Override

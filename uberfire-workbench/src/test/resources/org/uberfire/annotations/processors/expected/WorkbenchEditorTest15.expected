@@ -33,7 +33,7 @@ import org.uberfire.mvp.PlaceRequest;
 
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

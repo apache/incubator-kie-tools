@@ -2,8 +2,10 @@ package org.uberfire.workbench.model.menu.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -413,7 +415,15 @@ public final class MenuBuilderImpl
             public List<MenuItem> getItems() {
                 return unmodifiableList( menuItems );
             }
+
+            @Override
+            public Map<Object, MenuItem> getItemsMap() {
+                return new HashMap<Object, MenuItem>() {{
+                    for ( final MenuItem menuItem : menuItems ) {
+                        put( menuItem, menuItem );
+                    }
+                }};
+            }
         };
     }
-
 }

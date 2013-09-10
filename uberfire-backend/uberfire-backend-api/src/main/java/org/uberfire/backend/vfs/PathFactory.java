@@ -44,9 +44,9 @@ public final class PathFactory {
     @Portable
     public static class PathImpl implements Path {
 
-        private FileSystem              fs         = null;
-        private String                  uri        = null;
-        private String                  fileName   = null;
+        private FileSystem fs = null;
+        private String uri = null;
+        private String fileName = null;
         private HashMap<String, Object> attributes = null;
 
         public PathImpl() {
@@ -97,21 +97,17 @@ public final class PathFactory {
         }
 
         @Override
-        public boolean equals( final Object o ) {
+        public boolean equals( Object o ) {
             if ( this == o ) {
                 return true;
             }
-            if ( o == null || getClass() != o.getClass() ) {
+            if ( !( o instanceof Path ) ) {
                 return false;
             }
 
-            final PathImpl path = (PathImpl) o;
+            final Path path = (Path) o;
 
-            if ( uri.equals( path.uri ) ) {
-                return true;
-            }
-
-            return false;
+            return uri.equals( path.toURI() );
         }
 
         @Override

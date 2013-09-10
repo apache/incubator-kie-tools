@@ -197,17 +197,17 @@ public class PlaceManagerImpl
             final Activity activity = requestPair.getK1();
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-                launchActivity( place,
+                launchActivity( requestPair.getK2(),
                                 workbenchActivity,
                                 workbenchActivity.getDefaultPosition(),
                                 panel,
                                 callback );
             } else if ( activity instanceof PopupActivity ) {
-                launchActivity( place,
+                launchActivity( requestPair.getK2(),
                                 (PopupActivity) activity,
                                 callback );
             } else if ( activity instanceof PerspectiveActivity ) {
-                launchActivity( place,
+                launchActivity( requestPair.getK2(),
                                 (PerspectiveActivity) activity,
                                 callback );
             }
@@ -217,6 +217,21 @@ public class PlaceManagerImpl
     }
 
     private Pair<Activity, PlaceRequest> resolveActivity( final PlaceRequest place ) {
+        final Activity activity = getActivity( place );
+
+        if ( activity != null ) {
+            return new Pair<Activity, PlaceRequest>( activity, place );
+        }
+
+        if ( place instanceof PathPlaceRequest ) {
+            for ( final Map.Entry<PlaceRequest, PartDefinition> entry : existingWorkbenchParts.entrySet() ) {
+                if ( entry.getKey() instanceof PathPlaceRequest &&
+                        ( (PathPlaceRequest) entry.getKey() ).getPath().compareTo( ( (PathPlaceRequest) place ).getPath() ) == 0 ) {
+                    return new Pair<Activity, PlaceRequest>( getActivity( entry.getKey() ), entry.getKey() );
+                }
+            }
+        }
+
         final Set<Activity> activities = activityManager.getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
@@ -225,24 +240,12 @@ public class PlaceManagerImpl
 
             return Pair.newPair( null, notFoundPopup );
         } else if ( activities.size() > 1 ) {
-//            final PlaceRequest multiplePlaces = new DefaultPlaceRequest( "workbench.activities.multiple" ).addParameter( "requestedPlaceIdentifier", identifier );
-// Check if there is a default
-//            final String editorId = defaultPlaceResolver.getEditorId( place.getIdentifier() );
-//            if ( editorId == null ) {
-//                goToMultipleActivitiesPlace( placeRequest.getIdentifier() );
-//            } else {
-//                for ( final Activity activity : getActivities( placeRequest ) ) {
-//                    if ( activity.getSignatureId().equals( editorId ) ) {
-//                        return activity;
-//                    }
-//                }
-//                goToMultipleActivitiesPlace( placeRequest.getIdentifier() );
-//        }
             final PlaceRequest multiplePlaces = new DefaultPlaceRequest( "workbench.activities.multiple" ).addParameter( "requestedPlaceIdentifier", null );
+
             return Pair.newPair( null, multiplePlaces );
         }
 
-        return Pair.newPair( activities.iterator().next(), null );
+        return Pair.newPair( activities.iterator().next(), place );
     }
 
     @Override

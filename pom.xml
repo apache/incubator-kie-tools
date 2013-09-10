@@ -341,8 +341,8 @@
 
   <modules>
     <module>uberfire-security</module>
-    <module>uberfire-server</module>
     <module>uberfire-api</module>
+    <module>uberfire-server</module>
     <module>uberfire-client-api</module>
     <module>uberfire-workbench</module>
     <module>uberfire-backend</module>

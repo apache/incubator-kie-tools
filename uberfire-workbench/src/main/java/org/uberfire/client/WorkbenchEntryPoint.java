@@ -19,15 +19,19 @@ package org.uberfire.client;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -36,6 +40,9 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 
 @EntryPoint
@@ -45,6 +52,12 @@ public class WorkbenchEntryPoint {
     private Workbench workbench;
 
     @Inject
+    private Identity identity;
+
+    @Inject
+    private ClientMessageBus bus;
+
+    @Inject
     private PlaceManager placeManager;
 
     @Inject
@@ -52,6 +65,8 @@ public class WorkbenchEntryPoint {
 
     @Inject
     private Event<OrganizationalUnitChangeEvent> groupChangedEvent;
+
+    private SessionInfo sessionInfo = null;
 
     private final SimplePanel appWidget = new SimplePanel();
 
@@ -71,6 +86,21 @@ public class WorkbenchEntryPoint {
 
         //No context by default.. Ensure dependent widgets know about it.
         groupChangedEvent.fire( new OrganizationalUnitChangeEvent( null ) );
+
+        ( (SessionInfoImpl) sessionInfo ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
+    }
+
+    @Produces
+    @ApplicationScoped
+    public SessionInfo currentSession() {
+        if ( sessionInfo == null ) {
+            setupSessionInfo();
+        }
+        return sessionInfo;
+    }
+
+    private void setupSessionInfo() {
+        sessionInfo = new SessionInfoImpl( identity );
     }
 
     private void handleIntegration( final Map<String, List<String>> parameters ) {
@@ -96,5 +126,4 @@ public class WorkbenchEntryPoint {
         //Ensure CSS has been loaded
         WorkbenchResources.INSTANCE.CSS().ensureInjected();
     }
-
 }

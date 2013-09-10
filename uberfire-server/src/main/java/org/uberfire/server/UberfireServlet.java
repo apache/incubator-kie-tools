@@ -38,7 +38,7 @@ import org.mvel2.templates.TemplateRuntime;
 import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.server.cdi.SecurityFactory;
-import org.uberfire.server.cdi.ServletContextFactory;
+import org.uberfire.server.cdi.UberFireGeneralFactory;
 
 import static org.mvel2.templates.TemplateCompiler.*;
 
@@ -51,7 +51,7 @@ public class UberfireServlet extends HttpServlet {
 
     @Override
     public void init( final ServletConfig config ) throws ServletException {
-        ServletContextFactory.setServletContext( config.getServletContext() );
+        UberFireGeneralFactory.setServletContext( config.getServletContext() );
         try {
             final String appTemplateRef = getConfig( config, "org.uberfire.template.app" );
             if ( appTemplateRef != null ) {

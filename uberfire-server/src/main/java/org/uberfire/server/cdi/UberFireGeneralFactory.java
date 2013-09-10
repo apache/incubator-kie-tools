@@ -16,11 +16,18 @@
 
 package org.uberfire.server.cdi;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 
-public class ServletContextFactory {
+import org.jboss.errai.bus.server.api.RpcContext;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.security.server.cdi.SecurityFactory;
+
+public class UberFireGeneralFactory {
 
     static private ServletContext servletContext;
 
@@ -32,6 +39,13 @@ public class ServletContextFactory {
     @Named("uf")
     public static ServletContext getServletContent() {
         return servletContext;
+    }
+
+    @Produces
+    @RequestScoped
+    @Default
+    public static SessionInfo getSessionInfo() {
+        return new SessionInfoImpl( RpcContext.getQueueSession().getSessionId(), SecurityFactory.getIdentity() );
     }
 
 }

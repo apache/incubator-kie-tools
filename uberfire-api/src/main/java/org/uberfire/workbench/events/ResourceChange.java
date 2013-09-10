@@ -3,6 +3,9 @@ package org.uberfire.workbench.events;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
+
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  * A single Resource change in a batch
@@ -12,17 +15,18 @@ public class ResourceChange {
 
     private ChangeType type;
     private Path path;
+    private SessionInfo sessionInfo;
 
     public ResourceChange() {
         //Empty constructor for Errai marshalling
     }
 
     public ResourceChange( final ChangeType type,
-                           final Path path ) {
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
+                           final Path path,
+                           final SessionInfo sessionInfo ) {
+        this.type = PortablePreconditions.checkNotNull( "type", type );
+        this.path = PortablePreconditions.checkNotNull( "path", path );
+        this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
 
     public ChangeType getType() {
@@ -33,4 +37,7 @@ public class ResourceChange {
         return this.path;
     }
 
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
 }

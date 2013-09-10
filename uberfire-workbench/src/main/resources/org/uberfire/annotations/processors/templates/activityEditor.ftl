@@ -50,7 +50,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
 </#if>
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -96,7 +96,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     </#if>
     <#if onStartup2ParametersMethodName??>
     @Override
-    public void onStartup(final Path path,
+    public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
         realPresenter.${onStartup2ParametersMethodName}( path, place );
@@ -104,7 +104,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
 
     <#elseif onStartup1ParameterMethodName??>
     @Override
-    public void onStartup(final Path path,
+    public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path );
         realPresenter.${onStartup1ParameterMethodName}( path );

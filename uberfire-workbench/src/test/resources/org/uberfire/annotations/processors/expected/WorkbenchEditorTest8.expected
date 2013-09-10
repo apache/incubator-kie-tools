@@ -31,7 +31,7 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
 
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -62,7 +62,7 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     }
 
     @Override
-    public void onStartup(final Path path,
+    public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path );
         realPresenter.onStartup( path );

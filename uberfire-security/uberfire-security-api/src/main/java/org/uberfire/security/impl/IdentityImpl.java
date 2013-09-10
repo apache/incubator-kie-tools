@@ -2,6 +2,7 @@ package org.uberfire.security.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,10 @@ public class IdentityImpl implements Identity,
     private final Map<String, String> properties = new HashMap<String, String>();
 
     public IdentityImpl() {
+    }
+
+    public IdentityImpl( final String name ) {
+        this( name, Collections.<Role>emptyList() );
     }
 
     public IdentityImpl( final String name,
@@ -83,5 +88,24 @@ public class IdentityImpl implements Identity,
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Identity ) ) {
+            return false;
+        }
+
+        Identity identity = (Identity) o;
+
+        return name.equals( identity.getName() );
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }
