@@ -89,9 +89,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public void acceptPath( final Path path,
-                            final Callback<Boolean, Void> callback ) {
-        if ( path == null ) {
+    public void acceptContext( final ProjectContext context,
+                               final Callback<Boolean, Void> callback ) {
+        if ( context == null ) {
             callback.onSuccess( false );
         } else {
             final Package pkg = context.getActivePackage();

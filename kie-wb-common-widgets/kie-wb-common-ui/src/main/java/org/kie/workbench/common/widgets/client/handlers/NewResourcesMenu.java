@@ -14,15 +14,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.PackageChangeEvent;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
-import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -31,9 +26,6 @@ import org.uberfire.workbench.model.menu.MenuItem;
  */
 @ApplicationScoped
 public class NewResourcesMenu {
-
-    @Inject
-    private ProjectContext context;
 
     @Inject
     private SyncBeanManager iocBeanManager;
@@ -79,42 +71,33 @@ public class NewResourcesMenu {
         return items;
     }
 
-    public void selectedGroupChanged( @Observes final OrganizationalUnitChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        final ProjectContext context = new ProjectContext();
+        context.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
+        context.setActiveRepository( event.getRepository() );
+        context.setActiveProject( event.getProject() );
+        context.setActivePackage( event.getPackage() );
+        enableNewResourceHandlers( context );
     }
 
-    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
-    }
-
-    public void selectedProjectChanged( @Observes final ProjectChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
-    }
-
-    public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
-        final Package pkg = event.getPackage();
-        enableNewResourceHandlers( pkg );
-    }
-
-    private void enableNewResourceHandlers( final Package pkg ) {
-        final Path path = ( pkg == null ? null : pkg.getPackageMainResourcesPath() );
+    private void enableNewResourceHandlers( final ProjectContext context ) {
         for ( Map.Entry<NewResourceHandler, MenuItem> e : this.newResourceHandlers.entrySet() ) {
             final NewResourceHandler handler = e.getKey();
             final MenuItem menuItem = e.getValue();
-            handler.acceptPath( path,
-                                new Callback<Boolean, Void>() {
-                                    @Override
-                                    public void onFailure( Void reason ) {
-                                        // Nothing to do there right now.
-                                    }
+            handler.acceptContext( context,
+                                   new Callback<Boolean, Void>() {
+                                       @Override
+                                       public void onFailure( Void reason ) {
+                                           // Nothing to do there right now.
+                                       }
 
-                                    @Override
-                                    public void onSuccess( final Boolean result ) {
-                                        if ( result != null ) {
-                                            menuItem.setEnabled( result );
-                                        }
-                                    }
-                                } );
+                                       @Override
+                                       public void onSuccess( final Boolean result ) {
+                                           if ( result != null ) {
+                                               menuItem.setEnabled( result );
+                                           }
+                                       }
+                                   } );
 
         }
     }

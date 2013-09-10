@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.event.Event;
@@ -25,10 +24,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
@@ -40,10 +39,6 @@ import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -51,17 +46,18 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.IconType;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
-
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -97,7 +93,7 @@ public class DataModelerScreenPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ProjectChangeEvent> projectChangeEvent;
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
     @Inject
     private ProjectContext workbenchContext;
@@ -152,7 +148,9 @@ public class DataModelerScreenPresenter {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
         if ( project == null ) {
-            projectChangeEvent.fire( new ProjectChangeEvent( currentProject ) );
+            projectContextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
+                                                                           workbenchContext.getActiveRepository(),
+                                                                           currentProject ) );
         }
 
         modelerService.call( new RemoteCallback<GenerationResult>() {
@@ -166,13 +164,13 @@ public class DataModelerScreenPresenter {
                 if ( project != null ) {
                     loadProjectDataModel( project );
                 }
-                dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
-                                                             getDataModel(),
-                                                             oldDirtyStatus,
-                                                             getContext().isDirty()));
+                dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                                                                       getDataModel(),
+                                                                       oldDirtyStatus,
+                                                                       getContext().isDirty() ) );
             }
         },
-        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(),  currentProject );
+                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject );
     }
 
     @WorkbenchMenu
@@ -247,12 +245,12 @@ public class DataModelerScreenPresenter {
         newDataObjectPopup.show();
     }
 
-    private void onProjectChange( @Observes final ProjectChangeEvent event ) {
+    private void onProjectContextChange( @Observes final ProjectContextChangeEvent event ) {
         final Project project = event.getProject();
         if ( project == null ) {
             return;
         }
-        processProjectChange( event.getProject() );
+        processProjectChange( project );
     }
 
     private boolean isOpen() {

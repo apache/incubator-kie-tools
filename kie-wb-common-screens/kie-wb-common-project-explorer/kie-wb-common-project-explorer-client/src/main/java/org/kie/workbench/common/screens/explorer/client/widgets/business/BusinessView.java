@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.google.gwt.user.client.ui.HasVisibility;
 import org.guvnor.common.services.project.model.Package;
@@ -33,36 +34,16 @@ public interface BusinessView extends HasBusyIndicator,
 
     void init( final BusinessViewPresenter presenter );
 
-    void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits,
-                                 final OrganizationalUnit activeOrganizationalUnit );
-
-    void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit );
-
-    void setRepositories( final Collection<Repository> repositories,
-                          final Repository activeRepository );
-
-    void selectRepository( final Repository repository );
-
-    void setProjects( final Collection<Project> projects,
-                      final Project activeProject );
-
-    void selectProject( final Project project );
-
-    void setPackages( final Collection<Package> packages,
-                      final Package activePackage );
-
-    void selectPackage( final Package pkg );
+    void setContent( final Set<OrganizationalUnit> organizationalUnits,
+                     final OrganizationalUnit organizationalUnit,
+                     final Set<Repository> repositories,
+                     final Repository repository,
+                     final Set<Project> projects,
+                     final Project project,
+                     final Set<Package> packages,
+                     final Package pkg,
+                     final Collection<FolderItem> items );
 
     void setItems( final Collection<FolderItem> folderItems );
-
-    void addRepository( final Repository repository );
-
-    void addProject( final Project project );
-
-    void addPackage( final Package pkg );
-
-    void addItem( final FolderItem item );
-
-    void removeItem( final FolderItem item );
 
 }

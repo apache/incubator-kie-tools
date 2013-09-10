@@ -27,7 +27,10 @@ import org.uberfire.backend.repositories.Repository;
  */
 public interface BusinessViewPresenter extends BaseViewPresenter {
 
-    void initialiseViewForActiveContext();
+    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                         final Repository repository,
+                                         final Project project,
+                                         final Package pkg );
 
     void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 

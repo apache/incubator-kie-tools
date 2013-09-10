@@ -26,18 +26,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.PackageChangeEvent;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
-import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -86,41 +81,32 @@ public class NewResourcePresenter {
         view.setHandlers( handlers );
     }
 
-    public void selectedGroupChanged( @Observes final OrganizationalUnitChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        final ProjectContext context = new ProjectContext();
+        context.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
+        context.setActiveRepository( event.getRepository() );
+        context.setActiveProject( event.getProject() );
+        context.setActivePackage( event.getPackage() );
+        enableNewResourceHandlers( context );
     }
 
-    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
-    }
-
-    public void selectedProjectChanged( @Observes final ProjectChangeEvent event ) {
-        enableNewResourceHandlers( context.getActivePackage() );
-    }
-
-    public void selectedPackageChanged( @Observes final PackageChangeEvent event ) {
-        final Package pkg = event.getPackage();
-        enableNewResourceHandlers( pkg );
-    }
-
-    private void enableNewResourceHandlers( final Package pkg ) {
-        final Path path = ( pkg == null ? null : pkg.getPackageMainResourcesPath() );
+    private void enableNewResourceHandlers( final ProjectContext context ) {
         for ( final NewResourceHandler handler : this.handlers ) {
-            handler.acceptPath( path,
-                                new Callback<Boolean, Void>() {
-                                    @Override
-                                    public void onFailure( Void reason ) {
-                                        // Nothing to do there right now.
-                                    }
+            handler.acceptContext( context,
+                                   new Callback<Boolean, Void>() {
+                                       @Override
+                                       public void onFailure( Void reason ) {
+                                           // Nothing to do there right now.
+                                       }
 
-                                    @Override
-                                    public void onSuccess( final Boolean result ) {
-                                        if ( result != null ) {
-                                            view.enableHandler( handler,
-                                                                result );
-                                        }
-                                    }
-                                } );
+                                       @Override
+                                       public void onSuccess( final Boolean result ) {
+                                           if ( result != null ) {
+                                               view.enableHandler( handler,
+                                                                   result );
+                                           }
+                                       }
+                                   } );
 
         }
     }

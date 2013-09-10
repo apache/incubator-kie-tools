@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
@@ -26,7 +27,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -44,6 +44,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     private TechnicalViewPresenter technicalViewPresenter;
 
+    @Inject
+    private ProjectContext context;
+
     @PostConstruct
     public void init() {
         selectBusinessView();
@@ -59,25 +62,24 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         return ProjectExplorerConstants.INSTANCE.explorerTitle();
     }
 
-    @OnOpen
-    public void onOpen() {
-        if ( businessViewPresenter.isVisible() ) {
-            businessViewPresenter.initialiseViewForActiveContext();
-        } else {
-            technicalViewPresenter.initialiseViewForActiveContext();
-        }
-    }
-
     @Override
     public void selectBusinessView() {
         businessViewPresenter.setVisible( true );
         technicalViewPresenter.setVisible( false );
+        businessViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
+                                                              context.getActiveRepository(),
+                                                              context.getActiveProject(),
+                                                              context.getActivePackage() );
     }
 
     @Override
     public void selectTechnicalView() {
         businessViewPresenter.setVisible( false );
         technicalViewPresenter.setVisible( true );
+        technicalViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
+                                                               context.getActiveRepository(),
+                                                               context.getActiveProject(),
+                                                               context.getActivePackage() );
     }
 
 }

@@ -9,12 +9,12 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -35,7 +35,7 @@ public class NewProjectWizard
     private Event<NotificationEvent> notificationEvent;
 
     @Inject
-    private Event<ProjectChangeEvent> projectChangeEvent;
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
     @Inject
     private WizardPresenter presenter;
@@ -117,7 +117,9 @@ public class NewProjectWizard
             public void callback( final Project project ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                projectChangeEvent.fire( new ProjectChangeEvent( project ) );
+                projectContextChangeEvent.fire( new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
+                                                                               context.getActiveRepository(),
+                                                                               project ) );
                 placeManager.goTo( "projectScreen" );
             }
         };

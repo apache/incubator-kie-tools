@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -55,6 +55,6 @@ public interface NewResourceHandler {
      * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
-    void acceptPath( final Path path,
-                     final Callback<Boolean, Void> callback );
+    void acceptContext( final ProjectContext context,
+                        final Callback<Boolean, Void> callback );
 }

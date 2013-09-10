@@ -24,31 +24,27 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.events.PackageChangeEvent;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.model.ResourceContext;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.organizationalunit.NewOrganizationalUnitEvent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -77,28 +73,13 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<OrganizationalUnitChangeEvent> organizationalUnitChangeEvent;
+    private Event<BuildResults> buildResultsEvent;
 
     @Inject
-    private Event<RepositoryChangeEvent> repositoryChangeEvent;
-
-    @Inject
-    private Event<ProjectChangeEvent> projectChangeEvent;
-
-    @Inject
-    private Event<PackageChangeEvent> packageChangeEvent;
-
-    @Inject
-    private Event<PathChangeEvent> pathChangeEvent;
-
-    @Inject
-    private ProjectContext context;
+    private Event<ProjectContextChangeEvent> contextChangedEvent;
 
     @Inject
     private TechnicalView view;
-
-    @Inject
-    private Event<BuildResults> buildResultsEvent;
 
     //Active context
     private OrganizationalUnit activeOrganizationalUnit = null;
@@ -113,40 +94,57 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     @Override
-    public void initialiseViewForActiveContext() {
-        activeOrganizationalUnit = context.getActiveOrganizationalUnit();
-        activeRepository = context.getActiveRepository();
-        activeProject = context.getActiveProject();
-        activePackage = context.getActivePackage();
+    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                                final Repository repository,
+                                                final Project project,
+                                                final Package pkg ) {
+        doInitialiseViewForActiveContext( organizationalUnit,
+                                          repository,
+                                          project,
+                                          pkg,
+                                          null,
+                                          true );
+    }
+
+    private void doInitialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                                   final Repository repository,
+                                                   final Project project,
+                                                   final Package pkg,
+                                                   final FolderListing folderListing,
+                                                   final boolean showLoadingIndicator ) {
+        activeOrganizationalUnit = organizationalUnit;
+        activeRepository = repository;
+        activeProject = project;
+        activePackage = pkg;
+        activeFolderListing = folderListing;
 
         if ( activeFolderListing != null ) {
-            loadFilesAndFolders( activeFolderListing.getPath() );
+            loadFilesAndFolders( activeFolderListing.getPath(),
+                                 showLoadingIndicator );
 
         } else if ( activePackage != null ) {
-            loadFilesAndFolders( activePackage.getProjectRootPath() );
-            packageChangeEvent.fire( new PackageChangeEvent() );
+            loadFilesAndFolders( activePackage.getProjectRootPath(),
+                                 showLoadingIndicator );
 
         } else if ( activeProject != null ) {
-            loadFilesAndFolders( activeProject.getRootPath() );
+            loadFilesAndFolders( activeProject.getRootPath(),
+                                 showLoadingIndicator );
 
         } else if ( activeRepository != null ) {
-            loadProjects( activeRepository );
+            loadProjects( showLoadingIndicator );
 
         } else if ( activeOrganizationalUnit != null ) {
-            loadRepositories( activeOrganizationalUnit );
+            loadRepositories( showLoadingIndicator );
 
         } else {
-            loadOrganizationalUnits();
+            loadOrganizationalUnits( showLoadingIndicator );
         }
     }
 
-    private void loadOrganizationalUnits() {
-        activeOrganizationalUnit = null;
-        activeRepository = null;
-        activeProject = null;
-        activePackage = null;
-        activeFolderListing = null;
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+    private void loadOrganizationalUnits( final boolean showLoadingIndicator ) {
+        if ( showLoadingIndicator ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        }
         explorerService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
             @Override
             public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
@@ -157,13 +155,10 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
     }
 
-    private void loadRepositories( final OrganizationalUnit organizationalUnit ) {
-        activeOrganizationalUnit = organizationalUnit;
-        activeRepository = null;
-        activeProject = null;
-        activePackage = null;
-        activeFolderListing = null;
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+    private void loadRepositories( final boolean showLoadingIndicator ) {
+        if ( showLoadingIndicator ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        }
         explorerService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
@@ -174,12 +169,10 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( activeOrganizationalUnit );
     }
 
-    private void loadProjects( final Repository repository ) {
-        activeRepository = repository;
-        activeProject = null;
-        activePackage = null;
-        activeFolderListing = null;
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+    private void loadProjects( final boolean showLoadingIndicator ) {
+        if ( showLoadingIndicator ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        }
         explorerService.call( new RemoteCallback<Collection<Project>>() {
             @Override
             public void callback( final Collection<Project> projects ) {
@@ -190,8 +183,11 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( activeRepository );
     }
 
-    private void loadFilesAndFolders( final Path path ) {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+    private void loadFilesAndFolders( final Path path,
+                                      final boolean showLoadingIndicator ) {
+        if ( showLoadingIndicator ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        }
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
             public void callback( final FolderListing folderListing ) {
@@ -202,79 +198,80 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getFolderListing( path );
     }
 
+    private void fireContextChangeEvent() {
+        contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
+                                                                 activeRepository,
+                                                                 activeProject,
+                                                                 activePackage ) );
+    }
+
     @Override
-    public void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+    public void organizationalUnitListSelected() {
+        activeOrganizationalUnit = null;
+        activeRepository = null;
+        activeProject = null;
+        activePackage = null;
+        activeFolderListing = null;
+        fireContextChangeEvent();
+        loadOrganizationalUnits( true );
+    }
+
+    @Override
+    public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
                                                  activeOrganizationalUnit ) ) {
             activeOrganizationalUnit = organizationalUnit;
-            organizationalUnitChangeEvent.fire( new OrganizationalUnitChangeEvent( organizationalUnit ) );
-            if ( organizationalUnit == null ) {
-                loadOrganizationalUnits();
-            } else {
-                loadRepositories( organizationalUnit );
-            }
+            activeRepository = null;
+            activeProject = null;
+            activePackage = null;
+            activeFolderListing = null;
+            fireContextChangeEvent();
+            loadRepositories( true );
         }
-    }
-
-    public void onOrganizationalUnitChanged( final @Observes OrganizationalUnitChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
-        selectOrganizationalUnit( organizationalUnit );
     }
 
     @Override
-    public void selectRepository( final Repository repository ) {
+    public void repositoryListSelected() {
+        activeRepository = null;
+        activeProject = null;
+        activePackage = null;
+        activeFolderListing = null;
+        fireContextChangeEvent();
+        loadRepositories( true );
+    }
+
+    @Override
+    public void repositorySelected( final Repository repository ) {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeRepository ) ) {
             activeRepository = repository;
-            repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
-            if ( repository == null ) {
-                loadRepositories( activeOrganizationalUnit );
-            } else {
-                loadProjects( repository );
-            }
+            activeProject = null;
+            activePackage = null;
+            activeFolderListing = null;
+            fireContextChangeEvent();
+            loadProjects( true );
         }
-    }
-
-    public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final Repository repository = event.getRepository();
-        selectRepository( repository );
     }
 
     @Override
-    public void selectProject( final Project project ) {
+    public void projectListSelected() {
+        activeProject = null;
+        activePackage = null;
+        activeFolderListing = null;
+        fireContextChangeEvent();
+        loadProjects( true );
+    }
+
+    @Override
+    public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeProject ) ) {
             activeProject = project;
-            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-            doProjectChanged( project );
-        }
-    }
-
-    public void onProjectChanged( final @Observes ProjectChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final Project project = event.getProject();
-        selectProject( project );
-    }
-
-    private void doProjectChanged( final Project project ) {
-        if ( project == null ) {
-            //If Project is null, then no Project has been selected
-            loadProjects( activeRepository );
-
-        } else {
-            //Otherwise show Files and Folders for Project
-            loadFilesAndFolders( project.getRootPath() );
+            activePackage = null;
+            activeFolderListing = null;
+            fireContextChangeEvent();
+            loadFilesAndFolders( project.getRootPath(),
+                                 true );
 
             //Build Project
             buildService.call( new RemoteCallback<BuildResults>() {
@@ -287,60 +284,58 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
     }
 
     @Override
-    public void selectProjectRoot() {
+    public void projectRootSelected() {
         activePackage = null;
-        packageChangeEvent.fire( new PackageChangeEvent() );
-        pathChangeEvent.fire( new PathChangeEvent( activeProject.getRootPath() ) );
-        loadFilesAndFolders( activeProject.getRootPath() );
+        activeFolderListing = null;
+        fireContextChangeEvent();
+        loadFilesAndFolders( activeProject.getRootPath(),
+                             true );
     }
 
     @Override
-    public void selectParentFolder( final FolderListing folder ) {
-        //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
-        explorerService.call( new RemoteCallback<ResourceContext>() {
+    public void parentFolderSelected( final FolderListing folder ) {
+        //If path resolves to a Package and that package is different to the active one raise a ProjectContextChangeEvent
+        explorerService.call( new RemoteCallback<Package>() {
             @Override
-            public void callback( final ResourceContext context ) {
-                final Package pkg = context.getPackage();
+            public void callback( final Package pkg ) {
                 if ( Utils.hasPackageChanged( pkg,
                                               activePackage ) ) {
                     activePackage = pkg;
-                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                    fireContextChangeEvent();
                 }
             }
-        } ).resolveResourceContext( folder.getParentPath() );
-
-        pathChangeEvent.fire( new PathChangeEvent( folder.getParentPath() ) );
+        } ).resolvePackage( folder.getParentPath() );
 
         //If the folder represents the Project Root the parent is the list of projects
         if ( folder.getPath().equals( activeProject.getRootPath() ) ) {
-            loadProjects( activeRepository );
+            loadProjects( true );
+            activeFolderListing = null;
         } else {
-            loadFilesAndFolders( folder.getParentPath() );
+            loadFilesAndFolders( folder.getParentPath(),
+                                 true );
         }
     }
 
     @Override
-    public void selectFolder( final Path path ) {
-        //If path resolves to a Package and that package is different to the active one raise a PackageChangeEvent
-        explorerService.call( new RemoteCallback<ResourceContext>() {
+    public void folderSelected( final Path path ) {
+        //If path resolves to a Package and that package is different to the active one raise a ProjectContextChangeEvent
+        explorerService.call( new RemoteCallback<Package>() {
             @Override
-            public void callback( final ResourceContext context ) {
-                final Package pkg = context.getPackage();
+            public void callback( final Package pkg ) {
                 if ( Utils.hasPackageChanged( pkg,
                                               activePackage ) ) {
                     activePackage = pkg;
-                    packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
+                    fireContextChangeEvent();
                 }
             }
-        } ).resolveResourceContext( path );
+        } ).resolvePackage( path );
 
-        pathChangeEvent.fire( new PathChangeEvent( path ) );
-        loadFilesAndFolders( path );
+        loadFilesAndFolders( path,
+                             true );
     }
 
     @Override
-    public void selectFile( final Path path ) {
-        pathChangeEvent.fire( new PathChangeEvent( path ) );
+    public void fileSelected( final Path path ) {
         placeManager.goTo( path );
     }
 
@@ -371,15 +366,46 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
 
     @Override
     public void setVisible( final boolean visible ) {
-        if ( visible ) {
-            activeFolderListing = null;
-            initialiseViewForActiveContext();
-        }
         view.setVisible( visible );
     }
 
+    public void onOrganizationalUnitAdded( @Observes final NewOrganizationalUnitEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( organizationalUnit,
+                                             identity ) ) {
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              activeFolderListing,
+                                              false );
+        }
+    }
+
+    public void onOrganizationalUnitRemoved( @Observes final RemoveOrganizationalUnitEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
+    }
+
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
-        //Repositories are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -389,12 +415,16 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         if ( authorizationManager.authorize( repository,
                                              identity ) ) {
-            view.addRepository( repository );
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              activeFolderListing,
+                                              false );
         }
     }
 
     public void onProjectAdded( @Observes final NewProjectEvent event ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -406,15 +436,18 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                                     project ) ) {
             return;
         }
-
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            view.addProject( project );
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              activeFolderListing,
+                                              false );
         }
     }
 
     public void onPackageAdded( @Observes final NewPackageEvent event ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -422,20 +455,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( pkg == null ) {
             return;
         }
-        final Path mainSrcPath = pkg.getPackageMainSrcPath();
-        final Path testSrcPath = pkg.getPackageTestSrcPath();
-        final Path mainResourcesPath = pkg.getPackageMainResourcesPath();
-        final Path testResourcesPath = pkg.getPackageTestResourcesPath();
-
-        if ( isInActiveFolderListing( mainSrcPath ) ) {
-            view.addItem( Utils.makeFolderItem( mainSrcPath ) );
-        } else if ( isInActiveFolderListing( testSrcPath ) ) {
-            view.addItem( Utils.makeFolderItem( testSrcPath ) );
-        } else if ( isInActiveFolderListing( mainResourcesPath ) ) {
-            view.addItem( Utils.makeFolderItem( mainResourcesPath ) );
-        } else if ( isInActiveFolderListing( testResourcesPath ) ) {
-            view.addItem( Utils.makeFolderItem( testResourcesPath ) );
+        if ( !Utils.isInProject( activeProject,
+                                 pkg ) ) {
+            return;
         }
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
@@ -447,17 +477,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( isInActiveFolderListing( resource ) ) {
-            view.addItem( Utils.makeFileItem( resource ) );
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
         }
-    }
 
-    private boolean isInActiveFolderListing( final Path resource ) {
-        if ( activeFolderListing == null ) {
-            return false;
-        }
-        return Utils.isLeaf( resource,
-                             activeFolderListing.getPath() );
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -469,9 +499,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( isInActiveFolderListing( resource ) ) {
-            view.removeItem( Utils.makeFileItem( resource ) );
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
         }
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
@@ -483,9 +521,17 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( isInActiveFolderListing( resource ) ) {
-            view.addItem( Utils.makeFileItem( resource ) );
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
         }
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
@@ -495,20 +541,37 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
         }
         final Path sourcePath = event.getSourcePath();
         final Path destinationPath = event.getDestinationPath();
-        if ( isInActiveFolderListing( sourcePath ) ) {
-            view.removeItem( Utils.makeFileItem( sourcePath ) );
+
+        boolean refresh = false;
+        if ( Utils.isInPackage( activePackage,
+                                sourcePath ) ) {
+            refresh = true;
+        } else if ( Utils.isInPackage( activePackage,
+                                       destinationPath ) ) {
+            refresh = true;
         }
-        if ( isInActiveFolderListing( destinationPath ) ) {
-            view.addItem( Utils.makeFileItem( destinationPath ) );
+
+        if ( refresh ) {
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              activeFolderListing,
+                                              false );
         }
     }
 
-    // Refresh when a batch Resource change has occurred. Simple refresh everything.
+    // Refresh when a batch Resource change has occurred. Simply refresh everything.
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
         if ( !view.isVisible() ) {
             return;
         }
-        initialiseViewForActiveContext();
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          false );
     }
 
 }

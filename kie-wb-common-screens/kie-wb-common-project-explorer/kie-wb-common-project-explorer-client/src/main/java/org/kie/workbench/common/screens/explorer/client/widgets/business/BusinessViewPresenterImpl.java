@@ -24,34 +24,29 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.events.PackageChangeEvent;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.explorer.client.utils.LRUItemCache;
-import org.kie.workbench.common.screens.explorer.client.utils.LRUPackageCache;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.model.ResourceContext;
+import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.organizationalunit.NewOrganizationalUnitEvent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
-import org.uberfire.workbench.events.PathChangeEvent;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -80,34 +75,13 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Event<OrganizationalUnitChangeEvent> organizationalUnitChangeEvent;
+    private Event<BuildResults> buildResultsEvent;
 
     @Inject
-    private Event<RepositoryChangeEvent> repositoryChangeEvent;
-
-    @Inject
-    private Event<ProjectChangeEvent> projectChangeEvent;
-
-    @Inject
-    private Event<PackageChangeEvent> packageChangeEvent;
-
-    @Inject
-    private Event<PathChangeEvent> pathChangeEvent;
-
-    @Inject
-    private ProjectContext context;
+    private Event<ProjectContextChangeEvent> contextChangedEvent;
 
     @Inject
     private BusinessView view;
-
-    @Inject
-    private LRUPackageCache packageCache;
-
-    @Inject
-    private LRUItemCache itemCache;
-
-    @Inject
-    private Event<BuildResults> buildResultsEvent;
 
     //Active context
     private OrganizationalUnit activeOrganizationalUnit = null;
@@ -115,212 +89,160 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
     private Project activeProject = null;
     private Package activePackage = null;
 
-    //Displayed context
-    private OrganizationalUnit displayedOrganizationalUnit = null;
-    private Repository displayedRepository = null;
-    private Project displayedProject = null;
-    private Package displayedPackage = null;
-
     @PostConstruct
     public void init() {
         this.view.init( this );
     }
 
     @Override
-    public void initialiseViewForActiveContext() {
-        //Store active context as it changes during population of the view
-        activeOrganizationalUnit = context.getActiveOrganizationalUnit();
-        activeRepository = context.getActiveRepository();
-        activeProject = context.getActiveProject();
-        activePackage = context.getActivePackage();
+    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                                final Repository repository,
+                                                final Project project,
+                                                final Package pkg ) {
+        doInitialiseViewForActiveContext( organizationalUnit,
+                                          repository,
+                                          project,
+                                          pkg,
+                                          true );
+    }
 
-        //Invalidate the view so it is constructed from the active context
-        displayedOrganizationalUnit = null;
-        displayedRepository = null;
-        displayedProject = null;
-        displayedPackage = null;
-
-        //Show busy popup. Organizational Units cascade through Repositories, Projects, Packages and Items where it is closed
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
+    private void doInitialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                                   final Repository repository,
+                                                   final Project project,
+                                                   final Package pkg,
+                                                   final boolean showLoadingIndicator ) {
+        if ( showLoadingIndicator ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        }
+        explorerService.call( new RemoteCallback<ProjectExplorerContent>() {
             @Override
-            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
-                view.setOrganizationalUnits( organizationalUnits,
-                                             activeOrganizationalUnit );
+            public void callback( final ProjectExplorerContent content ) {
 
+                boolean signalChange = false;
+                boolean buildSelectedProject = false;
+
+                if ( Utils.hasOrganizationalUnitChanged( content.getOrganizationalUnit(),
+                                                         activeOrganizationalUnit ) ) {
+                    signalChange = true;
+                    activeOrganizationalUnit = content.getOrganizationalUnit();
+                }
+                if ( Utils.hasRepositoryChanged( content.getRepository(),
+                                                 activeRepository ) ) {
+                    signalChange = true;
+                    activeRepository = content.getRepository();
+                }
+                if ( Utils.hasProjectChanged( content.getProject(),
+                                              activeProject ) ) {
+                    signalChange = true;
+                    buildSelectedProject = true;
+                    activeProject = content.getProject();
+                }
+                if ( Utils.hasPackageChanged( content.getPackage(),
+                                              activePackage ) ) {
+                    signalChange = true;
+                    activePackage = content.getPackage();
+                }
+
+                if ( signalChange ) {
+                    fireContextChangeEvent();
+                }
+
+                if ( buildSelectedProject ) {
+                    buildProject( activeProject );
+                }
+
+                view.setContent( content.getOrganizationalUnits(),
+                                 activeOrganizationalUnit,
+                                 content.getRepositories(),
+                                 activeRepository,
+                                 content.getProjects(),
+                                 activeProject,
+                                 content.getPackages(),
+                                 activePackage,
+                                 content.getItems() );
+
+                view.hideBusyIndicator();
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getContent( organizationalUnit,
+                                                                          repository,
+                                                                          project,
+                                                                          pkg );
+    }
+
+    private void fireContextChangeEvent() {
+        contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
+                                                                 activeRepository,
+                                                                 activeProject,
+                                                                 activePackage ) );
+    }
+
+    private void buildProject( final Project project ) {
+        if ( project == null ) {
+            return;
+        }
+        buildService.call(
+                new RemoteCallback<BuildResults>() {
+                    @Override
+                    public void callback( final BuildResults results ) {
+                        buildResultsEvent.fire( results );
+                    }
+                },
+                new DefaultErrorCallback()
+                         ).build( project );
     }
 
     @Override
     public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
-                                                 displayedOrganizationalUnit ) ) {
-            activeOrganizationalUnit = organizationalUnit;
-            displayedOrganizationalUnit = organizationalUnit;
-            organizationalUnitChangeEvent.fire( new OrganizationalUnitChangeEvent( organizationalUnit ) );
-            doOrganizationalUnitChanged( organizationalUnit );
+                                                 activeOrganizationalUnit ) ) {
+            initialiseViewForActiveContext( organizationalUnit,
+                                            null,
+                                            null,
+                                            null );
         }
-    }
-
-    public void onOrganizationalUnitChanged( final @Observes OrganizationalUnitChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
-        view.selectOrganizationalUnit( organizationalUnit );
-    }
-
-    private void doOrganizationalUnitChanged( final OrganizationalUnit organizationalUnit ) {
-        //Show busy popup. Repositories cascade through Projects, Packages and Items where it is closed
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Repository>>() {
-            @Override
-            public void callback( final Collection<Repository> repositories ) {
-                view.setRepositories( repositories,
-                                      activeRepository );
-            }
-
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories( organizationalUnit );
     }
 
     @Override
     public void repositorySelected( final Repository repository ) {
         if ( Utils.hasRepositoryChanged( repository,
-                                         displayedRepository ) ) {
-            activeRepository = repository;
-            displayedRepository = repository;
-            repositoryChangeEvent.fire( new RepositoryChangeEvent( repository ) );
-            doRepositoryChanged( repository );
+                                         activeRepository ) ) {
+            initialiseViewForActiveContext( activeOrganizationalUnit,
+                                            repository,
+                                            null,
+                                            null );
         }
-    }
-
-    public void onRepositoryChanged( final @Observes RepositoryChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final Repository repository = event.getRepository();
-        view.selectRepository( repository );
-    }
-
-    private void doRepositoryChanged( final Repository repository ) {
-        //Show busy popup. Projects cascade through Packages and Items where it is closed
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Project>>() {
-            @Override
-            public void callback( final Collection<Project> projects ) {
-                view.setProjects( projects,
-                                  activeProject );
-            }
-
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getProjects( repository );
     }
 
     @Override
     public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
-                                      displayedProject ) ) {
-            activeProject = project;
-            displayedProject = project;
-            projectChangeEvent.fire( new ProjectChangeEvent( project ) );
-            doProjectChanged( project );
+                                      activeProject ) ) {
+            initialiseViewForActiveContext( activeOrganizationalUnit,
+                                            activeRepository,
+                                            project,
+                                            null );
         }
-    }
-
-    public void onProjectChanged( final @Observes ProjectChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final Project project = event.getProject();
-        view.selectProject( project );
-    }
-
-    private void doProjectChanged( final Project project ) {
-        if ( project != null ) {
-
-            //Build project
-            buildService.call(
-                    new RemoteCallback<BuildResults>() {
-                        @Override
-                        public void callback( final BuildResults results ) {
-                            buildResultsEvent.fire( results );
-                        }
-                    },
-                    new DefaultErrorCallback()
-                             ).build( project );
-
-            //Check cache
-            final Collection<Package> packages = packageCache.getEntry( project );
-            if ( packages != null ) {
-                view.setPackages( packages,
-                                  activePackage );
-                return;
-            }
-        }
-
-        //Show busy popup. Packages cascade through Items where it is closed
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<Package>>() {
-            @Override
-            public void callback( final Collection<Package> packages ) {
-                if ( project != null ) {
-                    packageCache.setEntry( project,
-                                           packages );
-                }
-                view.setPackages( packages,
-                                  context.getActivePackage() );
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getPackages( project );
     }
 
     @Override
     public void packageSelected( final Package pkg ) {
         if ( Utils.hasPackageChanged( pkg,
-                                      displayedPackage ) ) {
+                                      activePackage ) ) {
             activePackage = pkg;
-            displayedPackage = pkg;
-            packageChangeEvent.fire( new PackageChangeEvent( pkg ) );
-            doPackageChanged( pkg );
-        }
-    }
+            fireContextChangeEvent();
 
-    public void onPackageChanged( final @Observes PackageChangeEvent event ) {
-        //Don't process event if the view is not visible. State is synchronized when made visible.
-        if ( !view.isVisible() ) {
-            return;
-        }
-        final Package pkg = event.getPackage();
-        view.selectPackage( pkg );
-    }
-
-    private void doPackageChanged( final Package pkg ) {
-        //Check cache
-        if ( pkg != null ) {
-            final Collection<FolderItem> folderItems = itemCache.getEntry( pkg );
-            if ( folderItems != null ) {
-                view.setItems( folderItems );
-                view.hideBusyIndicator();
-                return;
-            }
-        }
-
-        //Show busy popup. Once Items are loaded it is closed
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
-            @Override
-            public void callback( final Collection<FolderItem> folderItems ) {
-                if ( pkg != null ) {
-                    itemCache.setEntry( pkg,
-                                        folderItems );
+            //Show busy popup. Once Items are loaded it is closed
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
+                @Override
+                public void callback( final Collection<FolderItem> folderItems ) {
+                    view.setItems( folderItems );
+                    view.hideBusyIndicator();
                 }
-                view.setItems( folderItems );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getItems( pkg );
+            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getItems( activePackage );
+
+        }
     }
 
     @Override
@@ -329,7 +251,6 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( path == null ) {
             return;
         }
-        pathChangeEvent.fire( new PathChangeEvent( path ) );
         placeManager.goTo( folderItem.getPath() );
     }
 
@@ -340,14 +261,44 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
 
     @Override
     public void setVisible( final boolean visible ) {
-        if ( visible ) {
-            initialiseViewForActiveContext();
-        }
         view.setVisible( visible );
     }
 
+    public void onOrganizationalUnitAdded( @Observes final NewOrganizationalUnitEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        if ( authorizationManager.authorize( organizationalUnit,
+                                             identity ) ) {
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              false );
+        }
+    }
+
+    public void onOrganizationalUnitRemoved( @Observes final RemoveOrganizationalUnitEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          false );
+    }
+
     public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
-        //Repositories are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -357,12 +308,15 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         if ( authorizationManager.authorize( repository,
                                              identity ) ) {
-            view.addRepository( repository );
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              false );
         }
     }
 
     public void onProjectAdded( @Observes final NewProjectEvent event ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -370,18 +324,21 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( project == null ) {
             return;
         }
-        if ( !Utils.isInRepository( displayedRepository,
+        if ( !Utils.isInRepository( activeRepository,
                                     project ) ) {
             return;
         }
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            view.addProject( project );
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              activeProject,
+                                              activePackage,
+                                              false );
         }
     }
 
     public void onPackageAdded( @Observes final NewPackageEvent event ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
         if ( !view.isVisible() ) {
             return;
         }
@@ -389,11 +346,16 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( pkg == null ) {
             return;
         }
-        if ( !Utils.isInProject( displayedProject,
+        if ( !Utils.isInProject( activeProject,
                                  pkg ) ) {
             return;
         }
-        view.addPackage( pkg );
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          false );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
@@ -405,23 +367,17 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
+        }
 
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( Utils.isInPackage( displayedPackage,
-                                        resource ) ) {
-                    view.addItem( Utils.makeFileItem( resource ) );
-                }
+            public void callback( final Collection<FolderItem> folderItems ) {
+                view.setItems( folderItems );
             }
-
-        } ).resolveResourceContext( resource );
+        }, new DefaultErrorCallback() ).getItems( activePackage );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -433,23 +389,17 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
+        }
 
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( Utils.isInPackage( displayedPackage,
-                                        resource ) ) {
-                    view.removeItem( Utils.makeFileItem( resource ) );
-                }
+            public void callback( final Collection<FolderItem> folderItems ) {
+                view.setItems( folderItems );
             }
-
-        } ).resolveResourceContext( resource );
+        }, new DefaultErrorCallback() ).getItems( activePackage );
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
@@ -461,23 +411,17 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         if ( resource == null ) {
             return;
         }
-        explorerService.call( new RemoteCallback<ResourceContext>() {
+        if ( !Utils.isInPackage( activePackage,
+                                 resource ) ) {
+            return;
+        }
 
+        explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
             @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( Utils.isInPackage( displayedPackage,
-                                        resource ) ) {
-                    view.addItem( Utils.makeFileItem( resource ) );
-                }
+            public void callback( final Collection<FolderItem> folderItems ) {
+                view.setItems( folderItems );
             }
-
-        } ).resolveResourceContext( resource );
+        }, new DefaultErrorCallback() ).getItems( activePackage );
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
@@ -487,51 +431,37 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
         }
         final Path sourcePath = event.getSourcePath();
         final Path destinationPath = event.getDestinationPath();
-        explorerService.call( new RemoteCallback<ResourceContext>() {
 
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
-                    return;
+        boolean refresh = false;
+        if ( Utils.isInPackage( activePackage,
+                                sourcePath ) ) {
+            refresh = true;
+        } else if ( Utils.isInPackage( activePackage,
+                                       destinationPath ) ) {
+            refresh = true;
+        }
+
+        if ( refresh ) {
+            explorerService.call( new RemoteCallback<Collection<FolderItem>>() {
+                @Override
+                public void callback( final Collection<FolderItem> folderItems ) {
+                    view.setItems( folderItems );
                 }
-                itemCache.invalidateCache( pkg );
-                if ( Utils.isInPackage( displayedPackage,
-                                        sourcePath ) ) {
-                    view.removeItem( Utils.makeFileItem( sourcePath ) );
-                }
-            }
-
-        } ).resolveResourceContext( sourcePath );
-
-        explorerService.call( new RemoteCallback<ResourceContext>() {
-
-            @Override
-            public void callback( final ResourceContext context ) {
-                final Project project = context.getProject();
-                final Package pkg = context.getPackage();
-                if ( project == null || pkg == null ) {
-                    return;
-                }
-                itemCache.invalidateCache( pkg );
-                if ( Utils.isInPackage( displayedPackage,
-                                        destinationPath ) ) {
-                    view.addItem( Utils.makeFileItem( destinationPath ) );
-                }
-            }
-
-        } ).resolveResourceContext( destinationPath );
+            }, new DefaultErrorCallback() ).getItems( activePackage );
+        }
     }
 
     // Refresh when a batch Resource change has occurred. Simply refresh everything.
     public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        itemCache.invalidateCache();
-        packageCache.invalidateCache();
         if ( !view.isVisible() ) {
             return;
         }
-        initialiseViewForActiveContext();
+
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          false );
     }
 
 }

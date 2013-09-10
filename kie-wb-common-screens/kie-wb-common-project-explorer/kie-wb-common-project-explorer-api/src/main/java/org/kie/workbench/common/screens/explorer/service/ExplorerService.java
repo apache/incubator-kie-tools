@@ -23,7 +23,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.model.ResourceContext;
+import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
@@ -33,6 +33,11 @@ import org.uberfire.backend.vfs.Path;
  */
 @Remote
 public interface ExplorerService {
+
+    ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
+                                       final Repository repository,
+                                       final Project project,
+                                       final Package pkg );
 
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
@@ -46,6 +51,6 @@ public interface ExplorerService {
 
     FolderListing getFolderListing( final Path path );
 
-    ResourceContext resolveResourceContext( final Path path );
+    Package resolvePackage( final Path path );
 
 }

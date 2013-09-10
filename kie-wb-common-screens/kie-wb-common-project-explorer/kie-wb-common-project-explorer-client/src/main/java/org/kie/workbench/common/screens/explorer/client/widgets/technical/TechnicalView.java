@@ -19,7 +19,6 @@ import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasVisibility;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
@@ -40,13 +39,5 @@ public interface TechnicalView extends HasBusyIndicator,
     void setProjects( final Collection<Project> projects );
 
     void setItems( final FolderListing activeFolderListing );
-
-    void addRepository( final Repository repository );
-
-    void addProject( final Project project );
-
-    void addItem( final FolderItem item );
-
-    void removeItem( final FolderItem item );
 
 }

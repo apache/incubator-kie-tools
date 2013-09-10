@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
@@ -27,21 +28,30 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface TechnicalViewPresenter extends BaseViewPresenter {
 
-    void initialiseViewForActiveContext();
+    void initialiseViewForActiveContext(final OrganizationalUnit organizationalUnit,
+                                        final Repository repository,
+                                        final Project project,
+                                        final Package pkg);
 
-    void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+    void organizationalUnitListSelected();
 
-    void selectRepository( final Repository repository );
+    void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 
-    void selectProject( final Project project );
+    void repositoryListSelected();
 
-    void selectProjectRoot();
+    void repositorySelected( final Repository repository );
 
-    void selectParentFolder( final FolderListing folder );
+    void projectListSelected();
 
-    void selectFolder( final Path path );
+    void projectSelected( final Project project );
 
-    void selectFile( final Path path );
+    void projectRootSelected();
+
+    void parentFolderSelected( final FolderListing folder );
+
+    void folderSelected( final Path path );
+
+    void fileSelected( final Path path );
 
     OrganizationalUnit getActiveOrganizationalUnit();
 

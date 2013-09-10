@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
@@ -22,10 +21,8 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.workbench.events.RepositoryChangeEvent;
 
 /**
  * Handler for the creation of new Projects
@@ -46,8 +43,6 @@ public class NewProjectHandler
 
     @Inject
     private ProjectContext context;
-
-    private boolean isRepositorySelected = false;
 
     @PostConstruct
     private void setupExtensions() {
@@ -76,7 +71,7 @@ public class NewProjectHandler
     public void create( final Package pkg,
                         final String projectName,
                         final NewResourcePresenter presenter ) {
-        if ( isRepositorySelected ) {
+        if ( context.getActiveRepository() != null ) {
             wizard.setProjectName( projectName );
             wizardPresenter.start( wizard );
             presenter.complete();
@@ -93,15 +88,11 @@ public class NewProjectHandler
         callback.onSuccess();
     }
 
-    public void selectedRepositoryChanged( @Observes final RepositoryChangeEvent event ) {
-        isRepositorySelected = ( event.getRepository() != null );
-    }
-
     @Override
-    public void acceptPath( final Path path,
-                            final Callback<Boolean, Void> response ) {
+    public void acceptContext( final ProjectContext context,
+                               final Callback<Boolean, Void> response ) {
         //You can always create a new Project (provided a repository has been selected)
-        response.onSuccess( isRepositorySelected );
+        response.onSuccess( context.getActiveRepository() != null );
     }
 
 }

@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.ProjectChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -93,7 +93,7 @@ public class ProjectScreenPresenter
         makeMenuBar();
     }
 
-    public void selectedPathChanged( @Observes final ProjectChangeEvent event ) {
+    public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
     }
 
@@ -106,29 +106,29 @@ public class ProjectScreenPresenter
     }
 
     private void init() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
-                    public void callback(ProjectScreenModel model) {
+                    public void callback( ProjectScreenModel model ) {
                         ProjectScreenPresenter.this.model = model;
 
-                        view.setPOM(model.getPOM());
-                        view.setDependencies(model.getPOM().getDependencies());
-                        view.setPomMetadata(model.getPOMMetaData());
+                        view.setPOM( model.getPOM() );
+                        view.setDependencies( model.getPOM().getDependencies() );
+                        view.setPomMetadata( model.getPOMMetaData() );
 
-                        view.setKModule(model.getKModule());
-                        view.setKModuleMetadata(model.getKModuleMetaData());
+                        view.setKModule( model.getKModule() );
+                        view.setKModuleMetadata( model.getKModuleMetaData() );
 
-                        view.setImports(model.getProjectImports());
-                        view.setImportsMetadata(model.getProjectImportsMetaData());
+                        view.setImports( model.getProjectImports() );
+                        view.setImportsMetadata( model.getProjectImportsMetaData() );
 
                         view.hideBusyIndicator();
                     }
                 },
                 new DefaultErrorCallback()
-        ).load(pathToPomXML);
+                                 ).load( pathToPomXML );
 
         view.showGAVPanel();
     }
@@ -160,25 +160,25 @@ public class ProjectScreenPresenter
             @Override
             public void execute() {
 
-                if (KModuleValidator.isValid(model.getKModule())) {
-                    saveOperationService.save(pathToPomXML,
-                            new CommandWithCommitMessage() {
-                                @Override
-                                public void execute(final String comment) {
+                if ( KModuleValidator.isValid( model.getKModule() ) ) {
+                    saveOperationService.save( pathToPomXML,
+                                               new CommandWithCommitMessage() {
+                                                   @Override
+                                                   public void execute( final String comment ) {
 
-                                    view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                                                       view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                    projectScreenService.call(new RemoteCallback<Void>() {
-                                        @Override
-                                        public void callback(Void v) {
-                                            view.hideBusyIndicator();
-                                        }
-                                    }).save(pathToPomXML, model, comment);
+                                                       projectScreenService.call( new RemoteCallback<Void>() {
+                                                           @Override
+                                                           public void callback( Void v ) {
+                                                               view.hideBusyIndicator();
+                                                           }
+                                                       } ).save( pathToPomXML, model, comment );
 
-                                }
-                            });
+                                                   }
+                                               } );
                 } else {
-                    ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne());
+                    ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne() );
                 }
             }
         };

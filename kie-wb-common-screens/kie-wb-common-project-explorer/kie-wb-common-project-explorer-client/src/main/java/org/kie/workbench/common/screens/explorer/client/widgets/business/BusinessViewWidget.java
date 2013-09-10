@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -113,8 +112,28 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     }
 
     @Override
-    public void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits,
-                                        final OrganizationalUnit activeOrganizationalUnit ) {
+    public void setContent( final Set<OrganizationalUnit> organizationalUnits,
+                            final OrganizationalUnit organizationalUnit,
+                            final Set<Repository> repositories,
+                            final Repository repository,
+                            final Set<Project> projects,
+                            final Project project,
+                            final Set<Package> packages,
+                            final Package pkg,
+                            final Collection<FolderItem> items ) {
+        setOrganizationalUnits( organizationalUnits,
+                                organizationalUnit );
+        setRepositories( repositories,
+                         repository );
+        setProjects( projects,
+                     project );
+        setPackages( packages,
+                     pkg );
+        setItems( items );
+    }
+
+    private void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits,
+                                         final OrganizationalUnit selectedOrganizationalUnit ) {
         ddOrganizationalUnits.clear();
         if ( !organizationalUnits.isEmpty() ) {
             sortedOrganizationalUnits.clear();
@@ -124,9 +143,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                 ddOrganizationalUnits.add( makeOrganizationalUnitNavLink( organizationalUnit ) );
             }
 
-            final OrganizationalUnit selectedOrganizationalUnit = getSelectedOrganizationalUnit( sortedOrganizationalUnits,
-                                                                                                 activeOrganizationalUnit );
-            selectOrganizationalUnit( selectedOrganizationalUnit );
+            ddOrganizationalUnits.setText( selectedOrganizationalUnit.getName() );
+            ddOrganizationalUnits.getTriggerWidget().setEnabled( true );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -138,16 +156,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            hideBusyIndicator();
-        }
-    }
-
-    @Override
-    public void selectOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
-        if ( organizationalUnit != null ) {
-            ddOrganizationalUnits.setText( organizationalUnit.getName() );
-            ddOrganizationalUnits.getTriggerWidget().setEnabled( true );
-            presenter.organizationalUnitSelected( organizationalUnit );
         }
     }
 
@@ -164,20 +172,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         return navLink;
     }
 
-    private OrganizationalUnit getSelectedOrganizationalUnit( final Collection<OrganizationalUnit> organizationalUnits,
-                                                              final OrganizationalUnit activeOrganizationalUnit ) {
-        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
-        for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-            if ( organizationalUnit.equals( activeOrganizationalUnit ) ) {
-                return activeOrganizationalUnit;
-            }
-        }
-        return organizationalUnits.iterator().next();
-    }
-
-    @Override
-    public void setRepositories( final Collection<Repository> repositories,
-                                 final Repository activeRepository ) {
+    private void setRepositories( final Collection<Repository> repositories,
+                                  final Repository selectedRepository ) {
         ddRepositories.clear();
 
         if ( !repositories.isEmpty() ) {
@@ -188,9 +184,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                 ddRepositories.add( makeRepositoryNavLink( repository ) );
             }
 
-            final Repository selectedRepository = getSelectedRepository( sortedRepositories,
-                                                                         activeRepository );
-            selectRepository( selectedRepository );
+            ddRepositories.setText( selectedRepository.getAlias() );
+            ddRepositories.getTriggerWidget().setEnabled( true );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -200,15 +195,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            hideBusyIndicator();
         }
-    }
-
-    @Override
-    public void selectRepository( final Repository repository ) {
-        ddRepositories.setText( repository.getAlias() );
-        ddRepositories.getTriggerWidget().setEnabled( true );
-        presenter.repositorySelected( repository );
     }
 
     private IsWidget makeRepositoryNavLink( final Repository repository ) {
@@ -224,20 +211,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         return navLink;
     }
 
-    private Repository getSelectedRepository( final Collection<Repository> repositories,
-                                              final Repository activeRepository ) {
-        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
-        for ( Repository repository : repositories ) {
-            if ( repository.equals( activeRepository ) ) {
-                return activeRepository;
-            }
-        }
-        return repositories.iterator().next();
-    }
-
-    @Override
-    public void setProjects( final Collection<Project> projects,
-                             final Project activeProject ) {
+    private void setProjects( final Collection<Project> projects,
+                              final Project selectedProject ) {
         ddProjects.clear();
 
         if ( !projects.isEmpty() ) {
@@ -248,9 +223,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                 ddProjects.add( makeProjectNavLink( project ) );
             }
 
-            final Project selectedProject = getSelectedProject( sortedProjects,
-                                                                activeProject );
-            selectProject( selectedProject );
+            ddProjects.setText( selectedProject.getProjectName() );
+            ddProjects.getTriggerWidget().setEnabled( true );
 
         } else {
             setItems( Collections.EMPTY_LIST );
@@ -258,15 +232,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             ddProjects.getTriggerWidget().setEnabled( false );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            hideBusyIndicator();
         }
-    }
-
-    @Override
-    public void selectProject( final Project project ) {
-        ddProjects.setText( project.getProjectName() );
-        ddProjects.getTriggerWidget().setEnabled( true );
-        presenter.projectSelected( project );
     }
 
     private IsWidget makeProjectNavLink( final Project project ) {
@@ -282,20 +248,8 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         return navLink;
     }
 
-    private Project getSelectedProject( final Collection<Project> projects,
-                                        final Project activeProject ) {
-        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
-        for ( Project project : projects ) {
-            if ( project.equals( activeProject ) ) {
-                return activeProject;
-            }
-        }
-        return projects.iterator().next();
-    }
-
-    @Override
-    public void setPackages( final Collection<Package> packages,
-                             final Package activePackage ) {
+    private void setPackages( final Collection<Package> packages,
+                              final Package selectedPackage ) {
         ddPackages.clear();
 
         if ( !packages.isEmpty() ) {
@@ -306,23 +260,14 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                 ddPackages.add( makePackageNavLink( pkg ) );
             }
 
-            final Package selectedPackage = getSelectedPackage( sortedPackages,
-                                                                activePackage );
-            selectPackage( selectedPackage );
+            ddPackages.setText( selectedPackage.getCaption() );
+            ddPackages.getTriggerWidget().setEnabled( true );
 
         } else {
             setItems( Collections.EMPTY_LIST );
             ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             ddPackages.getTriggerWidget().setEnabled( false );
-            hideBusyIndicator();
         }
-    }
-
-    @Override
-    public void selectPackage( final Package pkg ) {
-        ddPackages.setText( pkg.getCaption() );
-        ddPackages.getTriggerWidget().setEnabled( true );
-        presenter.packageSelected( pkg );
     }
 
     private IsWidget makePackageNavLink( final Package pkg ) {
@@ -336,17 +281,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
-    }
-
-    private Package getSelectedPackage( final Collection<Package> packages,
-                                        final Package activePackage ) {
-        //Iterate the collection instead of using TreeSet.contains() as this uses the Comparator with which it was constructed
-        for ( Package pkg : packages ) {
-            if ( pkg.equals( activePackage ) ) {
-                return activePackage;
-            }
-        }
-        return packages.iterator().next();
     }
 
     @Override
@@ -407,47 +341,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             }
         } );
         return navLink;
-    }
-
-    @Override
-    public void addRepository( final Repository newRepository ) {
-        ddRepositories.clear();
-        sortedRepositories.add( newRepository );
-        for ( Repository repository : sortedRepositories ) {
-            ddRepositories.add( makeRepositoryNavLink( repository ) );
-        }
-    }
-
-    @Override
-    public void addProject( final Project newProject ) {
-        ddProjects.clear();
-        sortedProjects.add( newProject );
-        for ( Project project : sortedProjects ) {
-            ddProjects.add( makeProjectNavLink( project ) );
-        }
-    }
-
-    @Override
-    public void addPackage( final Package newPackage ) {
-        ddPackages.clear();
-        sortedPackages.add( newPackage );
-        for ( Package pkg : sortedPackages ) {
-            ddPackages.add( makePackageNavLink( pkg ) );
-        }
-    }
-
-    @Override
-    public void addItem( final FolderItem item ) {
-        final Collection<FolderItem> currentItems = new ArrayList<FolderItem>( sortedFolderItems );
-        currentItems.add( item );
-        setItems( currentItems );
-    }
-
-    @Override
-    public void removeItem( final FolderItem item ) {
-        final Collection<FolderItem> currentItems = new ArrayList<FolderItem>( sortedFolderItems );
-        currentItems.remove( item );
-        setItems( currentItems );
     }
 
     @Override

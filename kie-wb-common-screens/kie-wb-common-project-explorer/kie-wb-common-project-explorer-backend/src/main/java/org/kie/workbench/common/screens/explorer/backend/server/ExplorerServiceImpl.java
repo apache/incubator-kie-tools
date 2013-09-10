@@ -38,7 +38,7 @@ import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.model.ResourceContext;
+import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
@@ -102,9 +102,53 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<OrganizationalUnit> getOrganizationalUnits() {
+    public ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
+                                              final Repository repository,
+                                              final Project project,
+                                              final Package pkg ) {
+        OrganizationalUnit selectedOrganizationalUnit = organizationalUnit;
+        Repository selectedRepository = repository;
+        Project selectedProject = project;
+        Package selectedPackage = pkg;
+
+        final Set<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
+        if ( !organizationalUnits.contains( selectedOrganizationalUnit ) ) {
+            selectedOrganizationalUnit = ( organizationalUnits.isEmpty() ? null : organizationalUnits.iterator().next() );
+        }
+
+        final Set<Repository> repositories = getRepositories( selectedOrganizationalUnit );
+        if ( !repositories.contains( selectedRepository ) ) {
+            selectedRepository = ( repositories.isEmpty() ? null : repositories.iterator().next() );
+        }
+
+        final Set<Project> projects = getProjects( selectedRepository );
+        if ( !projects.contains( selectedProject ) ) {
+            selectedProject = ( projects.isEmpty() ? null : projects.iterator().next() );
+        }
+
+        final Set<Package> packages = getPackages( selectedProject );
+        if ( !packages.contains( selectedPackage ) ) {
+            selectedPackage = ( packages.isEmpty() ? null : packages.iterator().next() );
+        }
+
+        final Collection<FolderItem> items = getItems( selectedPackage );
+
+        final ProjectExplorerContent content = new ProjectExplorerContent( organizationalUnits,
+                                                                           selectedOrganizationalUnit,
+                                                                           repositories,
+                                                                           selectedRepository,
+                                                                           projects,
+                                                                           selectedProject,
+                                                                           packages,
+                                                                           selectedPackage,
+                                                                           items );
+        return content;
+    }
+
+    @Override
+    public Set<OrganizationalUnit> getOrganizationalUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
-        final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
+        final Set<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
         for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
             if ( authorizationManager.authorize( organizationalUnit,
                                                  identity ) ) {
@@ -115,8 +159,8 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<Repository> getRepositories( final OrganizationalUnit organizationalUnit ) {
-        final Collection<Repository> authorizedRepositories = new HashSet<Repository>();
+    public Set<Repository> getRepositories( final OrganizationalUnit organizationalUnit ) {
+        final Set<Repository> authorizedRepositories = new HashSet<Repository>();
         if ( organizationalUnit == null ) {
             return authorizedRepositories;
         }
@@ -132,8 +176,8 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<Project> getProjects( final Repository repository ) {
-        final Collection<Project> authorizedProjects = new HashSet<Project>();
+    public Set<Project> getProjects( final Repository repository ) {
+        final Set<Project> authorizedProjects = new HashSet<Project>();
         if ( repository == null ) {
             return authorizedProjects;
         }
@@ -155,8 +199,8 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Collection<Package> getPackages( final Project project ) {
-        final Collection<Package> packages = new HashSet<Package>();
+    public Set<Package> getPackages( final Project project ) {
+        final Set<Package> packages = new HashSet<Package>();
         final Set<String> packageNames = new HashSet<String>();
         if ( project == null ) {
             return packages;
@@ -326,14 +370,12 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public ResourceContext resolveResourceContext( final Path path ) {
+    public Package resolvePackage( final Path path ) {
         if ( path == null ) {
-            return new ResourceContext();
+            return null;
         }
-        final Project project = projectService.resolveProject( path );
         final Package pkg = projectService.resolvePackage( path );
-        return new ResourceContext( project,
-                                    pkg );
+        return pkg;
     }
 
 }
