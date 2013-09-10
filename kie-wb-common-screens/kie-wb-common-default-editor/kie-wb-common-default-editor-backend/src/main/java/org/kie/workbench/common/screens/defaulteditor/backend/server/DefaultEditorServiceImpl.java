@@ -22,17 +22,18 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
@@ -59,6 +60,9 @@ public class DefaultEditorServiceImpl
     @Inject
     private Identity identity;
 
+    @Inject
+    private SessionInfo sessionInfo;
+
     @Override
     public Path save( final Path resource,
                       final String content,
@@ -72,7 +76,7 @@ public class DefaultEditorServiceImpl
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
 
             return resource;
 

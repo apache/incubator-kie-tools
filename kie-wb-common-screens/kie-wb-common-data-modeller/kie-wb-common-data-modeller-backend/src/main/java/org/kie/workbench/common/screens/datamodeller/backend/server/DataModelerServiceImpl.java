@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
@@ -75,6 +76,9 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Inject
     private Paths paths;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
@@ -217,22 +221,22 @@ public class DataModelerServiceImpl implements DataModelerService {
         Set<ResourceChange> batchChanges = new HashSet<ResourceChange>();
 
         for ( Path deleteableFile : deleteableFiles ) {
-            batchChanges.add( new ResourceChange( ChangeType.DELETE, deleteableFile ) );
+            batchChanges.add( new ResourceChange( ChangeType.DELETE, deleteableFile, sessionInfo ) );
         }
 
         for ( FileChangeDescriptor driverChange : driverChanges ) {
             switch ( driverChange.getAction() ) {
                 case FileChangeDescriptor.ADD:
                     logger.debug( "Notifying file created: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.ADD, paths.convert( driverChange.getPath() ) ) );
+                    batchChanges.add( new ResourceChange( ChangeType.ADD, paths.convert( driverChange.getPath() ), sessionInfo ) );
                     break;
                 case FileChangeDescriptor.DELETE:
                     logger.debug( "Notifying file deleted: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( driverChange.getPath() ) ) );
+                    batchChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( driverChange.getPath() ), sessionInfo ) );
                     break;
                 case FileChangeDescriptor.UPDATE:
                     logger.debug( "Notifying file updated: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.UPDATE, paths.convert( driverChange.getPath() ) ) );
+                    batchChanges.add( new ResourceChange( ChangeType.UPDATE, paths.convert( driverChange.getPath() ), sessionInfo ) );
                     break;
             }
         }
@@ -329,7 +333,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ) ) );
+                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ), sessionInfo ) );
                     ioService.delete( filePath );
                 }
             }
@@ -349,7 +353,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //do nothing, the file generator will notify that the file changed.
                     //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ) ) );
+                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ), sessionInfo ) );
                     ioService.delete( filePath );
                 }
             }

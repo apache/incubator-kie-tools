@@ -21,6 +21,10 @@ import org.uberfire.workbench.model.menu.Menus;
 
 public interface FileMenuBuilder {
 
+    public enum MenuItems {
+        SAVE, DELETE, RENAME, COPY, VALIDATE, RESTORE, CUSTOM
+    }
+
     public Menus build();
 
     FileMenuBuilder addSave( final Command command );

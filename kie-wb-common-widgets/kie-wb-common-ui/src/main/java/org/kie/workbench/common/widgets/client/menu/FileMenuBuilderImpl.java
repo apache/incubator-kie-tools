@@ -17,7 +17,9 @@
 package org.kie.workbench.common.widgets.client.menu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -25,8 +27,8 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -230,46 +232,46 @@ public class FileMenuBuilderImpl
 
     @Override
     public Menus build() {
-        final List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        final Map<Object, MenuItem> menuItems = new HashMap<Object, MenuItem>();
         if ( saveCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                                   .respondsWith( saveCommand )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.SAVE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
+                    .respondsWith( saveCommand )
+                    .endMenu()
+                    .build().getItems().get( 0 ) );
         }
 
         if ( deleteCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                                   .respondsWith( deleteCommand )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.DELETE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
+                    .respondsWith( deleteCommand )
+                    .endMenu()
+                    .build().getItems().get( 0 ) );
         }
 
         if ( renameCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                                   .respondsWith( renameCommand )
-                                   .endMenu().build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.RENAME, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
+                    .respondsWith( renameCommand )
+                    .endMenu().build().getItems().get( 0 ) );
         }
 
         if ( copyCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
-                                   .respondsWith( copyCommand )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.COPY, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
+                    .respondsWith( copyCommand )
+                    .endMenu()
+                    .build().getItems().get( 0 ) );
         }
 
         if ( validateCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Validate() )
-                                   .respondsWith( validateCommand )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.VALIDATE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Validate() )
+                    .respondsWith( validateCommand )
+                    .endMenu()
+                    .build().getItems().get( 0 ) );
         }
 
         if ( restoreCommand != null ) {
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
-                                   .respondsWith( restoreCommand )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            menuItems.put( MenuItems.RESTORE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
+                    .respondsWith( restoreCommand )
+                    .endMenu()
+                    .build().getItems().get( 0 ) );
         }
 
         if ( !( otherCommands == null || otherCommands.isEmpty() ) ) {
@@ -279,16 +281,26 @@ public class FileMenuBuilderImpl
                                             .respondsWith( other.getK2() )
                                             .endMenu().build().getItems().get( 0 ) );
             }
-            menuItems.add( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Other() )
-                                   .withItems( otherMenuItems )
-                                   .endMenu()
-                                   .build().getItems().get( 0 ) );
+            final MenuItem item = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Other() )
+                    .withItems( otherMenuItems )
+                    .endMenu()
+                    .build().getItems().get( 0 );
+            menuItems.put( item, item );
         }
 
         return new Menus() {
 
             @Override
             public List<MenuItem> getItems() {
+                return new ArrayList<MenuItem>() {{
+                    for ( final MenuItem menuItem : menuItems.values() ) {
+                        add( menuItem );
+                    }
+                }};
+            }
+
+            @Override
+            public Map<Object, MenuItem> getItemsMap() {
                 return menuItems;
             }
         };
