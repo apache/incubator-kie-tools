@@ -72,6 +72,7 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -128,6 +129,9 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @Inject
     private WorkItemsTypeDefinition resourceTypeDefinition;
@@ -196,7 +200,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
 
             return content;
 
@@ -252,7 +256,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
 
             return resource;
 

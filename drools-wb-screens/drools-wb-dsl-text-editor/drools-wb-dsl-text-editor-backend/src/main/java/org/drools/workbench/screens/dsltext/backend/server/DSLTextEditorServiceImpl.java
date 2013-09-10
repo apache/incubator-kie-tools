@@ -43,6 +43,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -87,6 +88,9 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     private Identity identity;
 
     @Inject
+    private SessionInfo sessionInfo;
+
+    @Inject
     private DSLResourceTypeDefinition resourceTypeDefinition;
 
     @Override
@@ -120,7 +124,7 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
 
             return content;
 
@@ -145,7 +149,7 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
 
             return resource;
 
