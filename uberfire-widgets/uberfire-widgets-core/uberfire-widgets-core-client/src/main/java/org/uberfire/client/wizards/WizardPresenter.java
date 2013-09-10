@@ -41,7 +41,7 @@ public class WizardPresenter implements
 
     @PostConstruct
     public void setup() {
-        view.init(this);
+        view.init( this );
     }
 
     //Update the status of each belonging to this Wizard
@@ -50,6 +50,10 @@ public class WizardPresenter implements
         if ( wizard == null ) {
             return;
         }
+        checkPagesState();
+    }
+
+    private void checkPagesState() {
         for ( WizardPage wp : wizard.getPages() ) {
             final int index = wizard.getPages().indexOf( wp );
             view.setPageCompletionState( index,
@@ -57,7 +61,7 @@ public class WizardPresenter implements
         }
 
         //Update the status of this Wizard
-        view.setCompletionStatus(wizard.isComplete());
+        view.setCompletionStatus( wizard.isComplete() );
     }
 
     public void onPageSelected( final @Observes WizardPageSelectedEvent event ) {
@@ -67,7 +71,7 @@ public class WizardPresenter implements
         }
         final WizardPage page = event.getSelectedPage();
         final int index = wizard.getPages().indexOf( page );
-        view.selectPage(index);
+        view.selectPage( index );
     }
 
     public void start( final Wizard<? extends WizardContext> wizard ) {
@@ -79,13 +83,17 @@ public class WizardPresenter implements
         view.setPreferredHeight( wizard.getPreferredHeight() );
         view.setPreferredWidth( wizard.getPreferredWidth() );
         view.setPageTitles( wizard.getPages() );
+
+        //Ensure Wizard's generic Cancel/Finish buttons are set correctly
+        checkPagesState();
+
         view.show();
-        view.selectPage(0);
+        view.selectPage( 0 );
     }
 
     public void pageSelected( final int pageNumber ) {
         final Widget w = wizard.getPageWidget( pageNumber );
-        view.setBodyWidget(w);
+        view.setBodyWidget( w );
     }
 
     public void complete() {
