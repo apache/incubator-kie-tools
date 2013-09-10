@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.Popup;
 

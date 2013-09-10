@@ -34,7 +34,7 @@ import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.kie.workbench.common.services.datamodel.oracle.CEPOracle;
+import org.drools.workbench.models.datamodel.oracle.CEPOracle;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**

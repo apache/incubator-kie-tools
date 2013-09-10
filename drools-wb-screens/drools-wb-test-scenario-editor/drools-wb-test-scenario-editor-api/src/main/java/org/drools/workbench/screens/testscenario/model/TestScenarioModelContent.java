@@ -1,9 +1,9 @@
 package org.drools.workbench.screens.testscenario.model;
 
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class TestScenarioModelContent {

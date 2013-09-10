@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.guided.template.model;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * Container for data needed to edit a Guided Template

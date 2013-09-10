@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.guided.rule.model;
 
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 @Portable
 public class GuidedEditorContent {

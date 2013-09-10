@@ -36,8 +36,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
-import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 

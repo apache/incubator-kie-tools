@@ -38,6 +38,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.rule.DSLComplexVariableValue;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.drools.workbench.models.commons.shared.rule.DSLVariableValue;
+import org.drools.workbench.models.datamodel.model.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.rule.client.editor.CustomFormPopUp;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
@@ -45,8 +47,6 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.services.datamodel.model.DropDownData;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;

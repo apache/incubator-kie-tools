@@ -27,8 +27,8 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.workbench.common.services.datamodel.model.DateConverter;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.model.DateConverter;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * A Factory to create CellValues applicable to given columns.

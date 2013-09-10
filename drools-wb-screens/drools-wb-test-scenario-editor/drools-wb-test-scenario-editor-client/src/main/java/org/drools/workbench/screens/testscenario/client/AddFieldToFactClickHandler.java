@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 

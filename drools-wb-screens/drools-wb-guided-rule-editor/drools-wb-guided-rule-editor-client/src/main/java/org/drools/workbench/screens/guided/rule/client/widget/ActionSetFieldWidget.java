@@ -39,9 +39,9 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
 import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.kie.workbench.common.services.datamodel.model.DropDownData;
-import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.model.DropDownData;
+import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;

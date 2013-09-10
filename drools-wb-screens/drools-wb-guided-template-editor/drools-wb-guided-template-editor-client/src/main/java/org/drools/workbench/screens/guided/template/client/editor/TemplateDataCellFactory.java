@@ -20,7 +20,7 @@ import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
 public class TemplateDataCellFactory
         extends AbstractCellFactory<TemplateDataColumn> {

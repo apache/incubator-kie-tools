@@ -28,8 +28,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
-import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
-import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**

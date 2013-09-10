@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import org.kie.workbench.common.services.datamodel.model.DateConverter;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.model.DateConverter;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;

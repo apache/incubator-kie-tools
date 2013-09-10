@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.BusyPopup;
 
 public class DRLEditorViewImpl
