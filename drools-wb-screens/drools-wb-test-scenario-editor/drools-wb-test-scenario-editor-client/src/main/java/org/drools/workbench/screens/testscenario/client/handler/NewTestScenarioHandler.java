@@ -11,8 +11,8 @@ import org.drools.workbench.screens.testscenario.client.TestScenarioResourceType
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -20,7 +20,6 @@ import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandle
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 public class NewTestScenarioHandler
@@ -68,18 +67,14 @@ public class NewTestScenarioHandler
     }
 
     @Override
-    public void acceptPath( final Path path,
-                            final Callback<Boolean, Void> callback ) {
-        if ( path == null ) {
+    public void acceptContext( final ProjectContext context,
+                               final Callback<Boolean, Void> callback ) {
+        if ( context == null ) {
             callback.onSuccess( false );
         } else {
-            projectService.call( new RemoteCallback<Package>() {
-                @Override
-                public void callback( final Package pkg ) {
-                    boolean accept = ( pkg == null ? false : pkg.getPackageTestResourcesPath() != null );
-                    callback.onSuccess( accept );
-                }
-            } ).resolvePackage( path );
+            final Package pkg = context.getActivePackage();
+            boolean accept = ( pkg == null ? false : pkg.getPackageTestResourcesPath() != null );
+            callback.onSuccess( accept );
         }
     }
 }
