@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.organizationalunit.NewOrganizationalUnitEvent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
+import org.uberfire.backend.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -31,6 +34,12 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Inject
     private OrganizationalUnitFactory organizationalUnitFactory;
+
+    @Inject
+    private Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent;
+
+    @Inject
+    private Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent;
 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
@@ -73,6 +82,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
         registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                            newOrganizationalUnit );
+
+        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit ) );
+
         return newOrganizationalUnit;
     }
 
@@ -94,6 +106,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
         registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                            newOrganizationalUnit );
+
+        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit ) );
+
         return newOrganizationalUnit;
     }
 
@@ -203,7 +218,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
         if ( thisGroupConfig != null ) {
             configurationService.removeConfiguration( thisGroupConfig );
-            registeredOrganizationalUnits.remove( groupName );
+            final OrganizationalUnit ou = registeredOrganizationalUnits.remove( groupName );
+            removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou ) );
         }
 
     }
