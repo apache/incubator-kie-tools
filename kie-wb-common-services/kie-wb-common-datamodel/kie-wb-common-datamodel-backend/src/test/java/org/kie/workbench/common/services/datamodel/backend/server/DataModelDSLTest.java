@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 import static junit.framework.Assert.assertEquals;
 

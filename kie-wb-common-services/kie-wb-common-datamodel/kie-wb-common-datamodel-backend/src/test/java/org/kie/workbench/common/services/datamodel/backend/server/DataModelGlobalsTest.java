@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Product;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 
 import static org.junit.Assert.*;
 

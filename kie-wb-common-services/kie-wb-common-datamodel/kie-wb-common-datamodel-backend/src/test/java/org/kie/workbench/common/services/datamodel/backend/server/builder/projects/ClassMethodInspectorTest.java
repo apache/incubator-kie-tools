@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
+import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
 import org.junit.Test;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassMethodInspector;
-import org.kie.workbench.common.services.datamodel.model.ClassToGenericClassConverter;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

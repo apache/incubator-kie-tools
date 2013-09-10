@@ -4,11 +4,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.guvnor.common.services.project.model.KModuleModel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanel;
-import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 public class KModuleEditorPanel

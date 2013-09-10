@@ -24,7 +24,6 @@ import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 public interface ProjectScreenView

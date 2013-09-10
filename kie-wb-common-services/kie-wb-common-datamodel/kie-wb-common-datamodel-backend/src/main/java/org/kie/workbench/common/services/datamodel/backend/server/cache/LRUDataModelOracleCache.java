@@ -8,6 +8,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
@@ -23,8 +25,6 @@ import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.EnumerationsFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 

@@ -2,7 +2,10 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.util.Set;
 
-import org.guvnor.common.services.project.builder.model.TypeSource;
+import org.drools.workbench.models.datamodel.model.Annotation;
+import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.junit.Test;
 import org.kie.api.definition.type.Role;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
@@ -11,9 +14,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.projec
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Product;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.RoleSmurf;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.Smurf;
-import org.kie.workbench.common.services.datamodel.model.Annotation;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 
 import static org.junit.Assert.*;
 

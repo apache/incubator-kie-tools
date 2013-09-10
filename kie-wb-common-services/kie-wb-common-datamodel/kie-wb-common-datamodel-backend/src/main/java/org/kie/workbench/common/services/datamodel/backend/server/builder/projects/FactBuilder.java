@@ -1,6 +1,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for Fact Types

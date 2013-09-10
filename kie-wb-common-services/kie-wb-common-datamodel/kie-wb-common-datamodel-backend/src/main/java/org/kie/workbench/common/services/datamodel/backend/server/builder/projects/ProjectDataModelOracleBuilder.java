@@ -3,10 +3,10 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 import java.io.IOException;
 import java.util.*;
 
-import org.guvnor.common.services.project.builder.model.TypeSource;
+import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for DataModelOracle

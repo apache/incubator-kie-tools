@@ -9,14 +9,14 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.guvnor.common.services.project.builder.model.TypeSource;
+import org.drools.workbench.models.datamodel.model.Annotation;
+import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
+import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.model.MethodInfo;
+import org.drools.workbench.models.datamodel.model.ModelField;
+import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
-import org.kie.workbench.common.services.datamodel.model.Annotation;
-import org.kie.workbench.common.services.datamodel.model.ClassToGenericClassConverter;
-import org.kie.workbench.common.services.datamodel.model.FieldAccessorsAndMutators;
-import org.kie.workbench.common.services.datamodel.model.MethodInfo;
-import org.kie.workbench.common.services.datamodel.model.ModelField;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for Fact Types originating from a .class

@@ -29,7 +29,7 @@ public class DefaultOracleAnnotationDriver implements AnnotationDriver {
     @Override
     public Annotation buildAnnotation(AnnotationDefinition annotationDefinition, Object annotationToken) throws ModelDriverException {
 
-        org.kie.workbench.common.services.datamodel.model.Annotation oracleAnnotationToken = (org.kie.workbench.common.services.datamodel.model.Annotation)annotationToken;
+        org.drools.workbench.models.datamodel.model.Annotation oracleAnnotationToken = (org.drools.workbench.models.datamodel.model.Annotation)annotationToken;
         AnnotationImpl annotation = new AnnotationImpl(annotationDefinition);
         if (annotationDefinition.isMarker()) {
             return annotation;

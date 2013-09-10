@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.workbench.common.services.datamodel.model.ClassToGenericClassConverter;
-import org.kie.workbench.common.services.datamodel.model.MethodInfo;
+import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
+import org.drools.workbench.models.datamodel.model.MethodInfo;
 
 /**
  * Finds all methods that are not getters or setters from a class.

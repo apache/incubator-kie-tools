@@ -24,8 +24,8 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.kie.workbench.common.services.datamodel.model.DropDownData;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.model.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 

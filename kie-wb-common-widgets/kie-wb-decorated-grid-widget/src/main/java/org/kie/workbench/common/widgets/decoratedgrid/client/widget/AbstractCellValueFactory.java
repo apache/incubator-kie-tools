@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

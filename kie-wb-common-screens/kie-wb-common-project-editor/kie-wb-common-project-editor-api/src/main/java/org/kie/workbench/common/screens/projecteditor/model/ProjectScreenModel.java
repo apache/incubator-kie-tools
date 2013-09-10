@@ -1,11 +1,11 @@
 package org.kie.workbench.common.screens.projecteditor.model;
 
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 
 @Portable
 public class ProjectScreenModel {

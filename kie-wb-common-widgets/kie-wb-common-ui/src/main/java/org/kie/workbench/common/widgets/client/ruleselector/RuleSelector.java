@@ -7,7 +7,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelector

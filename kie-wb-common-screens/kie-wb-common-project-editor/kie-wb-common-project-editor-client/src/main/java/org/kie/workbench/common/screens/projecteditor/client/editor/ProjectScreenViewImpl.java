@@ -38,7 +38,6 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGri
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;

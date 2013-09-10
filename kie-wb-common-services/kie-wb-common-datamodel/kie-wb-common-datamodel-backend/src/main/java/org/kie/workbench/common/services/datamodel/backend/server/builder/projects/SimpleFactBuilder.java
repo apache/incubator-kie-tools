@@ -1,7 +1,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.guvnor.common.services.project.builder.model.TypeSource;
-import org.kie.workbench.common.services.datamodel.model.ModelField;
+import org.drools.workbench.models.datamodel.model.ModelField;
+import org.drools.workbench.models.datamodel.model.TypeSource;
 
 /**
  * Simple builder for Fact Types

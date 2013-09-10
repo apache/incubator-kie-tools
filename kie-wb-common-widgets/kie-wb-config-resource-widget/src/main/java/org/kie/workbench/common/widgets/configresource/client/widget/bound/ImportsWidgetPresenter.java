@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.kie.workbench.common.services.datamodel.events.ImportAddedEvent;
-import org.kie.workbench.common.services.datamodel.events.ImportRemovedEvent;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 

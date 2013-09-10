@@ -20,6 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracleImpl;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -28,10 +32,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.PackageDataModelOracleImpl;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.services.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 
