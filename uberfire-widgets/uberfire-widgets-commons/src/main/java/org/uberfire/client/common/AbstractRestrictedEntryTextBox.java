@@ -54,7 +54,10 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
                         || keyCode == KeyCodes.KEY_DELETE
                         || keyCode == KeyCodes.KEY_LEFT
                         || keyCode == KeyCodes.KEY_RIGHT
-                        || keyCode == KeyCodes.KEY_TAB ) {
+                        || keyCode == KeyCodes.KEY_TAB
+                        || keyCode == KeyCodes.KEY_HOME
+                        || keyCode == KeyCodes.KEY_END
+                        ) {
                     return;
                 }
 
