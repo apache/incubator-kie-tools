@@ -82,4 +82,14 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                                                context.getActivePackage() );
     }
 
+    @Override
+    public void refresh() {
+        if ( businessViewPresenter.isVisible() ) {
+            businessViewPresenter.refresh();
+
+        } else if ( technicalViewPresenter.isVisible() ) {
+            technicalViewPresenter.refresh();
+
+        }
+    }
 }

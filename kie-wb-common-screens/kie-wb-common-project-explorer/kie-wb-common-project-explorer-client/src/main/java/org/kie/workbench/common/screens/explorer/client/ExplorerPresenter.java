@@ -26,4 +26,6 @@ public interface ExplorerPresenter {
 
     void selectTechnicalView();
 
+    void refresh();
+
 }

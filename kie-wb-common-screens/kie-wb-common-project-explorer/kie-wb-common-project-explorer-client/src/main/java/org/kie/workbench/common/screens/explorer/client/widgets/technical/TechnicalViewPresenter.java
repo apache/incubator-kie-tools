@@ -61,4 +61,6 @@ public interface TechnicalViewPresenter extends BaseViewPresenter {
 
     FolderListing getActiveFolderListing();
 
+    void refresh();
+
 }

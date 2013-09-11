@@ -52,6 +52,9 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     @UiField
     Button btnTechnicalView;
 
+    @UiField
+    Button btnRefresh;
+
     @Inject
     private BusinessViewWidget businessView;
 
@@ -90,6 +93,12 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void onClickTechnicalViewButton( final ClickEvent event ) {
         presenter.selectTechnicalView();
     }
+
+    @UiHandler("btnRefresh")
+    public void onClickRefreshButton( final ClickEvent event ) {
+        presenter.refresh();
+    }
+
 
     @Override
     public void showBusyIndicator( final String message ) {

@@ -42,4 +42,6 @@ public interface BusinessViewPresenter extends BaseViewPresenter {
 
     void itemSelected( final FolderItem folderItem );
 
+    void refresh();
+
 }

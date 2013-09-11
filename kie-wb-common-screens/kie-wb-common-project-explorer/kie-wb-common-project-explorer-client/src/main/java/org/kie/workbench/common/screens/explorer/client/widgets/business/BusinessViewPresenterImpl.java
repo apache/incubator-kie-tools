@@ -106,6 +106,15 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                                           true );
     }
 
+    @Override
+    public void refresh() {
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          true );
+    }
+
     private void doInitialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                                    final Repository repository,
                                                    final Project project,

@@ -106,6 +106,16 @@ public class TechnicalViewPresenterImpl implements TechnicalViewPresenter {
                                           true );
     }
 
+    @Override
+    public void refresh() {
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          activeFolderListing,
+                                          true );
+    }
+
     private void doInitialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                                    final Repository repository,
                                                    final Project project,

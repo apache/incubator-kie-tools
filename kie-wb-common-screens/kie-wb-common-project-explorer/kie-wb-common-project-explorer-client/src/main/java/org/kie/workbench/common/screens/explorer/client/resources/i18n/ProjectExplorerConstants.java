@@ -46,4 +46,6 @@ public interface ProjectExplorerConstants
 
     public String files();
 
+    public String refresh();
+
 }
