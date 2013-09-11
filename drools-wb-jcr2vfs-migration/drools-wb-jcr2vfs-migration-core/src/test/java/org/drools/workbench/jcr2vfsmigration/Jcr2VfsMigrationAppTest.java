@@ -1,15 +1,5 @@
 package org.drools.workbench.jcr2vfsmigration;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory;
@@ -17,7 +7,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import static org.junit.Assert.*;
+import java.io.*;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static org.junit.Assert.assertNotNull;
 
 public class Jcr2VfsMigrationAppTest {
 
