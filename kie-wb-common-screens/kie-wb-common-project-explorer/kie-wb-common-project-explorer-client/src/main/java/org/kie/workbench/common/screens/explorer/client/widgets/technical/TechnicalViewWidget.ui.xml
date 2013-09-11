@@ -24,7 +24,7 @@
 
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
-      <b:Well ui:field="breadCrumbs">
+      <b:Well ui:field="breadCrumbs" styleName="{resources.CSS.viewContainer}">
         <b:Breadcrumbs ui:field="breadcrumbs"/>
         <hr/>
         <b:NavList ui:field="items"/>

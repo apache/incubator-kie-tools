@@ -37,4 +37,6 @@ public interface StylesCss
 
     String label();
 
+    String viewContainer();
+
 }

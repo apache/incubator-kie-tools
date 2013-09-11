@@ -24,15 +24,23 @@
 
   <g:HTMLPanel visible="true">
     <div ui:field="businessView">
-      <b:Well>
-        <g:Label text="{i18n.organizationalUnitColon}" styleName="{resources.CSS.label}"/>
-        <b:SplitDropdownButton ui:field="ddOrganizationalUnits" icon="GROUP" size="MINI"/>
-        <g:Label text="{i18n.repositoryColon}" styleName="{resources.CSS.label}"/>
-        <b:SplitDropdownButton ui:field="ddRepositories" icon="BUILDING" size="MINI"/>
-        <g:Label text="{i18n.projectColon}" styleName="{resources.CSS.label}"/>
-        <b:SplitDropdownButton ui:field="ddProjects" icon="DESKTOP" size="MINI"/>
-        <g:Label text="{i18n.packageColon}" styleName="{resources.CSS.label}"/>
-        <b:SplitDropdownButton ui:field="ddPackages" icon="FOLDER_OPEN" size="MINI"/>
+      <b:Well styleName="{resources.CSS.viewContainer}">
+        <p>
+          <g:InlineLabel text="{i18n.organizationalUnitColon}" styleName="{resources.CSS.label}"/>
+          <b:SplitDropdownButton ui:field="ddOrganizationalUnits" icon="GROUP" size="MINI"/>
+        </p>
+        <p>
+          <g:InlineLabel text="{i18n.repositoryColon}" styleName="{resources.CSS.label}"/>
+          <b:SplitDropdownButton ui:field="ddRepositories" icon="BUILDING" size="MINI"/>
+        </p>
+        <p>
+          <g:InlineLabel text="{i18n.projectColon}" styleName="{resources.CSS.label}"/>
+          <b:SplitDropdownButton ui:field="ddProjects" icon="DESKTOP" size="MINI"/>
+        </p>
+        <p>
+          <g:InlineLabel text="{i18n.packageColon}" styleName="{resources.CSS.label}"/>
+          <b:SplitDropdownButton ui:field="ddPackages" icon="FOLDER_OPEN" size="MINI"/>
+        </p>
         <hr/>
         <b:WellNavList ui:field="itemsContainer"/>
       </b:Well>

@@ -66,3 +66,7 @@
     font-weight: bold;
     margin-bottom: 2px;
 }
+
+.viewContainer {
+    min-width: 300px;
+}
