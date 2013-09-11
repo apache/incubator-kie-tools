@@ -72,6 +72,12 @@ public interface PlaceManager {
 
     public Activity getActivity( final PlaceRequest place );
 
+    public PlaceStatus getStatus( final String id );
+
+    public PlaceStatus getStatus( final PlaceRequest place );
+
+    public void closePlace( final String id );
+
     public void closePlace( final PlaceRequest place );
 
     public void closeAllPlaces();

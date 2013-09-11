@@ -217,19 +217,11 @@ public class PlaceManagerImpl
     }
 
     private Pair<Activity, PlaceRequest> resolveActivity( final PlaceRequest place ) {
-        final Activity activity = getActivity( place );
 
-        if ( activity != null ) {
-            return new Pair<Activity, PlaceRequest>( activity, place );
-        }
+        final Pair<Activity, PlaceRequest> existingPair = resolveExistingParts( place );
 
-        if ( place instanceof PathPlaceRequest ) {
-            for ( final Map.Entry<PlaceRequest, PartDefinition> entry : existingWorkbenchParts.entrySet() ) {
-                if ( entry.getKey() instanceof PathPlaceRequest &&
-                        ( (PathPlaceRequest) entry.getKey() ).getPath().compareTo( ( (PathPlaceRequest) place ).getPath() ) == 0 ) {
-                    return new Pair<Activity, PlaceRequest>( getActivity( entry.getKey() ), entry.getKey() );
-                }
-            }
+        if ( existingPair != null ) {
+            return existingPair;
         }
 
         final Set<Activity> activities = activityManager.getActivities( place );
@@ -246,6 +238,25 @@ public class PlaceManagerImpl
         }
 
         return Pair.newPair( activities.iterator().next(), place );
+    }
+
+    private Pair<Activity, PlaceRequest> resolveExistingParts( final PlaceRequest place ) {
+        final Activity activity = getActivity( place );
+
+        if ( activity != null ) {
+            return new Pair<Activity, PlaceRequest>( activity, place );
+        }
+
+        if ( place instanceof PathPlaceRequest ) {
+            for ( final Map.Entry<PlaceRequest, PartDefinition> entry : existingWorkbenchParts.entrySet() ) {
+                if ( entry.getKey() instanceof PathPlaceRequest &&
+                        ( (PathPlaceRequest) entry.getKey() ).getPath().compareTo( ( (PathPlaceRequest) place ).getPath() ) == 0 ) {
+                    return new Pair<Activity, PlaceRequest>( getActivity( entry.getKey() ), entry.getKey() );
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -302,6 +313,21 @@ public class PlaceManagerImpl
         }
         final Activity activity = existingWorkbenchActivities.get( place );
         return activity;
+    }
+
+    @Override
+    public PlaceStatus getStatus( String id ) {
+        return getStatus( new DefaultPlaceRequest( id ) );
+    }
+
+    @Override
+    public PlaceStatus getStatus( final PlaceRequest place ) {
+        return resolveExistingParts( place ) != null ? PlaceStatus.OPEN : PlaceStatus.CLOSE;
+    }
+
+    @Override
+    public void closePlace( String id ) {
+        closePlace( new DefaultPlaceRequest( id ) );
     }
 
     @Override
