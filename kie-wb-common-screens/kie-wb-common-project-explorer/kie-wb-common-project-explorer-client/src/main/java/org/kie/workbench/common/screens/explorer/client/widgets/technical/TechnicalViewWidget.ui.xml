@@ -25,9 +25,10 @@
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
       <b:Well ui:field="breadCrumbs">
-          <b:Breadcrumbs ui:field="breadcrumbs"/>
+        <b:Breadcrumbs ui:field="breadcrumbs"/>
+        <hr/>
+        <b:NavList ui:field="items"/>
       </b:Well>
-      <b:NavList ui:field="items"/>
     </div>
   </g:HTMLPanel>
 

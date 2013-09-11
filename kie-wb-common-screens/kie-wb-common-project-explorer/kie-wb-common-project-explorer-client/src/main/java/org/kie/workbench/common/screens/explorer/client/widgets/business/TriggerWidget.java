@@ -15,23 +15,24 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
+import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Widget for AccordianGroup triggers
+ * Trigger Widget for ResourceType groups
  */
-public class AccordionGroupTriggerWidget extends HorizontalPanel {
+public class TriggerWidget extends HorizontalPanel {
 
-    public AccordionGroupTriggerWidget( final String caption ) {
-        add( new Label( caption ) );
+    public TriggerWidget( final String caption ) {
+        add( new NavHeader( caption ) );
     }
 
-    public AccordionGroupTriggerWidget( final IsWidget icon,
-                                        final String caption ) {
+    public TriggerWidget( final IsWidget icon,
+                          final String caption ) {
         add( icon );
-        add( new Label( caption ) );
+        add( new NavHeader( caption ) );
     }
 
 }

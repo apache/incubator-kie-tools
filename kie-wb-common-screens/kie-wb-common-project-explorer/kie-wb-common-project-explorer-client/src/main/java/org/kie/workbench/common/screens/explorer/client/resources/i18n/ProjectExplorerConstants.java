@@ -44,6 +44,14 @@ public interface ProjectExplorerConstants
 
     public String projects();
 
+    public String organizationalUnitColon();
+
+    public String repositoryColon();
+
+    public String projectColon();
+
+    public String packageColon();
+
     public String files();
 
     public String refresh();

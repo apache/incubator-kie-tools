@@ -35,4 +35,6 @@ public interface StylesCss
 
     String groupHeader();
 
+    String label();
+
 }

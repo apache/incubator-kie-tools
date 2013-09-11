@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -25,13 +26,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Accordion;
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.github.gwtbootstrap.client.ui.Collapse;
+import com.github.gwtbootstrap.client.ui.CollapseTrigger;
+import com.github.gwtbootstrap.client.ui.Divider;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.NavList;
 import com.github.gwtbootstrap.client.ui.SplitDropdownButton;
-import com.github.gwtbootstrap.client.ui.Well;
+import com.github.gwtbootstrap.client.ui.WellNavList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,7 +44,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
@@ -71,9 +72,6 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     private static final String MISCELLANEOUS = "Miscellaneous";
 
     @UiField
-    Well breadCrumbs;
-
-    @UiField
     SplitDropdownButton ddOrganizationalUnits;
 
     @UiField
@@ -86,7 +84,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     SplitDropdownButton ddPackages;
 
     @UiField
-    Accordion itemsContainer;
+    WellNavList itemsContainer;
 
     @Inject
     Classifier classifier;
@@ -292,17 +290,29 @@ public class BusinessViewWidget extends Composite implements BusinessView {
             final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( sortedFolderItems );
             final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
-            for ( Map.Entry<ClientResourceType, Collection<FolderItem>> e : sortedResourceTypeGroups.entrySet() ) {
-                final AccordionGroup group = new AccordionGroup();
-                group.getWidget( 0 ).addStyleName( ProjectExplorerResources.INSTANCE.CSS().groupHeader() );
-                group.addCustomTrigger( makeTriggerWidget( e.getKey() ) );
+
+            final Iterator<Map.Entry<ClientResourceType, Collection<FolderItem>>> itr = sortedResourceTypeGroups.entrySet().iterator();
+            while ( itr.hasNext() ) {
+                final Map.Entry<ClientResourceType, Collection<FolderItem>> e = itr.next();
+
+                final CollapseTrigger collapseTrigger = makeTriggerWidget( e.getKey() );
+
+                final Collapse collapse = new Collapse();
+                collapse.setExistTrigger( true );
+                collapse.setId( e.getKey().getSuffix() );
                 final NavList itemsNavList = new NavList();
-                group.add( itemsNavList );
+                collapse.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
                     itemsNavList.add( makeItemNavLink( e.getKey(),
                                                        folderItem ) );
                 }
-                itemsContainer.add( group );
+                collapse.setDefaultOpen( false );
+
+                itemsContainer.add( collapseTrigger );
+                itemsContainer.add( collapse );
+                if ( itr.hasNext() ) {
+                    itemsContainer.add( new Divider() );
+                }
             }
 
         } else {
@@ -310,14 +320,18 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         }
     }
 
-    private AccordionGroupTriggerWidget makeTriggerWidget( final ClientResourceType resourceType ) {
+    private CollapseTrigger makeTriggerWidget( final ClientResourceType resourceType ) {
+        final CollapseTrigger collapseTrigger = new CollapseTrigger( "#" + resourceType.getSuffix() );
         final String description = getResourceTypeDescription( resourceType );
         final IsWidget icon = resourceType.getIcon();
         if ( icon == null ) {
-            return new AccordionGroupTriggerWidget( description );
+            collapseTrigger.setWidget( new TriggerWidget( description ) );
+        } else {
+            collapseTrigger.setWidget( new TriggerWidget( icon,
+                                                          description ) );
+
         }
-        return new AccordionGroupTriggerWidget( icon,
-                                                description );
+        return collapseTrigger;
     }
 
     private String getResourceTypeDescription( final ClientResourceType resourceType ) {
