@@ -17,7 +17,7 @@
 package org.kie.workbench.common.widgets.client.menu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
@@ -232,7 +232,7 @@ public class FileMenuBuilderImpl
 
     @Override
     public Menus build() {
-        final Map<Object, MenuItem> menuItems = new HashMap<Object, MenuItem>();
+        final Map<Object, MenuItem> menuItems = new LinkedHashMap<Object, MenuItem>();
         if ( saveCommand != null ) {
             menuItems.put( MenuItems.SAVE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
                     .respondsWith( saveCommand )
