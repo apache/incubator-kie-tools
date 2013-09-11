@@ -48,6 +48,7 @@ public class FormAuthenticationScheme implements AuthenticationScheme {
         }
 
         try {
+        	httpSecurityContext.getResponse().setStatus(401);
             rd.forward(httpSecurityContext.getRequest(), httpSecurityContext.getResponse());
         } catch (Exception e) {
             throw new AuthenticationException(e);
