@@ -162,6 +162,8 @@ public abstract class Popup extends PopupPanel {
             if ( ow instanceof HasWidgets ) {
                 focusFirstWidget( (HasWidgets) ow );
             }
+        } else if ( content instanceof HasWidgets ) {
+            focusFirstWidget( ( (HasWidgets) content ) );
         }
     }
 
