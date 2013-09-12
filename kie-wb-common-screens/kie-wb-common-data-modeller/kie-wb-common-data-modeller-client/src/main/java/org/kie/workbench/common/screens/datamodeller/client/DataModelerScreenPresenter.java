@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.event.Event;
@@ -26,6 +28,9 @@ import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -59,6 +64,7 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
+
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
 public class DataModelerScreenPresenter {
@@ -81,6 +87,9 @@ public class DataModelerScreenPresenter {
 
     @Inject
     private Caller<DataModelerService> modelerService;
+
+    @Inject
+    private Caller<ProjectService> projectService;
 
     private Menus menus;
 
@@ -164,13 +173,14 @@ public class DataModelerScreenPresenter {
                 if ( project != null ) {
                     loadProjectDataModel( project );
                 }
-                dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
-                                                                       getDataModel(),
-                                                                       oldDirtyStatus,
-                                                                       getContext().isDirty() ) );
+                dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
+                        getDataModel(),
+                        oldDirtyStatus,
+                        getContext().isDirty()));
             }
         },
-                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject );
+        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject);
+
     }
 
     @WorkbenchMenu
@@ -195,24 +205,32 @@ public class DataModelerScreenPresenter {
 
                 context.setAnnotationDefinitions( defs );
 
-                modelerService.call(
-                        new RemoteCallback<DataModelTO>() {
+                projectService.call( new RemoteCallback<Collection<Package>>() {
 
-                            @Override
-                            public void callback( DataModelTO dataModel ) {
-                                BusyPopup.close();
-                                dataModel.setParentProjectName( projectRootPath.getFileName() );
-                                setDataModel( dataModel );
-                                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
-                            }
+                    public void callback(Collection<Package> packages) {
 
-                        },
-                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( project );
+                        context.cleanPackages();
+                        context.appendPackages(packages);
 
+                        modelerService.call(
+                                new RemoteCallback<DataModelTO>() {
+
+                                    @Override
+                                    public void callback( DataModelTO dataModel ) {
+                                        BusyPopup.close();
+                                        dataModel.setParentProjectName( projectRootPath.getFileName() );
+                                        setDataModel( dataModel );
+                                        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
+                                    }
+
+                                },
+                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel(project);
+
+                    }
+                }, new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_loading_error())).resolvePackages(project);
             }
-        },
-                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-                           ).getAnnotationDefinitions();
+        },new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
+        ).getAnnotationDefinitions();
 
         currentProject = project;
     }
@@ -252,6 +270,23 @@ public class DataModelerScreenPresenter {
         }
         processProjectChange( project );
     }
+
+    /*
+    private void onPackageAdded( @Observes final NewPackageEvent event ) {
+        //Projects are not cached so no need to do anything if this presenter is not active
+        if ( isOpen() ) {
+
+            final Package pkg = event.getPackage();
+            if ( pkg != null && isOnCurrentProject(pkg)) {
+                if (context != null) {
+                    List<Package> packages = new ArrayList<Package>();
+                    packages.add(pkg);
+                    context.appendPackages(packages);
+                }
+            }
+        }
+    }
+    */
 
     private boolean isOpen() {
         return open;
@@ -296,6 +331,15 @@ public class DataModelerScreenPresenter {
         getDataModel().setPersistedStatus();
         getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
     }
+
+    /*
+    private boolean isOnCurrentProject(Package pkg) {
+        if (currentProject != null) {
+            return currentProject.getRootPath().equals(pkg.getProjectRootPath());
+        }
+        return false;
+    }
+    */
 
     private void makeToolBar() {
         toolBar = new DefaultToolBar( "dataModelerToolbar" );
@@ -359,7 +403,7 @@ public class DataModelerScreenPresenter {
                     }
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
-                           ).getBasePropertyTypes();
+        ).getBasePropertyTypes();
     }
 
     private void clearContext() {

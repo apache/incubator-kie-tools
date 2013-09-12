@@ -79,7 +79,7 @@ public class NewPackagePopup extends Popup {
             public void onClick(ClickEvent event) {
 
                 setPackageName(null);
-                final String packgeName = newPackageName.getText() != null ? newPackageName.getText().trim() : "";
+                final String packgeName = newPackageName.getText() != null ? newPackageName.getText().trim().toLowerCase() : "";
                 validatorService.isValidPackageIdentifier(packgeName, new ValidatorCallback() {
                     @Override
                     public void onFailure() {

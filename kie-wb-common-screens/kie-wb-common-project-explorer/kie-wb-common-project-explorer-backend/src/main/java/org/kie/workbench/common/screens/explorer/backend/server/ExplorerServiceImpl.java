@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
-import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -53,15 +52,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final String MAIN_SRC_PATH = "src/main/java";
-    private static final String TEST_SRC_PATH = "src/test/java";
-    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_RESOURCES_PATH = "src/test/resources";
-
-    private static String[] sourcePaths = { MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH };
-
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
-    private LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -200,85 +191,7 @@ public class ExplorerServiceImpl
 
     @Override
     public Set<Package> getPackages( final Project project ) {
-        final Set<Package> packages = new HashSet<Package>();
-        final Set<String> packageNames = new HashSet<String>();
-        if ( project == null ) {
-            return packages;
-        }
-        //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
-        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
-        final Path projectRoot = project.getRootPath();
-        final org.kie.commons.java.nio.file.Path nioProjectRootPath = paths.convert( projectRoot );
-        for ( String src : sourcePaths ) {
-            final org.kie.commons.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
-            packageNames.addAll( getPackageNames( nioProjectRootPath,
-                                                  nioPackageRootSrcPath ) );
-        }
-
-        //Construct Package objects for each package name
-        final Set<String> resolvedPackages = new HashSet<String>();
-        for ( String packagePathSuffix : packageNames ) {
-            for ( String src : sourcePaths ) {
-                final org.kie.commons.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
-                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
-                    packages.add( makePackage( nioPackagePath ) );
-                    resolvedPackages.add( packagePathSuffix );
-                }
-            }
-        }
-
-        return packages;
-    }
-
-    private Set<String> getPackageNames( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
-                                         final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
-        final Set<String> packageNames = new HashSet<String>();
-        if ( !Files.exists( nioPackageSrcPath ) ) {
-            return packageNames;
-        }
-        packageNames.add( getPackagePathSuffix( nioProjectRootPath,
-                                                nioPackageSrcPath ) );
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
-                                                                                                                          metaDataFileFilter );
-        for ( org.kie.commons.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
-            if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
-                packageNames.addAll( getPackageNames( nioProjectRootPath,
-                                                      nioChildPackageSrcPath ) );
-            }
-        }
-        return packageNames;
-    }
-
-    private String getPackagePathSuffix( final org.kie.commons.java.nio.file.Path nioProjectRootPath,
-                                         final org.kie.commons.java.nio.file.Path nioPackagePath ) {
-        final org.kie.commons.java.nio.file.Path nioMainSrcPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
-        final org.kie.commons.java.nio.file.Path nioTestSrcPath = nioProjectRootPath.resolve( TEST_SRC_PATH );
-        final org.kie.commons.java.nio.file.Path nioMainResourcesPath = nioProjectRootPath.resolve( MAIN_RESOURCES_PATH );
-        final org.kie.commons.java.nio.file.Path nioTestResourcesPath = nioProjectRootPath.resolve( TEST_RESOURCES_PATH );
-
-        String packageName = null;
-        org.kie.commons.java.nio.file.Path packagePath = null;
-        if ( nioPackagePath.startsWith( nioMainSrcPath ) ) {
-            packagePath = nioMainSrcPath.relativize( nioPackagePath );
-            packageName = packagePath.toString();
-        } else if ( nioPackagePath.startsWith( nioTestSrcPath ) ) {
-            packagePath = nioTestSrcPath.relativize( nioPackagePath );
-            packageName = packagePath.toString();
-        } else if ( nioPackagePath.startsWith( nioMainResourcesPath ) ) {
-            packagePath = nioMainResourcesPath.relativize( nioPackagePath );
-            packageName = packagePath.toString();
-        } else if ( nioPackagePath.startsWith( nioTestResourcesPath ) ) {
-            packagePath = nioTestResourcesPath.relativize( nioPackagePath );
-            packageName = packagePath.toString();
-        }
-
-        return packageName;
-    }
-
-    private Package makePackage( final org.kie.commons.java.nio.file.Path nioPackageSrcPath ) {
-        final Package pkg = projectService.resolvePackage( paths.convert( nioPackageSrcPath,
-                                                                          false ) );
-        return pkg;
+        return projectService.resolvePackages(project);
     }
 
     @Override

@@ -110,6 +110,24 @@ public class DataModelerUtils {
     public String[] getPackageTerms(String packageName) {
         return packageName.split("\\.", -1);
     }
+    
+    public String[] calculateSubPackages(String packageName) {
+        String packageTerms[];
+        String subpackages[];
+        
+        if (packageName == null || (packageTerms = getPackageTerms(packageName)) == null) return null;
+        
+        subpackages = new String[packageTerms.length];
+        for (int i = 0; i < packageTerms.length; i++) {
+            String subpackage = "";
+            for (int j = 0; j <= i; j++) {
+                subpackage += packageTerms[j];
+                if (j < i) subpackage += ".";
+            }
+            subpackages[i] = subpackage;
+        }
+        return subpackages;
+    }
 
     public String unCapitalize(String str) {
         int strLen;

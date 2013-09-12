@@ -29,7 +29,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -63,6 +62,7 @@ public class PackageSelector extends Composite {
     private static PackageSelectorUIBinder uiBinder = GWT.create(PackageSelectorUIBinder.class);
 
     public static final String NOT_SELECTED = "NOT_SELECTED";
+    public static final String NOT_SELECTED_DESC = "<default>";
     public static final String DEFAULT_PACKAGE = "defaultpkg";
 
     private DataObjectTO dataObject;
@@ -78,8 +78,7 @@ public class PackageSelector extends Composite {
                 newPackagePopup.show();
             }
         }, ClickEvent.getType());
-        packageList.addItem("", NOT_SELECTED);
-        packageList.addItem(DEFAULT_PACKAGE, DEFAULT_PACKAGE);
+        packageList.addItem(NOT_SELECTED_DESC, NOT_SELECTED);
     }
 
     @PostConstruct
@@ -110,6 +109,9 @@ public class PackageSelector extends Composite {
                 packageList.addItem(newPackageName, newPackageName);
                 packageList.setSelectedValue(newPackageName);
                 DomEvent.fireNativeEvent(Document.get().createChangeEvent(), packageList);
+            }
+            if (context != null) {
+                context.appendPackage(newPackageName.trim());
             }
         }
     }
@@ -149,10 +151,18 @@ public class PackageSelector extends Composite {
             packageList.setSelectedValue(NOT_SELECTED);
         }
     }
-            
+
     private void initList() {
         packageList.clear();
         List<String> packageNames = new ArrayList<String>();
+
+        if (context != null && context.getCurrentProjectPackages() != null) {
+            for (String packageName : context.getCurrentProjectPackages()) {
+                packageNames.add(packageName);
+            }
+
+        }
+        /* WM old processing
         if (getDataModel() != null) {
             String packageName;
             for (String className : getContext().getHelper().getClassList()) {
@@ -162,9 +172,10 @@ public class PackageSelector extends Composite {
                 }
             }
         }
+        */
+
         Collections.sort(packageNames);
-        packageList.addItem("", NOT_SELECTED);
-        packageList.addItem(DEFAULT_PACKAGE, DEFAULT_PACKAGE);
+        packageList.addItem(NOT_SELECTED_DESC, NOT_SELECTED);
         for (String packageName : packageNames) {
             packageList.addItem(packageName, packageName);
         }

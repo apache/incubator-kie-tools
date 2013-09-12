@@ -17,12 +17,16 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.guvnor.common.services.project.model.Package;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class DataModelerContext {
 
@@ -35,6 +39,8 @@ public class DataModelerContext {
     private List<PropertyTypeTO> baseTypes;
 
     private boolean dirty = false;
+
+    private List<String> currentProjectPackages = new ArrayList<String>();
 
     public DataModelerContext() {
     }
@@ -81,11 +87,42 @@ public class DataModelerContext {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
+
+    public void appendPackages(Collection<Package> packages) {
+        if (packages != null) {
+            for (Package packageToAppend : packages) {
+                if (!"".equals(packageToAppend.getPackageName()) && !currentProjectPackages.contains(packageToAppend.getPackageName())) {
+                    currentProjectPackages.add(packageToAppend.getPackageName());
+                }
+            }
+        }
+    }
+
+    public void appendPackage(String packageName) {
+
+        if (packageName != null && !"".equals(packageName)) {
+            String[] subPackages = DataModelerUtils.getInstance().calculateSubPackages(packageName);
+            String subPackage = null;
+            for (int i = 0; subPackages != null && i < subPackages.length; i++) {
+                subPackage = subPackages[i];
+                if (!currentProjectPackages.contains(subPackage)) currentProjectPackages.add(subPackage);
+            }
+        }
+    }
     
+    public List<String> getCurrentProjectPackages() {
+        return currentProjectPackages;
+    }
+    
+    public void cleanPackages() {
+        if (currentProjectPackages != null) currentProjectPackages.clear();
+    }
+
     public void clear() {
         if (annotationDefinitions != null) annotationDefinitions.clear();
         if (baseTypes != null) baseTypes.clear();
         if (dataModel != null && dataModel.getDataObjects() != null) dataModel.getDataObjects().clear();
+        cleanPackages();
         helper = new DataModelHelper();
     }
 }

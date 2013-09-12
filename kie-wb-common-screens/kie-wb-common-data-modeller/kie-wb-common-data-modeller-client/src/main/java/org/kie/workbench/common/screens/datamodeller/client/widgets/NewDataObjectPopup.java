@@ -172,7 +172,7 @@ public class NewDataObjectPopup extends Modal {
 
         newName[0] = name.getText() != null ? name.getText().trim() : "";
         newLabel[0] = label.getText() != null ? label.getText().trim() : "";
-        newPackageName[0] = newPackage.getText() != null && !"".equals(newPackage.getText().trim()) ?  newPackage.getText().trim() : null;
+        newPackageName[0] = newPackage.getText() != null && !"".equals(newPackage.getText().trim()) ?  newPackage.getText().trim().toLowerCase() : null;
 
         superClass[0] = superclassSelector.getSuperclassList().getValue();
         if (SuperclassSelector.NOT_SELECTED.equals(superClass[0])) superClass[0] = null;
@@ -242,6 +242,7 @@ public class NewDataObjectPopup extends Modal {
         }
         getDataModel().getDataObjects().add(dataObject);
         notifyObjectCreated(dataObject);
+        if (getContext() != null) getContext().appendPackage(packageName);
     }
 
     private void clean() {
