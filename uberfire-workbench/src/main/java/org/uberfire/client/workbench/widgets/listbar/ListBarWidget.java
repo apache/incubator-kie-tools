@@ -105,7 +105,7 @@ public class ListBarWidget
     FlowPanel header;
 
     @UiField
-    ButtonGroup contextMenu;
+    FlowPanel contextMenu;
 
     @UiField
     Button closeButton;
@@ -118,6 +118,8 @@ public class ListBarWidget
 
     @UiField
     FlowPanel menuArea;
+
+//    private final List<Widget> contextMenuItems = new ArrayList<Widget>();
 
     private CustomList customList = null;
 
@@ -307,7 +309,9 @@ public class ListBarWidget
             for ( final MenuItem menuItem : part.getPresenter().getMenus().getItems() ) {
                 final Widget result = makeItem( menuItem, true );
                 if ( result != null ) {
-                    contextMenu.add( result );
+                    final ButtonGroup bg = new ButtonGroup();
+                    bg.add( result );
+                    contextMenu.add( bg );
                 }
             }
         }
