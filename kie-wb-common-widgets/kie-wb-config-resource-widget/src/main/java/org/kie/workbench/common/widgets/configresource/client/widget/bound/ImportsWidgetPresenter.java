@@ -27,7 +27,7 @@ import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
 import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 

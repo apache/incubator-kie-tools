@@ -18,10 +18,10 @@ package org.kie.workbench.common.services.datamodeller.driver.impl;
 
 import java.util.*;
 
-import org.drools.workbench.models.datamodel.model.ModelField;
-import org.drools.workbench.models.datamodel.model.Annotation;
-import org.drools.workbench.models.datamodel.model.TypeSource;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;

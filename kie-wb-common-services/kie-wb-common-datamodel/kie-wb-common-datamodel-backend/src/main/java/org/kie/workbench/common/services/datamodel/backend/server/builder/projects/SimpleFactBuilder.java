@@ -1,7 +1,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.drools.workbench.models.datamodel.model.ModelField;
-import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
 
 /**
  * Simple builder for Fact Types

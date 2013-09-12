@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
-import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.model.ModelField;
-import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 
 /**

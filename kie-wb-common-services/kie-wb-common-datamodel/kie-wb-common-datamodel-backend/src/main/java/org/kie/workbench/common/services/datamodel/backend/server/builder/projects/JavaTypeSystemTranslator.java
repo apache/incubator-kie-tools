@@ -1,6 +1,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
 
 import java.math.BigDecimal;

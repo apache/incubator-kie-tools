@@ -11,7 +11,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelectorDropdown

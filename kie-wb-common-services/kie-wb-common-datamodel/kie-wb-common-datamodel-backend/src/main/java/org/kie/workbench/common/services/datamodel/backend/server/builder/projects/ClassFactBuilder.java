@@ -9,12 +9,12 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.workbench.models.datamodel.model.Annotation;
+import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
 import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
-import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
-import org.drools.workbench.models.datamodel.model.ModelField;
-import org.drools.workbench.models.datamodel.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 

@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
 
 /**
  * Finds all methods that are not getters or setters from a class.
