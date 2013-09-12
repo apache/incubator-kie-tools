@@ -39,6 +39,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -81,6 +82,7 @@ public class DroolsWorkbenchEntryPoint {
     }
 
     private void loadPreferences() {
+        UberFirePreferences.setProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable", true );
         appConfigService.call( new RemoteCallback<Map<String, String>>() {
             @Override
             public void callback( final Map<String, String> response ) {
