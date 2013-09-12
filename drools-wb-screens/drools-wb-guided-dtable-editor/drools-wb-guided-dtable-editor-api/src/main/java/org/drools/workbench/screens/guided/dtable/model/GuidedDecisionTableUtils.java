@@ -3,7 +3,7 @@ package org.drools.workbench.screens.guided.dtable.model;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
@@ -25,7 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.kie.commons.validation.PortablePreconditions;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 /**
  * Utilities for GuidedDecisionTable

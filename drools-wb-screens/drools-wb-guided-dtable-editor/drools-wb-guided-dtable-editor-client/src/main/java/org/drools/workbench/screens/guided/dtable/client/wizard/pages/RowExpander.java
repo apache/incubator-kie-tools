@@ -32,8 +32,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
-import org.drools.workbench.models.datamodel.model.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 
 /**

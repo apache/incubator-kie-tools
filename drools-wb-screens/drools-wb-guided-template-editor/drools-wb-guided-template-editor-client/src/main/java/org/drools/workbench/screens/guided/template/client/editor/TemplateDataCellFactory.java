@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 public class TemplateDataCellFactory
         extends AbstractCellFactory<TemplateDataColumn> {

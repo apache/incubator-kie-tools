@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.decisiontable.parser.xls.ExcelParser;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;

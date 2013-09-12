@@ -46,7 +46,7 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -151,7 +151,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
 
-            return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content );
+            return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content, dataModelService.getDataModel( path ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

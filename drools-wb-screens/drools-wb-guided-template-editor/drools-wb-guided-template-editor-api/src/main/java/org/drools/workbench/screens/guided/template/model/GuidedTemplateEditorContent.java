@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.template.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 

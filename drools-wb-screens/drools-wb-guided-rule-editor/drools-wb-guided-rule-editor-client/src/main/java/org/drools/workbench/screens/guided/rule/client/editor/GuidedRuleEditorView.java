@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 public interface GuidedRuleEditorView extends HasBusyIndicator,

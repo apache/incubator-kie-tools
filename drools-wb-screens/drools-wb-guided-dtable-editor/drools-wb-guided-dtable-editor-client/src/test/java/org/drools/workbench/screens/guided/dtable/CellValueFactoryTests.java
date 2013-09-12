@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -38,11 +38,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
-import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.model.ModelField;
-import org.drools.workbench.models.datamodel.model.ModelField.FIELD_CLASS_TYPE;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField.FIELD_CLASS_TYPE;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static junit.framework.Assert.*;

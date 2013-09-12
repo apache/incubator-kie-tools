@@ -82,7 +82,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.AddButton;
 import org.uberfire.client.common.DecoratedDisclosurePanel;

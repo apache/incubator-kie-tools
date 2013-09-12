@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.scorecard.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 

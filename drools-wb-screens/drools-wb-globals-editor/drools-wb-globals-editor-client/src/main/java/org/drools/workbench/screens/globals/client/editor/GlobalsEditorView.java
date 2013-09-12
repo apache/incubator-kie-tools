@@ -3,7 +3,7 @@ package org.drools.workbench.screens.globals.client.editor;
 import java.util.List;
 
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.globals.model.Global;
 import org.uberfire.client.mvp.UberView;
 

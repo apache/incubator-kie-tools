@@ -26,7 +26,7 @@ import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetTemplateDataEvent;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;

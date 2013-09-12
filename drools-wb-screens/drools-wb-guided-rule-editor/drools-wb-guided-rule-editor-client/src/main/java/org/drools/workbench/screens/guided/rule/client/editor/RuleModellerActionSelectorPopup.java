@@ -44,7 +44,7 @@ import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.InfoPopup;
 
 /**

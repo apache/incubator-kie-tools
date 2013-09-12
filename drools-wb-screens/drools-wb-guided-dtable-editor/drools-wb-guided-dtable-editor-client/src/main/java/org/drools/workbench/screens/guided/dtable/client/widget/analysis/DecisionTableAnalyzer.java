@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.InsertFactActionDetectorKey;

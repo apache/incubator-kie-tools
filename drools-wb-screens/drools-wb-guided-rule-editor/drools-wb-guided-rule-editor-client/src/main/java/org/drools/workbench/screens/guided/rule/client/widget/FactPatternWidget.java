@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;

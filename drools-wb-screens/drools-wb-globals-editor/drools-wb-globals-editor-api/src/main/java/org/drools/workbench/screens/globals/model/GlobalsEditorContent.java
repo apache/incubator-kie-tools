@@ -18,7 +18,7 @@ package org.drools.workbench.screens.globals.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.commons.validation.PortablePreconditions;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 @Portable
 public class GlobalsEditorContent {
