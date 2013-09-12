@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -164,6 +165,10 @@ public class ListBarWidget
                 }
             }
         } );
+
+        if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null ) {
+            contextDisplay.setVisible( false );
+        }
     }
 
     public void enableDnd() {
