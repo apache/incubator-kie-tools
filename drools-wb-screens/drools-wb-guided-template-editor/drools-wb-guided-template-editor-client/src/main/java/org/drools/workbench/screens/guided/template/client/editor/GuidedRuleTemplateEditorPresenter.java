@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
@@ -33,11 +36,8 @@ import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEd
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -49,12 +49,8 @@ import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSucces
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.workbench.common.widgets.viewsource.client.callbacks.ViewSourceSuccessCallback;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -62,10 +58,19 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.IsDirty;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnSave;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })
@@ -93,6 +98,9 @@ public class GuidedRuleTemplateEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
+
+    @Inject
     private PlaceManager placeManager;
 
     @Inject
@@ -108,19 +116,77 @@ public class GuidedRuleTemplateEditorPresenter {
 
     private EventBus eventBus = new SimpleEventBus();
 
-    private Path path;
+    private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly = false;
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private TemplateModel model;
     private PackageDataModelOracle oracle;
 
     @OnStartup
-    public void onStartup( final Path path,
-                         final PlaceRequest place ) {
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+
+        this.path.onRename( new Command() {
+            @Override
+            public void execute() {
+                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+            }
+        } );
+        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        } );
+
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
+            }
+        } );
+
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( place );
+                                         }
+                                     }
+                                   ).show();
+            }
+        } );
+
         makeMenuBar();
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
@@ -183,6 +249,19 @@ public class GuidedRuleTemplateEditorPresenter {
         loadContent();
     }
 
+    private void reload() {
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        loadContent();
+    }
+
+    private void disableMenus() {
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+    }
+
     private void loadContent() {
         service.call( getModelSuccessCallback(),
                       new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
@@ -211,20 +290,6 @@ public class GuidedRuleTemplateEditorPresenter {
         };
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
-            return;
-        }
-        view.refresh();
-    }
-
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
-            return;
-        }
-        view.refresh();
-    }
-
     private void makeMenuBar() {
         if ( isReadOnly ) {
             menus = menuBuilder.addRestoreVersion( path ).build();
@@ -242,6 +307,20 @@ public class GuidedRuleTemplateEditorPresenter {
                     .addValidate( onValidate() )
                     .build();
         }
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refresh();
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.refresh();
     }
 
     private Command onValidate() {

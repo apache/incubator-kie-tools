@@ -142,7 +142,8 @@ public class ScenarioTestEditorServiceImpl
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(content);
             scenario.setName(path.getFileName());
@@ -169,7 +170,8 @@ public class ScenarioTestEditorServiceImpl
             invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 
@@ -258,7 +260,8 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public void runAllScenarios( final Path testResourcePath ) {
-    	runAllScenarios(testResourcePath, testResultMessageEvent);
+    	runAllScenarios(testResourcePath,
+                        testResultMessageEvent);
     }
     
     //@Override

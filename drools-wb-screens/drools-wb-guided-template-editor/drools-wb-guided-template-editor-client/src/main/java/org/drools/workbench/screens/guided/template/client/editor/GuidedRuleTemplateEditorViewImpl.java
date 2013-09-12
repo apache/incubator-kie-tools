@@ -20,10 +20,10 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
@@ -52,7 +52,7 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
                                           new TemplateModellerWidgetFactory(),
                                           eventBus,
                                           isReadOnly );
-        panel.add( this.modeller );
+        panel.setWidget( this.modeller );
     }
 
     @Override

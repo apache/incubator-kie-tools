@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
@@ -40,7 +41,6 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
@@ -68,9 +68,9 @@ public class ScenarioEditorViewImpl
     private MetadataWidget metadataWidget;
 
     private MultiPageEditor multiPage;
-    
+
     private BulkRunTestScenarioEditor bulkRunTestScenarioEditor;
-    
+
     private BusyIndicatorView busyIndicatorView;
     private Caller<MetadataService> metadataService;
 
@@ -105,8 +105,8 @@ public class ScenarioEditorViewImpl
 
     }
 
-    public String getTitle(String fileName) {
-        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName(fileName);
+    public String getTitle( String fileName ) {
+        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName( fileName );
     }
 
     @Override
@@ -138,8 +138,13 @@ public class ScenarioEditorViewImpl
                                 widget );
     }
 
-    public void renderEditor() {
+    @Override
+    public void clear() {
+        layout.clear();
+    }
 
+    public void renderEditor() {
+        //Remove body (i.e Test Scenario definition) when refreshing; leaving Test Scenario Runner widget
         if ( this.layout.getWidgetCount() == 2 ) {
             this.layout.remove( 1 );
         }
@@ -285,14 +290,14 @@ public class ScenarioEditorViewImpl
             }
         } );
     }
-    
+
     @Override
     public void addBulkRunTestScenarioPanel( final Path path,
                                              final boolean isReadOnly ) {
         multiPage.addPage( new Page( bulkRunTestScenarioEditor, TestScenarioConstants.INSTANCE.TestScenarios() ) {
             @Override
             public void onFocus() {
-                bulkRunTestScenarioEditor.init(path, isReadOnly);
+                bulkRunTestScenarioEditor.init( path, isReadOnly );
             }
 
             @Override
@@ -300,12 +305,12 @@ public class ScenarioEditorViewImpl
             }
         } );
     }
-    
+
     @Override
     public void setScenario( String packageName,
                              Scenario scenario,
                              PackageDataModelOracle dmo ) {
-        String[] availableRules = dmo.getRuleNames().toArray(new String[dmo.getRuleNames().size()]);
+        String[] availableRules = dmo.getRuleNames().toArray( new String[ dmo.getRuleNames().size() ] );
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( packageName, this, dmo, availableRules );
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );

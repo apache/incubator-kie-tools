@@ -127,7 +127,8 @@ public class EnumServiceImpl implements EnumService {
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return content;
 
@@ -162,7 +163,8 @@ public class EnumServiceImpl implements EnumService {
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

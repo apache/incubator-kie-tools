@@ -20,10 +20,10 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
@@ -32,7 +32,7 @@ public class GuidedRuleEditorViewImpl
         implements GuidedRuleEditorView {
 
     private final EventBus localBus = new SimpleEventBus();
-    private final VerticalPanel panel = new VerticalPanel();
+    private final SimplePanel panel = new SimplePanel();
     private RuleModeller modeller = null;
 
     public GuidedRuleEditorViewImpl() {
@@ -53,7 +53,7 @@ public class GuidedRuleEditorViewImpl
                                      localBus,
                                      isReadOnly,
                                      isDSLEnabled );
-        panel.add( this.modeller );
+        panel.setWidget( this.modeller );
     }
 
     @Override

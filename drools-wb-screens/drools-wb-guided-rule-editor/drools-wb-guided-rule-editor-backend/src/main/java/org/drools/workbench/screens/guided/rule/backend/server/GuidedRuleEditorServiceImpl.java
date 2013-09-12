@@ -159,7 +159,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final List<String> globals = loadGlobalsForPackage( path );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
                                                                      globals,
@@ -228,7 +229,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

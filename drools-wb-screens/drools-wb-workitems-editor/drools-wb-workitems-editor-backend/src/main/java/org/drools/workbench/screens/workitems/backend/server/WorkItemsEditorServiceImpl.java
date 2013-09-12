@@ -200,7 +200,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return content;
 
@@ -256,7 +257,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

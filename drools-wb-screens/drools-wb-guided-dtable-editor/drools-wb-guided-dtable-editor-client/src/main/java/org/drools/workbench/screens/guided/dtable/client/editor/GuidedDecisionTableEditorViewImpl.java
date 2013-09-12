@@ -21,12 +21,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.dtable.client.widget.GuidedDecisionTableWidget;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.security.Identity;
@@ -36,7 +36,7 @@ import org.uberfire.security.Identity;
  */
 public class GuidedDecisionTableEditorViewImpl extends Composite implements GuidedDecisionTableEditorView {
 
-    private final VerticalPanel panel = new VerticalPanel();
+    private final SimplePanel panel = new SimplePanel();
     private GuidedDecisionTable52 model;
     private GuidedDecisionTableWidget editor;
 
@@ -61,7 +61,7 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
                                                      identity,
                                                      workItemDefinitions,
                                                      isReadOnly );
-        panel.add( this.editor );
+        panel.setWidget( this.editor );
     }
 
     @Override

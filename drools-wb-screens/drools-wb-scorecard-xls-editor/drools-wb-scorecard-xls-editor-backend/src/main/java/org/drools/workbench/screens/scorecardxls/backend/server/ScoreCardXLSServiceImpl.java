@@ -104,7 +104,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
                                                                       StandardOpenOption.READ );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return inputStream;
 
@@ -166,7 +167,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
             final Path newPath = paths.convert( nioPath );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

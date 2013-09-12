@@ -149,7 +149,8 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content, dataModelService.getDataModel( path ) );
 
@@ -187,7 +188,8 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

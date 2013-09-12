@@ -109,7 +109,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                                                       StandardOpenOption.READ );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return inputStream;
 
@@ -175,7 +176,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             final Path newPath = paths.convert( nioPath );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath,
+                                                                 sessionInfo ) );
 
             return newPath;
 

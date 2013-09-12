@@ -117,7 +117,6 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
 
         //Images
         mainPanel.add( imagesList );
-        imagesList.addItem( WorkItemsEditorConstants.INSTANCE.ChooseIcon() );
         imagesList.setVisibleItemCount( 1 );
         imagesList.setSelectedIndex( 0 );
 
@@ -151,6 +150,8 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
     }
 
     public void setImages( final List<String> workItemImages ) {
+        imagesList.clear();
+        imagesList.addItem( WorkItemsEditorConstants.INSTANCE.ChooseIcon() );
         for ( String workItemImage : workItemImages ) {
             imagesList.addItem( workItemImage );
         }

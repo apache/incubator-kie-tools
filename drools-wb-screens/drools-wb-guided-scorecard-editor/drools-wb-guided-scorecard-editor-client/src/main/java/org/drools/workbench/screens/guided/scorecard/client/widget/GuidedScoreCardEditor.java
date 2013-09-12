@@ -69,7 +69,7 @@ public class GuidedScoreCardEditor extends Composite {
     private static final String[] booleanOperators = new String[]{ "false", "true" };
     private static final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<=" };
 
-    private VerticalPanel container = new VerticalPanel();
+    private SimplePanel container = new SimplePanel();
 
     private Button btnAddCharacteristic;
     private VerticalPanel characteristicsPanel;
@@ -122,7 +122,7 @@ public class GuidedScoreCardEditor extends Composite {
         config.add( characteristicsPanel );
 
         disclosurePanel.add( config );
-        container.add( disclosurePanel );
+        container.setWidget( disclosurePanel );
 
         for ( final Characteristic characteristic : model.getCharacteristics() ) {
             final DirtyableFlexTable flexTable = addCharacteristic( characteristic );
@@ -247,7 +247,6 @@ public class GuidedScoreCardEditor extends Composite {
         dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
         scoreCardPropertyFactChanged( dropDownFacts,
                                       dropDownFields );
-
 
     }
 

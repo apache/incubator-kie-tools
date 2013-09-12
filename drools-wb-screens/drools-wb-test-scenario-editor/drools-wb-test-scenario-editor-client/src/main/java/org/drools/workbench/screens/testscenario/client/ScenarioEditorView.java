@@ -16,6 +16,8 @@ public interface ScenarioEditorView
 
     void showCanNotSaveReadOnly();
 
+    void clear();
+
     void renderEditor();
 
     void addTestRunnerWidget( final Scenario scenario,
@@ -31,7 +33,7 @@ public interface ScenarioEditorView
 
     void showSaveSuccessful();
 
-    String getTitle(String fileName);
+    String getTitle( String fileName );
 
     void initImportsTab( final PackageDataModelOracle dmo,
                          final Imports imports,
@@ -40,6 +42,7 @@ public interface ScenarioEditorView
     Metadata getMetadata();
 
     void resetMetadataDirty();
-    
-    void addBulkRunTestScenarioPanel( final Path path, final boolean isReadOnly );
+
+    void addBulkRunTestScenarioPanel( final Path path,
+                                      final boolean isReadOnly );
 }

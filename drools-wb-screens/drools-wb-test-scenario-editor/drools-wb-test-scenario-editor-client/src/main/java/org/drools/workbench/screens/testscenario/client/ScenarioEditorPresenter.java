@@ -16,92 +16,196 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
 public class ScenarioEditorPresenter {
 
-    private final FileMenuBuilder menuBuilder;
     private final ScenarioEditorView view;
+    private final FileMenuBuilder menuBuilder;
+    private final Caller<ScenarioTestEditorService> service;
+    private final PlaceManager placeManager;
+    private final Event<ChangeTitleWidgetEvent> changeTitleNotification;
+
     private Menus menus;
     protected PackageDataModelOracle dmo;
-    private final Caller<ScenarioTestEditorService> service;
-    private boolean isReadOnly;
 
-    private Path path;
+    private ObservablePath path;
+    private PlaceRequest place;
+    private boolean isReadOnly;
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private Scenario scenario;
 
     @Inject
     public ScenarioEditorPresenter( final @New ScenarioEditorView view,
                                     final @New FileMenuBuilder menuBuilder,
-                                    final Caller<ScenarioTestEditorService> service ) {
+                                    final Caller<ScenarioTestEditorService> service,
+                                    final PlaceManager placeManager,
+                                    final Event<ChangeTitleWidgetEvent> changeTitleNotification ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
+        this.placeManager = placeManager;
+        this.changeTitleNotification = changeTitleNotification;
     }
 
     @OnStartup
-    public void onStartup( final Path path,
-                         final PlaceRequest place ) {
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
 
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         this.path = path;
+        this.place = place;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+
+        this.path.onRename( new Command() {
+            @Override
+            public void execute() {
+                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+            }
+        } );
+        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        } );
+
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
+            }
+        } );
+
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( place );
+                                         }
+                                     }
+                                   ).show();
+            }
+        } );
+
+        makeMenuBar();
+
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         if ( !isReadOnly ) {
-            view.addMetaDataPage( path, isReadOnly );
+            view.addMetaDataPage( path,
+                                  isReadOnly );
         }
-        
-        view.addBulkRunTestScenarioPanel( path, isReadOnly );        
+        view.addBulkRunTestScenarioPanel( path,
+                                          isReadOnly );
 
+        loadContent();
+    }
 
-        service.call( new RemoteCallback<TestScenarioModelContent>() {
+    private void reload() {
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        loadContent();
+    }
+
+    private void disableMenus() {
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+    }
+
+    private void loadContent() {
+        service.call( getModelSuccessCallback(),
+                      new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
+    }
+
+    private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
+        return new RemoteCallback<TestScenarioModelContent>() {
             @Override
             public void callback( TestScenarioModelContent modelContent ) {
                 scenario = modelContent.getScenario();
-
                 dmo = modelContent.getOracle();
                 dmo.filter( scenario.getImports() );
 
-                view.setScenario( modelContent.getPackageName(), scenario, dmo );
+                view.clear();
+                view.setScenario( modelContent.getPackageName(),
+                                  scenario,
+                                  dmo );
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
                 if ( !isReadOnly ) {
-                    view.addTestRunnerWidget( scenario, service, path );
+                    view.addTestRunnerWidget( scenario,
+                                              service,
+                                              path );
                 }
 
                 view.renderEditor();
 
-                view.initImportsTab( dmo, scenario.getImports(), isReadOnly );
+                view.initImportsTab( dmo,
+                                     scenario.getImports(),
+                                     isReadOnly );
+                view.hideBusyIndicator();
             }
-        } ).loadContent( path );
-
-        makeMenuBar();
+        };
     }
 
     private void onSave() {
@@ -137,7 +241,7 @@ public class ScenarioEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return view.getTitle(path.getFileName().substring(0, path.getFileName().indexOf(".scenario")));
+        return view.getTitle( path.getFileName().substring( 0, path.getFileName().indexOf( ".scenario" ) ) );
     }
 
     @WorkbenchPartView

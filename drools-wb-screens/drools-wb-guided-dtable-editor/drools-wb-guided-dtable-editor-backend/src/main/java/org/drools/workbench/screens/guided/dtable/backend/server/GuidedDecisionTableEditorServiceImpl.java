@@ -156,7 +156,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
@@ -197,7 +198,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                              makeCommentedOption( comment ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 

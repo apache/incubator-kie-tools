@@ -124,7 +124,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
             final String content = ioService.readAllString( paths.convert( path ) );
 
             //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
 
             return content;
 
@@ -149,7 +150,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
             //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
+            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
+                                                                 sessionInfo ) );
 
             return resource;
 
