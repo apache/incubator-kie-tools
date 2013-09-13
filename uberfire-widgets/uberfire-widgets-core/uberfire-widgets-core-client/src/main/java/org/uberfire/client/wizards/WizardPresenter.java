@@ -87,8 +87,8 @@ public class WizardPresenter implements
         //Ensure Wizard's generic Cancel/Finish buttons are set correctly
         checkPagesState();
 
-        view.show();
         view.selectPage( 0 );
+        view.show();
     }
 
     public void pageSelected( final int pageNumber ) {

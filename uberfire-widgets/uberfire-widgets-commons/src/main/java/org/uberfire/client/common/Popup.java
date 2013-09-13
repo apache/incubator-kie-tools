@@ -30,11 +30,12 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.FocusWidget;
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -121,7 +122,7 @@ public abstract class Popup extends PopupPanel {
 
         super.show();
 
-        focusFirstWidget( content );
+        focusFirstTextBox( content );
 
         if ( !fixedLocation ) {
             center();
@@ -155,33 +156,48 @@ public abstract class Popup extends PopupPanel {
         return focusPanel;
     }
 
-    private void focusFirstWidget( Widget content ) {
+    private void focusFirstTextBox( Widget content ) {
         if ( content instanceof FormStyleLayout ) {
             FormStyleLayout fsl = (FormStyleLayout) content;
             Widget ow = fsl.getWidget();
             if ( ow instanceof HasWidgets ) {
-                focusFirstWidget( (HasWidgets) ow );
+                focusFirstTextBox( (HasWidgets) ow );
             }
         } else if ( content instanceof HasWidgets ) {
-            focusFirstWidget( ( (HasWidgets) content ) );
+            focusFirstTextBox( ( (HasWidgets) content ) );
         }
     }
 
-    private boolean focusFirstWidget( HasWidgets container ) {
+    //It's tempting to check for Focusable, but Buttons don't look good when the focus is set
+    //We therefore use a white-list of widgets that respond well to having the focus set
+    private boolean focusFirstTextBox( HasWidgets container ) {
         boolean bFocused = false;
         Iterator<Widget> iw = container.iterator();
-        while ( !bFocused && iw.hasNext() ) {
+        while ( iw.hasNext() ) {
             Widget w = iw.next();
             if ( w instanceof HasWidgets ) {
-                bFocused = focusFirstWidget( (HasWidgets) w );
-            } else if ( w instanceof Focusable ) {
-                ( (Focusable) w ).setFocus( true );
-                bFocused = true;
-                break;
-            } else if ( w instanceof FocusWidget ) {
-                ( (FocusWidget) w ).setFocus( true );
-                bFocused = true;
-                break;
+                bFocused = focusFirstTextBox( (HasWidgets) w );
+            } else if ( w instanceof TextBox ) {
+                TextBox tb = (TextBox) w;
+                if ( tb.isEnabled() ) {
+                    tb.setFocus( true );
+                    bFocused = true;
+                    break;
+                }
+            } else if ( w instanceof RadioButton ) {
+                RadioButton rb = (RadioButton) w;
+                if ( rb.isEnabled() ) {
+                    rb.setFocus( true );
+                    bFocused = true;
+                    break;
+                }
+            } else if ( w instanceof CheckBox ) {
+                CheckBox cb = (CheckBox) w;
+                if ( cb.isEnabled() ) {
+                    cb.setFocus( true );
+                    bFocused = true;
+                    break;
+                }
             }
         }
         return bFocused;
