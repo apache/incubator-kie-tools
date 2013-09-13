@@ -261,9 +261,13 @@ public interface GuidedDecisionTableConstants
 
     String RemoveThisConditionColumn();
 
-    String UnableToDeleteConditionColumn( String p0 );
+    String UnableToDeletePatterns();
 
-    String DeleteConditionColumnWarning( String p0 );
+    String UnableToDeleteConditionColumns();
+
+    String UnableToDeleteConditionColumn0( String p0 );
+
+    String DeleteConditionColumnWarning0( String p0 );
 
     String Attributes();
 

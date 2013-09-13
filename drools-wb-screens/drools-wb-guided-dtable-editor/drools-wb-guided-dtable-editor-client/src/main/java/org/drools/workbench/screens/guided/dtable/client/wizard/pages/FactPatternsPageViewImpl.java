@@ -33,6 +33,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -45,7 +46,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
@@ -371,11 +371,19 @@ public class FactPatternsPageViewImpl extends Composite
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick( final ClickEvent event ) {
+        boolean allPatternsRemoved = true;
         for ( Pattern52 pattern : chosenPatternSelections ) {
-            chosenPatterns.remove( pattern );
+            if ( !validator.canPatternBeRemoved( pattern ) ) {
+                allPatternsRemoved = false;
+            } else {
+                chosenPatterns.remove( pattern );
 
-            //Raise an Event so ActionSetFieldPage can synchronise Patterns
-            presenter.signalRemovalOfPattern( pattern );
+                //Raise an Event so ActionSetFieldPage can synchronise Patterns
+                presenter.signalRemovalOfPattern( pattern );
+            }
+        }
+        if ( !allPatternsRemoved ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeletePatterns() );
         }
 
         chosenPatternSelections.clear();

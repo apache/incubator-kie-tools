@@ -37,6 +37,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -55,7 +56,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
@@ -713,6 +713,19 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick( final ClickEvent event ) {
+        //Don't allow removal if Pattern is used elsewhere and we're removing all constraints
+        if ( chosenConditions.size() == chosenConditionsSelections.size() ) {
+            if ( !validator.canPatternBeRemoved( availablePatternsSelection ) ) {
+                if ( chosenConditions.size() == 1 ) {
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( chosenConditions.get( 0 ).getHeader() ) );
+                } else {
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumns() );
+                }
+                return;
+            }
+        }
+
+        //Otherwise remove constraints
         for ( ConditionCol52 c : chosenConditionsSelections ) {
             chosenConditions.remove( c );
         }

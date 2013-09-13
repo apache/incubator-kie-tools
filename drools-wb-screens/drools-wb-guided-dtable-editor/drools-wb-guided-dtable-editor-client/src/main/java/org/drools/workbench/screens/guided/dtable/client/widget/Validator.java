@@ -15,7 +15,13 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
+import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactFieldsPattern;
@@ -25,12 +31,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Guided Decision Table Wizard validator
@@ -221,6 +221,11 @@ public class Validator {
         boolean doesOperatorNeedValue = doesOperatorNeedValue( lec );
         boolean hasValue = hasValue( lec );
         return ( doesOperatorNeedValue && hasValue ) || ( !doesOperatorNeedValue && !hasValue );
+    }
+
+    public boolean canPatternBeRemoved( final Pattern52 pattern ) {
+        List<ActionSetFieldCol52> actionSetFields = patternToActionSetFieldsMap.get( pattern );
+        return ( actionSetFields == null || actionSetFields.isEmpty() );
     }
 
     public boolean isTypeUsed( final String fqcn ) {

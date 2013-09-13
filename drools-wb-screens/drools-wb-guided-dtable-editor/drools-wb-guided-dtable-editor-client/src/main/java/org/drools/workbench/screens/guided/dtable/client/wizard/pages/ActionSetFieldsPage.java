@@ -110,7 +110,15 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     @Override
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
-        view.setAvailablePatterns( model.getPatterns() );
+        List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
+        for ( Pattern52 p : model.getPatterns() ) {
+            if ( p.getChildColumns().size() > 0 ) {
+                availablePatterns.add( p );
+            } else {
+                patternToActionsMap.remove( p );
+            }
+        }
+        view.setAvailablePatterns( availablePatterns );
     }
 
     @Override

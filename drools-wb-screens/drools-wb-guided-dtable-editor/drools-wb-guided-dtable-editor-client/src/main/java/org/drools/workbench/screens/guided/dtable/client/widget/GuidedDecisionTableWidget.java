@@ -1224,10 +1224,10 @@ public class GuidedDecisionTableWidget extends Composite
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             if ( !canConditionBeDeleted( (LimitedEntryBRLConditionColumn) c ) ) {
-                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( c.getHeader() ) );
                                                 return;
                                             }
-                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (LimitedEntryBRLConditionColumn) c );
                                                 refreshConditionsWidget();
@@ -1241,10 +1241,10 @@ public class GuidedDecisionTableWidget extends Composite
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             if ( !canConditionBeDeleted( (BRLConditionColumn) c ) ) {
-                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                                Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( c.getHeader() ) );
                                                 return;
                                             }
-                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0( c.getHeader() );
                                             if ( Window.confirm( cm ) ) {
                                                 dtable.deleteColumn( (BRLConditionColumn) c );
                                                 refreshConditionsWidget();
@@ -1258,10 +1258,10 @@ public class GuidedDecisionTableWidget extends Composite
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         if ( !canConditionBeDeleted( c ) ) {
-                                            Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn( c.getHeader() ) );
+                                            Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( c.getHeader() ) );
                                             return;
                                         }
-                                        String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning( c.getHeader() );
+                                        String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0( c.getHeader() );
                                         if ( Window.confirm( cm ) ) {
                                             dtable.deleteColumn( c );
                                             refreshConditionsWidget();
