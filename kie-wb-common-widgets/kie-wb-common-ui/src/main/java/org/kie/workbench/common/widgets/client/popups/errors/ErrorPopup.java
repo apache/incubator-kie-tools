@@ -47,6 +47,7 @@ public class ErrorPopup extends Modal {
     protected HTML message;
 
     private ErrorPopup() {
+        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         setTitle( CommonConstants.INSTANCE.Error() );
         setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
         setBackdrop( BackdropType.STATIC );
