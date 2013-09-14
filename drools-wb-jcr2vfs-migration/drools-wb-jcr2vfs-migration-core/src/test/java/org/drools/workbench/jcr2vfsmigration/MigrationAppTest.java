@@ -9,7 +9,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
 
-@Ignore
 public class MigrationAppTest {
 
     @Test
@@ -50,8 +49,9 @@ public class MigrationAppTest {
         //Hack: Force to create a new FileSystem
         IOServiceFactory.DEFAULT_MIGRATION_FILE_SYSTEM = "drools-wb-jcr2vfs-migration-another";
         
-        Jcr2VfsMigrationApp.main(
+        new Jcr2VfsMigrationApp().run(
                 "-i", getClass().getResource(datasetName + ".jcr").getFile(),
                 "-o", outputVfsRepository.getCanonicalPath());
     }
+    
 }

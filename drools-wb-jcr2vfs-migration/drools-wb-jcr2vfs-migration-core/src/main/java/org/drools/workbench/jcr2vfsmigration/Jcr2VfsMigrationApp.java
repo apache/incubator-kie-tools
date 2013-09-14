@@ -22,24 +22,44 @@ import org.jboss.weld.environment.se.WeldContainer;
 public class Jcr2VfsMigrationApp {
     public static boolean hasErrors = false;
     public static boolean hasWarnings = false;
-    
+
     /**
-     * To run this in development:
-     * Either use the unit test Jcr2VfsMigrationAppTest (recommended): it sets up the input and output dirs for you.
-     * Or run it and fill in -i and -o correctly.
-     * @param args never null
+     * This method should not be called directly from Java code as it uses System.exit() which may cause problems
+     * (e.g for surefire). Use 'new Jcr2VfsMigrationApp().run(String... args)' when using this class directly.
+     *
+     * @param args application arguments, never null
      */
     public static void main(String... args) {
-        Weld weld = new Weld();
-        WeldContainer weldContainer = weld.initialize();
+        try {
+            new Jcr2VfsMigrationApp().run(args);
+        } catch (Exception e) {
+            // stacktrace should not be printed to stdout (the exception should be already logged)
+            System.exit(-1);
+        }
+    }
 
-        Jcr2VfsMigrater migrater = weldContainer.instance().select(Jcr2VfsMigrater.class).get();
-        if(migrater.parseArgs(args)) {
-            migrater.migrateAll();
+    /**
+     * Use this method instead of #main() when you want to use the app directly from code. Method does not use System.exit()
+     * and instead throws {@link RuntimeException} when an error occurs.
+     *
+     * @param args application arguments - same as for #main() method
+     */
+    public void run(String... args) {
+        Weld weld = new Weld();
+        try {
+            WeldContainer weldContainer = weld.initialize();
+
+            Jcr2VfsMigrater migrater = weldContainer.instance().select(Jcr2VfsMigrater.class).get();
+            if (migrater.parseArgs(args)) {
+                migrater.migrateAll();
+            }
+        } finally {
+            weld.shutdown();
         }
 
-        weld.shutdown();
-        System.exit(hasErrors ? -1 : 0);
+        if (hasErrors) {
+            throw new RuntimeException("Migration ended with errors - see log for more details.");
+        }
     }
 
 }
