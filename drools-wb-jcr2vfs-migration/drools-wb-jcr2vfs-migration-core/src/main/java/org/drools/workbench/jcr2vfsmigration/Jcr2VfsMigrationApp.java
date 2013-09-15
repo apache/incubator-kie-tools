@@ -30,6 +30,8 @@ public class Jcr2VfsMigrationApp {
      * @param args application arguments, never null
      */
     public static void main(String... args) {
+        // git daemon thread is not needed for migration tool, so disable it
+        System.setProperty("org.kie.nio.git.deamon.enabled", "false");
         try {
             new Jcr2VfsMigrationApp().run(args);
         } catch (Exception e) {
