@@ -110,7 +110,7 @@ public class AssetMigrater {
                 }
 
             } catch (SerializationException e) {
-            	Jcr2VfsMigrationApp.hasErrors = true;
+                Jcr2VfsMigrationApp.hasErrors = true;
                 throw new IllegalStateException(e);
             }
             
@@ -149,7 +149,7 @@ public class AssetMigrater {
                         migrateAssetDiscussions(jcrModule, row.getUuid());
                     }
                 } catch (SerializationException e) {
-                	Jcr2VfsMigrationApp.hasErrors = true;
+                    Jcr2VfsMigrationApp.hasErrors = true;
                     throw new IllegalStateException(e);
                 } 
                 
@@ -175,6 +175,8 @@ public class AssetMigrater {
         } else if (AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FORM_DEFINITION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SPRING_CONTEXT.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SERVICE_CONFIG.equals(jcrAssetItem.getFormat())
@@ -187,8 +189,7 @@ public class AssetMigrater {
                 || "json".equals(jcrAssetItem.getFormat())
                 || "fw".equals(jcrAssetItem.getFormat())) {
             plainTextAssetMigrater.migrate(jcrModule, jcrAssetItem);
-        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())
-                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
+        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())) {
             plainTextAssetWithPackagePropertyMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                  ||AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
@@ -200,8 +201,8 @@ public class AssetMigrater {
                  ||"odt".equals(jcrAssetItem.getFormat())) {
             attachementAssetMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
-        	Jcr2VfsMigrationApp.hasWarnings = true;
-        	System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
+            Jcr2VfsMigrationApp.hasWarnings = true;
+            System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by migration tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
             guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem);
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
@@ -209,8 +210,8 @@ public class AssetMigrater {
         } else if ("package".equals(jcrAssetItem.getFormat())) {
             //Ignore
         } else {
-        	Jcr2VfsMigrationApp.hasWarnings = true;
-        	System.out.format("    WARNING: asset [%s] with format[%s] is not supported by migration tool. \n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+            Jcr2VfsMigrationApp.hasWarnings = true;
+            System.out.format("    WARNING: asset [%s] with format[%s] is not supported by migration tool. \n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
         }
         // TODO When all assetFormats types have been tried, the last else should throw an IllegalArgumentException
     }

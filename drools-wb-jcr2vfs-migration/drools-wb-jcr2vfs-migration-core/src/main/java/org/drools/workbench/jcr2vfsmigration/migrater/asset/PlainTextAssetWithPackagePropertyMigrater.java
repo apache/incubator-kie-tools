@@ -58,10 +58,6 @@ public class PlainTextAssetWithPackagePropertyMigrater {
             sb.append( "rule '" + jcrAssetItem.getName() + "'" );
             sb.append( "\n" );
             sb.append( "\n" );
-        } else if ( AssetFormats.FUNCTION.equals( jcrAssetItem.getFormat() ) ) {
-            sb.append( "function '" + jcrAssetItem.getName() + "'" );
-            sb.append( "\n" );
-            sb.append( "\n" );
         }
         sb.append( jcrAssetItem.getContent() );
         sb.append( "\n" );
