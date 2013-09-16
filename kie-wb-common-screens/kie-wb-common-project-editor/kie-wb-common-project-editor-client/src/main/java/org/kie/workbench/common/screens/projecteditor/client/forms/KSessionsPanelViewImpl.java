@@ -68,9 +68,6 @@ public class KSessionsPanelViewImpl
     @UiField
     Button addButton;
 
-    @UiField
-    Button removeButton;
-
     private final KSessionModelOptionsPopUp kSessionModelOptionsPopUp;
 
     @Inject
@@ -85,6 +82,7 @@ public class KSessionsPanelViewImpl
         setUpStateColumn();
         setUpClockColumn();
         setUpOptionsColumn();
+        setUpRemoveColumn();
 
         grid.setBordered(true);
 
@@ -211,6 +209,30 @@ public class KSessionsPanelViewImpl
         grid.setColumnWidth(column, "40px");
     }
 
+    private void setUpRemoveColumn() {
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
+        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
+        decorator.setText(ProjectEditorConstants.INSTANCE.Delete());
+        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
+            @Override
+            public ImageResource getValue(KSessionModel model) {
+                return CommonImages.INSTANCE.DeleteItemSmall();
+            }
+        };
+
+        column.setFieldUpdater(new FieldUpdater<KSessionModel, ImageResource>() {
+            @Override
+            public void update(int index, KSessionModel model, ImageResource value) {
+                presenter.onDelete(model);
+            }
+        });
+
+        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        grid.addColumn(column);
+        grid.setColumnWidth(column, "40px");
+    }
+
     @Override
     public void showOptionsPopUp(KSessionModel kSessionModel) {
         kSessionModelOptionsPopUp.show(kSessionModel);
@@ -219,13 +241,11 @@ public class KSessionsPanelViewImpl
     @Override
     public void makeReadOnly() {
         addButton.setEnabled(false);
-        removeButton.setEnabled(false);
     }
 
     @Override
     public void makeEditable() {
         addButton.setEnabled(true);
-        removeButton.setEnabled(true);
     }
 
     @Override
@@ -241,11 +261,6 @@ public class KSessionsPanelViewImpl
     @UiHandler("addButton")
     public void onAddClicked(ClickEvent event) {
         presenter.onAdd();
-    }
-
-    @UiHandler("removeButton")
-    public void onRemoveClicked(ClickEvent event) {
-//        presenter.onRemove();
     }
 
 }

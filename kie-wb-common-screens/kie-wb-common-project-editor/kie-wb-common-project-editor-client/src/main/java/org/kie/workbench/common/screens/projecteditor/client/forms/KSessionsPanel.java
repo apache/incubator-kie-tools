@@ -92,6 +92,12 @@ public class KSessionsPanel
     }
 
     @Override
+    public void onDelete(KSessionModel kSessionModel) {
+        items.remove(kSessionModel);
+        view.setItemList(items);
+    }
+
+    @Override
     public Widget asWidget() {
         return view.asWidget();
     }

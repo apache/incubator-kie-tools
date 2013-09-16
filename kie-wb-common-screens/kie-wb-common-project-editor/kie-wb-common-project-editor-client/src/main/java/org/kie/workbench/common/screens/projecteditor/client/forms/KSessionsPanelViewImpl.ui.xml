@@ -26,7 +26,6 @@
   <bootstrap:Container>
     <bootstrap:ButtonGroup>
       <bootstrap:Button text="Add" ui:field="addButton"/>
-      <bootstrap:Button text="Remove" ui:field="removeButton"/>
     </bootstrap:ButtonGroup>
     <bootstrap:DataGrid ui:field="grid" height="500px" width="800px"/>
   </bootstrap:Container>

@@ -32,6 +32,8 @@ public interface KSessionsPanelView
         void onDefaultChanged(KSessionModel model);
 
         void onOptionsSelectedForKSessions(KSessionModel kSessionModel);
+
+        void onDelete(KSessionModel kSessionModel);
     }
 
     void makeReadOnly();
