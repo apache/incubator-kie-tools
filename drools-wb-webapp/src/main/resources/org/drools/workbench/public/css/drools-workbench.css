@@ -99,6 +99,10 @@ select {
     background: #FFF;
 }
 
+.gwt-Image {
+    max-width: none; !important
+}
+
 .analysis-Report {
     padding-left: .5em;
     background: #FFF;
