@@ -164,6 +164,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
             return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
                                                                      globals,
+                                                                     dataModelService.getDataModel(path),
                                                                      dsls );
 
         } catch ( Exception e ) {
