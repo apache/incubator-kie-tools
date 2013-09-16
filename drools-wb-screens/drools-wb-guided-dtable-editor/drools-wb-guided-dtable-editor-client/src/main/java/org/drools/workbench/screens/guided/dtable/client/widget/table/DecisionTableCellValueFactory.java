@@ -139,13 +139,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
         if ( column instanceof LimitedEntryCol ) {
             dcv = new DTCellValue52( Boolean.FALSE );
         } else if ( column instanceof AttributeCol52 ) {
-            AttributeCol52 ac = (AttributeCol52) column;
-            if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
-                dcv = new DTCellValue52( RuleAttributeWidget.DEFAULT_DIALECT );
-            } else {
-                dcv = new DTCellValue52( column.getDefaultValue() );
-            }
-
+            dcv = new DTCellValue52( column.getDefaultValue() );
         } else {
             dcv = new DTCellValue52( column.getDefaultValue() );
         }

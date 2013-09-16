@@ -46,9 +46,9 @@ public class GuidedDecisionTableUtils {
     }
 
     public String getType( final BaseColumn col ) {
-        if ( col instanceof RowNumberCol52) {
+        if ( col instanceof RowNumberCol52 ) {
             return getType( (RowNumberCol52) col );
-        } else if ( col instanceof AttributeCol52) {
+        } else if ( col instanceof AttributeCol52 ) {
             return getType( (AttributeCol52) col );
         } else if ( col instanceof BRLConditionVariableColumn ) {
             return getType( (BRLConditionVariableColumn) col );
@@ -93,6 +93,8 @@ public class GuidedDecisionTableUtils {
             type = DataType.TYPE_DATE;
         } else if ( attrName.equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
             type = DataType.TYPE_STRING;
+        } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
+            type = DataType.TYPE_BOOLEAN;
         }
         return type;
     }
@@ -112,7 +114,7 @@ public class GuidedDecisionTableUtils {
         }
 
         // Operator "in" and "not in" requires a List as the value. These are always Text (for now)
-        if ( OperatorsOracle.operatorRequiresList(col.getOperator()) ) {
+        if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
             return DataType.TYPE_STRING;
         }
 
@@ -353,10 +355,10 @@ public class GuidedDecisionTableUtils {
         if ( col instanceof RowNumberCol52 ) {
             return true;
         }
-        if ( col instanceof DescriptionCol52) {
+        if ( col instanceof DescriptionCol52 ) {
             return true;
         }
-        if ( col instanceof MetadataCol52) {
+        if ( col instanceof MetadataCol52 ) {
             return true;
         }
         if ( col instanceof AttributeCol52 ) {
@@ -414,14 +416,14 @@ public class GuidedDecisionTableUtils {
             if ( column instanceof BRLConditionColumn ) {
                 final BRLConditionColumn brlColumn = (BRLConditionColumn) column;
                 for ( IPattern pattern : brlColumn.getDefinition() ) {
-                    if ( pattern instanceof DSLSentence) {
+                    if ( pattern instanceof DSLSentence ) {
                         return true;
                     }
                 }
             }
         }
         for ( ActionCol52 column : this.model.getActionCols() ) {
-            if ( column instanceof BRLActionColumn) {
+            if ( column instanceof BRLActionColumn ) {
                 final BRLActionColumn brlColumn = (BRLActionColumn) column;
                 for ( IAction action : brlColumn.getDefinition() ) {
                     if ( action instanceof DSLSentence ) {

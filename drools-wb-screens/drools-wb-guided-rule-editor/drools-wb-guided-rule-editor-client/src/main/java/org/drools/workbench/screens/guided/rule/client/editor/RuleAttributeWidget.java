@@ -75,7 +75,7 @@ public class RuleAttributeWidget extends Composite {
     public static final String LOCK_RHS = "freeze_actions";
 
     public static final String DEFAULT_DIALECT = "mvel";
-    private static String[] DIALECTS = { "java", "mvel" };
+    public static String[] DIALECTS = { "java", "mvel" };
 
     /**
      * If the rule attribute is represented visually by a checkbox, these are

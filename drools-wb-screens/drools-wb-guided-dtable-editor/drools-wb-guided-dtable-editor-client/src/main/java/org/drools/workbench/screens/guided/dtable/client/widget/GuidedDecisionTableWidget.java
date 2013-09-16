@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
@@ -82,7 +83,6 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.AddButton;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
@@ -1331,16 +1331,8 @@ public class GuidedDecisionTableWidget extends Composite
             final SmallLabel label = makeColumnLabel( atc );
             hp.add( label );
 
-            final TextBox defaultValue = new TextBox();
-            final DTCellValue52 dcv = at.getDefaultValue();
-            defaultValue.setStyleName( "form-field" );
-            defaultValue.setText( ( dcv == null ? "" : dcv.getStringValue() ) );
-            defaultValue.setEnabled( !isReadOnly );
-            defaultValue.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent event ) {
-                    at.setDefaultValue( new DTCellValue52( defaultValue.getText() ) );
-                }
-            } );
+            final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
+                                                                                         isReadOnly );
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
