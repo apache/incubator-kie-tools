@@ -38,8 +38,6 @@ import org.uberfire.client.common.InfoPopup;
 
 public class AttributeSelectorPopup extends FormStylePopup {
 
-    private final ListBox list = RuleAttributeWidget.getAttributeList();
-
     private final TextBox box = new TextBox();
 
     public AttributeSelectorPopup( final RuleModel model,
@@ -85,6 +83,19 @@ public class AttributeSelectorPopup extends FormStylePopup {
 
     private void setListBox( final RuleModel model,
                              final Command refresh ) {
+
+        final ListBox list = RuleAttributeWidget.getAttributeList();
+
+        // Remove any attributes already added
+        for ( RuleAttribute at : model.attributes ) {
+            for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
+                if ( list.getItemText( iItem ).equals( at.getAttributeName() ) ) {
+                    list.removeItem( iItem );
+                    break;
+                }
+            }
+        }
+
         list.setSelectedIndex( 0 );
 
         list.addChangeHandler( new ChangeHandler() {

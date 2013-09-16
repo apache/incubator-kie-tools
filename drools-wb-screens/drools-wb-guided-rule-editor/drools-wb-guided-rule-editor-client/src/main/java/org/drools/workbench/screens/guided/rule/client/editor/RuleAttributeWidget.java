@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Date;
+
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -23,6 +25,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -30,11 +34,14 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
 import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
+import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DirtyableHorizontalPane;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.InfoPopup;
@@ -68,6 +75,7 @@ public class RuleAttributeWidget extends Composite {
     public static final String LOCK_RHS = "freeze_actions";
 
     public static final String DEFAULT_DIALECT = "mvel";
+    private static String[] DIALECTS = { "java", "mvel" };
 
     /**
      * If the rule attribute is represented visually by a checkbox, these are
@@ -145,20 +153,120 @@ public class RuleAttributeWidget extends Composite {
     private Widget getEditorWidget( final RuleAttribute at,
                                     final int idx,
                                     final boolean isReadOnly ) {
-        Widget editor;
+        Widget editor = null;
 
-        if ( at.getAttributeName().equals( ENABLED_ATTR ) || at.getAttributeName().equals( AUTO_FOCUS_ATTR ) || at.getAttributeName().equals( LOCK_ON_ACTIVE_ATTR ) || at.getAttributeName().equals( NO_LOOP_ATTR ) ) {
+        final String attributeName = at.getAttributeName();
+        if ( attributeName.equals( RULEFLOW_GROUP_ATTR )
+                || attributeName.equals( AGENDA_GROUP_ATTR )
+                || attributeName.equals( ACTIVATION_GROUP_ATTR )
+                || attributeName.equals( TIMER_ATTR )
+                || attributeName.equals( CALENDARS_ATTR ) ) {
+            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
+            tb.setValue( at.getValue() );
+            tb.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                    public void onValueChange( ValueChangeEvent<String> event ) {
+                        at.setValue( tb.getValue() );
+                    }
+
+                } );
+            }
+            editor = tb;
+
+        } else if ( attributeName.equals( SALIENCE_ATTR ) ) {
+            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_INTEGER );
+            tb.setValue( at.getValue() );
+            tb.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                    public void onValueChange( ValueChangeEvent<String> event ) {
+                        at.setValue( tb.getValue() );
+                    }
+
+                } );
+            }
+            editor = tb;
+
+        } else if ( attributeName.equals( DURATION_ATTR ) ) {
+            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_LONG );
+            tb.setValue( at.getValue() );
+            tb.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+                    public void onValueChange( ValueChangeEvent<String> event ) {
+                        at.setValue( tb.getValue() );
+                    }
+
+                } );
+            }
+            editor = tb;
+
+        } else if ( attributeName.equals( NO_LOOP_ATTR )
+                || attributeName.equals( LOCK_ON_ACTIVE_ATTR )
+                || attributeName.equals( AUTO_FOCUS_ATTR )
+                || attributeName.equals( ENABLED_ATTR ) ) {
             editor = checkBoxEditor( at,
                                      isReadOnly );
-        } else {
-            editor = textBoxEditor( at,
-                                    isReadOnly );
+
+        } else if ( attributeName.equals( DATE_EFFECTIVE_ATTR )
+                || attributeName.equals( DATE_EXPIRES_ATTR ) ) {
+            if ( isReadOnly ) {
+                final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
+                tb.setValue( at.getValue() );
+                tb.setEnabled( false );
+            } else {
+                final PopupDatePicker dp = new PopupDatePicker( false );
+                dp.setValue( at.getValue() );
+                dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
+
+                    public void onValueChange( ValueChangeEvent<Date> event ) {
+                        at.setValue( PopupDatePicker.convertToString( event ) );
+                    }
+
+                } );
+                editor = dp;
+            }
+        } else if ( attributeName.equals( DIALECT_ATTR ) ) {
+            final ListBox lb = new ListBox();
+            lb.addItem( DIALECTS[ 0 ] );
+            lb.addItem( DIALECTS[ 1 ] );
+            lb.setEnabled( !isReadOnly );
+            if ( !isReadOnly ) {
+                lb.addChangeHandler( new ChangeHandler() {
+                    @Override
+                    public void onChange( ChangeEvent event ) {
+                        final int selectedIndex = lb.getSelectedIndex();
+                        if ( selectedIndex < 0 ) {
+                            return;
+                        }
+                        at.setValue( lb.getValue( selectedIndex ) );
+                    }
+                } );
+            }
+            if ( at.getValue() == null || at.getValue().isEmpty() ) {
+                lb.setSelectedIndex( 1 );
+                at.setValue( DIALECTS[ 1 ] );
+            } else if ( at.getValue().equals( DIALECTS[ 0 ] ) ) {
+                lb.setSelectedIndex( 0 );
+            } else if ( at.getValue().equals( DIALECTS[ 1 ] ) ) {
+                lb.setSelectedIndex( 1 );
+            } else {
+                lb.setSelectedIndex( 1 );
+                at.setValue( DIALECTS[ 1 ] );
+            }
+            editor = lb;
         }
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( editor );
-        if ( !isReadOnly ) {
-            horiz.add( getRemoveIcon( idx ) );
+        if ( editor != null ) {
+            horiz.add( editor );
+            if ( !isReadOnly ) {
+                horiz.add( getRemoveIcon( idx ) );
+            }
         }
 
         return horiz;
