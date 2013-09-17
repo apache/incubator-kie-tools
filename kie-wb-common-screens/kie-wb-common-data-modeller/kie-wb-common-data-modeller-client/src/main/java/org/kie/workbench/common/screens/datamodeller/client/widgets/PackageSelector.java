@@ -62,7 +62,7 @@ public class PackageSelector extends Composite {
     private static PackageSelectorUIBinder uiBinder = GWT.create(PackageSelectorUIBinder.class);
 
     public static final String NOT_SELECTED = "NOT_SELECTED";
-    public static final String NOT_SELECTED_DESC = "<default>";
+    public static final String NOT_SELECTED_DESC = "";
     public static final String DEFAULT_PACKAGE = "defaultpkg";
 
     private DataObjectTO dataObject;
@@ -130,7 +130,7 @@ public class PackageSelector extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        initList();
+        initList(true);
     }
 
     private DataModelTO getDataModel() {
@@ -143,16 +143,20 @@ public class PackageSelector extends Composite {
 
     public void setDataObject(DataObjectTO dataObject) {
         this.dataObject = dataObject;
-        initList();
+        String currentPackage = null;
+        boolean enableEmptyPackageOption = false;
 
         if (dataObject != null && dataObject.getPackageName() != null && !"".equals(dataObject.getPackageName())) {
-            packageList.setSelectedValue(dataObject.getPackageName());
+            currentPackage = dataObject.getPackageName();
         } else {
-            packageList.setSelectedValue(NOT_SELECTED);
+            enableEmptyPackageOption = true;
+            currentPackage = NOT_SELECTED;
         }
+        initList(enableEmptyPackageOption);
+        packageList.setSelectedValue(currentPackage);
     }
 
-    private void initList() {
+    private void initList(boolean enableEmptyPackageOption) {
         packageList.clear();
         List<String> packageNames = new ArrayList<String>();
 
@@ -175,7 +179,8 @@ public class PackageSelector extends Composite {
         */
 
         Collections.sort(packageNames);
-        packageList.addItem(NOT_SELECTED_DESC, NOT_SELECTED);
+        if (enableEmptyPackageOption) packageList.addItem(NOT_SELECTED_DESC, NOT_SELECTED);
+        //packageList.addItem(DEFAULT_PACKAGE, DEFAULT_PACKAGE);
         for (String packageName : packageNames) {
             packageList.addItem(packageName, packageName);
         }

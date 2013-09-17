@@ -197,8 +197,10 @@ public class NewDataObjectPopup extends Modal {
             public void onSuccess() {
 
                 //2) if classname is ok, validate the package name.
-                if ( newPackageName[ 0 ] != null ) {
-                    validatorService.isValidPackageIdentifier( newPackageName[ 0 ], new ValidatorCallback() {
+                if (newPackageName[0] == null || "".equals(newPackageName[0])) {
+                    setErrorMessage(newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier_null());
+                } else {
+                    validatorService.isValidPackageIdentifier(newPackageName[0], new ValidatorCallback() {
                         @Override
                         public void onFailure() {
                             setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier( newPackageName[ 0 ] ) );
@@ -221,21 +223,7 @@ public class NewDataObjectPopup extends Modal {
                             } );
 
                         }
-                    } );
-                } else {
-                    validatorService.isUniqueEntityName( newPackageName[ 0 ], newName[ 0 ], getDataModel(), new ValidatorCallback() {
-                        @Override
-                        public void onFailure() {
-                            setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_object_already_exists( newName[ 0 ], "" ) );
-                        }
-
-                        @Override
-                        public void onSuccess() {
-                            createDataObject( newPackageName[ 0 ], newName[ 0 ], newLabel[ 0 ], superClass[ 0 ] );
-                            clean();
-                            hide();
-                        }
-                    } );
+                    });
                 }
             }
         } );

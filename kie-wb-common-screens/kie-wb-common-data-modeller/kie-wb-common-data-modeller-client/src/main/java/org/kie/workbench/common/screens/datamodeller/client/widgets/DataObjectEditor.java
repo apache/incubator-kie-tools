@@ -340,9 +340,24 @@ public class DataObjectEditor extends Composite {
         final String oldPackageName = getDataObject().getPackageName();
 
         // No notification needed
-        if ( ( newPackageName == null && oldPackageName == null ) ||
-                ( newPackageName != null && newPackageName.equalsIgnoreCase( oldPackageName ) ) ) {
-            packageNameLabel.setStyleName( null );
+
+        if ( /*(newPackageName == null && oldPackageName == null) ||*/
+                (newPackageName != null && newPackageName.equalsIgnoreCase(oldPackageName)) ) {
+            packageNameLabel.setStyleName(null);
+            return;
+
+        } else if (newPackageName == null) {
+
+            /*
+            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_package_identifier_null(), null, new Command() {
+                @Override
+                public void execute() {
+                    packageNameLabel.setStyleName( "text-error" );
+                    packageSelector.getPackageList().setFocus( true );
+                }
+            } );
+            */
+
         } else {
             validatorService.isUniqueEntityName( newPackageName, getDataObject().getName(), getDataModel(), new ValidatorCallback() {
                 @Override
