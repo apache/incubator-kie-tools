@@ -114,29 +114,6 @@ public class DataModelBrowser extends Composite {
         dataObjectsProvider.setList(dataObjects);
         dataObjectsTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.modelBrowser_emptyTable()));
 
-        // Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
-        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
-        decorator.setText(Constants.INSTANCE.modelBrowser_action_deleteDataObject());
-
-        final Column<DataObjectTO, ImageResource> deleteDataObjectColumnImg = new Column<DataObjectTO, ImageResource>(decorator) {
-            @Override
-            public ImageResource getValue( final DataObjectTO global ) {
-                return ImagesResources.INSTANCE.Delete();
-            }
-        };
-
-        deleteDataObjectColumnImg.setFieldUpdater( new FieldUpdater<DataObjectTO, ImageResource>() {
-            public void update( final int index,
-                                final DataObjectTO object,
-                                final ImageResource value ) {
-                deleteDataObject(object, index);
-            }
-        } );
-
-        dataObjectsTable.addColumn(deleteDataObjectColumnImg);
-        dataObjectsTable.setColumnWidth(deleteDataObjectColumnImg, 20, Style.Unit.PX);
-
         // Init data object column
         final TextColumn<DataObjectTO> dataObjectColumn = new TextColumn<DataObjectTO>() {
 
@@ -168,6 +145,30 @@ public class DataModelBrowser extends Composite {
         };
         dataObjectColumn.setSortable(true);
         dataObjectsTable.addColumn(dataObjectColumn, Constants.INSTANCE.modelBrowser_columnName());
+
+        // Init delete column
+        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
+        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
+        decorator.setPlacement(Placement.LEFT);
+        decorator.setText(Constants.INSTANCE.modelBrowser_action_deleteDataObject());
+
+        final Column<DataObjectTO, ImageResource> deleteDataObjectColumnImg = new Column<DataObjectTO, ImageResource>(decorator) {
+            @Override
+            public ImageResource getValue( final DataObjectTO global ) {
+                return ImagesResources.INSTANCE.Delete();
+            }
+        };
+
+        deleteDataObjectColumnImg.setFieldUpdater( new FieldUpdater<DataObjectTO, ImageResource>() {
+            public void update( final int index,
+                                final DataObjectTO object,
+                                final ImageResource value ) {
+                deleteDataObject(object, index);
+            }
+        } );
+
+        dataObjectsTable.addColumn(deleteDataObjectColumnImg);
+        dataObjectsTable.setColumnWidth(deleteDataObjectColumnImg, 20, Style.Unit.PX);
 
         ColumnSortEvent.ListHandler<DataObjectTO> dataObjectNameColHandler = new ColumnSortEvent.ListHandler<DataObjectTO>(dataObjectsProvider.getList());
         dataObjectNameColHandler.setComparator(dataObjectColumn, new DataObjectComparator());

@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -135,31 +136,6 @@ public class DataObjectBrowser extends Composite {
         //Init data objects table
 
         dataObjectPropertiesTable.setEmptyTableWidget(new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.objectBrowser_emptyTable()));
-
-        //Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
-        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
-        decorator.setText(Constants.INSTANCE.objectBrowser_action_deleteProperty());
-
-        final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>(decorator) {
-            @Override
-            public ImageResource getValue( final ObjectPropertyTO global ) {
-                return ImagesResources.INSTANCE.Delete();
-            }
-        };
-
-        deletePropertyColumnImg.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
-            public void update( final int index,
-                                final ObjectPropertyTO property,
-                                final ImageResource value ) {
-
-                deleteDataObjectProperty(property, index);
-            }
-        } );
-
-
-        dataObjectPropertiesTable.addColumn(deletePropertyColumnImg);
-        dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 20, Style.Unit.PX);
 
         //Init position column
 
@@ -323,6 +299,32 @@ public class DataObjectBrowser extends Composite {
         propertyTypeColumn.setSortable(true);
         dataObjectPropertiesTable.addColumn(propertyTypeColumn, Constants.INSTANCE.objectBrowser_columnType());
         //dataObjectPropertiesTable.setColumnWidth(propertyTypeColumn, 100, Style.Unit.PX);
+
+        //Init delete column
+        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
+        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
+        decorator.setPlacement(Placement.LEFT);
+        decorator.setText(Constants.INSTANCE.objectBrowser_action_deleteProperty());
+
+        final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>(decorator) {
+            @Override
+            public ImageResource getValue( final ObjectPropertyTO global ) {
+                return ImagesResources.INSTANCE.Delete();
+            }
+        };
+
+        deletePropertyColumnImg.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
+            public void update( final int index,
+                                final ObjectPropertyTO property,
+                                final ImageResource value ) {
+
+                deleteDataObjectProperty(property, index);
+            }
+        } );
+
+
+        dataObjectPropertiesTable.addColumn(deletePropertyColumnImg);
+        dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 20, Style.Unit.PX);
 
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyTypeColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());

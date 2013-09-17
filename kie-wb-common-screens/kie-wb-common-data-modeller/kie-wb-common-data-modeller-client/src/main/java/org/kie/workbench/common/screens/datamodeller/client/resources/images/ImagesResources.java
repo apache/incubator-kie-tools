@@ -27,7 +27,7 @@ public interface ImagesResources
 
     public ImagesResources INSTANCE = GWT.create(ImagesResources.class);
 
-    @Source("delete.gif")
+    @Source("remove.png")
     ImageResource Delete();
 
     @Source("information.gif")
