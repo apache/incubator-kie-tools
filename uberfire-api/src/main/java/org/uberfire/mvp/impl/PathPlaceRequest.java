@@ -7,7 +7,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.URIEncoder;
+import org.uberfire.util.URIUtil;
 
 /**
  *
@@ -54,13 +54,13 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
         fullIdentifier.append( this.getIdentifier() );
 
         if ( !this.getIdentifier().equals( path.toURI() ) ) {
-            fullIdentifier.append( "?" ).append( "path_uri" ).append( "=" ).append( URIEncoder.encode( path.toURI() ) );
+            fullIdentifier.append( "?" ).append( "path_uri" ).append( "=" ).append( URIUtil.encode( path.toURI() ) );
         } else if ( this.getParameterNames().size() > 0 ) {
             fullIdentifier.append( "?" );
         }
 
         for ( String name : this.getParameterNames() ) {
-            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name, null ).toString() );
+            fullIdentifier.append( name ).append( "=" ).append( this.getParameter( name, null ) );
             fullIdentifier.append( "&" );
         }
 

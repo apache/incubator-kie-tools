@@ -17,7 +17,7 @@ public interface RepositoryService {
 
     Repository createRepository( final String scheme,
                                  final String alias,
-                                 final Map<String, Object> env );
+                                 final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
 
     void addRole( final Repository repository,
                   final String role );

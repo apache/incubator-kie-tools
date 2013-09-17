@@ -1,9 +1,7 @@
 package org.uberfire.backend.server.repositories.git;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -77,6 +75,8 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
             }} );
         } catch ( final FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( uri );
+        } catch ( final Throwable ex ) {
+            throw new RuntimeException( ex.getCause().getMessage() );
         }
 
         Path defaultRoot = fs.getRootDirectories().iterator().next();

@@ -44,18 +44,6 @@
               <b:HelpInline ui:field="organizationalUnitHelpInline" />
             </b:Controls>
           </b:ControlGroup>
-          <b:ControlGroup>
-            <b:ControlLabel>User Name</b:ControlLabel>
-            <b:Controls>
-              <b:TextBox ui:field="usernameTextBox" placeholder="user name..."/>
-            </b:Controls>
-          </b:ControlGroup>
-          <b:ControlGroup>
-            <b:ControlLabel>Password</b:ControlLabel>
-            <b:Controls>
-              <b:PasswordTextBox ui:field="passwordTextBox" placeholder="password..."/>
-            </b:Controls>
-          </b:ControlGroup>
         </b:Fieldset>
       </b:Well>
       <b:ModalFooter>

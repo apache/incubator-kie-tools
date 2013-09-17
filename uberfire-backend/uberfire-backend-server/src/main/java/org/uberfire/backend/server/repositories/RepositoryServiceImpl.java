@@ -16,6 +16,7 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -100,15 +101,15 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String alias,
                                         final Map<String, Object> env ) {
 
-        final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY,
-                                                                                  alias,
-                                                                                  "" );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
-                                                                            new ArrayList<String>() ) );
+        if ( configuredRepositories.containsKey( alias ) ) {
+            throw new RepositoryAlreadyExistsException( alias );
+        }
+
+        final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
+        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
 
         if ( !env.containsKey( SCHEME ) ) {
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME,
-                                                                                scheme ) );
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
         }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
             if ( entry.getKey().startsWith( "crypt:" ) ) {
@@ -131,8 +132,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     private Repository createRepository( final ConfigGroup repositoryConfig ) {
         final Repository repository = repositoryFactory.newRepository( repositoryConfig );
         configurationService.addConfiguration( repositoryConfig );
-        configuredRepositories.put( repository.getAlias(),
-                                    repository );
+        configuredRepositories.put( repository.getAlias(), repository );
         rootToRepo.put( repository.getRoot(), repository );
         return repository;
     }

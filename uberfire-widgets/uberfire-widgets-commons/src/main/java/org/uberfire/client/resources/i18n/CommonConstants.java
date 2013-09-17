@@ -28,6 +28,8 @@ public interface CommonConstants
 
     public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
 
+    String OK();
+
     String Information();
 
     String Close();

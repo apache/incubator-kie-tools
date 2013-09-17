@@ -28,7 +28,6 @@ import com.github.gwtbootstrap.client.ui.ControlLabel;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
@@ -52,7 +51,9 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 @Dependent
 public class CreateRepositoryForm
@@ -92,12 +93,6 @@ public class CreateRepositoryForm
     HelpInline nameHelpInline;
 
     @UiField
-    TextBox usernameTextBox;
-
-    @UiField
-    PasswordTextBox passwordTextBox;
-
-    @UiField
     Modal popup;
 
     @UiField
@@ -116,14 +111,14 @@ public class CreateRepositoryForm
                 nameHelpInline.setText( "" );
             }
         } );
-        ouLabel.getElement().setInnerText("Organizational Unit");
+        ouLabel.getElement().setInnerText( "Organizational Unit" );
         //populate Organizational Units list box
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
                                                 organizationalUnitDropdown.addItem( "--- Select ---" );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
-                                                    ouLabel.getElement().setInnerHTML("<font color=\"red\">*</font> Organizational Unit");
+                                                    ouLabel.getElement().setInnerHTML( "<font color=\"red\">*</font> Organizational Unit" );
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
                                                                                             organizationalUnit.getName() );
@@ -177,11 +172,7 @@ public class CreateRepositoryForm
 
         final String scheme = "git";
         final String alias = nameTextBox.getText();
-        final String username = usernameTextBox.getText();
-        final String password = passwordTextBox.getText();
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( "username", username );
-        env.put( "crypt:password", password );
 
         repositoryService.call( new RemoteCallback<Repository>() {
                                     @Override
@@ -198,13 +189,12 @@ public class CreateRepositoryForm
                                                                                 @Override
                                                                                 public boolean error( final Message message,
                                                                                                       final Throwable throwable ) {
-                                                                                    Window.alert( "Can't add repository to an Organizational Unit. \n" + message.toString() );
+                                                                                    ErrorPopup.showMessage( "Can't associate repository to an Organizational Unit." );
 
-                                                                                    return false;
+                                                                                    return true;
                                                                                 }
                                                                             }
-                                                                          ).addRepository( availableOrganizationalUnits.get( organizationalUnit ),
-                                                                                           o );
+                                                                          ).addRepository( availableOrganizationalUnits.get( organizationalUnit ), o );
 
                                         } else {
                                             hide();
@@ -215,9 +205,15 @@ public class CreateRepositoryForm
                                     @Override
                                     public boolean error( final Message message,
                                                           final Throwable throwable ) {
-                                        Window.alert( "Can't create repository, please check error message. \n" + message.toString() );
+                                        try {
+                                            throw throwable;
+                                        } catch ( RepositoryAlreadyExistsException ex ) {
+                                            ErrorPopup.showMessage( "Repository already exists." );
+                                        } catch ( Throwable ex ) {
+                                            ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
+                                        }
 
-                                        return false;
+                                        return true;
                                     }
                                 }
                               ).createRepository( scheme, alias, env );

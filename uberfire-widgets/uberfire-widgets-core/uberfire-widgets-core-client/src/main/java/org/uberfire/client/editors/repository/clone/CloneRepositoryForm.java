@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.ControlLabel;
 import com.github.gwtbootstrap.client.ui.HelpInline;
@@ -48,7 +49,11 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.util.URIUtil;
 
 @Dependent
 public class CloneRepositoryForm
@@ -67,6 +72,12 @@ public class CloneRepositoryForm
 
     @Inject
     private Caller<OrganizationalUnitService> organizationalUnitService;
+
+    @UiField
+    Button clone;
+
+    @UiField
+    Button cancel;
 
     @UiField
     ControlGroup organizationalUnitGroup;
@@ -127,14 +138,14 @@ public class CloneRepositoryForm
                 urlHelpInline.setText( "" );
             }
         } );
-        ouLabel.getElement().setInnerText("Organizational Unit");
+        ouLabel.getElement().setInnerText( "Organizational Unit" );
         //populate Organizational Units list box
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
                                                 organizationalUnitDropdown.addItem( "--- Select ---" );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
-                                                    ouLabel.getElement().setInnerHTML("<font color=\"red\">*</font> Organizational Unit");
+                                                    ouLabel.getElement().setInnerHTML( "<font color=\"red\">*</font> Organizational Unit" );
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
                                                                                             organizationalUnit.getName() );
@@ -148,7 +159,7 @@ public class CloneRepositoryForm
                                             @Override
                                             public boolean error( final Message message,
                                                                   final Throwable throwable ) {
-                                                Window.alert( "Can't load Organizational Units. \n" + message.toString() );
+                                                ErrorPopup.showMessage( "Can't load Organizational Units. \n" + throwable.getMessage() );
 
                                                 return false;
                                             }
@@ -172,6 +183,10 @@ public class CloneRepositoryForm
             urlGroup.setType( ControlGroupType.ERROR );
             urlHelpInline.setText( "URL is mandatory" );
             hasError = true;
+        } else if ( !URIUtil.isValid( gitURLTextBox.getText().trim() ) ) {
+            urlGroup.setType( ControlGroupType.ERROR );
+            urlHelpInline.setText( "Invalid URL format" );
+            hasError = true;
         } else {
             urlGroup.setType( ControlGroupType.NONE );
         }
@@ -188,6 +203,8 @@ public class CloneRepositoryForm
             return;
         }
 
+        lockScreen();
+
         final String scheme = "git";
         final String alias = nameTextBox.getText();
         final String origin = gitURLTextBox.getText();
@@ -201,6 +218,7 @@ public class CloneRepositoryForm
         repositoryService.call( new RemoteCallback<Repository>() {
                                     @Override
                                     public void callback( Repository o ) {
+                                        BusyPopup.close();
                                         Window.alert( "The repository is cloned successfully" );
                                         if ( availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
                                             organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
@@ -213,9 +231,11 @@ public class CloneRepositoryForm
                                                                                 @Override
                                                                                 public boolean error( final Message message,
                                                                                                       final Throwable throwable ) {
-                                                                                    Window.alert( "Can't add repository to an Organizational Unit. \n" + message.toString() );
+                                                                                    unlockScreen();
 
-                                                                                    return false;
+                                                                                    ErrorPopup.showMessage( "Can't associate repository to an Organizational Unit." );
+
+                                                                                    return true;
                                                                                 }
                                                                             }
                                                                           ).addRepository( availableOrganizationalUnits.get( organizationalUnit ), o );
@@ -229,12 +249,32 @@ public class CloneRepositoryForm
                                     @Override
                                     public boolean error( final Message message,
                                                           final Throwable throwable ) {
-                                        Window.alert( "Can't clone repository, please check error message. \n" + message.toString() );
-
-                                        return false;
+                                        unlockScreen();
+                                        try {
+                                            throw throwable;
+                                        } catch ( RepositoryAlreadyExistsException ex ) {
+                                            ErrorPopup.showMessage( "Repository already exists." );
+                                        } catch ( Throwable ex ) {
+                                            ErrorPopup.showMessage( "Can't clone repository. \n" + throwable.getMessage() );
+                                        }
+                                        return true;
                                     }
                                 }
                               ).createRepository( scheme, alias, env );
+    }
+
+    private void lockScreen() {
+        BusyPopup.showMessage( "Cloning repository..." );
+        popup.setCloseVisible( false );
+        clone.setEnabled( false );
+        cancel.setEnabled( false );
+    }
+
+    private void unlockScreen() {
+        BusyPopup.close();
+        popup.setCloseVisible( true );
+        clone.setEnabled( true );
+        cancel.setEnabled( true );
     }
 
     @UiHandler("cancel")
@@ -243,6 +283,7 @@ public class CloneRepositoryForm
     }
 
     public void hide() {
+        BusyPopup.close();
         popup.hide();
         super.hide();
     }
