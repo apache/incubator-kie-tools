@@ -89,7 +89,7 @@ public class GuvnorDefaultEditorPresenter
 
     @OnStartup
     public void onStartup( final Path path,
-                         final PlaceRequest place ) {
+                           final PlaceRequest place ) {
         super.onStartup( path );
 
         this.path = path;

@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
@@ -32,7 +39,11 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.*;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortList;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -42,34 +53,33 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataObjectComparator;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.uberfire.client.common.ErrorPopup;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 public class DataModelBrowser extends Composite {
 
     interface DataModelBrowserUIBinder
             extends UiBinder<Widget, DataModelBrowser> {
 
-    };
+    }
 
-    private static DataModelBrowserUIBinder uiBinder = GWT.create(DataModelBrowserUIBinder.class);
+    ;
+
+    private static DataModelBrowserUIBinder uiBinder = GWT.create( DataModelBrowserUIBinder.class );
 
     private static int BROWSER_MAX_LENGTH = 20;
     private static String MODIFIED_MARKER = "*";
@@ -81,7 +91,7 @@ public class DataModelBrowser extends Composite {
     Label modelName;
 
     @UiField(provided = true)
-    CellTable<DataObjectTO> dataObjectsTable = new CellTable<DataObjectTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
+    CellTable<DataObjectTO> dataObjectsTable = new CellTable<DataObjectTO>( 1000, GWT.<CellTable.SelectableResources>create( CellTable.SelectableResources.class ) );
 
     @UiField
     com.github.gwtbootstrap.client.ui.Button newEntityButton;
@@ -107,18 +117,20 @@ public class DataModelBrowser extends Composite {
     private NewDataObjectPopup newDataObjectPopup;
 
     public DataModelBrowser() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        modelName.setText(Constants.INSTANCE.modelBrowser_modelUnknown());
+        modelName.setText( Constants.INSTANCE.modelBrowser_modelUnknown() );
 
-        dataObjectsProvider.setList(dataObjects);
-        dataObjectsTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.modelBrowser_emptyTable()));
+        dataObjectsProvider.setList( dataObjects );
+        dataObjectsTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label( Constants.INSTANCE.modelBrowser_emptyTable() ) );
 
         // Init data object column
         final TextColumn<DataObjectTO> dataObjectColumn = new TextColumn<DataObjectTO>() {
 
             @Override
-            public void render(Cell.Context context, DataObjectTO object, SafeHtmlBuilder sb) {
+            public void render( Cell.Context context,
+                                DataObjectTO object,
+                                SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -132,19 +144,19 @@ public class DataModelBrowser extends Composite {
                     }
                 };
 
-                sb.append(startDiv);
-                super.render(context, object, sb);
-                sb.append(endDiv);
+                sb.append( startDiv );
+                super.render( context, object, sb );
+                sb.append( endDiv );
             }
 
             @Override
-            public String getValue( final DataObjectTO dataObject) {
+            public String getValue( final DataObjectTO dataObject ) {
                 // TODO return clipped AND tooltipped object UI label when relevant
-                return DataModelerUtils.getDataObjectUILabel(dataObject);
+                return DataModelerUtils.getDataObjectUILabel( dataObject );
             }
         };
-        dataObjectColumn.setSortable(true);
-        dataObjectsTable.addColumn(dataObjectColumn, Constants.INSTANCE.modelBrowser_columnName());
+        dataObjectColumn.setSortable( true );
+        dataObjectsTable.addColumn( dataObjectColumn, Constants.INSTANCE.modelBrowser_columnName() );
 
         // Init delete column
         ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
@@ -177,51 +189,52 @@ public class DataModelBrowser extends Composite {
 
         //Init the selection model
         SingleSelectionModel<DataObjectTO> selectionModel = new SingleSelectionModel<DataObjectTO>();
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                if (!skipNextOnChange) {
-                    DataObjectTO selectedObjectTO = ((SingleSelectionModel<DataObjectTO>)dataObjectsTable.getSelectionModel()).getSelectedObject();
-                    notifyObjectSelected(selectedObjectTO);
+            public void onSelectionChange( SelectionChangeEvent event ) {
+                if ( !skipNextOnChange ) {
+                    DataObjectTO selectedObjectTO = ( (SingleSelectionModel<DataObjectTO>) dataObjectsTable.getSelectionModel() ).getSelectedObject();
+                    notifyObjectSelected( selectedObjectTO );
                 }
                 skipNextOnChange = false;
             }
-        });
+        } );
 
-        dataObjectsTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
-        dataObjectsTable.setSelectionModel(selectionModel);
+        dataObjectsTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
+        dataObjectsTable.setSelectionModel( selectionModel );
 
-        dataObjectsProvider.addDataDisplay(dataObjectsTable);
+        dataObjectsProvider.addDataDisplay( dataObjectsTable );
         dataObjectsProvider.refresh();
 
-        newEntityButton.setIcon(IconType.PLUS_SIGN);
+        newEntityButton.setIcon( IconType.PLUS_SIGN );
     }
 
-    public void setContext(DataModelerContext context) {
+    public void setContext( DataModelerContext context ) {
         this.context = context;
-        setModelName(false);
-        loadDataModel(context.getDataModel());
+        setModelName( false );
+        loadDataModel( context.getDataModel() );
     }
 
-    private void setModelName(boolean modified) {
-        if (getContext() != null && getContext().getDataModel() != null) {
+    private void setModelName( boolean modified ) {
+        if ( getContext() != null && getContext().getDataModel() != null ) {
             String name = getContext().getDataModel().getParentProjectName();
-            if (name != null) {
-                if (name.length() > BROWSER_MAX_LENGTH) {
-                    setTooltip(modelName, name);
+            if ( name != null ) {
+                if ( name.length() > BROWSER_MAX_LENGTH ) {
+                    setTooltip( modelName, name );
                 }
-                name = DataModelerUtils.getMaxLengthClippedString(name, BROWSER_MAX_LENGTH) + (modified ? MODIFIED_MARKER : "");
-                modelName.setText(name);
+                name = DataModelerUtils.getMaxLengthClippedString( name, BROWSER_MAX_LENGTH ) + ( modified ? MODIFIED_MARKER : "" );
+                modelName.setText( name );
             }
         }
     }
 
-    private void setTooltip(Widget w, String message) {
+    private void setTooltip( Widget w,
+                             String message ) {
         Tooltip tooltip = new Tooltip();
-        tooltip.setWidget(w);
-        tooltip.setText(message);
-        tooltip.setPlacement(Placement.TOP);
+        tooltip.setWidget( w );
+        tooltip.setText( message );
+        tooltip.setPlacement( Placement.TOP );
         tooltip.reconfigure();
     }
 
@@ -233,7 +246,7 @@ public class DataModelBrowser extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
-    private void loadDataModel(DataModelTO dataModel) {
+    private void loadDataModel( DataModelTO dataModel ) {
         this.dataObjects = dataModel.getDataObjects();
 
         // We create a new selection model due to a bug found in GWT when we change e.g. from one data object with 9 rows
@@ -245,116 +258,117 @@ public class DataModelBrowser extends Composite {
         //  3) select the first row
 
         SingleSelectionModel selectionModel2 = new SingleSelectionModel<DataObjectTO>();
-        dataObjectsTable.setSelectionModel(selectionModel2);
+        dataObjectsTable.setSelectionModel( selectionModel2 );
 
-        selectionModel2.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        selectionModel2.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                if (!skipNextOnChange) {
-                    DataObjectTO selectedObjectTO = ((SingleSelectionModel<DataObjectTO>)dataObjectsTable.getSelectionModel()).getSelectedObject();
-                    notifyObjectSelected(selectedObjectTO);
+            public void onSelectionChange( SelectionChangeEvent event ) {
+                if ( !skipNextOnChange ) {
+                    DataObjectTO selectedObjectTO = ( (SingleSelectionModel<DataObjectTO>) dataObjectsTable.getSelectionModel() ).getSelectedObject();
+                    notifyObjectSelected( selectedObjectTO );
                 }
                 skipNextOnChange = false;
             }
-        });
+        } );
 
         ArrayList<DataObjectTO> sortBuffer = new ArrayList<DataObjectTO>();
-        sortBuffer.addAll(dataObjects);
-        Collections.sort(sortBuffer, new DataObjectComparator());
+        sortBuffer.addAll( dataObjects );
+        Collections.sort( sortBuffer, new DataObjectComparator() );
 
         dataObjectsProvider.getList().clear();
-        dataObjectsProvider.getList().addAll(sortBuffer);
+        dataObjectsProvider.getList().addAll( sortBuffer );
         dataObjectsProvider.flush();
         dataObjectsProvider.refresh();
 
-        dataObjectsTable.getColumnSortList().push(new ColumnSortList.ColumnSortInfo(dataObjectsTable.getColumn(1), true));
+        dataObjectsTable.getColumnSortList().push( new ColumnSortList.ColumnSortInfo( dataObjectsTable.getColumn( 1 ), true ) );
 
-        if (dataObjects.size() > 0) {
-            dataObjectsTable.setKeyboardSelectedRow(0);
-            selectionModel2.setSelected(sortBuffer.get(0), true);
+        if ( dataObjects.size() > 0 ) {
+            dataObjectsTable.setKeyboardSelectedRow( 0 );
+            selectionModel2.setSelected( sortBuffer.get( 0 ), true );
         }
 
         // Set the first row selected again. Sounds crazy, but it's part of the workaround, don't remove this line.
-        if (dataObjects.size() > 0) {
-            dataObjectsTable.setKeyboardSelectedRow(0);
+        if ( dataObjects.size() > 0 ) {
+            dataObjectsTable.setKeyboardSelectedRow( 0 );
         }
     }
 
     @UiHandler("newEntityButton")
     void newEntityClick( ClickEvent event ) {
-        newDataObjectPopup.setContext(getContext());
+        newDataObjectPopup.setContext( getContext() );
         newDataObjectPopup.show();
     }
 
-    public void selectDataObject(DataObjectTO dataObject) {
-        int index = dataObjectsProvider.getList().indexOf(dataObject);
-        if (index >= 0) {
+    public void selectDataObject( DataObjectTO dataObject ) {
+        int index = dataObjectsProvider.getList().indexOf( dataObject );
+        if ( index >= 0 ) {
             //when the selected object is set programatically an onSelectionChange event is produced
             //but we want to avoid this redundant (in this case) event because the object has already been selected.
             skipNextOnChange = true;
-            ((SingleSelectionModel<DataObjectTO>)dataObjectsTable.getSelectionModel()).setSelected(dataObject, true);
-            dataObjectsTable.setKeyboardSelectedRow(index);
+            ( (SingleSelectionModel<DataObjectTO>) dataObjectsTable.getSelectionModel() ).setSelected( dataObject, true );
+            dataObjectsTable.setKeyboardSelectedRow( index );
         }
     }
 
-    private void addDataObject(DataObjectTO dataObject) {
-        dataObjectsProvider.getList().add(dataObject);
+    private void addDataObject( DataObjectTO dataObject ) {
+        dataObjectsProvider.getList().add( dataObject );
         dataObjectsProvider.flush();
         dataObjectsProvider.refresh();
 
         int index = dataObjectsProvider.getList().size();
-        index = index > 0 ? (index-1) : 0;
+        index = index > 0 ? ( index - 1 ) : 0;
 
-        dataObjectsTable.setKeyboardSelectedRow(index);
+        dataObjectsTable.setKeyboardSelectedRow( index );
     }
 
-    private void deleteDataObject(final DataObjectTO dataObjectTO, final int index) {
+    private void deleteDataObject( final DataObjectTO dataObjectTO,
+                                   final int index ) {
 
-        validatorService.canDeleteDataObject(getContext(), dataObjectTO, getDataModel(), new ValidatorCallback() {
+        validatorService.canDeleteDataObject( getContext(), dataObjectTO, getDataModel(), new ValidatorCallback() {
             @Override
             public void onFailure() {
-                ErrorPopup.showMessage(Constants.INSTANCE.validation_error_cannot_delete_object(DataModelerUtils.getDataObjectUILabel(dataObjectTO)));
+                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cannot_delete_object( DataModelerUtils.getDataObjectUILabel( dataObjectTO ) ) );
             }
 
             @Override
             public void onSuccess() {
-                if (Window.confirm(Constants.INSTANCE.modelEditor_confirm_delete())) {
-                    getDataModel().removeDataObject(dataObjectTO);
+                if ( Window.confirm( Constants.INSTANCE.modelEditor_confirm_delete() ) ) {
+                    getDataModel().removeDataObject( dataObjectTO );
 
-                    dataObjectsProvider.getList().remove(index);
+                    dataObjectsProvider.getList().remove( index );
                     dataObjectsProvider.flush();
                     dataObjectsProvider.refresh();
 
-                    notifyObjectDeleted(dataObjectTO);
+                    notifyObjectDeleted( dataObjectTO );
                 }
             }
-        });
+        } );
     }
 
     // Event Observers
-    private void onModelStatusChange(@Observes DataModelStatusChangeEvent event) {
-        if (event.isFrom(getDataModel())) {
-            setModelName(Boolean.TRUE.equals(event.getNewValue()));
+    private void onModelStatusChange( @Observes DataModelStatusChangeEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            setModelName( Boolean.TRUE.equals( event.getNewValue() ) );
         }
     }
 
-    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            addDataObject(event.getCurrentDataObject());
+    private void onDataObjectCreated( @Observes DataObjectCreatedEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            addDataObject( event.getCurrentDataObject() );
         }
     }
 
-    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
+    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
 
-        if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) || "label".equals(event.getPropertyName())) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( "name".equals( event.getPropertyName() ) || "label".equals( event.getPropertyName() ) ) {
                 //by now we only need to refresh the row if the name changed
                 int row = 0;
 
-                for (DataObjectTO dataObjectTO : dataObjectsProvider.getList()) {
-                    if (event.getCurrentDataObject() == dataObjectTO) {
-                        dataObjectsTable.redrawRow(row);
+                for ( DataObjectTO dataObjectTO : dataObjectsProvider.getList() ) {
+                    if ( event.getCurrentDataObject() == dataObjectTO ) {
+                        dataObjectsTable.redrawRow( row );
                         break;
                     }
                     row++;
@@ -363,27 +377,27 @@ public class DataModelBrowser extends Composite {
         }
     }
 
-    private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            if (event.isFrom(DataModelerEvent.DATA_OBJECT_BROWSER) || event.isFrom(DataModelerEvent.DATA_MODEL_BREAD_CRUMB)) {
+    private void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( event.isFrom( DataModelerEvent.DATA_OBJECT_BROWSER ) || event.isFrom( DataModelerEvent.DATA_MODEL_BREAD_CRUMB ) ) {
                 //It's a data object selection in another related widget, select the object in the browser
                 //but don't fire selection event.
                 skipNextOnChange = true;
-                selectDataObject(event.getCurrentDataObject());
+                selectDataObject( event.getCurrentDataObject() );
             }
         }
     }
 
     // Event notifications
 
-    private void notifyObjectSelected(DataObjectTO selectedObjectTO) {
-        dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), selectedObjectTO));
+    private void notifyObjectSelected( DataObjectTO selectedObjectTO ) {
+        dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), selectedObjectTO ) );
     }
 
-    private void notifyObjectDeleted(DataObjectTO dataObject) {
-        getContext().getHelper().dataObjectDeleted(dataObject.getClassName());
-        dataModelerEvent.fire(new DataObjectDeletedEvent(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject));
-        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_deleted(DataModelerUtils.getDataObjectUILabel(dataObject))));
+    private void notifyObjectDeleted( DataObjectTO dataObject ) {
+        getContext().getHelper().dataObjectDeleted( dataObject.getClassName() );
+        dataModelerEvent.fire( new DataObjectDeletedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject ) );
+        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_deleted( DataModelerUtils.getDataObjectUILabel( dataObject ) ) ) );
     }
 
 }

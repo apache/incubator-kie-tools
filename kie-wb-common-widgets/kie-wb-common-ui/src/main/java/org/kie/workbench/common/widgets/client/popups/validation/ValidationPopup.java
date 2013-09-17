@@ -28,8 +28,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that lists BuildMessages

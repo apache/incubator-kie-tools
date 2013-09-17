@@ -16,7 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.*;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Popover;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
@@ -29,30 +38,26 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.widgets.client.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
+import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 
 public class NewDataObjectPopup extends Modal {
 
     interface NewDataObjectPopupUIBinder extends
-            UiBinder<Widget, NewDataObjectPopup> {
+                                         UiBinder<Widget, NewDataObjectPopup> {
 
     }
 
-    private static NewDataObjectPopupUIBinder uiBinder = GWT.create(NewDataObjectPopupUIBinder.class);
+    private static NewDataObjectPopupUIBinder uiBinder = GWT.create( NewDataObjectPopupUIBinder.class );
 
     @UiField
     ControlGroup nameGroup;
@@ -102,8 +107,8 @@ public class NewDataObjectPopup extends Modal {
 
     public NewDataObjectPopup() {
 
-        setTitle(Constants.INSTANCE.new_dataobject_popup_title());
-        setMaxHeigth((Window.getClientHeight() * 0.75) + "px");
+        setTitle( Constants.INSTANCE.new_dataobject_popup_title() );
+        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
@@ -113,50 +118,50 @@ public class NewDataObjectPopup extends Modal {
         add( uiBinder.createAndBindUi( this ) );
 
         add( new ModalFooterOKCancelButtons(
-                (new Command() {
+                ( new Command() {
                     @Override
                     public void execute() {
                         onOk();
                     }
-                }),
-                (new Command() {
+                } ),
+                ( new Command() {
                     @Override
                     public void execute() {
                         onCancel();
                     }
-                })
-        ));
+                } )
+        ) );
 
-        packageSelector.enableCreatePackage(false);
+        packageSelector.enableCreatePackage( false );
         final ListBox packageList = packageSelector.getPackageList();
-        packageList.addChangeHandler(new ChangeHandler() {
+        packageList.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 String selectedValue = packageList.getValue();
-                if (!PackageSelector.NOT_SELECTED.equals(selectedValue)) {
-                    newPackage.setText(selectedValue);
+                if ( !PackageSelector.NOT_SELECTED.equals( selectedValue ) ) {
+                    newPackage.setText( selectedValue );
                 } else {
-                    newPackage.setText("");
+                    newPackage.setText( "" );
                 }
             }
-        });
+        } );
 
-        newPackage.setPlaceholder(Constants.INSTANCE.package_id_placeholder());
+        newPackage.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
 
-        newPackageHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
-        newPackageHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        newPackageHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
+        newPackageHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
 
-        newPackageHelpPopover.setText(Constants.INSTANCE.validPackageHelp(""));
+        newPackageHelpPopover.setText( Constants.INSTANCE.validPackageHelp( "" ) );
     }
 
     public DataModelerContext getContext() {
         return context;
     }
 
-    public void setContext(DataModelerContext context) {
+    public void setContext( DataModelerContext context ) {
         this.context = context;
-        superclassSelector.setContext(context);
-        packageSelector.setContext(context);
+        superclassSelector.setContext( context );
+        packageSelector.setContext( context );
     }
 
     private DataModelTO getDataModel() {
@@ -165,104 +170,112 @@ public class NewDataObjectPopup extends Modal {
 
     private void onOk() {
 
-        final String newName[] = new String[1];
-        final String newLabel[] = new String[1];
-        final String newPackageName[] = new String[1];
-        final String superClass[] = new String[1];
+        final String newName[] = new String[ 1 ];
+        final String newLabel[] = new String[ 1 ];
+        final String newPackageName[] = new String[ 1 ];
+        final String superClass[] = new String[ 1 ];
 
-        newName[0] = name.getText() != null ? name.getText().trim() : "";
-        newLabel[0] = label.getText() != null ? label.getText().trim() : "";
-        newPackageName[0] = newPackage.getText() != null && !"".equals(newPackage.getText().trim()) ?  newPackage.getText().trim().toLowerCase() : null;
+        newName[ 0 ] = name.getText() != null ? name.getText().trim() : "";
+        newLabel[ 0 ] = label.getText() != null ? label.getText().trim() : "";
+        newPackageName[ 0 ] = newPackage.getText() != null && !"".equals( newPackage.getText().trim() ) ? newPackage.getText().trim().toLowerCase() : null;
 
-        superClass[0] = superclassSelector.getSuperclassList().getValue();
-        if (SuperclassSelector.NOT_SELECTED.equals(superClass[0])) superClass[0] = null;
+        superClass[ 0 ] = superclassSelector.getSuperclassList().getValue();
+        if ( SuperclassSelector.NOT_SELECTED.equals( superClass[ 0 ] ) ) {
+            superClass[ 0 ] = null;
+        }
 
         cleanErrors();
 
         //1) validate className
-        validatorService.isValidIdentifier(newName[0], new ValidatorCallback() {
+        validatorService.isValidIdentifier( newName[ 0 ], new ValidatorCallback() {
             @Override
             public void onFailure() {
-                setErrorMessage(nameGroup, Constants.INSTANCE.validation_error_invalid_object_identifier(newName[0]));
+                setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_invalid_object_identifier( newName[ 0 ] ) );
             }
 
             @Override
             public void onSuccess() {
 
                 //2) if classname is ok, validate the package name.
-                if (newPackageName[0] != null) {
-                    validatorService.isValidPackageIdentifier(newPackageName[0], new ValidatorCallback() {
+                if ( newPackageName[ 0 ] != null ) {
+                    validatorService.isValidPackageIdentifier( newPackageName[ 0 ], new ValidatorCallback() {
                         @Override
                         public void onFailure() {
-                            setErrorMessage(newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier(newPackageName[0]));
+                            setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier( newPackageName[ 0 ] ) );
                         }
 
                         @Override
                         public void onSuccess() {
-                            validatorService.isUniqueEntityName(newPackageName[0], newName[0], getDataModel(), new ValidatorCallback() {
+                            validatorService.isUniqueEntityName( newPackageName[ 0 ], newName[ 0 ], getDataModel(), new ValidatorCallback() {
                                 @Override
                                 public void onFailure() {
-                                    setErrorMessage(nameGroup,  Constants.INSTANCE.validation_error_object_already_exists(newName[0], newPackageName[0]));
+                                    setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_object_already_exists( newName[ 0 ], newPackageName[ 0 ] ) );
                                 }
 
                                 @Override
                                 public void onSuccess() {
-                                    createDataObject(newPackageName[0], newName[0], newLabel[0], superClass[0]);
+                                    createDataObject( newPackageName[ 0 ], newName[ 0 ], newLabel[ 0 ], superClass[ 0 ] );
                                     clean();
                                     hide();
                                 }
-                            });
+                            } );
 
                         }
-                    });
+                    } );
                 } else {
-                    validatorService.isUniqueEntityName(newPackageName[0], newName[0], getDataModel(), new ValidatorCallback() {
+                    validatorService.isUniqueEntityName( newPackageName[ 0 ], newName[ 0 ], getDataModel(), new ValidatorCallback() {
                         @Override
                         public void onFailure() {
-                            setErrorMessage(nameGroup, Constants.INSTANCE.validation_error_object_already_exists(newName[0], ""));
+                            setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_object_already_exists( newName[ 0 ], "" ) );
                         }
 
                         @Override
                         public void onSuccess() {
-                            createDataObject(newPackageName[0], newName[0], newLabel[0], superClass[0]);
+                            createDataObject( newPackageName[ 0 ], newName[ 0 ], newLabel[ 0 ], superClass[ 0 ] );
                             clean();
                             hide();
                         }
-                    });
+                    } );
                 }
             }
-        });
+        } );
 
     }
 
-    private void createDataObject(String packageName, String name, String label, String superClass) {
-        DataObjectTO dataObject = new DataObjectTO(name, packageName, superClass);
-        if (label != null && !"".equals(label)) {
-            dataObject.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, label);
+    private void createDataObject( String packageName,
+                                   String name,
+                                   String label,
+                                   String superClass ) {
+        DataObjectTO dataObject = new DataObjectTO( name, packageName, superClass );
+        if ( label != null && !"".equals( label ) ) {
+            dataObject.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, label );
         }
-        getDataModel().getDataObjects().add(dataObject);
-        notifyObjectCreated(dataObject);
-        if (getContext() != null) getContext().appendPackage(packageName);
+        getDataModel().getDataObjects().add( dataObject );
+        notifyObjectCreated( dataObject );
+        if ( getContext() != null ) {
+            getContext().appendPackage( packageName );
+        }
     }
 
     private void clean() {
-        name.setText("");
-        label.setText("");
-        newPackage.setText("");
+        name.setText( "" );
+        label.setText( "" );
+        newPackage.setText( "" );
         cleanErrors();
     }
 
     private void cleanErrors() {
-        errorMessages.setText("");
-        nameGroup.setType(ControlGroupType.NONE);
-        newPackageGroup.setType(ControlGroupType.NONE);
-        errorMessagesGroup.setType(ControlGroupType.NONE);
+        errorMessages.setText( "" );
+        nameGroup.setType( ControlGroupType.NONE );
+        newPackageGroup.setType( ControlGroupType.NONE );
+        errorMessagesGroup.setType( ControlGroupType.NONE );
     }
 
-    private void setErrorMessage(ControlGroup controlGroup, String errorMessage) {
-        controlGroup.setType(ControlGroupType.ERROR);
-        errorMessages.setText(errorMessage);
-        errorMessagesGroup.setType(ControlGroupType.ERROR);
+    private void setErrorMessage( ControlGroup controlGroup,
+                                  String errorMessage ) {
+        controlGroup.setType( ControlGroupType.ERROR );
+        errorMessages.setText( errorMessage );
+        errorMessagesGroup.setType( ControlGroupType.ERROR );
     }
 
     private void onCancel() {
@@ -270,10 +283,10 @@ public class NewDataObjectPopup extends Modal {
         hide();
     }
 
-    private void notifyObjectCreated(DataObjectTO createdObjectTO) {
-        getContext().getHelper().dataObjectCreated(createdObjectTO.getClassName());
-        dataModelerEvent.fire(new DataObjectCreatedEvent(DataModelerEvent.NEW_DATA_OBJECT_POPUP, getDataModel(), createdObjectTO));
-        notification.fire(new NotificationEvent(Constants.INSTANCE.modelEditor_notification_dataObject_created(DataModelerUtils.getDataObjectUILabel(createdObjectTO))));
+    private void notifyObjectCreated( DataObjectTO createdObjectTO ) {
+        getContext().getHelper().dataObjectCreated( createdObjectTO.getClassName() );
+        dataModelerEvent.fire( new DataObjectCreatedEvent( DataModelerEvent.NEW_DATA_OBJECT_POPUP, getDataModel(), createdObjectTO ) );
+        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_created( DataModelerUtils.getDataObjectUILabel( createdObjectTO ) ) ) );
     }
 
 }

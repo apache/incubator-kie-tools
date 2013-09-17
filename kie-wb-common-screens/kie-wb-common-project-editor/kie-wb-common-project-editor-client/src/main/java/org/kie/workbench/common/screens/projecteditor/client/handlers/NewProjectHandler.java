@@ -21,7 +21,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.client.common.ErrorPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
 
 /**

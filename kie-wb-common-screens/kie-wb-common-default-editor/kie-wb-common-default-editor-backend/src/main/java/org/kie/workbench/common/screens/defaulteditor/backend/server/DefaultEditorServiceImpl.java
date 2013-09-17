@@ -88,10 +88,9 @@ public class DefaultEditorServiceImpl
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
+        return new CommentedOption( name,
+                                    null,
+                                    commitMessage,
+                                    when );
     }
 }

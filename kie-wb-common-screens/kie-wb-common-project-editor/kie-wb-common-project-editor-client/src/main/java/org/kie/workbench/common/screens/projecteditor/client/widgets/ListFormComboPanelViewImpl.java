@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.uberfire.client.common.ErrorPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class ListFormComboPanelViewImpl
         extends Composite
@@ -45,7 +45,7 @@ public class ListFormComboPanelViewImpl
 
     }
 
-    private static ListFormComboPanelViewImplBinder uiBinder = GWT.create(ListFormComboPanelViewImplBinder.class);
+    private static ListFormComboPanelViewImplBinder uiBinder = GWT.create( ListFormComboPanelViewImplBinder.class );
 
     @UiField
     ListBox list;
@@ -66,24 +66,24 @@ public class ListFormComboPanelViewImpl
     Button deleteButton;
 
     public ListFormComboPanelViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addItem(String fullName) {
-        list.addItem(fullName);
+    public void addItem( String fullName ) {
+        list.addItem( fullName );
     }
 
     @Override
-    public void remove(String fullName) {
-        for (int i = 0; i < list.getItemCount(); i++) {
-            if (list.getItemText(i).equals(fullName)) {
-                list.removeItem(i);
+    public void remove( String fullName ) {
+        for ( int i = 0; i < list.getItemCount(); i++ ) {
+            if ( list.getItemText( i ).equals( fullName ) ) {
+                list.removeItem( i );
                 break;
             }
         }
@@ -95,17 +95,17 @@ public class ListFormComboPanelViewImpl
     }
 
     @Override
-    public void setForm(Form form) {
+    public void setForm( Form form ) {
         kSessionForm.clear();
         this.form = form;
-        kSessionForm.add(form);
+        kSessionForm.add( form );
     }
 
     @Override
-    public void setSelected(String fullName) {
-        for (int i = 0; i < list.getItemCount(); i++) {
-            if (list.getItemText(i).equals(fullName)) {
-                list.setSelectedIndex(i);
+    public void setSelected( String fullName ) {
+        for ( int i = 0; i < list.getItemCount(); i++ ) {
+            if ( list.getItemText( i ).equals( fullName ) ) {
+                list.setSelectedIndex( i );
                 break;
             }
         }
@@ -113,51 +113,51 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void showPleaseSelectAnItem() {
-        ErrorPopup.showMessage(ProjectEditorConstants.INSTANCE.PleaseSelectAnItem());
+        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.PleaseSelectAnItem() );
     }
 
     @UiHandler("list")
-    public void handleChange(ChangeEvent event) {
-        String value = list.getValue(list.getSelectedIndex());
-        presenter.onSelect(value);
+    public void handleChange( ChangeEvent event ) {
+        String value = list.getValue( list.getSelectedIndex() );
+        presenter.onSelect( value );
     }
 
     @UiHandler("addButton")
-    public void add(ClickEvent clickEvent) {
+    public void add( ClickEvent clickEvent ) {
         presenter.onAdd();
     }
 
     @UiHandler("renameButton")
-    public void rename(ClickEvent clickEvent) {
+    public void rename( ClickEvent clickEvent ) {
         presenter.onRename();
     }
 
     @UiHandler("deleteButton")
-    public void delete(ClickEvent clickEvent) {
+    public void delete( ClickEvent clickEvent ) {
         presenter.onRemove();
     }
 
     @UiHandler("makeDefaultButton")
-    public void makeDefault(ClickEvent clickEvent) {
+    public void makeDefault( ClickEvent clickEvent ) {
         presenter.onMakeDefault();
     }
 
     @Override
     public void enableMakeDefault() {
-        makeDefaultButton.setEnabled(true);
+        makeDefaultButton.setEnabled( true );
     }
 
     @Override
     public void disableMakeDefault() {
-        makeDefaultButton.setEnabled(false);
+        makeDefaultButton.setEnabled( false );
     }
 
     @Override
     public void makeReadOnly() {
-        addButton.setEnabled(false);
-        renameButton.setEnabled(false);
-        deleteButton.setEnabled(false);
-        makeDefaultButton.setEnabled(false);
+        addButton.setEnabled( false );
+        renameButton.setEnabled( false );
+        deleteButton.setEnabled( false );
+        makeDefaultButton.setEnabled( false );
         form.makeReadOnly();
     }
 }

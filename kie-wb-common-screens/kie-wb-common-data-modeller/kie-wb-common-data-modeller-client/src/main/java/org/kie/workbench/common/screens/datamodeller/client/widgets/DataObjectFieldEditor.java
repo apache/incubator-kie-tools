@@ -16,8 +16,17 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -31,25 +40,29 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.*;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectFieldEditor extends Composite {
 
@@ -92,8 +105,6 @@ public class DataObjectFieldEditor extends Composite {
 
     @Inject
     private ValidatorService validatorService;
-
-    private DataObjectFieldEditorErrorPopup ep = new DataObjectFieldEditorErrorPopup();
 
     private Map<String, AnnotationDefinitionTO> annotationDefinitions = new HashMap<String, AnnotationDefinitionTO>();
 
@@ -257,8 +268,14 @@ public class DataObjectFieldEditor extends Composite {
     void nameChanged(ValueChangeEvent<String> event) {
         if (getObjectField() == null) return;
         // Set widgets to errorpopup for styling purposes etc.
-        ep.setTitleWidget(titleLabel);
-        ep.setValueWidget(name);
+        titleLabel.setStyleName( null );
+        final Command afterCloseCommand = new Command() {
+            @Override
+            public void execute() {
+                titleLabel.setStyleName( "text-error" );
+                name.selectAll();
+            }
+        };
 
         final String oldValue = getObjectField().getName();
         final String newValue = DataModelerUtils.getInstance().unCapitalize(name.getValue());
@@ -273,7 +290,7 @@ public class DataObjectFieldEditor extends Composite {
         validatorService.isValidIdentifier(newValue, new ValidatorCallback() {
             @Override
             public void onFailure() {
-                ep.showMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(newValue));
+                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_object_attribute_identifier( newValue ), null, afterCloseCommand );
             }
 
             @Override
@@ -281,7 +298,7 @@ public class DataObjectFieldEditor extends Composite {
                 validatorService.isUniqueAttributeName(newValue, getDataObject(), new ValidatorCallback() {
                     @Override
                     public void onFailure() {
-                        ep.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(newValue));
+                        ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists(newValue), null, afterCloseCommand );
                     }
 
                     @Override
@@ -464,28 +481,5 @@ public class DataObjectFieldEditor extends Composite {
         equalsSelector.setValue(Boolean.FALSE);
         positionLabel.setStyleName(null);
         positionSelector.clear();
-    }
-
-    // TODO extract this to parent widget to avoid duplicate code
-    private class DataObjectFieldEditorErrorPopup extends ErrorPopup {
-        private Widget titleWidget;
-        private Widget valueWidget;
-        private DataObjectFieldEditorErrorPopup() {
-            setAfterCloseEvent(new Command() {
-                @Override
-                public void execute() {
-                    titleWidget.setStyleName("text-error");
-                    if (valueWidget instanceof Focusable) ((FocusWidget)valueWidget).setFocus(true);
-                    if (valueWidget instanceof ValueBoxBase) ((ValueBoxBase)valueWidget).selectAll();
-                    clearWidgets();
-                }
-            });
-        }
-        private void setTitleWidget(Widget titleWidget){this.titleWidget = titleWidget;titleWidget.setStyleName(null);}
-        private void setValueWidget(Widget valueWidget){this.valueWidget = valueWidget;}
-        private void clearWidgets() {
-            titleWidget = null;
-            valueWidget = null;
-        }
     }
 }

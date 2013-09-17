@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datamodeller.client;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class DataModelerErrorCallback implements ErrorCallback<Message> {
     
@@ -37,7 +37,7 @@ public class DataModelerErrorCallback implements ErrorCallback<Message> {
     public boolean error( final Message message,
                           final Throwable throwable ) {
         BusyPopup.close();
-        ErrorPopup.showMessage(Constants.INSTANCE.modeler_callback_error(localMessage, throwable.getMessage()));
+        ErrorPopup.showMessage( Constants.INSTANCE.modeler_callback_error( localMessage, throwable.getMessage() ) );
         return true;
     }
 }

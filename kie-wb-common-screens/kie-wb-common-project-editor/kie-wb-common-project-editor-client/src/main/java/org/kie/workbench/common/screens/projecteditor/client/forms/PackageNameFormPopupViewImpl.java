@@ -9,12 +9,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class PackageNameFormPopupViewImpl
         extends Popup
@@ -29,7 +28,7 @@ public class PackageNameFormPopupViewImpl
 
     }
 
-    private static PackageNameFormPopupViewImplBinder uiBinder = GWT.create(PackageNameFormPopupViewImplBinder.class);
+    private static PackageNameFormPopupViewImplBinder uiBinder = GWT.create( PackageNameFormPopupViewImplBinder.class );
 
     @UiField
     TextBox selectedNameTextBox;
@@ -44,11 +43,11 @@ public class PackageNameFormPopupViewImpl
     Button cancelButton;
 
     public PackageNameFormPopupViewImpl() {
-        widget = uiBinder.createAndBindUi(this);
+        widget = uiBinder.createAndBindUi( this );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -63,30 +62,30 @@ public class PackageNameFormPopupViewImpl
     }
 
     @Override
-    public void addItem(final String packageName) {
-        NavLink navLink = new NavLink(packageName);
-        navLink.addClickHandler(new ClickHandler() {
+    public void addItem( final String packageName ) {
+        NavLink navLink = new NavLink( packageName );
+        navLink.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                selectedNameTextBox.setText(packageName);
+            public void onClick( ClickEvent event ) {
+                selectedNameTextBox.setText( packageName );
             }
-        });
-        nameDropDown.add(navLink);
+        } );
+        nameDropDown.add( navLink );
     }
 
     @Override
-    public void setName(String name) {
-        selectedNameTextBox.setText(name);
+    public void setName( String name ) {
+        selectedNameTextBox.setText( name );
     }
 
     @UiHandler("okButton")
-    public void ok(ClickEvent clickEvent) {
+    public void ok( ClickEvent clickEvent ) {
         presenter.onOk();
         hide();
     }
 
     @Override
     public void showFieldEmptyWarning() {
-        ErrorPopup.showMessage(CommonConstants.INSTANCE.PleaseSetAName());
+        ErrorPopup.showMessage( CommonConstants.INSTANCE.PleaseSetAName() );
     }
 }

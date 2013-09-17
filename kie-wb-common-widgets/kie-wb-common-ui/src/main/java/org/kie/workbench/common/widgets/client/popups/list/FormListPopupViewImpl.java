@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.Popup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class FormListPopupViewImpl
         extends Popup
@@ -83,13 +83,11 @@ public class FormListPopupViewImpl
     public Pair<String, String> getSelectedItem() {
         final int selectedIndex = listItems.getSelectedIndex();
         if ( selectedIndex == -1 ) {
-            return new Pair( "",
-                             "" );
+            return Pair.newPair( "", "" );
         }
         final String text = listItems.getItemText( selectedIndex );
         final String value = listItems.getValue( selectedIndex );
-        return new Pair( text,
-                         value );
+        return Pair.newPair( text, value );
     }
 
     @Override
