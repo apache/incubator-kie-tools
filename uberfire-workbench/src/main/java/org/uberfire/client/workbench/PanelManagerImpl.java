@@ -31,7 +31,7 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.events.DropPlaceEvent;
 import org.uberfire.workbench.events.MinimizePlaceEvent;

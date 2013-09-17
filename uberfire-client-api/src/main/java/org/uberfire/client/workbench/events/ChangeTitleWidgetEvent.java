@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.workbench.events;
+package org.uberfire.client.workbench.events;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;

@@ -27,7 +27,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 
 /**
  * A stand-alone Presenter annotated to hook into the Workbench
