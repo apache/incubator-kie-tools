@@ -36,9 +36,9 @@ import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.ErrorPopup;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.PrettyFormLayout;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 /**
  *

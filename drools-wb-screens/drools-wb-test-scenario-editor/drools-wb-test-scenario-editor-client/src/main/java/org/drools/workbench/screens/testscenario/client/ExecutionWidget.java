@@ -32,8 +32,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class ExecutionWidget extends Composite {
 
@@ -125,7 +125,7 @@ public class ExecutionWidget extends Composite {
                         textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
-                        ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0(format));
+                        ErrorPopup.showMessage( TestScenarioConstants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );
                     }
                 }
             }

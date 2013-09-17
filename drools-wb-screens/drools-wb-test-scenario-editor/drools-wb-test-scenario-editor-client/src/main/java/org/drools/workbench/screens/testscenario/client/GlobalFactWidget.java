@@ -22,9 +22,8 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class GlobalFactWidget extends FactWidget {
 
@@ -57,7 +56,7 @@ public class GlobalFactWidget extends FactWidget {
         }
 
         if (used) {
-            ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed());
+            ErrorPopup.showMessage( TestScenarioConstants.INSTANCE.CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed() );
         } else {
             super.onDelete();
         }

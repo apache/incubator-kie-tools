@@ -26,7 +26,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
@@ -36,9 +41,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.security.UserCapabilities;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
@@ -48,6 +51,7 @@ import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.DirtyableHorizontalPane;
 import org.uberfire.client.common.DirtyableVerticalPane;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 /**
  * This is the parent widget that contains the model based rule builder.

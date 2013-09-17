@@ -37,7 +37,6 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
-import org.kie.workbench.common.widgets.client.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
 import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
@@ -46,6 +45,7 @@ import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 /**
  * This widget is for setting fields on a bound fact or global variable.
