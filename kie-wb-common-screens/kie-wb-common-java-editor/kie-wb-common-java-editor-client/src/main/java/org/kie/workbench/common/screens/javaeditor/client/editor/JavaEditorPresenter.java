@@ -85,7 +85,7 @@ public class JavaEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Java Editor [" + path.getFileName() + "]";
+        return "Java Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

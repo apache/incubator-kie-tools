@@ -21,7 +21,7 @@ public class GuvnorTextEditorScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor [" + path.getFileName() + "]";
+        return "Text Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView
