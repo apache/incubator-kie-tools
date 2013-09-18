@@ -62,7 +62,8 @@ public class NewTestScenarioHandler
                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageTestResourcesPath(),
                                                                                         buildFileName( resourceType,
                                                                                                        baseFileName ),
-                                                                                        new Scenario(),
+                                                                                        new Scenario( pkg.getPackageName(),
+                                                                                                      baseFileName ),
                                                                                         "" );
     }
 

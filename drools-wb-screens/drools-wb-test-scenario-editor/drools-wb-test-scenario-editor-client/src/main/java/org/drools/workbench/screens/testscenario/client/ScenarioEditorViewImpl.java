@@ -90,7 +90,7 @@ public class ScenarioEditorViewImpl
         this.busyIndicatorView = busyIndicatorView;
         this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
 
-        multiPage.addWidget( layout, "Test Scenario" );
+        multiPage.addWidget( layout, TestScenarioConstants.INSTANCE.TestScenario() );
 
         layout.setWidth( "100%" );
 
