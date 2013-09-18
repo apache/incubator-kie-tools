@@ -24,25 +24,19 @@
 
     <gwt:HTMLPanel>
 
-            <b:Column size="12">
-                <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
-                    <gwt:SimplePanel ui:field="breadCrumbsPanel"></gwt:SimplePanel>
-                    <!--datamodeler:DataObjectBreadcrums  divider=">" ui:field="dataObjectNavigation"/-->
+            <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
+                <gwt:SimplePanel ui:field="breadCrumbsPanel"></gwt:SimplePanel>
+                <!--datamodeler:DataObjectBreadcrums  divider=">" ui:field="dataObjectNavigation"/-->
 
-                    <gwt:HTMLPanel>
-                        <!--div class="well" style="margin-top:20px;"-->
+                <gwt:HTMLPanel>
+                    <!--div class="well" style="margin-top:20px;"-->
+                    <div class="well well-small">
+
+                        <h5>
+                            <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
+                        </h5>
+
                         <div class="well">
-                            <h5>
-                                <gwt:Label ui:field="objectName" ></gwt:Label>
-                            </h5>
-                            <gwt:ScrollPanel width="100%" height="457px">
-                                <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
-                            </gwt:ScrollPanel>
-                            <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
-                            <h5>
-                                <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
-                            </h5>
-
                             <table>
                                 <tr>
                                     <td style="white-space: nowrap; vertical-align: top;">
@@ -70,12 +64,22 @@
                                     </td>
                                 </tr>
                             </table>
-
                         </div>
-                    </gwt:HTMLPanel>
 
-                </gwt:VerticalPanel>
-            </b:Column>
+                        <h5>
+                            <gwt:Label ui:field="objectName" ></gwt:Label>
+                        </h5>
+
+                        <gwt:ScrollPanel width="100%" height="408px">
+                            <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
+                        </gwt:ScrollPanel>
+
+                        <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
+
+                    </div>
+                </gwt:HTMLPanel>
+
+            </gwt:VerticalPanel>
 
     </gwt:HTMLPanel>
 </ui:UiBinder>

@@ -24,8 +24,13 @@
     <gwt:HTMLPanel>
         <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
             <gwt:HTMLPanel>
-                <div class="well" style="height:660px;">
-                    <h6><gwt:Label ui:field="modelName"></gwt:Label></h6>
+                <div style="height:660px;">
+                    <table width="100%">
+                        <tr>
+                            <td><h6><gwt:Label ui:field="modelName"></gwt:Label></h6></td>
+                            <td style="text-align: right;"><b:Button ui:field="newEntityButton" styleName="btn btn-primary" text="{i18n.modelBrowser_create}"/></td>
+                        </tr>
+                    </table>
                     <gwt:ScrollPanel  width="100%" height="544px">
 
                         <!--table table-bordered table-striped table-hover-->
@@ -33,8 +38,6 @@
                         <b:CellTable ui:field="dataObjectsTable" styleName="table table-bordered table-striped table-hover"/>
 
                     </gwt:ScrollPanel>
-                    <br></br>
-                    <b:Button ui:field="newEntityButton" styleName="btn btn-primary" text="{i18n.modelBrowser_create}"/>
                 </div>
 
             </gwt:HTMLPanel>

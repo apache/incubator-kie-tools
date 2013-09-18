@@ -289,7 +289,7 @@ public class DataObjectBrowser extends Composite {
         } );
 
         dataObjectPropertiesTable.addColumn(typeImageColumn);
-        dataObjectPropertiesTable.setColumnWidth(typeImageColumn, 20, Style.Unit.PX);
+        dataObjectPropertiesTable.setColumnWidth(typeImageColumn, 32, Style.Unit.PX);
 
 
         //Init property type column
@@ -348,7 +348,7 @@ public class DataObjectBrowser extends Composite {
 
 
         dataObjectPropertiesTable.addColumn(deletePropertyColumnImg);
-        dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 20, Style.Unit.PX);
+        dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 32, Style.Unit.PX);
 
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyTypeColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());

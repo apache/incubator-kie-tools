@@ -23,22 +23,49 @@
 
     <gwt:HTMLPanel>
 
-        <div id="dataModelerViewDiv">
-            <div class="row-fluid">
-                <div class="span12 data-model">
-                    <!--div class="navbar">
-                        <div class="container top-row">
-                        </div>
-                    </div-->
-                    <div class="row-fluid container">
-                        <!--div class="well container span2"><label data-field="browserPanel"></label></div-->
-                        <div class="span3" id="browserPanelDiv"><gwt:SimplePanel ui:field="browserPanel"></gwt:SimplePanel></div>
-                        <div class="span6" id="dataObjectPanelDiv"><gwt:SimplePanel ui:field="dataObjectPanel"></gwt:SimplePanel></div>
-                        <div class="well container span3" style="height: 700px;" id="propertiesPanelDiv"><gwt:SimplePanel ui:field="propertiesPanel"></gwt:SimplePanel></div>
+<style>
+    .BgTable {
+        background-color: #FFFFFF !important;
+        border-collapse: collapse;
+        margin: 0px;
+    }
+    .TdLateralTable {
+        background-color: #FFFFFF !important;
+        vertical-align: top;
+        padding: 10px;
+        width: 20%;
+    }
+    .TdCentralTable {
+        background-color: #FFFFFF !important;
+        vertical-align: top;
+        padding: 0px;
+        padding: 10px 0;
+        width: 60%;
+    }
+</style>
+
+        <table class="BgTable">
+            <tr>
+                <td class="TdLateralTable">
+                    <div class="well well-small">
+                    <gwt:SimplePanel ui:field="browserPanel"></gwt:SimplePanel>
                     </div>
-                </div>
-            </div>
-        </div>
+                </td>
+                <td class="TdCentralTable">
+                    <div>
+                    <gwt:SimplePanel ui:field="dataObjectPanel"></gwt:SimplePanel>
+                    </div>
+                </td>
+                <td class="TdLateralTable">
+                    <div class="well well-small">
+                        <div style="height:660px;">
+                    <gwt:SimplePanel ui:field="propertiesPanel"></gwt:SimplePanel>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
 
     </gwt:HTMLPanel>
 

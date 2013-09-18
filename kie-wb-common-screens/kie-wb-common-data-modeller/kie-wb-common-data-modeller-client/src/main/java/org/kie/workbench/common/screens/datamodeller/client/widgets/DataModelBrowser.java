@@ -180,7 +180,7 @@ public class DataModelBrowser extends Composite {
         } );
 
         dataObjectsTable.addColumn(deleteDataObjectColumnImg);
-        dataObjectsTable.setColumnWidth(deleteDataObjectColumnImg, 20, Style.Unit.PX);
+        dataObjectsTable.setColumnWidth(deleteDataObjectColumnImg, 32, Style.Unit.PX);
 
         ColumnSortEvent.ListHandler<DataObjectTO> dataObjectNameColHandler = new ColumnSortEvent.ListHandler<DataObjectTO>(dataObjectsProvider.getList());
         dataObjectNameColHandler.setComparator(dataObjectColumn, new DataObjectComparator());
