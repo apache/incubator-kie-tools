@@ -411,6 +411,14 @@ public class ProjectResourceDispatcher {
         List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
         if ( repositoryNameList != null && repositoryNameList.size() > 0 ) {
             for ( String repoName : repositoryNameList ) {
+                org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repoName );
+
+                if(repositoryPath == null) {
+                    result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                    result.setResult( "Repository [" + repoName + "] does not exist" );
+                    jobResultEvent.fire( result );
+                    return;
+                } 
                 GitRepository repo = new GitRepository( repoName );
                 repositories.add( repo );
             }
@@ -444,11 +452,19 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire( result );
             return;
         }
-
+        
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        if(repositoryPath == null) {
+            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setResult( "Repository [" + repositoryName + "] does not exist" );
+            jobResultEvent.fire( result );
+            return;
+        } 
+        
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName,
                                                                             null );
-        GitRepository repo = new GitRepository( repositoryName );
-
+       
+        GitRepository repo = new GitRepository( repositoryName );        
         try {
             organicationalUnitService.addRepository( organizationalUnit,
                                                      repo );
@@ -477,6 +493,14 @@ public class ProjectResourceDispatcher {
             return;
         }
 
+        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        if(repositoryPath == null) {
+            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setResult( "Repository [" + repositoryName + "] does not exist" );
+            jobResultEvent.fire( result );
+            return;
+        } 
+        
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName, null );
         GitRepository repo = new GitRepository( repositoryName );
         try {
