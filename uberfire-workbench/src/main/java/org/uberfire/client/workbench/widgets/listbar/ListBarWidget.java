@@ -31,6 +31,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -163,7 +165,7 @@ public class ListBarWidget
             @Override
             public void onFocus( FocusEvent event ) {
                 if ( currentPart != null && currentPart.getK1() != null ) {
-                    SelectionEvent.fire( ListBarWidget.this, currentPart.getK1() );
+                    selectPart( currentPart.getK1() );
                 }
             }
         } );
@@ -278,6 +280,9 @@ public class ListBarWidget
         }
 
         if ( currentPart != null ) {
+            if (currentPart.getK1().equals( part )){
+                return;
+            }
             parts.add( currentPart.getK1() );
             currentPart.getK2().getElement().getStyle().setDisplay( NONE );
         }
@@ -291,6 +296,8 @@ public class ListBarWidget
         setupContextMenu();
 
         scheduleResize();
+
+        SelectionEvent.fire( ListBarWidget.this, part );
     }
 
     private void setupDropdown() {
@@ -511,7 +518,9 @@ public class ListBarWidget
                         addClickHandler( new ClickHandler() {
                             @Override
                             public void onClick( final ClickEvent event ) {
-                                presenter.selectPart( part );
+                                selectPart( part );
+//                                presenter.selectPart( part );
+//                                SelectionEvent.fire( ListBarWidget.this, part );
                             }
                         } );
                     }} );

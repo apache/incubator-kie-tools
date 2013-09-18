@@ -54,7 +54,7 @@ public class MultiListWorkbenchPanelView
         //When a tab is selected ensure content is resized and set focus
         listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
-            public void onSelection( SelectionEvent<PartDefinition> event ) {
+            public void onSelection( final SelectionEvent<PartDefinition> event ) {
                 presenter.onPartLostFocus();
                 presenter.onPartFocus( event.getSelectedItem() );
             }
