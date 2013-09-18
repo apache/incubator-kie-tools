@@ -315,7 +315,7 @@ public class DSLEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "DRL Editor [" + path.getFileName() + "]";
+        return "DRL Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

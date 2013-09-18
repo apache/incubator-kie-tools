@@ -319,7 +319,7 @@ public class WorkItemsEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return WorkItemsEditorConstants.INSTANCE.Title() + " [" + path.getFileName() + "]";
+        return WorkItemsEditorConstants.INSTANCE.Title() + " [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

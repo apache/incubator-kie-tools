@@ -332,7 +332,7 @@ public class EnumEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Enum Editor [" + path.getFileName() + "]";
+        return "Enum Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

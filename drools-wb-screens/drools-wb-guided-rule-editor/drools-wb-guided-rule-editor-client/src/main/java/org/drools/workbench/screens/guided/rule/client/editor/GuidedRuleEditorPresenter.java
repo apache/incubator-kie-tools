@@ -378,7 +378,7 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Editor [" + path.getFileName() + "]";
+        return "Guided Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

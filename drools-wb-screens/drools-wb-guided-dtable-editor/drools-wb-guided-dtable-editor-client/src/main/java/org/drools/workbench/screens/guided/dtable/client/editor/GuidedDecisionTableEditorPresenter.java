@@ -361,7 +361,7 @@ public class GuidedDecisionTableEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Decision Table [" + path.getFileName() + "]";
+        return "Guided Decision Table [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

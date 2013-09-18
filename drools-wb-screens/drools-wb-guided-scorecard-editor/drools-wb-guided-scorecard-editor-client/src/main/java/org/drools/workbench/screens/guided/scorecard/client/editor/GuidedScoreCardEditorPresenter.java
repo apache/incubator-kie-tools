@@ -382,9 +382,9 @@ public class GuidedScoreCardEditorPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         if ( isReadOnly ) {
-            return "Read Only Score Card  Viewer [" + path.getFileName() + "]";
+            return "Read Only Score Card  Viewer [" + path.getFileNameWithoutExtension() + "]";
         }
-        return "Score Card Editor [" + path.getFileName() + "]";
+        return "Score Card Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchMenu

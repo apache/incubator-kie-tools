@@ -248,7 +248,7 @@ public class DecisionTableXLSEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Decision Table Editor [" + path.getFileName() + "]";
+        return "XLS Decision Table Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

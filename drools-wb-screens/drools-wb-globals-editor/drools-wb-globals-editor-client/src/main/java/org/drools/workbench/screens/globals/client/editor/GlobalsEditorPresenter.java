@@ -347,9 +347,9 @@ public class GlobalsEditorPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         if ( isReadOnly ) {
-            return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( path.getFileName() );
+            return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( path.getFileNameWithoutExtension() );
         }
-        return GlobalsEditorConstants.INSTANCE.globalsEditorTitle0( path.getFileName() );
+        return GlobalsEditorConstants.INSTANCE.globalsEditorTitle0( path.getFileNameWithoutExtension() );
     }
 
     @WorkbenchMenu

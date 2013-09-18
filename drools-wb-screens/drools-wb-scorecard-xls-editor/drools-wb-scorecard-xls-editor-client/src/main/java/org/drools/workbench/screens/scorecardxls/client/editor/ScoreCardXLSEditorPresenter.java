@@ -236,7 +236,7 @@ public class ScoreCardXLSEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Score Card Editor [" + path.getFileName() + "]";
+        return "XLS Score Card Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView

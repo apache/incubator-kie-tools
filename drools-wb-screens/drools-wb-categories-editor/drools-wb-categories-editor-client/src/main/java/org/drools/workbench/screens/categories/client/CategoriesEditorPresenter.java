@@ -144,7 +144,7 @@ public class CategoriesEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Categories Editor [" + path.getFileName() + "]";
+        return "Categories Editor [" + path.getFileNameWithoutExtension() + "]";
     }
 
     @WorkbenchPartView
