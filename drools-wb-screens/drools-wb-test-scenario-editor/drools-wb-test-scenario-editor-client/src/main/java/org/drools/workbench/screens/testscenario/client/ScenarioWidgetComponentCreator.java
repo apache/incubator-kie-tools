@@ -44,16 +44,12 @@ public class ScenarioWidgetComponentCreator {
 
     private boolean showResults;
     private Scenario scenario;
-    private String packageName;
 
-    protected ScenarioWidgetComponentCreator(String packageName,
-                                             ScenarioParentWidget scenarioWidget,
-                                             PackageDataModelOracle dmo,
-                                             String[] availableRules) {
+    protected ScenarioWidgetComponentCreator(ScenarioParentWidget scenarioWidget,
+                                             PackageDataModelOracle dmo) {
         this.scenarioWidget = scenarioWidget;
-        this.packageName = packageName;
         this.dmo = dmo;
-        this.availableRules = availableRules;
+        this.availableRules = dmo.getRuleNames().toArray( new String[ dmo.getRuleNames().size() ] );
     }
 
     protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper, ExecutionTrace previousExecutionTrace) {

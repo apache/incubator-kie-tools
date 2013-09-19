@@ -27,8 +27,7 @@ public interface ScenarioEditorView
     void addMetaDataPage( final Path path,
                           final boolean isReadOnly );
 
-    void setScenario( final String packageName,
-                      final Scenario scenario,
+    void setScenario( final Scenario scenario,
                       final PackageDataModelOracle dmo );
 
     void showSaveSuccessful();

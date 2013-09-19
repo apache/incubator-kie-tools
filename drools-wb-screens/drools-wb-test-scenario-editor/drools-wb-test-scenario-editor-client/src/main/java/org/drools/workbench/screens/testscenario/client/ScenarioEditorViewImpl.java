@@ -307,11 +307,9 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void setScenario( String packageName,
-                             Scenario scenario,
+    public void setScenario( Scenario scenario,
                              PackageDataModelOracle dmo ) {
-        String[] availableRules = dmo.getRuleNames().toArray( new String[ dmo.getRuleNames().size() ] );
-        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( packageName, this, dmo, availableRules );
+        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this, dmo );
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
     }

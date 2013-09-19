@@ -187,8 +187,7 @@ public class ScenarioEditorPresenter {
                 dmo.filter( scenario.getImports() );
 
                 view.clear();
-                view.setScenario( modelContent.getPackageName(),
-                                  scenario,
+                view.setScenario( scenario,
                                   dmo );
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
