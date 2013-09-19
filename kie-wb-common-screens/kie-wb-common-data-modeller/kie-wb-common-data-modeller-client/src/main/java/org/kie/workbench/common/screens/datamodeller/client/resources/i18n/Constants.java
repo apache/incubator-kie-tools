@@ -167,6 +167,8 @@ public interface Constants extends Messages {
 
     public String validation_error_invalid_package_identifier_null();
 
+    public String validation_error_no_package_selected();
+
     public String validation_error_invalid_position();
 
     public String validation_error_object_already_exists(String name, String packageName);

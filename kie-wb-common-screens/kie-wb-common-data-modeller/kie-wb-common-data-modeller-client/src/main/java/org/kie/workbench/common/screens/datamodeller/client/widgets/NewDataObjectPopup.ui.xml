@@ -44,21 +44,36 @@
 
             </b:ControlGroup>
 
-            <b:ControlGroup ui:field="newPackageGroup">
+            <b:ControlGroup>
+                <b:Fieldset title="PACKAGE">
+                    <b:ControlLabel for="package">
+                        <gwt:InlineHTML text="Package"/>
+                    </b:ControlLabel>
+                    <b:Controls>
+                        <table>
+                            <tr>
+                                <td style="padding-right: 20px;">
+                                    <b:RadioButton ui:field="r_newPackage" name="package" checked="true" text="{i18n.new_dataobject_popup_new_package}"/>
+                                </td>
+                                <td>
+                                    <b:RadioButton ui:field="r_existingPackage" name="package" text="{i18n.new_dataobject_popup_existing_package}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </b:Controls>
+                </b:Fieldset>
+            </b:ControlGroup>
 
-                <b:ControlLabel for="newPackage" ><gwt:Label ui:field="newPackageLabel" text="{i18n.new_dataobject_popup_new_package}"  /></b:ControlLabel>
-
+            <b:ControlGroup ui:field="newPackageGroup" visible="true">
                 <b:Controls>
-                    <b:TextBox b:id="newPackage" ui:field="newPackage" placeholder="{i18n.package_id_placeholder}"></b:TextBox>
+                    <b:TextBox ui:field="newPackage" placeholder="{i18n.package_id_placeholder}"></b:TextBox>
                     <b:Popover ui:field="newPackageHelpPopover" placement="LEFT" trigger="HOVER" heading="{i18n.new_dataobject_popup_new_package}">
                         <b:Icon ui:field="newPackageHelpIcon" type="QUESTION_SIGN"></b:Icon>
                     </b:Popover>
                 </b:Controls>
             </b:ControlGroup>
 
-            <b:ControlGroup ui:field="existingPackageGroup">
-                <b:ControlLabel for="packageSelectorPanel" ><gwt:Label ui:field="existingPackageLabel" text="{i18n.new_dataobject_popup_existing_package}"  /></b:ControlLabel>
-
+            <b:ControlGroup ui:field="existingPackageGroup" visible="false">
                 <b:Controls>
                     <base:DivWidget b:id="packageSelectorPanel">
                         <datamodeler:PackageSelector ui:field="packageSelector"></datamodeler:PackageSelector>

@@ -19,19 +19,13 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.Popover;
-import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -69,7 +63,16 @@ public class NewDataObjectPopup extends Modal {
     TextBox label;
 
     @UiField
+    RadioButton r_newPackage;
+
+    @UiField
+    RadioButton r_existingPackage;
+
+    @UiField
     ControlGroup newPackageGroup;
+
+    @UiField
+    ControlGroup existingPackageGroup;
 
     @UiField
     TextBox newPackage;
@@ -132,19 +135,38 @@ public class NewDataObjectPopup extends Modal {
                 } )
         ) );
 
-        packageSelector.enableCreatePackage( false );
-        final ListBox packageList = packageSelector.getPackageList();
-        packageList.addChangeHandler( new ChangeHandler() {
+        r_newPackage.addClickHandler(new ClickHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
-                String selectedValue = packageList.getValue();
-                if ( !PackageSelector.NOT_SELECTED.equals( selectedValue ) ) {
-                    newPackage.setText( selectedValue );
-                } else {
-                    newPackage.setText( "" );
+            public void onClick(ClickEvent event) {
+                if (!newPackageGroup.isVisible()) newPackageGroup.setVisible(true);
+                if(existingPackageGroup.isVisible()) existingPackageGroup.setVisible(false);
+                // Reset package error messages upon switching between new and existing package
+                if (existingPackageGroup.getStyleName().toLowerCase().contains(ControlGroupType.ERROR.toString().toLowerCase())) {
+                    errorMessagesGroup.setType( ControlGroupType.NONE );
+                    errorMessages.setText("");
                 }
+                existingPackageGroup.setType( ControlGroupType.NONE );
+                newPackage.setText(null);
+                packageSelector.getPackageList().setSelectedValue(null);
             }
-        } );
+        });
+        r_existingPackage.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (newPackageGroup.isVisible()) newPackageGroup.setVisible(false);
+                if(!existingPackageGroup.isVisible()) existingPackageGroup.setVisible(true);
+                // Reset package error messages upon switching between new and existing package
+                if (newPackageGroup.getStyleName().toLowerCase().contains(ControlGroupType.ERROR.toString().toLowerCase())) {
+                    errorMessagesGroup.setType( ControlGroupType.NONE );
+                    errorMessages.setText("");
+                }
+                newPackageGroup.setType( ControlGroupType.NONE );
+                newPackage.setText(null);
+                packageSelector.getPackageList().setSelectedValue(null);
+            }
+        });
+
+        packageSelector.enableCreatePackage( false );
 
         newPackage.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
 
@@ -172,12 +194,13 @@ public class NewDataObjectPopup extends Modal {
 
         final String newName[] = new String[ 1 ];
         final String newLabel[] = new String[ 1 ];
-        final String newPackageName[] = new String[ 1 ];
+        final String packageName[] = new String[ 1 ];
         final String superClass[] = new String[ 1 ];
 
         newName[ 0 ] = name.getText() != null ? name.getText().trim() : "";
         newLabel[ 0 ] = label.getText() != null ? label.getText().trim() : "";
-        newPackageName[ 0 ] = newPackage.getText() != null && !"".equals( newPackage.getText().trim() ) ? newPackage.getText().trim().toLowerCase() : null;
+        packageName[ 0 ] = newPackage.getText() != null && !"".equals( newPackage.getText().trim() ) ? newPackage.getText().trim().toLowerCase() :
+                                packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue().trim().toLowerCase() : null ;
 
         superClass[ 0 ] = superclassSelector.getSuperclassList().getValue();
         if ( SuperclassSelector.NOT_SELECTED.equals( superClass[ 0 ] ) ) {
@@ -197,26 +220,29 @@ public class NewDataObjectPopup extends Modal {
             public void onSuccess() {
 
                 //2) if classname is ok, validate the package name.
-                if (newPackageName[0] == null || "".equals(newPackageName[0])) {
-                    setErrorMessage(newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier_null());
+                if (packageName[0] == null || "".equals(packageName[0])) {
+                    if (r_newPackage.getValue())
+                        setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier_null() );
+                    else
+                        setErrorMessage( existingPackageGroup, Constants.INSTANCE.validation_error_no_package_selected() );
                 } else {
-                    validatorService.isValidPackageIdentifier(newPackageName[0], new ValidatorCallback() {
+                    validatorService.isValidPackageIdentifier(packageName[0], new ValidatorCallback() {
                         @Override
                         public void onFailure() {
-                            setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier( newPackageName[ 0 ] ) );
+                            setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier( packageName[ 0 ] ) );
                         }
 
                         @Override
                         public void onSuccess() {
-                            validatorService.isUniqueEntityName( newPackageName[ 0 ], newName[ 0 ], getDataModel(), new ValidatorCallback() {
+                            validatorService.isUniqueEntityName( packageName[ 0 ], newName[ 0 ], getDataModel(), new ValidatorCallback() {
                                 @Override
                                 public void onFailure() {
-                                    setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_object_already_exists( newName[ 0 ], newPackageName[ 0 ] ) );
+                                    setErrorMessage( nameGroup, Constants.INSTANCE.validation_error_object_already_exists( newName[ 0 ], packageName[ 0 ] ) );
                                 }
 
                                 @Override
                                 public void onSuccess() {
-                                    createDataObject( newPackageName[ 0 ], newName[ 0 ], newLabel[ 0 ], superClass[ 0 ] );
+                                    createDataObject( packageName[ 0 ], newName[ 0 ], newLabel[ 0 ], superClass[ 0 ] );
                                     clean();
                                     hide();
                                 }
@@ -256,6 +282,7 @@ public class NewDataObjectPopup extends Modal {
         errorMessages.setText( "" );
         nameGroup.setType( ControlGroupType.NONE );
         newPackageGroup.setType( ControlGroupType.NONE );
+        existingPackageGroup.setType( ControlGroupType.NONE );
         errorMessagesGroup.setType( ControlGroupType.NONE );
     }
 

@@ -335,8 +335,7 @@ public class DataObjectEditor extends Composite {
         // Set widgets to errorpopup for styling purposes etc.
         packageNameLabel.setStyleName( null );
 
-        final String newPackageName = PackageSelector.NOT_SELECTED.equals( packageSelector.getPackageList().getValue() ) ?
-                null : packageSelector.getPackageList().getValue();
+        final String newPackageName = packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue() : null;
         final String oldPackageName = getDataObject().getPackageName();
 
         // No notification needed
