@@ -21,31 +21,40 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
-import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = { JavaResourceType.class })
-public class JavaEditorPresenter
-        extends TextEditorPresenter {
+public class JavaEditorPresenter {
+
+    protected Path path;
 
     private boolean isReadOnly = true;
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    private Caller<VFSService> vfsServices;
+
+    @Inject
+    private ViewSourceView sourceView;
 
     @Inject
     private MetadataWidget metadataWidget;
@@ -60,14 +69,28 @@ public class JavaEditorPresenter
     public void init( final Path path ) {
         this.path = checkNotNull( "path", path );
 
-        super.onStartup( path );
 
-        this.path = path;
+        multiPage.addPage( new Page( sourceView,
+                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
+            @Override
+            public void onFocus() {
+                vfsServices.call( new RemoteCallback<String>() {
+                    @Override
+                    public void callback( String response ) {
+                        if ( response == null ) {
+                            sourceView.setContent( "-- empty --" );
+                        } else {
+                            sourceView.setContent( response );
+                        }
+                    }
+                } ).readAllString(path);
+            }
 
-        IsWidget widget = super.getWidget();
-        multiPage.addWidget(
-                widget,
-                CommonConstants.INSTANCE.EditTabTitle() );
+            @Override
+            public void onLostFocus() {
+                sourceView.clear();
+            }
+        } );
 
         multiPage.addPage( new Page( metadataWidget,
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
@@ -88,8 +111,8 @@ public class JavaEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Java Editor [" + FileNameUtil.removeExtension( path,
-                                                               type ) + "]";
+        return "Java Source View [" + FileNameUtil.removeExtension(path,
+                type) + "]";
     }
 
     @WorkbenchPartView
