@@ -62,10 +62,6 @@ public class ObservablePathImpl implements ObservablePath {
     public String getFileName() {
         return path.getFileName();
     }
-    @Override
-    public String getFileNameWithoutExtension() {
-        return removeExtension(path.getFileName());
-    }
     
 	public static String removeExtension(final String filename) {
 		if (filename == null) {

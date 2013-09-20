@@ -21,8 +21,6 @@ public interface Path extends Comparable<Path> {
     FileSystem getFileSystem();
 
     String getFileName();
-    
-    String getFileNameWithoutExtension();
 
     String toURI();
 

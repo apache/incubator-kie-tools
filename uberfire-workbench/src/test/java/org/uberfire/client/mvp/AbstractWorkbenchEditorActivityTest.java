@@ -51,11 +51,6 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
                 return 0;
             }
 
-			@Override
-			public String getFileNameWithoutExtension() {
-				// TODO Auto-generated method stub
-				return null;
-			}
         } );
 
         final ObservablePath path = mock( ObservablePath.class );
@@ -108,12 +103,6 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
             public int compareTo( final Path o ) {
                 return 0;
             }
-
-			@Override
-			public String getFileNameWithoutExtension() {
-				// TODO Auto-generated method stub
-				return null;
-			}
         } );
         final PlaceRequest somewhereTheSame = somewhere.clone();
 
@@ -173,12 +162,6 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
             public int compareTo( final Path o ) {
                 return 0;
             }
-
-			@Override
-			public String getFileNameWithoutExtension() {
-				// TODO Auto-generated method stub
-				return null;
-			}
         } );
 
         final PlaceRequest somewhereElse = new PathPlaceRequest( new Path() {
@@ -201,12 +184,6 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
             public int compareTo( final Path o ) {
                 return 0;
             }
-
-			@Override
-			public String getFileNameWithoutExtension() {
-				// TODO Auto-generated method stub
-				return null;
-			}
         } );
 
         //The first place
