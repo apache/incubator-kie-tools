@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
+import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -104,6 +106,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @OnStartup
     public void onStartup() {
+        view.reset();
         view.showBusyIndicator( CommonConstants.INSTANCE.Wait() );
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
@@ -143,8 +146,15 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @Override
     public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
-        final Collection<Repository> repositories = organizationalUnit.getRepositories();
-        view.setOrganizationalUnitRepositories( repositories );
+        //Reload rather than using cached Object as it could have been changed server-side (adding/deleting Repositories)
+        view.showBusyIndicator( CommonConstants.INSTANCE.Wait() );
+        organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
+            @Override
+            public void callback( final OrganizationalUnit organizationalUnit ) {
+                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories() );
+                view.hideBusyIndicator();
+            }
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnit( organizationalUnit.getName() );
     }
 
     @Override
@@ -192,6 +202,10 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,
                                                                                 repository );
+    }
+
+    public void onRepositoryAddedEvent( @Observes NewRepositoryEvent event ) {
+        onStartup();
     }
 
 }
