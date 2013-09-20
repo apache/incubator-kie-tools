@@ -39,6 +39,7 @@ import org.uberfire.backend.vfs.Path;
 public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDataModelOracle> {
 
     private static final Logger log = LoggerFactory.getLogger( LRUProjectDataModelOracleCache.class );
+    private final static String DEFAULTPKG = "defaultpkg";
 
     @Inject
     private Paths paths;
@@ -88,13 +89,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
         // Add all packages
-        // XXX: For Testing
-        ArrayList<String> temp = new ArrayList<String>();
-        temp.add("A.B.C");
-        temp.add("B.C.D");
-        temp.add("C.D.E");
-        pdBuilder.addPackages(temp);
-//        pdBuilder.addPackages(kieModuleMetaData.getPackages());
+        pdBuilder.addPackages(kieModuleMetaData.getPackages());
 
         //Add all classes from the KieModule metaData
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
@@ -133,18 +128,24 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
             }
         }
 
-        addAllRuleNames( builder, pdBuilder );
+        addAllRuleNames( builder, pdBuilder, project );
 
         return pdBuilder.build();
     }
 
-    private void addAllRuleNames( Builder builder,
-                                  ProjectDataModelOracleBuilder pdBuilder ) {
+    private void addAllRuleNames(
+            Builder builder,
+            ProjectDataModelOracleBuilder pdBuilder,
+            Project project) {
 
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(builder.getKieModuleIgnoringErrors());
-
         final List<String> ruleNames = new ArrayList<String>();
-        for (String packageName : kieModuleMetaData.getPackages()) {
+
+        for (org.guvnor.common.services.project.model.Package pkg : projectService.resolvePackages(project)) {
+            String packageName = pkg.getPackageName();
+            if (packageName.isEmpty()) {
+                packageName = DEFAULTPKG;
+            }
             ruleNames.addAll(kieModuleMetaData.getRuleNamesInPackage(packageName));
         }
 
