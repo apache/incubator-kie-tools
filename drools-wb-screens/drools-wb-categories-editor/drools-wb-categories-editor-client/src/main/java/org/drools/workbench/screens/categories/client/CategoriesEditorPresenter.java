@@ -42,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.mvp.Command;
+import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -144,7 +145,7 @@ public class CategoriesEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Categories Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "Categories Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchPartView

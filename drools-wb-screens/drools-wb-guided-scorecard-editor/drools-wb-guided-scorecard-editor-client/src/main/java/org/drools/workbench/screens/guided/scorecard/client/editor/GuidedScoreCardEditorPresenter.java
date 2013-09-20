@@ -65,6 +65,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -382,9 +383,9 @@ public class GuidedScoreCardEditorPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         if ( isReadOnly ) {
-            return "Read Only Score Card  Viewer [" + path.getFileNameWithoutExtension() + "]";
+            return "Read Only Score Card  Viewer [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
         }
-        return "Score Card Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "Score Card Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchMenu

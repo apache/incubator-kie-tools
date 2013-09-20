@@ -60,6 +60,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -353,7 +354,7 @@ public class DRLEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "DRL Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "DRL Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchPartView

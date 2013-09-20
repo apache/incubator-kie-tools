@@ -47,6 +47,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -347,9 +348,9 @@ public class GlobalsEditorPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         if ( isReadOnly ) {
-            return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( path.getFileNameWithoutExtension() );
+            return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( FileNameUtil.removeExtension(path.getFileName()) );
         }
-        return GlobalsEditorConstants.INSTANCE.globalsEditorTitle0( path.getFileNameWithoutExtension() );
+        return GlobalsEditorConstants.INSTANCE.globalsEditorTitle0( FileNameUtil.removeExtension(path.getFileName()) );
     }
 
     @WorkbenchMenu

@@ -51,6 +51,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -236,7 +237,7 @@ public class ScoreCardXLSEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Score Card Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "XLS Score Card Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchPartView
