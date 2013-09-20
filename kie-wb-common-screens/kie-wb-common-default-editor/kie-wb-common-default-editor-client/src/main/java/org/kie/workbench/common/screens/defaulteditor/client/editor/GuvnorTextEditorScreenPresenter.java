@@ -8,6 +8,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.util.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = {TextResourceType.class}, priority = -1)
@@ -21,7 +22,7 @@ public class GuvnorTextEditorScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "Text Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchPartView

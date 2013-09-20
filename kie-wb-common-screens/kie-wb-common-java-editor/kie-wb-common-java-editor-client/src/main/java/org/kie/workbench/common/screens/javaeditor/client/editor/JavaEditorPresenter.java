@@ -35,6 +35,7 @@ import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.util.FileNameUtil;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 
@@ -85,7 +86,7 @@ public class JavaEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Java Editor [" + path.getFileNameWithoutExtension() + "]";
+        return "Java Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
     }
 
     @WorkbenchPartView
