@@ -53,4 +53,6 @@ public interface OrganizationalUnitManagerConstants
 
     String ConfirmOrganizationalUnitDeletion0( String organizationalUnitName );
 
+    String OrganizationalUnitAlreadyExists();
+
 }

@@ -22,11 +22,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
@@ -75,6 +77,27 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                 }, new HasBusyIndicatorDefaultErrorCallback( view ) ).createOrganizationalUnit( organizationalUnitName,
                                                                                                 organizationalUnitOwner,
                                                                                                 repositories );
+
+            }
+
+        } );
+        addOrganizationalUnitPopup.setValidationCallbackCommand( new CommandWithPayload<ValidatorCallback>() {
+
+            @Override
+            public void execute( final ValidatorCallback payload ) {
+
+                //Check the Organizational Unit doesn't already exist
+                organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
+
+                    @Override
+                    public void callback( final OrganizationalUnit organizationalUnit ) {
+                        if ( organizationalUnit == null ) {
+                            payload.onSuccess();
+                        } else {
+                            payload.onFailure();
+                        }
+                    }
+                } ).getOrganizationalUnit( addOrganizationalUnitPopup.getOrganizationalUnitName() );
             }
         } );
     }
@@ -170,4 +193,5 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,
                                                                                 repository );
     }
+
 }

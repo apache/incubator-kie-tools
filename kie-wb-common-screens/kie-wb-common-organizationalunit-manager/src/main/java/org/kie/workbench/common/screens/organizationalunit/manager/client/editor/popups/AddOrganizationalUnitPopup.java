@@ -30,6 +30,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
 import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class AddOrganizationalUnitPopup extends Modal {
@@ -55,6 +57,8 @@ public class AddOrganizationalUnitPopup extends Modal {
     TextBox ownerTextBox;
 
     private Command callbackCommand;
+
+    private CommandWithPayload<ValidatorCallback> validationCallbackCommand;
 
     private final Command okCommand = new Command() {
         @Override
@@ -93,19 +97,35 @@ public class AddOrganizationalUnitPopup extends Modal {
     }
 
     private void onOKButtonClick() {
-        boolean hasError = false;
+        nameGroup.setType( ControlGroupType.NONE );
         if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
             nameGroup.setType( ControlGroupType.ERROR );
             nameHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitNameIsMandatory() );
-            hasError = true;
-        } else {
-            nameGroup.setType( ControlGroupType.NONE );
-        }
-
-        if ( hasError ) {
             return;
         }
 
+        if ( validationCallbackCommand == null ) {
+            onOKSuccess();
+            return;
+        }
+
+        validationCallbackCommand.execute( new ValidatorCallback() {
+
+            @Override
+            public void onSuccess() {
+                onOKSuccess();
+            }
+
+            @Override
+            public void onFailure() {
+                nameGroup.setType( ControlGroupType.ERROR );
+                nameHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitAlreadyExists() );
+            }
+        } );
+
+    }
+
+    private void onOKSuccess() {
         if ( callbackCommand != null ) {
             callbackCommand.execute();
         }
@@ -122,6 +142,10 @@ public class AddOrganizationalUnitPopup extends Modal {
 
     public void setCallback( final Command callbackCommand ) {
         this.callbackCommand = callbackCommand;
+    }
+
+    public void setValidationCallbackCommand( final CommandWithPayload<ValidatorCallback> validationCallbackCommand ) {
+        this.validationCallbackCommand = validationCallbackCommand;
     }
 
     @Override
