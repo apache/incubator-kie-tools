@@ -59,9 +59,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -95,6 +95,9 @@ public class WorkItemsEditorPresenter {
 
     @Inject
     private MultiPageEditor multiPage;
+
+    @Inject
+    private WorkItemsResourceType type;
 
     @Inject
     @New
@@ -320,7 +323,8 @@ public class WorkItemsEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return WorkItemsEditorConstants.INSTANCE.Title() + " [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return WorkItemsEditorConstants.INSTANCE.Title() + " [" + FileNameUtil.removeExtension( path,
+                                                                                                type ) + "]";
     }
 
     @WorkbenchPartView

@@ -24,27 +24,27 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.mvp.Command;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  *
@@ -64,6 +64,9 @@ public class CategoriesEditorPresenter {
 
     @Inject
     private FileMenuBuilder menuBuilder;
+
+    @Inject
+    private CategoryDefinitionResourceType type;
 
     private Path path;
 
@@ -108,7 +111,7 @@ public class CategoriesEditorPresenter {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  categoryService.call( getSaveSuccessCallback(),
                                                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                      view.getContent() );
+                                                                                                                                view.getContent() );
                                              }
                                          } );
     }
@@ -145,7 +148,8 @@ public class CategoriesEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Categories Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return "Categories Editor [" + FileNameUtil.removeExtension( path,
+                                                                     type ) + "]";
     }
 
     @WorkbenchPartView

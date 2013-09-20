@@ -55,9 +55,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -91,6 +91,9 @@ public class DecisionTableXLSEditorPresenter {
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private DecisionTableXLSResourceType type;
 
     @Inject
     @New
@@ -249,7 +252,8 @@ public class DecisionTableXLSEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Decision Table Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return "XLS Decision Table Editor [" + FileNameUtil.removeExtension( path,
+                                                                             type ) + "]";
     }
 
     @WorkbenchPartView

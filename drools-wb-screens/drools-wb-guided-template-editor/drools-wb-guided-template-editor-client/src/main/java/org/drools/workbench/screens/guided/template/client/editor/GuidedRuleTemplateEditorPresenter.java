@@ -67,9 +67,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -106,6 +106,9 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    private GuidedRuleTemplateResourceType type;
 
     @Inject
     @New
@@ -398,7 +401,8 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Template [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return "Guided Template [" + FileNameUtil.removeExtension( path,
+                                                                   type ) + "]";
     }
 
     @WorkbenchPartView

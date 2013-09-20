@@ -45,8 +45,8 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -58,6 +58,7 @@ public class ScenarioEditorPresenter {
     private final Caller<ScenarioTestEditorService> service;
     private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotification;
+    private final TestScenarioResourceType type;
 
     private Menus menus;
     protected PackageDataModelOracle dmo;
@@ -74,12 +75,14 @@ public class ScenarioEditorPresenter {
                                     final @New FileMenuBuilder menuBuilder,
                                     final Caller<ScenarioTestEditorService> service,
                                     final PlaceManager placeManager,
-                                    final Event<ChangeTitleWidgetEvent> changeTitleNotification ) {
+                                    final Event<ChangeTitleWidgetEvent> changeTitleNotification,
+                                    final TestScenarioResourceType type ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
         this.placeManager = placeManager;
         this.changeTitleNotification = changeTitleNotification;
+        this.type = type;
     }
 
     @OnStartup
@@ -241,7 +244,8 @@ public class ScenarioEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return view.getTitle( FileNameUtil.removeExtension(path.getFileName()) );
+        return view.getTitle( FileNameUtil.removeExtension( path,
+                                                            type ) );
     }
 
     @WorkbenchPartView

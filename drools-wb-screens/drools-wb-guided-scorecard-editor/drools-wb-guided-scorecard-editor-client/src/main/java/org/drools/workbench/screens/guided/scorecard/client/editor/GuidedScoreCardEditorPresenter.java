@@ -24,9 +24,9 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
 import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
@@ -65,9 +65,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -104,6 +104,9 @@ public class GuidedScoreCardEditorPresenter {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private GuidedScoreCardResourceType type;
 
     @Inject
     @New
@@ -382,10 +385,12 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
+        final String fileName = FileNameUtil.removeExtension( path,
+                                                              type );
         if ( isReadOnly ) {
-            return "Read Only Score Card  Viewer [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+            return "Read Only Score Card  Viewer [" + fileName + "]";
         }
-        return "Score Card Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return "Score Card Editor [" + fileName + "]";
     }
 
     @WorkbenchMenu

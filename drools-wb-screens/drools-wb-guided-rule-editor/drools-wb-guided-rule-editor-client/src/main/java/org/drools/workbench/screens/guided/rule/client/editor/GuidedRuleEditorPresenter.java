@@ -66,9 +66,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -102,6 +102,9 @@ public class GuidedRuleEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    private GuidedRuleDRLResourceType resourceTypeDRL;
 
     @Inject
     private GuidedRuleDSLRResourceType resourceTypeDSL;
@@ -379,7 +382,14 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        if ( resourceTypeDRL.accept( path ) ) {
+            return "Guided Editor [" + FileNameUtil.removeExtension( path,
+                                                                     resourceTypeDRL ) + "]";
+        } else if ( resourceTypeDSL.accept( path ) ) {
+            return "Guided Editor [" + FileNameUtil.removeExtension( path,
+                                                                     resourceTypeDSL ) + "]";
+        }
+        return path.getFileName();
     }
 
     @WorkbenchPartView

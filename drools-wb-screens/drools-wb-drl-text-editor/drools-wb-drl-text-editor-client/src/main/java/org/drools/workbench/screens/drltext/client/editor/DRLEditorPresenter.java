@@ -60,9 +60,9 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.util.FileNameUtil;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
@@ -96,6 +96,9 @@ public class DRLEditorPresenter {
 
     @Inject
     private MultiPageEditor multiPage;
+
+    @Inject
+    private DRLResourceType type;
 
     @Inject
     @New
@@ -354,7 +357,8 @@ public class DRLEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "DRL Editor [" + FileNameUtil.removeExtension(path.getFileName()) + "]";
+        return "DRL Editor [" + FileNameUtil.removeExtension( path,
+                                                              type ) + "]";
     }
 
     @WorkbenchPartView
