@@ -36,8 +36,39 @@
   <dependencySets>
     <!-- Binaries -->
     <dependencySet>
+      <excludes>
+        <exclude>*:sources</exclude>
+        <!-- keep the alphabetical order! -->
+        <exclude>*.netty:netty</exclude>
+        <exclude>bouncycastle:bcmail-jdk14</exclude>
+        <exclude>bouncycastle:bcprov-jdk14</exclude>
+        <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
+        <exclude>com.github.gwtbootstrap:gwt-bootstrap</exclude>
+        <exclude>com.google.gwt:gwt-user</exclude>
+        <exclude>com.google.inject:guice</exclude>
+        <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
+        <exclude>edu.ucar:netcdf</exclude>
+        <!-- org.javassist:javassist is included -->
+        <exclude>javassist:javassist</exclude>
+        <exclude>org.apache.ant:ant*</exclude>
+        <exclude>org.apache.poi:poi-ooxml</exclude>
+        <exclude>org.apache.poi:poi-ooxml-schemas</exclude>
+        <exclude>org.apache.xmlbeans:xmlbeans</exclude>
+        <exclude>org.hamcrest:hamcrest-core</exclude>
+        <exclude>org.hibernate:hibernate-validator</exclude>
+        <exclude>org.jboss.errai:*</exclude>
+        <exclude>org.jboss.resteasy:*</exclude>
+        <exclude>org.jboss.seam.conversation:seam-conversation-spi</exclude>
+        <exclude>org.jboss.seam.international:seam-international*</exclude>
+        <exclude>org.jboss.seam.persistence:seam-persistence*</exclude>
+        <exclude>org.jboss.seam.remoting:seam-remoting</exclude>
+        <exclude>org.jboss.seam.transaction:seam-transaction*</exclude>
+        <exclude>org.jgroups:jgroups</exclude>
+        <exclude>org.kie:kie-ci</exclude>
+        <exclude>pl.balon.gwt:gwt-diagrams</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
+      </excludes>
       <includes>
-        <include></include>
         <include>*:*</include>
       </includes>
       <outputDirectory>libs</outputDirectory>
