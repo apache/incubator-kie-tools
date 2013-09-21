@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -13,7 +29,18 @@
   <name>Drools Workbench - JCR to UberFire VFS migration</name>
   <description>Migrates the data of Guvnor 5 to Drools Workbench 6</description>
 
+  <!--
+    Following artifacts are marked as "used undeclared" by dependency:analyze, but in
+    fact they are _not_ used. They just contain classes that are also inside other declared jar(s)
+    e.g. javax.inject.* is in multiple jars and the 'dependency:analyze' won't cope with that.
+    Do not declare these as dependencies unless they are explicitly needed.
+
+      - com.google.gwt:gwt-user
+      - org.sonatype.sisu:sisu-inject-bean
+      - org.jboss.errai:errai-javax-enterprise
+  -->
   <dependencies>
+    <!-- JCR Guvnor dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
@@ -22,19 +49,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-api</artifactId>
-      <version>${version.org.drools.jcrGuvnor}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
       <version>${version.org.drools.jcrGuvnor}</version>
+      <!-- TODO try to remove some of the transitive deps -->
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-scorecards</artifactId>
-      <version>${version.org.drools.jcrGuvnor}</version>
-    </dependency>    
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
@@ -84,8 +103,135 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
-    <!-- Keep dependencies in sync with guvnor-distribution/src/main/assembly/assembly-drools-wb.xml -->
+    <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+
+    <!-- VFS Guvnor (Drools Workbench) dependencies -->
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-jgit</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-rule-editor-api</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-drl-text-editor-api</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-drl-text-editor-backend</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-factmodel-editor-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-commons</artifactId>
+    </dependency>
+
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-datamodel-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-api</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-backend</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-project-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-user</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
+
+    <!-- Other external dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency> <!-- This is an executable jar, so it needs a logging implementation -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <dependency>
       <groupId>commons-cli</groupId>
@@ -99,7 +245,9 @@
     <!-- Weld Modules -->
     <dependency>
       <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
+      <artifactId>weld-api</artifactId>
+      <version>1.1.Final</version>
+      <!-- TODO declare the version in JBoss Integration Platform bom -->
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -107,123 +255,46 @@
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
     </dependency>
-    <dependency><!-- This is an executable jar, so it needs a logging implementation -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <!-- mandatory dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
     </dependency>
 
-    <!-- Overwrite the lucene version to that of jackrabbit, because jackrabbit cannot work with lucene 4.0.0 -->
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-
-    <!-- jcr-guvnor dependencies -->
-
-    <!--<dependency>-->
-    <!--<groupId>org.drools</groupId>-->
-    <!--<artifactId>guvnor-repository</artifactId>-->
-    <!--</dependency>-->
-
-    <!-- vfs-guvnor dependencies -->
-
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-data-modeller-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-data-modeller-backend</artifactId>
-    </dependency>   
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-factmodel-editor-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
-    </dependency> 
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-project-editor-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-backend</artifactId>
-    </dependency>  
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-guided-dtable</artifactId>
-    </dependency>   
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-drl-text-editor-backend</artifactId>
-    </dependency>         
-    <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-jgit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-fs</artifactId>
-    </dependency>
   </dependencies>
-  
-<build>
-  <plugins>
-  <!--
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <phase>prepare-package</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                        <overWriteReleases>false</overWriteReleases>
-                        <overWriteSnapshots>false</overWriteSnapshots>
-                        <overWriteIfNewer>true</overWriteIfNewer>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-        -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <executions>
-                <execution>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>single</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <configuration>
-                <descriptors>
-                  <descriptor>src/main/assembly/assembly-migrator.xml</descriptor><!-- Must be last -->
-                </descriptors>
-                <appendAssemblyId>false</appendAssemblyId>
-              </configuration>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly-migrator.xml</descriptor>
+            <!-- Must be last -->
+          </descriptors>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
       </plugin>
-  </plugins>
-
-</build>
-
+    </plugins>
+  </build>
 </project>
