@@ -144,18 +144,25 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         final OrganizationalUnit selectedOrganizationalUnit = ( selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex ) );
 
         lstOrganizationalUnits.clear();
+        sortedOrganizationalUnits.clear();
         if ( !( organizationalUnits == null || organizationalUnits.isEmpty() ) ) {
             lstOrganizationalUnits.setEnabled( true );
             sortedOrganizationalUnits = sortOrganizationalUnits( organizationalUnits );
             for ( OrganizationalUnit group : sortedOrganizationalUnits ) {
                 lstOrganizationalUnits.addItem( group.getName() );
             }
+
         } else {
             lstOrganizationalUnits.setEnabled( false );
             lstOrganizationalUnits.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitsDefined() );
         }
 
-        if ( selectedOrganizationalUnit == null ) {
+        if ( sortedOrganizationalUnits.contains( selectedOrganizationalUnit ) ) {
+            lstOrganizationalUnits.setSelectedIndex( sortedOrganizationalUnits.indexOf( selectedOrganizationalUnit ) );
+            presenter.organizationalUnitSelected( selectedOrganizationalUnit );
+            btnDeleteOrganizationalUnit.setEnabled( true );
+
+        } else {
             lstOrganizationalUnitRepositories.clear();
             lstOrganizationalUnitRepositories.setEnabled( false );
             lstOrganizationalUnitRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected() );
@@ -163,10 +170,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
             lstAvailableRepositories.setEnabled( false );
             lstAvailableRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected() );
             btnDeleteOrganizationalUnit.setEnabled( false );
-        } else {
-            lstOrganizationalUnits.setSelectedIndex( sortedOrganizationalUnits.indexOf( selectedOrganizationalUnit ) );
-            presenter.organizationalUnitSelected( selectedOrganizationalUnit );
-            btnDeleteOrganizationalUnit.setEnabled( true );
         }
 
     }
