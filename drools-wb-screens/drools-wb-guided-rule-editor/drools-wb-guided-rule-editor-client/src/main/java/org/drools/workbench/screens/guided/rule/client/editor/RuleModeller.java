@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.core.rule.Collect;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
@@ -174,7 +176,7 @@ public class RuleModeller extends DirtyableComposite
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
 
-        addExtendedRuleDropdown();
+        addExtendedRuleDropdown(dataModel.getRuleNamesForPackage(model.getPackageName()));
 
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
@@ -251,13 +253,12 @@ public class RuleModeller extends DirtyableComposite
                                              "100%" );
     }
 
-    private void addExtendedRuleDropdown() {
+    private void addExtendedRuleDropdown(Collection<String> ruleNames) {
         layout.setWidget( currentLayoutRow,
                 0,
                 new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
 
-
-        RuleSelector ruleSelector = new RuleSelector(dataModel);
+        RuleSelector ruleSelector = new RuleSelector(ruleNames, model.name);
         ruleSelector.setRuleName(model.parentName);
         ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
