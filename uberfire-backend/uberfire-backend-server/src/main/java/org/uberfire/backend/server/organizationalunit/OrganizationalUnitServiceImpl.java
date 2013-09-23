@@ -120,6 +120,24 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         return repositoryList;
     }
 
+    @Override
+    public void updateOrganizationalUnitOwner( final String name,
+                                               final String owner ) {
+        final ConfigGroup thisGroupConfig = findGroupConfig( name );
+
+        if ( thisGroupConfig != null ) {
+            thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                               owner ) );
+            configurationService.updateConfiguration( thisGroupConfig );
+
+            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                               updatedOrganizationalUnit );
+        } else {
+            throw new IllegalArgumentException( "OrganizationalUnit " + name + " not found" );
+        }
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void addRepository( final OrganizationalUnit organizationalUnit,

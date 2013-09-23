@@ -19,6 +19,9 @@ public interface OrganizationalUnitService {
                                                  final String owner,
                                                  final Collection<Repository> repositories );
 
+    void updateOrganizationalUnitOwner( final String name,
+                                        final String owner );
+
     void addRepository( final OrganizationalUnit organizationalUnit,
                         final Repository repository );
 
