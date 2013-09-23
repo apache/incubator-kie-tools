@@ -139,17 +139,15 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
             Project project) {
 
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(builder.getKieModuleIgnoringErrors());
-        final List<String> ruleNames = new ArrayList<String>();
 
         for (org.guvnor.common.services.project.model.Package pkg : projectService.resolvePackages(project)) {
             String packageName = pkg.getPackageName();
             if (packageName.isEmpty()) {
                 packageName = DEFAULTPKG;
             }
-            ruleNames.addAll(kieModuleMetaData.getRuleNamesInPackage(packageName));
+             pdBuilder.addRuleNames( pkg.getPackageName(), kieModuleMetaData.getRuleNamesInPackage(packageName) );
         }
 
-        pdBuilder.addRuleNames( ruleNames );
 
     }
 }

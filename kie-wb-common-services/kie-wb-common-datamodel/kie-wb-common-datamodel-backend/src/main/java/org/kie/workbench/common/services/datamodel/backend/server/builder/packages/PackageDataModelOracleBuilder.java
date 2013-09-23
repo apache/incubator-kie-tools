@@ -156,7 +156,7 @@ public final class PackageDataModelOracleBuilder {
         packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
         packageOracle.addTypeAnnotations( pd.getTypeAnnotations() );
         packageOracle.addTypeFieldsAnnotations( pd.getTypeFieldsAnnotations() );
-        packageOracle.addRuleNames( pd.getRuleNames() );
+        packageOracle.getRuleNamesMap().putAll( pd.getRuleNamesMap() );
         packageOracle.addPackageNames( pd.getPackageNames() );
 
         //Add Package DMO specifics

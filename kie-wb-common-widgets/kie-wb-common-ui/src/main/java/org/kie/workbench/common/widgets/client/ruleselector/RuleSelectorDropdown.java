@@ -1,5 +1,8 @@
 package org.kie.workbench.common.widgets.client.ruleselector;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,7 +14,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelectorDropdown
@@ -20,10 +22,10 @@ public class RuleSelectorDropdown
 
     private DropdownButton dropdownButton = new DropdownButton();
 
-    public RuleSelectorDropdown(ProjectDataModelOracle oracle) {
+    public RuleSelectorDropdown(Collection<String> ruleNames) {
 
         addNoneSelectionToDropDown();
-        addRuleNamesToDropDown(oracle);
+        addRuleNamesToDropDown(ruleNames);
 
         initWidget(dropdownButton);
     }
@@ -32,8 +34,8 @@ public class RuleSelectorDropdown
         dropdownButton.add(makeNoneLabel());
     }
 
-    private void addRuleNamesToDropDown(ProjectDataModelOracle oracle) {
-        for (final String ruleName : oracle.getRuleNames()) {
+    private void addRuleNamesToDropDown(Collection<String> ruleNames) {
+        for (final String ruleName : ruleNames) {
             NavLink label = new NavLink(ruleName);
 
             label.addClickHandler(new ClickHandler() {

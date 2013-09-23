@@ -17,7 +17,7 @@ public final class ProjectDataModelOracleBuilder {
 
     private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
-    private List<String> ruleNames = new ArrayList<String>();
+    private Map<String,Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
     private List<String> packageNames = new ArrayList<String>();
 
     private List<String> errors = new ArrayList<String>();
@@ -112,7 +112,9 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void loadRuleNames() {
-        oracle.addRuleNames(ruleNames);
+        for (String packageName : ruleNames.keySet()) {
+            oracle.addRuleNames(packageName, ruleNames.get(packageName));
+        }
     }
 
     private void loadPackageNames() {
@@ -135,10 +137,9 @@ public final class ProjectDataModelOracleBuilder {
         oracle.addEnumDefinitions( loadableEnums );
     }
 
-    public void addRuleNames(List<String> ruleNames) {
-        this.ruleNames.addAll(ruleNames);
+    public void addRuleNames(String packageName, Collection<String> ruleNames) {
+        this.ruleNames.put(packageName, ruleNames);
     }
-
 
     public void addPackages(Collection<String> packageNames) {
         this.packageNames.addAll(packageNames);
