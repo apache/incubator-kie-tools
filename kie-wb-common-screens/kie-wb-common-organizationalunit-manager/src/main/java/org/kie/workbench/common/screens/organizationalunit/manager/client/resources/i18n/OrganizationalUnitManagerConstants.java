@@ -37,6 +37,8 @@ public interface OrganizationalUnitManagerConstants
 
     String AddOrganizationalUnitPopupTitle();
 
+    String EditOrganizationalUnitPopupTitle();
+
     String OrganizationalUnitNameIsMandatory();
 
     String NoOrganizationalUnitsDefined();
@@ -54,5 +56,7 @@ public interface OrganizationalUnitManagerConstants
     String ConfirmOrganizationalUnitDeletion0( String organizationalUnitName );
 
     String OrganizationalUnitAlreadyExists();
+
+    String EditOrganizationalUnit();
 
 }

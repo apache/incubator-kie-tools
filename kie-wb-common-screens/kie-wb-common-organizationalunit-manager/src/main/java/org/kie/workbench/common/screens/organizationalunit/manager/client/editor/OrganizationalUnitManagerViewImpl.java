@@ -67,6 +67,9 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     Button btnAddOrganizationalUnit;
 
     @UiField
+    Button btnEditOrganizationalUnit;
+
+    @UiField
     Button btnDeleteOrganizationalUnit;
 
     @UiField
@@ -99,6 +102,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
                 final OrganizationalUnit selectedOrganizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
                 presenter.organizationalUnitSelected( selectedOrganizationalUnit );
                 btnDeleteOrganizationalUnit.setEnabled( true );
+                btnEditOrganizationalUnit.setEnabled( true );
                 btnAddRepository.setEnabled( false );
                 btnRemoveRepository.setEnabled( false );
             }
@@ -136,6 +140,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         btnAddRepository.setEnabled( false );
         btnRemoveRepository.setEnabled( false );
         btnDeleteOrganizationalUnit.setEnabled( false );
+        btnEditOrganizationalUnit.setEnabled( false );
     }
 
     @Override
@@ -148,8 +153,8 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         if ( !( organizationalUnits == null || organizationalUnits.isEmpty() ) ) {
             lstOrganizationalUnits.setEnabled( true );
             sortedOrganizationalUnits = sortOrganizationalUnits( organizationalUnits );
-            for ( OrganizationalUnit group : sortedOrganizationalUnits ) {
-                lstOrganizationalUnits.addItem( group.getName() );
+            for ( OrganizationalUnit organizationalUnit : sortedOrganizationalUnits ) {
+                lstOrganizationalUnits.addItem( getOrganizationalUnitDisplayName( organizationalUnit ) );
             }
 
         } else {
@@ -161,6 +166,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
             lstOrganizationalUnits.setSelectedIndex( sortedOrganizationalUnits.indexOf( selectedOrganizationalUnit ) );
             presenter.organizationalUnitSelected( selectedOrganizationalUnit );
             btnDeleteOrganizationalUnit.setEnabled( true );
+            btnEditOrganizationalUnit.setEnabled( true );
 
         } else {
             lstOrganizationalUnitRepositories.clear();
@@ -170,13 +176,22 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
             lstAvailableRepositories.setEnabled( false );
             lstAvailableRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected() );
             btnDeleteOrganizationalUnit.setEnabled( false );
+            btnEditOrganizationalUnit.setEnabled( false );
         }
 
     }
 
-    private List<OrganizationalUnit> sortOrganizationalUnits( final Collection<OrganizationalUnit> groups ) {
+    private String getOrganizationalUnitDisplayName( final OrganizationalUnit organizationalUnit ) {
+        final StringBuilder sb = new StringBuilder( organizationalUnit.getName() );
+        if ( !( organizationalUnit.getOwner() == null || organizationalUnit.getOwner().isEmpty() ) ) {
+            sb.append( " : " ).append( organizationalUnit.getOwner() );
+        }
+        return sb.toString();
+    }
+
+    private List<OrganizationalUnit> sortOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits ) {
         final List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        sortedOrganizationalUnits.addAll( groups );
+        sortedOrganizationalUnits.addAll( organizationalUnits );
         Collections.sort( sortedOrganizationalUnits,
                           ORGANIZATIONAL_UNIT_COMPARATOR );
         return sortedOrganizationalUnits;
@@ -268,6 +283,16 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         if ( Window.confirm( OrganizationalUnitManagerConstants.INSTANCE.ConfirmOrganizationalUnitDeletion0( organizationalUnit.getName() ) ) ) {
             presenter.deleteOrganizationalUnit( organizationalUnit );
         }
+    }
+
+    @UiHandler("btnEditOrganizationalUnit")
+    public void onClickEditOrganizationalUnitButton( final ClickEvent event ) {
+        final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
+        if ( selectedOrganizationalUnitIndex < 0 ) {
+            return;
+        }
+        final OrganizationalUnit organizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
+        presenter.editOrganizationalUnit( organizationalUnit );
     }
 
     @UiHandler("btnAddRepository")

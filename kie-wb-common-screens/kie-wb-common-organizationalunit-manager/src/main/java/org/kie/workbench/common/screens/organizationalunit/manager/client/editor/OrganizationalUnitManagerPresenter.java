@@ -26,6 +26,8 @@ public interface OrganizationalUnitManagerPresenter {
 
     void addNewOrganizationalUnit();
 
+    void editOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+
     void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit );
 
     void addOrganizationalUnitRepository( final OrganizationalUnit organizationalUnit,

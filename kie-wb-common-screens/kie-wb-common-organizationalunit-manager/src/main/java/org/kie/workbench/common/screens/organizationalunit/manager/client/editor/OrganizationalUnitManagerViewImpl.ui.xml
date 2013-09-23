@@ -57,11 +57,8 @@
       </tr>
     </table>
 
-    <g:HTMLPanel>
-      <p>&nbsp;</p>
-    </g:HTMLPanel>
-
     <b:Button ui:field="btnAddOrganizationalUnit" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.AddOrganizationalUnit}"></b:Button>
+    <b:Button ui:field="btnEditOrganizationalUnit" icon="EDIT" text="{i18n.EditOrganizationalUnit}"></b:Button>
     <b:Button ui:field="btnDeleteOrganizationalUnit" icon="MINUS_SIGN" type="DANGER" text="{i18n.DeleteOrganizationalUnit}"></b:Button>
 
   </g:HTMLPanel>

@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Command;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
+import org.kie.workbench.common.screens.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -58,6 +59,9 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @Inject
     private AddOrganizationalUnitPopup addOrganizationalUnitPopup;
+
+    @Inject
+    private EditOrganizationalUnitPopup editOrganizationalUnitPopup;
 
     @PostConstruct
     public void setup() {
@@ -102,6 +106,27 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                 } ).getOrganizationalUnit( addOrganizationalUnitPopup.getOrganizationalUnitName() );
             }
         } );
+
+        editOrganizationalUnitPopup.setCallback( new Command() {
+
+            @Override
+            public void execute() {
+                final String organizationalUnitName = editOrganizationalUnitPopup.getOrganizationalUnitName();
+                final String organizationalUnitOwner = editOrganizationalUnitPopup.getOrganizationalUnitOwner();
+                view.showBusyIndicator( CommonConstants.INSTANCE.Wait() );
+                organizationalUnitService.call( new RemoteCallback<Void>() {
+
+                    @Override
+                    public void callback( final Void response ) {
+                        loadOrganizationalUnits();
+                    }
+                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnitOwner( organizationalUnitName,
+                                                                                                     organizationalUnitOwner );
+
+            }
+
+        } );
+
     }
 
     @OnStartup
@@ -160,6 +185,12 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     @Override
     public void addNewOrganizationalUnit() {
         addOrganizationalUnitPopup.show();
+    }
+
+    @Override
+    public void editOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        editOrganizationalUnitPopup.setOrganizationalUnit( organizationalUnit );
+        editOrganizationalUnitPopup.show();
     }
 
     @Override
