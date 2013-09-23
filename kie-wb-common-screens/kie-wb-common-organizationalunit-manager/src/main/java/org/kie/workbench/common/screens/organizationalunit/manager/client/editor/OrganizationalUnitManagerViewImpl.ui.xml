@@ -20,45 +20,50 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.screens.organizationalunit.manager.client.resources.OrganizationalUnitManagerResources"/>
 
-  <b:FluidContainer>
-    <b:FluidRow>
-      <b:Column size="3">
-        <b:Label text="{i18n.OrganizationalUnits}"/>
-      </b:Column>
-      <b:Column size="3">
-        <b:Label text="{i18n.OrganizationalUnitRepositories}"/>
-      </b:Column>
-      <b:Column size="1"/>
-      <b:Column size="3">
-        <b:Label text="{i18n.AllRepositories}"/>
-      </b:Column>
-    </b:FluidRow>
-    <b:FluidRow>
-      <b:Column size="3">
-        <b:ListBox ui:field="lstOrganizationalUnits" visibleItemCount="10"/>
-      </b:Column>
-      <b:Column size="3">
-        <b:ListBox ui:field="lstOrganizationalUnitRepositories" visibleItemCount="10"/>
-      </b:Column>
-      <b:Column size="1">
-        <g:VerticalPanel>
-          <b:Button ui:field="btnAddRepository" icon="CHEVRON_LEFT"></b:Button>
-          <b:Button ui:field="btnRemoveRepository" icon="CHEVRON_RIGHT"></b:Button>
-        </g:VerticalPanel>
-      </b:Column>
-      <b:Column size="3">
-        <b:ListBox ui:field="lstAvailableRepositories" visibleItemCount="10"/>
-      </b:Column>
-    </b:FluidRow>
+  <g:HTMLPanel>
+    <table>
+      <thead>
+        <tr>
+          <td>
+            <b:Label text="{i18n.OrganizationalUnits}" addStyleNames="{resources.CSS.container}"/>
+          </td>
+          <td>
+            <b:Label text="{i18n.OrganizationalUnitRepositories}" addStyleNames="{resources.CSS.container}"/>
+          </td>
+          <td/>
+          <td>
+            <b:Label text="{i18n.AllRepositories}" addStyleNames="{resources.CSS.container}"/>
+          </td>
+        </tr>
+      </thead>
+      <tr>
+        <td>
+          <b:ListBox ui:field="lstOrganizationalUnits" visibleItemCount="10" addStyleNames="{resources.CSS.container}"/>
+        </td>
+        <td>
+          <b:ListBox ui:field="lstOrganizationalUnitRepositories" visibleItemCount="10" addStyleNames="{resources.CSS.container}"/>
+        </td>
+        <td>
+          <g:VerticalPanel styleName="{resources.CSS.shuffleButtons}">
+            <b:Button ui:field="btnAddRepository" icon="CHEVRON_LEFT" addStyleNames="{resources.CSS.container}"></b:Button>
+            <b:Button ui:field="btnRemoveRepository" icon="CHEVRON_RIGHT" addStyleNames="{resources.CSS.container}"></b:Button>
+          </g:VerticalPanel>
+        </td>
+        <td>
+          <b:ListBox ui:field="lstAvailableRepositories" visibleItemCount="10" addStyleNames="{resources.CSS.container}"/>
+        </td>
+      </tr>
+    </table>
 
     <g:HTMLPanel>
-      <p/>
+      <p>&nbsp;</p>
     </g:HTMLPanel>
 
     <b:Button ui:field="btnAddOrganizationalUnit" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.AddOrganizationalUnit}"></b:Button>
     <b:Button ui:field="btnDeleteOrganizationalUnit" icon="MINUS_SIGN" type="DANGER" text="{i18n.DeleteOrganizationalUnit}"></b:Button>
 
-  </b:FluidContainer>
+  </g:HTMLPanel>
 
 </ui:UiBinder>
