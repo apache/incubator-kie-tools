@@ -23,10 +23,12 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -60,6 +62,11 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @WorkbenchPartTitle
     public String getTitle() {
         return ProjectExplorerConstants.INSTANCE.explorerTitle();
+    }
+
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return Position.WEST;
     }
 
     @Override
