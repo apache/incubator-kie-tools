@@ -63,6 +63,10 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     @Inject
     private EditOrganizationalUnitPopup editOrganizationalUnitPopup;
 
+    private Collection<Repository> allRepositories;
+
+    private Collection<OrganizationalUnit> allOrganizationalUnits;
+
     @PostConstruct
     public void setup() {
         addOrganizationalUnitPopup.setCallback( new Command() {
@@ -136,8 +140,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> repositories ) {
-                view.setAllRepositories( repositories );
-                view.hideBusyIndicator();
+                OrganizationalUnitManagerPresenterImpl.this.allRepositories = repositories;
+                loadOrganizationalUnits();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories();
     }
@@ -163,6 +167,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
             @Override
             public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
+                OrganizationalUnitManagerPresenterImpl.this.allOrganizationalUnits = organizationalUnits;
                 view.setOrganizationalUnits( organizationalUnits );
                 view.hideBusyIndicator();
             }
@@ -176,10 +181,20 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
             @Override
             public void callback( final OrganizationalUnit organizationalUnit ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories() );
+                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                        getAvailableRepositories() );
                 view.hideBusyIndicator();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnit( organizationalUnit.getName() );
+    }
+
+    private Collection<Repository> getAvailableRepositories() {
+        final Collection<Repository> availableRepositories = new ArrayList<Repository>();
+        availableRepositories.addAll( allRepositories );
+        for ( OrganizationalUnit ou : allOrganizationalUnits ) {
+            availableRepositories.removeAll( ou.getRepositories() );
+        }
+        return availableRepositories;
     }
 
     @Override
@@ -213,7 +228,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         organizationalUnitService.call( new RemoteCallback<Void>() {
             @Override
             public void callback( final Void v ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories() );
+                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                        getAvailableRepositories() );
                 view.hideBusyIndicator();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).addRepository( organizationalUnit,
@@ -228,7 +244,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         organizationalUnitService.call( new RemoteCallback<Void>() {
             @Override
             public void callback( final Void v ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories() );
+                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                        getAvailableRepositories() );
                 view.hideBusyIndicator();
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,

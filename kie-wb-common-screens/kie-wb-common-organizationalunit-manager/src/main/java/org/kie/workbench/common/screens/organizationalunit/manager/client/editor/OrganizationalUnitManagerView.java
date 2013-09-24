@@ -29,9 +29,8 @@ public interface OrganizationalUnitManagerView extends UberView<OrganizationalUn
 
     void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits );
 
-    void setOrganizationalUnitRepositories( final Collection<Repository> repositories );
-
-    void setAllRepositories( final Collection<Repository> repositories );
+    void setOrganizationalUnitRepositories( final Collection<Repository> repositories,
+                                            final Collection<Repository> availableRepositories );
 
     void addOrganizationalUnit( final OrganizationalUnit organizationalUnit );
 

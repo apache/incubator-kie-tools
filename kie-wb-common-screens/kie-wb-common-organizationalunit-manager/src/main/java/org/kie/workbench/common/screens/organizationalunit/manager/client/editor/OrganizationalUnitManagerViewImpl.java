@@ -83,7 +83,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     private List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
     private List<Repository> sortedOrganizationalUnitRepositories = new ArrayList<Repository>();
     private List<Repository> sortedAvailableRepositories = new ArrayList<Repository>();
-    private List<Repository> sortedAllRepositories = new ArrayList<Repository>();
 
     public OrganizationalUnitManagerViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -133,7 +132,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         sortedOrganizationalUnits.clear();
         sortedOrganizationalUnitRepositories.clear();
         sortedAvailableRepositories.clear();
-        sortedAllRepositories.clear();
         lstOrganizationalUnits.clear();
         lstOrganizationalUnitRepositories.clear();
         lstAvailableRepositories.clear();
@@ -198,7 +196,8 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     }
 
     @Override
-    public void setOrganizationalUnitRepositories( final Collection<Repository> repositories ) {
+    public void setOrganizationalUnitRepositories( final Collection<Repository> repositories,
+                                                   final Collection<Repository> availableRepositories ) {
         lstOrganizationalUnitRepositories.clear();
         sortedOrganizationalUnitRepositories.clear();
         if ( !( repositories == null || repositories.isEmpty() ) ) {
@@ -214,7 +213,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
         lstAvailableRepositories.clear();
         sortedAvailableRepositories.clear();
-        sortedAvailableRepositories.addAll( sortedAllRepositories );
+        sortedAvailableRepositories.addAll( availableRepositories );
         sortedAvailableRepositories.removeAll( sortedOrganizationalUnitRepositories );
         if ( !( sortedAvailableRepositories == null || sortedAvailableRepositories.isEmpty() ) ) {
             lstAvailableRepositories.setEnabled( true );
@@ -228,12 +227,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
         btnAddRepository.setEnabled( false );
         btnRemoveRepository.setEnabled( false );
-    }
-
-    @Override
-    public void setAllRepositories( final Collection<Repository> repositories ) {
-        sortedAllRepositories = sortRepositories( repositories );
-        presenter.loadOrganizationalUnits();
     }
 
     private List<Repository> sortRepositories( final Collection<Repository> repositories ) {
