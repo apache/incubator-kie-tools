@@ -208,4 +208,5 @@ public interface ProjectEditorConstants
 
     String InvalidPackageName(String packageName);
 
+    String KnowledgeSessions();
 }
