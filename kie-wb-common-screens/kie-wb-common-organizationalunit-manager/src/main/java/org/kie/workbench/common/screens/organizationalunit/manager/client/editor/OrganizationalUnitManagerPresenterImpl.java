@@ -36,6 +36,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -253,6 +254,10 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     public void onRepositoryAddedEvent( @Observes NewRepositoryEvent event ) {
+        onStartup();
+    }
+
+    public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
         onStartup();
     }
 

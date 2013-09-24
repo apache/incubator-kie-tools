@@ -43,6 +43,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
@@ -323,6 +324,17 @@ public class BusinessViewPresenterImpl implements BusinessViewPresenter {
                                               activePackage,
                                               false );
         }
+    }
+
+    public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
+        if ( !view.isVisible() ) {
+            return;
+        }
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          activePackage,
+                                          false );
     }
 
     public void onProjectAdded( @Observes final NewProjectEvent event ) {
