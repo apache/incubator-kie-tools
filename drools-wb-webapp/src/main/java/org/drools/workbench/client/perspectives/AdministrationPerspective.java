@@ -180,6 +180,15 @@ public class AdministrationPerspective {
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.MenuRepositories() )
                 .menus()
+                .menu( AppConstants.INSTANCE.MenuListRepositories() )
+                .withRoles( PERMISSIONS_ADMIN )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "RepositoriesEditor" );
+                    }
+                })
+                .endMenu()
                 .menu( AppConstants.INSTANCE.MenuCloneRepository() )
                 .withRoles( PERMISSIONS_ADMIN )
                 .respondsWith( cloneRepoCommand )

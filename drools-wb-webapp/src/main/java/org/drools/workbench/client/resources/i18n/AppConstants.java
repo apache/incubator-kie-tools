@@ -49,6 +49,8 @@ public interface AppConstants
 
     String MenuRepositories();
 
+    String MenuListRepositories();
+
     String MenuCloneRepository();
 
     String MenuNewRepository();
