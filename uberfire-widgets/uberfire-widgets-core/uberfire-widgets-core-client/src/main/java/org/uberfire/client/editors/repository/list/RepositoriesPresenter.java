@@ -19,6 +19,7 @@ package org.uberfire.client.editors.repository.list;
 import java.util.Collection;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -28,11 +29,13 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
@@ -46,16 +49,20 @@ public class RepositoriesPresenter {
     private Caller<RepositoryService> repositoryService;
 
     @Inject
+    private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
+
+    @Inject
     private SyncBeanManager iocManager;
 
     public interface View
             extends
-            IsWidget {
+            UberView<RepositoriesPresenter> {
 
-        void addRepository( String repositoryName,
-                            String gitURL,
-                            String description,
-                            String link );
+        void addRepository( Repository repository );
+
+        boolean confirmDeleteRepository( Repository repository );
+
+        void removeIfExists( Repository repository );
 
         void clear();
     }
@@ -68,7 +75,7 @@ public class RepositoriesPresenter {
 
     @OnStartup
     public void onStartup() {
-
+        view.init( this );
         view.clear();
 
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
@@ -78,10 +85,7 @@ public class RepositoriesPresenter {
                     vfsService.call( new RemoteCallback<Map>() {
                         @Override
                         public void callback( Map response ) {
-                            view.addRepository( repo.getAlias(),
-                                                repo.getUri(),
-                                                "[empty]",
-                                                repo.getRoot().toURI() );
+                            view.addRepository( repo );
                         }
                     } ).readAttributes( repo.getRoot() );
                 }
@@ -99,15 +103,29 @@ public class RepositoriesPresenter {
         return view;
     }
 
+    public void removeRepository( final Repository repository ) {
+        if ( view.confirmDeleteRepository( repository ) ) {
+            repositoryService.call( new RemoteCallback<Void>() {
+
+                @Override
+                public void callback( Void aVoid ) {
+                    repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repository ) );
+                }
+            } ).removeRepository( repository.getAlias() );
+        }
+    }
+
     public void newRepository( @Observes final NewRepositoryEvent event ) {
         vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback( Map response ) {
-                view.addRepository( event.getNewRepository().getAlias(),
-                                    event.getNewRepository().getUri(),
-                                    "[empty]",
-                                    event.getNewRepository().getRoot().toURI() );
+                view.addRepository( event.getNewRepository() );
             }
         } ).readAttributes( event.getNewRepository().getRoot() );
     }
+
+    public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
+        view.removeIfExists( event.getRepository() );
+    }
+
 }

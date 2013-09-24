@@ -40,5 +40,12 @@ public interface CoreConstants
 
     String Finish();
 
+    String Delete();
+
+    String RepositoryViewUriLabel();
+
+    String RepositoryViewRootLabel();
+
+    String ConfirmDeleteRepository0( String repositoryAlias );
 
 }

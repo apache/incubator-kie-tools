@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.vfs.AttrsUtil;
 import org.uberfire.backend.vfs.BasicFileAttributes;
@@ -199,6 +200,10 @@ public class FileExplorerPresenter {
     public void newRootDirectory( @Observes NewRepositoryEvent event ) {
         view.removeIfExists( event.getNewRepository() );
         view.addNewRepository( event.getNewRepository() );
+    }
+
+    public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
+        view.removeIfExists( event.getRepository() );
     }
 
     //Communicate change in context

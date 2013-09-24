@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -59,6 +60,10 @@ public class FileNavigatorPresenter {
 
     public void newRootDirectory( @Observes NewRepositoryEvent event ) {
         view.addNewRepository( event.getNewRepository() );
+    }
+
+    public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
+        view.removeIfExists( event.getRepository() );
     }
 
 }

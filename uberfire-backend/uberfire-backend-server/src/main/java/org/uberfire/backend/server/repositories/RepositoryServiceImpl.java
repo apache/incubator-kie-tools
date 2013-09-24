@@ -14,6 +14,8 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
@@ -42,6 +44,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    private OrganizationalUnitService organizationalUnitService;
 
     @Inject
     private ConfigurationFactory configurationFactory;
@@ -202,5 +207,16 @@ public class RepositoryServiceImpl implements RepositoryService {
             }
         }
 
+        //Remove reference to Repository from Organizational Units
+        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
+        for ( OrganizationalUnit ou : organizationalUnits ) {
+            for ( Repository repository : ou.getRepositories() ) {
+                if ( repository.getAlias().equals( alias ) ) {
+                    organizationalUnitService.removeRepository( ou,
+                                                                repository );
+                }
+            }
+        }
     }
+
 }

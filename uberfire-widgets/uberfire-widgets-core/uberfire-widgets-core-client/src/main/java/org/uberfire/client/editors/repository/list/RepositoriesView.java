@@ -16,51 +16,83 @@
 
 package org.uberfire.client.editors.repository.list;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.client.resources.i18n.CoreConstants;
 
 public class RepositoriesView extends Composite
-    implements
-    RequiresResize,
-    RepositoriesPresenter.View {
+        implements
+        RequiresResize,
+        RepositoriesPresenter.View {
 
     interface RepositoriesEditorViewBinder
-        extends
-        UiBinder<Widget, RepositoriesView> {
+            extends
+            UiBinder<Widget, RepositoriesView> {
+
     }
 
     private static RepositoriesEditorViewBinder uiBinder = GWT.create( RepositoriesEditorViewBinder.class );
 
+    private RepositoriesPresenter presenter;
+
     @UiField
-    public HTMLPanel                            panel;
+    public HTMLPanel panel;
+
+    private Map<Repository, Widget> repositoryToWidgetMap = new HashMap<Repository, Widget>();
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        panel.setWidth( "800px" );
     }
 
-    public void addRepository(String repositoryName,
-                              String gitURL,
-                              String description,
-                              String link) {
-        panel.setWidth( "800px" );
-        panel.add( new HTML( "<li  class=guvnor-repository-li>" +
-                               "<h3>" + repositoryName + "</h3>" +
-                               "<div class=guvnor-repository-body>" +
-                                   "<p> Description: " + description + "</p>" +
-                                   "<p >Last updated: </p>" +
-                               "</div>" +
-                             "</li>"
+    @Override
+    public void init( final RepositoriesPresenter presenter ) {
+        this.presenter = presenter;
+    }
 
-        ) );
+    @Override
+    public void addRepository( final Repository repository ) {
+        final RepositoriesViewItem item = new RepositoriesViewItem( repository.getAlias(),
+                                                                    repository.getUri(),
+                                                                    repository.getRoot().toURI(),
+                                                                    new Command() {
+
+                                                                        @Override
+                                                                        public void execute() {
+                                                                            presenter.removeRepository( repository );
+                                                                        }
+                                                                    } );
+        repositoryToWidgetMap.put( repository,
+                                   item );
+        panel.add( item );
+
+    }
+
+    @Override
+    public boolean confirmDeleteRepository( final Repository repository ) {
+        return Window.confirm( CoreConstants.INSTANCE.ConfirmDeleteRepository0( repository.getAlias() ) );
+    }
+
+    @Override
+    public void removeIfExists( final Repository repository ) {
+        Widget w = repositoryToWidgetMap.remove( repository );
+        if ( w == null ) {
+            return;
+        }
+        panel.remove( w );
     }
 
     @Override
