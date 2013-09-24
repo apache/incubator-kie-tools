@@ -37,6 +37,6 @@ public enum AppRoles implements Role {
 
     @Override
     public String getName() {
-        return toString();
+        return toString().toLowerCase();
     }
 }
