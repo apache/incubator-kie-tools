@@ -15,6 +15,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.widgets.client.menu.ProjectScreenPlaceRequest;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -120,7 +121,7 @@ public class NewProjectWizard
                 projectContextChangeEvent.fire( new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
                                                                                context.getActiveRepository(),
                                                                                project ) );
-                placeManager.goTo( "projectScreen" );
+                placeManager.goTo( new ProjectScreenPlaceRequest() );
             }
         };
     }

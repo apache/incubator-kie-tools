@@ -51,7 +51,7 @@ public class ProjectMenu {
             new Command() {
                 @Override
                 public void execute() {
-                    placeManager.goTo("projectScreen");
+                    placeManager.goTo( new ProjectScreenPlaceRequest());
                 }
             }).endMenu().build().getItems().get(0);
 

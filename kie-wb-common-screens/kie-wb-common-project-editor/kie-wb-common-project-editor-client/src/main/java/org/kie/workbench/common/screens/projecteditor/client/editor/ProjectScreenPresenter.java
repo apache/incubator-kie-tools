@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
+import java.lang.invoke.MethodType;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -35,19 +35,25 @@ import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.menu.ProjectScreenPlaceRequest;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -59,11 +65,15 @@ public class ProjectScreenPresenter
     private Caller<BuildService> buildServiceCaller;
 
     private Project project;
-    private Path pathToPomXML;
+    private ObservablePath pathToPomXML;
+    private ObservablePath pathToKModule;
+    private ObservablePath pathToImports;
     private SaveOperationService saveOperationService;
 
     private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
+
+    private PlaceManager placeManager;
 
     private Menus menus;
     private ProjectScreenModel model;
@@ -72,13 +82,17 @@ public class ProjectScreenPresenter
     }
 
     @Inject
-    public ProjectScreenPresenter( @New ProjectScreenView view,
+    public ProjectScreenPresenter( ProjectScreenView view,
                                    ProjectContext workbenchContext,
                                    Caller<ProjectScreenService> projectScreenService,
                                    Caller<BuildService> buildServiceCaller,
                                    SaveOperationService saveOperationService,
                                    Event<BuildResults> buildResultsEvent,
-                                   Event<NotificationEvent> notificationEvent ) {
+                                   Event<NotificationEvent> notificationEvent,
+                                   PlaceManager placeManager,
+                                   ObservablePath pathToPomXML,
+                                   ObservablePath pathToKModule,
+                                   ObservablePath pathToImports) {
         this.view = view;
         view.setPresenter( this );
 
@@ -87,11 +101,17 @@ public class ProjectScreenPresenter
         this.saveOperationService = saveOperationService;
         this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
+        this.placeManager = placeManager;
+
+        this.pathToPomXML = pathToPomXML;
+        this.pathToKModule = pathToKModule;
+        this.pathToImports = pathToImports;
 
         showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
 
         makeMenuBar();
     }
+
 
     public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
@@ -100,7 +120,11 @@ public class ProjectScreenPresenter
     private void showCurrentProjectInfoIfAny( final Project project ) {
         if ( project != null && !project.equals( this.project ) ) {
             this.project = project;
-            this.pathToPomXML = project.getPomXMLPath();
+
+            this.pathToPomXML.wrap(project.getPomXMLPath());
+            this.pathToKModule.wrap(project.getKModuleXMLPath());
+            this.pathToImports.wrap(project.getImportsPath());
+
             init();
         }
     }
@@ -113,6 +137,8 @@ public class ProjectScreenPresenter
                     @Override
                     public void callback( ProjectScreenModel model ) {
                         ProjectScreenPresenter.this.model = model;
+
+                        addPathListeners( pathToPomXML );
 
                         view.setPOM( model.getPOM() );
                         view.setDependencies( model.getPOM().getDependencies() );
@@ -131,6 +157,63 @@ public class ProjectScreenPresenter
                                  ).load( pathToPomXML );
 
         view.showGAVPanel();
+    }
+
+    private void addPathListeners(ObservablePath pathToPomXML1) {
+        pathToPomXML1.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            @Override
+            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
+                newConcurrentRename(info.getSource(),
+                        info.getTarget(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                reload();
+                            }
+                        }
+                ).show();
+            }
+        });
+
+        pathToPomXML.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            @Override
+            public void execute(final ObservablePath.OnConcurrentDelete info) {
+                newConcurrentDelete(info.getPath(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.closePlace(new ProjectScreenPlaceRequest());
+                            }
+                        }
+                ).show();
+            }
+        });
+    }
+
+    private void disableMenus() {
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+    }
+
+    private void reload() {
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        init();
     }
 
     private void makeMenuBar() {
