@@ -59,7 +59,8 @@ import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = { ScoreCardXLSResourceType.class })
-public class ScoreCardXLSEditorPresenter {
+public class ScoreCardXLSEditorPresenter
+        implements ScoreCardXLSEditorView.Presenter {
 
     @Inject
     private Caller<ScoreCardXLSService> scoreCardXLSService;
@@ -101,6 +102,10 @@ public class ScoreCardXLSEditorPresenter {
     private boolean isReadOnly;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
+    public ScoreCardXLSEditorPresenter() {
+        view.setPresenter(this);
+    }
+
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
@@ -117,7 +122,7 @@ public class ScoreCardXLSEditorPresenter {
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                concurrentUpdateSessionInfo = eventInfo;
+                view.setConcurrentUpdateSessionInfo(eventInfo);
             }
         } );
 
@@ -189,7 +194,7 @@ public class ScoreCardXLSEditorPresenter {
         view.setReadOnly( isReadOnly );
     }
 
-    private void reload() {
+    public void reload() {
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
     }
 

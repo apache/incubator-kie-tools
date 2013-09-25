@@ -215,19 +215,47 @@ public class ScenarioEditorPresenter {
         if ( isReadOnly ) {
             view.showCanNotSaveReadOnly();
         } else {
-            new SaveOperationService().save( path,
-                                             new CommandWithCommitMessage() {
-                                                 @Override
-                                                 public void execute( final String commitMessage ) {
-                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                     service.call( getSaveSuccessCallback(),
-                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                            scenario,
-                                                                                                                            view.getMetadata(),
-                                                                                                                            commitMessage );
-                                                 }
-                                             } );
+            if ( concurrentUpdateSessionInfo != null ) {
+                newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                        concurrentUpdateSessionInfo.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                save();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                //cancel?
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                reload();
+                            }
+                        }
+                ).show();
+            } else {
+                save();
+            }
         }
+    }
+
+    private void save() {
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 service.call( getSaveSuccessCallback(),
+                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                        scenario,
+                                                                                                                        view.getMetadata(),
+                                                                                                                        commitMessage );
+                                             }
+                                         } );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

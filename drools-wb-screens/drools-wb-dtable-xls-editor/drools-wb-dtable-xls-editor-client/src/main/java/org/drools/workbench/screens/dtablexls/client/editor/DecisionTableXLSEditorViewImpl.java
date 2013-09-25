@@ -35,10 +35,13 @@ import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSR
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 public class DecisionTableXLSEditorViewImpl
         extends Composite
@@ -57,12 +60,25 @@ public class DecisionTableXLSEditorViewImpl
     @Inject
     private Event<NotificationEvent> notificationEvent;
 
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+    private Presenter presenter;
+
     @PostConstruct
     public void init() {
         layout.setWidth( "100%" );
         layout.add( ts );
         initWidget( layout );
         setWidth( "100%" );
+    }
+
+    @Override
+    public void setConcurrentUpdateSessionInfo(ObservablePath.OnConcurrentUpdateEvent eventInfo) {
+        this.concurrentUpdateSessionInfo = eventInfo;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     public void setPath( final Path path ) {
@@ -79,26 +95,33 @@ public class DecisionTableXLSEditorViewImpl
             @Override
             public void onClick( final ClickEvent event ) {
                 BusyPopup.showMessage( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
-                uploadWidget.submit( path,
-                                     URLHelper.getServletUrl(),
-                                     new Command() {
 
-                                         @Override
-                                         public void execute() {
-                                             BusyPopup.close();
-                                             notifySuccess();
-                                         }
+                if ( concurrentUpdateSessionInfo != null ) {
+                    newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                            concurrentUpdateSessionInfo.getIdentity(),
+                            new org.uberfire.mvp.Command() {
+                                @Override
+                                public void execute() {
+                                    submit(path);
+                                }
+                            },
+                            new org.uberfire.mvp.Command() {
+                                @Override
+                                public void execute() {
+                                    //cancel?
+                                }
+                            },
+                            new org.uberfire.mvp.Command() {
+                                @Override
+                                public void execute() {
+                                    presenter.reload();
+                                }
+                            }
+                    ).show();
+                } else {
+                    submit(path);
+                }
 
-                                     },
-                                     new Command() {
-
-                                         @Override
-                                         public void execute() {
-                                             BusyPopup.close();
-                                         }
-
-                                     }
-                                   );
             }
         } );
 
@@ -118,6 +141,29 @@ public class DecisionTableXLSEditorViewImpl
                              "resizable=no,scrollbars=yes,status=no" );
             }
         } );
+    }
+
+    private void submit(Path path) {
+        uploadWidget.submit( path,
+                             URLHelper.getServletUrl(),
+                             new Command() {
+
+                                 @Override
+                                 public void execute() {
+                                     BusyPopup.close();
+                                     notifySuccess();
+                                 }
+
+                             },
+                             new Command() {
+
+                                 @Override
+                                 public void execute() {
+                                     BusyPopup.close();
+                                 }
+
+                             }
+                           );
     }
 
     @Override

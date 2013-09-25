@@ -276,6 +276,34 @@ public class WorkItemsEditorPresenter {
             return;
         }
 
+        if ( concurrentUpdateSessionInfo != null ) {
+            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                    concurrentUpdateSessionInfo.getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            save();
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //cancel?
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            reload();
+                        }
+                    }
+            ).show();
+        } else {
+            save();
+        }
+    }
+
+    private void save() {
         new SaveOperationService().save( path,
                                          new CommandWithCommitMessage() {
                                              @Override

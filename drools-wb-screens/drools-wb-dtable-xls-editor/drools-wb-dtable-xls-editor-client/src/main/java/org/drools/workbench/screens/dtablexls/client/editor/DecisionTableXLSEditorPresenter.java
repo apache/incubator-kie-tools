@@ -63,7 +63,8 @@ import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
-public class DecisionTableXLSEditorPresenter {
+public class DecisionTableXLSEditorPresenter
+        implements DecisionTableXLSEditorView.Presenter {
 
     @Inject
     private Caller<DecisionTableXLSService> decisionTableXLSService;
@@ -96,14 +97,17 @@ public class DecisionTableXLSEditorPresenter {
     private DecisionTableXLSResourceType type;
 
     @Inject
-    @New
     private FileMenuBuilder menuBuilder;
+
     private Menus menus;
 
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+
+    public DecisionTableXLSEditorPresenter() {
+        view.setPresenter(this);
+    }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -121,7 +125,7 @@ public class DecisionTableXLSEditorPresenter {
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                concurrentUpdateSessionInfo = eventInfo;
+                view.setConcurrentUpdateSessionInfo(eventInfo);
             }
         } );
 
@@ -193,7 +197,8 @@ public class DecisionTableXLSEditorPresenter {
         view.setReadOnly( isReadOnly );
     }
 
-    private void reload() {
+    @Override
+    public void reload() {
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
     }
 
