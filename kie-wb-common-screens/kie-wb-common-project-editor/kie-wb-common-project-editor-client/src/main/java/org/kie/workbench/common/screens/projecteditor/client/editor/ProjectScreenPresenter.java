@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.lang.invoke.MethodType;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
