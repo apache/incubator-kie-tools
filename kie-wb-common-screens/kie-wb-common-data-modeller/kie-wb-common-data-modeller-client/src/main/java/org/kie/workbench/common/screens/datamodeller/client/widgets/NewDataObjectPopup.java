@@ -135,6 +135,12 @@ public class NewDataObjectPopup extends Modal {
                 } )
         ) );
 
+        r_newPackage.setValue(Boolean.FALSE);
+        r_existingPackage.setValue(Boolean.TRUE);
+
+        newPackageGroup.setVisible(Boolean.FALSE);
+        existingPackageGroup.setVisible(Boolean.TRUE);
+
         r_newPackage.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -275,6 +281,12 @@ public class NewDataObjectPopup extends Modal {
         name.setText( "" );
         label.setText( "" );
         newPackage.setText( "" );
+
+        r_newPackage.setValue(Boolean.FALSE);
+        r_existingPackage.setValue(Boolean.TRUE);
+        newPackageGroup.setVisible(Boolean.FALSE);
+        existingPackageGroup.setVisible(Boolean.TRUE);
+
         cleanErrors();
     }
 

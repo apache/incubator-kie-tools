@@ -56,7 +56,7 @@
                                     <b:RadioButton ui:field="r_newPackage" name="package" text="{i18n.new_dataobject_popup_new_package}"/>
                                 </td>
                                 <td>
-                                    <b:RadioButton ui:field="r_existingPackage" name="package" checked="true" text="{i18n.new_dataobject_popup_existing_package}"/>
+                                    <b:RadioButton ui:field="r_existingPackage" name="package" text="{i18n.new_dataobject_popup_existing_package}"/>
                                 </td>
                             </tr>
                         </table>
