@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface KSessionFormView
         extends IsWidget {
 
+
     interface Presenter
             extends IsWidget {
 
@@ -37,6 +38,8 @@ public interface KSessionFormView
     void selectPseudo();
 
     void selectRealtime();
+
+    void clear();
 
     void makeReadOnly();
 }

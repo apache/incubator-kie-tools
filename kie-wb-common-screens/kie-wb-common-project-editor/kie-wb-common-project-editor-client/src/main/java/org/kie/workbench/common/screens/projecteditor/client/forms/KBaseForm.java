@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.AssertBehaviorOption;
 import org.guvnor.common.services.project.model.EventProcessingOption;
 import org.guvnor.common.services.project.model.KBaseModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
-
-import javax.inject.Inject;
 
 public class KBaseForm
         implements Form<KBaseModel>, KBaseFormView.Presenter {
@@ -40,13 +41,14 @@ public class KBaseForm
     @Override
     public void setModel(KBaseModel knowledgeBaseConfiguration) {
 
+        clear();
+
         view.makeEditable();
 
         this.model = knowledgeBaseConfiguration;
 
         view.setName(knowledgeBaseConfiguration.getName());
         view.setDefault(knowledgeBaseConfiguration.isDefault());
-
 
         for (String include : model.getIncludes()) {
             view.addIncludedKBase(include);
@@ -61,6 +63,11 @@ public class KBaseForm
         setEventProcessingMode(knowledgeBaseConfiguration);
 
         setSessions(knowledgeBaseConfiguration);
+    }
+
+    public void clear() {
+        model = null;
+        view.clear();
     }
 
     @Override

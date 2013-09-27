@@ -49,6 +49,10 @@ public interface ListFormComboPanelView
 
     void showPleaseSelectAnItem();
 
+    void enableItemEditingButtons();
+
+    void disableItemEditingButtons();
+
     void enableMakeDefault();
 
     void disableMakeDefault();

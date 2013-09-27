@@ -28,12 +28,14 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Dependent
 public class KBaseFormViewImpl
         extends Composite
         implements KBaseFormView {
@@ -185,6 +187,16 @@ public class KBaseFormViewImpl
     @Override
     public void addIncludedKBase(String name) {
         includesListBox.addItem(name);
+    }
+
+    @Override
+    public void clear() {
+        nameLabel.setText("");
+        includesListBox.clear();
+        packagesListBox.clear();
+        equalsBehaviorIdentity.setValue(true);
+        eventProcessingModeStream.setValue(true);
+        statefulSessionsPanel.setItems(new ArrayList<KSessionModel>());
     }
 
     @UiHandler("equalsBehaviorIdentity")

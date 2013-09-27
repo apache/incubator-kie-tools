@@ -45,7 +45,7 @@
     <bootstrap:PageHeader ui:field="nameLabel"></bootstrap:PageHeader>
 
     <bootstrap:Heading size="4">
-      <ui:text from="{i18n.Includes}"/>
+      <ui:text from="{i18n.IncludedKnowledgeBases}"/>
     </bootstrap:Heading>
 
     <gwt:SimplePanel styleName='{style.leftPadding}'>

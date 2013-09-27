@@ -96,4 +96,8 @@ public class CRUDListBox
     public void makeEditable() {
         view.makeEditable();
     }
+
+    public void clear() {
+        view.clear();
+    }
 }

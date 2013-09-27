@@ -31,13 +31,13 @@
         <bootstrap:Button ui:field="addButton">
           <ui:text from="{i18n.Add}"/>
         </bootstrap:Button>
-        <bootstrap:Button ui:field="renameButton">
+        <bootstrap:Button ui:field="renameButton" enabled="false">
           <ui:text from="{i18n.Rename}"/>
         </bootstrap:Button>
-        <bootstrap:Button ui:field="deleteButton">
+        <bootstrap:Button ui:field="deleteButton" enabled="false">
           <ui:text from="{i18n.Delete}"/>
         </bootstrap:Button>
-        <bootstrap:Button ui:field="makeDefaultButton">
+        <bootstrap:Button ui:field="makeDefaultButton" enabled="false">
           <ui:text from="{i18n.MakeDefault}"/>
         </bootstrap:Button>
       </bootstrap:ButtonGroup>

@@ -75,6 +75,12 @@ public class KSessionFormViewImpl
     }
 
     @Override
+    public void clear() {
+        realtime.setValue(true);
+        nameTextBox.setText("");
+    }
+
+    @Override
     public void makeReadOnly() {
         realtime.setEnabled(false);
         pseudo.setEnabled(false);

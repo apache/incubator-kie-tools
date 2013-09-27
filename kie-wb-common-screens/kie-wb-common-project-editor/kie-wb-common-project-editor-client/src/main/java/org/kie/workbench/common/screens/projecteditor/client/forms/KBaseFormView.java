@@ -25,7 +25,6 @@ import org.guvnor.common.services.project.model.KSessionModel;
 public interface KBaseFormView
         extends IsWidget {
 
-
     interface Presenter
             extends IsWidget {
 
@@ -70,4 +69,5 @@ public interface KBaseFormView
 
     void makeEditable();
 
+    void clear();
 }

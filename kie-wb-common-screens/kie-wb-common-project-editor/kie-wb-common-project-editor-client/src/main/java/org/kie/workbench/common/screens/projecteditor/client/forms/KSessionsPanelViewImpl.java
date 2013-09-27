@@ -22,10 +22,9 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.DataGrid;
-import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
@@ -35,7 +34,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -43,10 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
-import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 
 public class KSessionsPanelViewImpl
         extends Composite
@@ -90,12 +86,20 @@ public class KSessionsPanelViewImpl
     }
 
     private void setUpNameColumn() {
-        grid.addColumn(new TextColumn<KSessionModel>() {
+        Column<KSessionModel, String> column = new Column<KSessionModel, String>(new EditTextCell()) {
             @Override
             public String getValue(KSessionModel kSessionModel) {
                 return kSessionModel.getName();
             }
-        }, ProjectEditorConstants.INSTANCE.Name());
+        };
+        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Name());
+
+        column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
+            @Override
+            public void update(int i, KSessionModel kSessionModel, String value) {
+                kSessionModel.setName(value);
+            }
+        });
     }
 
     private void setUpClockColumn() {

@@ -65,6 +65,9 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
         selectedItemName = fullName;
         T selected = items.get(fullName);
         form.setModel(selected);
+
+       view.enableItemEditingButtons();
+
         if (selected.isDefault()) {
             view.disableMakeDefault();
         } else {
@@ -110,6 +113,14 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
     private void setSelected(T model) {
         selectedItemName = model.getName();
         view.setSelected(model.getName());
+
+        if (model.isDefault()) {
+            view.disableMakeDefault();
+        } else {
+            view.enableMakeDefault();
+        }
+
+        view.enableItemEditingButtons();
         form.setModel(model);
     }
 
@@ -122,6 +133,9 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
         } else {
             items.remove(selectedItemName);
             view.remove(selectedItemName);
+            view.disableMakeDefault();
+            view.disableItemEditingButtons();
+            form.clear();
             selectedItemName = null;
         }
     }

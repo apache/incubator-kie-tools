@@ -17,13 +17,16 @@
 package org.kie.workbench.common.screens.projecteditor.client.widgets;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
+import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.mockito.ArgumentCaptor;
 
+import static org.jgroups.util.Util.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ListFormComboPanelTest {
@@ -31,25 +34,29 @@ public class ListFormComboPanelTest {
     private ListFormComboPanel<HasListFormComboPanelProperties> panel;
     private ListFormComboPanelView view;
     private ListFormComboPanelView.Presenter presenter;
+    private Form form;
+    private FormPopup namePopup;
+    private HashMap<String, HasListFormComboPanelProperties> items;
 
     @Before
     public void setUp() throws Exception {
         view = mock(ListFormComboPanelView.class);
-        Form form = mock(Form.class);
-        FormPopup namePopup = mock(FormPopup.class);
+        form = mock(Form.class);
+        namePopup = mock(FormPopup.class);
         panel = new ListFormComboPanel<HasListFormComboPanelProperties>(view, form, namePopup) {
             @Override
             protected HasListFormComboPanelProperties createNew(String name) {
-                return null;  //TODO -Rikkola-
+                return newItem(name);
             }
         };
+
+        items = new HashMap<String, HasListFormComboPanelProperties>();
 
         presenter = panel;
     }
 
     @Test
     public void testDefault() throws Exception {
-        Map<String, HasListFormComboPanelProperties> items = new HashMap<String, HasListFormComboPanelProperties>();
         items.put("a", createItem("a", false));
         items.put("b", createItem("b", true));
         items.put("c", createItem("c", false));
@@ -62,6 +69,44 @@ public class ListFormComboPanelTest {
         verify(view, times(2)).enableMakeDefault();
         verify(view).disableMakeDefault();
 
+    }
+
+    @Test
+    public void testAddNew() throws Exception {
+        panel.setItems(items);
+
+        presenter.onAdd();
+
+        ArgumentCaptor<PopupSetFieldCommand> commandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
+        verify(namePopup).show(commandArgumentCaptor.capture());
+
+        commandArgumentCaptor.getValue().setName("kbase1");
+
+        verify(view).addItem("kbase1");
+        ArgumentCaptor<HasListFormComboPanelProperties> propertiesArgumentCaptor = ArgumentCaptor.forClass(HasListFormComboPanelProperties.class);
+        verify(form).setModel(propertiesArgumentCaptor.capture());
+        assertEquals("kbase1", propertiesArgumentCaptor.getValue().getName());
+        verify(view).enableItemEditingButtons();
+        verify(view).enableMakeDefault();
+        verify(view).setSelected("kbase1");
+        assertTrue(items.containsKey("kbase1"));
+
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        items.put("kbase", newItem("kbase"));
+        panel.setItems(items);
+
+        presenter.onSelect("kbase");
+        presenter.onRemove();
+
+        verify(view).disableMakeDefault();
+        verify(view).disableItemEditingButtons();
+        verify(view).remove("kbase");
+        verify(form).clear();
+
+        assertTrue(items.isEmpty());
     }
 
     private HasListFormComboPanelProperties createItem(final String name, final boolean b) {
@@ -95,5 +140,32 @@ public class ListFormComboPanelTest {
         item.setDefault(b);
 
         return item;
+    }
+
+    private HasListFormComboPanelProperties newItem(String name) {
+        HasListFormComboPanelProperties result = new HasListFormComboPanelProperties() {
+            String name;
+            boolean isDefault;
+
+            @Override public String getName() {
+                return name;
+            }
+
+            @Override public void setName(String name) {
+                this.name = name;
+            }
+
+            @Override public boolean isDefault() {
+                return isDefault;
+            }
+
+            @Override public void setDefault(boolean theDefault) {
+                isDefault = theDefault;
+            }
+        };
+
+        result.setName(name);
+
+        return result;
     }
 }

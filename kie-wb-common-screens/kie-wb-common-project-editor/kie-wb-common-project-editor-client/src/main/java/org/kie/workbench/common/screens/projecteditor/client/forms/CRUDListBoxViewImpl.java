@@ -101,6 +101,11 @@ public class CRUDListBoxViewImpl
     }
 
     @Override
+    public void clear() {
+        listBox.clear();
+    }
+
+    @Override
     public HandlerRegistration addRemoveItemHandler(RemoveItemHandler handler) {
         return addHandler(handler, RemoveItemEvent.getType());
     }

@@ -143,6 +143,18 @@ public class ListFormComboPanelViewImpl
     }
 
     @Override
+    public void enableItemEditingButtons() {
+        renameButton.setEnabled(true);
+        deleteButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableItemEditingButtons() {
+        renameButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+    }
+
+    @Override
     public void enableMakeDefault() {
         makeDefaultButton.setEnabled( true );
     }

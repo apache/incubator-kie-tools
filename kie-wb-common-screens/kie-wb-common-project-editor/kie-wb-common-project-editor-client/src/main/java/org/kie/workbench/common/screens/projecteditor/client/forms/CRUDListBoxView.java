@@ -44,4 +44,7 @@ public interface CRUDListBoxView
     void makeReadOnly();
 
     void makeEditable();
+
+    void clear();
+
 }

@@ -61,6 +61,12 @@ public class KSessionForm
     }
 
     @Override
+    public void clear() {
+        model = null;
+        view.clear();
+    }
+
+    @Override
     public void onRealtimeSelect() {
         model.setClockType( ClockTypeOption.REALTIME);
     }

@@ -170,7 +170,7 @@ public interface ProjectEditorConstants
 
     String AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne();
 
-    String Includes();
+    String IncludedKnowledgeBases();
 
     String Stateful();
 
