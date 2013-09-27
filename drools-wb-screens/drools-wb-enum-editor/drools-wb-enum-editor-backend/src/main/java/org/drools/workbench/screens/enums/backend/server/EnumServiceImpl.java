@@ -218,10 +218,12 @@ public class EnumServiceImpl implements EnumService {
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final String content ) {
-        return doValidation( content );
+        return doValidation( path,
+                             content );
     }
 
-    private List<ValidationMessage> doValidation( final String content ) {
+    private List<ValidationMessage> doValidation( final Path path,
+                                                  final String content ) {
         try {
             final DataEnumLoader loader = new DataEnumLoader( content );
             if ( !loader.hasErrors() ) {
@@ -231,7 +233,8 @@ public class EnumServiceImpl implements EnumService {
                 final List<String> loaderErrors = loader.getErrors();
 
                 for ( final String message : loaderErrors ) {
-                    validationMessages.add( makeValidationMessages( message ) );
+                    validationMessages.add( makeValidationMessages( path,
+                                                                    message ) );
                 }
                 return validationMessages;
             }
@@ -241,8 +244,10 @@ public class EnumServiceImpl implements EnumService {
         }
     }
 
-    private ValidationMessage makeValidationMessages( final String message ) {
+    private ValidationMessage makeValidationMessages( final Path path,
+                                                      final String message ) {
         final ValidationMessage msg = new ValidationMessage();
+        msg.setPath( path );
         msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( message );
         return msg;

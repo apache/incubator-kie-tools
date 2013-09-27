@@ -314,16 +314,19 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final String content ) {
-        return doValidation( content );
+        return doValidation( path,
+                             content );
     }
 
-    private List<ValidationMessage> doValidation( final String content ) {
+    private List<ValidationMessage> doValidation( final Path path,
+                                                  final String content ) {
         final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         try {
             MVEL.eval( content,
                        new HashMap() );
         } catch ( Exception e ) {
             final ValidationMessage msg = new ValidationMessage();
+            msg.setPath( path );
             msg.setLevel( ValidationMessage.Level.ERROR );
             msg.setText( e.getMessage() );
             validationMessages.add( msg );
