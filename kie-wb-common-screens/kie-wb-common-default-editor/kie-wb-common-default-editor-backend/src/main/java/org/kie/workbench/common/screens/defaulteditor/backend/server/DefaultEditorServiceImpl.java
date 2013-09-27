@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.defaulteditor.backend.server;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,7 +34,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -50,9 +48,6 @@ public class DefaultEditorServiceImpl
 
     @Inject
     private MetadataService metadataService;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -75,9 +70,6 @@ public class DefaultEditorServiceImpl
                                                               metadata ),
                              makeCommentedOption( comment ) );
 
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource, sessionInfo ) );
-
             return resource;
 
         } catch ( Exception e ) {
@@ -88,7 +80,8 @@ public class DefaultEditorServiceImpl
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        return new CommentedOption( name,
+        return new CommentedOption( sessionInfo.getId(),
+                                    name,
                                     null,
                                     commitMessage,
                                     when );
