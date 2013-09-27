@@ -28,11 +28,19 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 
 import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
+
+    @Inject
+    IOWatchServiceNonDotImpl watchService;
+
+    @Inject
+    @Named("debug")
+    ResourceUpdateDebugger debug;
 
     @Inject
     @Named("clusterServiceFactory")
@@ -43,9 +51,9 @@ public class ApplicationScopedProducer {
     @PostConstruct
     public void setup() {
         if ( clusterServiceFactory == null ) {
-            ioService = new IOServiceDotFileImpl();
+            ioService = new IOServiceDotFileImpl( watchService );
         } else {
-            ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl(), clusterServiceFactory );
+            ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
     }
 

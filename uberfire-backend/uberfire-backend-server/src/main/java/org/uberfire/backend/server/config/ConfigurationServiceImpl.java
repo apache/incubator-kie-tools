@@ -99,6 +99,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                                                                                      @Override
                                                                                      public boolean accept( final Path entry ) throws IOException {
                                                                                          if ( !Files.isDirectory( entry ) &&
+                                                                                                 !entry.getFileName().toString().startsWith( "." ) &&
                                                                                                  entry.getFileName().toString().endsWith( type.getExt() ) ) {
                                                                                              return true;
                                                                                          }
