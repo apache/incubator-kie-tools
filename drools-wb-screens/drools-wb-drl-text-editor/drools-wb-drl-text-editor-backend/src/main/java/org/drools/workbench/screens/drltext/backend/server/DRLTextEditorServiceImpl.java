@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.packages.HasPackageName;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
@@ -46,15 +47,12 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -85,12 +83,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -127,9 +119,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             ioService.write( nioPath,
                              drl,
                              makeCommentedOption( comment ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
             return newPath;
 
@@ -185,10 +174,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
             //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
             invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -289,7 +274,8 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

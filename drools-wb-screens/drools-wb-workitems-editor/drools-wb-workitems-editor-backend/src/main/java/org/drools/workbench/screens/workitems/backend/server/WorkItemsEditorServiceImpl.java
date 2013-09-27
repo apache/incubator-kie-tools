@@ -104,12 +104,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private ConfigurationService configurationService;
 
     @Inject
@@ -184,9 +178,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                              defaultDefinition,
                              makeCommentedOption( comment ) );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
-
             return newPath;
 
         } catch ( Exception e ) {
@@ -255,10 +246,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -404,7 +391,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -49,7 +50,6 @@ import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -90,12 +90,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
 
     @Inject
     private Paths paths;
@@ -139,9 +133,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             ioService.write( nioPath,
                              GuidedDTXMLPersistence.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
             return newPath;
 
@@ -196,10 +187,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -278,7 +265,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

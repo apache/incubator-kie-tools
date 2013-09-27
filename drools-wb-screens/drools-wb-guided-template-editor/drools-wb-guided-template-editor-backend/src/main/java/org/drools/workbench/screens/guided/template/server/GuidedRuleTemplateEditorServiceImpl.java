@@ -89,12 +89,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private Paths paths;
 
     @Inject
@@ -132,9 +126,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             ioService.write( nioPath,
                              BRDRTXMLPersistence.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
             return newPath;
 
@@ -186,10 +177,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                              BRDRTXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
                              makeCommentedOption( comment ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -268,7 +255,8 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

@@ -81,12 +81,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private Paths paths;
 
     @Inject
@@ -129,12 +123,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
             outputStream.flush();
             outputStream.close();
 
-            //Read Path to ensure attributes have been set
-            final Path newPath = paths.convert( nioPath );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( resource ) );
-
             return resource;
 
         } catch ( Exception e ) {
@@ -162,13 +150,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
                           outputStream );
             outputStream.flush();
             outputStream.close();
-
-            //Read Path to ensure attributes have been set
-            final Path newPath = paths.convert( nioPath );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -242,7 +223,8 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

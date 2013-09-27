@@ -45,9 +45,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 /**
  *
@@ -79,12 +77,6 @@ public class EnumServiceImpl implements EnumService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private Paths paths;
 
     @Inject
@@ -110,9 +102,6 @@ public class EnumServiceImpl implements EnumService {
             ioService.write( nioPath,
                              content,
                              makeCommentedOption( comment ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
             return newPath;
 
@@ -161,10 +150,6 @@ public class EnumServiceImpl implements EnumService {
 
             //Invalidate Package-level DMO cache as Enums have changed.
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -266,7 +251,8 @@ public class EnumServiceImpl implements EnumService {
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

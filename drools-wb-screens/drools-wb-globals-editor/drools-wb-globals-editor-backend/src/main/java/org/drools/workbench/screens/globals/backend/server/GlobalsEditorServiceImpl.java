@@ -83,12 +83,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private Paths paths;
 
     @Inject
@@ -127,9 +121,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
             ioService.write( nioPath,
                              GlobalsPersistence.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
-
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
 
             return newPath;
 
@@ -187,10 +178,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
 
             //Invalidate Package-level DMO cache as Globals have changed.
             invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( resource,
-                                                                 sessionInfo ) );
 
             return resource;
 
@@ -267,7 +254,8 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );

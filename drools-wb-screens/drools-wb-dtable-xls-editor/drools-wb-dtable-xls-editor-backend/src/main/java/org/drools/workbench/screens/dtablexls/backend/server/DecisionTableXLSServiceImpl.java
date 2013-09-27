@@ -83,12 +83,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
     private DecisionTableXLSConversionService conversionService;
 
     @Inject
@@ -139,9 +133,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             //Read Path to ensure attributes have been set
             final Path newPath = paths.convert( nioPath );
 
-            //Signal creation to interested parties
-            resourceAddedEvent.fire( new ResourceAddedEvent( newPath ) );
-
             return newPath;
 
         } catch ( Exception e ) {
@@ -174,10 +165,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
             //Read Path to ensure attributes have been set
             final Path newPath = paths.convert( nioPath );
-
-            //Signal update to interested parties
-            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( newPath,
-                                                                 sessionInfo ) );
 
             return newPath;
 
@@ -273,7 +260,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( name,
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
                                                         null,
                                                         commitMessage,
                                                         when );
