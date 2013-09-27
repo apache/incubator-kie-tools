@@ -29,7 +29,6 @@
 
   <inherits name="org.kie.commons.KieCommonsData"/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
-  <inherits name='org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorAPI'/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
