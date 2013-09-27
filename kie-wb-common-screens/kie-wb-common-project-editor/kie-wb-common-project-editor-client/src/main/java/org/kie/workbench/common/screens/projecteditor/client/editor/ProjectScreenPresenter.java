@@ -35,7 +35,6 @@ import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenServi
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.menu.ProjectScreenPlaceRequest;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -195,7 +194,7 @@ public class ProjectScreenPresenter
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.closePlace(new ProjectScreenPlaceRequest());
+                                placeManager.closePlace("projectScreen");
                             }
                         }
                 ).show();
