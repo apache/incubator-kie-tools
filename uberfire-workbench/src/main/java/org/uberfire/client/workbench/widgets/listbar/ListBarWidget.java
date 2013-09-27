@@ -31,8 +31,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -121,8 +119,6 @@ public class ListBarWidget
     @UiField
     FlowPanel menuArea;
 
-//    private final List<Widget> contextMenuItems = new ArrayList<Widget>();
-
     private CustomList customList = null;
 
     private WorkbenchPanelPresenter presenter;
@@ -171,7 +167,7 @@ public class ListBarWidget
         } );
 
         if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null ) {
-            contextDisplay.setVisible( false );
+            contextDisplay.removeFromParent();
         }
     }
 
@@ -180,12 +176,14 @@ public class ListBarWidget
     }
 
     public void setExpanderCommand( final Command command ) {
-        contextDisplay.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                command.execute();
-            }
-        } );
+        if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) == null ) {
+            contextDisplay.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    command.execute();
+                }
+            } );
+        }
     }
 
     @Override
@@ -280,7 +278,7 @@ public class ListBarWidget
         }
 
         if ( currentPart != null ) {
-            if (currentPart.getK1().equals( part )){
+            if ( currentPart.getK1().equals( part ) ) {
                 return;
             }
             parts.add( currentPart.getK1() );
