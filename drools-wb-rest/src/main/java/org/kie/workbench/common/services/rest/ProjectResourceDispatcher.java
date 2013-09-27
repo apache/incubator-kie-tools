@@ -271,10 +271,19 @@ public class ProjectResourceDispatcher {
                 return;
             }
 
-            BuildResults buildResults = buildService.buildAndDeploy( project );
+            BuildResults buildResults = null;
+            try {
+                buildResults = buildService.buildAndDeploy( project );
 
-            result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-            result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
+                result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
+                result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
+            } catch (Throwable t) {
+                List<String> errorResult = new ArrayList<String>();
+                errorResult.add( t.getMessage());
+                result.setDetailedResult( errorResult );
+                result.setStatus( JobRequest.Status.FAIL );           	
+            }
+
             jobResultEvent.fire( result );
         }
     }
