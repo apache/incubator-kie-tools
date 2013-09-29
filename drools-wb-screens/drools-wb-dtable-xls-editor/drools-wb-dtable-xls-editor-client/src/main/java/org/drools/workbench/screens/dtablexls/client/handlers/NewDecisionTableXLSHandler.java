@@ -77,7 +77,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
         final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
                                                   URL.encode( path.toURI() + "/" + fileName ) );
-
+        String[] validExtensions = {"xls"};
         uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),
@@ -100,7 +100,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                      busyIndicatorView.hideBusyIndicator();
                                  }
                              }
-                           );
+                           , validExtensions);
     }
 
 }

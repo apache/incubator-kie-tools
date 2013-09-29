@@ -144,6 +144,7 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     private void submit(Path path) {
+        String[] validExtensions = {"xls"};
         uploadWidget.submit( path,
                              URLHelper.getServletUrl(),
                              new Command() {
@@ -162,8 +163,8 @@ public class ScoreCardXLSEditorViewImpl
                                      BusyPopup.close();
                                  }
 
-                             }
-                           );
+                             },
+                             validExtensions);
     }
 
     @Override
