@@ -10,6 +10,8 @@ import org.kie.commons.java.nio.base.WatchContext;
 import org.kie.commons.java.nio.file.StandardWatchEventKind;
 import org.kie.commons.java.nio.file.WatchEvent;
 import org.kie.commons.java.nio.file.WatchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
@@ -20,6 +22,8 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 public class IOWatchServiceNonDotImpl implements IOWatchService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( IOWatchServiceNonDotImpl.class );
 
     @Inject
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
@@ -56,22 +60,26 @@ public class IOWatchServiceNonDotImpl implements IOWatchService {
                     final List<WatchEvent<?>> events = ws.take().pollEvents();
                     for ( WatchEvent object : events ) {
                         final WatchContext context = (WatchContext) object.context();
-                        if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
-                            if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
-                                resourceUpdatedEvent.fire( new ResourceUpdatedEvent( paths.convert( context.getOldPath() ), sessionInfo( context ) ) );
+                        try {
+                            if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
+                                if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
+                                    resourceUpdatedEvent.fire( new ResourceUpdatedEvent( paths.convert( context.getOldPath() ), sessionInfo( context ) ) );
+                                }
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
+                                if ( !context.getPath().getFileName().toString().startsWith( "." ) ) {
+                                    resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
+                                }
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
+                                if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
+                                    resourceRenamedEvent.fire( new ResourceRenamedEvent( paths.convert( context.getOldPath(), false ), paths.convert( context.getPath() ), sessionInfo( context ) ) );
+                                }
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
+                                if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
+                                    resourceDeletedEvent.fire( new ResourceDeletedEvent( paths.convert( context.getOldPath(), false ), sessionInfo( context ) ) );
+                                }
                             }
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-                            if ( !context.getPath().getFileName().toString().startsWith( "." ) ) {
-                                resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
-                            }
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
-                            if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
-                                resourceRenamedEvent.fire( new ResourceRenamedEvent( paths.convert( context.getOldPath(), false ), paths.convert( context.getPath() ), sessionInfo( context ) ) );
-                            }
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
-                            if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
-                                resourceDeletedEvent.fire( new ResourceDeletedEvent( paths.convert( context.getOldPath(), false ), sessionInfo( context ) ) );
-                            }
+                        } catch ( final Exception ex ) {
+                            LOGGER.error( "Unexpected error during WatchService events fire.", ex );
                         }
                     }
                 }

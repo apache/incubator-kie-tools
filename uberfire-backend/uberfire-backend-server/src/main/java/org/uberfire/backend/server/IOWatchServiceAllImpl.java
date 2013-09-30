@@ -10,6 +10,8 @@ import org.kie.commons.java.nio.base.WatchContext;
 import org.kie.commons.java.nio.file.StandardWatchEventKind;
 import org.kie.commons.java.nio.file.WatchEvent;
 import org.kie.commons.java.nio.file.WatchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
@@ -20,6 +22,8 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 public class IOWatchServiceAllImpl implements IOWatchService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger( IOWatchServiceAllImpl.class );
 
     @Inject
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
@@ -55,15 +59,19 @@ public class IOWatchServiceAllImpl implements IOWatchService {
                 while ( !isDisposed ) {
                     final List<WatchEvent<?>> events = ws.take().pollEvents();
                     for ( WatchEvent object : events ) {
-                        final WatchContext context = (WatchContext) object.context();
-                        if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
-                            resourceUpdatedEvent.fire( new ResourceUpdatedEvent( paths.convert( context.getOldPath() ), sessionInfo( context ) ) );
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-                            resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
-                            resourceRenamedEvent.fire( new ResourceRenamedEvent( paths.convert( context.getOldPath(), false ), paths.convert( context.getPath() ), sessionInfo( context ) ) );
-                        } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
-                            resourceDeletedEvent.fire( new ResourceDeletedEvent( paths.convert( context.getOldPath(), false ), sessionInfo( context ) ) );
+                        try {
+                            final WatchContext context = (WatchContext) object.context();
+                            if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
+                                resourceUpdatedEvent.fire( new ResourceUpdatedEvent( paths.convert( context.getOldPath() ), sessionInfo( context ) ) );
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
+                                resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
+                                resourceRenamedEvent.fire( new ResourceRenamedEvent( paths.convert( context.getOldPath(), false ), paths.convert( context.getPath() ), sessionInfo( context ) ) );
+                            } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
+                                resourceDeletedEvent.fire( new ResourceDeletedEvent( paths.convert( context.getOldPath(), false ), sessionInfo( context ) ) );
+                            }
+                        } catch ( final Exception ex ) {
+                            LOGGER.error( "Unexpected error during WatchService events fire.", ex );
                         }
                     }
                 }
