@@ -26,18 +26,22 @@ public class RuleModellerConfiguration {
     private boolean hideLHS;
     private boolean hideRHS;
     private boolean hideAttributes;
+    private boolean hideExtendedRuleDropdown;
 
     public RuleModellerConfiguration( boolean hideLHS,
                                       boolean hideRHS,
-                                      boolean hideAttrbiutes ) {
+                                      boolean hideAttrbiutes,
+                                      boolean hideExtendedRuleDropdown ) {
         this.hideLHS = hideLHS;
         this.hideRHS = hideRHS;
         this.hideAttributes = hideAttrbiutes;
+        this.hideExtendedRuleDropdown = hideExtendedRuleDropdown;
     }
 
     public synchronized static RuleModellerConfiguration getDefault() {
         if ( DEFAULT == null ) {
             DEFAULT = new RuleModellerConfiguration( false,
+                                                     false,
                                                      false,
                                                      false );
         }
@@ -66,6 +70,14 @@ public class RuleModellerConfiguration {
 
     public void setHideRHS( boolean hideRHS ) {
         this.hideRHS = hideRHS;
+    }
+
+    public boolean isHideExtendedRuleDropdown() {
+        return hideExtendedRuleDropdown;
+    }
+
+    public void setHideExtendedRuleDropdown( boolean hideExtendedRuleDropdown ) {
+        this.hideExtendedRuleDropdown = hideExtendedRuleDropdown;
     }
 
 }

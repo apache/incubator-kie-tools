@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.core.rule.Collect;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
@@ -176,7 +175,9 @@ public class RuleModeller extends DirtyableComposite
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
 
-        addExtendedRuleDropdown(dataModel.getRuleNamesForPackage(model.getPackageName()));
+        if ( this.showExtendedRuleDropdown() ) {
+            addExtendedRuleDropdown( dataModel.getRuleNamesForPackage( model.getPackageName() ) );
+        }
 
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
@@ -253,23 +254,23 @@ public class RuleModeller extends DirtyableComposite
                                              "100%" );
     }
 
-    private void addExtendedRuleDropdown(Collection<String> ruleNames) {
+    private void addExtendedRuleDropdown( Collection<String> ruleNames ) {
         layout.setWidget( currentLayoutRow,
-                0,
-                new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
+                          0,
+                          new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
 
-        RuleSelector ruleSelector = new RuleSelector(ruleNames, model.name);
-        ruleSelector.setRuleName(model.parentName);
-        ruleSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
+        RuleSelector ruleSelector = new RuleSelector( ruleNames, model.name );
+        ruleSelector.setRuleName( model.parentName );
+        ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
+            public void onValueChange( ValueChangeEvent<String> event ) {
                 model.parentName = event.getValue();
             }
-        });
+        } );
 
         layout.setWidget( currentLayoutRow,
-                3,
-                ruleSelector);
+                          3,
+                          ruleSelector );
         currentLayoutRow++;
     }
 
@@ -335,6 +336,10 @@ public class RuleModeller extends DirtyableComposite
         }
 
         return !this.configuration.isHideAttributes();
+    }
+
+    private boolean showExtendedRuleDropdown() {
+        return !this.configuration.isHideExtendedRuleDropdown();
     }
 
     public void refreshWidget() {

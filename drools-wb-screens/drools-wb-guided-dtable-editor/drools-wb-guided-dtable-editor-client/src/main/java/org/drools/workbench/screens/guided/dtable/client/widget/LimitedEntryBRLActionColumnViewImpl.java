@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -30,7 +31,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -56,8 +56,11 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
                eventBus,
                isNew,
                isReadOnly );
+    }
 
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ActionBRLFragmentConfiguration() );
+    @Override
+    public String getTitle() {
+        return GuidedDecisionTableConstants.INSTANCE.ActionBRLFragmentConfiguration();
     }
 
     protected boolean isHeaderUnique( String header ) {
@@ -79,6 +82,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
     protected RuleModellerConfiguration getRuleModellerConfiguration() {
         return new RuleModellerConfiguration( true,
                                               false,
+                                              true,
                                               true );
     }
 

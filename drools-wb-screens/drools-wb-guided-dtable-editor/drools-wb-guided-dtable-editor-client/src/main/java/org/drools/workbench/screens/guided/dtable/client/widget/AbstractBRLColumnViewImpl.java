@@ -129,7 +129,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );
-        this.brlEditorContainer.setHeight( ( getPopupHeight() - 120 ) + "px" );
+        this.brlEditorContainer.setHeight( ( getPopupHeight() - 160 ) + "px" );
         this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
         this.txtColumnHeader.setEnabled( !isReadOnly );
