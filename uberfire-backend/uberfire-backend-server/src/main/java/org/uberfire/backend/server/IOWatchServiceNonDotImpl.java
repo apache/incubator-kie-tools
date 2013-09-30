@@ -2,6 +2,7 @@ package org.uberfire.backend.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -21,6 +22,7 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+@ApplicationScoped
 public class IOWatchServiceNonDotImpl implements IOWatchService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( IOWatchServiceNonDotImpl.class );
@@ -53,7 +55,7 @@ public class IOWatchServiceNonDotImpl implements IOWatchService {
     public void addWatchService( final WatchService ws ) {
         watchServices.add( ws );
 
-        new Thread( "IOWatchServiceAllImpl(" + ws.toString() + ")" ) {
+        new Thread( "IOWatchServiceNonDotImpl(" + ws.toString() + ")" ) {
             @Override
             public void run() {
                 while ( !isDisposed ) {

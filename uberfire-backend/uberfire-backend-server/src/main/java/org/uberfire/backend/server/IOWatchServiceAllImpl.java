@@ -2,6 +2,7 @@ package org.uberfire.backend.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -21,6 +22,7 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+@ApplicationScoped
 public class IOWatchServiceAllImpl implements IOWatchService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( IOWatchServiceAllImpl.class );
