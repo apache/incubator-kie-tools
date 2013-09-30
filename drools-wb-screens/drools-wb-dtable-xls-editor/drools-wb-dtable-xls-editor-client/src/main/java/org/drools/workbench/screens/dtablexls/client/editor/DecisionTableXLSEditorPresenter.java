@@ -17,9 +17,9 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -105,8 +105,9 @@ public class DecisionTableXLSEditorPresenter
     private PlaceRequest place;
     private boolean isReadOnly;
 
-    public DecisionTableXLSEditorPresenter() {
-        view.setPresenter(this);
+    @PostConstruct
+    public void setup() {
+        view.init( this );
     }
 
     @OnStartup
@@ -125,7 +126,7 @@ public class DecisionTableXLSEditorPresenter
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                view.setConcurrentUpdateSessionInfo(eventInfo);
+                view.setConcurrentUpdateSessionInfo( eventInfo );
             }
         } );
 

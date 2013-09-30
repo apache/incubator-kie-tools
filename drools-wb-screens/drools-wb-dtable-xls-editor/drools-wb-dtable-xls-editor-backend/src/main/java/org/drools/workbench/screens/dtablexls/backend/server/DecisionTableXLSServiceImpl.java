@@ -48,9 +48,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -92,19 +90,27 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private Identity identity;
 
     @Inject
-    private SessionInfo sessionInfo;
-
-    @Inject
     private GenericValidator genericValidator;
 
-    public InputStream load( final Path path ) {
+    public InputStream load( final Path path,
+                             final String sessionId ) {
         try {
             final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
                                                                       StandardOpenOption.READ );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+                                                               new SessionInfo() {
+                                                                   @Override
+                                                                   public String getId() {
+                                                                       return sessionId;
+                                                                   }
+
+                                                                   @Override
+                                                                   public Identity getIdentity() {
+                                                                       return identity;
+                                                                   }
+                                                               } ) );
 
             return inputStream;
 
@@ -117,6 +123,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
     public Path create( final Path resource,
                         final InputStream content,
+                        final String sessionId,
                         final String comment ) {
         log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
 
@@ -124,7 +131,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( comment ) );
+                                                                         makeCommentedOption( sessionId,
+                                                                                              comment ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -151,13 +159,15 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
     public Path save( final Path resource,
                       final InputStream content,
+                      final String sessionId,
                       final String comment ) {
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( comment ) );
+                                                                         makeCommentedOption( sessionId,
+                                                                                              comment ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -257,10 +267,11 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
         }
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
+    private CommentedOption makeCommentedOption( final String sessionId,
+                                                 final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+        final CommentedOption co = new CommentedOption( sessionId,
                                                         name,
                                                         null,
                                                         commitMessage,

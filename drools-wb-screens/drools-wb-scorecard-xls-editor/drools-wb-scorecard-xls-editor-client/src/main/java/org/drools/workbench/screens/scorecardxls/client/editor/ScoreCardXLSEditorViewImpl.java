@@ -41,7 +41,7 @@ import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 public class ScoreCardXLSEditorViewImpl
         extends Composite
@@ -60,7 +60,7 @@ public class ScoreCardXLSEditorViewImpl
     @Inject
     private Event<NotificationEvent> notificationEvent;
 
-    private Presenter presenter;
+    private ScoreCardXLSEditorView.Presenter presenter;
 
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo;
 
@@ -73,12 +73,12 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void init( final ScoreCardXLSEditorView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setConcurrentUpdateSessionInfo(ObservablePath.OnConcurrentUpdateEvent eventInfo) {
+    public void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
         this.concurrentUpdateSessionInfo = eventInfo;
     }
 
@@ -99,28 +99,28 @@ public class ScoreCardXLSEditorViewImpl
 
                 if ( concurrentUpdateSessionInfo != null ) {
                     newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                            concurrentUpdateSessionInfo.getIdentity(),
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    submit(path);
-                                }
-                            },
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    //cancel?
-                                }
-                            },
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    presenter.reload();
-                                }
-                            }
-                    ).show();
+                                         concurrentUpdateSessionInfo.getIdentity(),
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 submit( path );
+                                             }
+                                         },
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 //cancel?
+                                             }
+                                         },
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 presenter.reload();
+                                             }
+                                         }
+                                       ).show();
                 } else {
-                    submit(path);
+                    submit( path );
                 }
             }
         } );
@@ -143,8 +143,8 @@ public class ScoreCardXLSEditorViewImpl
         } );
     }
 
-    private void submit(Path path) {
-        String[] validExtensions = {"xls"};
+    private void submit( Path path ) {
+        String[] validExtensions = { "xls" };
         uploadWidget.submit( path,
                              URLHelper.getServletUrl(),
                              new Command() {
@@ -164,7 +164,8 @@ public class ScoreCardXLSEditorViewImpl
                                  }
 
                              },
-                             validExtensions);
+                             validExtensions
+                           );
     }
 
     @Override

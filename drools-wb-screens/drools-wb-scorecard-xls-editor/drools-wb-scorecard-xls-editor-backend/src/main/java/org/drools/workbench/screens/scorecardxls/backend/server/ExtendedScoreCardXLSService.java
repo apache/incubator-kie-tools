@@ -23,14 +23,17 @@ import org.uberfire.backend.vfs.Path;
 
 public interface ExtendedScoreCardXLSService extends ScoreCardXLSService {
 
-    InputStream load( final Path path );
+    InputStream load( final Path path,
+                      final String sessionId );
 
     Path create( final Path resource,
                  final InputStream content,
+                 final String sessionId,
                  final String comment );
 
     Path save( final Path resource,
                final InputStream content,
+               final String sessionId,
                final String comment );
 
 }

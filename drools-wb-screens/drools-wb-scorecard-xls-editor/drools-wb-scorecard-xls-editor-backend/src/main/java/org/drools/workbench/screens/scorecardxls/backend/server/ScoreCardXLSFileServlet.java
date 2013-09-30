@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.guvnor.common.services.backend.file.upload.AbstractFileServlet;
 import org.kie.commons.io.IOService;
@@ -45,25 +46,31 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
     private ExtendedScoreCardXLSService scoreCardXLSService;
 
     @Override
-    protected InputStream doLoad( final Path path ) {
-        return scoreCardXLSService.load( path );
+    protected InputStream doLoad( final Path path,
+                                  final HttpServletRequest request ) {
+        return scoreCardXLSService.load( path,
+                                         request.getSession().getId() );
     }
 
     @Override
     protected void doCreate( final Path path,
                              final InputStream data,
+                             final HttpServletRequest request,
                              final String comment ) {
         scoreCardXLSService.create( path,
                                     data,
+                                    request.getSession().getId(),
                                     comment );
     }
 
     @Override
     protected void doUpdate( final Path path,
                              final InputStream data,
+                             final HttpServletRequest request,
                              final String comment ) {
         scoreCardXLSService.save( path,
                                   data,
+                                  request.getSession().getId(),
                                   comment );
     }
 

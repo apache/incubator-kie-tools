@@ -2,10 +2,9 @@ package org.drools.workbench.screens.dtablexls.client.editor;
 
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-public interface DecisionTableXLSEditorView extends IsWidget {
+public interface DecisionTableXLSEditorView extends UberView<DecisionTableXLSEditorView.Presenter> {
 
     interface Presenter {
 
@@ -17,8 +16,5 @@ public interface DecisionTableXLSEditorView extends IsWidget {
 
     void setReadOnly( final boolean isReadOnly );
 
-    void setConcurrentUpdateSessionInfo(ObservablePath.OnConcurrentUpdateEvent eventInfo);
-
-    void setPresenter(Presenter presenter);
-
+    void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent eventInfo );
 }

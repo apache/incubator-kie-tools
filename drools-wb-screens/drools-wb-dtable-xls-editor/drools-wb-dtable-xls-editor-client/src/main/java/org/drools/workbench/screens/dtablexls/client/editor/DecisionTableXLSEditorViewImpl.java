@@ -41,7 +41,7 @@ import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+import static org.uberfire.client.common.ConcurrentChangePopup.*;
 
 public class DecisionTableXLSEditorViewImpl
         extends Composite
@@ -61,7 +61,7 @@ public class DecisionTableXLSEditorViewImpl
     private Event<NotificationEvent> notificationEvent;
 
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
-    private Presenter presenter;
+    private DecisionTableXLSEditorView.Presenter presenter;
 
     @PostConstruct
     public void init() {
@@ -72,13 +72,13 @@ public class DecisionTableXLSEditorViewImpl
     }
 
     @Override
-    public void setConcurrentUpdateSessionInfo(ObservablePath.OnConcurrentUpdateEvent eventInfo) {
-        this.concurrentUpdateSessionInfo = eventInfo;
+    public void init( final DecisionTableXLSEditorView.Presenter presenter ) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+        this.concurrentUpdateSessionInfo = eventInfo;
     }
 
     public void setPath( final Path path ) {
@@ -98,28 +98,28 @@ public class DecisionTableXLSEditorViewImpl
 
                 if ( concurrentUpdateSessionInfo != null ) {
                     newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                            concurrentUpdateSessionInfo.getIdentity(),
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    submit(path);
-                                }
-                            },
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    //cancel?
-                                }
-                            },
-                            new org.uberfire.mvp.Command() {
-                                @Override
-                                public void execute() {
-                                    presenter.reload();
-                                }
-                            }
-                    ).show();
+                                         concurrentUpdateSessionInfo.getIdentity(),
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 submit( path );
+                                             }
+                                         },
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 //cancel?
+                                             }
+                                         },
+                                         new org.uberfire.mvp.Command() {
+                                             @Override
+                                             public void execute() {
+                                                 presenter.reload();
+                                             }
+                                         }
+                                       ).show();
                 } else {
-                    submit(path);
+                    submit( path );
                 }
 
             }
@@ -143,7 +143,7 @@ public class DecisionTableXLSEditorViewImpl
         } );
     }
 
-    private void submit(Path path) {
+    private void submit( Path path ) {
         uploadWidget.submit( path,
                              URLHelper.getServletUrl(),
                              new Command() {

@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scorecardxls.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
@@ -100,10 +101,10 @@ public class ScoreCardXLSEditorPresenter
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
-    public ScoreCardXLSEditorPresenter() {
-        view.setPresenter(this);
+    @PostConstruct
+    public void setup() {
+        view.init( this );
     }
 
     @OnStartup
@@ -122,7 +123,7 @@ public class ScoreCardXLSEditorPresenter
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                view.setConcurrentUpdateSessionInfo(eventInfo);
+                view.setConcurrentUpdateSessionInfo( eventInfo );
             }
         } );
 

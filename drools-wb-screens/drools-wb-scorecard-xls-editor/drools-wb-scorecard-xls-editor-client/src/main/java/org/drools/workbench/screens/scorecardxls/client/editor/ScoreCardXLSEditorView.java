@@ -1,10 +1,10 @@
 package org.drools.workbench.screens.scorecardxls.client.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
 
-public interface ScoreCardXLSEditorView extends IsWidget {
+public interface ScoreCardXLSEditorView extends UberView<ScoreCardXLSEditorView.Presenter> {
 
     interface Presenter {
 
@@ -16,8 +16,6 @@ public interface ScoreCardXLSEditorView extends IsWidget {
 
     void setReadOnly( final boolean isReadOnly );
 
-    void setPresenter(Presenter presenter);
-
-    void setConcurrentUpdateSessionInfo(ObservablePath.OnConcurrentUpdateEvent eventInfo);
+    void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent eventInfo );
 
 }
