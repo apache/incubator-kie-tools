@@ -1,12 +1,11 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+
+import org.drools.workbench.models.datamodel.oracle.DataType;
 
 /**
  * Translates Java's Type System to Guvnor's Type System

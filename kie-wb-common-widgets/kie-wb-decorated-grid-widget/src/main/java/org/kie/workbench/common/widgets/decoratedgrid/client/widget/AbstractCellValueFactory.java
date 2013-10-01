@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
  * A Factory to create CellValues applicable to given columns.

@@ -15,8 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
-
-import org.drools.workbench.models.commons.shared.workitems.PortableListParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableListParameterDefinition;
 
 /**
  * A Widget to display a Work Item List parameter

@@ -3,12 +3,12 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
-import org.drools.workbench.models.datamodel.oracle.CEPOracle;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.CEPOracle;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
@@ -134,7 +134,7 @@ public class DataModelOracleCEPCompletionsTest {
     @Test
     @SuppressWarnings("serial")
     public void testCEPParameterCompletions() {
-        List<Integer> c = CEPOracle.getCEPOperatorParameterSets("after");
+        List<Integer> c = CEPOracle.getCEPOperatorParameterSets( "after" );
         assertEquals( 3,
                       c.size() );
         assertEquals( 0,

@@ -23,11 +23,11 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
 import static org.kie.commons.validation.PortablePreconditions.*;
 

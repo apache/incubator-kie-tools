@@ -1,11 +1,15 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 
 /**

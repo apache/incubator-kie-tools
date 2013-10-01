@@ -15,14 +15,14 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
-import org.drools.workbench.models.commons.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableEnumParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableFloatParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableListParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableObjectParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableStringParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableEnumParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableListParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 
 /**
  * A Factory to create Widgets to edit Work Item parameters
@@ -37,32 +37,32 @@ public class WorkItemParameterWidgetFactory {
                                                        bindingProvider,
                                                        isReadOnly );
         }
-        if ( ppd instanceof PortableEnumParameterDefinition) {
+        if ( ppd instanceof PortableEnumParameterDefinition ) {
             return new WorkItemEnumParameterWidget( (PortableEnumParameterDefinition) ppd,
                                                     bindingProvider,
                                                     isReadOnly );
         }
-        if ( ppd instanceof PortableFloatParameterDefinition) {
+        if ( ppd instanceof PortableFloatParameterDefinition ) {
             return new WorkItemFloatParameterWidget( (PortableFloatParameterDefinition) ppd,
                                                      bindingProvider,
                                                      isReadOnly );
         }
-        if ( ppd instanceof PortableIntegerParameterDefinition) {
+        if ( ppd instanceof PortableIntegerParameterDefinition ) {
             return new WorkItemIntegerParameterWidget( (PortableIntegerParameterDefinition) ppd,
                                                        bindingProvider,
                                                        isReadOnly );
         }
-        if ( ppd instanceof PortableListParameterDefinition) {
+        if ( ppd instanceof PortableListParameterDefinition ) {
             return new WorkItemListParameterWidget( (PortableListParameterDefinition) ppd,
                                                     bindingProvider,
                                                     isReadOnly );
         }
-        if ( ppd instanceof PortableObjectParameterDefinition) {
+        if ( ppd instanceof PortableObjectParameterDefinition ) {
             return new WorkItemObjectParameterWidget( (PortableObjectParameterDefinition) ppd,
                                                       bindingProvider,
                                                       isReadOnly );
         }
-        if ( ppd instanceof PortableStringParameterDefinition) {
+        if ( ppd instanceof PortableStringParameterDefinition ) {
             return new WorkItemStringParameterWidget( (PortableStringParameterDefinition) ppd,
                                                       bindingProvider,
                                                       isReadOnly );

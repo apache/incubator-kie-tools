@@ -3,10 +3,10 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
-import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.datamodel.oracle.Annotation;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;

@@ -15,14 +15,14 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.commons.shared.workitems.PortableParameterDefinition;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 
 /**
  * A Widget to display a list of Work Item parameters

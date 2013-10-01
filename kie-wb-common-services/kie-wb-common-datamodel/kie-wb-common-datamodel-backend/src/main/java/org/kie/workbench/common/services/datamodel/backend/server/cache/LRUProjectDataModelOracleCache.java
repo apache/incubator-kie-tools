@@ -1,18 +1,16 @@
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.core.rule.TypeMetaInfo;
-import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.builder.Builder;
 import org.guvnor.common.services.builder.LRUBuilderCache;

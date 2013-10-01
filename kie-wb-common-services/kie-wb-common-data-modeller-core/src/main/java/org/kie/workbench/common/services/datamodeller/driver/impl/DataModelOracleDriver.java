@@ -16,12 +16,18 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
-import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
-import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.Annotation;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -38,8 +44,11 @@ import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.DescriptionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.LabelAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.RoleAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

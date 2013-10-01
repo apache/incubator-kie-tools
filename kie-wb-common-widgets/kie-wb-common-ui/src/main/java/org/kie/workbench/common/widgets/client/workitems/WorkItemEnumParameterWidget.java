@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.workitems.PortableEnumParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableEnumParameterDefinition;
 
 /**
  * A Widget to display a Work Item Enum parameter

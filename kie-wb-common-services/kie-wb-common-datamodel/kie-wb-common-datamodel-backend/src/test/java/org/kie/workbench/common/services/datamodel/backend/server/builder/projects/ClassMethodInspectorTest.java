@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.drools.workbench.models.datamodel.model.ClassToGenericClassConverter;
-import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ClassMethodInspectorTest {
 

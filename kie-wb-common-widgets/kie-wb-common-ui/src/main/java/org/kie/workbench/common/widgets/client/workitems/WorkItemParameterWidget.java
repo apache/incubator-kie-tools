@@ -17,7 +17,7 @@ package org.kie.workbench.common.widgets.client.workitems;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.workitems.PortableParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 
 /**
  * A Widget to display a Work Item parameter

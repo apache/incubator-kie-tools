@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,11 +26,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.NumericFloatTextBox;
-
-import java.util.Set;
 
 /**
  * A Widget to display a Work Item Float parameter
@@ -36,24 +36,25 @@ import java.util.Set;
 public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
 
     interface WorkItemFloatParameterWidgetBinder
-        extends
-        UiBinder<HorizontalPanel, WorkItemFloatParameterWidget> {
+            extends
+            UiBinder<HorizontalPanel, WorkItemFloatParameterWidget> {
+
     }
 
     @UiField
-    Label                                             parameterName;
+    Label parameterName;
 
     @UiField
     NumericFloatTextBox parameterEditor;
 
     @UiField
-    ListBox                                           lstAvailableBindings;
+    ListBox lstAvailableBindings;
 
     private static WorkItemFloatParameterWidgetBinder uiBinder = GWT.create( WorkItemFloatParameterWidgetBinder.class );
 
-    public WorkItemFloatParameterWidget(PortableFloatParameterDefinition ppd,
-                                        IBindingProvider bindingProvider,
-                                        boolean isReadOnly) {
+    public WorkItemFloatParameterWidget( PortableFloatParameterDefinition ppd,
+                                         IBindingProvider bindingProvider,
+                                         boolean isReadOnly ) {
         super( ppd,
                bindingProvider );
         this.parameterName.setText( ppd.getName() );
@@ -90,23 +91,23 @@ public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
     }
 
     @UiHandler("parameterEditor")
-    void parameterEditorOnChange(ChangeEvent event) {
+    void parameterEditorOnChange( ChangeEvent event ) {
         try {
-            ((PortableFloatParameterDefinition) ppd).setValue( Float.parseFloat( parameterEditor.getText() ) );
+            ( (PortableFloatParameterDefinition) ppd ).setValue( Float.parseFloat( parameterEditor.getText() ) );
         } catch ( NumberFormatException nfe ) {
-            ((PortableFloatParameterDefinition) ppd).setValue( null );
+            ( (PortableFloatParameterDefinition) ppd ).setValue( null );
         }
     }
 
     @UiHandler("lstAvailableBindings")
-    void lstAvailableBindingsOnChange(ChangeEvent event) {
+    void lstAvailableBindingsOnChange( ChangeEvent event ) {
         int index = lstAvailableBindings.getSelectedIndex();
         parameterEditor.setEnabled( index == 0 );
         if ( index > 0 ) {
-            ((PortableFloatParameterDefinition) ppd).setValue( null );
-            ((PortableFloatParameterDefinition) ppd).setBinding( lstAvailableBindings.getItemText( index ) );
+            ( (PortableFloatParameterDefinition) ppd ).setValue( null );
+            ( (PortableFloatParameterDefinition) ppd ).setBinding( lstAvailableBindings.getItemText( index ) );
         } else {
-            ((PortableFloatParameterDefinition) ppd).setBinding( "" );
+            ( (PortableFloatParameterDefinition) ppd ).setBinding( "" );
         }
     }
 

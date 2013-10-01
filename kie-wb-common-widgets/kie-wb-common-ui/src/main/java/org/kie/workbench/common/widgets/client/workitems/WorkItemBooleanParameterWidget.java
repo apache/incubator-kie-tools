@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,10 +26,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-
-import java.util.Set;
 
 /**
  * A Widget to display a Work Item Boolean parameter
