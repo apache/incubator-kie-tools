@@ -58,7 +58,12 @@ public class DependencyGrid
 
     @Override
     public void onAddDependencyButton() {
-        dependencies.add(new Dependency());
+        Dependency dependency = new Dependency();
+        dependency.setArtifactId("*****");
+        dependency.setGroupId("*****");
+        dependency.setVersion("*****");
+
+        dependencies.add(dependency);
         fillList(dependencies);
     }
 
