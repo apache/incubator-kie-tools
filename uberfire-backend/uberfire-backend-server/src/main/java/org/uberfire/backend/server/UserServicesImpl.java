@@ -15,61 +15,26 @@
  */
 package org.uberfire.backend.server;
 
-import java.util.Iterator;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
 import org.uberfire.security.Identity;
-
-import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 @ApplicationScoped
 public class UserServicesImpl {
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Inject
     @SessionScoped
     private Identity identity;
 
-    private Path bootstrapRoot = null;
-
-    @PostConstruct
-    public void init() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-        if ( fsIterator.hasNext() ) {
-            final FileSystem bootstrap = fsIterator.next();
-            final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
-            if ( rootIterator.hasNext() ) {
-                this.bootstrapRoot = rootIterator.next();
-            }
-        }
-    }
+    @Inject
+    private UserServicesBackendImpl userServicesBackend;
 
     public Path buildPath( final String serviceType,
                            final String relativePath ) {
-        if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType + "/." + relativePath );
-        } else {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + identity.getName() + "/." + serviceType );
-        }
+        return userServicesBackend.buildPath( identity.getName(), serviceType, relativePath );
     }
 
-    public Path buildPath( final String userName,
-                           final String serviceType,
-                           final String relativePath ) {
-        if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType + "/." + relativePath );
-        } else {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType );
-        }
-    }
 }

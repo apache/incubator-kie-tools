@@ -10,6 +10,7 @@ import org.kie.commons.io.IOWatchService;
 import org.kie.commons.java.nio.base.WatchContext;
 import org.kie.commons.java.nio.file.StandardWatchEventKind;
 import org.kie.commons.java.nio.file.WatchEvent;
+import org.kie.commons.java.nio.file.WatchKey;
 import org.kie.commons.java.nio.file.WatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,12 @@ public class IOWatchServiceAllImpl implements IOWatchService {
             @Override
             public void run() {
                 while ( !isDisposed ) {
-                    final List<WatchEvent<?>> events = ws.take().pollEvents();
+                    final WatchKey wk = ws.take();
+                    if ( wk == null ) {
+                        continue;
+                    }
+
+                    final List<WatchEvent<?>> events = wk.pollEvents();
                     for ( WatchEvent object : events ) {
                         try {
                             final WatchContext context = (WatchContext) object.context();
