@@ -81,7 +81,6 @@ public class PackageNameFormPopupViewImpl
     @UiHandler("okButton")
     public void ok( ClickEvent clickEvent ) {
         presenter.onOk();
-        hide();
     }
 
     @Override

@@ -110,6 +110,7 @@ public class ProjectScreenViewImpl
 
         this.importsPageMetadata = importsPageMetadata;
         deckPanel.add(importsPageMetadata);
+
     }
 
 
@@ -162,6 +163,7 @@ public class ProjectScreenViewImpl
     public void showKBasePanel() {
         deckPanel.showWidget(KBASE_PANEL_INDEX);
         dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.KnowledgeBasesAndSessions());
+        kModuleEditorPanel.refresh();
     }
 
     @Override

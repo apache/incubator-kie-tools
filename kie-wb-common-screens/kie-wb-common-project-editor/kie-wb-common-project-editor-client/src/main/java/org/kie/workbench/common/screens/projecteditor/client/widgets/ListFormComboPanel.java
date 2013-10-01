@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {
@@ -62,17 +61,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     @Override
     public void onSelect(String fullName) {
-        selectedItemName = fullName;
-        T selected = items.get(fullName);
-        form.setModel(selected);
-
-       view.enableItemEditingButtons();
-
-        if (selected.isDefault()) {
-            view.disableMakeDefault();
-        } else {
-            view.enableMakeDefault();
-        }
+        setSelected(items.get(fullName));
     }
 
     @Override
@@ -81,11 +70,17 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
         namePopup.show(new PopupSetFieldCommand() {
             @Override
             public void setName(String name) {
-                T model = createNew(name);
+                if (items.containsKey(name)) {
+                    view.showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
+                } else {
+                    T model = createNew(name);
 
-                view.addItem(model.getName());
-                items.put(model.getName(), model);
-                setSelected(model);
+                    view.addItem(model.getName());
+                    items.put(model.getName(), model);
+                    setSelected(model);
+
+                    namePopup.hide();
+                }
             }
         });
     }
@@ -106,6 +101,8 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
                 view.addItem(name);
 
                 setSelected(model);
+
+                namePopup.hide();
             }
         });
     }
@@ -125,6 +122,23 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
     }
 
     protected abstract T createNew(String name);
+
+    public void refresh() {
+        if (itemsIsNotNullOrEmpty()) {
+          setSelected(getFirstItem());
+        } else {
+            selectedItemName = null;
+            form.clear();
+        }
+    }
+
+    private T getFirstItem() {
+        return items.values().iterator().next();
+    }
+
+    private boolean itemsIsNotNullOrEmpty() {
+        return items != null && !items.isEmpty();
+    }
 
     @Override
     public void onRemove() {

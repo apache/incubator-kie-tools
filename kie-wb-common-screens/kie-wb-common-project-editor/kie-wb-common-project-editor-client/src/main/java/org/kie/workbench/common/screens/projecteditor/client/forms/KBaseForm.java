@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;

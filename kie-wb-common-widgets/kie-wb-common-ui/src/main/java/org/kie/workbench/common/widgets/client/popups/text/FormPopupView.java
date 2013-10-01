@@ -28,6 +28,8 @@ public interface FormPopupView {
 
     void show();
 
+    void hide();
+
     String getName();
 
     void setName( String name );

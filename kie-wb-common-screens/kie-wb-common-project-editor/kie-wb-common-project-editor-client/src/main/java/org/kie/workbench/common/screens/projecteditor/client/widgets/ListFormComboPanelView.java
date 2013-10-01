@@ -49,6 +49,8 @@ public interface ListFormComboPanelView
 
     void showPleaseSelectAnItem();
 
+    void showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
+
     void enableItemEditingButtons();
 
     void disableItemEditingButtons();

@@ -116,6 +116,11 @@ public class ListFormComboPanelViewImpl
         ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.PleaseSelectAnItem() );
     }
 
+    @Override
+    public void showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName() {
+        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName() );
+    }
+
     @UiHandler("list")
     public void handleChange( ChangeEvent event ) {
         String value = list.getValue( list.getSelectedIndex() );

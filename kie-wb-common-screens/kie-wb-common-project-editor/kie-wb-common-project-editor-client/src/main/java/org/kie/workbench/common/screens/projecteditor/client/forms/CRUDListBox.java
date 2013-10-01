@@ -54,6 +54,7 @@ public class CRUDListBox
             @Override
             public void setName(String name) {
                 view.addItemAndFireEvent(name);
+                newItemPopup.hide();
             }
         });
     }

@@ -30,16 +30,14 @@ public class KSessionsPanel
         IsWidget {
 
     private final KSessionsPanelView view;
-    private final KSessionForm form;
     private final TextBoxFormPopup namePopup;
     private List<KSessionModel> items;
 
     @Inject
-    public KSessionsPanel(KSessionsPanelView view,
-            KSessionForm form,
+    public KSessionsPanel(
+            KSessionsPanelView view,
             TextBoxFormPopup namePopup) {
         this.view = view;
-        this.form = form;
         this.namePopup = namePopup;
 
         view.setPresenter(this);
@@ -72,6 +70,7 @@ public class KSessionsPanel
                 view.setItemList(items);
 
                 namePopup.setOldName("");
+                namePopup.hide();
             }
         });
     }

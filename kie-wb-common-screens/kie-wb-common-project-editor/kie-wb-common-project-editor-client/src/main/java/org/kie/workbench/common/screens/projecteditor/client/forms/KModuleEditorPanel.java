@@ -10,8 +10,6 @@ import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 public class KModuleEditorPanel
         extends ListFormComboPanel<KBaseModel> {
 
-    private KModuleModel model;
-
     private KModuleEditorPanelView view;
 
     public KModuleEditorPanel() {
@@ -28,7 +26,6 @@ public class KModuleEditorPanel
     }
 
     public void setData(KModuleModel model, boolean isReadOnly) {
-        this.model = model;
 
         if (isReadOnly) {
             view.makeReadOnly();

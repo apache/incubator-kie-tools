@@ -47,4 +47,8 @@ public abstract class FormPopup
         view.setName(oldName);
     }
 
+    public void hide() {
+        view.hide();
+    }
+
 }
