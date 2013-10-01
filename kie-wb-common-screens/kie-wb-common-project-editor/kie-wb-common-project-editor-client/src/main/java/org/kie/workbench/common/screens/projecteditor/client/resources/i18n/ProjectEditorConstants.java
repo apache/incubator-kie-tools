@@ -212,4 +212,5 @@ public interface ProjectEditorConstants
 
     String ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
 
+    String ProjectScreenWithName(String projectName);
 }

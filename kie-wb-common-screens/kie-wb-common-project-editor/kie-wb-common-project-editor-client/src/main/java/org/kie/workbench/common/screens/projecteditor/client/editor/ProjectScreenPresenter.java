@@ -45,8 +45,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -70,11 +73,13 @@ public class ProjectScreenPresenter
 
     private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private PlaceManager placeManager;
 
     private Menus menus;
     private ProjectScreenModel model;
+    private PlaceRequest placeRequest;
 
     public ProjectScreenPresenter() {
     }
@@ -87,6 +92,7 @@ public class ProjectScreenPresenter
                                    SaveOperationService saveOperationService,
                                    Event<BuildResults> buildResultsEvent,
                                    Event<NotificationEvent> notificationEvent,
+                                   Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
                                    PlaceManager placeManager,
                                    ObservablePath pathToPomXML,
                                    ObservablePath pathToKModule,
@@ -99,6 +105,7 @@ public class ProjectScreenPresenter
         this.saveOperationService = saveOperationService;
         this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
+        this.changeTitleWidgetEvent=changeTitleWidgetEvent;
         this.placeManager = placeManager;
 
         this.pathToPomXML = pathToPomXML;
@@ -108,6 +115,11 @@ public class ProjectScreenPresenter
         showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
 
         makeMenuBar();
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        this.placeRequest = placeRequest;
     }
 
 
@@ -149,6 +161,15 @@ public class ProjectScreenPresenter
                         view.setImportsMetadata( model.getProjectImportsMetaData() );
 
                         view.hideBusyIndicator();
+
+                        changeTitleWidgetEvent.fire(
+                                new ChangeTitleWidgetEvent(
+                                        placeRequest,
+                                        ProjectEditorConstants.INSTANCE.ProjectScreenWithName(
+                                                model.getPOM().getGav().getArtifactId() + ":" +
+                                                model.getPOM().getGav().getGroupId() + ":" +
+                                                model.getPOM().getGav().getVersion()
+                                        )));
                     }
                 },
                 new DefaultErrorCallback()
