@@ -23,6 +23,8 @@ import java.util.Map;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.SimplePager;
+import com.github.gwtbootstrap.client.ui.SimplePager.TextLocation;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -46,7 +48,6 @@ import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.services.security.AppRoles;
 import org.uberfire.client.common.popups.footers.ModalFooterOKButton;
-import org.uberfire.client.tables.UberfireSimplePager;
 import org.uberfire.security.Identity;
 
 /**
@@ -152,7 +153,7 @@ public class AuditLogViewImpl extends Modal
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
 
-        UberfireSimplePager gsp = new UberfireSimplePager();
+        SimplePager gsp = new SimplePager(TextLocation.LEFT);
         gsp.setDisplay( events );
 
         events.setPageSize( 4 );
