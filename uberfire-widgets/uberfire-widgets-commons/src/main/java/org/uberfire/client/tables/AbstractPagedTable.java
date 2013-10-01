@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.CellTable;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.view.client.AsyncDataProvider;
 import org.uberfire.paging.AbstractPageRow;
+import com.github.gwtbootstrap.client.ui.SimplePager;
 
 /**
  * Widget that shows rows of paged data.
@@ -31,7 +32,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow>
     protected AsyncDataProvider<T> dataProvider;
 
     @UiField
-    public UberfireSimplePager pager;
+    public SimplePager pager;
 
     /**
      * Constructor

@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
     xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-    xmlns:uf="urn:import:org.uberfire.client.tables">
+    xmlns:gb='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
@@ -26,7 +26,7 @@
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
     <b:CellTable ui:field="cellTable"/>
-    <uf:UberfireSimplePager ui:field="pager"/>
+    <gb:SimplePager location="LEFT" ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

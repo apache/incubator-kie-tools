@@ -17,20 +17,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:uf="urn:import:org.uberfire.client.tables">
+             xmlns:gb='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CommonConstants"/>
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
-      <b:Button ui:field="refreshButton" text='{i18n.AbstractTableRefreshList}'/>
-      <b:Button ui:field="openSelectedButton" text='{i18n.AbstractTableOpenSelected}'/>
+      <gb:Button ui:field="refreshButton" text='{i18n.AbstractTableRefreshList}'/>
+      <gb:Button ui:field="openSelectedButton" text='{i18n.AbstractTableOpenSelected}'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
-    <b:CellTable ui:field="cellTable"/>
+    <gb:CellTable ui:field="cellTable"/>
     <!--<b:SimplePager location="CENTER" ui:field="pager"/>-->
-    <uf:UberfireSimplePager ui:field="pager"/>
+    <gb:SimplePager location="LEFT" ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>
