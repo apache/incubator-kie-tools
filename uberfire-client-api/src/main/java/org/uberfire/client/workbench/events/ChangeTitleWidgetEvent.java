@@ -28,6 +28,11 @@ public class ChangeTitleWidgetEvent {
     private final IsWidget     titleDecoration;
 
     public ChangeTitleWidgetEvent( final PlaceRequest place,
+                                   final String title) {
+        this(place, title, null);
+    }
+
+    public ChangeTitleWidgetEvent( final PlaceRequest place,
                                    final String title,
                                    final IsWidget titleDecoration ) {
         this.place = place;
