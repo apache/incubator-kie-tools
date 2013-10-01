@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * Methods annotated with this provide a {@code java.lang.String} title for the
  * WorkbenchPart. The method should have zero arguments and return a
- * {@code java.lang.String}.
+ * {@code com.google.gwt.user.client.ui.IsWidget}.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
