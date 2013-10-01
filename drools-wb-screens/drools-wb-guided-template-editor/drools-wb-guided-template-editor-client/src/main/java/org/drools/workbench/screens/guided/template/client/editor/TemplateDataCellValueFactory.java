@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
-import org.drools.workbench.models.datamodel.model.DateConverter;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.DateConverter;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 /**
  * A Factory to create CellValues applicable to given columns.

@@ -30,18 +30,18 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCollectCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromEntryPointFactPattern;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -124,7 +124,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             IPattern rPattern = this.getFromCollectPattern().getRightPattern();
 
             RuleModellerWidget patternWidget = null;
-            if ( rPattern instanceof FactPattern) {
+            if ( rPattern instanceof FactPattern ) {
                 patternWidget = new FactPatternWidget( this.getModeller(),
                                                        this.getEventBus(),
                                                        rPattern,
@@ -132,7 +132,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                        true,
                                                        this.readOnly );
 
-            } else if ( rPattern instanceof FromAccumulateCompositeFactPattern) {
+            } else if ( rPattern instanceof FromAccumulateCompositeFactPattern ) {
                 patternWidget = new FromAccumulateCompositeFactPatternWidget( this.getModeller(),
                                                                               this.getEventBus(),
                                                                               (FromAccumulateCompositeFactPattern) rPattern,
@@ -156,7 +156,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                                     (FromCompositeFactPattern) rPattern,
                                                                     this.readOnly );
 
-            } else if ( rPattern instanceof FreeFormLine) {
+            } else if ( rPattern instanceof FreeFormLine ) {
                 patternWidget = new FreeFormLineWidget( this.getModeller(),
                                                         this.getEventBus(),
                                                         (FreeFormLine) rPattern,

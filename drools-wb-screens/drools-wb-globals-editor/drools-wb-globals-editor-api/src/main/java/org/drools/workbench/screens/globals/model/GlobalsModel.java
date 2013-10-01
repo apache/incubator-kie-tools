@@ -3,7 +3,7 @@ package org.drools.workbench.screens.globals.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**

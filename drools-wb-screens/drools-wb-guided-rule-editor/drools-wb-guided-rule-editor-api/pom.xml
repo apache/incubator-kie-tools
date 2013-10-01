@@ -16,10 +16,6 @@
   <description>Drools Workbench - Guided Rule Editor - API</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.services</groupId>

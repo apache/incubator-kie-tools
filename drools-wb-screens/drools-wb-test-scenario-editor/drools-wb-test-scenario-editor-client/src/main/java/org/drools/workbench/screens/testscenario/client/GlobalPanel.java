@@ -16,13 +16,13 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-
-import java.util.Map;
 
 public class GlobalPanel extends VerticalPanel {
 

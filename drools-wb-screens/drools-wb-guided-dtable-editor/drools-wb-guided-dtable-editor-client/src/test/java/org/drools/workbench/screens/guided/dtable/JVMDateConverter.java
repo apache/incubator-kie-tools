@@ -19,8 +19,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.drools.workbench.models.datamodel.oracle.DateConverter;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
-import org.drools.workbench.models.datamodel.model.DateConverter;
 
 /**
  * Convenience class to handle date conversion in a normal JVM (i.e. not running

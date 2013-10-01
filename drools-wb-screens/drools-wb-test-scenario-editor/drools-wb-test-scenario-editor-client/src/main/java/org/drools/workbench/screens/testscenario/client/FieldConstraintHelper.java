@@ -16,19 +16,19 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class FieldConstraintHelper {
 

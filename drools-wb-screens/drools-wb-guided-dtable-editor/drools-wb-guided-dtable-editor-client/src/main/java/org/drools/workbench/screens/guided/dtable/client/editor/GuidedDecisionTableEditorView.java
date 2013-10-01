@@ -3,10 +3,10 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**

@@ -16,13 +16,13 @@
 
 package org.drools.workbench.screens.factmodel.model;
 
-import org.drools.workbench.models.commons.shared.imports.HasImports;
-import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.commons.shared.packages.HasPackageName;
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Model for Declarative Fact Types

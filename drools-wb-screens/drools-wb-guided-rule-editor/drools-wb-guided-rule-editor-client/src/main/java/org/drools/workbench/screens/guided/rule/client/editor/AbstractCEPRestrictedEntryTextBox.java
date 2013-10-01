@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import org.drools.workbench.models.commons.shared.rule.HasParameterizedOperator;
+import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 

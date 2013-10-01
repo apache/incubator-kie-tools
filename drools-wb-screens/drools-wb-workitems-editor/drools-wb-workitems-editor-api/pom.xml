@@ -29,7 +29,7 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
 
     <dependency>

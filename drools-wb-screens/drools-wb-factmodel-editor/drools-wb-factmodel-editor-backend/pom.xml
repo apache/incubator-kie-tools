@@ -16,9 +16,15 @@
   <description>Drools Workbench - Fact Model Editor - Backend</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-factmodel-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-commons</artifactId>
     </dependency>
 
     <dependency>

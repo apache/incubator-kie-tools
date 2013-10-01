@@ -38,13 +38,13 @@ import org.drools.core.process.core.datatype.impl.type.FloatDataType;
 import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
-import org.drools.workbench.models.commons.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableFloatParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableObjectParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableStringParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
@@ -74,9 +74,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped

@@ -18,10 +18,10 @@ package org.drools.workbench.screens.guided.dtable.model;
 
 import java.util.Set;
 
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 @Portable
 public class GuidedDecisionTableEditorContent {

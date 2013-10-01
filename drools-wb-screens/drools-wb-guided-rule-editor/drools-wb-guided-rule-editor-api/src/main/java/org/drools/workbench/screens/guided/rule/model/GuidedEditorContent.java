@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.model;
 
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

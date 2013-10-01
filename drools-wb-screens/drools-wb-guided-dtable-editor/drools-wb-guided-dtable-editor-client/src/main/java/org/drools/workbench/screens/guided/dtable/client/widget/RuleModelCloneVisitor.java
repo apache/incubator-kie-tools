@@ -15,36 +15,35 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.DSLVariableValue;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
-import org.drools.workbench.models.commons.shared.rule.ActionRetractFact;
-import org.drools.workbench.models.commons.shared.rule.ActionSetField;
-import org.drools.workbench.models.commons.shared.rule.ActionUpdateField;
-import org.drools.workbench.models.commons.shared.rule.CEPWindow;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.ConnectiveConstraint;
-import org.drools.workbench.models.commons.shared.rule.ExpressionFormLine;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCollectCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.IFactPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
-import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
+import org.drools.workbench.models.datamodel.rule.CEPWindow;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
+import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
+import org.drools.workbench.models.datamodel.rule.RuleMetadata;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 
 /**
  * A Rule Model Visitor to create a clone TODO Clone LHS of model...
@@ -55,37 +54,37 @@ public class RuleModelCloneVisitor {
         if ( o == null ) {
             return null;
         }
-        if ( o instanceof RuleModel) {
+        if ( o instanceof RuleModel ) {
             return visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof RuleAttribute) {
+        } else if ( o instanceof RuleAttribute ) {
             return visitRuleAttribute( (RuleAttribute) o );
         } else if ( o instanceof RuleMetadata ) {
             return visitRuleMetadata( (RuleMetadata) o );
-        } else if ( o instanceof FactPattern) {
+        } else if ( o instanceof FactPattern ) {
             return visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint) {
+        } else if ( o instanceof CompositeFieldConstraint ) {
             return visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide) {
+        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
             return visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint) {
+        } else if ( o instanceof SingleFieldConstraint ) {
             return visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof ExpressionFormLine) {
+        } else if ( o instanceof ExpressionFormLine ) {
             return visitExpressionFormLine( (ExpressionFormLine) o );
-        } else if ( o instanceof ConnectiveConstraint) {
+        } else if ( o instanceof ConnectiveConstraint ) {
             return visitConnectiveConstraint( (ConnectiveConstraint) o );
-        } else if ( o instanceof CompositeFactPattern) {
+        } else if ( o instanceof CompositeFactPattern ) {
             return visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FreeFormLine) {
+        } else if ( o instanceof FreeFormLine ) {
             return visitFreeFormLine( (FreeFormLine) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern) {
+        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
             return visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern) {
+        } else if ( o instanceof FromCollectCompositeFactPattern ) {
             return visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern) {
+        } else if ( o instanceof FromCompositeFactPattern ) {
             return visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof DSLSentence) {
+        } else if ( o instanceof DSLSentence ) {
             return visitDSLSentence( (DSLSentence) o );
-        } else if ( o instanceof DSLVariableValue) {
+        } else if ( o instanceof DSLVariableValue ) {
             return visitDSLVariableValue( (DSLVariableValue) o );
         } else if ( o instanceof ActionInsertFact ) {
             return visitActionFieldList( (ActionInsertFact) o );
@@ -93,7 +92,7 @@ public class RuleModelCloneVisitor {
             return visitActionFieldList( (ActionUpdateField) o );
         } else if ( o instanceof ActionSetField ) {
             return visitActionFieldList( (ActionSetField) o );
-        } else if ( o instanceof ActionRetractFact) {
+        } else if ( o instanceof ActionRetractFact ) {
             return visitActionRetractFact( (ActionRetractFact) o );
         }
         throw new IllegalArgumentException( "Class " + o.getClass().getName() + " is not recognised" );

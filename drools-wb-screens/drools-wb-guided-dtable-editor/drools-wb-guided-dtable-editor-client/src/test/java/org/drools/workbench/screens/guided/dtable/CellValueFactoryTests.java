@@ -22,8 +22,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -38,11 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
-import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField.FIELD_CLASS_TYPE;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static junit.framework.Assert.*;
@@ -79,67 +78,67 @@ public class CellValueFactoryTests {
                 .addFact( "MyClass" )
                 .addField( new ModelField( "bigDecimalField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_BIGDECIMAL ) )
                 .addField( new ModelField( "bigIntegerField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_BIGINTEGER ) )
                 .addField( new ModelField( "byteField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_BYTE ) )
                 .addField( new ModelField( "doubleField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_DOUBLE ) )
                 .addField( new ModelField( "floatField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_FLOAT ) )
                 .addField( new ModelField( "integerField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_INTEGER ) )
                 .addField( new ModelField( "longField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_LONG ) )
                 .addField( new ModelField( "shortField",
                                            Integer.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_NUMERIC_SHORT ) )
                 .addField( new ModelField( "stringField",
                                            String.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .addField( new ModelField( "dateField",
                                            Boolean.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_DATE ) )
                 .addField( new ModelField( "booleanField",
                                            Boolean.class.getName(),
-                                           FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                            ModelField.FIELD_ORIGIN.DECLARED,
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_BOOLEAN ) )

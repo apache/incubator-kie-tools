@@ -24,10 +24,10 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;

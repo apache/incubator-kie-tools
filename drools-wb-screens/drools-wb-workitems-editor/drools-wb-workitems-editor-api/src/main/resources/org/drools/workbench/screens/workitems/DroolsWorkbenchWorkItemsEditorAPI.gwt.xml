@@ -21,7 +21,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
+  <inherits name='org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI'/>
 
   <source path="model"/>
   <source path="service"/>

@@ -22,12 +22,12 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
-import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define imports

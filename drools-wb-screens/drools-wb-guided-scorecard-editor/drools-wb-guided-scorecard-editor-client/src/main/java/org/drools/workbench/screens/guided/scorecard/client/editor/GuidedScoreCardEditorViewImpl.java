@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.scorecard.client.editor;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;

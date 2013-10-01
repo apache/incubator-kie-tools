@@ -15,7 +15,7 @@ import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactModels;

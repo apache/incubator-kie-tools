@@ -35,11 +35,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.rule.DSLComplexVariableValue;
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.DSLVariableValue;
-import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.screens.guided.rule.client.editor.CustomFormPopUp;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
@@ -426,7 +426,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         public DSLVariableValue getSelectedValue() {
             //if oldVariableValue was of type DSLComplexVariableValue, then return a
             //copy of it with only the 'value' part modified
-            if ( oldVariableValue instanceof DSLComplexVariableValue) {
+            if ( oldVariableValue instanceof DSLComplexVariableValue ) {
                 return new DSLComplexVariableValue( ( (DSLComplexVariableValue) oldVariableValue ).getId(),
                                                     box.getText() );
             }

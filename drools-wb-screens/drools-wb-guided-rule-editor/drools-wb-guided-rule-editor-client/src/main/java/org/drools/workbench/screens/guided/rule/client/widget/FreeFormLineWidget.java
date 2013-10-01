@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.screens.guided.rule.client.editor.DynamicTextArea;
 import org.drools.workbench.screens.guided.rule.client.editor.FreeFormLinePopup;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;

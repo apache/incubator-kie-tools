@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
 
 public interface ModellerWidgetFactory {

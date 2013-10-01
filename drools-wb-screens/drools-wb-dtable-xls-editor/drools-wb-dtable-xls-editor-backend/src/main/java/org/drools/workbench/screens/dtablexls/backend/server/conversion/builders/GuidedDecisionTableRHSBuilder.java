@@ -23,17 +23,17 @@ import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
+import org.drools.template.model.SnippetBuilder;
+import org.drools.template.model.SnippetBuilder.SnippetType;
+import org.drools.template.parser.DecisionTableParseException;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.template.model.SnippetBuilder;
-import org.drools.template.model.SnippetBuilder.SnippetType;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builder for Action columns

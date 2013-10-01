@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.backend.rule.SharedConstants;
-import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
+import org.drools.workbench.models.commons.shared.oracle.CEPOracle;
+import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.drools.workbench.models.datamodel.oracle.CEPOracle;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**

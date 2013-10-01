@@ -12,7 +12,7 @@ import org.drools.workbench.jcr2vfsmigration.migrater.PackageHeaderInfo;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
-import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;

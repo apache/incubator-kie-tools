@@ -23,10 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.decisiontable.parser.xls.ExcelParser;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.parser.DataListener;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
@@ -41,11 +44,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.template.model.Global;
-import org.drools.template.model.Import;
-import org.drools.template.parser.DataListener;
 import org.junit.Test;
-import org.drools.workbench.screens.dtablexls.backend.server.conversion.GuidedDecisionTableGeneratorListener;
 
 import static org.junit.Assert.*;
 

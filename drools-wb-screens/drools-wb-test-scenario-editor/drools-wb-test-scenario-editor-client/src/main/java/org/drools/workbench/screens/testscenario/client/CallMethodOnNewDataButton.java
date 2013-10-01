@@ -18,6 +18,7 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CallMethod;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
@@ -25,7 +26,6 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 /**
  * 

@@ -16,10 +16,10 @@
 
 package org.drools.workbench.screens.guided.rule.client.util;
 
-import org.drools.workbench.models.commons.shared.rule.FieldNature;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.workbench.models.datamodel.rule.FieldNature;
 
 /**
  *

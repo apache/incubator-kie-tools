@@ -24,9 +24,9 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.events.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.events.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
+import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;

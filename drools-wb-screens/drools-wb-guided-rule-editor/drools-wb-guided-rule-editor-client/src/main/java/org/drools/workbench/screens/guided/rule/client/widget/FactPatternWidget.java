@@ -41,16 +41,16 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
-import org.drools.workbench.models.commons.shared.rule.HasConstraints;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
+import org.drools.workbench.models.datamodel.rule.HasConstraints;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
@@ -340,7 +340,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          hasConstraints,
                                          showBinding,
                                          tabs );
-        } else if ( constraint instanceof CompositeFieldConstraint) {
+        } else if ( constraint instanceof CompositeFieldConstraint ) {
             inner.setWidget( row,
                              1,
                              compositeFieldConstraintEditor( (CompositeFieldConstraint) constraint ) );
@@ -733,7 +733,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                         return;
                     }
 
-                    final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList(selected);
+                    final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( selected );
                     final boolean oldOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( c.getOperator() );
                     c.setOperator( selected );
                     if ( c.getOperator().equals( "" ) ) {

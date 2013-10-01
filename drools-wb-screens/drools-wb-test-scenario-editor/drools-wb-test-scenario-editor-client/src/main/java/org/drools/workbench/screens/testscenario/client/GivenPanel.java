@@ -16,15 +16,15 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-
-import java.util.List;
-import java.util.Map;
 
 public class GivenPanel
         extends VerticalPanel {

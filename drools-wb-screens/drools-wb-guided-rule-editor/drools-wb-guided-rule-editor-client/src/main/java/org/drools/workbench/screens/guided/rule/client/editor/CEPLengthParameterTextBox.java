@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.regexp.shared.RegExp;
-import org.drools.workbench.models.commons.shared.rule.HasParameterizedOperator;
+import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 
 /**
  * A TextBox to handle CEP 'window length' parameters

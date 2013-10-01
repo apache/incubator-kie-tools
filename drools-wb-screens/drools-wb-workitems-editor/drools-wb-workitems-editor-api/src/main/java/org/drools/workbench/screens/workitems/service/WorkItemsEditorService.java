@@ -18,7 +18,7 @@ package org.drools.workbench.screens.workitems.service;
 
 import java.util.Set;
 
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;

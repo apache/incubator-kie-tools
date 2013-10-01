@@ -15,20 +15,22 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.auditlog;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
-import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditEvents;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionInsertFactColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionSetFieldColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.AttributeColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ConditionColumnDetails;
+import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditEvents;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteRowAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.InsertColumnAuditLogEntry;
@@ -38,10 +40,8 @@ import org.drools.workbench.models.guided.dtable.shared.auditlog.LimitedEntryAct
 import org.drools.workbench.models.guided.dtable.shared.auditlog.LimitedEntryConditionColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.MetadataColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**
  * Render different HTML for different AuditLogEvents

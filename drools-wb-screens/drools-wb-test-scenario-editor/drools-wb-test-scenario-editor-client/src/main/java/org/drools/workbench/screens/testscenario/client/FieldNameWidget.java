@@ -1,6 +1,6 @@
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
 public class FieldNameWidget implements FieldNameWidgetView.Presenter {
 

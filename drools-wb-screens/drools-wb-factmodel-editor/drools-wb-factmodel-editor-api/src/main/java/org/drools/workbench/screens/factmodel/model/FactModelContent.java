@@ -16,11 +16,11 @@
 
 package org.drools.workbench.screens.factmodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class FactModelContent {

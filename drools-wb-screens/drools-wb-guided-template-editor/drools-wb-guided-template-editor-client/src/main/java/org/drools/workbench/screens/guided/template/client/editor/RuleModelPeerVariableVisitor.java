@@ -15,25 +15,25 @@
  */
 package org.drools.workbench.screens.guided.template.client.editor;
 
-import org.drools.workbench.models.commons.shared.rule.FieldNatureType;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldList;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCollectCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.workbench.models.datamodel.rule.ActionFieldList;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 
 /**
  * A Rule Model Visitor to extract InterpolationVariables that are defined on
@@ -97,23 +97,23 @@ public class RuleModelPeerVariableVisitor {
         }
         if ( o instanceof RuleModel ) {
             visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof FactPattern) {
+        } else if ( o instanceof FactPattern ) {
             visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint) {
+        } else if ( o instanceof CompositeFieldConstraint ) {
             visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide) {
+        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
             visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint) {
+        } else if ( o instanceof SingleFieldConstraint ) {
             visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof CompositeFactPattern) {
+        } else if ( o instanceof CompositeFactPattern ) {
             visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern) {
+        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
             visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern) {
+        } else if ( o instanceof FromCollectCompositeFactPattern ) {
             visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern) {
+        } else if ( o instanceof FromCompositeFactPattern ) {
             visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof ActionFieldList) {
+        } else if ( o instanceof ActionFieldList ) {
             visitActionFieldList( (ActionFieldList) o );
         }
     }

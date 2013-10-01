@@ -22,7 +22,7 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
-  <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
+  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
 
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
 
