@@ -26,7 +26,7 @@
 
     body {
       margin: 0;
-      pading: 0;
+      padding: 0;
       color: #fff;
       background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bg-login.png') repeat #1b1b1b;
       font-size: 14px;

@@ -495,6 +495,10 @@ public class PlaceManagerImpl
 
             @Override
             public void execute() {
+                if ( place instanceof PathPlaceRequest ) {
+                    ( (PathPlaceRequest) place ).getPath().dispose();
+                }
+
                 activityManager.destroyActivity( activity );
             }
         } );
