@@ -62,7 +62,7 @@ public class BulkRunTestScenarioEditorViewImpl
 
     @Override
     public void showSaveSuccessful( String fileName ) {
-        notificationEvent.fire( new NotificationEvent( "ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName )" ) );
+        notificationEvent.fire( new NotificationEvent( "ProjectEditorResources.CONSTANTS.SaveSuccessful( fileName )" ) );
     }
 
     @Override
