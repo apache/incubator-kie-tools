@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
@@ -92,7 +93,7 @@ public class KSessionsPanelViewImpl
                 return kSessionModel.getName();
             }
         };
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Name());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Name());
 
         column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
             @Override
@@ -104,16 +105,16 @@ public class KSessionsPanelViewImpl
 
     private void setUpClockColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add(ProjectEditorConstants.INSTANCE.Realtime());
-        options.add(ProjectEditorConstants.INSTANCE.Pseudo());
+        options.add(ProjectEditorResources.CONSTANTS.Realtime());
+        options.add(ProjectEditorResources.CONSTANTS.Pseudo());
 
         Column<KSessionModel, String> column = new Column<KSessionModel, String>(new SelectionCell(options)) {
             @Override
             public String getValue(KSessionModel kSessionModel) {
                 if (kSessionModel.getClockType().equals(ClockTypeOption.PSEUDO)) {
-                    return ProjectEditorConstants.INSTANCE.Pseudo();
+                    return ProjectEditorResources.CONSTANTS.Pseudo();
                 } else if (kSessionModel.getClockType().equals(ClockTypeOption.REALTIME)) {
-                    return ProjectEditorConstants.INSTANCE.Realtime();
+                    return ProjectEditorResources.CONSTANTS.Realtime();
                 } else {
                     return kSessionModel.getClockType().toString();
                 }
@@ -123,7 +124,7 @@ public class KSessionsPanelViewImpl
         column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
             @Override
             public void update(int index, KSessionModel model, String value) {
-                if (value.equals(ProjectEditorConstants.INSTANCE.Pseudo())) {
+                if (value.equals(ProjectEditorResources.CONSTANTS.Pseudo())) {
                     model.setClockType(ClockTypeOption.PSEUDO);
                 } else {
                     model.setClockType(ClockTypeOption.REALTIME);
@@ -131,23 +132,23 @@ public class KSessionsPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Clock());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Clock());
     }
 
     private void setUpStateColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add(ProjectEditorConstants.INSTANCE.Stateful());
-        options.add(ProjectEditorConstants.INSTANCE.Stateless());
+        options.add(ProjectEditorResources.CONSTANTS.Stateful());
+        options.add(ProjectEditorResources.CONSTANTS.Stateless());
 
         Column<KSessionModel, String> column = new Column<KSessionModel, String>(new SelectionCell(options)) {
             @Override
             public String getValue(KSessionModel kSessionModel) {
                 if (kSessionModel.getType() == null) {
-                    return ProjectEditorConstants.INSTANCE.Stateful();
+                    return ProjectEditorResources.CONSTANTS.Stateful();
                 } else if (kSessionModel.getType().equals("stateful")) {
-                    return ProjectEditorConstants.INSTANCE.Stateful();
+                    return ProjectEditorResources.CONSTANTS.Stateful();
                 } else if (kSessionModel.getType().equals("stateless")) {
-                    return ProjectEditorConstants.INSTANCE.Stateless();
+                    return ProjectEditorResources.CONSTANTS.Stateless();
                 } else {
                     return kSessionModel.getType();
                 }
@@ -157,7 +158,7 @@ public class KSessionsPanelViewImpl
         column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
             @Override
             public void update(int index, KSessionModel model, String value) {
-                if (value.equals(ProjectEditorConstants.INSTANCE.Stateful())) {
+                if (value.equals(ProjectEditorResources.CONSTANTS.Stateful())) {
                     model.setType("stateful");
                 } else {
                     model.setType("stateless");
@@ -165,7 +166,7 @@ public class KSessionsPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.State());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.State());
     }
 
     private void setUpDefaultColumn() {
@@ -185,14 +186,14 @@ public class KSessionsPanelViewImpl
 
         column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Default());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Default());
         grid.setColumnWidth(column, "80px");
     }
 
     private void setUpOptionsColumn() {
         ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
         TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        decorator.setText(ProjectEditorConstants.INSTANCE.Options());
+        decorator.setText(ProjectEditorResources.CONSTANTS.Options());
         Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
             @Override
             public ImageResource getValue(KSessionModel model) {
@@ -216,7 +217,7 @@ public class KSessionsPanelViewImpl
     private void setUpRemoveColumn() {
         ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
         TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        decorator.setText(ProjectEditorConstants.INSTANCE.Delete());
+        decorator.setText(ProjectEditorResources.CONSTANTS.Delete());
         Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
             @Override
             public ImageResource getValue(KSessionModel model) {

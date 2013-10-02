@@ -1,5 +1,6 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -29,6 +30,6 @@ public class PomEditorScreenViewImpl
 
     @Override
     public void showSaveSuccessful(String fileName) {
-        notificationEvent.fire(new NotificationEvent(ProjectEditorConstants.INSTANCE.SaveSuccessful(fileName)));
+        notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.SaveSuccessful(fileName)));
     }
 }

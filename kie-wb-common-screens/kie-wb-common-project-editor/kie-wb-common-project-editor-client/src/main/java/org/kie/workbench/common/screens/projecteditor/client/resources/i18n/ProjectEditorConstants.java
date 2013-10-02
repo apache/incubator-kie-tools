@@ -24,8 +24,6 @@ public interface ProjectEditorConstants
         extends
         Messages {
 
-    ProjectEditorConstants INSTANCE = GWT.create(ProjectEditorConstants.class);
-
     String ProjectModel();
 
     String StatefulKSessions();
@@ -82,7 +80,7 @@ public interface ProjectEditorConstants
 
     String SaveSuccessful(String fileName);
 
-    String Build();
+    String BuildAndDeploy();
 
     String Building();
 

@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 import javax.enterprise.context.Dependent;
@@ -126,7 +127,7 @@ public class KBaseFormViewImpl
     @Override
     public void setDefault(boolean aDefault) {
         if (aDefault) {
-            nameLabel.setSubtext(ProjectEditorConstants.INSTANCE.BracketDefaultBracket());
+            nameLabel.setSubtext(ProjectEditorResources.CONSTANTS.BracketDefaultBracket());
         } else {
             nameLabel.setSubtext("");
         }

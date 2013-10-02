@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -55,7 +56,7 @@ public class ProblemsScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ProjectEditorConstants.INSTANCE.Problems();
+        return ProjectEditorResources.CONSTANTS.Problems();
     }
 
     @WorkbenchPartView

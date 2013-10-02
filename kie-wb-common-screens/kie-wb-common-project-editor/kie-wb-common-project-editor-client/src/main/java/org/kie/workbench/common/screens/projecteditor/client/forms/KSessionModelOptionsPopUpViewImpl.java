@@ -50,13 +50,13 @@ public class KSessionModelOptionsPopUpViewImpl
             return ProjectEditorResources.INSTANCE.mainCss().panelDisabled();
         }
     };
-    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.WorkingMemoryEventListener();
-    private static final String AGENDA_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.AgendaEventListener();
-    private static final String PROCESS_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.ProcessEventListener();
+    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.WorkingMemoryEventListener();
+    private static final String AGENDA_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.AgendaEventListener();
+    private static final String PROCESS_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.ProcessEventListener();
 
     private final Widget content;
-    private final String CONSOLE_LOGGER = ProjectEditorConstants.INSTANCE.ConsoleLogger();
-    private final String FILE_LOGGER = ProjectEditorConstants.INSTANCE.FileLogger();
+    private final String CONSOLE_LOGGER = ProjectEditorResources.CONSTANTS.ConsoleLogger();
+    private final String FILE_LOGGER = ProjectEditorResources.CONSTANTS.FileLogger();
     private Presenter presenter;
 
     interface Binder

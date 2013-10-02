@@ -28,6 +28,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -165,7 +166,7 @@ public class ProjectScreenPresenter
                         changeTitleWidgetEvent.fire(
                                 new ChangeTitleWidgetEvent(
                                         placeRequest,
-                                        ProjectEditorConstants.INSTANCE.ProjectScreenWithName(
+                                        ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
                                                 model.getPOM().getGav().getArtifactId() + ":" +
                                                 model.getPOM().getGav().getGroupId() + ":" +
                                                 model.getPOM().getGav().getVersion()
@@ -244,11 +245,11 @@ public class ProjectScreenPresenter
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( ProjectEditorConstants.INSTANCE.Build() )
+                .newTopLevelMenu( ProjectEditorResources.CONSTANTS.BuildAndDeploy() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator( ProjectEditorConstants.INSTANCE.Building() );
+                        view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                         buildServiceCaller.call( getBuildSuccessCallback(),
                                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
                     }
@@ -261,8 +262,10 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
+                KModuleValidator kModuleValidator = new KModuleValidator(ProjectEditorResources.CONSTANTS);
+                kModuleValidator.validate(model.getKModule());
 
-                if ( KModuleValidator.isValid( model.getKModule() ) ) {
+                if ( !kModuleValidator.hasErrors() ) {
                     saveOperationService.save( pathToPomXML,
                                                new CommandWithCommitMessage() {
                                                    @Override
@@ -280,7 +283,7 @@ public class ProjectScreenPresenter
                                                    }
                                                } );
                 } else {
-                    ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne() );
+                    ErrorPopup.showMessage( kModuleValidator.getErrorsString() );
                 }
             }
         };
@@ -291,10 +294,10 @@ public class ProjectScreenPresenter
             @Override
             public void callback( final BuildResults result ) {
                 if ( result.getMessages().isEmpty() ) {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildSuccessful(),
+                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildSuccessful(),
                                                                    NotificationEvent.NotificationType.SUCCESS ) );
                 } else {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.BuildFailed(),
+                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildFailed(),
                                                                    NotificationEvent.NotificationType.ERROR ) );
                 }
                 buildResultsEvent.fire( result );
@@ -305,7 +308,7 @@ public class ProjectScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ProjectEditorConstants.INSTANCE.ProjectScreen();
+        return ProjectEditorResources.CONSTANTS.ProjectScreen();
     }
 
     @WorkbenchPartView

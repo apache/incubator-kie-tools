@@ -28,6 +28,7 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 
@@ -113,12 +114,12 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void showPleaseSelectAnItem() {
-        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.PleaseSelectAnItem() );
+        ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.PleaseSelectAnItem() );
     }
 
     @Override
     public void showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName() {
-        ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName() );
+        ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName() );
     }
 
     @UiHandler("list")

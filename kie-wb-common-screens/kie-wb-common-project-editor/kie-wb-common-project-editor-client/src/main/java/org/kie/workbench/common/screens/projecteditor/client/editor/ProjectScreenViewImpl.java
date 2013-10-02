@@ -37,6 +37,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
@@ -121,13 +122,13 @@ public class ProjectScreenViewImpl
     @Override
     public void showGAVPanel() {
         deckPanel.showWidget(GAV_PANEL_INDEX);
-        setGAVDropboxTitle(ProjectEditorConstants.INSTANCE.GroupArtifactVersion());
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.GroupArtifactVersion());
     }
 
     @Override
     public void showGAVMetadataPanel() {
         deckPanel.showWidget(GAV_METADATA_PANEL_INDEX);
-        setGAVDropboxTitle(ProjectEditorConstants.INSTANCE.Metadata());
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "gavButton")
@@ -141,7 +142,7 @@ public class ProjectScreenViewImpl
     }
 
     private void setGAVDropboxTitle(String subItem) {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.ProjectSettings() + ": " + subItem);
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem);
     }
 
     @UiHandler(value = "dependenciesButton")
@@ -162,14 +163,14 @@ public class ProjectScreenViewImpl
     @Override
     public void showKBasePanel() {
         deckPanel.showWidget(KBASE_PANEL_INDEX);
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.KnowledgeBasesAndSessions());
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.KnowledgeBasesAndSessions());
         kModuleEditorPanel.refresh();
     }
 
     @Override
     public void showKBaseMetadataPanel() {
         deckPanel.showWidget(KBASE_METADATA_PANEL_INDEX);
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.KnowledgeBaseSettings() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "importsButton")
@@ -194,35 +195,35 @@ public class ProjectScreenViewImpl
 
     //    @UiHandler(value = "categoriesButton")
 //    public void onCategoriesButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Categories());
 //    }
 //
 //    @UiHandler(value = "categoriedMetadataButton")
 //    public void onCategoriedMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Categories() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Categories() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
 //    }
 //
 //    @UiHandler(value = "dslButton")
 //    public void onDslButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.DSL());
 //    }
 //
 //    @UiHandler(value = "metadataButton")
 //    public void onMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.DSL() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.DSL() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
 //    }
 //
 //    @UiHandler(value = "enumsButton")
 //    public void onEnumsButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Enums());
 //    }
 //
 //    @UiHandler(value = "enumsMetadataButton")
 //    public void onEnumsMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Enums() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Enums() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
     @Override
     public void showDependenciesPanel() {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Dependencies() + ": " + ProjectEditorConstants.INSTANCE.DependenciesList());
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList());
         deckPanel.showWidget(DEPENDENCY_PANEL_INDEX);
         dependencyGrid.refresh();
 
@@ -230,13 +231,13 @@ public class ProjectScreenViewImpl
 
     @Override
     public void showImportsPanel() {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Imports() + ": " + ProjectEditorConstants.INSTANCE.ImportSuggestions());
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.ImportSuggestions());
         deckPanel.showWidget(IMPORTS_PANEL_INDEX);
     }
 
     @Override
     public void showImportsMetadataPanel() {
-        dropDownButton.setText(ProjectEditorConstants.INSTANCE.Imports() + ": " + ProjectEditorConstants.INSTANCE.Metadata());
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
         deckPanel.showWidget(IMPORTS_METADATA_PANEL_INDEX);
     }
 

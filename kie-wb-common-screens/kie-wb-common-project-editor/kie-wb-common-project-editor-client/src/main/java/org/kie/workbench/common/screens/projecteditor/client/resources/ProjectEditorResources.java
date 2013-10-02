@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import org.kie.workbench.common.screens.projecteditor.client.resources.css.ProjectEditorCss;
+import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public interface ProjectEditorResources
         extends
@@ -27,6 +28,7 @@ public interface ProjectEditorResources
 
     public ProjectEditorResources INSTANCE = GWT.create(ProjectEditorResources.class);
 
+    ProjectEditorConstants CONSTANTS = GWT.create(ProjectEditorConstants.class);
 
     @Source("css/ProjectEditor.css")
     public ProjectEditorCss mainCss();

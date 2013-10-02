@@ -106,7 +106,7 @@ public class ProblemsScreenViewImpl
                 return Integer.toString( message.getLine() );
             }
         };
-        dataGrid.addColumn( lineColumn, ProjectEditorConstants.INSTANCE.Line() );
+        dataGrid.addColumn( lineColumn, ProjectEditorResources.CONSTANTS.Line() );
         dataGrid.setColumnWidth( lineColumn, 60, Style.Unit.PCT );
     }
 
@@ -117,7 +117,7 @@ public class ProblemsScreenViewImpl
                 return Integer.toString( message.getColumn() );
             }
         };
-        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Column() );
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Column() );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -128,7 +128,7 @@ public class ProblemsScreenViewImpl
                 return message.getText();
             }
         };
-        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Text() );
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Text() );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -153,7 +153,7 @@ public class ProblemsScreenViewImpl
                 }
             }
         } );
-        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.FileName() );
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.FileName() );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -173,7 +173,7 @@ public class ProblemsScreenViewImpl
                 }
             }
         };
-        dataGrid.addColumn( column, ProjectEditorConstants.INSTANCE.Level() );
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Level() );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 

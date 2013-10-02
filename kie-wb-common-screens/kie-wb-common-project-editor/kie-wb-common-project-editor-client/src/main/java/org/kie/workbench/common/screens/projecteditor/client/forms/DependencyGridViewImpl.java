@@ -91,14 +91,14 @@ public class DependencyGridViewImpl
             @Override
             public void update(int index, Dependency dependency, String value) {
                 if (checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
+                    Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setArtifactId(value);
             }
         });
 
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.ArtifactID());
+        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.ArtifactID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 
@@ -117,14 +117,14 @@ public class DependencyGridViewImpl
             @Override
             public void update(int index, Dependency dependency, String value) {
                 if (checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
+                    Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setGroupId(value);
             }
         });
 
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.GroupID());
+        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.GroupID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 
@@ -143,13 +143,13 @@ public class DependencyGridViewImpl
             @Override
             public void update(int index, Dependency dependency, String value) {
                 if (checkIsInValid(value)) {
-                    Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());
+                    Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
                     return;
                 }
                 dependency.setVersion(value);
             }
         });
-        dataGrid.addColumn(column, ProjectEditorConstants.INSTANCE.VersionID());
+        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.VersionID());
         dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 

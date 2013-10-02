@@ -35,7 +35,7 @@ public class NewPackageHandler
 
     @Override
     public String getDescription() {
-        return ProjectEditorConstants.INSTANCE.newPackageDescription();
+        return ProjectEditorResources.CONSTANTS.newPackageDescription();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class NewPackageHandler
             @Override
             public void callback( final Map<String, Boolean> results ) {
                 if ( results.containsValue( Boolean.FALSE ) ) {
-                    callback.onFailure( ProjectEditorConstants.INSTANCE.InvalidPackageName( fileName ) );
+                    callback.onFailure( ProjectEditorResources.CONSTANTS.InvalidPackageName( fileName ) );
                 } else {
                     callback.onSuccess();
                 }

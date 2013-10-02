@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelViewImpl;
 import org.uberfire.client.common.BusyPopup;
@@ -38,7 +39,7 @@ public class KModuleEditorPanelViewImpl
 
     @Override
     public void showSaveSuccessful( String fileName ) {
-        notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName ) ) );
+        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( fileName ) ) );
     }
 
     @Override

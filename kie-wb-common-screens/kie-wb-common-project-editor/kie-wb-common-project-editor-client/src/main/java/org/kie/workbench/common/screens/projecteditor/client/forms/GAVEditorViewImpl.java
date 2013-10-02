@@ -1,6 +1,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.github.gwtbootstrap.client.ui.TextBox;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 import com.google.gwt.core.client.GWT;
@@ -51,7 +52,7 @@ public class GAVEditorViewImpl
     @UiHandler("groupIdTextBox")
     public void onGroupIdChange(KeyUpEvent event) {
         if(checkIsInValid(groupIdTextBox.getText())) {
-            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());  
+            Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
             return;
         }
         presenter.onGroupIdChange(groupIdTextBox.getText());
@@ -72,7 +73,7 @@ public class GAVEditorViewImpl
     @UiHandler("artifactIdTextBox")
     public void onArtifactIdChange(KeyUpEvent event) {
         if(checkIsInValid(artifactIdTextBox.getText())) {
-            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());    
+            Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
             return;
         }
         presenter.onArtifactIdChange(artifactIdTextBox.getText());
@@ -86,7 +87,7 @@ public class GAVEditorViewImpl
     @UiHandler("versionIdTextBox")
     public void onVersionIdChange(KeyUpEvent event) {
         if(checkIsInValid(versionIdTextBox.getText())) {
-            Window.alert(ProjectEditorConstants.INSTANCE.XMLMarkIsNotAllowed());     
+            Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
             return;
         }
         presenter.onVersionIdChange(versionIdTextBox.getText());

@@ -59,7 +59,7 @@ public class NewProjectHandler
 
     @Override
     public String getDescription() {
-        return ProjectEditorConstants.INSTANCE.newProjectDescription();
+        return ProjectEditorResources.CONSTANTS.newProjectDescription();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class NewProjectHandler
             presenter.complete();
 
         } else {
-            ErrorPopup.showMessage( ProjectEditorConstants.INSTANCE.NoRepositorySelectedPleaseSelectARepository() );
+            ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.NoRepositorySelectedPleaseSelectARepository() );
         }
     }
 

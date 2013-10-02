@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class WorkItemHandlersPanelViewImpl
@@ -75,7 +76,7 @@ public class WorkItemHandlersPanelViewImpl
         Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>(new ButtonCell()) {
             @Override
             public String getValue(WorkItemHandlerModel object) {
-                return ProjectEditorConstants.INSTANCE.Delete();
+                return ProjectEditorResources.CONSTANTS.Delete();
             }
         };
 
@@ -110,7 +111,7 @@ public class WorkItemHandlersPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Type());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Type());
     }
 
     private void addNameColumn() {
@@ -129,7 +130,7 @@ public class WorkItemHandlersPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Name());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Name());
     }
 
     public void setModels(List<WorkItemHandlerModel> handlerModels) {

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -35,7 +36,7 @@ public class POMEditorPanelViewImpl
         extends ResizeComposite
         implements POMEditorPanelView {
 
-    private String tabTitleLabel = ProjectEditorConstants.INSTANCE.ProjectModel();
+    private String tabTitleLabel = ProjectEditorResources.CONSTANTS.ProjectModel();
 
     interface GroupArtifactVersionEditorPanelViewImplBinder
             extends
@@ -65,7 +66,7 @@ public class POMEditorPanelViewImpl
 
     @Override
     public void showSaveSuccessful( String fileName ) {
-        notificationEvent.fire( new NotificationEvent( ProjectEditorConstants.INSTANCE.SaveSuccessful( fileName ) ) );
+        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( fileName ) ) );
     }
 
     @Override

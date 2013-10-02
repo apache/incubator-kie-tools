@@ -2,6 +2,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.GuvnorTextEditorPresenter;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
 import org.uberfire.backend.vfs.Path;
@@ -36,7 +37,7 @@ public class KModuleEditorScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ProjectEditorConstants.INSTANCE.KModuleDotXml();
+        return ProjectEditorResources.CONSTANTS.KModuleDotXml();
     }
 
     @WorkbenchPartView

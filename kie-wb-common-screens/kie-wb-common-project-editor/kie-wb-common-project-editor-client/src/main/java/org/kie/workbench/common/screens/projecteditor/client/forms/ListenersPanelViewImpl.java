@@ -36,15 +36,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class ListenersPanelViewImpl
         extends Composite
         implements ListenersPanelView {
 
-    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.WorkingMemoryEventListener();
-    private static final String AGENDA_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.AgendaEventListener();
-    private static final String PROCESS_EVENT_LISTENER = ProjectEditorConstants.INSTANCE.ProcessEventListener();
+    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.WorkingMemoryEventListener();
+    private static final String AGENDA_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.AgendaEventListener();
+    private static final String PROCESS_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.ProcessEventListener();
 
     private Presenter presenter;
 
@@ -83,7 +84,7 @@ public class ListenersPanelViewImpl
         Column<ListenerModel, String> column = new Column<ListenerModel, String>(new ButtonCell()) {
             @Override
             public String getValue(ListenerModel object) {
-                return ProjectEditorConstants.INSTANCE.Delete();
+                return ProjectEditorResources.CONSTANTS.Delete();
             }
         };
 
@@ -118,7 +119,7 @@ public class ListenersPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Type());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Type());
     }
 
     private void addKindColumn() {
@@ -155,7 +156,7 @@ public class ListenersPanelViewImpl
             }
         });
 
-        grid.addColumn(column, ProjectEditorConstants.INSTANCE.Kind());
+        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Kind());
     }
 
     public void setModels(List<ListenerModel> listeners) {

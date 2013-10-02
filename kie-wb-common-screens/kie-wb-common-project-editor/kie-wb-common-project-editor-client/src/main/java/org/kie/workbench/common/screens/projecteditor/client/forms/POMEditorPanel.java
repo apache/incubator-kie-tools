@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.POM;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class POMEditorPanel
@@ -55,7 +56,7 @@ public class POMEditorPanel
 
     private void setTitle(final String titleText) {
         if (titleText == null || titleText.isEmpty()) {
-            view.setTitleText(ProjectEditorConstants.INSTANCE.ProjectModel());
+            view.setTitleText(ProjectEditorResources.CONSTANTS.ProjectModel());
         } else {
             view.setTitleText(titleText);
         }
