@@ -27,6 +27,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.security.Role;
+import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
@@ -78,7 +79,7 @@ public abstract class AbstractDatabaseAuthSource implements AuthenticationSource
     }
 
     @Override
-    public boolean authenticate( final Credential credential ) {
+    public boolean authenticate( final Credential credential, final SecurityContext securityContext ) {
         final UsernamePasswordCredential usernamePasswd = checkInstanceOf( "credential", credential, UsernamePasswordCredential.class );
 
         Connection connection = null;

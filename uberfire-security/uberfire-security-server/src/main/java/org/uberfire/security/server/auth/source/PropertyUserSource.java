@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.uberfire.security.Role;
+import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
@@ -101,7 +102,7 @@ public class PropertyUserSource implements AuthenticationSource,
     }
 
     @Override
-    public boolean authenticate( final Credential credential ) {
+    public boolean authenticate( final Credential credential, final SecurityContext securityContext ) {
         final UsernamePasswordCredential usernamePasswd = checkInstanceOf( "credential", credential, UsernamePasswordCredential.class );
 
         final Object pass = credentials.get( usernamePasswd.getUserName() );
