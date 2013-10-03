@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
@@ -45,7 +46,7 @@ public class RememberMeCookieAuthProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationResult authenticate( final Credential credential ) throws AuthenticationException {
+    public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext ) throws AuthenticationException {
 
         if ( !supportsCredential( credential ) ) {
             return new AuthenticationResult() {

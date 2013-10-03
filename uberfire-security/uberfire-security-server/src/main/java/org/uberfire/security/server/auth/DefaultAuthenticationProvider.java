@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
@@ -53,7 +54,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationResult authenticate( final Credential credential )
+    public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext )
             throws AuthenticationException {
         if ( !supportsCredential( credential ) ) {
             return new AuthenticationResult() {
@@ -78,7 +79,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
 
         final UserNameCredential realCredential = UserNameCredential.class.cast( credential );
 
-        if ( !authenticationSource.authenticate( realCredential ) ) {
+        if ( !authenticationSource.authenticate( realCredential, securityContext ) ) {
             return new AuthenticationResult() {
                 @Override
                 public List<String> getMessages() {

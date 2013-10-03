@@ -10,6 +10,7 @@ import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
 import org.uberfire.security.Role;
+import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
@@ -42,7 +43,7 @@ public class JACCAuthenticationSource implements AuthenticationSource,
     }
 
     @Override
-    public boolean authenticate( Credential credential ) {
+    public boolean authenticate( Credential credential, final SecurityContext securityContext ) {
         final UserNameCredential userNameCredential = checkInstanceOf( "credential", credential, UserNameCredential.class );
         try {
             Subject subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );

@@ -18,12 +18,14 @@ package org.uberfire.security.auth;
 
 import java.util.Map;
 
+import org.uberfire.security.SecurityContext;
+
 public interface AuthenticationSource {
 
     void initialize(final Map<String, ?> options);
 
     boolean supportsCredential(final Credential credential);
 
-    boolean authenticate(final Credential credential);
+    boolean authenticate(final Credential credential, final SecurityContext securityContext);
 
 }
