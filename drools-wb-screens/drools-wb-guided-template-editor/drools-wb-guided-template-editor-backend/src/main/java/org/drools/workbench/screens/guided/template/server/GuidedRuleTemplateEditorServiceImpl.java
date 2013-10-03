@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.guided.template.backend.BRDRTPersistence;
 import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
@@ -239,8 +240,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                                              final TemplateModel content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( toSource( path,
-                                                                                  content ).getBytes() ),
+                                              new ByteArrayInputStream( BRDRTXMLPersistence.getInstance().marshal(content).getBytes() ),
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
                                               FILTER_DSLS );
