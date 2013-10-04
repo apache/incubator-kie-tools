@@ -17,6 +17,7 @@
 package org.uberfire.client.editors.texteditor;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -27,12 +28,14 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchEditor(identifier = "TextEditor", supportedTypes = {TextResourceType.class, DotResourceType.class})
@@ -42,8 +45,11 @@ public class TextEditorWorkbenchEditor
     @Inject
     private Caller<VFSService> vfsServices;
 
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
+
     @OnStartup
-    public void onStartup(final Path path) {
+    public void onStartup(final Path path, final PlaceRequest placeRequest) {
         vfsServices.call(new RemoteCallback<String>() {
             @Override
             public void callback(String response) {
@@ -52,6 +58,11 @@ public class TextEditorWorkbenchEditor
                 } else {
                     view.setContent(response);
                 }
+                changeTitleWidgetEvent.fire(
+                        new ChangeTitleWidgetEvent(
+                                placeRequest,
+                                "Text Editor [" + path.getFileName() + "]"));
+
             }
         }).readAllString(path);
     }
@@ -83,7 +94,7 @@ public class TextEditorWorkbenchEditor
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor [" + path.getFileName() + "]";
+        return "Text Editor";
     }
 
     @WorkbenchPartView
