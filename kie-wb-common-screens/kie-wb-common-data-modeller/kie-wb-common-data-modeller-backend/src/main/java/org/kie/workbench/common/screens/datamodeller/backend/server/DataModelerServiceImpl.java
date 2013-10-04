@@ -163,7 +163,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             cleanupFiles( deleteableFiles );
 
             //invalidate ProjectDataModelOracle for this project.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
+            //invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
 
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
             javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
