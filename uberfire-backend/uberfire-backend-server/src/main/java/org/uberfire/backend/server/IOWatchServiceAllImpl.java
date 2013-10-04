@@ -72,7 +72,7 @@ public class IOWatchServiceAllImpl implements IOWatchService {
                             if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
                                 resourceUpdatedEvent.fire( new ResourceUpdatedEvent( paths.convert( context.getOldPath() ), sessionInfo( context ) ) );
                             } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-                                resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
+                                resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ), sessionInfo( context ) ) );
                             } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
                                 resourceRenamedEvent.fire( new ResourceRenamedEvent( paths.convert( context.getOldPath(), false ), paths.convert( context.getPath() ), sessionInfo( context ) ) );
                             } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
