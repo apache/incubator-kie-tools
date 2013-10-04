@@ -62,6 +62,7 @@ import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
@@ -489,6 +490,11 @@ public class ListBarWidget
             }
 
             return gwtItem;
+        } else if ( item instanceof MenuCustom ) {
+            final Object result = ( (MenuCustom) item ).build();
+            if ( result instanceof Widget ) {
+                return (Widget) result;
+            }
         }
 
         return null;

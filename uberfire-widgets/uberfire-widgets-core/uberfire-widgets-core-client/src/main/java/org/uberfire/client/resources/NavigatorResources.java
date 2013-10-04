@@ -33,17 +33,28 @@ public interface NavigatorResources
 
     public interface NavigatorStyle extends CssResource {
 
+        String container();
+
         String navigator();
 
         String message();
 
-        @ClassName("navigator-icon")
-        String navigatorIcon();
+        @ClassName("navigator-folder-icon")
+        String navigatorFolderIcon();
+
+        @ClassName("navigator-file-icon")
+        String navigatoFileIcon();
 
         @ClassName("navigator-message")
         String navigatorMessage();
 
         String breadcrumb();
+
+        @ClassName("breadcrumb-header")
+        String breadcrumbHeader();
+
+        @ClassName("breadcrumb-2nd-level")
+        String breadcrumb2ndLevel();
 
         @ClassName("repo-name")
         String repoName();
@@ -51,5 +62,31 @@ public interface NavigatorResources
         @ClassName("directory-name")
         String directory();
 
+        @ClassName("tree-nav")
+        String treeNav();
+
+        @ClassName("tree")
+        String tree();
+
+        @ClassName("tree-folder")
+        String treeFolder();
+
+        @ClassName("tree-folder-header")
+        String treeFolderHeader();
+
+        @ClassName("tree-folder-name")
+        String treeFolderName();
+
+        @ClassName("tree-folder-content")
+        String treeFolderContent();
+
+        @ClassName("tree-item")
+        String treeItem();
+
+        @ClassName("tree-item-name")
+        String treeItemName();
+
+        @ClassName("tree-selected")
+        String treeSelected();
     }
 }

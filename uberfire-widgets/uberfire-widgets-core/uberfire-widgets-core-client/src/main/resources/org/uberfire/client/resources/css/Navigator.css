@@ -1,3 +1,12 @@
+.container {
+    background-color: #E6F1F6;
+    padding-top: 8px;
+    border-bottom: 1px solid #ebebeb;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
 .navigator {
     width: 100%;
     margin: 0;
@@ -16,11 +25,19 @@
 }
 
 .navigator td:first-child {
-    border-left: 0px;
+    border-left: 0;
 }
 
-.navigator-icon {
+.navigator-folder-icon {
     width: 17px;
+    color: #0088CC;
+    padding-right: 2px;
+    padding-left: 10px;
+}
+
+.navigator-file-icon {
+    width: 17px;
+    color: #484848;
     padding-right: 2px;
     padding-left: 10px;
 }
@@ -33,16 +50,29 @@
     color: #4E575B;
 }
 
-.breadcrumb {
-    list-style: none;
-    margin-bottom: 5px !important;
+.breadcrumb-2nd-level {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: #F0F0F0;
+    border: 1px solid #E6E6E6;
 }
 
-.breadcrumb li {
-    font-size: 18px;
+.breadcrumb {
+    list-style: none;
+    margin-left: 16px;
+}
+
+.breadcrumb-header {
+    font-size: 16px;
     display: inline-block;
-    padding-right: 5px;
-    padding-left: 5px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+@external .divider;
+.breadcrumb .divider {
+    padding: 0 7px;
+    color: #ccc;
 }
 
 .repo-name {
@@ -52,4 +82,90 @@
 
 .directory-name {
     font-weight: bold;
+}
+
+.tree-nav {
+    padding: 10px 15px 15px 15px;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.tree {
+    color: #484848;
+}
+
+.tree .tree-folder {
+    width: 100%;
+    min-height: 20px;
+    margin-top: 1px;
+    cursor: pointer;
+}
+
+.tree .tree-folder .tree-folder-header {
+    position: relative;
+    height: 20px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.tree .tree-folder .tree-folder-header i {
+    color: #80A6CD;
+}
+
+.tree .tree-folder .tree-folder-header:hover {
+    background-color: #dfeef5;
+}
+
+.tree .tree-folder .tree-folder-header i {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    float: left;
+    color: #0088CC;
+}
+
+.tree .tree-folder .tree-folder-header .tree-folder-name {
+    padding-left: 29px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tree .tree-folder .tree-folder-content {
+    margin-left: 23px;
+}
+
+.tree .tree-item {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin-top: 1px;
+    cursor: pointer;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.tree .tree-item:hover {
+    background-color: #dfeef5;
+}
+
+.tree .tree-item .tree-item-name {
+    position: absolute;
+    left: 29px;
+}
+
+.tree .tree-item i {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.tree .tree-selected {
+    background-color: #b9dff1;
+}
+
+.tree .tree-selected:hover {
+    background-color: #b9dff1;
 }

@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.UberBreadcrumbs;
 import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.mvp.ParameterizedCommand;
 

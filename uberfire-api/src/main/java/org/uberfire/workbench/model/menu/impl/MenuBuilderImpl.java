@@ -33,13 +33,13 @@ public final class MenuBuilderImpl
                    MenuFactory.TerminalMenu {
 
     public enum MenuType {
-        TOP_LEVEL, CONTRIBUTED, REGULAR, GROUP
+        TOP_LEVEL, CONTRIBUTED, REGULAR, GROUP, CUSTOM
     }
 
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
-    final Stack<CurrentContext> context = new Stack<CurrentContext>();
+    final Stack<MenuFactory.CustomMenuBuilder> context = new Stack<MenuFactory.CustomMenuBuilder>();
 
-    private static class CurrentContext {
+    private static class CurrentContext implements MenuFactory.CustomMenuBuilder {
 
         MenuItem menu = null;
 
@@ -51,15 +51,20 @@ public final class MenuBuilderImpl
         String contributionPoint = null;
         Command command = null;
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
-        Stack<CurrentContext> menuRawItems = new Stack<CurrentContext>();
+        Stack<MenuFactory.CustomMenuBuilder> menuRawItems = new Stack<MenuFactory.CustomMenuBuilder>();
 
-        MenuItem build() {
+        @Override
+        public void push( MenuFactory.CustomMenuBuilder element ) {
+            menuRawItems.push( element );
+        }
+
+        public MenuItem build() {
             if ( menu != null ) {
                 return menu;
             }
             if ( menuItems.size() > 0 || menuRawItems.size() > 0 ) {
                 if ( menuRawItems.size() > 0 ) {
-                    for ( final CurrentContext current : menuRawItems ) {
+                    for ( final MenuFactory.CustomMenuBuilder current : menuRawItems ) {
                         menuItems.add( current.build() );
                     }
                 }
@@ -283,6 +288,11 @@ public final class MenuBuilderImpl
         context.push( currentContext );
     }
 
+    public MenuBuilderImpl( final MenuType menuType,
+                            final MenuFactory.CustomMenuBuilder builder ) {
+        context.push( builder );
+    }
+
     @Override
     public MenuBuilderImpl newContributedMenu( final String caption ) {
         final CurrentContext currentContext = new CurrentContext();
@@ -313,6 +323,13 @@ public final class MenuBuilderImpl
     }
 
     @Override
+    public MenuFactory.TerminalMenu newTopLevelCustomMenu( final MenuFactory.CustomMenuBuilder builder ) {
+        context.push( builder );
+
+        return this;
+    }
+
+    @Override
     public MenuBuilderImpl menu( final String caption ) {
         final CurrentContext currentContext = new CurrentContext();
         currentContext.caption = checkNotEmpty( "caption", caption );
@@ -324,7 +341,14 @@ public final class MenuBuilderImpl
 
     @Override
     public MenuBuilderImpl menus() {
-        context.peek().menuType = MenuType.GROUP;
+        ( (CurrentContext) context.peek() ).menuType = MenuType.GROUP;
+        return this;
+    }
+
+    @Override
+    public MenuFactory.TerminalMenu custom( MenuFactory.CustomMenuBuilder builder ) {
+        context.push( builder );
+
         return this;
     }
 
@@ -340,27 +364,27 @@ public final class MenuBuilderImpl
 
     @Override
     public MenuBuilderImpl contributeTo( final String contributionPoint ) {
-        context.peek().contributionPoint = checkNotEmpty( "contributionPoint", contributionPoint );
+        ( (CurrentContext) context.peek() ).contributionPoint = checkNotEmpty( "contributionPoint", contributionPoint );
         return this;
     }
 
     @Override
     public MenuBuilderImpl withItems( final List items ) {
-        context.peek().menuItems = new ArrayList<MenuItem>( checkNotEmpty( "items", items ) );
+        ( (CurrentContext) context.peek() ).menuItems = new ArrayList<MenuItem>( checkNotEmpty( "items", items ) );
 
         return this;
     }
 
     @Override
     public MenuBuilderImpl respondsWith( final Command command ) {
-        context.peek().command = checkNotNull( "command", command );
+        ( (CurrentContext) context.peek() ).command = checkNotNull( "command", command );
 
         return this;
     }
 
     @Override
     public MenuBuilderImpl withRole( final String role ) {
-        context.peek().roles.add( role );
+        ( (CurrentContext) context.peek() ).roles.add( role );
 
         return this;
     }
@@ -368,7 +392,7 @@ public final class MenuBuilderImpl
     @Override
     public MenuBuilderImpl withRoles( final String... roles ) {
         for ( final String role : checkNotEmpty( "roles", roles ) ) {
-            context.peek().roles.add( role );
+            ( (CurrentContext) context.peek() ).roles.add( role );
         }
 
         return this;
@@ -376,14 +400,14 @@ public final class MenuBuilderImpl
 
     @Override
     public MenuBuilderImpl order( final int order ) {
-        context.peek().order = order;
+        ( (CurrentContext) context.peek() ).order = order;
 
         return this;
     }
 
     @Override
     public MenuBuilderImpl position( final MenuPosition position ) {
-        context.peek().position = checkNotNull( "position", position );
+        ( (CurrentContext) context.peek() ).position = checkNotNull( "position", position );
 
         return this;
     }
@@ -398,8 +422,7 @@ public final class MenuBuilderImpl
         if ( context.size() == 1 ) {
             menuItems.add( context.pop().build() );
         } else {
-            final CurrentContext currentContext = context.pop();
-            context.peek().menuRawItems.push( currentContext );
+            context.peek().push( context.pop() );
         }
 
         return this;

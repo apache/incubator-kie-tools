@@ -5,7 +5,7 @@ $registerPerspective({
     view: {
         parts: [
             {
-                place: "Chart"
+                place: "IPInfoGadget"
             }
         ],
         panels: [

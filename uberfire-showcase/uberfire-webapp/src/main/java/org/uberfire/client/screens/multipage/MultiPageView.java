@@ -16,18 +16,16 @@
 
 package org.uberfire.client.screens.multipage;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.advnavigator.Explorer;
 import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.navigator.FileNavigator;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -41,30 +39,31 @@ public class MultiPageView extends MultiPageEditor
     private Caller<VFSService> vfsServices;
 
     @Inject
-    private FileNavigator fileNavigator;
+    private Explorer explorer;
 
     private MultiPagePresenter presenter;
 
     @Override
     public void init( final MultiPagePresenter presenter ) {
         this.presenter = presenter;
+        init();
     }
 
-    @PostConstruct
-    public void init() {
+    private void init() {
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path o ) {
                 for ( int i = 0; i < 10; i++ ) {
                     if ( i == 0 ) {
-                        fileNavigator.loadContent( o );
-                        addWidget( fileNavigator, "Cool!" );
+                        explorer.setMode( Explorer.Mode.COLLAPSED );
+                        explorer.loadContent( o );
+                        addWidget( explorer, "Cool!" );
                     } else {
                         addWidget( new Button( "My Button " + i ), "Page " + i );
                     }
                 }
             }
-        } ).get( "default://uf-playground/" );
+        } ).get( "default://uf-playground/mortgages" );
     }
 
 }

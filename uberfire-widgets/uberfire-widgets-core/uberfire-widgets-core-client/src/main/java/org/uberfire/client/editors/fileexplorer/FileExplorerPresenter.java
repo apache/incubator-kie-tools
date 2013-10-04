@@ -82,8 +82,6 @@ public class FileExplorerPresenter {
             extends
             UberView<FileExplorerPresenter> {
 
-        void setFocus();
-
         void reset();
 
         void removeIfExists( final Repository repo );
@@ -147,16 +145,6 @@ public class FileExplorerPresenter {
                 }
             }
         } ).newDirectoryStream( path );
-    }
-
-    @OnOpen
-    public void onOpen() {
-        view.setFocus();
-    }
-
-    @OnFocus
-    public void onFocus() {
-        view.setFocus();
     }
 
     @WorkbenchPartTitle

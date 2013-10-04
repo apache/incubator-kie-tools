@@ -1,8 +1,9 @@
-package org.uberfire.client.navigator;
+package org.uberfire.client.advnavigator;
 
-import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -19,105 +20,68 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.navigator.DataContent;
 import org.uberfire.navigator.FileNavigatorService;
 import org.uberfire.navigator.NavigatorContent;
+import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 @Dependent
-public class FileNavigator extends Composite {
-
-    @Inject
-    private PlaceManager placeManager;
+@Named("FlatNav")
+public class BreadcrumNavigator extends Composite implements Navigator {
 
     @Inject
     private Caller<FileNavigatorService> navigatorService;
 
-    private FlowPanel container = new FlowPanel();
-    private FlexTable navigator = null;
+    @Inject
+    private DotResourceTypeDefinition hiddenTypeDef;
+
+    private final FlowPanel container = new FlowPanel();
+    private final FlexTable navigator = new FlexTable() {{
+        setStyleName( NavigatorResources.INSTANCE.css().navigator() );
+    }};
     private NavigatorOptions options = NavigatorOptions.DEFAULT;
-    private boolean isListingRepos = false;
     private ParameterizedCommand<Path> fileActionCommand = null;
 
-    public FileNavigator() {
+    @PostConstruct
+    public void init() {
         initWidget( container );
     }
 
-    public void setOptions( final NavigatorOptions options ) {
-        this.options = options;
-    }
-
-    public void setFileActionCommand( final ParameterizedCommand<Path> fileActionCommand ) {
-        this.fileActionCommand = fileActionCommand;
-    }
-
+    @Override
     public void loadContent( final Path path ) {
-        if ( path == null && options.listRepositories() ) {
-            navigatorService.call( new RemoteCallback<List<Repository>>() {
-                @Override
-                public void callback( final List<Repository> response ) {
-                    container.clear();
-                    navigator = new FlexTable();
-                    navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
-
-                    isListingRepos = true;
-                    setupContent( response );
-                }
-            } ).listRepositories();
-        } else if ( path != null ) {
+        if ( path != null ) {
             navigatorService.call( new RemoteCallback<NavigatorContent>() {
                 @Override
                 public void callback( final NavigatorContent response ) {
 
                     container.clear();
-                    navigator = new FlexTable();
-                    navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
+                    navigator.removeAllRows();
 
-                    isListingRepos = false;
                     setupBreadcrumb( response, path );
 
-                    if ( !path.equals( response.getRoot() ) ) {
-                        setupUpFolder( response );
-                    } else if ( options.listRepositories() ) {
-                        setupUpFolder();
-                    }
+                    setupUpFolder( response );
 
                     setupContent( response );
+
+                    container.add( navigator );
                 }
             } ).listContent( path );
         }
     }
 
-    public boolean isListingRepos() {
-        return this.isListingRepos;
-    }
-
     private void setupBreadcrumb( final NavigatorContent response,
                                   final Path path ) {
-        if ( !options.showBreadcrumb() ) {
-            return;
-        }
-
-        final ParameterizedCommand<Path> command;
-        if ( options.breadcrumbWithLink() ) {
-            command = new ParameterizedCommand<Path>() {
+        container.add( new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.SECOND_LEVEL ) {{
+            build( response.getRoot(), response.getBreadcrumbs(), path, new ParameterizedCommand<Path>() {
                 @Override
                 public void execute( final Path path ) {
                     loadContent( path );
                 }
-            };
-        } else {
-            command = null;
-        }
-
-        container.add( new Breadcrumb( command, null ) {{
-            build( response.getRepoName(), response.getRoot(), response.getBreadcrumbs(), path );
+            } );
         }} );
     }
 
@@ -128,52 +92,30 @@ public class FileNavigator extends Composite {
             if ( dataContent.isDirectory() && options.showDirectories() ) {
                 createDirectory( base + i, dataContent );
             } else if ( options.showFiles() ) {
-                createFile( base + i, dataContent );
+                if ( !options.showHiddenFiles() && !hiddenTypeDef.accept( dataContent.getPath() ) ) {
+                    createFile( base + i, dataContent );
+                } else if ( options.showHiddenFiles() ) {
+                    createFile( base + i, dataContent );
+                }
             }
         }
-
-        container.add( navigator );
-    }
-
-    private void setupContent( final List<Repository> response ) {
-        for ( int i = 0; i < response.size(); i++ ) {
-            final Repository repository = response.get( i );
-            createElement( i, repository, IconType.BOOK, NavigatorResources.INSTANCE.css().navigatorFolderIcon(), new Command() {
-                @Override
-                public void execute() {
-                    loadContent( repository.getRoot() );
-                }
-            } );
-        }
-        container.add( navigator );
     }
 
     private void setupUpFolder( final NavigatorContent content ) {
         if ( options.allowUpLink() ) {
-            if ( content.getBreadcrumbs().size() == 0 ) {
-                createUpFolder( content.getRoot() );
-            } else {
+            if ( content.getBreadcrumbs().size() > 0 ) {
                 createUpFolder( content.getBreadcrumbs().get( content.getBreadcrumbs().size() - 1 ) );
             }
         }
     }
 
-    private void setupUpFolder() {
-        if ( options.allowUpLink() ) {
-            createUpFolder( null );
-        }
-    }
-
     private void createFile( final int row,
                              final DataContent dataContent ) {
-
         createElement( row, dataContent, IconType.FILE_ALT, NavigatorResources.INSTANCE.css().navigatoFileIcon(), new Command() {
             @Override
             public void execute() {
                 if ( fileActionCommand != null ) {
                     fileActionCommand.execute( dataContent.getPath() );
-                } else {
-                    placeManager.goTo( new PathPlaceRequest( dataContent.getPath() ) );
                 }
             }
         } );
@@ -266,24 +208,5 @@ public class FileNavigator extends Composite {
                 setElement( messageCol );
             }} );
         }
-    }
-
-    private void createElement( final int row,
-                                final Repository repository,
-                                final IconType iconType,
-                                final String style,
-                                final Command onClick ) {
-        int col = 0;
-        navigator.setWidget( row, col, new Icon( iconType ) {{
-            addStyleName( style );
-        }} );
-        navigator.setWidget( row, ++col, new Anchor( repository.getAlias() ) {{
-            addClickHandler( new ClickHandler() {
-                @Override
-                public void onClick( ClickEvent event ) {
-                    onClick.execute();
-                }
-            } );
-        }} );
     }
 }

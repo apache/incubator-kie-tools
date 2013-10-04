@@ -2,6 +2,8 @@ package org.uberfire.workbench.model.menu.impl;
 
 import org.junit.Test;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
@@ -37,6 +39,19 @@ public class TestBehavior {
                             .endMenu()
                         .endMenus()
                     .endMenu().build();
+
+        final Menus custom = newTopLevelMenu( "X" )
+                .custom( new CustomMenuBuilder() {
+                    @Override
+                    public void push( CustomMenuBuilder element ) {
+                    }
+
+                    @Override
+                    public MenuItem build() {
+                        return null;
+                    }
+                } )
+                .endMenu().build();
 
         assertThat( menus ).isNotNull();
         assertThat( menus.getItems() ).isNotNull().hasSize( 1 );

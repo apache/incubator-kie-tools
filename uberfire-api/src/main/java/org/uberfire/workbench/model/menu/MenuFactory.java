@@ -24,6 +24,10 @@ public final class MenuFactory {
         return new MenuBuilderImpl( REGULAR, caption );
     }
 
+    public static MenuBuilder<Builder> newTopLevelCustomMenu( final CustomMenuBuilder builder ) {
+        return new MenuBuilderImpl( CUSTOM, builder );
+    }
+
     public interface TopLevelMenusBuilder<T> extends Builder {
 
         ContributedMenuBuilder<TopLevelMenusBuilder<T>> newContributedMenu( final String caption );
@@ -31,6 +35,8 @@ public final class MenuFactory {
         TerminalMenu<TopLevelMenusBuilder<T>> newTopLevelMenu( final MenuItem menu );
 
         MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu( final String caption );
+
+        TerminalMenu<T> newTopLevelCustomMenu( final CustomMenuBuilder builder );
     }
 
     public interface Builder {
@@ -47,6 +53,8 @@ public final class MenuFactory {
     public interface MenuBuilder<T>
             extends SimpleMenuBuilder<MenuBuilder<T>>,
                     SecurityInfos<MenuBuilder<T>> {
+
+        TerminalMenu<T> custom( final CustomMenuBuilder builder );
 
         SubMenusBuilder<SubMenuBuilder<T>> submenu( final String caption );
 
@@ -92,6 +100,13 @@ public final class MenuFactory {
         T withRole( final String role );
 
         T withRoles( final String... roles );
+    }
+
+    public interface CustomMenuBuilder {
+
+        void push( final CustomMenuBuilder element );
+
+        MenuItem build();
     }
 
 }

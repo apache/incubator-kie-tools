@@ -184,12 +184,6 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>com.googlecode.gchart</groupId>
-      <artifactId>gchart</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>

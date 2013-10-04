@@ -33,4 +33,12 @@
   <source path='client'/>
   <source path='shared'/>
 
+  <replace-with class="org.uberfire.client.resources.UberFireConfigurator">
+    <when-type-is class="com.github.gwtbootstrap.client.ui.config.Configurator"/>
+  </replace-with>
+  <public path="client/resources">
+    <include name="**/css/font-*.*"/>
+    <include name="**/font/*.*"/>
+  </public>
+
 </module>
