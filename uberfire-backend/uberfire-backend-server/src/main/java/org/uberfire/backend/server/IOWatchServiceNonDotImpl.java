@@ -75,7 +75,7 @@ public class IOWatchServiceNonDotImpl implements IOWatchService {
                                 }
                             } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
                                 if ( !context.getPath().getFileName().toString().startsWith( "." ) ) {
-                                    resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ) ) );
+                                    resourceAddedEvent.fire( new ResourceAddedEvent( paths.convert( context.getPath() ), sessionInfo(context) ) );
                                 }
                             } else if ( object.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
                                 if ( !context.getOldPath().getFileName().toString().startsWith( "." ) ) {
