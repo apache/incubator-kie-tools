@@ -173,7 +173,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                              makeCommentedOption( comment ) );
 
             //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( resource ) );
+            //@wmedvede TODO review this event throwing, now the DataModelResourceChangeObserver takes care of
+            //throwing this event.
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject(resource), resource ) );
 
             return resource;
 
