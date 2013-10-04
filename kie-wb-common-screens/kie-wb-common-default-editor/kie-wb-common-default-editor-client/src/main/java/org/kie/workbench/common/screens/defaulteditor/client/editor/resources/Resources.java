@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.org.kie.workbench.common.screens.defaulteditor.client.resources.images;
+package org.kie.workbench.common.screens.defaulteditor.client.editor.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.css.StylesCss;
 
-public interface ImageResources
+public interface Resources
         extends
         ClientBundle {
 
-    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+    public static final Resources INSTANCE = GWT.create( Resources.class );
 
-    @Source("newDSL.gif")
-    ImageResource newDSL();
+    @Source("css/Styles.css")
+    StylesCss CSS();
 
 }

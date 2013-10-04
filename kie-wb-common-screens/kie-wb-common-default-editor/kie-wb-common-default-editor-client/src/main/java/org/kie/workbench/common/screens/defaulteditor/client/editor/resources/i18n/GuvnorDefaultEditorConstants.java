@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.org.kie.workbench.common.screens.defaulteditor.client.resources;
+
+package org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import org.org.kie.workbench.common.screens.defaulteditor.client.resources.css.StylesCss;
+import com.google.gwt.i18n.client.Messages;
 
-public interface Resources
+/**
+ * DSL Editor I18N constants
+ */
+public interface GuvnorDefaultEditorConstants
         extends
-        ClientBundle {
+        Messages {
 
-    public static final Resources INSTANCE = GWT.create( Resources.class );
+    public static final GuvnorDefaultEditorConstants INSTANCE = GWT.create( GuvnorDefaultEditorConstants.class );
 
-    @Source("css/Styles.css")
-    StylesCss CSS();
+    String MetaFileEditor(String fileName);
 
+    String TextEditor(String fileName);
 }

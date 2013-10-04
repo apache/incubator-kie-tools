@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package org.org.kie.workbench.common.screens.defaulteditor.client.resources.i18n;
+package org.kie.workbench.common.screens.defaulteditor.client.editor.resources.css;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.resources.client.CssResource;
 
 /**
- * DSL Editor I18N constants
+ * CSS for DSL editor
  */
-public interface GuvnorDefaultEditorConstants
+public interface StylesCss
         extends
-        Messages {
+        CssResource {
 
-    public static final GuvnorDefaultEditorConstants INSTANCE = GWT.create( GuvnorDefaultEditorConstants.class );
+    @ClassName("default-text-Area")
+    String defaultTextArea();
 
-    String NewDslTextDescription();
-
-    String Edit();
 }

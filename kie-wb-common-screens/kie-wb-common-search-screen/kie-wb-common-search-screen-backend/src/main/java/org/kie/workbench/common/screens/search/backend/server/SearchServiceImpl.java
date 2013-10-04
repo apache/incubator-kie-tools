@@ -27,14 +27,12 @@ import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Service
-
 @ApplicationScoped
 public class SearchServiceImpl implements SearchService {
 

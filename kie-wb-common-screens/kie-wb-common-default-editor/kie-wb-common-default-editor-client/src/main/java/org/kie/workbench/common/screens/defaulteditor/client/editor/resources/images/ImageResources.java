@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.org.kie.workbench.common.screens.defaulteditor.client.resources.css;
+package org.kie.workbench.common.screens.defaulteditor.client.editor.resources.images;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-/**
- * CSS for DSL editor
- */
-public interface StylesCss
+public interface ImageResources
         extends
-        CssResource {
+        ClientBundle {
 
-    @ClassName("default-text-Area")
-    String defaultTextArea();
+    public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
+
+    @Source("newDSL.gif")
+    ImageResource newDSL();
 
 }

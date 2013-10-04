@@ -1,6 +1,5 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -18,19 +17,12 @@ import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -56,7 +48,8 @@ public class GuvnorTextEditorPresenter
 
     @Inject
     private FileMenuBuilder menuBuilder;
-    private Menus menus;
+
+    protected Menus menus;
 
     @Inject
     private MetadataWidget metadataWidget;
