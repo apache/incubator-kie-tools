@@ -16,73 +16,32 @@
 
 package org.uberfire.client.common;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
 
-public class ConcurrentChangePopup extends Modal {
+public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
-    interface ConcurrentChangePopupWidgetBinder
-            extends
-            UiBinder<Widget, ConcurrentChangePopup> {
-
-    }
-
-    private ConcurrentChangePopupWidgetBinder uiBinder = GWT.create( ConcurrentChangePopupWidgetBinder.class );
-
-    @UiField
-    protected HTML message;
 
     private ConcurrentChangePopup( final String content,
                                    final Command onIgnore,
                                    final Command onAction,
                                    final String buttonText ) {
-        setTitle( CommonConstants.INSTANCE.Error() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
-
-        add( uiBinder.createAndBindUi( this ) );
-        add( new ModalFooterReOpenIgnoreButtons( this, onAction, onIgnore, buttonText ) );
-
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content ) );
+        super(content, onIgnore, onAction, buttonText);
     }
 
     private ConcurrentChangePopup( final String content,
                                    final Command onIgnore,
                                    final Command onReOpen ) {
-        this( content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen() );
+        this(content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen());
     }
 
     private ConcurrentChangePopup( final String content,
                                    final Command onForceSave,
                                    final Command onIgnore,
                                    final Command onReOpen ) {
-        setTitle( CommonConstants.INSTANCE.Error() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
-
-        add( uiBinder.createAndBindUi( this ) );
-        add( new ModalFooterForceSaveReOpenCancelButtons( this, onForceSave, onReOpen, onIgnore ) );
-
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content ) );
+        super(content, onForceSave, onIgnore, onReOpen);
     }
 
     public static ConcurrentChangePopup newConcurrentUpdate( final Path path,
