@@ -20,12 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.SimplePager;
 import com.github.gwtbootstrap.client.ui.SimplePager.TextLocation;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
+import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -38,10 +37,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
@@ -60,7 +57,7 @@ public class AuditLogViewImpl extends Modal
     private final AuditLog auditLog;
 
     @UiField
-    DropdownButton eventTypes;
+    FlowPanel eventTypes;
 
     @UiField
     SimplePanel eventsContainer;
@@ -102,6 +99,11 @@ public class AuditLogViewImpl extends Modal
     }
 
     public void setup() {
+
+        // BZ-996917: Use a the gwtboostrap style "row-fluid" to allow display some events in the same row.
+        eventTypes.setStyleName(Constants.ROW_FLUID);
+
+        // Fill panel with available events.
         for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
             eventTypes.add( makeEventTypeCheckBox( e.getKey(),
                                                    e.getValue() ) );
@@ -179,6 +181,10 @@ public class AuditLogViewImpl extends Modal
             }
 
         } );
+
+        // BZ-996917: Use two layout columns for widget width and Set nowrap for while-space.
+        chkEventType.addStyleName("span2");
+        chkEventType.setWordWrap(false);
 
         return chkEventType;
     }

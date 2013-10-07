@@ -24,11 +24,8 @@
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
   <g:VerticalPanel width="100%">
-      <b:ButtonToolbar>
-        <b:ButtonGroup>
-          <b:DropdownButton text="{i18n.DecisionTableAuditLogEvents}" ui:field="eventTypes"/>
-        </b:ButtonGroup>
-      </b:ButtonToolbar>
+      <!-- BZ-996917: Changed dropdown menu with all events as menu item for a flow panel layout due to usability reasons. -->
+      <g:FlowPanel ui:field="eventTypes"/>
       <b:Well>
         <g:SimplePanel ui:field="eventsContainer" width="100%" height="300px"/>
       </b:Well>
